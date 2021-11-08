@@ -1,111 +1,149 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    <grid name="work-center-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
-        <field name="workCenterTypeSelect"/>
-    </grid>
-    
-    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    </grid>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-   <grid name="work-center-work-center-group-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+  <grid name="work-center-grid" title="Work centers"
+    model="com.axelor.apps.production.db.WorkCenter">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
+    <field name="workCenterTypeSelect"/>
+  </grid>
+
+  <grid name="work-center-grid-small" title="Work centers"
+    model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+  </grid>
+
+  <grid name="work-center-work-center-group-grid" title="Work centers"
+    model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="machine" form-view="machine-form" grid-view="machine-grid"/>
+  </grid>
+
+  <form name="work-center-form" title="Work center"
+    model="com.axelor.apps.production.db.WorkCenter" width="large"
+    onNew="action-work-center-group-onnew"
+    onLoad="action-work-center-attrs-set-readonly-on-new-load">
+    <panel name="mainPanel">
       <field name="name"/>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="machine" form-view="machine-form" grid-view="machine-grid"/>
-   </grid>
-
-	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large"
-	  onNew="action-work-center-group-onnew" onLoad="action-work-center-attrs-set-readonly-on-new-load">
-	  <panel name="mainPanel" >
-	    <field name="name"/>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
-	    <field name="workCenterTypeSelect" required="true" onChange="action-work-center-record-type-select-onchange"/>
-		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
-		<field name="machineTool" domain="self.machine = :machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-tool-form" grid-view="machine-tool-grid" if="__config__.app.getApp('production').getEnableToolManagement()"/>
-	  </panel>
-	  <panel-tabs name="mainPanelTab">
-	    <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
-	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
-	          <field name="minCapacityPerCycle" colSpan="3"/>
-	          <field name="maxCapacityPerCycle" colSpan="3"/>
-	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-	          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-	        </panel>
-	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	          <field name="costTypeSelect" colSpan="3"/>
-	          <field name="costAmount" colSpan="3"/>
-  		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
-  		  	  <field name="isRevaluationAtActualPrices"/>
-	        </panel>
-	    </panel>
-	    <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
-	  </panel-tabs>
-	  
-	  <panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail>
-	</form>
-    
-    <grid name="work-center-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="machine"/>
-    </grid>
-    
-    <form name="work-center-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-    	<panel name="mainPanel" >
-	        <field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	        <field name="machine"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
+      <field name="workCenterTypeSelect" required="true"
+        onChange="action-work-center-record-type-select-onchange"/>
+      <field name="machine"
+        requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
+        showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form"
+        grid-view="machine-grid"/>
+      <field name="machineTool" domain="self.machine = :machine"
+        showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
+        form-view="machine-tool-form" grid-view="machine-tool-grid"
+        if="__config__.app.getApp('production').getEnableToolManagement()"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine"
+        showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
+        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+          <field name="minCapacityPerCycle" colSpan="3"/>
+          <field name="maxCapacityPerCycle" colSpan="3"/>
+          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+            x-seconds="true"/>
+          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+            x-seconds="true"/>
         </panel>
-        <panel name="productionAndCostSettingsPanel" title="Production and cost settings">
-	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
-	          <field name="minCapacityPerCycle" colSpan="3"/>
-	          <field name="maxCapacityPerCycle" colSpan="3"/>
-	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-	          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-	        </panel>
-	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"/>
-	          <field name="costTypeSelect" colSpan="3"/>
-	          <field name="costAmount" colSpan="3"/>
-   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
-	        </panel>
-	    </panel>
-    </form>
+        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
+          <field name="product"
+            domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"
+            form-view="product-form" grid-view="product-grid"/>
+          <field name="costTypeSelect" colSpan="3"/>
+          <field name="costAmount" colSpan="3"/>
+          <field name="costSheetGroup" form-view="cost-sheet-group-form"
+            grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"
+            if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+          <field name="isRevaluationAtActualPrices"/>
+        </panel>
+      </panel>
+      <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
+        title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3"
+        form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
+    </panel-tabs>
 
-   <action-group name="action-work-center-group-onnew">
-      <action name="action-work-center-record-default"/>
-      <action name="action-work-center-attrs-set-readonly-on-new-load"/>
-   </action-group>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
 
-     <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
-		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
-		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
-		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
-    </action-record>
+  <grid name="work-center-machine-grid" title="Machines"
+    model="com.axelor.apps.production.db.WorkCenter">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="machine"/>
+  </grid>
 
-   <action-attrs name="action-work-center-attrs-set-readonly-on-new-load">
-      <attribute name="readonly" for="workCenterTypeSelect" expr="true" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
-   </action-attrs>
+  <form name="work-center-machine-form" title="Machine"
+    model="com.axelor.apps.production.db.WorkCenter" width="large"
+    onNew="action-work-center-record-default">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="machine"/>
+    </panel>
+    <panel name="productionAndCostSettingsPanel" title="Production and cost settings">
+      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+        <field name="minCapacityPerCycle" colSpan="3"/>
+        <field name="maxCapacityPerCycle" colSpan="3"/>
+        <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
+      </panel>
+      <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
+        <field name="product"
+          domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"/>
+        <field name="costTypeSelect" colSpan="3"/>
+        <field name="costAmount" colSpan="3"/>
+        <field name="costSheetGroup" form-view="cost-sheet-group-form"
+          grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"
+          if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+      </panel>
+    </panel>
+  </form>
 
-	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">
-		<field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
-		<field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
-	</action-record>
-	
-	<search-filters name="work-center-filters" model="com.axelor.apps.production.db.WorkCenter" title="Work center filters">
-        <field name="costSheetGroup" hidden="true" if="!__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
-    </search-filters>
-    
+  <action-group name="action-work-center-group-onnew">
+    <action name="action-work-center-record-default"/>
+    <action name="action-work-center-attrs-set-readonly-on-new-load"/>
+  </action-group>
+
+  <action-record name="action-work-center-record-default"
+    model="com.axelor.apps.production.db.WorkCenter">
+    <field name="costSheetGroup"
+      expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null "
+      if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+    <field name="product"
+      expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null"/>
+    <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}"
+      if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
+  </action-record>
+
+  <action-attrs name="action-work-center-attrs-set-readonly-on-new-load">
+    <attribute name="readonly" for="workCenterTypeSelect" expr="true"
+      if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
+  </action-attrs>
+
+  <action-record name="action-work-center-record-type-select-onchange"
+    model="com.axelor.apps.production.db.WorkCenter">
+    <field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
+    <field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
+  </action-record>
+
+  <search-filters name="work-center-filters"
+    model="com.axelor.apps.production.db.WorkCenter" title="Work center filters">
+    <field name="costSheetGroup" hidden="true"
+      if="!__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+  </search-filters>
+
 </object-views>
 

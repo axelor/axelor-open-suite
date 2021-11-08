@@ -172,4 +172,44 @@ public interface ITranslation {
       "BankReconciliationStatement.unreconileAccountBalance"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_RECONCILIATION_GAP = /*$$(*/
       "BankReconciliationStatement.reconciliationGap"; /*)*/;
+  public static final String BANK_RECONCILIATION_NEW_MAIN_TITLE = /*$$(*/
+      "BankReconciliationStatementNew.mainTitle"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_BANK = /*$$(*/
+      "BankReconciliationStatementNew.bank"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_IBAN = /*$$(*/
+      "BankReconciliationStatementNew.iban"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_FROM = /*$$(*/
+      "BankReconciliationStatementNew.from"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_TO = /*$$(*/
+      "BankReconciliationStatementNew.to"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_OPERATION_DATE = /*$$(*/
+      "BankReconciliationStatementNew.operationDate"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_VALUE_DATE = /*$$(*/
+      "BankReconciliationStatementNew.valueDate"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_VALUE_LABEL = /*$$(*/
+      "BankReconciliationStatementNew.label"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_POSTED_NUMBER = /*$$(*/
+      "BankReconciliationStatementNew.postedNbr"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_BALANCE_AFTER_RECONCILIATION = /*$$(*/
+      "BankReconciliationStatementNew.balanceAfterReconcilation"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_TOTAL_GENERAL_BALANCE = /*$$(*/
+      "BankReconciliationStatementNew.totalGeneralBalance"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_ORIGIN_DATE = /*$$(*/
+      "BankReconciliationStatementNew.originDate"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_MOVE_DATE = /*$$(*/
+      "BankReconciliationStatementNew.moveDate"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_NON_POSTED_MOVE_STATEMENT = /*$$(*/
+      "BankReconciliationStatementNew.nonPostedMoveStatement"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_ACCOUNTING_BALANCE_ON = /*$$(*/
+      "BankReconciliationStatementNew.accountingBalanceOn"; /*)*/
+  public static final String BANK_RECONCILIATION_NEW_BALANCE_EXTRACT_ON = /*$$(*/
+      "BankReconciliationStatementNew.balanceExtractOn"; /*)*/
+  public static final String BANK_RECONCILIATION_TO_BE_CONFIRMED = /*$$(*/
+      "BankReconciliationStatementNew.toBeConfirmed"; /*)*/
+  public static final String BANK_RECONCILIATION_BANK_STATEMENT_EXTRACT = /*$$(*/
+      "BankReconciliationStatementNew.bankStatementExtract"; /*)*/
+  public static final String BANK_RECONCILIATION_ACCOUNTING_EXTRACT = /*$$(*/
+      "BankReconciliationStatementNew.accountingExtract"; /*)*/
+  public static final String BANK_RECONCILIATION_SELECT_A_LINE = /*$$(*/
+      "Please select at least one bank reconciliation line (button on right side of table)."; /*)*/
 }

@@ -7,25 +7,29 @@
 
   <entity name="TSTimer" cacheable="true">
 
-      	<many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
-      	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-      	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity" required="true"/>
-      	<string name="comments" title="Comments" large="true"/>
-		<datetime name="startDateTime" title="Start Time" readonly="true"/>
-		<datetime name="timerStartDateT" title="Timer start date time" readonly="true"/>
-      	<long name="duration" title="Duration" required="true"/>
-     	<many-to-one name="timesheetLine" ref="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line" readonly="true"/>
-      	<integer name="statusSelect" title="Status Timer" default="2" selection="hr.timer.status.select" readonly="true"></integer>
-      
+    <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true"
+      column="user_id"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"
+      required="true"/>
+    <string name="comments" title="Comments" large="true"/>
+    <datetime name="startDateTime" title="Start Time" readonly="true"/>
+    <datetime name="timerStartDateT" title="Timer start date time" readonly="true"/>
+    <long name="duration" title="Duration" required="true"/>
+    <many-to-one name="timesheetLine" ref="com.axelor.apps.hr.db.TimesheetLine"
+      title="Timesheet Line" readonly="true"/>
+    <integer name="statusSelect" title="Status Timer" default="2"
+      selection="hr.timer.status.select" readonly="true"></integer>
+
     <extra-code><![CDATA[
-	
+
 	   	// STATUS SELECT
 		public static final int STATUS_START = 1;
 		public static final int STATUS_PAUSE = 2;
 		public static final int STATUS_STOP = 3;
-	
+
 	]]></extra-code>
-      
+
   </entity>
-  
+
 </domain-models>

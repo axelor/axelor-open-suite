@@ -1,5 +1,0 @@
----
-title: "PRODUCT: Image of barcode generated display for Code_39 and code_128 erroneous"
-type: fix
-description:
-    Erroneous barcode generation due to width being less is resolved

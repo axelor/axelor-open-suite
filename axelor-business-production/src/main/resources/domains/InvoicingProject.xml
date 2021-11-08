@@ -6,11 +6,12 @@
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
   <entity name="InvoicingProject" cacheable="true">
-      
-   
-    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf. Orders Selection"/>
 
-    
+
+    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder"
+      title="Manuf. Orders Selection"/>
+
+
   </entity>
-  
+
 </domain-models>

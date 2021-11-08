@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+
+  <input file="dashlet-builder.xml" root="dashlet-builders">
+
+    <bind node="dashlet-builder" type="com.axelor.studio.db.DashletBuilder"
+      search="self.name = :name and self.dashboardBuilder.name = :dashboardBuilder and (self.appBuilder.code = :appBuilder OR self.dashboardBuilder.appBuilder.code = :parentAppBuilder)"
+      update="true">
+      <bind node="name" to="name"/>
+      <bind node="metaView" to="metaView" search="self.name = :metaView"/>
+      <bind node="dashboardBuilder" to="dashboardBuilder"
+        search="self.name = :dashboardBuilder" create="false"/>
+      <bind node="action" to="action" search="self.name = :action" create="false"/>
+      <bind node="sequence" to="sequence"/>
+      <bind node="viewType" to="viewType"/>
+      <bind node="colspan" to="colspan"/>
+      <bind node="paginationLimit" to="paginationLimit"/>
+      <bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+      <bind node="parentAppBuilder" alias="parentAppBuilder"/>
+    </bind>
+
+  </input>
+
+</xml-inputs>

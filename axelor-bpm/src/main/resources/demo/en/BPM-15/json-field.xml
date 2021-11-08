@@ -1,0 +1,2097 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-fields>
+
+
+  <json-field>
+
+    <name>buttonCancel</name>
+
+    <title>Cancel</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>7</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Name</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>startDate</name>
+
+    <title>Start</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonSubscribe</name>
+
+    <title>Subscribe</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonCancel</name>
+
+    <title>Cancel</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>7</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "validIf": null,
+      "itemSpan": 6, "collapseIf": "", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonStart</name>
+
+    <title>Start</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>endDate</name>
+
+    <title>End</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel2</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "sidebar": "true",
+      "itemSpan": 6, "showTitle": "undefined", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel2</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "sidebar": "true",
+      "itemSpan": 6, "showTitle": "undefined", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonCancel</name>
+
+    <title>Cancel</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "validIf": null,
+      "itemSpan": 6, "collapseIf": "", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonHold</name>
+
+    <title>Hold</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel2</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "sidebar": "true",
+      "itemSpan": 6, "showTitle": "undefined", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>subscriptionDate</name>
+
+    <title>Subscription Date</title>
+
+    <type>datetime</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>billSubscription</name>
+
+    <title>Bill subscription</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel>BillSubscription</targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Name</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>subscriptionEnd</name>
+
+    <title>Subscription end</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "validIf": null,
+      "itemSpan": 6, "collapseIf": "", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>BillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>subscriptionStart</name>
+
+    <title>Subcription start</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonEnd</name>
+
+    <title>End</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>8</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>CreditCardBillSubcription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>billSubscription</name>
+
+    <title>Bill subscription</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel>BillSubscription</targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonEnd</name>
+
+    <title>End</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>8</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Name</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buttonStart</name>
+
+    <title>Start</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-15&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ElectricityBillSubscription</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-15</appBuilder>
+
+    <modelAppBuilder>BPM-15</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+
+
+</json-fields>

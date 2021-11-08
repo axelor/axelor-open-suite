@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app-loaders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <app-loader name="Product app" importFilePath="demo/fr/PRD"/>
+
+</app-loaders>
+

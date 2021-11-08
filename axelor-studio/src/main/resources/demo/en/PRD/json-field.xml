@@ -1,0 +1,2082 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-fields>
+
+
+  <json-field>
+
+    <name>reference</name>
+
+    <title>Ref</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>main</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductCategory</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Name</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductCategory</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>code</name>
+
+    <title>Code</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductCategory</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>main</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Name</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>code</name>
+
+    <title>Code</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>price</name>
+
+    <title>Price</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>launchDate</name>
+
+    <title>Launch Date</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>supplier</name>
+
+    <title>Supplier</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.base.db.Partner</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>category</name>
+
+    <title>Main Category</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>Product</jsonModel>
+
+    <targetJsonModel>ProductCategory</targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>main</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrderLine</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>product</name>
+
+    <title>Product</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>action-product-order-line-get-product-details,action-product-order-line-update-total</onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrderLine</jsonModel>
+
+    <targetJsonModel>Product</targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>price</name>
+
+    <title>Price</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>action-product-order-line-update-total</onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrderLine</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>qty</name>
+
+    <title>Qty</title>
+
+    <type>integer</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>action-product-order-line-update-total</onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrderLine</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>total</name>
+
+    <title>Total</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrderLine</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>main</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>customer</name>
+
+    <title>Customer</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain>isCustomer = true</domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.base.db.Partner</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>orderDate</name>
+
+    <title>Order Date</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>total</name>
+
+    <title>Total</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>lines</name>
+
+    <title>Lines</title>
+
+    <type>json-one-to-many</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>action-product-order-update-total</onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductOrder</jsonModel>
+
+    <targetJsonModel>ProductOrderLine</targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createInvoice</name>
+
+    <title>Create invoice</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.hr.db.Timesheet</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-create-invoice-from-timesheet</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;PRD&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf>$record.user.employee</showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>PRD</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>invertToInvoice</name>
+
+    <title>Check/Uncheck &apos;to invoice&apos;</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.hr.db.Timesheet</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-timesheet-line-invert-to-invoice</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;PRD&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>PRD</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>products</name>
+
+    <title>Products</title>
+
+    <type>json-many-to-many</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;PRD&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductCategory</jsonModel>
+
+    <targetJsonModel>Product</targetJsonModel>
+
+    <appBuilder>PRD</appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createProduct</name>
+
+    <title>Create product order</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-create-product-order-from-category</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;PRD&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>ProductCategory</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>PRD</appBuilder>
+
+    <modelAppBuilder>PRD</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+
+
+</json-fields>

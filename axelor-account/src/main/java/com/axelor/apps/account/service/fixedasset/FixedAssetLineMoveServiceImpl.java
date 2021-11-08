@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -52,18 +52,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveRepository moveRepo;
 
-  protected MoveLineService moveLineService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Override
@@ -100,10 +100,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-        fixedAsset.getReference(),
+        origin,
         company.getName(),
         journal.getCode());
 
@@ -115,14 +116,16 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             company.getCurrency(),
             partner,
             date,
+            date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
-      String origin = fixedAsset.getReference();
       Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account creditLineAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       BigDecimal amount = fixedAssetLine.getDepreciation();
@@ -184,6 +187,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     // Creating move
     Move move =
@@ -193,14 +197,16 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             company.getCurrency(),
             partner,
             date,
+            date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      String origin = fixedAsset.getReference();
       Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
@@ -283,7 +289,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLineService.computeAnalyticDistribution(moveLine);
+      moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
     }
   }
 }
