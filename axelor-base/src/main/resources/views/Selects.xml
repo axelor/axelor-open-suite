@@ -257,8 +257,8 @@
   <selection name="base.period.status.select">
     <option value="1">Opened</option>
     <option value="2">Permanently Closed</option>
-	<option value="3">Adjusting</option>
-	<option value="4">Temporarily Closed</option>
+    <option value="3">Adjusting</option>
+    <option value="4">Temporarily Closed</option>
   </selection>
 
   <selection name="company.partner.category.select">

@@ -558,7 +558,16 @@ public class MoveController {
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 
+  public void setReadonlyRights(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Period period = move.getPeriod();
+      boolean canEdit = Beans.get(MoveToolService.class).getEditAuthorization(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
