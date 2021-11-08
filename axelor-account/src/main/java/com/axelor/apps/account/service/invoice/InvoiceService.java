@@ -283,4 +283,6 @@ public interface InvoiceService {
   public User getPfpValidatorUser(Invoice invoice);
 
   public String getPfpValidatorUserDomain(Invoice invoice);
+
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
 }
