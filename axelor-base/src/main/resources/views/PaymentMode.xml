@@ -11,7 +11,7 @@
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"
-    width="large">
+    onLoad="action-attrs-base-set-readonly-fields-if-in-move" width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -91,5 +91,18 @@
       if="!__config__.app.isApp('bank-payment')"/>
     <field name="bankOrderFileFormat" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
   </search-filters>
+
+  <action-attrs name="action-attrs-base-set-readonly-fields-if-in-move"
+    if-module="axelor-account">
+    <attribute name="readonly" for="name"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="code"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="typeSelect"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="inOutSelect"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+  </action-attrs>
+
 
 </object-views>
