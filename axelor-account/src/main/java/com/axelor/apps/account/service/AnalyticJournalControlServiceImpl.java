@@ -2,6 +2,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -12,10 +13,14 @@ import java.util.Objects;
 public class AnalyticJournalControlServiceImpl implements AnalyticJournalControlService {
 
   protected AnalyticJournalRepository analyticJournalRepository;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
-  public AnalyticJournalControlServiceImpl(AnalyticJournalRepository analyticJournalRepository) {
+  public AnalyticJournalControlServiceImpl(
+      AnalyticJournalRepository analyticJournalRepository,
+      AnalyticMoveLineRepository moveRepository) {
     this.analyticJournalRepository = analyticJournalRepository;
+    this.analyticMoveLineRepository = moveRepository;
   }
 
   @Override
@@ -38,5 +43,14 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
           I18n.get(IExceptionMessage.NOT_UNIQUE_NAME_ANALYTIC_JOURNAL),
           analyticJournal.getCompany().getName());
     }
+  }
+
+  @Override
+  public Boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal) {
+    return analyticMoveLineRepository
+            .all()
+            .filter("self.analyticJournal = ?", analyticJournal)
+            .count()
+        > 0;
   }
 }

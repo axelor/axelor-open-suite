@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticJournal;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -32,8 +33,25 @@ public class AnalyticJournalController {
   public void controlUniqueCode(ActionRequest request, ActionResponse response) {
 
     try {
-      AnalyticJournal analyticJournal = request.getContext().asType(AnalyticJournal.class);
-      Beans.get(AnalyticJournalControlService.class).controlDuplicateCode(analyticJournal);
+      Beans.get(AnalyticJournalControlService.class)
+          .controlDuplicateCode(request.getContext().asType(AnalyticJournal.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setReadOnly(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticJournal analyticJournal =
+          Beans.get(AnalyticJournalRepository.class)
+              .find(request.getContext().asType(AnalyticJournal.class).getId());
+      if (analyticJournal != null) {
+        Boolean isInMove =
+            Beans.get(AnalyticJournalControlService.class).isInAnalyticMoveLine(analyticJournal);
+        response.setAttr("name", "readonly", isInMove);
+        response.setAttr("code", "readonly", isInMove);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
