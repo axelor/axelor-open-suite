@@ -24,6 +24,34 @@ package com.axelor.apps.account.exception;
  */
 public interface IExceptionMessage {
 
+  static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
+      /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
+      /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
+      /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
+      /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
+      /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
+  static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
+      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
+      /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
+      /*$$(*/ "The input failover date is not conforme compare with the dates and configured depreciation duration." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
+      /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
+      /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
@@ -61,6 +89,8 @@ public interface IExceptionMessage {
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
+  static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
+      "The move line %s is missing description in order to create fixed asset" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -237,7 +267,7 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
-      "Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed." /*)*/;
+      "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -547,6 +577,10 @@ public interface IExceptionMessage {
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_46 = /*$$(*/
+      "%s : You must configure a holdback customer account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_47 = /*$$(*/
+      "%s : You must configure a holdback supplier account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -794,6 +828,23 @@ public interface IExceptionMessage {
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
+  static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
+      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
+      "The sum of invoice payment term lines must be equal to 100%" /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_CREATION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid, therefore invoice term creation is not possible." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid partially or totally, therefore invoice term deletion is not possible." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
+  /** Invoice payment controller */
+  static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
+      "You must select at least one invoice term line to pay" /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -873,6 +924,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED = /*$$(*/
+      "The disposal of the asset cannot be executed while depreciation has already been accounted." /*)*/;
 
   /* MOVE REVERSE*/
   static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/

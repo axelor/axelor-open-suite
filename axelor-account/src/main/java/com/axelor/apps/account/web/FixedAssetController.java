@@ -19,11 +19,23 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -34,6 +46,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,37 +56,107 @@ public class FixedAssetController {
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
     FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+    fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAsset.getId());
+    // There is nothing to do if depreciation plan is None.
+    if (fixedAsset.getDepreciationPlanSelect() == null
+        || fixedAsset
+            .getDepreciationPlanSelect()
+            .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+      return;
+    }
+
     try {
-      if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+      fixedAsset = Beans.get(FixedAssetGenerationService.class).generateAndComputeLines(fixedAsset);
 
-        if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
-          fixedAsset.getFixedAssetLineList().clear();
-        }
-        fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
-
-      } else {
-        fixedAsset.getFixedAssetLineList().clear();
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-    response.setValue("residualValue", fixedAsset.getGrossValue());
-    response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
+
+    response.setReload(true);
   }
 
+  @SuppressWarnings("unchecked")
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-    if (context.get("disposalDate") == null || context.get("disposalAmount") == null) {
+    if (context.get("disposalDate") == null
+        || context.get("disposalAmount") == null
+        || context.get("disposalTypeSelect") == null
+        || context.get("disposalQtySelect") == null) {
       return;
     }
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
     BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+    Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
+    Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    String comments = null;
+    if (context.get("comments") != null) {
+      comments = context.get("comments").toString();
+    }
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
+    Boolean generateSaleMove = false;
+    TaxLine saleTaxLine = null;
+    if (context.get("generateSaleMove") != null) {
+      generateSaleMove = Boolean.parseBoolean(context.get("generateSaleMove").toString());
+    }
+    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
+      generateSaleMove = false;
+    }
+    if (context.get("saleTaxLine") != null) {
+      saleTaxLine =
+          Beans.get(TaxLineRepository.class)
+              .find(
+                  ((Integer) ((HashMap<String, Object>) context.get("saleTaxLine")).get("id"))
+                      .longValue());
+    }
+
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
+    if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
+        && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          fixedAsset.getQty().toString());
+    }
+    try {
+      int transferredReason =
+          Beans.get(FixedAssetService.class)
+              .computeTransferredReason(disposalTypeSelect, disposalQtySelect);
 
-    response.setCanClose(true);
+      FixedAsset createdFixedAsset =
+          Beans.get(FixedAssetService.class)
+              .computeDisposal(
+                  fixedAsset,
+                  disposalDate,
+                  disposalQty,
+                  disposalAmount,
+                  transferredReason,
+                  comments);
+      if (createdFixedAsset != null) {
+        response.setView(
+            ActionView.define("Fixed asset")
+                .model(FixedAsset.class.getName())
+                .add("form", "fixed-asset-form")
+                .context("_showRecord", createdFixedAsset.getId())
+                .map());
+        response.setCanClose(true);
+        response.setReload(true);
+        if (generateSaleMove && saleTaxLine != null) {
+          Beans.get(FixedAssetLineMoveService.class)
+              .generateSaleMove(createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+        }
+      } else {
+        if (generateSaleMove && saleTaxLine != null) {
+          Beans.get(FixedAssetLineMoveService.class)
+              .generateSaleMove(fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+        }
+        response.setCanClose(true);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
@@ -82,6 +165,11 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
+        if (fixedAsset.getGrossValue().signum() <= 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
+        }
         Beans.get(FixedAssetService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -154,7 +242,66 @@ public class FixedAssetController {
                 .context("fixedAsset", fixedAsset.getId())
                 .map());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
+  public void computeFirstDepreciationDate(ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetService.class).computeFirstDepreciationDate(fixedAsset);
+
+      response.setValue("firstDepreciationDate", fixedAsset.getFirstDepreciationDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateDepreciation(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset =
+          Beans.get(FixedAssetRepository.class)
+              .find(request.getContext().asType(FixedAsset.class).getId());
+      Beans.get(FixedAssetService.class).updateDepreciation(fixedAsset);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void splitFixedAsset(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Long fixedAssetId = Long.valueOf(context.get("_id").toString());
+    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+
+    try {
+      if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+            fixedAsset.getQty().toString());
+      }
+      FixedAsset createdFixedAsset =
+          Beans.get(FixedAssetService.class)
+              .splitAndSaveFixedAsset(
+                  fixedAsset,
+                  disposalQty,
+                  Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
+                  fixedAsset.getComments());
+      if (createdFixedAsset != null) {
+        response.setView(
+            ActionView.define("Fixed asset")
+                .model(FixedAsset.class.getName())
+                .add("form", "fixed-asset-form")
+                .context("_showRecord", createdFixedAsset.getId())
+                .map());
+        response.setCanClose(true);
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -170,7 +317,60 @@ public class FixedAssetController {
         response.setAttr(
             "personalizeBtn", "title", I18n.get("Create personalized analytic template"));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
+  public void failOverControl(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetFailOverControlService.class).controlFailOver(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setDepreciationPlanSelect(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      FixedAssetCategoryService fixedAssetCategoryService =
+          Beans.get(FixedAssetCategoryService.class);
+
+      fixedAssetCategoryService.setDepreciationPlanSelectToNone(
+          fixedAsset,
+          FixedAssetTypeRepository.FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET);
+      if (StringUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())) {
+        response.setValue("depreciationPlanSelect", fixedAsset.getDepreciationPlanSelect());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDepreciationPlanSelectReadonly(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      FixedAssetCategoryService fixedAssetCategoryService =
+          Beans.get(FixedAssetCategoryService.class);
+      boolean isReadonly =
+          fixedAssetCategoryService.compareFixedAssetCategoryTypeSelect(
+              fixedAsset,
+              FixedAssetTypeRepository.FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET);
+
+      response.setAttr("depreciationPlanSelect", "readonly", isReadonly);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onChangeDepreciationPlan(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
+      fixedAssetService.onChangeDepreciationPlan(fixedAsset);
+      response.setValues(fixedAsset);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

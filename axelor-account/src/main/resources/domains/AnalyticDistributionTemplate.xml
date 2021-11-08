@@ -5,12 +5,15 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticDistributionTemplate" lang="java">
-	
-	<string name="name" title="Name" required="true"/>
-	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="analyticDistributionTemplate"/>
-	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	<boolean name="isSpecific" title="Specific"/>
+  <entity name="AnalyticDistributionTemplate" lang="java">	
+  
+    <string name="name" title="Name" required="true"/>
+    <one-to-many name="analyticDistributionLineList"
+      ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines"
+      mappedBy="analyticDistributionTemplate"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <boolean name="isSpecific" title="Specific"/>
+    
   </entity>
 
 </domain-models>

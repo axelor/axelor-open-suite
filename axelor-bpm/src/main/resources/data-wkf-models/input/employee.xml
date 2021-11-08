@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bpm>
 
-	<wkfModels>
-		
-		<wkfModel>
-								
-			<code>HR_LUNCHVOUCHERMGTLINE</code>
-								
-			<name>HR_LunchVoucherMgtLine</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>HR_LUNCHVOUCHERMGTLINE</code>
+
+      <name>HR_LunchVoucherMgtLine</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="LVLProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -82,23 +82,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>HR_EMPLOYEEBONUSMGT</code>
-								
-			<name>HR_EmployeeBonusMgt</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>HR_EMPLOYEEBONUSMGT</code>
+
+      <name>HR_EmployeeBonusMgt</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="EmployeeBonusProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -181,23 +181,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>HR_LUNCHVOUCHERMANAGEMENT</code>
-								
-			<name>HR_LunchVoucherManagement</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>HR_LUNCHVOUCHERMANAGEMENT</code>
+
+      <name>HR_LunchVoucherManagement</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="LunchVoiucerManagementProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -289,23 +289,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>HR_EMPLOYEEBONUSMGTLINE</code>
-								
-			<name>HR_EmployeeBonusMgtLine</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>HR_EMPLOYEEBONUSMGTLINE</code>
+
+      <name>HR_EmployeeBonusMgtLine</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="LunchVoucherMgtLineProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -376,15 +376,15 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-	</wkfModels>
-	
-	
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
 </bpm>
