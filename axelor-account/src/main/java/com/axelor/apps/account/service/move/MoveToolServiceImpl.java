@@ -439,8 +439,8 @@ public class MoveToolServiceImpl implements MoveToolService {
   public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
