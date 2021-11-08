@@ -1454,7 +1454,13 @@ public class MoveLineServiceImpl implements MoveLineService {
     } else {
       moveLine.setAnalyticDistributionTemplate(null);
     }
-    moveLine.getAnalyticMoveLineList().clear();
+    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+    if (analyticMoveLineList != null) {
+    	analyticMoveLineList.clear();
+    }
+    else {
+    	moveLine.setAnalyticMoveLineList(new ArrayList<AnalyticMoveLine>());
+    }
     moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
   }
