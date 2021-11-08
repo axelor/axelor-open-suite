@@ -8,11 +8,9 @@
   <entity name="AnalyticJournal" lang="java">
 
     <string name="name" title="Name" required="true" unique="true"/>
-    <string name="code" title="Code"/>
     <many-to-one name="type" ref="AnalyticJournalType" title="Type"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
-    <unique-constraint columns="code,company"/>
   </entity>
 
 </domain-models>
