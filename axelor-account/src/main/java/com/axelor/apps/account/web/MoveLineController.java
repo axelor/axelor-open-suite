@@ -97,9 +97,9 @@ public class MoveLineController {
           && Beans.get(AccountConfigService.class)
               .getAccountConfig(moveLine.getMove().getCompany())
               .getManageAnalyticAccounting()) {
-          Beans.get(MoveLineComputeAnalyticService.class)
-              .createAnalyticDistributionWithTemplate(moveLine);
-      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        Beans.get(MoveLineComputeAnalyticService.class)
+            .createAnalyticDistributionWithTemplate(moveLine);
+        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -476,11 +476,12 @@ public class MoveLineController {
           && Beans.get(AccountConfigService.class)
               .getAccountConfig(moveLine.getMove().getCompany())
               .getManageAnalyticAccounting()) {
-    	  moveLine =
-    	          Beans.get(MoveLineComputeAnalyticService.class)
-    	              .selectDefaultDistributionTemplate(moveLine);
-    	  response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-          response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        moveLine =
+            Beans.get(MoveLineComputeAnalyticService.class)
+                .selectDefaultDistributionTemplate(moveLine);
+        response.setValue(
+            "analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
