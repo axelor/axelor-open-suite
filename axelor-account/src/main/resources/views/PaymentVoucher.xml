@@ -57,7 +57,8 @@
 
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
-        domain=":company member of self.companySet" onChange="action-pv-record-default-partner-inf"
+        domain=":company member of self.companySet"
+        onChange="action-group-payment-voucher-reset-imputation,action-pv-record-default-partner-inf"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
