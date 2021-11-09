@@ -2541,7 +2541,7 @@
 "Waiting for deposit slip",,,
 "Warning : This will import move lines even if they have already been imported through this feature. Be careful not to import the same elements several times.",,,
 "Warning, existing lines will be deleted, do you wish to continue?",,,
-"Watch out, an invoice already exist with this number for the same supplier and year. Do you want to proceed ?",,,
+"Watch out, an invoice already exist with same number (${supplierInvoiceNb}) and year for the supplier ${partner.fullName} . Do you want to proceed ?",,,
 "Watch out, an invoice with the same number",,,
 "Watch out, this partner has no active bank details",,,
 "Watermark",,,

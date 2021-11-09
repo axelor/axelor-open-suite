@@ -441,7 +441,7 @@
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="3" canEdit="false"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values,action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
+        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="3" canEdit="false"
@@ -483,7 +483,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
-        onChange="action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+        onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
         <viewer>
@@ -496,7 +496,7 @@
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
-        onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date,action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+        onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -1340,7 +1340,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
-    <action name="action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
@@ -2242,28 +2242,15 @@ InvoiceSet.length > 0))"
       if="dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 
-  <action-attrs
-    name="action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden">
-    <attribute name="hidden" for="$duplicateInvoiceNbrSameYear"
-      if="originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null"
-      expr="eval: !((id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear()).count() > 0)
-      				|| (id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.id != ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear(), id).count() > 0))"/>
-    <attribute name="value" for="$duplicateInvoiceNbrSameYear"
-      if="originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null"
-      expr="eval: ((id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear()).count() > 0)
-      				|| (id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.id != ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear(), id).count() > 0))"/>
-    <attribute name="hidden" for="$duplicateInvoiceNbrSameYear"
-      if="!(originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null)"
-      expr="eval:true"/>
-    <attribute name="value" for="$duplicateInvoiceNbrSameYear"
-      if="!(originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null)"
-      expr="eval:false"/>
-  </action-attrs>
+  <action-method
+    name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkDuplicateInvoice"/>
+  </action-method>
 
   <action-validate
     name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner">
     <alert
-      message="Watch out, an invoice already exist with this number for the same supplier and year. Do you want to proceed ?"
+      message="Watch out, an invoice already exist with same number (${supplierInvoiceNb}) and year for the supplier ${partner.fullName} . Do you want to proceed ?"
       if="duplicateInvoiceNbrSameYear"/>
   </action-validate>
 
