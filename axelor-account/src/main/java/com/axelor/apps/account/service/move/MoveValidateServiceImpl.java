@@ -319,7 +319,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
-    if (!daybook
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || !daybook
         || (daybook
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)
