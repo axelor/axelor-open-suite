@@ -958,4 +958,10 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String INACTIVE_ACCOUNT_FOUND =
+      /*$$(*/ "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounter" /*)*/;
+
+  static final String INACTIVE_ACCOUNTS_FOUND =
+      /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounter" /*)*/;
 }

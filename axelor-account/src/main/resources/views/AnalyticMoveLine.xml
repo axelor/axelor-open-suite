@@ -160,8 +160,8 @@
   </action-record>
 
   <action-attrs name="action-analytic-move-line-attrs-account-domain">
-    <attribute for="account" name="domain" expr="eval: null"/>
-    <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType'"
+    <attribute for="account" name="domain" expr="eval: 'self.statusSelect = 1'"/>
+    <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'"
       if="accountType"/>
   </action-attrs>
 
