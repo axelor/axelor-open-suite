@@ -6,7 +6,6 @@
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
     canNew="false">
-
     <hilite if="debit > 0" color="red"/>
     <hilite if="credit > 0" color="green"/>
     <hilite if="isSelectedBankReconciliation" background="grey"/>

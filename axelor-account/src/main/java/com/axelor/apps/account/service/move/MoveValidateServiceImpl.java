@@ -194,27 +194,28 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   /**
-   * Valider une écriture comptable.
+   * Comptabiliser une écriture comptable.
    *
    * @param move
    * @throws AxelorException
    */
   @Override
-  public void validate(Move move) throws AxelorException {
-    this.validate(move, true);
+  public void accounting(Move move) throws AxelorException {
+
+    this.accounting(move, true);
   }
 
   /**
-   * Valider une écriture comptable.
+   * Comptabiliser une écriture comptable.
    *
    * @param move
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
+  public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException {
 
-    log.debug("Validation de l'écriture comptable {}", move.getReference());
+    log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
 
@@ -222,13 +223,13 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         && !move.getAutoYearClosureMove()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
+          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
     }
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
 
-    if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+    if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
     }
 
@@ -324,10 +325,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
 
     if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
-      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
-      move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-      move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+      move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
       this.generateFixedAssetMoveLine(move);
     }
   }
@@ -413,23 +414,27 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   @Override
-  public boolean validateMultiple(List<? extends Move> moveList) {
-    boolean error = false;
+  public String accountingMultiple(List<? extends Move> moveList) {
+    String errors = "";
     if (moveList == null) {
-      return error;
+      return errors;
     }
-    try {
-      for (Move move : moveList) {
+    for (Move move : moveList) {
 
-        validate(moveRepository.find(move.getId()));
+      try {
+        accounting(moveRepository.find(move.getId()));
+        JPA.clear();
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        if (errors.length() > 0) {
+          errors = errors.concat(", ");
+        }
+        errors = errors.concat(move.getReference());
         JPA.clear();
       }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      error = true;
-      JPA.clear();
     }
-    return error;
+
+    return errors;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -445,12 +450,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  @Override
-  public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {
+  public void accountingMultiple(Query<Move> moveListQuery) throws AxelorException {
     Move move;
 
     while (!((move = moveListQuery.fetchOne()) == null)) {
-      validate(move);
+      accounting(move);
       JPA.clear();
     }
   }

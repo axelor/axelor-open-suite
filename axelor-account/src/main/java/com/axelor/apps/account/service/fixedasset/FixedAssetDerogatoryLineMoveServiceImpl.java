@@ -98,7 +98,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               amount,
               false);
       if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
-        this.moveValidateService.validate(deragotaryDepreciationMove);
+        this.moveValidateService.accounting(deragotaryDepreciationMove);
       }
       fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(deragotaryDepreciationMove);
     }
