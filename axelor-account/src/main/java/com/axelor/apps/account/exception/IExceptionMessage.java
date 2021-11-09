@@ -908,12 +908,4 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
-
-  /*Period */
-  static final String PERIOD_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
-      "This period is already in use by some accounting moves. The dates can't be modified." /*)*/;
-
-  /*Period */
-  static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
-      "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
 }

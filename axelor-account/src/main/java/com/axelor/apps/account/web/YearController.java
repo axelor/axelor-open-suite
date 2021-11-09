@@ -17,10 +17,8 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
-import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -49,14 +47,6 @@ public class YearController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void controlDates(ActionRequest request, ActionResponse response) {
-    try {
-      Beans.get(YearControlService.class).controlDates(request.getContext().asType(Year.class));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

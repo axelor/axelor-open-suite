@@ -16,8 +16,7 @@
   </grid>
 
   <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
-    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet,action-attrs-account-fiscal-year-readonly-if-in-move"
-    onSave="action-year-check-date,action-method-account-year-control-dates"
+    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet" onSave="action-year-check-date"
     onNew="action-year-account-record-new">
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
@@ -25,8 +24,8 @@
       <field name="company" widget="SuggestBox" form-view="company-form" required="true"
         colSpan="3" grid-view="company-grid"/>
       <panel name="datesPanel" title="Dates" colSpan="12">
-        <field name="fromDate" colSpan="3"/>
-        <field name="toDate" colSpan="3"/>
+        <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+        <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
         <field name="reportedBalanceDate" required="true" colSpan="3"/>
       </panel>
     </panel>
