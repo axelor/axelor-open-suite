@@ -1,3 +1,34 @@
+## [6.1.1] (2021-11-05)
+
+#### Changes
+
+* Group: add a new configuration to allow or forbid grid customization per group.
+* Product Category: fix wrong grid view used for parent product category.
+* ACCOUNTING SITUATION: Add filters on customer account and supplier account.
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* PaymentVoucher: Fix remaining amount update when updating amount in imputation lines.
+* Improve module application cards design: fix spacing and margin cards for better UI/UX.
+* FORECAST GENERATOR: fix issue when generating outgoing forecast.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* Forecast Recap: fix display of bank details last update balance date in form view.
+* ANALYTIC DISTRIBUTION TEMPLATE: add missing french translation for an error message.
+* Accounting Report: fix custom accounting report xlsx format.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* BatchLeaveManagement: Fix an issue where created leave lines had an empty name.
+* Batch: Fixed duration which was computed in minutes instead of seconds.
+* Contract: Fixed quantity scale not using config when generating an invoice from a contract with prorata.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when setting last purchase price as product cost price.
+* Sale Order: correctly hide availability request label when stock module is not included.
+* Product: fix stock details never showing any stock location line.
+* Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected.
+* Fix french translation 'Personnaliser' to 'Personnalisé'.
+
 ## [6.1.0] (2021-10-14)
 
 #### Features
@@ -255,4 +286,5 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.1.0

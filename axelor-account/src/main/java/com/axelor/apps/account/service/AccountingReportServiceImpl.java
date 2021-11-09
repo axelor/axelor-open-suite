@@ -281,8 +281,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects = new ArrayList<>();
+    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    statusSelects.add(MoveRepository.STATUS_VALIDATED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
             .getIsActivateSimulatedMove()
@@ -668,9 +668,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_ACCOUNTED
+            + MoveRepository.STATUS_DAYBOOK
             + " OR self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_VALIDATED
+            + MoveRepository.STATUS_ACCOUNTED
             + ")");
 
     log.debug("Query : {}", this.query);
@@ -743,9 +743,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_ACCOUNTED
+            + MoveRepository.STATUS_DAYBOOK
             + " OR self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_VALIDATED
+            + MoveRepository.STATUS_ACCOUNTED
             + ")");
 
     this.addParams("self.originTaxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_COLLECTION);

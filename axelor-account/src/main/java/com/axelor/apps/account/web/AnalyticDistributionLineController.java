@@ -53,7 +53,7 @@ public class AnalyticDistributionLineController {
           .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
         response.setError(
             I18n.get(
-                "The distribution is wrong, some axes percentage values are higher than 100%"));
+                "The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

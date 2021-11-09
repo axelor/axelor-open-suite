@@ -99,8 +99,8 @@ public class AccountCustomerService {
                     + "AND (move.status_select = ?3 or move.status_select = ?4) AND ml.amount_remaining > 0 ")
             .setParameter(1, partner)
             .setParameter(2, company)
-            .setParameter(3, MoveRepository.STATUS_VALIDATED)
-            .setParameter(4, MoveRepository.STATUS_ACCOUNTED);
+            .setParameter(3, MoveRepository.STATUS_ACCOUNTED)
+            .setParameter(4, MoveRepository.STATUS_DAYBOOK);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -161,8 +161,8 @@ public class AccountCustomerService {
                 TemporalType.DATE)
             .setParameter("partner", partner)
             .setParameter("company", company)
-            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
-            .setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
+            .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);
@@ -247,8 +247,8 @@ public class AccountCustomerService {
                 TemporalType.DATE)
             .setParameter("partner", partner)
             .setParameter("company", company)
-            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
-            .setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
+            .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);

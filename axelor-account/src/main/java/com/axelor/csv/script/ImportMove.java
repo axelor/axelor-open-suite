@@ -89,12 +89,12 @@ public class ImportMove {
         move.setReference(moveReference);
 
         if (values.get("ValidDate") != null) {
-          move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-          move.setValidationDate(
+          move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+          move.setAccountingDate(
               LocalDate.parse(
                   values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         } else {
-          move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+          move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
         }
 
         move.setCompany(getCompany(values));
@@ -181,9 +181,9 @@ public class ImportMove {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-          || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
-        moveValidateService.validate(move);
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+        moveValidateService.accounting(move);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
