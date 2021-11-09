@@ -14,7 +14,7 @@
 
   <form id="account-period-form" name="period-form" title="Period"
     model="com.axelor.apps.base.db.Period" extension="true">
-    <extend target="/" if-module="axelor-account">
+    <extend target="/">
       <attribute name="onLoad"
         value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-account-readonly-if-period-in-move"/>
       <attribute name="onSave" value="action-method-account-period-control-dates"/>
@@ -22,7 +22,7 @@
   </form>
   <form id="account-period-year-form" name="period-year-form" title="Period"
     model="com.axelor.apps.base.db.Period" extension="true">
-    <extend target="/" if-module="axelor-account">
+    <extend target="/">
       <attribute name="onLoad"
         value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-method-account-readonly-if-period-in-move"/>
       <attribute name="onSave" value="action-method-account-period-control-dates"/>
