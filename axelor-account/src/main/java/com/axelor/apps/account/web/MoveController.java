@@ -48,6 +48,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -166,20 +167,21 @@ public class MoveController {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
             if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
                 && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-              response.setError(
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
                       I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
                       move.getReference()));
-            } else {
-            	String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
-                if (error.length() > 0) {
-                  response.setFlash(
-                      String.format(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-                } else {
-                  response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
-                }
             }
           }
+          String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
+          if (error.length() > 0) {
+            response.setFlash(
+                String.format(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
+          } else {
+            response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
+          }
+
           response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
@@ -215,16 +217,16 @@ public class MoveController {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
             if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
                 && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-              response.setError(
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
                       I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
                       move.getReference()));
-            } else {
-              Beans.get(MoveValidateService.class).simulateMultiple(moveList);
-              response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
-              response.setReload(true);
             }
           }
+          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
+          response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
         }

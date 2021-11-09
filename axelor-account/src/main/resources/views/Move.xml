@@ -70,7 +70,7 @@
             onChange="action-move-account-record-set-journal-technical-type-select"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false"/>
-          <field name="date" onChange="action-move-method-get-period,action-move-method-check-period-permissions"
+          <field name="date" onChange="action-move-method-get-period,action-move-method-check-period-permissions,action-record-initialize-permission-validation-move,save"
             hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3" readonlyIf="$validatePeriod"/>
           <field name="tradingName" readonlyIf="$validatePeriod"
@@ -131,13 +131,8 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-<<<<<<< HEAD
-        <button name="validateBtn" title="Validate" readonlyIf="$validatePeriod"
-          onClick="action-account-move-group-validate-click" colSpan="12"
-=======
-        <button name="accountingBtn" title="Accounting.toAccount"
+        <button name="accountingBtn" title="Accounting.toAccount" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-accounting-click" colSpan="12"
->>>>>>> 8aa536ad835d2c4d9fb2975df172efe2d03d0de1
           hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
@@ -317,6 +312,7 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-record-initialize-permission-validation-move"/>
+  	<action name="action-move-method-check-period-permissions"/>
   </action-group>
   
   <action-group name="action-account-move-group-onsave">
