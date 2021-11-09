@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.purchase.web;
 
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;

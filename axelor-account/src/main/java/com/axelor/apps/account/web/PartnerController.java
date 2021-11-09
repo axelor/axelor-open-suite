@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
@@ -107,7 +108,7 @@ public class PartnerController {
                 .filter(
                     "self.partner = :partner AND self.account.accountType.technicalTypeSelect = :technicalTypeSelect")
                 .bind("partner", partner.getId())
-                .bind("technicalTypeSelect", "payable")
+                .bind("technicalTypeSelect", AccountTypeRepository.TYPE_PAYABLE)
                 .count();
         if (moveLineCount > 0) {
           response.setValue("supplierCantBeRemoved", true);
@@ -150,7 +151,7 @@ public class PartnerController {
                 .filter(
                     "self.partner = :partner AND self.account.accountType.technicalTypeSelect = :technicalTypeSelect")
                 .bind("partner", partner.getId())
-                .bind("technicalTypeSelect", "receivable")
+                .bind("technicalTypeSelect", AccountTypeRepository.TYPE_RECEIVABLE)
                 .count();
         if (moveLineCount > 0) {
           response.setValue("customerCantBeRemoved", true);
