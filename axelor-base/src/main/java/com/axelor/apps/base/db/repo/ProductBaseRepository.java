@@ -19,11 +19,15 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -42,6 +46,7 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product save(Product product) {
+
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {
@@ -58,6 +63,17 @@ public class ProductBaseRepository extends ProductRepository {
       Product oldProduct = Beans.get(ProductRepository.class).find(product.getId());
       translationService.updateFormatedValueTranslations(
           oldProduct.getFullName(), FULL_NAME_FORMAT, product.getCode(), product.getName());
+
+      if(!oldProduct.getCode().equals(product.getCode())) {
+        try {
+          throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(IExceptionMessage.PRODUCT_CODE_CAN_NOT_BE_CHANGED),
+                  null);
+        } catch (AxelorException e) {
+          throw new PersistenceException(e);
+        }
+      }
     } else {
       translationService.createFormatedValueTranslations(
           FULL_NAME_FORMAT, product.getCode(), product.getName());
