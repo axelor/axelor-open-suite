@@ -10,6 +10,9 @@
     <string name="name" title="Name" initParam="true" translatable="true"/>
     <string name="serialNumber" title="Serial Nbr" unique="true"/>
     <string name="code" title="Code" initParam="true" unique="true"/>
+    <string name="oldCode" transient="true"/>
+
+
 
     <string name="description" large="true" title="Description" initParam="true"
       translatable="true"/>

@@ -18,6 +18,8 @@
     <one-to-many name="complementaryProductList"
       ref="com.axelor.apps.sale.db.ComplementaryProduct" mappedBy="originalProduct"/>
 
+    <entity-listener class="com.axelor.apps.sale.db.repo.ProductSaleListener"/>
+
   </entity>
 
 </domain-models>

@@ -16,6 +16,9 @@
     <track on="UPDATE">
       <field name="purchasesUnit"/>
     </track>
+
+    <entity-listener
+      class="com.axelor.apps.purchase.db.repo.ProductPurchaseListener"/>
   </entity>
 
 </domain-models>

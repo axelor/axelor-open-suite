@@ -255,7 +255,7 @@ public interface IExceptionMessage {
 
   /** Product repository */
   public static final String PRODUCT_CODE_CAN_NOT_BE_CHANGED = /*$$(*/
-          "This product is already in use in other modules, the code can't be modified at this stage." /*)*/;
+      "This product is already in use in other modules, the code can't be modified at this stage." /*)*/;
 
   /** Calendar */
   static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;

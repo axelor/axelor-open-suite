@@ -1759,6 +1759,7 @@
 "This batch is not runnable!","Ce batch n’est pas exécutable !",,
 "This code is already use by another batch.","Ce code est déjà utilisé par un autre batch.",,
 "This maximal discount","Cette remise maximale",,
+"This product is already in use in other modules, the code can't be modified at this stage.","Ce produit est déjà utilisé par d'autres modules, le code ne peut être modifié à ce stade.",,
 "Thursday","Jeudi",,
 "Thursdays","Jeudis",,
 "Ticket",,,

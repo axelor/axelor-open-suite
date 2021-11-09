@@ -21,6 +21,8 @@
     <track on="UPDATE">
       <field name="trackingNumberConfiguration"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.stock.db.repo.ProductStockListener"/>
   </entity>
 
 </domain-models>

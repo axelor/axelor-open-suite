@@ -9,6 +9,8 @@
 
     <boolean name="isAnalyticCapture" title="Use for Analytic Capture"/>
 
+    <entity-listener class="com.axelor.apps.account.db.repo.ProductInvoiceListener"/>
+
   </entity>
 
 </domain-models>
