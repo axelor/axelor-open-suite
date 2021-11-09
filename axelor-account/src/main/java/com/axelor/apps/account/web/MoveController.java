@@ -66,12 +66,12 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class MoveController {
 
-  public void validate(ActionRequest request, ActionResponse response) {
+  public void accounting(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
     move = Beans.get(MoveRepository.class).find(move.getId());
     try {
-      Beans.get(MoveValidateService.class).validate(move);
+      Beans.get(MoveValidateService.class).accounting(move);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -144,7 +144,7 @@ public class MoveController {
   }
 
   @SuppressWarnings("unchecked")
-  public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
+  public void accountingMultipleMoves(ActionRequest request, ActionResponse response) {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
     try {
       if (moveIds != null && !moveIds.isEmpty()) {
@@ -155,7 +155,7 @@ public class MoveController {
                 .filter(
                     "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
                     moveIds,
-                    MoveRepository.STATUS_VALIDATED,
+                    MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_CANCELED)
                 .order("date")
                 .fetch();
@@ -171,15 +171,16 @@ public class MoveController {
                       I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
                       move.getReference()));
             } else {
-              boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
-              if (error) {
-                response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
-              } else {
-                response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
-                response.setReload(true);
-              }
+            	String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
+                if (error.length() > 0) {
+                  response.setFlash(
+                      String.format(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
+                } else {
+                  response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
+                }
             }
           }
+          response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
         }
@@ -242,7 +243,7 @@ public class MoveController {
 
       this.removeOneMove(move, response);
 
-      if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+      if (!move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
 
         response.setView(
             ActionView.define(I18n.get("Moves"))
@@ -265,7 +266,7 @@ public class MoveController {
         || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
       moveRemoveService.deleteMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
-    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       moveRemoveService.archiveDaybookMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -286,7 +287,7 @@ public class MoveController {
                     "self.id in ?1 AND self.statusSelect in (?2,?3,?4,?5) AND (self.archived = false or self.archived = null)",
                     moveIds,
                     MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
@@ -361,7 +362,7 @@ public class MoveController {
     move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).updateInDayBookMode(move);
         response.setReload(true);
@@ -416,7 +417,7 @@ public class MoveController {
     boolean isHidden = true;
     try {
       if (move.getMoveLineList() != null
-          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+          && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED) {
         for (MoveLine moveLine : move.getMoveLineList()) {
           if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
               || moveLine.getReconcileGroup() != null) {
