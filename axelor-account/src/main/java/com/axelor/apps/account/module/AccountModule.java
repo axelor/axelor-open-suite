@@ -427,7 +427,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
     bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
-    
+
     bind(AnalyticAxisControlService.class).to(AnalyticAxisControlServiceImpl.class);
   }
 }

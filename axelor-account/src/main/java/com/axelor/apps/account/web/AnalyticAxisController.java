@@ -1,6 +1,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.AnalyticAxisService;
 import com.axelor.common.ObjectUtils;
@@ -68,6 +69,23 @@ public class AnalyticAxisController {
     try {
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
       Beans.get(AnalyticAxisControlService.class).controlUnicity(analyticAxis);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setReadOnly(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticAxis analyticAxis =
+          Beans.get(AnalyticAxisRepository.class)
+              .find(request.getContext().asType(AnalyticAxis.class).getId());
+      if (analyticAxis != null) {
+        Boolean isInMove =
+            Beans.get(AnalyticAxisControlService.class).isInAnalyticMoveLine(analyticAxis);
+        response.setAttr("name", "readonly", isInMove);
+        response.setAttr("code", "readonly", isInMove);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
