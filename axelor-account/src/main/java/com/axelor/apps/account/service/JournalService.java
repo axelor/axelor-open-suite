@@ -45,8 +45,8 @@ public class JournalService {
     Query resultQuery = JPA.em().createQuery(query);
 
     resultQuery.setParameter("journal", journal.getId());
-    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
-    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_VALIDATED);
+    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED);
 
     Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
 

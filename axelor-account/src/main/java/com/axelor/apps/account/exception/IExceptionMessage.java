@@ -26,7 +26,34 @@ public interface IExceptionMessage {
 
   static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
       /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
-  /** Bank statement service */
+  static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
+      /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
+      /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
+      /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
+      /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
+      /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
+  static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
+      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
+      /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
+      /*$$(*/ "The input failover date is not conforme compare with the dates and configured depreciation duration." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
+      /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
+      /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
@@ -44,9 +71,10 @@ public interface IExceptionMessage {
   static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
-  static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
-      "Error in move validation, please check the log" /*)*/;
-  static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
+      "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
+  static final String MOVE_ACCOUNTING_OK = /*$$(*/
+      "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
@@ -64,6 +92,8 @@ public interface IExceptionMessage {
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
+  static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
+      "The move line %s is missing description in order to create fixed asset" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -259,8 +289,8 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
-      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -876,6 +906,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED = /*$$(*/
+      "The disposal of the asset cannot be executed while depreciation has already been accounted." /*)*/;
 
   /* MOVE REVERSE*/
   static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/

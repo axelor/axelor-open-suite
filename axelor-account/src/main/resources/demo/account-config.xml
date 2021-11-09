@@ -123,9 +123,6 @@
     type="com.axelor.apps.account.db.DebtRecoveryMethodLine"/>
 
 
-  <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.account.db.FixedAssetType"/>
-
   <input file="account_fixedAssetCategory.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetCategory">
     <bind to="computationMethodSelect" eval="'linear'"/>
