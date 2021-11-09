@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -36,6 +35,7 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 
 public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 
@@ -54,7 +54,6 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
       IntercoService intercoService,
       InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
@@ -70,7 +69,6 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
-        invoiceTermService,
         appBaseService,
         intercoService);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
@@ -80,6 +78,10 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
     super.ventilate(invoice);
-    invoiceEstimatedPaymentService.computeEstimatedPaymentDate(invoice);
+    if (invoice.getEstimatedPaymentDate() == null) {
+      LocalDate estimatedPaymentDate =
+          invoiceEstimatedPaymentService.computeEstimatedPaymentDate(invoice);
+      invoice.setEstimatedPaymentDate(estimatedPaymentDate);
+    }
   }
 }
