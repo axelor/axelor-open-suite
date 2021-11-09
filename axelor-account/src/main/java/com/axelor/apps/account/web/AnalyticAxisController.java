@@ -1,11 +1,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.service.AnalyticAxisControlService;
 import com.axelor.apps.account.service.AnalyticAxisService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -61,16 +59,6 @@ public class AnalyticAxisController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void controlUnicity(ActionRequest request, ActionResponse response) {
-    try {
-      AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
-      Beans.get(AnalyticAxisControlService.class).controlUnicity(analyticAxis);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
