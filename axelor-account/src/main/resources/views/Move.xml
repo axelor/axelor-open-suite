@@ -93,7 +93,7 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code"/>
           <field name="paymentMode" colSpan="3"
-            readonlyIf="(moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3) || period.statusSelect != 1 || $validatePeriod"/>
+            readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>

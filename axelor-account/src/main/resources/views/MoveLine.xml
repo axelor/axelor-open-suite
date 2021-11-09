@@ -188,12 +188,12 @@
   </grid>
 
   <form name="incl-analytic-distribution-move-line-form"
-    model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false" 
+    model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
     onLoad="action-record-initialize-permission-validation-move-line">
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
       showIf="account.analyticDistributionAuthorized"
-      readonlyIf="move.period.statusSelect != 1 &amp;&amp; $validatePeriod">
+      readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"
@@ -206,7 +206,7 @@
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-      <panel colSpan="12" >
+      <panel colSpan="12" hidden="true">
         <field name="account.analyticDistributionAuthorized"/>
         <field name="account.analyticDistributionRequiredOnMoveLines"/>
         <field name="$validatePeriod"/>
@@ -340,7 +340,7 @@
         <field name="bankReconciledAmount" if-module="axelor-bank-payment" readonly="true"/>
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
-      <panel-include view="incl-analytic-distribution-move-line-form" />
+      <panel-include view="incl-analytic-distribution-move-line-form"/>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
@@ -427,7 +427,8 @@
       <field name="account.hasInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
-      <field name="description" colSpan="6" requiredIf="$isDescriptionRequired" readonlyIf="$validatePeriod &amp;&amp; move.period.statusSelect != 1"/>  
+      <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
+        readonlyIf="move.period.statusSelect == 2 || $validatePeriod"/>
       <field name="move.period.statusSelect" hidden="true"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     </panel>
@@ -550,7 +551,7 @@
         <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
-      <panel-include view="incl-analytic-distribution-move-line-form" />
+      <panel-include view="incl-analytic-distribution-move-line-form"/>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -691,13 +692,13 @@
   <action-method name="action-move-line-account-method-get-validate-period">
     <call class="com.axelor.apps.account.web.MoveLineController" method="getValidatePeriod"/>
   </action-method>
-  
+
   <action-attrs name="action-move-line-attrs-readonly">
-    <attribute name="readonly" for="informationsPanel" 
-    expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
-    <attribute name="readonly" for="analyticDistributionPanel" 
-    expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
-      <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel"
+    <attribute name="readonly" for="informationsPanel"
+      expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
+    <attribute name="readonly" for="analyticDistributionPanel"
+      expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
+    <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel"
       expr="eval: move?.statusSelect == 3 "/>
   </action-attrs>
 
@@ -711,9 +712,11 @@
     <attribute name="domain" for="analyticDistributionTemplate"
       expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
-  
-  <action-record name="action-record-initialize-permission-validation-move-line" model="com.axelor.apps.account.db.MoveLine">
-    <field name="$validatePeriod" expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.move?.period,__user__)"/>
+
+  <action-record name="action-record-initialize-permission-validation-move-line"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="$validatePeriod"
+      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.move?.period,__user__)"/>
   </action-record>
 
   <action-record name="action-account-move-line-record-calculate-balance"

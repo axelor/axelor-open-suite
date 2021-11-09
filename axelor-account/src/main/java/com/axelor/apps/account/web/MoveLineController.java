@@ -506,7 +506,7 @@ public class MoveLineController {
     try {
       Context parentContext = request.getContext().getParent();
       if (ObjectUtils.notEmpty(parentContext)
-          && Move.class.equals(parentContext.getContextClass())){
+          && Move.class.equals(parentContext.getContextClass())) {
         response.setValue("$validatePeriod", parentContext.get("validatePeriod"));
       }
     } catch (Exception e) {
