@@ -39,7 +39,8 @@ public class YearControlServiceImpl implements YearControlService {
     }
   }
 
-  protected boolean isLinkedToMove(Year year) {
+  @Override
+  public Boolean isLinkedToMove(Year year) {
 
     if (CollectionUtils.isEmpty(year.getPeriodList())) {
       return false;

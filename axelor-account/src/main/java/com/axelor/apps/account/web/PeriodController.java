@@ -78,4 +78,23 @@ public class PeriodController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setReadOnly(ActionRequest request, ActionResponse response) {
+    try {
+      Period period =
+          Beans.get(PeriodRepository.class).find(request.getContext().asType(Period.class).getId());
+      if (period != null) {
+        Boolean isInMove =
+            (Beans.get(PeriodControlService.class).isLinkedToMove(period)
+                && Beans.get(PeriodControlService.class).isOpen(period));
+        response.setAttr("fromDate", "readonly", isInMove);
+        response.setAttr("toDate", "readonly", isInMove);
+        response.setAttr("periodDurationSelect", "readonly", isInMove);
+        response.setAttr("generatePeriodsBtn", "readonly", isInMove);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

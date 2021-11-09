@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -55,6 +56,23 @@ public class YearController {
   public void controlDates(ActionRequest request, ActionResponse response) {
     try {
       Beans.get(YearControlService.class).controlDates(request.getContext().asType(Year.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setReadOnly(ActionRequest request, ActionResponse response) {
+    try {
+      Year year =
+          Beans.get(YearRepository.class).find(request.getContext().asType(Year.class).getId());
+      if (year != null) {
+        Boolean isInMove = Beans.get(YearControlService.class).isLinkedToMove(year);
+        response.setAttr("fromDate", "readonly", isInMove);
+        response.setAttr("toDate", "readonly", isInMove);
+        response.setAttr("periodDurationSelect", "readonly", isInMove);
+        response.setAttr("generatePeriodsBtn", "readonly", isInMove);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

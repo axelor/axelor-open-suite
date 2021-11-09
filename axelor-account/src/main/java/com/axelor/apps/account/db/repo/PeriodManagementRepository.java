@@ -29,7 +29,7 @@ public class PeriodManagementRepository extends PeriodRepository {
   }
 
   /**
-   * Udapte period fromDate and toDate if it is not linked to a move.
+   * Update period fromDate and toDate if it is not linked to a move.
    *
    * @param entity
    */
