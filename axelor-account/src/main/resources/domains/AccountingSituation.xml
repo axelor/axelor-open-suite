@@ -62,6 +62,12 @@
       ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation"
       title="Reported balance lines"/>
 
+    <!-- Holdback -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Supplier account"/>
+
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
 

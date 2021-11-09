@@ -99,6 +99,9 @@
 
     <date name="originDate" title="Origin date" initParam="true"/>
 
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
+
     <!-- DAS2 -->
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       readonly="true"/>

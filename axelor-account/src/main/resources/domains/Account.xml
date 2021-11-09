@@ -42,6 +42,7 @@
       massUpdate="true"/>
     <boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line"
       massUpdate="true"/>
+    <boolean name="hasInvoiceTerm" title="Activate invoice term"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       massUpdate="true"
@@ -80,4 +81,5 @@
 
 
   </entity>
+
 </domain-models>
