@@ -19,8 +19,9 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface ModelEmailLinkService {
 
-  public boolean validateModelFields(ModelEmailLink modelEmailLink) throws AxelorException;
+  public void validateEmailLinks(List<ModelEmailLink> emailLinkList) throws AxelorException;
 }

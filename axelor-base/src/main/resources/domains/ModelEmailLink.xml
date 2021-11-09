@@ -9,6 +9,7 @@
 
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"/>
     <string name="emailField"/>
+    <string name="filter" title="Filter"/>
     <integer name="addressTypeSelect" selection="message.address.type.select"
       title="Address type"/>
 
@@ -16,6 +17,7 @@
        	<![CDATA[
        		public static final int ADDRESS_TYPE_FROM = 1;
        		public static final int ADDRESS_TYPE_TO = 2;
+       		public static final int ADDRESS_TYPE_MANUAL = 3;
        	]]>
     </extra-code>
 

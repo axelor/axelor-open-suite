@@ -7,7 +7,15 @@
     model="com.axelor.apps.base.db.ModelEmailLink" editable="true">
     <field name="metaModel" required="true"/>
     <field name="emailField" required="true"/>
-    <field name="addressTypeSelect"/>
+    <field name="addressTypeSelect" selection-in="[1,2]"/>
+  </grid>
+
+  <grid name="model-manual-email-link-grid" title="Model email links"
+    model="com.axelor.apps.base.db.ModelEmailLink" editable="true"
+    onNew="action-base-record-manual-model-email-link-onnew">
+    <field name="metaModel" required="true"/>
+    <field name="filter" required="true"/>
+    <field name="addressTypeSelect" hidden="true"/>
   </grid>
 
   <form name="model-email-link-form" title="Model email link"
@@ -15,7 +23,17 @@
     <panel name="mainPanel">
       <field name="metaModel" required="true"/>
       <field name="emailField" required="true"/>
-      <field name="addressTypeSelect"/>
+      <field name="addressTypeSelect" selection-in="[1,2]"/>
+    </panel>
+  </form>
+
+  <form name="model-manual-email-link-form" title="Model email link"
+    model="com.axelor.apps.base.db.ModelEmailLink"
+    onNew="action-base-record-manual-model-email-link-onnew">
+    <panel name="mainPanel">
+      <field name="metaModel" required="true"/>
+      <field name="filter" required="true"/>
+      <field name="addressTypeSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -23,5 +41,15 @@
     <call class="com.axelor.apps.base.web.ModelEmailLinkController"
       method="validateModelFields"/>
   </action-method>
+
+  <action-method name="action-base-method-model-manual-email-link-onsave">
+    <call class="com.axelor.apps.base.web.ModelEmailLinkController"
+      method="validateEmailLinkManualFiler"/>
+  </action-method>
+
+  <action-record name="action-base-record-manual-model-email-link-onnew"
+    model="com.axelor.apps.base.db.ModelEmailLink">
+    <field name="addressTypeSelect" expr="eval: ModelEmailLinkRepository.ADDRESS_TYPE_MANUAL"/>
+  </action-record>
 
 </object-views>

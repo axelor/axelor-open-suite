@@ -54,8 +54,10 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -124,11 +126,45 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     return messageRepository.save(message);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void manageRelatedTo(Message message) {
 
     AppBase appBase = appBaseService.getAppBase();
+    Map<String, Long> relatedMap = new HashMap<>();
+    fetchManualEmailLinks(message, appBase, relatedMap);
+    fetchAutoEmailLinks(message, appBase, relatedMap);
+    for (Entry<String, Long> entry : relatedMap.entrySet()) {
+      addMessageRelatedTo(message, entry.getKey(), entry.getValue());
+    }
+  }
+
+  protected void fetchManualEmailLinks(
+      Message message, AppBase appBase, Map<String, Long> relatedMap) {
+
+    if (!appBase.getManageManualEmailLink()
+        || ObjectUtils.isEmpty(appBase.getManualEmailLinkList())) {
+      return;
+    }
+
+    for (ModelEmailLink modelEmailLink : appBase.getManualEmailLinkList()) {
+      try {
+        String className = modelEmailLink.getMetaModel().getFullName();
+        @SuppressWarnings("unchecked")
+        Class<Model> klass = (Class<Model>) Class.forName(className);
+        List<Model> relatedRecords =
+            JPA.all(klass).filter(modelEmailLink.getFilter()).cacheable().fetch();
+        for (Model relatedRecord : relatedRecords) {
+          relatedMap.put(className, relatedRecord.getId());
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
+  }
+
+  protected void fetchAutoEmailLinks(
+      Message message, AppBase appBase, Map<String, Long> relatedMap) {
+
     if (ObjectUtils.isEmpty(appBase.getEmailLinkList())) {
       return;
     }
@@ -159,6 +195,11 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     for (ModelEmailLink modelEmailLink : appBase.getEmailLinkList()) {
       try {
         String className = modelEmailLink.getMetaModel().getFullName();
+        if (relatedMap.containsKey(className)) {
+          continue;
+        }
+
+        @SuppressWarnings("unchecked")
         Class<Model> klass = (Class<Model>) Class.forName(className);
         List<Model> relatedRecords = new ArrayList<>();
 
@@ -184,7 +225,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
         }
 
         for (Model relatedRecord : relatedRecords) {
-          addMessageRelatedTo(message, className, relatedRecord.getId());
+          relatedMap.put(className, relatedRecord.getId());
         }
       } catch (Exception e) {
         TraceBackService.trace(e);

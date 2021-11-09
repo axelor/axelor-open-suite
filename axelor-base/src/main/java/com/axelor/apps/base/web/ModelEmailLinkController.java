@@ -18,14 +18,8 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.ModelEmailLink;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.ModelEmailLinkService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,20 +30,13 @@ public class ModelEmailLinkController {
       throws AxelorException {
 
     AppBase appBase = request.getContext().asType(AppBase.class);
-    if (ObjectUtils.isEmpty(appBase.getEmailLinkList())) {
-      return;
-    }
+    Beans.get(ModelEmailLinkService.class).validateEmailLinks(appBase.getEmailLinkList());
+  }
 
-    for (ModelEmailLink modelEmailLink : appBase.getEmailLinkList()) {
-      modelEmailLink = EntityHelper.getEntity(modelEmailLink);
-      if (!Beans.get(ModelEmailLinkService.class).validateModelFields(modelEmailLink)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(IExceptionMessage.INVALID_FIELD),
-                modelEmailLink.getEmailField(),
-                modelEmailLink.getMetaModel().getName()));
-      }
-    }
+  public void validateEmailLinkManualFiler(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    AppBase appBase = request.getContext().asType(AppBase.class);
+    Beans.get(ModelEmailLinkService.class).validateEmailLinks(appBase.getManualEmailLinkList());
   }
 }

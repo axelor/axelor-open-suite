@@ -633,6 +633,7 @@
   <selection name="message.address.type.select">
     <option value="1">From</option>
     <option value="2">To</option>
+    <option value="3">Manual</option>
   </selection>
 
   <selection name="base.pricing.rule.type.select">

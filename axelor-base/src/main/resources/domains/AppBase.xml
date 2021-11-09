@@ -135,6 +135,8 @@
 
     <one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
       title="Email links"/>
+    <one-to-many name="manualEmailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
+      title="Manual email links"/>
 
     <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
@@ -142,6 +144,7 @@
     <boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners"
       default="false"/>
     <boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
+    <boolean name="manageManualEmailLink" title="Link email manually"/>
 
     <string name="customAppStyle" title="Custom style" large="true"
       help="Custom css to personnalize web user interface."/>
