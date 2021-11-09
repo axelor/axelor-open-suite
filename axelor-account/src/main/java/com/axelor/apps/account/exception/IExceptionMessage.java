@@ -132,9 +132,6 @@ public interface IExceptionMessage {
   /** Journal service */
   static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
-  /** AnalyticJournal service */
-  static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
-      /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
   /** Move line export service */
   static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;

@@ -24,4 +24,5 @@
   <action-method name="action-period-method-close-continue">
     <call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
   </action-method>
+
 </object-views>
