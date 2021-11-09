@@ -150,8 +150,8 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED)
+          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
               && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
             moveLineList.add(moveLine);
           }
@@ -180,8 +180,8 @@ public class MoveLineController {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
             if (moveLine != null && moveLine.getMove() != null) {
               Integer statusSelect = moveLine.getMove().getStatusSelect();
-              if (statusSelect.equals(MoveRepository.STATUS_VALIDATED)
-                  || statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+              if (statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)
                   || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());

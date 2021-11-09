@@ -47,7 +47,6 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
-    <field name="paymentProgress" widget="Progress"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -199,7 +198,6 @@
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
     <field name="statusSelect"/>
-    <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" title="PFP val."
@@ -329,8 +327,7 @@
   </grid>
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -457,7 +454,7 @@
         form-view="payment-mode-form" grid-view="payment-mode-grid"/>
       <field name="paymentCondition" colSpan="3" canEdit="false"
         readonlyIf="statusSelect == 3" widget="SuggestBox"
-        onChange="action-invoice-group-payment-condition-onchange"
+        onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
@@ -498,7 +495,7 @@
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
-        onChange="action-invoice-group-payment-condition-onchange"/>
+        onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -519,11 +516,6 @@
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
-      </panel>
-      <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
-        showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
-        <panel-related name="invoiceTermListPanel" field="invoiceTermList"
-          colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
@@ -716,7 +708,7 @@ InvoiceSet.length > 0))"
         <panel name="financialDiscountPanel" colSpan="12"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="financialDiscount" colSpan="6"
-            onChange="action-record-invoice-set-financial-discount-informations,action-method-invoice-financial-discount-update-invoice-terms"
+            onChange="action-record-invoice-set-financial-discount-informations"
             showIf="statusSelect &gt;=3"/>
           <field name="financialDiscountRate" colSpan="6"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
@@ -759,10 +751,10 @@ InvoiceSet.length > 0))"
       <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
-        onClick="action-invoice-group-on-validate"/>
+        onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-on-ventilate"
+        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
@@ -923,11 +915,13 @@ InvoiceSet.length > 0))"
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
         <field name="invoiceDate"
-          onChange="action-invoice-group-payment-condition-onchange,action-invoice-method-estimated-payment-dates"
+          onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
-        <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
+        <field name="dueDate" onChange="action-invoice-method-estimated-payment-date"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
+        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
+          if="__config__.app.isApp('cash-management')" colSpan="12"/>
       </panel>
     </panel-stack>
 
@@ -970,8 +964,7 @@ InvoiceSet.length > 0))"
   </form>
 
   <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
 
     <toolbar>
       <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -1048,8 +1041,7 @@ InvoiceSet.length > 0))"
         form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain"
         onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list"/>
       <field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3"
-        widget="SuggestBox"
-        onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-date"
+        widget="SuggestBox" onChange="action-invoice-record-due-date"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
@@ -1080,10 +1072,12 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate"
-          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-date,action-invoice-method-estimated-payment-dates"/>
-        <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
+          onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
+        <field name="dueDate" onChange="action-invoice-method-estimated-payment-date"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
+        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
+          if="__config__.app.isApp('cash-management')"/>
       </panel>
     </panel-stack>
 
@@ -1369,10 +1363,8 @@ InvoiceSet.length > 0))"
   <action-group name="action-group-account-invoice-partner-onchange">
     <action name="action-invoice-record-partner-change"/>
     <action name="action-invoice-method-payment-mode-condition"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>
-    <action name="action-invoice-method-estimated-payment-dates"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
     <action name="action-invoice-method-fill-company-bank-details"/>
     <action name="action-invoice-record-specific-note-on-invoice"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
@@ -1385,8 +1377,6 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
-    <action name="action-invoice-record-set-payment-condition"/>
-
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1428,40 +1418,6 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
-  </action-group>
-
-  <action-group name="action-invoice-group-on-validate">
-    <action
-      name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
-    <action name="save"/>
-    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="save"/>
-    <action name="action-invoice-method-validate"/>
-  </action-group>
-
-  <action-group name="action-invoice-group-on-ventilate">
-    <action name="save"/>
-    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
-    <action name="action-invoice-method-check-not-imputed-refunds"/>
-    <action name="action-invoice-method-ventilate"/>
-    <action name="action-record-invoice-set-financial-discount-informations"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-invoice-group-payment-condition-onchange">
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
-    <action name="action-invoice-method-estimated-payment-dates"/>
-  </action-group>
-
-  <action-group name="action-invoice-onsave-group">
-    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
@@ -1566,8 +1522,11 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-due-date"
     model="com.axelor.apps.account.db.Invoice">
     <field name="dueDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(__this__)"
-      if="(originDate != null &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (invoiceDate != null &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4))"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,originDate)"
+      if="paymentCondition != null &amp;&amp; originDate != null &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2) "/>
+    <field name="dueDate"
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)"
+      if="paymentCondition != null &amp;&amp; invoiceDate != null &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
   </action-record>
 
   <action-record name="action-invoice-record-draft"
@@ -1626,11 +1585,6 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings"
       if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
-  </action-record>
-
-  <action-record name="action-invoice-record-set-payment-condition"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -1831,6 +1785,11 @@ InvoiceSet.length > 0))"
       method="regenerateAndShowInvoice"/>
   </action-method>
 
+  <action-method name="action-invoice-method-estimated-payment-date">
+    <call class="com.axelor.apps.cash.management.web.InvoiceController"
+      method="fillEstimatedPaymentDate"/>
+  </action-method>
+
   <action-validate name="action-invoice-validate-regenerate-invoice">
     <alert
       message="Regenerating the printed copy can lead to several conflicting copies to be distributed. Do you still want to regenerate the printed copy?"/>
@@ -1879,12 +1838,6 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-merge-business-project">
     <call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-estimated-payment-dates"
-    if-module="axelor-cash-management">
-    <call class="com.axelor.apps.cash.management.web.InvoiceController"
-      method="computeEstimatedPaymentDates"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
@@ -1961,25 +1914,6 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceController" method="hideSendEmailPfpBtn"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-generate-invoice-terms">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceTerms"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="computeInvoiceTermsDueDates"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-validate-invoice-terms-before-save">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="validateInvoiceTermsBeforeSave"/>
-  </action-method>
-
-  <action-method name="action-method-invoice-financial-discount-update-invoice-terms">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="updateInvoiceTermsFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

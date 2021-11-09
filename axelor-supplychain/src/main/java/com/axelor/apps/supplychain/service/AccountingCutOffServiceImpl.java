@@ -327,7 +327,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       move.setStockMove(stockMove);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;

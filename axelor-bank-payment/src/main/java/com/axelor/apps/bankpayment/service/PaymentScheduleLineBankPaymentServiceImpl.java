@@ -184,7 +184,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         moveReverseService.generateReverse(
             advanceOrPaymentMove, true, true, false, advanceOrPaymentMove.getDate());
     rejectionMove.setRejectOk(true);
-    moveValidateService.validate(rejectionMove);
+    moveValidateService.accounting(rejectionMove);
 
     List<MoveLine> moveLineList = new ArrayList<>();
     moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
@@ -210,8 +210,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         continue;
       }
 
-      for (InvoicePayment invoicePayment :
-          invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+      for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
         invoicePaymentCancelService.cancel(invoicePayment);
       }
     }

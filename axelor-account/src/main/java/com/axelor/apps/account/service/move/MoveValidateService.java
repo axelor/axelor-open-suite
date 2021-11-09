@@ -34,21 +34,9 @@ public interface MoveValidateService {
 
   void checkPreconditions(Move move) throws AxelorException;
 
-  /**
-   * Valider une écriture comptable.
-   *
-   * @param move
-   * @throws AxelorException
-   */
-  void validate(Move move) throws AxelorException;
+  public void accounting(Move move) throws AxelorException;
 
-  /**
-   * Valider une écriture comptable.
-   *
-   * @param move
-   * @throws AxelorException
-   */
-  void validate(Move move, boolean updateCustomerAccount) throws AxelorException;
+  public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException;
 
   /**
    * This method may generate fixed asset for each moveLine of move. It will generate if
@@ -75,16 +63,11 @@ public interface MoveValidateService {
    */
   List<Partner> getPartnerOfMoveBeforeUpdate(Move move);
 
-  /**
-   * Method that freeze the account and partner fields on move lines
-   *
-   * @param move
-   */
-  void freezeAccountAndPartnerFieldsOnMoveLines(Move move);
+  String accountingMultiple(List<? extends Move> moveList);
 
-  boolean validateMultiple(List<? extends Move> moveList);
+  void freezeAccountAndPartnerFieldsOnMoveLines(Move move);
 
   void simulateMultiple(List<? extends Move> moveList) throws AxelorException;
 
-  void validateMultiple(Query<Move> moveListQuery) throws AxelorException;
+  void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
 }
