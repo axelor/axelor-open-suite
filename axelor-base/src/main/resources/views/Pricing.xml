@@ -112,13 +112,13 @@
     <attribute name="hidden" for="pricingLineList.classificationDecParam4"
       expr="eval: class4PricingRule == null || class4PricingRule?.fieldTypeSelect != 1"/>
 
-    <attribute name="hidden" for="pricingLineList.resultParam1"
+    <attribute name="hidden" for="pricingLineList.resultParam1,pricingLineList.tempVar1"
       expr="eval: result1PricingRule == null"/>
-    <attribute name="hidden" for="pricingLineList.resultParam2"
+    <attribute name="hidden" for="pricingLineList.resultParam2,pricingLineList.tempVar2"
       expr="eval: result2PricingRule == null"/>
-    <attribute name="hidden" for="pricingLineList.resultParam3"
+    <attribute name="hidden" for="pricingLineList.resultParam3,pricingLineList.tempVar3"
       expr="eval: result3PricingRule == null"/>
-    <attribute name="hidden" for="pricingLineList.resultParam4"
+    <attribute name="hidden" for="pricingLineList.resultParam4,pricingLineList.tempVar4"
       expr="eval: result4PricingRule == null"/>
   </action-attrs>
 
@@ -158,6 +158,15 @@
       expr="eval: result3PricingRule?.name"/>
     <attribute name="title" for="pricingLineList.resultParam4"
       expr="eval: result4PricingRule?.name"/>
+
+    <attribute name="title" for="pricingLineList.tempVar1"
+      expr="eval: result1PricingRule?.tempVarName"/>
+    <attribute name="title" for="pricingLineList.tempVar2"
+      expr="eval: result2PricingRule?.tempVarName"/>
+    <attribute name="title" for="pricingLineList.tempVar3"
+      expr="eval: result3PricingRule?.tempVarName"/>
+    <attribute name="title" for="pricingLineList.tempVar4"
+      expr="eval: result4PricingRule?.tempVarName"/>
   </action-attrs>
 
   <action-group name="action-pricing-group-attrs-pricing-line-list">

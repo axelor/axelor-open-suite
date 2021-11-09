@@ -21,6 +21,10 @@
     <field name="resultParam2"/>
     <field name="resultParam3"/>
     <field name="resultParam4"/>
+    <field name="tempVar1"/>
+    <field name="tempVar2"/>
+    <field name="tempVar3"/>
+    <field name="tempVar4"/>
   </grid>
 
   <form name="pricing-line-form" model="com.axelor.apps.base.db.PricingLine"
@@ -44,9 +48,13 @@
       </panel>
       <panel name="resultPanel" colSpan="12">
         <field name="resultParam1"/>
+        <field name="tempVar1"/>
         <field name="resultParam2"/>
+        <field name="tempVar2"/>
         <field name="resultParam3"/>
+        <field name="tempVar3"/>
         <field name="resultParam4"/>
+        <field name="tempVar4"/>
       </panel>
     </panel>
 
@@ -80,13 +88,13 @@
     <attribute name="hidden" for="classificationDecParam4"
       expr="eval: __parent__.class4PricingRule == null || __parent__.class4PricingRule?.fieldTypeSelect != 1"/>
 
-    <attribute name="hidden" for="resultParam1"
+    <attribute name="hidden" for="resultParam1,tempVar1"
       expr="eval: __parent__.result1PricingRule == null"/>
-    <attribute name="hidden" for="resultParam2"
+    <attribute name="hidden" for="resultParam2,tempVar2"
       expr="eval: __parent__.result2PricingRule == null"/>
-    <attribute name="hidden" for="resultParam3"
+    <attribute name="hidden" for="resultParam3,tempVar3"
       expr="eval: __parent__.result3PricingRule == null"/>
-    <attribute name="hidden" for="resultParam4"
+    <attribute name="hidden" for="resultParam4,tempVar4"
       expr="eval: __parent__.result4PricingRule == null"/>
   </action-attrs>
 
@@ -138,6 +146,15 @@
       expr="eval: __parent__.result3PricingRule?.name"/>
     <attribute name="title" for="resultParam4"
       expr="eval: __parent__.result4PricingRule?.name"/>
+
+    <attribute name="title" for="tempVar1"
+      expr="eval: __parent__.result1PricingRule?.tempVarName"/>
+    <attribute name="title" for="tempVar2"
+      expr="eval: __parent__.result2PricingRule?.tempVarName"/>
+    <attribute name="title" for="tempVar3"
+      expr="eval: __parent__.result3PricingRule?.tempVarName"/>
+    <attribute name="title" for="tempVar4"
+      expr="eval: __parent__.result4PricingRule?.tempVarName"/>
   </action-attrs>
 
   <action-group name="action-pricing-line-group-attrs-onnew-onload">

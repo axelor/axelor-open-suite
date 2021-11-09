@@ -26,6 +26,11 @@
     <decimal name="resultParam2" title="Result param 2"/>
     <decimal name="resultParam3" title="Result param 3"/>
     <decimal name="resultParam4" title="Result param 4"/>
+
+    <decimal name="tempVar1" title="Temp var 1"/>
+    <decimal name="tempVar2" title="Temp var 2"/>
+    <decimal name="tempVar3" title="Temp var 3"/>
+    <decimal name="tempVar4" title="Temp var 4"/>
     <many-to-one name="pricing" ref="com.axelor.apps.base.db.Pricing" title="Pricing"/>
 
   </entity>

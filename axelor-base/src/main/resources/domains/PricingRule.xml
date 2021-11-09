@@ -19,6 +19,7 @@
       selection="base.pricing.rule.field.type.select"/>
     <integer name="operatorSelect" title="Operator"
       selection="base.pricing.rule.operator.select"/>
+    <string name="tempVarName" title="Name of temporary variable"/>
 
     <extra-code><![CDATA[
 			//TYPE SELECT

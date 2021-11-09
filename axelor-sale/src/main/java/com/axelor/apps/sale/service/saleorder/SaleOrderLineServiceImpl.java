@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PricingLineRepository;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -68,6 +69,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -78,7 +80,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -120,6 +122,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected PricingRepository pricingRepository;
   @Inject protected ProductCompanyService productCompanyService;
   @Inject protected PricingService pricingService;
+  @Inject protected PricingLineRepository pricingLineRepo;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -1103,7 +1106,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
     scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    computeResultFormulaAndApply(scriptHelper, pricing, orderLine);
+    pricingLine = computeResultFormulaAndApply(scriptHelper, pricing, pricingLine, orderLine);
 
     Query<Pricing> childPricingQry =
         pricingService.getPricing(
@@ -1390,26 +1393,45 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
   }
 
-  public void computeResultFormulaAndApply(
-      GroovyScriptHelper scriptHelper, Pricing pricing, SaleOrderLine orderLine) {
+  @Transactional
+  public PricingLine computeResultFormulaAndApply(
+      GroovyScriptHelper scriptHelper,
+      Pricing pricing,
+      PricingLine pricingLine,
+      SaleOrderLine orderLine) {
 
-    List<PricingRule> resultPricingRuleList = new ArrayList<>();
-    resultPricingRuleList.add(pricing.getResult1PricingRule());
-    resultPricingRuleList.add(pricing.getResult2PricingRule());
-    resultPricingRuleList.add(pricing.getResult3PricingRule());
-    resultPricingRuleList.add(pricing.getResult4PricingRule());
+    Map<String, PricingRule> pricingRuleMap = new HashMap<>();
+    pricingRuleMap.put("rule1", pricing.getResult1PricingRule());
+    pricingRuleMap.put("rule2", pricing.getResult2PricingRule());
+    pricingRuleMap.put("rule3", pricing.getResult3PricingRule());
+    pricingRuleMap.put("rule4", pricing.getResult4PricingRule());
 
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              if (resultPricingRule.getFieldToPopulate() != null) {
-                Mapper.of(SaleOrderLine.class)
-                    .set(
-                        orderLine,
-                        resultPricingRule.getFieldToPopulate().getName(),
-                        scriptHelper.eval(resultPricingRule.getFormula()));
-              }
-            });
+    for (Entry<String, PricingRule> entry : pricingRuleMap.entrySet()) {
+      String ruleName = entry.getKey();
+      PricingRule rule = entry.getValue();
+
+      if (rule == null || rule.getFieldToPopulate() == null) {
+        continue;
+      }
+      Object result = scriptHelper.eval(rule.getFormula());
+      Mapper.of(SaleOrderLine.class).set(orderLine, rule.getFieldToPopulate().getName(), result);
+      BigDecimal resultVal = result != null ? new BigDecimal(result.toString()) : BigDecimal.ZERO;
+
+      switch (ruleName) {
+        case "rule1":
+          pricingLine.setTempVar1(resultVal);
+          break;
+        case "rule2":
+          pricingLine.setTempVar2(resultVal);
+          break;
+        case "rule3":
+          pricingLine.setTempVar3(resultVal);
+          break;
+        case "rule4":
+          pricingLine.setTempVar4(resultVal);
+          break;
+      }
+    }
+    return pricingLineRepo.save(pricingLine);
   }
 }
