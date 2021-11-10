@@ -17,12 +17,6 @@
  */
 package com.axelor.csv.script;
 
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Optional;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -47,6 +41,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Optional;
 
 public class ImportMove {
 
@@ -93,7 +92,7 @@ public class ImportMove {
           move.setValidationDate(
               LocalDate.parse(
                   values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
-        } 
+        }
         move.setStatusSelect(MoveRepository.STATUS_NEW);
         move.setCompany(getCompany(values));
         move.setCompanyCurrency(move.getCompany().getCurrency());
@@ -132,11 +131,12 @@ public class ImportMove {
                   .fetchOne();
           move.setPartner(partner);
         }
-        if (values.get("PieceDate")!= null) {
-        	move.setOriginDate(LocalDate.parse(
-                values.get("PieceDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+        if (values.get("PieceDate") != null) {
+          move.setOriginDate(
+              LocalDate.parse(
+                  values.get("PieceDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         }
-        
+
         moveRepository.save(move);
       }
       if (values.get("CompteNum") != null) {
