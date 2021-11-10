@@ -236,7 +236,7 @@
 
   <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
     <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.company.id = ${analyticAxis.company.id} &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${analyticAxis.company.id} &quot;"
       if="analyticAxis &amp;&amp; analyticAxis?.company"/>
     <attribute name="domain" for="analyticJournal" expr="eval: null"
       if="!(analyticAxis &amp;&amp; analyticAxis?.company)"/>

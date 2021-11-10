@@ -10,12 +10,19 @@
       grid-view="analytic-journal-type-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="statusSelect"/>
   </grid>
 
   <form name="analytic-journal-form" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default"
     onLoad="action-analytic-journal-on-load"
     onSave="action-validate-for-analytic-journal-without-company">
+    <panel name="statusPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="8"/>
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="account-analytic-journal-record-status-active,save,action-attrs-account-analytic-journal-status-show-title" colSpan="3"/>
+    </panel>
     <panel name="mainPanel">
       <field name="name"/>
       <field name="type" form-view="analytic-journal-type-form"
@@ -41,6 +48,7 @@
 
   <action-group name="action-analytic-journal-on-load">
     <action name="action-attrs-analytic-journal-on-load"/>
+    <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
 
   <action-attrs name="action-attrs-analytic-journal-on-load">
@@ -54,5 +62,16 @@
       message="This analytic journal will not be selectable in any account configurations due to the absence of company."
       if="company == null"/>
   </action-validate>
+  
+  <action-record name="account-analytic-journal-record-status-active"
+    model="com.axelor.apps.account.db.AnalyticJournal">
+    <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
+    <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
+  </action-record>
+  
+  <action-attrs name="action-attrs-account-analytic-journal-status-show-title">
+  	<attribute name="title" for="activeStatusBtn" expr="eval: 'Set Active'" if="__this__.statusSelect == 0"/>
+  	<attribute name="title" for="activeStatusBtn" expr="eval: 'Set Inactive'" if="__this__.statusSelect == 1"/>
+  </action-attrs>
 
 </object-views>

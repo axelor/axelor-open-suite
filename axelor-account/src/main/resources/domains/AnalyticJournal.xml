@@ -10,6 +10,20 @@
     <string name="name" title="Name" required="true" unique="true"/>
     <many-to-one name="type" ref="AnalyticJournalType" title="Type"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    
+    <integer name="statusSelect" title="Status" selection="ianalytic.journal.status.select" default="1"/>
+
+	<extra-code>
+      	<![CDATA[
+      		// STATUS SELECT
+      		public static final int STATUS_INACTIVE = 0;
+      		public static final int STATUS_ACTIVE = 1;
+      	]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+    </track>
 
   </entity>
 

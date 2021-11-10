@@ -69,7 +69,7 @@
 
   <action-attrs name="action-attrs-domain-journal-distribution-line">
     <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
       if="__parent__ &amp;&amp; __parent__.company"/>
     <attribute name="domain" for="analyticJournal" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
