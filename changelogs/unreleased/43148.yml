@@ -1,0 +1,3 @@
+---
+title: "Close button in paymentVoucher opened from invoice no longer creates a draft payment voucher."
+type: change
