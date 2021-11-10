@@ -938,4 +938,10 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNT_FOUND =
+      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
+      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 }
