@@ -81,7 +81,6 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      System.err.println(accountConfig.getClosureAuthorizedRoleList());
       if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
         return true;
       }
