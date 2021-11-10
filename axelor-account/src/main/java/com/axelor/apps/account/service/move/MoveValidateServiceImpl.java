@@ -222,7 +222,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     Boolean dayBookMode =
-        accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
+        accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
+            && move.getJournal().getAllowAccountingDaybook();
 
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
@@ -318,13 +319,19 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
-
-    if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
-      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
-    } else {
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        || !daybook
+        || (daybook
+            && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)
+            && (move.getTechnicalOriginSelect() == MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC)
+            && (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+                || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE))) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
       this.generateFixedAssetMoveLine(move);
+    } else {
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     }
   }
 

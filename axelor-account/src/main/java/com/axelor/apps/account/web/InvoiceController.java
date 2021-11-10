@@ -27,6 +27,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -1112,5 +1113,20 @@ public class InvoiceController {
       response.setError(e.getMessage());
     }
     response.setAttr("partner", "domain", domain);
+  }
+
+  public void checkDuplicateInvoice(ActionRequest request, ActionResponse response) {
+    try {
+
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice != null) {
+        Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
+        response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
+        response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 }
