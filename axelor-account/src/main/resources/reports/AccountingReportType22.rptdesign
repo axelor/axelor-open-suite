@@ -729,47 +729,41 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	FixedAssetType.technical_type_select AS fixed_asset_type,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select IN (2,3) 
-			AND FixedAsset.first_service_date < AccountingReport.date_from
+			FixedAsset.first_service_date < AccountingReport.date_from
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_a,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select IN (2,3) 
-			AND FixedAsset.first_service_date >= AccountingReport.date_from
+			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_b,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select = 4
-			AND FixedAsset.first_service_date >= AccountingReport.date_from
-			AND FixedAsset.first_service_date <= AccountingReport.date_to
+			FixedAsset.disposal_date >= AccountingReport.date_from
+			AND FixedAsset.disposal_date <= AccountingReport.date_to
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_c,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select IN (2,3) 
-			AND FixedAsset.first_service_date < AccountingReport.date_from
+			FixedAsset.first_service_date < AccountingReport.date_from
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_a,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select IN (2,3) 
-			AND FixedAsset.first_service_date >= AccountingReport.date_from
+			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_b,
 	SUM(CASE
 		WHEN 
-			FixedAsset.status_select = 4
-			AND FixedAsset.first_service_date >= AccountingReport.date_from
-			AND FixedAsset.first_service_date <= AccountingReport.date_to
+			FixedAsset.disposal_date >= AccountingReport.date_from
+			AND FixedAsset.disposal_date <= AccountingReport.date_to
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_c
@@ -789,7 +783,7 @@ ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 	
 WHERE 
 	AccountingReport.id = ? 
-	AND FixedAsset.status_select IN (2, 3, 4)
+	AND FixedAsset.status_select > 1
 	AND FixedAssetType.technical_type_select > 1
 	
 GROUP BY FixedAssetType.technical_type_select]]></xml-property>
