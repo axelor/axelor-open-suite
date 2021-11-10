@@ -63,7 +63,9 @@ public class MoveLineController {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
-      if (moveLine.getMove() != null && moveLine.getMove().getCompany() != null && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+      if (moveLine.getMove() != null
+          && moveLine.getMove().getCompany() != null
+          && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           && Beans.get(AccountConfigService.class)
               .getAccountConfig(moveLine.getMove().getCompany())
               .getManageAnalyticAccounting()) {
@@ -495,6 +497,7 @@ public class MoveLineController {
         if (move.getCompany() != null) {
           AccountConfig accountConfig =
               Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+          System.err.println(accountConfig.getManageAnalyticAccounting());
           if (accountConfig != null
               && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
               && accountConfig.getManageAnalyticAccounting()) {
@@ -515,12 +518,12 @@ public class MoveLineController {
                 analyticAxis = null;
               }
             }
-          }
-        } else {
-          response.setAttr("analyticDistributionTemplate", "hidden", true);
-          response.setAttr("analyticMoveLineList", "hidden", true);
-          for (int i = 1; i <= 5; i++) {
-            response.setAttr("axis" + i + "AnalyticAccount", "hidden", true);
+          } else {
+            response.setAttr("analyticDistributionTemplate", "hidden", true);
+            response.setAttr("analyticMoveLineList", "hidden", true);
+            for (int i = 1; i <= 5; i++) {
+              response.setAttr("axis" + i + "AnalyticAccount", "hidden", true);
+            }
           }
         }
       }
