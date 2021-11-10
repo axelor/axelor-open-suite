@@ -17,24 +17,26 @@
  */
 package com.axelor.apps.account.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.repo.FECImportRepository;
+import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 public class FECImportController {
 
@@ -50,9 +52,11 @@ public class FECImportController {
               .upload(
                   new FileInputStream(MetaFiles.getPath(fecImport.getDataMetaFile()).toFile()),
                   "FEC.csv"));
-
-      ImportHistory importHistory =
-          Beans.get(FactoryImporter.class).createImporter(importConfig).run();
+      
+      ImportHistory importHistory = Beans.get(FECImportService.class).runImport(fecImport, importConfig);
+      
+//      ImportHistory importHistory =
+//          Beans.get(FactoryImporter.class).createImporter(importConfig).run();
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)

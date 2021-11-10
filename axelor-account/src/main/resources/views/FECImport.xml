@@ -18,6 +18,9 @@
         onSelect="action-fec-import-attr-set-data-meta-file-domain" canNew="true"
         form-view="meta-files-form" grid-view="meta-files-grid"/>
       <field name="bindMetaFile" widget="binary-link" hidden="true"/>
+      <field name="validGeneratedMove"/>
+      <field name="company"/>
+      <field name="moveDescription"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="importBtn" title="Import"
