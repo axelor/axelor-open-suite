@@ -497,7 +497,6 @@ public class MoveLineController {
         if (move.getCompany() != null) {
           AccountConfig accountConfig =
               Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-          System.err.println(accountConfig.getManageAnalyticAccounting());
           if (accountConfig != null
               && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
               && accountConfig.getManageAnalyticAccounting()) {
