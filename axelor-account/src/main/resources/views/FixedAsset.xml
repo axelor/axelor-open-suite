@@ -81,7 +81,7 @@
         form-view="account-form" grid-view="account-grid"/>
       <field
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        name="analyticDistributionTemplate" canEdit="false"
+        name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
         onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
         domain="self.company = :company AND self.isSpecific = false" form-view="analytic-distribution-template-form"
         grid-view="analytic-distribution-template-grid"/>
