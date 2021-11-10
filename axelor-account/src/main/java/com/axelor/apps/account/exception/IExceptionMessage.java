@@ -24,6 +24,8 @@ package com.axelor.apps.account.exception;
  */
 public interface IExceptionMessage {
 
+  static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
+      /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
