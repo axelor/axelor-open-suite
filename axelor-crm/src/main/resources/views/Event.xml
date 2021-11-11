@@ -628,7 +628,10 @@
 
   <action-attrs name="action-event-attrs-show-past-event-text">
     <attribute name="hidden" for="pastEventText"
-      expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime"/>
+      expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime"
+      if="id != null &amp;&amp; startDateTime !=null"/>
+    <attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__"
+      if="!id"/>
   </action-attrs>
 
   <!-- FILTERS -->
