@@ -17,13 +17,25 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseHRRepository extends ExpenseRepository {
+
+  @Inject protected PeriodRepository periodRepo;
+  @Inject protected AppBaseService appBaseService;
+
   @Override
   public Expense save(Expense expense) {
     try {
@@ -38,5 +50,41 @@ public class ExpenseHRRepository extends ExpenseRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
+  }
+
+  @Override
+  public Expense copy(Expense entity, boolean deep) {
+    Expense expense = super.copy(entity, deep);
+    expense.setStatusSelect(STATUS_DRAFT);
+    if (CollectionUtils.isNotEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLine.setExpenseDate(null);
+        expenseLine.setJustificationMetaFile(null);
+      }
+    }
+    if (CollectionUtils.isNotEmpty(expense.getKilometricExpenseLineList())) {
+      expense.getKilometricExpenseLineList().stream().forEach(line -> line.setExpenseDate(null));
+    }
+    expense.setSentDate(null);
+    expense.setValidatedBy(null);
+    expense.setValidationDate(null);
+    expense.setPeriod(getPeriod(expense));
+    expense.setExpenseSeq(null);
+    expense.setMove(null);
+    expense.setMoveDate(null);
+    expense.setVentilated(false);
+    expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
+    return expense;
+  }
+
+  protected Period getPeriod(Expense expense) {
+    return periodRepo
+        .all()
+        .filter(
+            "self.fromDate <= :todayDate AND self.toDate >= :todayDate AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = :typeSelect")
+        .bind("todayDate", appBaseService.getTodayDate(expense.getCompany()))
+        .bind("company", expense.getCompany())
+        .bind("typeSelect", YearRepository.TYPE_FISCAL)
+        .fetchOne();
   }
 }
