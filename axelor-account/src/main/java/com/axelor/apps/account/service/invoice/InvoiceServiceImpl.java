@@ -449,7 +449,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      int operationTypeSelect)
       throws AxelorException {
     Invoice invoiceMerged =
         mergeInvoice(
@@ -460,7 +461,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             contactPartner,
             priceList,
             paymentMode,
-            paymentCondition);
+            paymentCondition,
+            operationTypeSelect);
     deleteOldInvoices(invoiceList);
     return invoiceMerged;
   }
@@ -475,7 +477,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      int operationtypeSelect)
       throws AxelorException {
     String numSeq = "";
     String externalRef = "";
@@ -497,7 +500,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            operationtypeSelect,
             company,
             paymentCondition,
             paymentMode,

@@ -258,7 +258,8 @@ public interface SaleOrderInvoiceService {
       PriceList priceList,
       PaymentMode paymentMode,
       PaymentCondition paymentCondition,
-      SaleOrder saleOrder)
+      SaleOrder saleOrder,
+      int operaionTypeSelect)
       throws AxelorException;
 
   /**

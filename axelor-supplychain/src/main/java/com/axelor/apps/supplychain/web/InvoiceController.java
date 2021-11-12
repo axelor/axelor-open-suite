@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.base.db.Company;
@@ -101,6 +102,8 @@ public class InvoiceController {
     SaleOrder commonSaleOrder = null;
     // Useful to check if all sale orders are null (since this field is not required)
     boolean saleOrderIsNull = false;
+    // Useful to check the operation type of the invoices
+    int commonOperationTypeSelect = -1;
 
     Invoice invoiceTemp;
     int count = 1;
@@ -116,6 +119,7 @@ public class InvoiceController {
         commonPriceList = invoiceTemp.getPriceList();
         commonPaymentMode = invoiceTemp.getPaymentMode();
         commonSaleOrder = invoiceTemp.getSaleOrder();
+        commonOperationTypeSelect = invoiceTemp.getOperationTypeSelect();
         if (commonSaleOrder == null) {
           saleOrderIsNull = true;
         }
@@ -153,6 +157,9 @@ public class InvoiceController {
         }
         if (invoiceTemp.getSaleOrder() != null) {
           saleOrderIsNull = false;
+        }
+        if (invoiceTemp.getOperationTypeSelect() != commonOperationTypeSelect) {
+          response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_OPERATION_TYPE);
         }
       }
       count++;
@@ -228,7 +235,7 @@ public class InvoiceController {
       ActionViewBuilder confirmView =
           ActionView.define("Confirm merge invoice")
               .model(Wizard.class.getName())
-              .add("form", "customer-invoices-merge-confirm-form")
+              .add("form", "invoices-merge-confirm-form")
               .param("popup", "true")
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
@@ -267,15 +274,23 @@ public class InvoiceController {
                   commonPriceList,
                   commonPaymentMode,
                   commonPaymentCondition,
-                  commonSaleOrder);
+                  commonSaleOrder,
+                  commonOperationTypeSelect);
       if (invoice != null) {
+        String searchFilters = null;
+        if (commonOperationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+          searchFilters = "customer-invoices-filters";
+        } else if (commonOperationTypeSelect
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+          searchFilters = "supplier-invoices-filters";
+        }
         // Open the generated invoice in a new tab
         response.setView(
             ActionView.define("Invoice")
                 .model(Invoice.class.getName())
                 .add("grid", "invoice-grid")
                 .add("form", "invoice-form")
-                .param("search-filters", "customer-invoices-filters")
+                .param("search-filters", searchFilters)
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());

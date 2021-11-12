@@ -817,7 +817,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       PriceList priceList,
       PaymentMode paymentMode,
       PaymentCondition paymentCondition,
-      SaleOrder saleOrder)
+      SaleOrder saleOrder,
+      int operationTypeSelect)
       throws AxelorException {
     log.debug("service supplychain 1 (saleOrder) {}", saleOrder);
     if (saleOrder != null) {
@@ -866,7 +867,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               contactPartner,
               priceList,
               paymentMode,
-              paymentCondition);
+              paymentCondition,
+              operationTypeSelect);
       swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;

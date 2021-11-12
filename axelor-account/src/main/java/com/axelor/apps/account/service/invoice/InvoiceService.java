@@ -156,7 +156,8 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      int operationTypeSelect)
       throws AxelorException;
 
   public Invoice mergeInvoice(
@@ -167,7 +168,8 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      int operationTypeSelect)
       throws AxelorException;
 
   public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);

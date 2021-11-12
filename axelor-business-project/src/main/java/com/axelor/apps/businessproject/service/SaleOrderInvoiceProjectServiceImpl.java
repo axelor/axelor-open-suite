@@ -28,6 +28,8 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,11 +40,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
@@ -83,8 +87,16 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       PaymentMode paymentMode,
       PaymentCondition paymentCondition,
       SaleOrder saleOrder,
-      Project project)
+      Project project,
+      int OperationTypeSelect)
       throws AxelorException {
+    List<InvoicingProject> invoicingProjectsList = new ArrayList<>();
+    invoicingProjectsList =
+        Beans.get(InvoicingProjectRepository.class)
+            .all()
+            .filter("self.invoice in ?1", invoiceList)
+            .fetch();
+
     Invoice invoiceMerged =
         super.mergeInvoice(
             invoiceList,
@@ -95,12 +107,18 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
             priceList,
             paymentMode,
             paymentCondition,
-            saleOrder);
+            saleOrder,
+            OperationTypeSelect);
     if (project != null
         && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
       invoiceMerged.setProject(project);
       for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
         invoiceLine.setProject(project);
+      }
+    }
+    if (ObjectUtils.notEmpty(invoicingProjectsList)) {
+      for (InvoicingProject invoiceProject : invoicingProjectsList) {
+        invoiceProject.setInvoice(invoiceMerged);
       }
     }
     return invoiceMerged;

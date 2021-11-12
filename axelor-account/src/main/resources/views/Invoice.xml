@@ -125,6 +125,8 @@
           action="action-supplier-invoice-line-menu"/>
         <item title="See budget distribution lines"
           action="action-invoice-see-budget-distribution-lines"/>
+        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
+          action="action-invoice-mergesupplinvoices"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -1131,7 +1133,20 @@ InvoiceSet.length > 0))"
     </panel>
   </form>
 
-  <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+  <!-- SUPPLIER INVOICES MERGE -->
+  <form name="supplier-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+    title="Merge Suppl. Invoices" width="large">
+    <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="generateMergedCustInvoicesBtn" title="Merge into single suppl. invoice"
+        onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>
+    </panel>
+  </form>
+
+  <form name="invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
     title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
     <panel name="mainPanel" colSpan="6" colOffset="3">
       <field name="contactPartnerToCheck" hidden="true" colOffset="12"/>
@@ -1815,6 +1830,11 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="customer-invoices-merge-form"/>
+  </action-view>
+
+  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"
