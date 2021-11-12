@@ -16,7 +16,7 @@ public class PaymentModeControlServiceImpl implements PaymentModeControlService 
   }
 
   @Override
-  public Boolean isInMove(PaymentMode paymentMode) {
+  public boolean isInMove(PaymentMode paymentMode) {
     Objects.requireNonNull(paymentMode);
 
     return moveRepository.all().filter("self.paymentMode.id = ?", paymentMode.getId()).count() > 0;

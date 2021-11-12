@@ -10,5 +10,5 @@ public interface PaymentModeControlService {
    * @param paymentMode
    * @return true if paymentMode is linked to Move, else false
    */
-  Boolean isInMove(PaymentMode paymentMode);
+  boolean isInMove(PaymentMode paymentMode);
 }

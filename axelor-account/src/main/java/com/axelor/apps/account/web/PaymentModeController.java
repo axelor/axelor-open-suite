@@ -24,7 +24,7 @@ public class PaymentModeController {
         response.setAttr("inOutSelect", "readonly", isInMove);
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 }
