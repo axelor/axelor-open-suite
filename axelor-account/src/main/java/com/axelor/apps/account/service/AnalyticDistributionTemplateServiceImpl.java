@@ -90,47 +90,9 @@ public class AnalyticDistributionTemplateServiceImpl
     specificAnalyticDistributionTemplate.setName("Template - ");
 
     specificAnalyticDistributionTemplate.setIsSpecific(true);
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfig.getAnalyticAxisByCompanyList()) {
-      boolean isIn = false;
-      if (analyticDistributionTemplate != null
-          && CollectionUtils.isNotEmpty(
-              analyticDistributionTemplate.getAnalyticDistributionLineList())) {
-        for (AnalyticDistributionLine analyticDistributionLine :
-            analyticDistributionTemplate.getAnalyticDistributionLineList()) {
-          if (analyticDistributionLine
-              .getAnalyticAxis()
-              .equals(analyticAxisByCompany.getAnalyticAxis())) {
-            AnalyticDistributionLine specificAnalyticDistributionLine =
-                analyticDistributionLineService.createAnalyticDistributionLine(
-                    analyticAxisByCompany.getAnalyticAxis(),
-                    analyticDistributionLine.getAnalyticAccount(),
-                    accountConfig.getAnalyticJournal(),
-                    analyticDistributionLine.getPercentage());
-            specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
-                specificAnalyticDistributionTemplate);
-            specificAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
-                specificAnalyticDistributionLine);
-            isIn = true;
-          }
-        }
-      }
-      if (!isIn) {
-        AnalyticDistributionLine specificAnalyticDistributionLine =
-            analyticDistributionLineService.createAnalyticDistributionLine(
-                analyticAxisByCompany.getAnalyticAxis(),
-                null,
-                accountConfig.getAnalyticJournal(),
-                new BigDecimal(100));
-        specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
-            specificAnalyticDistributionTemplate);
-
-        specificAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
-            specificAnalyticDistributionLine);
-      }
-    }
+    specificAnalyticDistributionTemplate =
+        personalizeAnalyticTemplateFromConfig(
+            analyticDistributionTemplate, specificAnalyticDistributionTemplate);
     analyticDistributionTemplateRepository.save(specificAnalyticDistributionTemplate);
     if (analyticDistributionTemplate != null) {
       specificAnalyticDistributionTemplate.setName(
@@ -180,5 +142,54 @@ public class AnalyticDistributionTemplateServiceImpl
         }
       }
     }
+  }
+
+  protected AnalyticDistributionTemplate personalizeAnalyticTemplateFromConfig(
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      AnalyticDistributionTemplate newAnalyticDistributionTemplate)
+      throws AxelorException {
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(analyticDistributionTemplate.getCompany());
+
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfig.getAnalyticAxisByCompanyList()) {
+      boolean isIn = false;
+      if (analyticDistributionTemplate != null
+          && CollectionUtils.isNotEmpty(
+              analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+        for (AnalyticDistributionLine analyticDistributionLine :
+            analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+          if (analyticDistributionLine
+              .getAnalyticAxis()
+              .equals(analyticAxisByCompany.getAnalyticAxis())) {
+            AnalyticDistributionLine specificAnalyticDistributionLine =
+                analyticDistributionLineService.createAnalyticDistributionLine(
+                    analyticAxisByCompany.getAnalyticAxis(),
+                    analyticDistributionLine.getAnalyticAccount(),
+                    accountConfig.getAnalyticJournal(),
+                    analyticDistributionLine.getPercentage());
+            specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
+                newAnalyticDistributionTemplate);
+            newAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
+                specificAnalyticDistributionLine);
+            isIn = true;
+          }
+        }
+      }
+      if (!isIn) {
+        AnalyticDistributionLine specificAnalyticDistributionLine =
+            analyticDistributionLineService.createAnalyticDistributionLine(
+                analyticAxisByCompany.getAnalyticAxis(),
+                null,
+                accountConfig.getAnalyticJournal(),
+                new BigDecimal(100));
+        specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
+            newAnalyticDistributionTemplate);
+
+        newAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
+            specificAnalyticDistributionLine);
+      }
+    }
+    return newAnalyticDistributionTemplate;
   }
 }

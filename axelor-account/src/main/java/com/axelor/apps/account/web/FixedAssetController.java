@@ -221,13 +221,15 @@ public class FixedAssetController {
       ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          fixedAsset.getAnalyticDistributionTemplate();
       AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
           Beans.get(AnalyticDistributionTemplateService.class)
               .personalizeAnalyticDistributionTemplate(
-                  fixedAsset.getAnalyticDistributionTemplate(), fixedAsset.getCompany());
-      if (fixedAsset.getAnalyticDistributionTemplate() == null
-          || !(fixedAsset.getAnalyticDistributionTemplate() != null
-              && fixedAsset.getAnalyticDistributionTemplate().getIsSpecific())) {
+                  analyticDistributionTemplate, fixedAsset.getCompany());
+      if ((analyticDistributionTemplate == null)
+          ? true
+          : analyticDistributionTemplate.getIsSpecific()) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
             ActionView.define("Specific Analytic Distribution Template")

@@ -30,7 +30,7 @@
   	model="com.axelor.apps.account.db.AnalyticDistributionLine" editable="true" groupBy="analyticAxis">
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="analyticAccount" required="true" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-    domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
+    domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
    </grid>
@@ -45,7 +45,7 @@
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true"
-        domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
+        domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form" required="true"/>
@@ -55,7 +55,7 @@
   <form name="analytic-distribution-line-personalized-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine" onNew="action-group-analytic-distribution-line-set-on-new" onLoad="action-group-analytic-distribution-line-set-on-new">
         <panel name="mainPanel" >
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-axis-change-remove-account" required="true" readonly="true"/>
-	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change" required="true" domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
+	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change" required="true" domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
 	        <field name="percentage" required="true"/>
 	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form" required="true"/>
         </panel>      
