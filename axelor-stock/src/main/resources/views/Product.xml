@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
-        <field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null,null)" if="__config__.app.isApp('stock')" />
-        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null,null)" if="__config__.app.isApp('stock')" />
-        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null,null)" if="__config__.app.isApp('supplychain')" />
-    </action-record>
-    
-    <action-record name="action-product-record-service-stock-managed" model="com.axelor.apps.base.db.Product">
-      <field name="stockManaged" expr="eval: productTypeSelect != 'service'"/>
-    </action-record>
-    
-    <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
-        <attribute name="scale" for="avgPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
-    </action-attrs>
-    
-    <cards name="stock-product-cards" title="Product" css="rect-image" model="com.axelor.apps.base.db.Product" width="25%" orderBy="code,name">
-		<field name="picture"/>
-		<field name="fullName"/>
-		<template><![CDATA[
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <action-record name="action-product-set-stock"
+    model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
+    <field name="$realQtyBtn"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null,null)"
+      if="__config__.app.isApp('stock')"/>
+    <field name="$futureQtyBtn"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null,null)"
+      if="__config__.app.isApp('stock')"/>
+    <field name="$reservedQtyBtn"
+      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null,null)"
+      if="__config__.app.isApp('supplychain')"/>
+  </action-record>
+
+  <action-record name="action-product-record-service-stock-managed"
+    model="com.axelor.apps.base.db.Product">
+    <field name="stockManaged" expr="eval: productTypeSelect != 'service'"/>
+  </action-record>
+
+  <action-attrs name="action-product-attrs-scale-and-precision-stock"
+    if-module="axelor-stock">
+    <attribute name="scale" for="avgPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
+  <cards name="stock-product-cards" title="Product" css="rect-image"
+    model="com.axelor.apps.base.db.Product" width="25%" orderBy="code,name">
+    <field name="picture"/>
+    <field name="fullName"/>
+    <template><![CDATA[
 		   <div class="span12"><strong>{{fullName}}</strong></div>
 		   <div>
 			  <div class="span4 card-image" style="width: 128px; height: 64px;">
@@ -33,91 +44,108 @@
 			  </div>
 		   </div>
 		]]></template>
-	</cards>
-	
-	<grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
-	    <field name="picture" widget="Image"/>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	    <field name="name" width="400"/>
-	    <field name="$stockMinDate" title="Min stock date" type="date" />
-	    <field name="$stockMin" title="Min stock"  type="integer"/>
-	    <field name="$stockMaxDate" title="Max stock date" type="date" />
-	    <field name="$stockMax" title="Max stock" type="integer" />
-    </grid>
-    
-    <grid name="stock-move-line-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
-	    <field name="picture" widget="Image"/>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
-	    <field name="name" width="300"/>
-  	    <field name="$availableQty" title="Available qty" type="decimal" width="120" sortable="false"/>
-	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
-	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
-	    <field name="productTypeSelect" width="100"/>
-	   	<field name="salePrice" x-scale="2" />
-	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="internalDescription" widget="html" width="400" />
-	</grid>
-    
-    <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
-    	onLoad="action-stock-product-method-set-stock-per-day">
-    	<panel name="mainPanel">
-	   		<panel colSpan="2" name="imagePanel">
-	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
-				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
-			</panel>
-			<panel name="namePanel" colSpan="10">
-	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
-	       			<editor x-show-titles="false">
-	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" readonly="true"/>
-	         				<field name="name" required="true" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name" readonly="true"/>
-	       			</editor>
-	     			</field>
-	   		</panel>
-	   		<panel name="stockPerDayPanel" colSpan="12">
-	   			<field name="$stockPerDayList" title="Stock per day" type="one-to-many" target="com.axelor.apps.base.db.Wizard"  grid-view="wizard-stock-perday-grid" form-view="wizard-stock-perday-form" readonly="true" colSpan="12" />
-   			</panel>
-   		</panel>
-	</form>
-	
-	<grid model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-grid" orderBy="$date">
-		<field name="$date" title="Date" type="date"/>
-		<field name="$qty" title="Qty" type="decimal"/>
-	</grid>
-	
-	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false"
-		  onNew="action-wizard-stock-per-day-attrs-scale">
-		<panel name="mainPanel">
-			<field name="$date" title="Date" type="date"/>
-			<field name="$qty" title="Qty" type="decimal"/>
-			<button name="showStockMoveLinesBtn" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
-		</panel>
-	</form>
-	
-	<action-method name="action-stock-product-method-set-stock-per-day">
-		<call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
-	</action-method>
-	
-	<action-method name="action-stock-product-method-display-stock-move-line">
-		<call class="com.axelor.apps.stock.web.ProductStockController" method="displayStockMoveLine"/>
-	</action-method>
-	
-	<action-method name="action-product-method-update-stock-location">
-		<call class="com.axelor.apps.stock.web.ProductStockController" method="updateStockLocation"/>
-	</action-method>
-	
-	<action-record name="action-stock-product-record-stock-managed-onchange" model="com.axelor.apps.base.db.Product">
-		<field name="excludeFromMrp" expr="eval: !stockManaged"/>
-	</action-record>
-	
-    <action-attrs name="action-wizard-stock-per-day-attrs-scale">
-		<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-	</action-attrs>
+  </cards>
 
-	<action-view name="action-stock-view-stock-rule" title="Stock rule" model="com.axelor.apps.stock.db.StockRules">
-		<view type="grid" name="stock-rule-product-grid"/>
-		<view type="form" name="stock-rules-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>
+  <grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product"
+    orderBy="code,name">
+    <field name="picture" widget="Image"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name" width="400"/>
+    <field name="$stockMinDate" title="Min stock date" type="date"/>
+    <field name="$stockMin" title="Min stock" type="integer"/>
+    <field name="$stockMaxDate" title="Max stock date" type="date"/>
+    <field name="$stockMax" title="Max stock" type="integer"/>
+  </grid>
+
+  <grid name="stock-move-line-product-grid" title="Products"
+    model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+    <field name="picture" widget="Image"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
+    <field name="name" width="300"/>
+    <field name="$availableQty" title="Available qty" type="decimal" width="120"
+      sortable="false"/>
+    <field name="productCategory" form-view="product-category-form"
+      grid-view="product-category-grid"/>
+    <field name="productFamily" form-view="product-family-form"
+      grid-view="product-family-grid"/>
+    <field name="productTypeSelect" width="100"/>
+    <field name="salePrice" x-scale="2"/>
+    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="internalDescription" widget="html" width="400"/>
+  </grid>
+
+  <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product"
+    width="large" onLoad="action-stock-product-method-set-stock-per-day">
+    <panel name="mainPanel">
+      <panel colSpan="2" name="imagePanel">
+        <field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+        <field name="barCode" showTitle="false" colSpan="12" widget="Image"
+          if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true"
+          x-height="50"/>
+      </panel>
+      <panel name="namePanel" colSpan="10">
+        <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+          <editor x-show-titles="false">
+            <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false"
+              colSpan="3" css="label-bold bold large" placeholder="Code" readonly="true"/>
+            <field name="name" required="true" showTitle="false" colSpan="9"
+              css="label-bold bold large" placeholder="Name" readonly="true"/>
+          </editor>
+        </field>
+      </panel>
+      <panel name="stockPerDayPanel" colSpan="12">
+        <field name="$stockPerDayList" title="Stock per day" type="one-to-many"
+          target="com.axelor.apps.base.db.Wizard" grid-view="wizard-stock-perday-grid"
+          form-view="wizard-stock-perday-form" readonly="true" colSpan="12"/>
+      </panel>
+    </panel>
+  </form>
+
+  <grid model="com.axelor.apps.base.db.Wizard" title="Stock per day"
+    name="wizard-stock-perday-grid" orderBy="$date">
+    <field name="$date" title="Date" type="date"/>
+    <field name="$qty" title="Qty" type="decimal"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Stock per day"
+    name="wizard-stock-perday-form" canEdit="false" onNew="action-wizard-stock-per-day-attrs-scale">
+    <panel name="mainPanel">
+      <field name="$date" title="Date" type="date"/>
+      <field name="$qty" title="Qty" type="decimal"/>
+      <button name="showStockMoveLinesBtn" title="Show stock move lines"
+        onClick="action-stock-product-method-display-stock-move-line"/>
+    </panel>
+  </form>
+
+  <action-method name="action-stock-product-method-set-stock-per-day">
+    <call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
+  </action-method>
+
+  <action-method name="action-stock-product-method-display-stock-move-line">
+    <call class="com.axelor.apps.stock.web.ProductStockController"
+      method="displayStockMoveLine"/>
+  </action-method>
+
+  <action-method name="action-product-method-update-stock-location">
+    <call class="com.axelor.apps.stock.web.ProductStockController" method="updateStockLocation"/>
+  </action-method>
+
+  <action-record name="action-stock-product-record-stock-managed-onchange"
+    model="com.axelor.apps.base.db.Product">
+    <field name="excludeFromMrp" expr="eval: !stockManaged"/>
+  </action-record>
+
+  <action-attrs name="action-wizard-stock-per-day-attrs-scale">
+    <attribute name="scale" for="$qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-view name="action-stock-view-stock-rule" title="Stock rule"
+    model="com.axelor.apps.stock.db.StockRules">
+    <view type="grid" name="stock-rule-product-grid"/>
+    <view type="form" name="stock-rules-form"/>
+    <domain>self.product.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
 
 </object-views>
