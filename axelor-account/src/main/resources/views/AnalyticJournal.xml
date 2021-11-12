@@ -14,7 +14,7 @@
   </grid>
 
   <form name="analytic-journal-form" title="Analytic Journal"
-    model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default"
+    model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default,action-attrs-account-analytic-journal-status-show-title"
     onLoad="action-analytic-journal-on-load"
     onSave="action-validate-for-analytic-journal-without-company">
     <panel name="statusPanel">
@@ -48,7 +48,7 @@
 
   <action-group name="action-analytic-journal-on-load">
     <action name="action-attrs-analytic-journal-on-load"/>
-    <action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-attrs-account-analytic-journal-status-show-title"/>
   </action-group>
 
   <action-attrs name="action-attrs-analytic-journal-on-load">

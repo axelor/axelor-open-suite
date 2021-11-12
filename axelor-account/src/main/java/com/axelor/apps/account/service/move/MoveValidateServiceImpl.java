@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,9 +187,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
-        
+
         exceptionInactiveAnalyticJournal(move);
-        
+
         moveLineControlService.validateMoveLine(moveLine);
       }
       this.validateWellBalancedMove(move);
@@ -482,35 +481,35 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return "" + partner.getId();
     }
   }
-  
+
   protected void exceptionInactiveAnalyticJournal(Move move) throws AxelorException {
-	    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-	      int inactiveNbr = 0;
-	      List<String> inactiveList = new ArrayList();
-	      for (MoveLine moveLine : move.getMoveLineList()) {
-	        if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
-	          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-	            AnalyticJournal analyticJournal = analyticMoveLine.getAnalyticJournal();
-	            if (analyticJournal.getStatusSelect() != null
-	                && analyticJournal.getStatusSelect() != AnalyticJournalRepository.STATUS_ACTIVE
-	                && !inactiveList.contains(analyticJournal.getName())) {
-	              inactiveNbr++;
-	              inactiveList.add(analyticJournal.getName());
-	            }
-	          }
-	        }
-	        if (inactiveNbr == 1) {
-	          throw new AxelorException(
-	              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-	              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNAL_FOUND),
-	              inactiveList.get(0));
-	        } else if (inactiveNbr > 1) {
-	          throw new AxelorException(
-	              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-	              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNALS_FOUND),
-	              inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
-	        }
-	      }
-	    }
-	  }
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      int inactiveNbr = 0;
+      List<String> inactiveList = new ArrayList();
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+            AnalyticJournal analyticJournal = analyticMoveLine.getAnalyticJournal();
+            if (analyticJournal.getStatusSelect() != null
+                && analyticJournal.getStatusSelect() != AnalyticJournalRepository.STATUS_ACTIVE
+                && !inactiveList.contains(analyticJournal.getName())) {
+              inactiveNbr++;
+              inactiveList.add(analyticJournal.getName());
+            }
+          }
+        }
+        if (inactiveNbr == 1) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNAL_FOUND),
+              inactiveList.get(0));
+        } else if (inactiveNbr > 1) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNALS_FOUND),
+              inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+        }
+      }
+    }
+  }
 }
