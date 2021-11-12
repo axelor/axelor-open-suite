@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="dmn-field-grid" title="DMN field" model="com.axelor.apps.bpm.db.DmnField"
+    editable="true">
+    <field name="name" readonly="true"/>
+    <field name="field"/>
+    <field name="fieldType"/>
+  </grid>
+
+  <form name="dmn-field-form" title="DMN field" model="com.axelor.apps.bpm.db.DmnField"
+    width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" readonly="true"/>
+      <field name="field"/>
+      <field name="fieldType"/>
+    </panel>
+  </form>
+
+</object-views>

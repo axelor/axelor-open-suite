@@ -3,13 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="sale" package="com.axelor.apps.sale.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-	<entity name="SaleOrder" lang="java">
- 	
-		<many-to-one name="taxNumber" title="Tax number" ref="com.axelor.apps.account.db.TaxNumber"/>
-		<many-to-one name="fiscalPosition" title="Fiscal position" ref="com.axelor.apps.account.db.FiscalPosition"/>
-   
-	</entity>
+  <entity name="SaleOrder" lang="java">
+
+    <many-to-one name="taxNumber" title="Tax number"
+      ref="com.axelor.apps.account.db.TaxNumber"/>
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
+
+  </entity>
 
 </domain-models>

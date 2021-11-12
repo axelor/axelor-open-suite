@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<dashboard title="Quality Dashboard" name="quality.dashboard">
-		<dashlet action="action-dashboard-view-quality-control-points" height="350" canSearch="true" />
-		<dashlet action="chart:chart.quality.controls.total.numbers" height="350" canSearch="true" />
-		<dashlet action="chart:chart.quality.alerts.total.numbers" height="350" canSearch="true" />
-		<dashlet action="chart:chart.quality.alerts.solved.total.numbers" height="350" canSearch="true" />
-	</dashboard>
-	
-	<action-view name="action-dashboard-view-quality-control-points" title="Control Points">
-	   <view type="chart" name="chart.quality.control.points"/>
-	   <context name="_language" expr="eval: __user__.getLanguage()"/>
-	</action-view>
-	
+  <dashboard title="Quality Dashboard" name="quality.dashboard">
+    <dashlet action="action-dashboard-view-quality-control-points" height="350"
+      canSearch="true"/>
+    <dashlet action="chart:chart.quality.controls.total.numbers" height="350"
+      canSearch="true"/>
+    <dashlet action="chart:chart.quality.alerts.total.numbers" height="350" canSearch="true"/>
+    <dashlet action="chart:chart.quality.alerts.solved.total.numbers" height="350"
+      canSearch="true"/>
+  </dashboard>
+
+  <action-view name="action-dashboard-view-quality-control-points"
+    title="Control Points">
+    <view type="chart" name="chart.quality.control.points"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
+  </action-view>
+
 </object-views>
