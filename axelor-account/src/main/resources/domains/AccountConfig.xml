@@ -1,305 +1,382 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns="http://axelor.com/xml/ns/domain-models"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="account" package="com.axelor.apps.account.db"/>
+  <module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountConfig" lang="java" cacheable="true">
+  <entity name="AccountConfig" lang="java" cacheable="true">
 
-		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
-		
-		<!-- JOURNAL -->
-		<many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
-		<many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Customer Credit note Journal"/>
-		<many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Purchase Journal"/>
-		<many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
-		<many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
-		<many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
-		<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
-		<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
-		<many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Auto Misc. Operation Journal"/>
-		<many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Manual Misc. Operation Journal"/>
-		<many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal" title="Reported Balance Journal"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
 
-		<many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
-		<many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
-		<many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType" title="Cash journal type"/>
-		<many-to-one name="creditNoteJournalType" ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
+    <!-- JOURNAL -->
+    <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Sales Journal"/>
+    <many-to-one name="customerCreditNoteJournal"
+      ref="com.axelor.apps.account.db.Journal" title="Customer Credit note Journal"/>
+    <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Supplier Purchase Journal"/>
+    <many-to-one name="supplierCreditNoteJournal"
+      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
+    <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Rejects journal"/>
+    <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Account clearance journal"/>
+    <many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Reimbursement Journal"/>
+    <many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Irrecoverable Journal"/>
+    <many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Auto Misc. Operation Journal"/>
+    <many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Manual Misc. Operation Journal"/>
+    <many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal"
+      title="Reported Balance Journal"/>
 
-
-		<!-- ACCOUNT -->
-		<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
-		<many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-		<many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account"/>
-		<many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>
-		<many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
-		<many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
-		<many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
-		<many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
-		<many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
-		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>
-		<many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account" title="Year closure account"/>
-		
-
-        <!-- Automatic account creation for partners -->
-        <integer name="partnerAccountGenerationModeSelect" selection="account.create.mode.select" default="0" title="Automatic partner account creation mode"/>
-        <string name="customerAccountPrefix" title="Autogenerated customer accounts' prefix"/>
-        <string name="supplierAccountPrefix" title="Autogenerated supplier accounts' prefix"/>
-        <string name="employeeAccountPrefix" title="Autogenerated employee accounts' prefix"/>
-        <many-to-one name="customerAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-        <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-        <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-		
-		<decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
-
-		<boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
-		<boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
-
-		<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
-
-		<!-- Default Payment Modes -->
-		<many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Incoming Payment Mode"/>
-		<many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Outgoing Payment Mode"/>
-
-		<!-- Default Payment Condition -->
-		<many-to-one name="defPaymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
-
-		<!-- Onglet CFONB -->
-		<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
-
-		<!-- Doubtful Cust. -->
-		<string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)" default="Receivables over 6 months"/>
-		<string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)" default="Receivables over 3 months"/>
-		<integer name="sixMonthDebtMonthNumber" title="Long term debt duration (month)" default="6"/>
-		<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
-
-		<!-- DebtRecovery -->
-		<one-to-many name="debtRecoveryConfigLineList" ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig" title="Debt recovery configuration table"/>
-		<integer name="mailTransitTime" title="Mail transit time"/>
-		<many-to-one name="factorPartner" ref="com.axelor.apps.base.db.Partner" title="Factor"/>
-
-		<!-- Reimbursement -->
-		<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)"/>
-		<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)"/>
-		<decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
-		<decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
-		<many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account" title="Reimbursement account"/>
-		<many-to-one name="reimbursementTemplate" ref="com.axelor.apps.message.db.Template" title="Reimbursement email template"/>
-
-		<string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"/>
-		<string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import"/>
-
-		<string name="exportPath" title="Filepath for exported files (Accounting)"/>
-		<string name="exportFileName" title="File name for payroll journal entries"/>
-
-		<!-- Onglet Prélèvements -->
-		<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)"/>
-
-		<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
-		<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
-		<integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
-		<integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-		<many-to-one name="rejectPaymentScheduleTemplate" ref="com.axelor.apps.message.db.Template" title="Email template for invoice and payment schedule rejections"/>
-
-		<!-- Onglet Apurements -->
-		<many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account" title="Clearance Accounts"/>
-		<many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account" title="Profit accounts"/>
-		<many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for clearance"/>
-
-		<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
-		<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
+    <many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType"
+      title="Sales journal type"/>
+    <many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType"
+      title="Purchase journal type"/>
+    <many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType"
+      title="Cash journal type"/>
+    <many-to-one name="creditNoteJournalType"
+      ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
 
-		<!-- Invoice page -->
-		<boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
-		<boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
-		<boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
-		<boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
-		<boolean name="fixedAssetCatReqOnInvoice" title="Fixed asset category required on invoices"/>
-		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language" default="true"/>
+    <!-- ACCOUNT -->
+    <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Customer account"/>
+    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Supplier account"/>
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Doubtful customers account"/>
+    <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account"
+      title="Employee account"/>
+    <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account"
+      title="Irrecoverable account"/>
+    <many-to-one name="cashPositionVariationAccount"
+      ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
+    <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
+      title="Advance Payment Account"/>
+    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account"
+      title="Year opening account"/>
+    <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
+      title="Year closure account"/>
 
-		<!-- Account chart template -->
-		<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart"/>
-		<boolean name="hasChartImported" title="Chart imported"/>
-		<integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select" default="1"/>
 
-		<!-- Accounting Daybook (Mode brouillard) -->
-		<boolean name="accountingDaybook" title="Accounting Daybook"/>
+    <!-- Automatic account creation for partners -->
+    <integer name="partnerAccountGenerationModeSelect"
+      selection="account.create.mode.select" default="0"
+      title="Automatic partner account creation mode"/>
+    <string name="customerAccountPrefix" title="Autogenerated customer accounts' prefix"/>
+    <string name="supplierAccountPrefix" title="Autogenerated supplier accounts' prefix"/>
+    <string name="employeeAccountPrefix" title="Autogenerated employee accounts' prefix"/>
+    <many-to-one name="customerAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
+    <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
+    <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
 
-		<!-- Sequence -->
-		<many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer invoices sequence"/>
-		<many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Customer refunds sequence"/>
-		<many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier invoices sequence"/>
-		<many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence" title="Supplier refunds sequence"/>
+    <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
 
-		<!--Product -->
+    <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
+    <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
 
-		<many-to-one name="invoicingProduct" title="Product to partially invoice sale order" ref="com.axelor.apps.base.db.Product"/>
-		<many-to-one name="advancePaymentProduct" title="Advance payment product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax"
+      title="Tax for management fee"/>
 
-		<!-- Invoice printing -->
-		<boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"/>
-		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
-		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
-		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
-		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
-		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
-		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices"/>
-		<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
-		<many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark" title="Watermark"/>
-		
-		<!-- Invoice mail -->
-		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
-		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-		
-		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
-		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <!-- Default Payment Modes -->
+    <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Incoming Payment Mode"/>
+    <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Outgoing Payment Mode"/>
 
-		<!-- Account Report -->
-		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of lines minimum before long report generation message appears" min="0" help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"  default="10000"/>
+    <!-- Default Payment Condition -->
+    <many-to-one name="defPaymentCondition"
+      ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
+
+    <!-- Onglet CFONB -->
+    <many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig"
+      title="Cfonb configuration"/>
+
+    <!-- Doubtful Cust. -->
+    <string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)"
+      default="Receivables over 6 months"/>
+    <string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)"
+      default="Receivables over 3 months"/>
+    <integer name="sixMonthDebtMonthNumber" title="Long term debt duration (month)"
+      default="6"/>
+    <integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)"
+      default="3"/>
+
+    <!-- DebtRecovery -->
+    <one-to-many name="debtRecoveryConfigLineList"
+      ref="com.axelor.apps.account.db.DebtRecoveryConfigLine" mappedBy="accountConfig"
+      title="Debt recovery configuration table"/>
+    <integer name="mailTransitTime" title="Mail transit time"/>
+    <many-to-one name="factorPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Factor"/>
+
+    <!-- Reimbursement -->
+    <string name="reimbursementExportFolderPathCFONB"
+      title="Path for reimbursement files (CFONB)"/>
+    <string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)"/>
+    <decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
+    <decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
+    <many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account"
+      title="Reimbursement account"/>
+    <many-to-one name="reimbursementTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Reimbursement email template"/>
+
+    <string name="reimbursementImportFolderPathCFONB"
+      title="Filepath for rejected reimbursements"/>
+    <string name="tempReimbImportFolderPathCFONB"
+      title="Filepath for temporary rejected reimbursements import"/>
+
+    <string name="exportPath" title="Filepath for exported files (Accounting)"/>
+    <string name="exportFileName" title="File name for payroll journal entries"/>
+
+    <!-- Onglet Prélèvements -->
+    <string name="paymentScheduleExportFolderPathCFONB"
+      title="Filepath for direct debit exports (CFONB)"/>
+
+    <many-to-one name="directDebitPaymentMode"
+      ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
+    <many-to-one name="rejectionPaymentMode"
+      ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
+    <integer name="paymentScheduleRejectNumLimit"
+      title="Max Nbr. for payment schedule rejection"/>
+    <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
+    <many-to-one name="rejectPaymentScheduleTemplate"
+      ref="com.axelor.apps.message.db.Template"
+      title="Email template for invoice and payment schedule rejections"/>
+
+    <!-- Onglet Apurements -->
+    <many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account"
+      title="Clearance Accounts"/>
+    <many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account"
+      title="Profit accounts"/>
+    <many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax"
+      title="Tax standard rate for clearance"/>
+
+    <string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason"
+      default="Manual shift into irrecoverable receivables"/>
+    <many-to-one name="irrecoverableStandardRateTax"
+      ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
+
+
+    <!-- Invoice page -->
+    <boolean name="allowCancelVentilatedInvoice"
+      title="Allow cancelation of ventilated invoice"/>
+    <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/>
+    <boolean name="generateMoveForInvoicePayment"
+      title="Generate move for payment on invoice" default="true"/>
+    <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
+      default="true"/>
+    <boolean name="fixedAssetCatReqOnInvoice"
+      title="Fixed asset category required on invoices"/>
+    <boolean name="isPrintInvoicesInCompanyLanguage"
+      title="Print invoices in company language" default="true"/>
+
+    <!-- Account chart template -->
+    <many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart"
+      title="Account chart"/>
+    <boolean name="hasChartImported" title="Chart imported"/>
+    <integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select"
+      default="1"/>
+
+    <!-- Accounting Daybook (Mode brouillard) -->
+    <boolean name="accountingDaybook" title="Accounting Daybook"/>
+
+    <!-- Sequence -->
+    <many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Customer invoices sequence"/>
+    <many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Customer refunds sequence"/>
+    <many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Supplier invoices sequence"/>
+    <many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Supplier refunds sequence"/>
+
+    <!--Product -->
+
+    <many-to-one name="invoicingProduct" title="Product to partially invoice sale order"
+      ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="advancePaymentProduct" title="Advance payment product"
+      ref="com.axelor.apps.base.db.Product"/>
+
+    <!-- Invoice printing -->
+    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"/>
+    <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
+    <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
+    <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+    <boolean name="displayHeadOfficeAddrOnInvoicePrinting"
+      title="Display head office address on invoice printing"/>
+    <string name="invoiceClientBox" large="true" multiline="true"
+      title="Client box in invoice"/>
+    <string name="saleInvoiceLegalNote" large="true" multiline="true"
+      title="Legal note on sale invoices"/>
+    <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
+    <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
+      title="Watermark"/>
+
+    <!-- Invoice mail -->
+    <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
+      default="false"/>
+    <many-to-one name="invoiceMessageTemplate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
+
+    <boolean name="isManagePassedForPayment" title="Passed for payment"/>
+    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+
+    <!-- Account Report -->
+    <integer name="lineMinBeforeLongReportGenerationMessageNumber"
+      title="Number of lines minimum before long report generation message appears" min="0"
+      help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"
+      default="10000"/>
 
 
     <finder-method name="findByCompany" using="company"/>
 
-		<extra-code><![CDATA[
-	
+    <extra-code><![CDATA[
+
 	   	// TYPE SELECT
 		public static final int INVOICE_WT_ALWAYS = 1;
 		public static final int INVOICE_ATI_ALWAYS = 2;
 		public static final int INVOICE_WT_DEFAULT = 3;
 		public static final int INVOICE_ATI_DEFAULT = 4;
-	
+
 		// AUTOMATIC PARTNER ACCOUNT CREATION TYPE
 		public static final int AUTOMATIC_ACCOUNT_CREATION_NONE = 0;
 		public static final int AUTOMATIC_ACCOUNT_CREATION_PREFIX = 1;
 		public static final int AUTOMATIC_ACCOUNT_CREATION_SEQUENCE = 2;
-	
-	
+
+
 	]]></extra-code>
-	
-	<track>
-		<field name="company" on="UPDATE"/>
-		
-		<field name="customerSalesJournal" on="UPDATE"/>
-		<field name="customerCreditNoteJournal" on="UPDATE"/>
-		<field name="supplierPurchaseJournal" on="UPDATE"/>
-		<field name="supplierCreditNoteJournal" on="UPDATE"/>
-		<field name="rejectJournal" on="UPDATE"/>
-		<field name="accountClearanceJournal" on="UPDATE"/>
-		<field name="reimbursementJournal" on="UPDATE"/>
-		<field name="irrecoverableJournal" on="UPDATE"/>
-		<field name="autoMiscOpeJournal" on="UPDATE"/>
-		<field name="manualMiscOpeJournal" on="UPDATE"/>
-		
-		<field name="saleJournalType" on="UPDATE"/>
-		<field name="purchaseJournalType" on="UPDATE"/>
-		<field name="cashJournalType" on="UPDATE"/>
-		<field name="creditNoteJournalType" on="UPDATE"/>
-		
-		<field name="customerAccount" on="UPDATE"/>
-		<field name="supplierAccount" on="UPDATE"/>
-		<field name="doubtfulCustomerAccount" on="UPDATE"/>
-		<field name="employeeAccount" on="UPDATE"/>
-		<field name="irrecoverableAccount" on="UPDATE"/>
-		<field name="cashPositionVariationAccount" on="UPDATE"/>
-		<field name="advancePaymentAccount" on="UPDATE"/>
-		<field name="factorDebitAccount" on="UPDATE"/>
-		<field name="factorCreditAccount" on="UPDATE"/>
-		
-		<field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
-		<field name="customerAccountPrefix" on="UPDATE"/>
-		<field name="supplierAccountPrefix" on="UPDATE"/>
-		<field name="employeeAccountPrefix" on="UPDATE"/>
-		<field name="customerAccountSequence" on="UPDATE"/>
-		<field name="supplierAccountSequence" on="UPDATE"/>
-		<field name="employeeAccountSequence" on="UPDATE"/>
-		
-		<field name="thresholdDistanceFromRegulation" on="UPDATE"/>
-		
-		<field name="autoReconcileOnInvoice" on="UPDATE"/>
-		<field name="autoReconcileOnPayment" on="UPDATE"/>
-		
-		<field name="payingBackTax" on="UPDATE"/>
-		
-		<field name="inPaymentMode" on="UPDATE"/>
-		<field name="outPaymentMode" on="UPDATE"/>
-		
-		<field name="defPaymentCondition" on="UPDATE"/>
-		<field name="cfonbConfig" on="UPDATE"/>
-		
-		<field name="sixMonthDebtPassReason" on="UPDATE"/>
-		<field name="threeMonthDebtPassReason" on="UPDATE"/>
-		<field name="sixMonthDebtMonthNumber" on="UPDATE"/>
-		<field name="threeMonthDebtMontsNumber" on="UPDATE"/>
-		
-		<field name="mailTransitTime" on="UPDATE"/>
-		<field name="factorPartner" on="UPDATE"/>
-		
-		<field name="reimbursementExportFolderPathCFONB" on="UPDATE"/>
-		<field name="reimbursementExportFolderPath" on="UPDATE"/>
-		<field name="lowerThresholdReimbursement" on="UPDATE"/>
-		<field name="upperThresholdReimbursement" on="UPDATE"/>
-		<field name="reimbursementAccount" on="UPDATE"/>
-		<field name="reimbursementTemplate" on="UPDATE"/>
-		
-		<field name="reimbursementImportFolderPathCFONB" on="UPDATE"/>
-		<field name="tempReimbImportFolderPathCFONB" on="UPDATE"/>
-		
-		<field name="exportPath" on="UPDATE"/>
-		<field name="exportFileName" on="UPDATE"/>
-		
-		<field name="paymentScheduleExportFolderPathCFONB" on="UPDATE"/>
-		
-		<field name="directDebitPaymentMode" on="UPDATE"/>
-		<field name="rejectionPaymentMode" on="UPDATE"/>
-		<field name="paymentScheduleRejectNumLimit" on="UPDATE"/>
-		<field name="invoiceRejectNumLimit" on="UPDATE"/>
-		<field name="rejectPaymentScheduleTemplate" on="UPDATE"/>
-		
-		<field name="profitAccount" on="UPDATE"/>
-		<field name="standardRateTax" on="UPDATE"/>
-		
-		<field name="irrecoverableReasonPassage" on="UPDATE"/>
-		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
-		
 
-		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
-		<field name="allowRemovalValidatedMove" on="UPDATE"/>
-		<field name="generateMoveForInvoicePayment" on="UPDATE"/>
-		<field name="generateMoveForAdvancePayment" on="UPDATE"/>
-		<field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
-		
-		<field name="accountChart" on="UPDATE"/>
-		<field name="hasChartImported" on="UPDATE"/>
-		<field name="invoiceInAtiSelect" on="UPDATE"/>
-		
-		<field name="accountingDaybook" on="UPDATE"/>
-		
-		<field name="custInvSequence" on="UPDATE"/>
-		<field name="custRefSequence" on="UPDATE"/>
-		<field name="suppInvSequence" on="UPDATE"/>
-		<field name="suppRefSequence" on="UPDATE"/>
-		
-		<field name="invoicingProduct" on="UPDATE"/>
-		<field name="advancePaymentProduct" on="UPDATE"/>
-		
-		<field name="displayDelAddrOnPrinting" on="UPDATE"/>
-		<field name="displayProductCodeOnPrinting" on="UPDATE"/>
-		<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
-		<field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
-		<field name="invoiceClientBox" on="UPDATE"/>
-		<field name="saleInvoiceLegalNote" on="UPDATE"/>
+    <track>
+      <field name="company" on="UPDATE"/>
 
-		<field name="termsAndConditions" on="UPDATE"/>
+      <field name="customerSalesJournal" on="UPDATE"/>
+      <field name="customerCreditNoteJournal" on="UPDATE"/>
+      <field name="supplierPurchaseJournal" on="UPDATE"/>
+      <field name="supplierCreditNoteJournal" on="UPDATE"/>
+      <field name="rejectJournal" on="UPDATE"/>
+      <field name="accountClearanceJournal" on="UPDATE"/>
+      <field name="reimbursementJournal" on="UPDATE"/>
+      <field name="irrecoverableJournal" on="UPDATE"/>
+      <field name="autoMiscOpeJournal" on="UPDATE"/>
+      <field name="manualMiscOpeJournal" on="UPDATE"/>
 
-		<field name="invoiceAutomaticMail" on="UPDATE"/>
-		<field name="invoiceMessageTemplate" on="UPDATE"/>
-		
-		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
-	</track>
+      <field name="saleJournalType" on="UPDATE"/>
+      <field name="purchaseJournalType" on="UPDATE"/>
+      <field name="cashJournalType" on="UPDATE"/>
+      <field name="creditNoteJournalType" on="UPDATE"/>
 
-	</entity>
+      <field name="customerAccount" on="UPDATE"/>
+      <field name="supplierAccount" on="UPDATE"/>
+      <field name="doubtfulCustomerAccount" on="UPDATE"/>
+      <field name="employeeAccount" on="UPDATE"/>
+      <field name="irrecoverableAccount" on="UPDATE"/>
+      <field name="cashPositionVariationAccount" on="UPDATE"/>
+      <field name="advancePaymentAccount" on="UPDATE"/>
+      <field name="factorDebitAccount" on="UPDATE"/>
+      <field name="factorCreditAccount" on="UPDATE"/>
+
+      <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
+      <field name="customerAccountPrefix" on="UPDATE"/>
+      <field name="supplierAccountPrefix" on="UPDATE"/>
+      <field name="employeeAccountPrefix" on="UPDATE"/>
+      <field name="customerAccountSequence" on="UPDATE"/>
+      <field name="supplierAccountSequence" on="UPDATE"/>
+      <field name="employeeAccountSequence" on="UPDATE"/>
+
+      <field name="thresholdDistanceFromRegulation" on="UPDATE"/>
+
+      <field name="autoReconcileOnInvoice" on="UPDATE"/>
+      <field name="autoReconcileOnPayment" on="UPDATE"/>
+
+      <field name="payingBackTax" on="UPDATE"/>
+
+      <field name="inPaymentMode" on="UPDATE"/>
+      <field name="outPaymentMode" on="UPDATE"/>
+
+      <field name="defPaymentCondition" on="UPDATE"/>
+      <field name="cfonbConfig" on="UPDATE"/>
+
+      <field name="sixMonthDebtPassReason" on="UPDATE"/>
+      <field name="threeMonthDebtPassReason" on="UPDATE"/>
+      <field name="sixMonthDebtMonthNumber" on="UPDATE"/>
+      <field name="threeMonthDebtMontsNumber" on="UPDATE"/>
+
+      <field name="mailTransitTime" on="UPDATE"/>
+      <field name="factorPartner" on="UPDATE"/>
+
+      <field name="reimbursementExportFolderPathCFONB" on="UPDATE"/>
+      <field name="reimbursementExportFolderPath" on="UPDATE"/>
+      <field name="lowerThresholdReimbursement" on="UPDATE"/>
+      <field name="upperThresholdReimbursement" on="UPDATE"/>
+      <field name="reimbursementAccount" on="UPDATE"/>
+      <field name="reimbursementTemplate" on="UPDATE"/>
+
+      <field name="reimbursementImportFolderPathCFONB" on="UPDATE"/>
+      <field name="tempReimbImportFolderPathCFONB" on="UPDATE"/>
+
+      <field name="exportPath" on="UPDATE"/>
+      <field name="exportFileName" on="UPDATE"/>
+
+      <field name="paymentScheduleExportFolderPathCFONB" on="UPDATE"/>
+
+      <field name="directDebitPaymentMode" on="UPDATE"/>
+      <field name="rejectionPaymentMode" on="UPDATE"/>
+      <field name="paymentScheduleRejectNumLimit" on="UPDATE"/>
+      <field name="invoiceRejectNumLimit" on="UPDATE"/>
+      <field name="rejectPaymentScheduleTemplate" on="UPDATE"/>
+
+      <field name="profitAccount" on="UPDATE"/>
+      <field name="standardRateTax" on="UPDATE"/>
+
+      <field name="irrecoverableReasonPassage" on="UPDATE"/>
+      <field name="irrecoverableStandardRateTax" on="UPDATE"/>
+
+
+      <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
+      <field name="allowRemovalValidatedMove" on="UPDATE"/>
+      <field name="generateMoveForInvoicePayment" on="UPDATE"/>
+      <field name="generateMoveForAdvancePayment" on="UPDATE"/>
+      <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
+
+      <field name="accountChart" on="UPDATE"/>
+      <field name="hasChartImported" on="UPDATE"/>
+      <field name="invoiceInAtiSelect" on="UPDATE"/>
+
+      <field name="accountingDaybook" on="UPDATE"/>
+
+      <field name="custInvSequence" on="UPDATE"/>
+      <field name="custRefSequence" on="UPDATE"/>
+      <field name="suppInvSequence" on="UPDATE"/>
+      <field name="suppRefSequence" on="UPDATE"/>
+
+      <field name="invoicingProduct" on="UPDATE"/>
+      <field name="advancePaymentProduct" on="UPDATE"/>
+
+      <field name="displayDelAddrOnPrinting" on="UPDATE"/>
+      <field name="displayProductCodeOnPrinting" on="UPDATE"/>
+      <field name="displayTaxDetailOnPrinting" on="UPDATE"/>
+      <field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
+      <field name="invoiceClientBox" on="UPDATE"/>
+      <field name="saleInvoiceLegalNote" on="UPDATE"/>
+
+      <field name="termsAndConditions" on="UPDATE"/>
+
+      <field name="invoiceAutomaticMail" on="UPDATE"/>
+      <field name="invoiceMessageTemplate" on="UPDATE"/>
+
+      <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
+    </track>
+
+  </entity>
 
 </domain-models>
 

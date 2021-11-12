@@ -6,9 +6,10 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
-  		
-      <many-to-many name="projectSet" title="Projects" ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
-		    	
+
+    <many-to-many name="projectSet" title="Projects"
+      ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
+
   </entity>
 
 </domain-models>

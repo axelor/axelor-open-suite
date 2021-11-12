@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <form name="configurator-bom-form" title="Configurator BOM"
-    		onNew="action-configurator-bom-record-set-parent"
-    		model="com.axelor.apps.production.db.ConfiguratorBOM">
-        <panel name="mainPanel">
-            <panel>
-                <field name="company"/>
-                <field name="statusSelect" selection-in="[2,3]"/>
-            </panel>
-            <panel name="labelPanel" title="Label">
-                <field name="defNameAsFormula" colSpan="6"/>
-                <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
-                <field name="nameFormula" colSpan="12" height="120"
-                       widget="CodeEditor" x-code-syntax="groovy"
-                       showTitle="false" showIf="defNameAsFormula"/>
-            </panel>
-            <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
-                   x-code-syntax="groovy"/>
-            <panel name="productPanel" title="Product">
-                <field name="defProductFromConfigurator" colSpan="6"
-                       showIf="!defProductAsFormula"/>
-                <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
-                <field name="product" colSpan="12"
-                       showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-                       onSelect="action-configurator-bom-attrs-product-domain"
-                       form-view="product-form" grid-view="product-grid"/>
-                <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
-                       x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
-            </panel>
-            <panel name="qtyPanel" title="Qty">
-                <field name="defQtyAsFormula" colSpan="6"/>
-                <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
-                <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
-                       showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
-            </panel>
-            <panel name="unitPanel" title="Unit">
-                <field name="defUnitAsFormula" colSpan="6"/>
-                <field name="unit" colSpan="12" showIf="!defUnitAsFormula"/>
-                <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
-                       showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
-            </panel>
-            <panel name="productionProcessPanel" title="Production process">
-                <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6"/>
-                <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6"/>
-                <field name="prodProcess" colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-                <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
-                       showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-                <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
-            </panel>
-        </panel>
-      <panel-tabs name="mainPanelTab">
-        <panel-related name="configuratorBomListPanel" canSelect="true" field="configuratorBomList" title="Components" height="15" domain="self.defineSubBillOfMaterial = true and (:id is null or self.id != :id)" form-view="configurator-bom-line-form" grid-view="configurator-bom-line-grid" colSpan="12"/>
-        <panel-dashlet name="configuratorBomTreePanel" title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
-      </panel-tabs>
-    </form>
+  <form name="configurator-bom-form" title="Configurator BOM"
+    onNew="action-configurator-bom-record-set-parent"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <panel name="mainPanel">
+      <panel>
+        <field name="company"/>
+        <field name="statusSelect" selection-in="[2,3]"/>
+      </panel>
+      <panel name="labelPanel" title="Label">
+        <field name="defNameAsFormula" colSpan="6"/>
+        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+        <field name="nameFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defNameAsFormula"/>
+      </panel>
+      <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+        x-code-syntax="groovy"/>
+      <panel name="productPanel" title="Product">
+        <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
+        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+        <field name="product" colSpan="12"
+          showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+          onSelect="action-configurator-bom-attrs-product-domain" form-view="product-form"
+          grid-view="product-grid"/>
+        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+      </panel>
+      <panel name="qtyPanel" title="Qty">
+        <field name="defQtyAsFormula" colSpan="6"/>
+        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+          showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+      </panel>
+      <panel name="unitPanel" title="Unit">
+        <field name="defUnitAsFormula" colSpan="6"/>
+        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"/>
+        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+          showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+      </panel>
+      <panel name="productionProcessPanel" title="Production process">
+        <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator"
+          colSpan="6"/>
+        <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula"
+          colSpan="6"/>
+        <field name="prodProcess" colSpan="12"
+          showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+        <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
+          showTitle="false" x-code-syntax="groovy"
+          showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
+        <field name="configuratorProdProcess" colSpan="12"
+          showIf="defProdProcessAsConfigurator"/>
+      </panel>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-related name="configuratorBomListPanel" canSelect="true"
+        field="configuratorBomList" title="Components" height="15"
+        domain="self.defineSubBillOfMaterial = true and (:id is null or self.id != :id)"
+        form-view="configurator-bom-line-form" grid-view="configurator-bom-line-grid" colSpan="12"/>
+      <panel-dashlet name="configuratorBomTreePanel"
+        title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
+    </panel-tabs>
+  </form>
 
   <form name="configurator-bom-line-form" title="Configurator BOM component"
     onNew="action-configurator-bom-record-set-parent"
@@ -68,8 +75,8 @@
         <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
         <field name="product" colSpan="12"
           showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-          onSelect="action-configurator-bom-attrs-product-domain"
-          form-view="product-form" grid-view="product-grid"/>
+          onSelect="action-configurator-bom-attrs-product-domain" form-view="product-form"
+          grid-view="product-grid"/>
         <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
           x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
       </panel>
@@ -88,72 +95,74 @@
     </panel>
   </form>
 
-  <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
+  <grid name="configurator-bom-grid" title="Configurator BOM"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
     <field name="name"/>
     <field name="product"/>
     <field name="qty"/>
     <field name="unit"/>
   </grid>
 
-  <grid name="configurator-bom-line-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
+  <grid name="configurator-bom-line-grid" title="Configurator BOM"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
     <field name="product"/>
     <field name="qty"/>
     <field name="unit"/>
   </grid>
 
-     <action-view name="action-configurator-bom-view" title="Configurator BOM"
-                  model="com.axelor.apps.production.db.ConfiguratorBOM">
-         <view type="form" name="configurator-bom-form"/>
-         <view-param name="popup" value="true"/>
-        <view-param name="show-toolbar" value="false"/>
-  		<view-param name="show-confirm" value="false" />
-	  	<view-param name="popup-save" value="false"/>
-    	<context name="_showRecord" expr="eval: id"/>
-     </action-view>
+  <action-view name="action-configurator-bom-view" title="Configurator BOM"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <view type="form" name="configurator-bom-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
-     <action-view name="action-configurator-bom-view-tree" title="Configurators BOMs tree" model="com.axelor.apps.production.db.ConfiguratorBOM">
-    	<view type="tree" name="configurator-bom-tree"/>
-    	<view type="form" name="configurator-bom-form"/>
-     	<context name="confBomId" expr="eval: id"/>
-    </action-view>
-    
-    <action-record name="action-configurator-bom-record-set-parent" model="com.axelor.apps.production.db.ConfiguratorBOM">
-      <field name="defineSubBillOfMaterial" expr="eval: !__parent__"/>
-    </action-record>
-    
-    <action-attrs name="action-configurator-bom-attrs-product-domain">
-        <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.dtype = 'Product'&quot;"/>
-    </action-attrs>
+  <action-view name="action-configurator-bom-view-tree" title="Configurators BOMs tree"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <view type="tree" name="configurator-bom-tree"/>
+    <view type="form" name="configurator-bom-form"/>
+    <context name="confBomId" expr="eval: id"/>
+  </action-view>
 
-    <tree name="configurator-bom-tree" title="Configurators BOMs tree">
+  <action-record name="action-configurator-bom-record-set-parent"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <field name="defineSubBillOfMaterial" expr="eval: !__parent__"/>
+  </action-record>
 
-    	<column name="name" type="string"/>
-        <column name="product" type="reference"/>
-    	<column name="qty" type="decimal"/>
-    	<column name="unit" type="reference"/>
-    	<column name="prodProcess" type="reference"/>
+  <action-attrs name="action-configurator-bom-attrs-product-domain">
+    <attribute name="domain" for="product"
+      expr="eval: &quot; self.productTypeSelect = 'storable' AND self.dtype = 'Product'&quot;"/>
+  </action-attrs>
 
-		<node model="com.axelor.apps.production.db.ConfiguratorBOM"
-              domain="self.id = :confBomId"
-              onClick="action-configurator-bom-view">
-            <field name="name" as="name"/>
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>
+  <tree name="configurator-bom-tree" title="Configurators BOMs tree">
 
-		<node model="com.axelor.apps.production.db.ConfiguratorBOM"
-              parent="parentConfiguratorBOM" draggable="true"
-              onClick="action-configurator-bom-view">
-            <field name="name" as="name"/>
-			<field name="product" as="product"/>
-			<field name="qty" as="qty"/>
-			<field name="unit" as="unit"/>
-			<field name="prodProcess" as="prodProcess"/>
-		</node>
+    <column name="name" type="string"/>
+    <column name="product" type="reference"/>
+    <column name="qty" type="decimal"/>
+    <column name="unit" type="reference"/>
+    <column name="prodProcess" type="reference"/>
 
-	</tree>
+    <node model="com.axelor.apps.production.db.ConfiguratorBOM" domain="self.id = :confBomId"
+      onClick="action-configurator-bom-view">
+      <field name="name" as="name"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="unit" as="unit"/>
+      <field name="prodProcess" as="prodProcess"/>
+    </node>
+
+    <node model="com.axelor.apps.production.db.ConfiguratorBOM" parent="parentConfiguratorBOM"
+      draggable="true" onClick="action-configurator-bom-view">
+      <field name="name" as="name"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="unit" as="unit"/>
+      <field name="prodProcess" as="prodProcess"/>
+    </node>
+
+  </tree>
 
 </object-views>

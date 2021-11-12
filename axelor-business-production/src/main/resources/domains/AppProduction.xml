@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProduction" lang="java" >
+  <entity name="AppProduction" lang="java">
 
-		<boolean name="manageBusinessProduction" title="Manage business production" />
-		<boolean name="enableTimesheetOnManufOrder" title="Enable timesheet on manuf order" default="false"/>
+    <boolean name="manageBusinessProduction" title="Manage business production"/>
+    <boolean name="enableTimesheetOnManufOrder" title="Enable timesheet on manuf order"
+      default="false"/>
 
-		<track>
-			<field name="manageBusinessProduction" on="UPDATE"/>
-			<field name="enableTimesheetOnManufOrder" on="UPDATE"/>
-		</track>
-	</entity>
+    <track>
+      <field name="manageBusinessProduction" on="UPDATE"/>
+      <field name="enableTimesheetOnManufOrder" on="UPDATE"/>
+    </track>
+  </entity>
 
 </domain-models>
