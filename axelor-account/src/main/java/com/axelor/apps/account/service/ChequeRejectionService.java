@@ -178,7 +178,7 @@ public class ChequeRejectionService {
 
     move.setRejectOk(true);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     return move;
   }

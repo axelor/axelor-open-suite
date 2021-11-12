@@ -205,7 +205,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             origin,
             null));
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     advancePayment.setMove(move);
     advancePaymentRepository.save(advancePayment);
