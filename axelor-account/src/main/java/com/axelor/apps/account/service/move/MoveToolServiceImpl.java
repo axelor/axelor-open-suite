@@ -18,6 +18,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -435,8 +436,10 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void setOriginAndDescriptionOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setDescription(move.getDescription());
-      moveLine.setOrigin(move.getOrigin());
+      if (ObjectUtils.notEmpty(moveLine)) {
+        moveLine.setDescription(move.getDescription());
+        moveLine.setOrigin(move.getOrigin());
+      }
     }
   }
 
