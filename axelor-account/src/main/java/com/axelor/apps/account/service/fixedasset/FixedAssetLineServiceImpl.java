@@ -101,6 +101,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
     fixedAssetLine.setAccountingValue(
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
+    fixedAssetLine.setDepreciationDate(disposalDate);
   }
 
   @Transactional
