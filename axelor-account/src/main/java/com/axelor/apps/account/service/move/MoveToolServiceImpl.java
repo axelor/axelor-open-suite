@@ -2,8 +2,6 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -12,15 +10,19 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -29,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,18 +42,21 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PeriodServiceAccount periodServiceAccount) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   @Override
@@ -122,43 +126,6 @@ public class MoveToolServiceImpl implements MoveToolService {
       return moveLineToolService.getDebitCustomerMoveLine(invoice);
     } else {
       return moveLineToolService.getCreditCustomerMoveLine(invoice);
-    }
-  }
-
-  /**
-   * Method that returns all move lines of an invoice payment that are not completely lettered
-   *
-   * @param invoicePayment Invoice payment
-   * @return
-   * @throws AxelorException
-   */
-  @Override
-  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
-      throws AxelorException {
-    List<MoveLine> moveLines = Lists.newArrayList();
-    if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
-      for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-        if (!moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
-          moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
-        }
-      }
-    }
-    return moveLines;
-  }
-
-  /**
-   * Method that returns all the move lines of an invoice that are not completely lettered
-   *
-   * @param invoice Invoice
-   * @return
-   * @throws AxelorException
-   */
-  @Override
-  public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
-    if (this.isDebitCustomer(invoice, true)) {
-      return moveLineToolService.getDebitCustomerMoveLines(invoice);
-    } else {
-      return moveLineToolService.getCreditCustomerMoveLines(invoice);
     }
   }
 
@@ -368,13 +335,11 @@ public class MoveToolServiceImpl implements MoveToolService {
 
       Beans.get(InvoiceRepository.class).save(invoice);
 
-      List<MoveLine> moveLines = this.getInvoiceCustomerMoveLines(invoice);
+      MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
       //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
 
-      if (!CollectionUtils.isEmpty(moveLines)) {
-        for (MoveLine moveLine : moveLines) {
-          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
-        }
+      if (moveLine != null) {
+        inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
 
         if (isMinus) {
           inTaxTotalRemaining = inTaxTotalRemaining.negate();
@@ -471,8 +436,21 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void setOriginAndDescriptionOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setDescription(move.getDescription());
-      moveLine.setOrigin(move.getOrigin());
+      if (ObjectUtils.notEmpty(moveLine)) {
+        moveLine.setDescription(move.getDescription());
+        moveLine.setOrigin(move.getOrigin());
+      }
     }
+  }
+
+  @Override
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user.getGroup() != null
+        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      return !periodServiceAccount.isManageClosedPeriod(period, user);
+    }
+    return false;
   }
 }

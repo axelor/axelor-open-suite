@@ -62,9 +62,6 @@
   <input file="account_paymentCondition.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
 
-  <input file="account_paymentConditionLine.csv" separator=";"
-    type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId"/>
-
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" update="true"
     call="com.axelor.csv.script.UpdateAll:updatePeriod">
