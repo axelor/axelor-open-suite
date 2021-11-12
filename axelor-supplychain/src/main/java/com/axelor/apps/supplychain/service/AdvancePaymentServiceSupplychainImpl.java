@@ -27,8 +27,9 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -57,9 +58,10 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected PaymentModeService paymentModeService;
 
-  @Inject protected MoveService moveService;
+  @Inject protected MoveCreateService moveCreateService;
 
-  @Inject protected MoveLineService moveLineService;
+  @Inject protected MoveValidateService moveValidateService;
+  @Inject protected MoveLineCreateService moveLineCreateService;
 
   @Inject protected CurrencyService currencyService;
 
@@ -140,7 +142,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     Partner clientPartner = saleOrder.getClientPartner();
     LocalDate advancePaymentDate = advancePayment.getAdvancePaymentDate();
     BankDetails bankDetails = saleOrder.getCompanyBankDetails();
-    String ref = saleOrder.getSaleOrderSeq();
+    String origin = saleOrder.getSaleOrderSeq();
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
@@ -157,17 +159,18 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                advancePayment.getCurrency(),
-                clientPartner,
-                advancePaymentDate,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+        moveCreateService.createMove(
+            journal,
+            company,
+            advancePayment.getCurrency(),
+            clientPartner,
+            advancePaymentDate,
+            advancePaymentDate,
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     BigDecimal amountConverted =
         currencyService.getAmountCurrencyConvertedAtDate(
@@ -177,7 +180,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
@@ -186,11 +189,11 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate,
             null,
             1,
-            ref,
+            origin,
             null));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             accountConfigService.getAdvancePaymentAccount(accountConfig),
@@ -199,10 +202,10 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate,
             null,
             2,
-            ref,
+            origin,
             null));
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     advancePayment.setMove(move);
     advancePaymentRepository.save(advancePayment);

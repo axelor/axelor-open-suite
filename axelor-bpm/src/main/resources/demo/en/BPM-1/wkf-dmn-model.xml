@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-dmn-models>
+
+  <wkf-dmn-model>
+
+    <name>Budget check</name>
+
+    <description></description>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1oj7khq" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_1jui1qr" name="Validation demande ?">
+    <informationRequirement id="InformationRequirement_1t4gm82">
+      <requiredInput href="#InputData_1fplq1t" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0ksqwoa">
+      <requiredInput href="#InputData_0w3vsp1" />
+    </informationRequirement>
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="Type de demande">
+        <inputExpression id="inputExpression_1" typeRef="string" expressionLanguage="groovy">
+          <text>purchaseReq.requestType</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1aj4uh4" label="Montant estimé">
+        <inputExpression id="LiteralExpression_0yr6zak" typeRef="double" expressionLanguage="groovy">
+          <text>purchaseReq.amountTotal</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Validation" name="needPO" typeRef="boolean" />
+      <rule id="DecisionRule_1gszp8f">
+        <inputEntry id="UnaryTests_1bfz9pv">
+          <text>"Demande courante"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04iikx9">
+          <text>&lt;= 100</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cxyxfv">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1dh3ppj">
+        <inputEntry id="UnaryTests_1t7irf2">
+          <text>"Demande courante"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_00ldvh5">
+          <text>&gt; 100</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_06laxyx">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_06z76bp">
+        <inputEntry id="UnaryTests_03zivmo">
+          <text>"Demande fournitures"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h6txu1">
+          <text>[0..200]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0i8ufja">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1h5ahea">
+        <inputEntry id="UnaryTests_1yvldm0">
+          <text>"Demande fournitures"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13u4x1c">
+          <text>&gt; 200</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y9p7zj">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1mhdld1">
+        <inputEntry id="UnaryTests_0qr7sw9">
+          <text>"Demande matériel informatique"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mwk8bi">
+          <text>&lt;= 500</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1e3lzco">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ggiepz">
+        <inputEntry id="UnaryTests_0yntjzh">
+          <text>"Demande matériel informatique"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1x8v8nl">
+          <text>[501..5000]</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_19qr4bd">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1xgecai">
+        <inputEntry id="UnaryTests_0wu1b7p">
+          <text>"Demande matériel informatique"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0myvbxt">
+          <text>&gt; 5000</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1w8zw0b">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1gzys5e">
+        <inputEntry id="UnaryTests_07eeckx">
+          <text>"Demande logiciel"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1r6n8o0">
+          <text>&lt;= 500</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_04cnnj6">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0x9lfnd">
+        <inputEntry id="UnaryTests_1vowco2">
+          <text>"Demande logiciel"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oge9lm">
+          <text>&gt; 500</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1frdb2t">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1rw6wte">
+        <inputEntry id="UnaryTests_1yvcqqc">
+          <text>"Demande prestation"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0sfd5ru">
+          <text>&lt;= 1000</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0a88531">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_171cd5e">
+        <inputEntry id="UnaryTests_0saf5rp">
+          <text>"Demande prestation"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0e7c1xy">
+          <text>&gt; 100</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ea5ulg">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1fplq1t" name="Type de demande" />
+  <inputData id="InputData_0w3vsp1" name="Montant estimé" />
+  <decision id="Decision_1cw6wm0" name="Définir responsable et dossier">
+    <informationRequirement id="InformationRequirement_0w0y8wx">
+      <requiredDecision href="#Decision_1jui1qr" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0zscc43">
+      <requiredInput href="#InputData_1gumaig" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_19vhtzp">
+      <requiredInput href="#InputData_0bmnflk" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0j8sot2" hitPolicy="FIRST">
+      <input id="InputClause_1nnfsvy" label="Demande validée" camunda:inputVariable="needPO">
+        <inputExpression id="LiteralExpression_0ow7x00" typeRef="boolean" />
+      </input>
+      <input id="InputClause_17334xg" label="Urgence">
+        <inputExpression id="LiteralExpression_1x97vre" typeRef="boolean" expressionLanguage="groovy">
+          <text>purchaseReq.urgent</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0w300zc" label="Bureau">
+        <inputExpression id="LiteralExpression_0lqao93" typeRef="string" expressionLanguage="groovy">
+          <text>purchaseReq.office</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_14mdmz6">
+          <text>"Paris","Lyon","Marseille","Lille"</text>
+        </inputValues>
+      </input>
+      <output id="OutputClause_0hwr03x" label="Dossier" name="file" typeRef="string" />
+      <output id="OutputClause_0ppkjji" label="Assigné à" name="assignedTo" typeRef="string" />
+      <output id="OutputClause_0yxncj1" label="Nécessite Commande" name="needPO" typeRef="boolean" />
+      <rule id="DecisionRule_1iukdux">
+        <inputEntry id="UnaryTests_1j8v30f">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0vwhi7t">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fk2c2q">
+          <text>"Paris","Lyon"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_009qqv4">
+          <text>"File1"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0gpltdw">
+          <text>"Thomas LAMY"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0u0tc8d">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_19u225u">
+        <inputEntry id="UnaryTests_010ij13">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0i7o9yb">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xq42gg">
+          <text>"Marseille","Lille"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1y1nkvn">
+          <text>"File2"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06j5sq2">
+          <text>"William ANDRE"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1d22q80">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0bka7md">
+        <inputEntry id="UnaryTests_05vr5jo">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18lplpi">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16pkbg3">
+          <text>"Paris","Lyon"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0gf6m4i">
+          <text>"File3"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_07t2fq8">
+          <text>"David MAURIN"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_11hhaio">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0xi0nqa">
+        <inputEntry id="UnaryTests_1evt38y">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k0ro87">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01kncho">
+          <text>"Marseille","Lille"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rj6t12">
+          <text>"File4"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0aq5h37">
+          <text>"Daniel SILVA"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_16cqybv">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ng7yyt">
+        <inputEntry id="UnaryTests_10nefxl">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0b7m7u0">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11jb3fr">
+          <text>"Paris","Lyon","Marseille","Lille"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qrplxr">
+          <text>"File5"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1x0r78h">
+          <text>"Dimitri GEOFFROY"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1sziqyd">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0lm1cjh">
+        <inputEntry id="UnaryTests_1bdchzk">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16myy0l">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05y49ve">
+          <text>"Paris","Lyon","Marseille","Lille"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1hm6lvr">
+          <text>"File6"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1hhyums">
+          <text>"Lucas RICHARD"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_123sjok">
+          <text>needPO</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_0bmnflk" name="Urgency" />
+  <inputData id="InputData_1gumaig" name="Bureau" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_0tyg5im">
+      <dmndi:DMNShape id="DMNShape_14wzuuz" dmnElementRef="Decision_1jui1qr">
+        <dc:Bounds height="80" width="180" x="80" y="60" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_1eswjcy" dmnElementRef="InputData_1fplq1t">
+        <dc:Bounds height="45" width="125" x="-8" y="-53" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_18n8bal" dmnElementRef="InformationRequirement_1t4gm82">
+        <di:waypoint x="55" y="-8" />
+        <di:waypoint x="140" y="40" />
+        <di:waypoint x="140" y="60" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0nyabq1" dmnElementRef="InputData_0w3vsp1">
+        <dc:Bounds height="45" width="125" x="207" y="-73" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_17k58qf" dmnElementRef="InformationRequirement_0ksqwoa">
+        <di:waypoint x="270" y="-28" />
+        <di:waypoint x="200" y="40" />
+        <di:waypoint x="200" y="60" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_0wbhd4o" dmnElementRef="Decision_1cw6wm0">
+        <dc:Bounds height="80" width="180" x="-35" y="290" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_00mr64k" dmnElementRef="InformationRequirement_0w0y8wx">
+        <di:waypoint x="170" y="140" />
+        <di:waypoint x="55" y="270" />
+        <di:waypoint x="55" y="290" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_15ih2p2" dmnElementRef="InputData_0bmnflk">
+        <dc:Bounds height="45" width="125" x="-173" y="177" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_17qrbrj" dmnElementRef="InputData_1gumaig">
+        <dc:Bounds height="45" width="125" x="247" y="187" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_1se8yga" dmnElementRef="InformationRequirement_0zscc43">
+        <di:waypoint x="310" y="232" />
+        <di:waypoint x="100" y="270" />
+        <di:waypoint x="100" y="290" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_03p54x4" dmnElementRef="InformationRequirement_19vhtzp">
+        <di:waypoint x="-110" y="222" />
+        <di:waypoint x="10" y="270" />
+        <di:waypoint x="10" y="290" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+]]></diagramXml>
+
+    <metaModel></metaModel>
+
+    <jsonModel></jsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </wkf-dmn-model>
+</wkf-dmn-models>

@@ -36,16 +36,19 @@ import java.util.List;
 public class BankStatementController {
 
   public void runImport(ActionRequest request, ActionResponse response) {
-
     try {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      Beans.get(BankStatementService.class).runImport(bankStatement, true);
 
+      BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
+      BankStatementService bankStatementService = Beans.get(BankStatementService.class);
+      bankStatement = bankStatementRepo.find(bankStatement.getId());
+      bankStatementService.runImport(bankStatement, true);
+      bankStatementService.checkImport(bankStatement);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-    response.setReload(true);
   }
 
   public void print(ActionRequest request, ActionResponse response) {

@@ -3,13 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="human-resource" package="com.axelor.apps.hr.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity name="EmploymentContractType" lang="java">
-    	<string name="name" title="EmploymentContractType.name" required="true" />
-    	<one-to-many name="employmentContractSubTypeList" ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
-    	<string name="description" title="EmploymentContractType.description"/>
-    	<boolean name="isNoLongerUsed" title="No longer used" default="false"/>
-    </entity>
+  <entity name="EmploymentContractType" lang="java">
+    <string name="name" title="EmploymentContractType.name" required="true"/>
+    <one-to-many name="employmentContractSubTypeList"
+      ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
+    <string name="description" title="EmploymentContractType.description"/>
+    <boolean name="isNoLongerUsed" title="No longer used" default="false"/>
+  </entity>
 
 </domain-models>

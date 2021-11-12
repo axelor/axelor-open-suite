@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <action-export id="bpm-action-export-studio-app-builders"
+    name="action-export-studio-app-builders" output="${date}${time}" download="true">
+    <export
+      name="BPM-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
+      template="data-export/export-app-bpm.tmpl" engine="groovy"/>
+  </action-export>
+
+  <form name="app-builder-form" id="bpm-app-builder-form" title="App builder"
+    model="com.axelor.studio.db.AppBuilder" width="large" extension="true">
+    <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
+      <insert position="after">
+        <panel-dashlet action="bpm-action-view-app-builder-bpm" title="BPM"/>
+        <panel-dashlet action="bpm-action-view-app-builder-dmn" title="DMN"/>
+        <panel-dashlet action="bpm-action-view-app-builder-baml" title="BAML"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="bpm-action-view-app-builder-bpm" title="BPM"
+    model="com.axelor.apps.bpm.db.WkfModel">
+    <view type="grid" name="wkf-model-grid"/>
+    <view type="form" name="wkf-model-form"/>
+    <domain>self.appBuilder.id = :appBuilderId</domain>
+    <context name="appBuilderId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="bpm-action-view-app-builder-dmn" title="DMN"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <view type="grid" name="wkf-dmn-model-grid"/>
+    <view type="form" name="wkf-dmn-model-form"/>
+    <domain>self.appBuilder.id = :appBuilderId</domain>
+    <context name="appBuilderId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="bpm-action-view-app-builder-baml" title="BAML"
+    model="com.axelor.apps.bpm.db.BamlModel">
+    <view type="grid" name="baml-model-grid"/>
+    <view type="form" name="baml-model-form"/>
+    <domain>self.appBuilder.id = :appBuilderId</domain>
+    <context name="appBuilderId" expr="eval: id"/>
+  </action-view>
+
+</object-views>

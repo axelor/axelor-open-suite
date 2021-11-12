@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="wkf-process-config-grid" title="Wkf process config"
+    model="com.axelor.apps.bpm.db.WkfProcessConfig" editable="true">
+    <field name="title"/>
+    <field name="metaModel" requiredIf="metaJsonModel == null"
+      onChange="action-wkf-process-config-attrs-set-model"/>
+    <field name="metaJsonModel" requiredIf="metaModel == null"
+      onChange="action-wkf-process-config-attrs-set-model"/>
+    <field name="processPath"/>
+    <field name="pathCondition"/>
+    <field name="isStartModel"/>
+    <field name="userDefaultPath"/>
+    <field name="model" readonly="true"/>
+    <field name="isDirectCreation"/>
+  </grid>
+
+  <form name="wkf-process-config-form" title="Wkf process config"
+    model="com.axelor.apps.bpm.db.WkfProcessConfig" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="title"/>
+      <field name="metaModel" requiredIf="metaJsonModel == null"
+        onChange="action-wkf-process-config-attrs-set-model"/>
+      <field name="metaJsonModel" requiredIf="metaModel == null"
+        onChange="action-wkf-process-config-attrs-set-model"/>
+      <field name="processPath"/>
+      <field name="pathCondition"/>
+      <field name="isStartModel"/>
+      <field name="userDefaultPath"/>
+      <field name="model" readonly="true"/>
+      <field name="isDirectCreation"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-wkf-process-config-attrs-set-model">
+    <attribute name="value" for="model"
+      expr="eval:metaModel != null ? metaModel.fullName : metaJsonModel != null ? 'com.axelor.meta.db.MetaJsonRecord' : null"/>
+  </action-attrs>
+
+</object-views>
