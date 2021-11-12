@@ -53,11 +53,10 @@ public class FECImportController {
                   new FileInputStream(MetaFiles.getPath(fecImport.getDataMetaFile()).toFile()),
                   "FEC.csv"));
 
-      ImportHistory importHistory =
-    		  Beans.get(FECImporter.class).run();
+      ImportHistory importHistory = Beans.get(FECImporter.class).addFecImport(fecImport).init(importConfig).run();
 
-      //      ImportHistory importHistory =
-      //          Beans.get(FactoryImporter.class).createImporter(importConfig).run();
+//            ImportHistory importHistory =
+//                Beans.get(FactoryImporter.class).createImporter(importConfig).run();
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)

@@ -7,6 +7,7 @@
     <field name="name"/>
     <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="company"/>
     <field name="createdOn"/>
   </grid>
 
@@ -19,8 +20,8 @@
         form-view="meta-files-form" grid-view="meta-files-grid"/>
       <field name="bindMetaFile" widget="binary-link" hidden="true"/>
       <field name="validGeneratedMove"/>
-      <field name="company"/>
       <field name="moveDescription"/>
+      <field name="company" readonly="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="importBtn" title="Import"

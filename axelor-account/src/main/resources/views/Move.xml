@@ -242,6 +242,10 @@
         <field name="currencyCode" hidden="true"/>
       </panel>
 
+      <panel name="fecImportPanel" title="FEC Import" showIf="technicalOriginSelect == 4">
+        <field name="fecImport" form-view="fec-import-form" grid-view="fec-import-grid"/>
+      </panel>
+
       <panel name="othersPanel" title="Others">
         <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
         <field name="ignoreInDebtRecoveryOk"/>
