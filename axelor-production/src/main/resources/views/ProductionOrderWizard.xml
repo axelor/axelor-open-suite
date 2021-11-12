@@ -1,56 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    
-    <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <form name="production-order-wizard-form" title="Production order wizard"
+    model="com.axelor.apps.base.db.Wizard"
     onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom,action-production-order-wizard-attrs-scale">
-		<panel name="mainPanel">
-			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" canEdit="false" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
-			<field name="qty" widget="decimal" title="Quantity"/>
-			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
-			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
-			onChange="action-production-order-wizard-record-product"/>
-			<field name="_startDate" title="Planned start date" widget="dateTime" colSpan="3"/>
-			<field name="_endDate" title="Planned end date" widget="dateTime" colSpan="3"/>
-			<button name="validateBtn" title="Validate" onClick="action-production-order-wizard-method-validate"/>
-		</panel>
-	</form>
+    <panel name="mainPanel">
+      <field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product"
+        canEdit="false" title="Product" showIf="!product_id" form-view="product-form"
+        grid-view="product-grid" domain="self.dtype = 'Product'"/>
+      <field name="qty" widget="decimal" title="Quantity"/>
+      <field name="billOfMaterial" widget="ManyToOne"
+        target="com.axelor.apps.production.db.BillOfMaterial" title="BOM"
+        form-view="bill-of-material-form" grid-view="bill-of-material-grid"
+        onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
+        onChange="action-production-order-wizard-record-product"/>
+      <field name="_startDate" title="Planned start date" widget="dateTime" colSpan="3"/>
+      <field name="_endDate" title="Planned end date" widget="dateTime" colSpan="3"/>
+      <button name="validateBtn" title="Validate"
+        onClick="action-production-order-wizard-method-validate"/>
+    </panel>
+  </form>
 
-	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
-    	<field name="product_id" expr="eval: _productId"/>
-    	<field name="product" expr="eval: __repo__(Product).find(_productId)" if="_productId"/>
-    	<field name="business_id" expr="eval: _businessId?.id"/>
-		<field name="qty" expr="eval: 1.0"/>
-		<field name="_startDate" expr="eval: __datetime__"/>
-	</action-record>
-	
-	<action-record name="action-production-order-wizard-record-default-bom" model="com.axelor.apps.base.db.Wizard">
-		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)" if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
-		<field name="billOfMaterial" expr="eval: __repo__(BillOfMaterial).find(product.defaultBillOfMaterial.id)" if="product.defaultBillOfMaterial?.id"/>
-	</action-record>
+  <action-record name="action-production-order-wizard-record-default"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="product_id" expr="eval: _productId"/>
+    <field name="product" expr="eval: __repo__(Product).find(_productId)" if="_productId"/>
+    <field name="business_id" expr="eval: _businessId?.id"/>
+    <field name="qty" expr="eval: 1.0"/>
+    <field name="_startDate" expr="eval: __datetime__"/>
+  </action-record>
 
-	<action-record name="action-production-order-wizard-record-product" model="com.axelor.apps.base.db.Wizard">
-		<field if="billOfMaterial != null &amp;&amp; product == null" name="$product" expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
-	</action-record>
+  <action-record name="action-production-order-wizard-record-default-bom"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="billOfMaterial"
+      expr="eval: __repo__(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)"
+      if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
+    <field name="billOfMaterial"
+      expr="eval: __repo__(BillOfMaterial).find(product.defaultBillOfMaterial.id)"
+      if="product.defaultBillOfMaterial?.id"/>
+  </action-record>
 
-    <action-record name="action-production-order-wizard-record-bill-of-materials" model="com.axelor.apps.base.db.Wizard">
-      <field name="$billOfMaterial" expr="eval: product?.defaultBillOfMaterial"/>
-    </action-record>
+  <action-record name="action-production-order-wizard-record-product"
+    model="com.axelor.apps.base.db.Wizard">
+    <field if="billOfMaterial != null &amp;&amp; product == null" name="$product"
+      expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
+  </action-record>
 
-    <action-method name="action-production-order-wizard-method-validate">
-		<call class="com.axelor.apps.production.web.ProductionOrderWizardController" method="validate"/>
-    </action-method>
-    
-    <action-attrs name="action-production-order-wizard-attrs-scale">
-    	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    </action-attrs>
-    
-    <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.defineSubBillOfMaterial = true&quot;" if="product"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.defineSubBillOfMaterial = true&quot;" if="!product"/>
-	</action-attrs>
-    
-    
+  <action-record name="action-production-order-wizard-record-bill-of-materials"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="$billOfMaterial" expr="eval: product?.defaultBillOfMaterial"/>
+  </action-record>
+
+  <action-method name="action-production-order-wizard-method-validate">
+    <call class="com.axelor.apps.production.web.ProductionOrderWizardController"
+      method="validate"/>
+  </action-method>
+
+  <action-attrs name="action-production-order-wizard-attrs-scale">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
+    <attribute name="domain" for="billOfMaterial"
+      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.defineSubBillOfMaterial = true&quot;"
+      if="product"/>
+    <attribute name="domain" for="billOfMaterial"
+      expr="eval: &quot;self.defineSubBillOfMaterial = true&quot;" if="!product"/>
+  </action-attrs>
+
+
 </object-views>

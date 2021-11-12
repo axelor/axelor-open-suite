@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="wkf-task-config-grid" title="Wkf task config"
+    model="com.axelor.apps.bpm.db.WkfTaskConfig" editable="true">
+    <field name="name"/>
+    <field name="description"/>
+    <field name="expression"/>
+    <field name="button"/>
+    <field name="messages"/>
+  </grid>
+
+  <form name="wkf-task-config-form" title="Wkf task config"
+    model="com.axelor.apps.bpm.db.WkfTaskConfig" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name"/>
+      <field name="description"/>
+      <field name="expression"/>
+      <field name="button"/>
+      <field name="messages"/>
+      <panel title="Task/Email" colSpan="12">
+        <field name="createTask"/>
+        <field name="taskEmailTitle"/>
+        <field name="userPath"/>
+        <field name="deadlineFieldPath"/>
+        <field name="notificationEmail"/>
+        <field name="newMenu"/>
+        <field name="menuName"/>
+        <field name="parentMenuName"/>
+        <field name="menuPosition"/>
+        <field name="positionMenuName"/>
+        <field name="formView"/>
+        <field name="gridView"/>
+        <field name="displayTagCount"/>
+        <field name="userNewMenu"/>
+        <field name="userMenuName"/>
+        <field name="userParentMenuName"/>
+        <field name="userMenuPosition"/>
+        <field name="userPositionMenuName"/>
+        <field name="userFormView"/>
+        <field name="userGridview"/>
+        <field name="userDisplayTagCount"/>
+        <field name="modelName"/>
+        <field name="jsonModelName"/>
+        <field name="defaultForm"/>
+        <field name="processId"/>
+        <field name="displayStatus"/>
+        <field name="displayOnModels"/>
+        <field name="templateName"/>
+        <field name="callModel"/>
+        <field name="callLink"/>
+        <field name="callCondition"/>
+      </panel>
+    </panel>
+  </form>
+
+
+</object-views>
