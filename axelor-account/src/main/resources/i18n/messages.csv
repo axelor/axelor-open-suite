@@ -2370,6 +2370,7 @@
 "The chart of account has been loaded successfully",,,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
+"The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly.",,,
 "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly.",,,
 "The company is required and must be the same for all invoices",,,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%",,,

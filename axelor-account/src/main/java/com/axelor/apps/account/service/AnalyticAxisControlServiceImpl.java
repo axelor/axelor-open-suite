@@ -29,11 +29,14 @@ public class AnalyticAxisControlServiceImpl implements AnalyticAxisControlServic
   public void controlUnicity(AnalyticAxis analyticAxis) throws AxelorException {
     Objects.requireNonNull(analyticAxis);
 
-    StringBuilder query = new StringBuilder("self.code = :code AND self.id != :analyticAxisId");
+    StringBuilder query = new StringBuilder("self.code = :code");
     Map<String, Object> params = new HashMap<>();
     params.put("code", analyticAxis.getCode());
-    params.put("analyticAxisId", analyticAxis.getId());
 
+    if (analyticAxis.getId() != null) {
+      query.append(" AND self.id != :analyticAxisId");
+      params.put("analyticAxisId", analyticAxis.getId());
+    }
     if (analyticAxis.getCompany() == null) {
       query.append(" AND self.company is null");
     } else {
