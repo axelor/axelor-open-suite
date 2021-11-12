@@ -283,6 +283,11 @@
 
       title="Holdback Supplier account"/>
 
+    <many-to-many ref="com.axelor.auth.db.Role"
+      name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
+      help="Authorized roles for temporary closure"/>
+    <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
+      title="Closure Authorized Role" help="Authorized roles for closure"/>
 
     <finder-method name="findByCompany" using="company"/>
 

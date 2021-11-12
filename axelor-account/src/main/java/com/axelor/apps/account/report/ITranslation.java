@@ -717,6 +717,39 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_21_COMPANY =
+      /*$$(*/ "AccountingReportType21.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_CREATED_ON =
+      /*$$(*/ "AccountingReportType21.created_on"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_CURRENCY =
+      /*$$(*/ "AccountingReportType21.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_DECREASE_VALUE =
+      /*$$(*/ "AccountingReportType21.decrease_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_FROM =
+      /*$$(*/ "AccountingReportType21.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_GROSS_VALUE_END =
+      /*$$(*/ "AccountingReportType21.gross_value_end"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_GROSS_VALUE_START =
+      /*$$(*/ "AccountingReportType21.gross_value_start"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_HEADINGS =
+      /*$$(*/ "AccountingReportType21.headings"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_INCREASE_VALUE =
+      /*$$(*/ "AccountingReportType21.increase_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_SITUATIONS_AND_MOVES =
+      /*$$(*/ "AccountingReportType21.situations_and_moves"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TECHNICAL_TYPE_2 =
+      /*$$(*/ "AccountingReportType21.technical_type_2"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TECHNICAL_TYPE_3 =
+      /*$$(*/ "AccountingReportType21.technical_type_3"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TECHNICAL_TYPE_4 =
+      /*$$(*/ "AccountingReportType21.technical_type_4"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TITLE =
+      /*$$(*/ "AccountingReportType21.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TO = /*$$(*/ "AccountingReportType21.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_21_TOTAL = /*$$(*/
+      "AccountingReportType21.total"; /*)*/
+
   public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
       /*$$(*/ "AccountingReportType.provisional"; /*)*/
   public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
