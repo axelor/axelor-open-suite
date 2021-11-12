@@ -18,9 +18,11 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -97,6 +99,21 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class).checkAnalyticAxis(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
+          && account.getAnalyticDistributionAuthorized()) {
+        AnalyticDistributionTemplate analyticDistributionTemplate =
+            Beans.get(AnalyticDistributionTemplateService.class)
+                .createDistributionTemplateFromAccount(account);
+        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

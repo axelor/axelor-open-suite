@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -33,6 +34,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
@@ -56,6 +58,7 @@ public class MoveManagementRepository extends MoveRepository {
           && entity.getStatusSelect() == STATUS_SIMULATED) {
         copy.setStatusSelect(STATUS_SIMULATED);
       }
+      copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
       copy.setReference(null);
       copy.setExportNumber(null);
       copy.setExportDate(null);
@@ -86,6 +89,12 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
     moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+    moveLine.setReconcileGroup(null);
+    moveLine.setDebitReconcileList(null);
+    moveLine.setCreditReconcileList(null);
+    moveLine.setAmountPaid(BigDecimal.ZERO);
+    moveLine.setTaxPaymentMoveLineList(null);
+    moveLine.setTaxAmount(BigDecimal.ZERO);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
@@ -105,6 +114,7 @@ public class MoveManagementRepository extends MoveRepository {
         move.setCurrencyCode(move.getCurrency().getCode());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
+      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
@@ -115,6 +125,7 @@ public class MoveManagementRepository extends MoveRepository {
               analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
             }
           }
+          moveLineControlService.controlAccountingAccount(moveLine);
         }
       }
       return super.save(move);

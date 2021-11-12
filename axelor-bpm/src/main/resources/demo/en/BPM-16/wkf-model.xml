@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-16</code>
+
+    <name>Parallel Sub Process</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-16" camunda:diagramName="Parallel Sub Process" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-16">
+  <bpmn2:process id="Process_Parallel_SubProcess" name="Parallel Sub Process" isExecutable="true" camunda:versionTag="">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Expense" metaModelLabel="Expense (Expense)" isStartModel="true" model="com.axelor.apps.hr.db.Expense" metaModelFullName="com.axelor.apps.hr.db.Expense" title="Expense" />
+        <camunda:processConfigurationParameter metaModel="ExpenseLine" metaModelLabel="ExpenseLine (Expense line)" isStartModel="false" model="com.axelor.apps.hr.db.ExpenseLine" metaModelFullName="com.axelor.apps.hr.db.ExpenseLine" title="Expense line" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_0hrb6ve</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_0hrb6ve" sourceRef="StartEvent_1" targetRef="Activity_0gbzeli" />
+    <bpmn2:userTask id="Activity_0gbzeli" name="Draft" camunda:completedIf="expense?.statusSelect != 1" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0hrb6ve</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0tvsxov</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0tvsxov" sourceRef="Activity_0gbzeli" targetRef="Activity_14a4c31" />
+    <bpmn2:subProcess id="Activity_14a4c31" name="Validate lines">
+      <bpmn2:extensionElements>
+        <camunda:properties />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0tvsxov</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_04enipm</bpmn2:outgoing>
+      <bpmn2:multiInstanceLoopCharacteristics camunda:collection="${getIdList(expense.generalExpenseLineList)}" camunda:elementVariable="expenseLineId" />
+      <bpmn2:startEvent id="Event_1yhmjj3" name="Line start">
+        <bpmn2:outgoing>Flow_06yluit</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:userTask id="Activity_0q9d9jn" name="Validate line" camunda:metaModel="ExpenseLine" camunda:metaModelModelName="com.axelor.apps.hr.db.ExpenseLine" camunda:metaModelLabel="Expense line" camunda:completedIf="$ctx.find(&#39;ExpenseLine&#39;, expenseLineId)?.totalAmount &#62; 50" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;ExpenseLine&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;totalAmount&#34;,&#34;operator&#34;:&#34;&#62;&#34;,&#34;fieldValue&#34;:50,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DECIMAL&#34;,&#34;field&#34;:{&#34;defaultValue&#34;:&#34;0&#34;,&#34;name&#34;:&#34;totalAmount&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total amount with tax&#34;,&#34;required&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;defaultValue&#34;:&#34;0&#34;,&#34;name&#34;:&#34;totalAmount&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total amount with tax&#34;,&#34;required&#34;:true}]}]}],&#34;generateWithId&#34;:true}]" camunda:completedIfCombinator="and">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="model" value="com.axelor.apps.hr.db.Expense" />
+            <camunda:property name="modelName" value="Expense" />
+            <camunda:property name="modelLabel" value="Expense" />
+            <camunda:property name="modelType" value="metaModel" />
+            <camunda:property name="view" value="expense-form" />
+            <camunda:property name="viewLabel" value="Expense" />
+            <camunda:property name="item" value="generalExpenseLineList" />
+            <camunda:property name="itemLabel" value="General expense lines" />
+            <camunda:property name="permanent" value="false" />
+            <camunda:property name="readonly" value="false" />
+          </camunda:properties>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_06yluit</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1bkjc9k</bpmn2:outgoing>
+      </bpmn2:userTask>
+      <bpmn2:sequenceFlow id="Flow_06yluit" sourceRef="Event_1yhmjj3" targetRef="Activity_0q9d9jn" />
+      <bpmn2:sequenceFlow id="Flow_1bkjc9k" sourceRef="Activity_0q9d9jn" targetRef="Activity_0jtd2d2" />
+      <bpmn2:endEvent id="Event_0qrnwk6" name="Line end">
+        <bpmn2:incoming>Flow_1j76608</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="Flow_1j76608" sourceRef="Activity_0jtd2d2" targetRef="Event_0qrnwk6" />
+      <bpmn2:scriptTask id="Activity_0jtd2d2" name="Update to invoice" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[20]&#34;,&#34;type&#34;:&#34;BOOLEAN&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:true},&#34;from&#34;:&#34;none&#34;},&#34;name&#34;:&#34;toInvoice&#34;}],&#34;targetModel&#34;:&#34;ExpenseLine&#34;,&#34;sourceModel&#34;:null,&#34;newRecord&#34;:false,&#34;createVariable&#34;:false,&#34;isJson&#34;:false}">
+        <bpmn2:incoming>Flow_1bkjc9k</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1j76608</bpmn2:outgoing>
+        <bpmn2:script>def rec = $ctx.find('ExpenseLine',expenseLineId)
+rec.toInvoice = true
+return $ctx.save(rec)</bpmn2:script>
+      </bpmn2:scriptTask>
+    </bpmn2:subProcess>
+    <bpmn2:endEvent id="Event_1q1wryi" name="End">
+      <bpmn2:incoming>Flow_04enipm</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_04enipm" sourceRef="Activity_14a4c31" targetRef="Event_1q1wryi" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Parallel_SubProcess">
+      <bpmndi:BPMNEdge id="Flow_04enipm_di" bpmnElement="Flow_04enipm" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1140" y="300" />
+        <di:waypoint x="1252" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tvsxov_di" bpmnElement="Flow_0tvsxov" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="420" y="280" />
+        <di:waypoint x="540" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hrb6ve_di" bpmnElement="Flow_0hrb6ve" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="268" y="280" />
+        <di:waypoint x="320" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="232" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="238" y="305" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ror7ks_di" bpmnElement="Activity_0gbzeli" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="320" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fxg06s_di" bpmnElement="Activity_14a4c31" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="540" y="200" width="600" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1j76608_di" bpmnElement="Flow_1j76608" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="970" y="300" />
+        <di:waypoint x="1062" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bkjc9k_di" bpmnElement="Flow_1bkjc9k" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="785" y="300" />
+        <di:waypoint x="870" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06yluit_di" bpmnElement="Flow_06yluit" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="603" y="300" />
+        <di:waypoint x="685" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1yhmjj3_di" bpmnElement="Event_1yhmjj3" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="566.6666666666667" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="562" y="325" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lf2fe1_di" bpmnElement="Activity_0q9d9jn" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="685" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qrnwk6_di" bpmnElement="Event_0qrnwk6" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1062" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1059" y="325" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hxm07k_di" bpmnElement="Activity_0jtd2d2" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="870" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1q1wryi_di" bpmnElement="Event_1q1wryi" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1252" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1260" y="328" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-16</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -537,7 +538,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (move.getPartner().getFiscalPosition() != null) {
+    if (ObjectUtils.notEmpty(move.getPartner())
+        && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
@@ -583,11 +585,48 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLine newOrUpdatedMoveLine) {
 
     newOrUpdatedMoveLine.setSourceTaxLine(taxLine);
+    newOrUpdatedMoveLine.setTaxLine(taxLine);
     newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
     newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
     newOrUpdatedMoveLine.setDescription(taxLine.getTax().getName());
     newOrUpdatedMoveLine.setDate(date);
 
     return newOrUpdatedMoveLine;
+  }
+
+  @Override
+  public MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal currencyAmount,
+      TaxLine taxLine,
+      BigDecimal amount,
+      BigDecimal currencyRate,
+      boolean isDebit,
+      LocalDate date,
+      LocalDate dueDate,
+      LocalDate originDate,
+      Integer counter,
+      String origin,
+      String description)
+      throws AxelorException {
+    MoveLine moveLine =
+        createMoveLine(
+            move,
+            partner,
+            account,
+            currencyAmount,
+            amount,
+            currencyRate,
+            isDebit,
+            date,
+            dueDate,
+            originDate,
+            counter,
+            origin,
+            description);
+    moveLine.setTaxLine(taxLine);
+    return moveLine;
   }
 }
