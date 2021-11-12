@@ -938,6 +938,9 @@ public interface IExceptionMessage {
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
 
+  static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
+      "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves" /*)*/;
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
