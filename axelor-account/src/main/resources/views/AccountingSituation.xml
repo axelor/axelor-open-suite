@@ -1,190 +1,255 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-		<field name="balanceCustAccount"/>
-		<field name="balanceDueCustAccount"/>
-		<field name="balanceDueDebtRecoveryCustAccount"/>
-		<field name="acceptedCredit"/>
-		<field name="usedCredit"/>
-	</grid>
-	
-	<grid name="accounting-situation-pfp-partner-grid" canNew="false" title="Suppliers" model="com.axelor.apps.account.db.AccountingSituation">
-    		<field name="partner.partnerSeq"/>
-    		<field name="partner.simpleFullName"/>
-		<field name="partner.fixedPhone"/>
-		<field name="partner.emailAddress.address"/>
-		<field name="partner.mainAddress"/>
-		<field name="partner.companyStr"/>
-		<field name="company"/>
-    	</grid>
+  <grid name="accounting-situation-partner-grid" title="Accounting situations"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="balanceCustAccount"/>
+    <field name="balanceDueCustAccount"/>
+    <field name="balanceDueDebtRecoveryCustAccount"/>
+    <field name="acceptedCredit"/>
+    <field name="usedCredit"/>
+  </grid>
 
-	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
-		  onLoad="action-accounting-situation-group-form-onload"
-		  onNew="action-accounting-situation-group-form-onnew" width="large">
-		<panel name="mainPanel">
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
-			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="customerAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
-			<field name="supplierAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
-			<field name="employeeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
-			<field name="pfpValidatorUser" required="true" domain=":company member of self.companySet and self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-			<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-			<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-		</panel>
-		<panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
-			<field name="balanceCustAccount"/>
-			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueDebtRecoveryCustAccount"/>
-		</panel>
-		<panel name="automaticMailPanel" title="Automatic mail">
-			<field name="invoiceAutomaticMailOnValidate"/>
-			<field name="invoiceMessageTemplateOnValidate" requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate" domain="self.metaModel.name = 'Invoice'"/>
-			<field name="invoiceAutomaticMail"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
-		</panel>
-		<panel name="debtRecoveryProcessPanel" title="Debt recovery process" hideIf="debtRecovery == null">
-			<field name="debtRecovery.debtRecoveryMethodLine.debtRecoveryLevelLabel" title="AccountingSituation.debtRecoveryLevelLabel" colSpan="3"/>
-			<field name="debtRecovery.balanceDueDebtRecovery" title="Balance due recoverable" colSpan="4"/>
-			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
-		</panel>
-		<panel name="tradingNameDebtRecoveryProcessPanel" title="Debt recovery process" hideIf="tradingNameDebtRecoveryList == null &amp;&amp; tradingNameDebtREcoveryList.length &lt;= 0">
-			<panel-related name="tradingNameDebtRecoveryPanel" field="tradingNameDebtRecoveryList" canNew="false" canRemove="false" canSelect="false" grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>
-		</panel>
+  <grid name="accounting-situation-pfp-partner-grid" canNew="false" title="Suppliers"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="partner.partnerSeq"/>
+    <field name="partner.simpleFullName"/>
+    <field name="partner.fixedPhone"/>
+    <field name="partner.emailAddress.address"/>
+    <field name="partner.mainAddress"/>
+    <field name="partner.companyStr"/>
+    <field name="company"/>
+  </grid>
 
-		<panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
+  <form name="accounting-situation-partner-form" title="Accounting situation"
+    model="com.axelor.apps.account.db.AccountingSituation"
+    onLoad="action-accounting-situation-group-form-onload"
+    onNew="action-accounting-situation-group-form-onnew" width="large">
+    <panel name="mainPanel">
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
+      <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
+        onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
+        grid-view="bank-details-grid"/>
+      <field name="companyOutBankDetails" hidden="true" widget="SuggestBox"
+        onSelect="action-account-accounting-situation-set-outbd-domain"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
+      <field name="customerAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
+      <field name="supplierAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
+      <field name="employeeAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        form-view="employee-account-form" grid-view="account-grid" canNew="true"/>
+      <field name="pfpValidatorUser" required="true"
+        domain=":company member of self.companySet and self.isPfpValidator = true" canEdit="false"
+        showIf="company.accountConfig.isManagePassedForPayment"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <field name="company.accountConfig" hidden="true"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    </panel>
+    <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
+      <field name="balanceCustAccount"/>
+      <field name="balanceDueCustAccount"/>
+      <field name="balanceDueDebtRecoveryCustAccount"/>
+    </panel>
+    <panel name="automaticMailPanel" title="Automatic mail">
+      <field name="invoiceAutomaticMailOnValidate"/>
+      <field name="invoiceMessageTemplateOnValidate"
+        requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate"
+        domain="self.metaModel.name = 'Invoice'"/>
+      <field name="invoiceAutomaticMail"/>
+      <field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail"
+        showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
+    </panel>
+    <panel name="debtRecoveryProcessPanel" title="Debt recovery process"
+      hideIf="debtRecovery == null">
+      <field name="debtRecovery.debtRecoveryMethodLine.debtRecoveryLevelLabel"
+        title="AccountingSituation.debtRecoveryLevelLabel" colSpan="3"/>
+      <field name="debtRecovery.balanceDueDebtRecovery" title="Balance due recoverable"
+        colSpan="4"/>
+      <button name="customerRecoveryBtn" title="Customer recovery"
+        onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
+    </panel>
+    <panel name="tradingNameDebtRecoveryProcessPanel" title="Debt recovery process"
+      hideIf="tradingNameDebtRecoveryList == null &amp;&amp; tradingNameDebtREcoveryList.length &lt;= 0">
+      <panel-related name="tradingNameDebtRecoveryPanel"
+        field="tradingNameDebtRecoveryList" canNew="false" canRemove="false" canSelect="false"
+        grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>
+    </panel>
 
-		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
-			<field name="acceptedCredit"/>
-			<field name="usedCredit"/>
-			<field name="insurCreditDate"/>
-			<field name="description" colSpan="12"/>
-		</panel>
+    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
+      hideIf="reportedBalanceLineList.length == 0" colSpan="12"
+      form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 
-		<panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
-	</form>
+    <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
+      <field name="acceptedCredit"/>
+      <field name="usedCredit"/>
+      <field name="insurCreditDate"/>
+      <field name="description" colSpan="12"/>
+    </panel>
 
-
-    <grid name="accounting-situation-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-    	<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
-    	<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    	<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-       	<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-       	<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-        <field name="balanceCustAccount"/>
-        <field name="balanceDueCustAccount"/>
-        <field name="balanceDueDebtRecoveryCustAccount"/>
-		<field name="acceptedCredit"/>
-		<field name="usedCredit"/>
-    </grid>
-    
-	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
-	     onNew="action-account-accounting-situation-default-set,action-accounting-situation-attrs-hidden-multi-banks"
-	     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
-		<panel name="mainPanel" >
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-		</panel>
-	    	
-		<panel name="customerBalancePanel" title="Customer balance"  itemSpan="4" >
-			<field name="balanceCustAccount"/>
-			<field name="balanceDueCustAccount"/>
-			<field name="balanceDueDebtRecoveryCustAccount"/>
-		</panel>
-	    <panel name="debtRecoveryProcessPanel" title="Debt recovery process"  >
-	    	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
-	    </panel>
-
-		 <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
-
-		 <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
-			 <field name="acceptedCredit"/>
-			 <field name="usedCredit"/>
-			 <field name="insurCreditDate"/>
-			 <field name="description" colSpan="12"/>
-		 </panel>
-
-		 <panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
-	</form>
-
-	<action-group name="action-accounting-situation-group-form-onnew">
-		<action name="action-account-accounting-situation-default-set"/>
-        <action name="action-accounting-situation-method-set-default-mail"/>
-        <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
-	</action-group>
-
-	<action-group name="action-accounting-situation-group-form-onload">
-		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
-		<action name="action-accounting-situation-attrs-hide-customer-account"/>
-		<action name="action-accounting-situation-attrs-hide-employee-account"/>
-		<action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
-		<action name="action-accounting-situation-attrs-hidden-multi-banks"/>
-	</action-group>
-
-	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
-		<attribute name="hidden" for="supplierAccount" expr="eval: !__parent__?.isSupplier"/>
-	</action-attrs>
-
-	<action-attrs name="action-accounting-situation-attrs-hide-customer-account">
-		<attribute name="hidden" for="customerAccount" expr="eval: !__parent__?.isCustomer"/>
-	</action-attrs>
-
-	<action-attrs name="action-accounting-situation-attrs-hide-employee-account">
-		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
-	</action-attrs>
-
-	<action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
-		<attribute name="hidden" for="pfpValidatorUser" expr="eval: !__parent__?.isSupplier"/>
-	</action-attrs>
+    <panel-dashlet name="viewMoveLinesPanel"
+      action="action-accounting-situation-view-move-lines"/>
+  </form>
 
 
-		<action-attrs name="action-accounting-situation-attrs-hidden-multi-banks">
-    	<attribute name="hidden" for="companyInBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
-    	<attribute name="hidden" for="companyOutBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
-	</action-attrs>
+  <grid name="accounting-situation-grid" title="Accounting situations"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="balanceCustAccount"/>
+    <field name="balanceDueCustAccount"/>
+    <field name="balanceDueDebtRecoveryCustAccount"/>
+    <field name="acceptedCredit"/>
+    <field name="usedCredit"/>
+  </grid>
 
-	<action-method name="action-supplychain-method-compute-used-credit">
-		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
-	</action-method>
+  <form name="accounting-situation-form" title="Accounting situation"
+    model="com.axelor.apps.account.db.AccountingSituation"
+    onNew="action-account-accounting-situation-default-set,action-accounting-situation-attrs-hidden-multi-banks"
+    onLoad="action-accounting-situation-attrs-hidden-multi-banks">
+    <panel name="mainPanel">
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="partner" domain=":company member of self.companySet"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <field name="customerAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        form-view="customer-account-form" grid-view="account-grid"/>
+      <field name="supplierAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="employeeAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        form-view="employee-account-form" grid-view="account-grid"/>
+      <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
+        onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
+        grid-view="bank-details-grid"/>
+      <field name="companyOutBankDetails" hidden="true" widget="SuggestBox"
+        onSelect="action-account-accounting-situation-set-outbd-domain"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
+    </panel>
 
-	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
-        <view type="grid" name="move-line-accounting-situation-grid"/>
-    	<view type="form" name="move-line-form"/>
-    	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
-    	AND self.account.useForPartnerBalance = 'true' AND (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
-    </action-view>
-    
-	<action-record name="action-account-accounting-situation-default-set" model="com.axelor.apps.account.db.AccountingSituation">
-	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-	</action-record>
+    <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
+      <field name="balanceCustAccount"/>
+      <field name="balanceDueCustAccount"/>
+      <field name="balanceDueDebtRecoveryCustAccount"/>
+    </panel>
+    <panel name="debtRecoveryProcessPanel" title="Debt recovery process">
+      <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
+    </panel>
 
-	<action-method name="action-accounting-situation-method-set-default-mail">
-		<call class="com.axelor.apps.account.web.AccountingSituationController" method="setDefaultMail"/>
-	</action-method>
+    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
+      colSpan="12" form-view="reported-balance-line-custom-form"
+      grid-view="reported-balance-line-custom-grid"/>
 
-	<action-method name="action-account-accounting-situation-set-inbd-domain">
-        <call class="com.axelor.apps.account.web.AccountingSituationController" method="createInBankDetailsDomain"/>
-	</action-method>
+    <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
+      <field name="acceptedCredit"/>
+      <field name="usedCredit"/>
+      <field name="insurCreditDate"/>
+      <field name="description" colSpan="12"/>
+    </panel>
 
-	<action-method name="action-account-accounting-situation-set-outbd-domain">
-		<call class="com.axelor.apps.account.web.AccountingSituationController" method="createOutBankDetailsDomain"/>
-	</action-method>
-	
-	<action-method name="action-accounting-situation-method-open-debt-recovery">
-		<call class="com.axelor.apps.account.web.AccountingSituationController" method="openDebtRecovery"/>
-	</action-method>
+    <panel-dashlet name="viewMoveLinesPanel"
+      action="action-accounting-situation-view-move-lines"/>
+  </form>
 
- </object-views>
+  <action-group name="action-accounting-situation-group-form-onnew">
+    <action name="action-account-accounting-situation-default-set"/>
+    <action name="action-accounting-situation-method-set-default-mail"/>
+    <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-group name="action-accounting-situation-group-form-onload">
+    <action name="action-accounting-situation-attrs-hide-supplier-account"/>
+    <action name="action-accounting-situation-attrs-hide-customer-account"/>
+    <action name="action-accounting-situation-attrs-hide-employee-account"/>
+    <action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
+    <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+  </action-group>
+
+  <action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
+    <attribute name="hidden" for="supplierAccount" expr="eval: !__parent__?.isSupplier"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-situation-attrs-hide-customer-account">
+    <attribute name="hidden" for="customerAccount" expr="eval: !__parent__?.isCustomer"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-situation-attrs-hide-employee-account">
+    <attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
+    <attribute name="hidden" for="pfpValidatorUser" expr="eval: !__parent__?.isSupplier"/>
+  </action-attrs>
+
+
+  <action-attrs name="action-accounting-situation-attrs-hidden-multi-banks">
+    <attribute name="hidden" for="companyInBankDetails"
+      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+    <attribute name="hidden" for="companyOutBankDetails"
+      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+  </action-attrs>
+
+  <action-method name="action-supplychain-method-compute-used-credit">
+    <call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController"
+      method="computeUsedCredit"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
+  </action-method>
+
+  <action-view name="action-accounting-situation-view-move-lines" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-accounting-situation-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.partner = :partner AND self.move.company = :company AND
+      self.move.ignoreInAccountingOk IN ('false', null)
+      AND self.account.useForPartnerBalance =
+      'true' AND (self.move.statusSelect = 2 OR
+      self.move.statusSelect = 3)</domain>
+  </action-view>
+
+  <action-record name="action-account-accounting-situation-default-set"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-method name="action-accounting-situation-method-set-default-mail">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="setDefaultMail"/>
+  </action-method>
+
+  <action-method name="action-account-accounting-situation-set-inbd-domain">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="createInBankDetailsDomain"/>
+  </action-method>
+
+  <action-method name="action-account-accounting-situation-set-outbd-domain">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="createOutBankDetailsDomain"/>
+  </action-method>
+
+  <action-method name="action-accounting-situation-method-open-debt-recovery">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="openDebtRecovery"/>
+  </action-method>
+
+</object-views>

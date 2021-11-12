@@ -19,7 +19,7 @@
             domain="self.metaModel.name = 'Product' AND self.name != 'configurator'"/>
           <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
           <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
-      <field name="metaField.relationship" hidden="true"/>
+          <field name="metaField.relationship" hidden="true"/>
         </panel>
         <panel name="actionPanel">
           <button name="checkScriptsBtn" title="Check the script"
