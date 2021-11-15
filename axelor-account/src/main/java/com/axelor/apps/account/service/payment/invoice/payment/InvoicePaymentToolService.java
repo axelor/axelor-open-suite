@@ -33,8 +33,6 @@ public interface InvoicePaymentToolService {
 
   void updateHasPendingPayments(Invoice invoice);
 
-  public void updatePaymentProgress(Invoice invoice);
-
   /**
    * @param company company from the invoice
    * @param invoicePayment

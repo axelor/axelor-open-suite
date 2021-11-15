@@ -120,13 +120,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       if (generateMove) {
         Move depreciationAccountMove = generateMove(fixedAssetLine, false);
         if (fixedAssetLine.getIsSimulated() && depreciationAccountMove != null) {
-          this.moveValidateService.validate(depreciationAccountMove);
+          this.moveValidateService.accounting(depreciationAccountMove);
         }
         fixedAssetLine.setDepreciationAccountMove(depreciationAccountMove);
       }
       Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, false);
       if (fixedAssetLine.getIsSimulated() && impairementAccountMove != null) {
-        this.moveValidateService.validate(impairementAccountMove);
+        this.moveValidateService.accounting(impairementAccountMove);
       }
       fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
     }
