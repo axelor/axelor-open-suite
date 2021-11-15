@@ -92,6 +92,11 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
+      if (purchaseOrder.getPurchaseOrderLineList() != null) {
+        purchaseOrder.getPurchaseOrderLineList().stream()
+            .forEach(poLine -> poLine.clearBudgetDistributionList());
+      }
     }
   }
 }
