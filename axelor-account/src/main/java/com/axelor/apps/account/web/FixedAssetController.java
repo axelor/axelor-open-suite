@@ -218,7 +218,7 @@ public class FixedAssetController {
   }
 
   public void personalizeAnalyticDistributionTemplate(
-      ActionRequest request, ActionResponse response) throws AxelorException {
+      ActionRequest request, ActionResponse response) {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
       AnalyticDistributionTemplate analyticDistributionTemplate =
@@ -227,9 +227,7 @@ public class FixedAssetController {
           Beans.get(AnalyticDistributionTemplateService.class)
               .personalizeAnalyticDistributionTemplate(
                   analyticDistributionTemplate, fixedAsset.getCompany());
-      if ((analyticDistributionTemplate == null)
-          ? true
-          : analyticDistributionTemplate.getIsSpecific()) {
+      if (analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific()) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
             ActionView.define("Specific Analytic Distribution Template")
