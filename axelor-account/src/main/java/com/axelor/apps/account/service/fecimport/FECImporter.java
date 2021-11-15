@@ -1,10 +1,5 @@
 package com.axelor.apps.account.service.fecimport;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.ImportHistory;
@@ -12,9 +7,12 @@ import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.Model;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class FECImporter extends Importer {
-
 
   private final List<Move> moveList = new ArrayList<>();
 
@@ -49,8 +47,6 @@ public class FECImporter extends Importer {
     return addHistory(listener);
   }
 
-
-
   protected void addMoveFromMoveLine(Model bean) {
     if (bean.getClass().equals(MoveLine.class)) {
       MoveLine moveLine = (MoveLine) bean;
@@ -67,8 +63,8 @@ public class FECImporter extends Importer {
   protected ImportHistory process(String bind, String data) throws IOException {
     return process(bind, data, null);
   }
-  
+
   public List<Move> getMoves() {
-	  return this.moveList;
+    return this.moveList;
   }
 }
