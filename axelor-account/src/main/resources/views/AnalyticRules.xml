@@ -21,8 +21,9 @@
         readonlyIf="company == null"/>
       <field name="toAccount" onSelect="action-on-select-to-account-set-domain"
         requiredIf="company != null" readonlyIf="company == null"/>
-      <field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" 
-        domain="self.analyticAxis.company = :company OR self.analyticAxis.company IS NULL" canNew="false" canEdit="false"/>
+      <field name="analyticAccountSet" colSpan="12" readonlyIf="company == null"
+        domain="self.analyticAxis.company = :company OR self.analyticAxis.company IS NULL"
+        canNew="false" canEdit="false"/>
     </panel>
   </form>
 
