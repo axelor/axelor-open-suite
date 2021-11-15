@@ -8,6 +8,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class AnalyticJournalControlServiceImpl implements AnalyticJournalControlService {
@@ -26,22 +28,24 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
   @Override
   public void controlDuplicateCode(AnalyticJournal analyticJournal) throws AxelorException {
     Objects.requireNonNull(analyticJournal);
-    if (analyticJournal.getCode() != null
-        && analyticJournal.getCompany() != null
-        && analyticJournalRepository
-                .all()
-                .filter(
-                    "self.code = ?1 AND self.company = ?2",
-                    analyticJournal.getCode(),
-                    analyticJournal.getCompany())
-                .fetchStream()
-                .filter(aJournal -> aJournal.getId() != analyticJournal.getId())
-                .count()
-            > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-          I18n.get(IExceptionMessage.NOT_UNIQUE_NAME_ANALYTIC_JOURNAL),
-          analyticJournal.getCompany().getName());
+
+    StringBuilder query = new StringBuilder("self.code = :code AND self.company = :company");
+    Map<String, Object> params = new HashMap<>();
+
+    if (analyticJournal.getCode() != null && analyticJournal.getCompany() != null) {
+      params.put("code", analyticJournal.getCode());
+      params.put("company", analyticJournal.getCompany());
+      if (analyticJournal.getId() != null) {
+        query.append(" AND self.id != :analyticJournalId");
+        params.put("analyticJournalId", analyticJournal.getId());
+      }
+
+      if (analyticJournalRepository.all().filter(query.toString()).bind(params).count() > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+            I18n.get(IExceptionMessage.NOT_UNIQUE_NAME_ANALYTIC_JOURNAL),
+            analyticJournal.getCompany().getName());
+      }
     }
   }
 
