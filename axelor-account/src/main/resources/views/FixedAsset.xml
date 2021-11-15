@@ -680,22 +680,22 @@
     <attribute name="value" for="residualValue" expr="eval:0"
       if="isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
     <attribute name="value" for="residualValue" expr="eval:0"
-      if="depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
     <attribute name="value" for="residualValue" expr="eval:0"
-      if=" !depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
+      if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
     <attribute name="value" for="residualValue" expr="eval:0"
-      if=" !depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; isEqualToFiscalDepreciation"/>
+      if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; isEqualToFiscalDepreciation"/>
     <attribute name="readonly" for="residualValue"
       expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
-      if="depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue"
       expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
-      if="depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;)"/>
     <attribute name="readonly" for="residualValue"
       expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
-      if="depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp;  depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue" expr="eval:false"
-      if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
   </action-attrs>
 
   <action-record
