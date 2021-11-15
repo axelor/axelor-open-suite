@@ -54,7 +54,7 @@
     groupBy="company,bankDetails">
     <field name="company"/>
     <field name="bankDetails"/>
-    <field name="journal"/>
+    <field name="journal" domain="self.statusSelect = 1"/>
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>

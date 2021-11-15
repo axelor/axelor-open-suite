@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
 import com.axelor.apps.account.service.AccountingReportPrintService;
@@ -130,7 +131,11 @@ public class AccountingReportController {
       JournalType journalType =
           Beans.get(AccountingReportService.class).getJournalType(accountingReport);
       if (journalType != null) {
-        String domainQuery = "self.journalType.id = " + journalType.getId();
+        String domainQuery =
+            "self.journalType.id = "
+                + journalType.getId()
+                + " AND self.statusSelect = "
+                + JournalRepository.STATUS_ACTIVE;
         response.setAttr("journal", "domain", domainQuery);
       }
     } catch (Exception e) {

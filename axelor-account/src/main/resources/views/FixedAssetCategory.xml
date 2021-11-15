@@ -58,7 +58,7 @@
       </panel>
       <panel name="accountingInfoPanel" title="Accounting information" colspan="12">
         <panel name="journalPanel" title="Journal" colspan="12">
-          <field name="journal" domain="self.company = :company" form-view="journal-form"
+          <field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
             grid-view="journal-grid"/>
         </panel>
         <panel name="depreciationAccountsPanel" title="Depreciation"
