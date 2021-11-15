@@ -70,8 +70,8 @@
   </action-record>
   
   <action-attrs name="action-attrs-account-analytic-journal-status-show-title">
-  	<attribute name="title" for="activeStatusBtn" expr="eval: 'Set Active'" if="__this__.statusSelect == 0"/>
-  	<attribute name="title" for="activeStatusBtn" expr="eval: 'Set Inactive'" if="__this__.statusSelect == 1"/>
+  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
+  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
   </action-attrs>
 
 </object-views>
