@@ -27,7 +27,7 @@
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
     onNew="action-fixed-asset-record-default, action-record-account-fixed-asset-set-default-serial-number-config-type"
-    onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation">
+    onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation,action-attrs-fixed-asset-clear-residual-value">
     <toolbar>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard"/>
@@ -694,6 +694,8 @@
     <attribute name="readonly" for="residualValue"
       expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+    <attribute name="readonly" for="residualValue" expr="eval:false"
+      if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
   </action-attrs>
 
   <action-record
