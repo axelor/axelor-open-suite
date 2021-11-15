@@ -291,11 +291,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
           qty = qty.add(invoiceLine.getQty());
         }
 
-        BigDecimal qtyToCompare = qty;
-
         Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qtyToCompare =
+          qty =
               unitConversionService.convert(
                   invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
         } catch (AxelorException e) {
@@ -306,7 +304,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                   + e.getMessage());
         }
 
-        if (stockMoveLine.getRealQty().compareTo(qtyToCompare) >= 0) {
+        if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
         } else {
           throw new AxelorException(
