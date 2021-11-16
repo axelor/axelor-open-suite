@@ -14,7 +14,7 @@ public class JournalControlServiceImpl implements JournalControlService {
   }
 
   @Override
-  public Boolean isLinkedToMove(Journal journal) {
+  public boolean isLinkedToMove(Journal journal) {
 
     return moveRepository.all().filter("self.journal = ?", journal).count() > 0;
   }

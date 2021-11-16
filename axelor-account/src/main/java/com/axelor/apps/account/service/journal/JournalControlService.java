@@ -11,5 +11,5 @@ public interface JournalControlService {
    * @param journal
    * @return true if you journal linked to a Move, else false
    */
-  Boolean isLinkedToMove(Journal journal);
+  boolean isLinkedToMove(Journal journal);
 }
