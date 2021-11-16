@@ -54,6 +54,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.mail.MessagingException;
 
 public class LeaveServiceImpl implements LeaveService {
@@ -100,6 +101,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @return the computed duration in days
    * @throws AxelorException
    */
+  @Override
   public BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     LocalDateTime leaveFromDate = leave.getFromDateT();
@@ -133,6 +135,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @return the computed duration in days
    * @throws AxelorException
    */
+  @Override
   public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException {
     return computeDuration(
         leave,
@@ -154,6 +157,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @return the computed duration in days
    * @throws AxelorException
    */
+  @Override
   public BigDecimal computeDuration(
       LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException {
@@ -363,6 +367,7 @@ public class LeaveServiceImpl implements LeaveService {
     return publicHolidayPlanning;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
@@ -396,6 +401,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageValidateLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
@@ -447,6 +453,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
@@ -480,6 +487,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void manageCancelLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
@@ -522,6 +530,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
+  @Override
   public double computeStartDateWithSelect(
       LocalDate date, int select, WeeklyPlanning weeklyPlanning) {
     double value = 0;
@@ -538,6 +547,7 @@ public class LeaveServiceImpl implements LeaveService {
     return value;
   }
 
+  @Override
   public double computeEndDateWithSelect(
       LocalDate date, int select, WeeklyPlanning weeklyPlanning) {
     double value = 0;
@@ -554,6 +564,7 @@ public class LeaveServiceImpl implements LeaveService {
     return value;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
@@ -659,6 +670,7 @@ public class LeaveServiceImpl implements LeaveService {
         leave.getToDateT().toLocalDate(), LocalTime.of(endTimeHour, endTimeMin));
   }
 
+  @Override
   public BigDecimal computeLeaveDaysByLeaveRequest(
       LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
       throws AxelorException {
@@ -723,6 +735,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
   }
 
+  @Override
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -752,6 +765,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequestRepo.save(leaveRequest);
   }
 
+  @Override
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -768,6 +782,7 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
     LeaveLine leaveLine = leaveRequest.getLeaveLine();
@@ -788,6 +803,7 @@ public class LeaveServiceImpl implements LeaveService {
     createEvents(leaveRequest);
   }
 
+  @Override
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -804,6 +820,7 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
 
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
@@ -817,6 +834,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequestRepo.save(leaveRequest);
   }
 
+  @Override
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -832,6 +850,7 @@ public class LeaveServiceImpl implements LeaveService {
     return null;
   }
 
+  @Override
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
 
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
@@ -858,41 +877,37 @@ public class LeaveServiceImpl implements LeaveService {
     return leaveRequest.getDuration().compareTo(num) <= 0;
   }
 
-  @Transactional
-  public LeaveLine getLeaveReasonToJustify(Employee employee, LeaveReason leaveReason) {
-    LeaveLine leaveLineBase = null;
-    if ((employee.getLeaveLineList() != null) || (!employee.getLeaveLineList().isEmpty())) {
-      for (LeaveLine leaveLine : employee.getLeaveLineList()) {
-        if (leaveReason.equals(leaveLine.getLeaveReason())) {
-          leaveLineBase = leaveLine;
-        }
-      }
+  protected Optional<LeaveLine> getLeaveReasonToJustify(
+      Employee employee, LeaveReason leaveReason) {
+    if (employee.getLeaveLineList() != null) {
+      return employee.getLeaveLineList().stream()
+          .filter(leaveLine -> leaveReason.equals(leaveLine.getLeaveReason()))
+          .findAny();
     }
-    return leaveLineBase;
+    return Optional.empty();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  protected LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReason) {
     LeaveLine leaveLineEmployee = new LeaveLine();
     leaveLineEmployee.setLeaveReason(leaveReason);
     leaveLineEmployee.setEmployee(employee);
+    if (leaveReason != null) {
+      leaveLineEmployee.setName(leaveReason.getLeaveReason());
+    }
 
     leaveLineRepo.save(leaveLineEmployee);
     return leaveLineEmployee;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException {
-    LeaveLine leaveLine = getLeaveReasonToJustify(employee, leaveReason);
-    if ((leaveLine == null) || (leaveLine.getLeaveReason() != leaveReason)) {
-      leaveLine = createLeaveReasonToJustify(employee, leaveReason);
-    }
-    leaveLine.setName(leaveReason.getLeaveReason());
-    return leaveLine;
+    return getLeaveReasonToJustify(employee, leaveReason)
+        .orElseGet(() -> createLeaveReasonToJustify(employee, leaveReason));
   }
 
+  @Override
   public boolean isLeaveDay(User user, LocalDate date) {
     return ObjectUtils.notEmpty(getLeaves(user, date));
   }
