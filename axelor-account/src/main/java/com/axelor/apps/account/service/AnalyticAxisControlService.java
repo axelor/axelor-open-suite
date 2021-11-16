@@ -20,5 +20,5 @@ public interface AnalyticAxisControlService {
    * @param analyticAxis
    * @return true if analyticAxis is used in a analyticMoveLine, false else.
    */
-  Boolean isInAnalyticMoveLine(AnalyticAxis analyticAxis);
+  boolean isInAnalyticMoveLine(AnalyticAxis analyticAxis);
 }

@@ -57,7 +57,7 @@ public class AnalyticAxisControlServiceImpl implements AnalyticAxisControlServic
   }
 
   @Override
-  public Boolean isInAnalyticMoveLine(AnalyticAxis analyticAxis) {
+  public boolean isInAnalyticMoveLine(AnalyticAxis analyticAxis) {
     return analyticMoveLineRepository.all().filter("self.analyticAxis = ?", analyticAxis).count()
         > 0;
   }
