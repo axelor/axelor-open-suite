@@ -1,0 +1,6 @@
+---
+title: "Wrong translation in scheduler"
+type: fix
+description: |
+     Add title for the given field and set their translations.
+
