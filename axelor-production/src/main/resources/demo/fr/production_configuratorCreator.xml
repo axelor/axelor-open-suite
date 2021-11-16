@@ -27,9 +27,8 @@
         <statusSelect>2</statusSelect>
         <name>Conception de l&apos;ordinateur</name>
         <code></code>
-        <codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name
-          = &apos;Ordinateur personnalisé&apos; AND self.dtype = &apos;Product&apos;&quot;).count()
-          + 1)</codeFormula>
+        <codeFormula>
+          <![CDATA["ORD"+"-"+ (__repo__(Product).all().filter("self.name = 'Ordinateur personnalisé' AND self.dtype = 'Product'").count() + 1)]]></codeFormula>
         <defCodeAsFormula>true</defCodeAsFormula>
         <companyCode>AXE</companyCode>
         <stockLocation>1</stockLocation>
@@ -372,7 +371,8 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;CARTM&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'CARTM' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>6</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -410,7 +410,8 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;DD&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'DD' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>7</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -448,7 +449,8 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;MEM&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'MEM' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>10</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -486,7 +488,8 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;BOIT&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'BOIT' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>5</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -524,7 +527,8 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;ECR&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'ECR' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>8</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -585,7 +589,7 @@
           <selection></selection>
           <widget></widget>
           <help></help>
-          <showIf>assistance_1 == true</showIf>
+          <showIf><![CDATA[assistance_1 == true]]></showIf>
           <hideIf></hideIf>
           <requiredIf></requiredIf>
           <hidden>false</hidden>
@@ -661,7 +665,7 @@
           <selection></selection>
           <widget></widget>
           <help></help>
-          <showIf>memoire_1 != null</showIf>
+          <showIf><![CDATA[memoire_1 != null]]></showIf>
           <hideIf></hideIf>
           <requiredIf></requiredIf>
           <hidden>false</hidden>
@@ -828,7 +832,9 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code = &apos;PROC&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code = 'PROC' AND self.dtype = 'Product']]>
+          </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>9</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -882,90 +888,89 @@
       <configuratorProductFormulaList>
         <configuratorProductFormula>
           <metaField>description</metaField>
-          <formula>description = &quot;&quot;
-            if (carteMere_1?.description){
-            description +=
-            &quot;Carte mère : &quot; + carteMere_1.description + &quot;\n&quot;
-            }
-            if
-            (disqueDur_1?.description){
-            description += &quot;Disque dur : &quot; +
-            disqueDur_1.description + &quot;\n&quot;
-            }
-            if (ecran_1?.description){
-            description +=
-            &quot;Ecran :&quot; + ecran_1.description + &quot;\n&quot;
-            }
-            if
-            (processeur_1?.description){
-            description += &quot;Processeur :&quot; +
-            processeur_1.description + &quot;\n&quot;
-            }
-            if (memoire_1?.description){
-            description +=
-            &quot;Mémoire :&quot; + memoire_1.description + &quot;\n&quot;
-            }
-            return description;</formula>
+          <formula><![CDATA[description = ""
+if (carteMere_1?.description){
+  description += "Carte mère : " + carteMere_1.description + "\n"
+}
+if (disqueDur_1?.description) {
+  description += "Disque dur : " +
+  disqueDur_1.description + "\n"
+}
+if (ecran_1?.description) {
+  description +=
+  "Ecran :" + ecran_1.description + "\n"
+}
+if (processeur_1?.description) {
+  description += "Processeur :" + processeur_1.description + "\n"
+}
+if (memoire_1?.description) {
+  description += "Mémoire :" + memoire_1.description + "\n"
+}
+return description;
+]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>salePrice</metaField>
-          <formula>cp=0
-            cp+=(boitier_1?.salePrice?:0)
-            cp+=(carteMere_1?.salePrice?:0)
-            cp+=(disqueDur_1?.salePrice?:0)
-            cp+=(ecran_1?.salePrice?:0)
-            cp+=(memoire_1?.salePrice?:0)*(quantiteMemoire_1?:0)
-            cp+=(processeur_1?.salePrice?:0)
-            if
-            (montageOrdinateur_1?:0){
-            cp+=2*60
-            }
-            return cp*nbOrdi_1*1.5</formula>
+          <formula><![CDATA[cp=0
+cp+=(boitier_1?.salePrice?:0)
+cp+=(carteMere_1?.salePrice?:0)
+cp+=(disqueDur_1?.salePrice?:0)
+cp+=(ecran_1?.salePrice?:0)
+cp+=(memoire_1?.salePrice?:0)*(quantiteMemoire_1?:0)
+cp+=(processeur_1?.salePrice?:0)
+if (montageOrdinateur_1?:0) {
+  cp+=2*60
+}
+return cp*nbOrdi_1*1.5
+            ]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>costPrice</metaField>
-          <formula>cp=0
-            cp+=(boitier_1?.salePrice?:0)
-            cp+=(carteMere_1?.salePrice?:0)
-            cp+=(disqueDur_1?.salePrice?:0)
-            cp+=(ecran_1?.salePrice?:0)
-            cp+=(memoire_1?.salePrice?:0)*(quantiteMemoire_1?:0)
-            cp+=(processeur_1?.salePrice?:0)
-            if
-            (montageOrdinateur_1?:0){
-            cp+=2*60
-            }
-            return cp*nbOrdi_1</formula>
+          <formula><![CDATA[cp=0
+cp+=(boitier_1?.salePrice?:0)
+cp+=(carteMere_1?.salePrice?:0)
+cp+=(disqueDur_1?.salePrice?:0)
+cp+=(ecran_1?.salePrice?:0)
+cp+=(memoire_1?.salePrice?:0)*(quantiteMemoire_1?:0)
+cp+=(processeur_1?.salePrice?:0)
+if (montageOrdinateur_1?:0){
+  cp+=2*60
+}
+return cp*nbOrdi_1
+          ]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>code</metaField>
-          <formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name =
-            &apos;Ordinateur personnalisé&apos; AND self.dtype = &apos;Product&apos;&quot;).count()
-            + 1)</formula>
+          <formula>
+            <![CDATA["ORD"+"-"+ (__repo__(Product).all().filter("self.name = 'Ordinateur personnalisé' AND self.dtype = 'Product'").count() + 1)]]></formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>name</metaField>
-          <formula>&quot;Ordinateur personnalisé&quot;</formula>
+          <formula>"Ordinateur personnalisé"</formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>productCategory</metaField>
-          <formula>__repo__(ProductCategory).all().filter(&quot;self.code =
-            &apos;SER&apos;&quot;).fetchOne()</formula>
+          <formula>
+            <![CDATA[ __repo__(ProductCategory).all().filter("self.code = 'SER'").fetchOne()]]>
+          </formula>
           <showOnConfigurator>false</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
@@ -979,8 +984,9 @@
 
         <configuratorProductFormula>
           <metaField>productFamily</metaField>
-          <formula>__repo__(ProductFamily).all().filter(&quot;self.code =
-            &apos;EQPT&apos;&quot;).fetchOne()</formula>
+          <formula>
+            <![CDATA[ __repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()]]>
+          </formula>
           <showOnConfigurator>false</showOnConfigurator>
           <configuratorCreatorImportId>1</configuratorCreatorImportId>
         </configuratorProductFormula>
@@ -1109,7 +1115,9 @@
           <enumType></enumType>
           <formView></formView>
           <gridView></gridView>
-          <domain>self.productCategory.code=&apos;IMP&apos; AND self.dtype = &apos;Product&apos;</domain>
+          <domain>
+            <![CDATA[self.productCategory.code='IMP' AND self.dtype = 'Product']]>
+          </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>4</sequence>
           <onChange>save,action-configurator-update-indicators,save</onChange>
@@ -1429,7 +1437,8 @@
       <configuratorProductFormulaList>
         <configuratorProductFormula>
           <metaField>costPrice</metaField>
-          <formula>((longueurA_2?:0)*(largeurA_2?:0)*(quantiteAffiches_2?:0))/6+0.30*(quantiteFlyers_2?:0)
+          <formula>
+            <![CDATA[((longueurA_2?:0)*(largeurA_2?:0)*(quantiteAffiches_2?:0))/6+0.30*(quantiteFlyers_2?:0)]]>
           </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
@@ -1451,25 +1460,27 @@
 
         <configuratorProductFormula>
           <metaField>code</metaField>
-          <formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name =
-            &apos;Campagne publicitaire&apos; AND self.dtype = &apos;Product&apos;&quot;).count() +
-            1)</formula>
+          <formula>
+            <![CDATA["PUB"+"-"+ (__repo__(Product).all().filter("self.name = 'Campagne publicitaire' AND self.dtype = 'Product'").count() + 1)]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>productCategory</metaField>
-          <formula>__repo__(ProductCategory).all().filter(&quot;self.code =
-            &apos;FORF&apos;&quot;).fetchOne()</formula>
+          <formula>
+            <![CDATA[__repo__(ProductCategory).all().filter("self.code = 'FORF'").fetchOne()]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
         </configuratorProductFormula>
 
         <configuratorProductFormula>
           <metaField>productFamily</metaField>
-          <formula>__repo__(ProductFamily).all().filter(&quot;self.code =
-            &apos;SERV&apos;&quot;).fetchOne()</formula>
+          <formula>
+            <![CDATA[__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()]]>
+          </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
         </configuratorProductFormula>
