@@ -6,7 +6,10 @@
   <input file="base_appLeave.csv" separator=";" type="com.axelor.apps.base.db.AppLeave"
     search="self.code = :code" update="true"/>
 
-  <input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine"/>
+  <input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine">
+    <bind to="name" column="leaveReasonName"/>
+    <bind to="leaveReason" search="self.name = :leaveReasonName" column="leaveReasonName"/>
+  </input>
 
   <input file="hr_leaveManagement.csv" separator=";"
     type="com.axelor.apps.hr.db.LeaveManagement">
