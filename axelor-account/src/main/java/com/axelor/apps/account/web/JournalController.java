@@ -18,7 +18,12 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.journal.JournalControlService;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -40,5 +45,22 @@ public class JournalController {
     response.setValue("$balance", resultMap.get("balance"));
     response.setValue("$totalDebit", resultMap.get("debit"));
     response.setValue("$totalCredit", resultMap.get("credit"));
+  }
+
+  public void setReadOnly(ActionRequest request, ActionResponse response) {
+    try {
+      Journal journal =
+          Beans.get(JournalRepository.class)
+              .find(request.getContext().asType(Journal.class).getId());
+      if (journal != null) {
+        Boolean isInMove = Beans.get(JournalControlService.class).isLinkedToMove(journal);
+        response.setAttr("name", "readonly", isInMove);
+        response.setAttr("code", "readonly", isInMove);
+        response.setAttr("journalType", "readonly", isInMove);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }
