@@ -94,8 +94,4 @@
     <call class="com.axelor.apps.account.web.YearController" method="adjust"/>
   </action-method>
 
-  <action-method name="action-method-account-year-control-dates">
-    <call class="com.axelor.apps.account.web.YearController" method="controlDates"/>
-  </action-method>
-
 </object-views>
