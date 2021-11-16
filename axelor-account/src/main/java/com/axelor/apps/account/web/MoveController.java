@@ -561,7 +561,6 @@ public class MoveController {
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
