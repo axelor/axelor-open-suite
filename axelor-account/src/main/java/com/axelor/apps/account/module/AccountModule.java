@@ -147,6 +147,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceControlService;
+import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -423,6 +425,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
     bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
+
+    bind(InvoiceControlService.class).to(InvoiceControlServiceImpl.class);
 
     bind(PeriodRepository.class).to(PeriodManagementRepository.class);
 

@@ -1,0 +1,3 @@
+---
+title: "Payment Voucher: Changing partner will now empty list of invoice to pay and reset list of due element."
+type: fix
