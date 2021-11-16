@@ -54,11 +54,11 @@ public class PeriodControlServiceImpl implements PeriodControlService {
   }
 
   @Override
-  public boolean isOpen(Period period) {
+  public boolean isStatusValid(Period period) {
 
     if (period.getYear() != null) {
-      return period.getStatusSelect() == PeriodRepository.STATUS_OPENED
-          && period.getYear().getStatusSelect() == YearRepository.STATUS_OPENED;
+      return period.getStatusSelect() >= PeriodRepository.STATUS_OPENED
+          && period.getYear().getStatusSelect() >= YearRepository.STATUS_OPENED;
     }
     return false;
   }

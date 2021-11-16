@@ -69,8 +69,6 @@ public class YearController {
         Boolean isInMove = Beans.get(YearControlService.class).isLinkedToMove(year);
         response.setAttr("fromDate", "readonly", isInMove);
         response.setAttr("toDate", "readonly", isInMove);
-        response.setAttr("periodDurationSelect", "readonly", isInMove);
-        response.setAttr("generatePeriodsBtn", "readonly", isInMove);
       }
 
     } catch (Exception e) {

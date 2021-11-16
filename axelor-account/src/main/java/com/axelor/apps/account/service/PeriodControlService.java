@@ -22,10 +22,10 @@ public interface PeriodControlService {
   boolean isLinkedToMove(Period period);
 
   /**
-   * Method that checks is statusSelect and year.statusSelect are OPENED.
+   * Method that checks is statusSelect and year.statusSelect are greater or equal to 1 (OPENED) .
    *
    * @param period
-   * @return true if status select is OPENED, else false;
+   * @return true if status select is greater or equal to 1, else false;
    */
-  boolean isOpen(Period period);
+  boolean isStatusValid(Period period);
 }

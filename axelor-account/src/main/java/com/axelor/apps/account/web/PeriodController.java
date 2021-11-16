@@ -125,11 +125,9 @@ public class PeriodController {
       if (period != null) {
         Boolean isInMove =
             (Beans.get(PeriodControlService.class).isLinkedToMove(period)
-                && Beans.get(PeriodControlService.class).isOpen(period));
+                && Beans.get(PeriodControlService.class).isStatusValid(period));
         response.setAttr("fromDate", "readonly", isInMove);
         response.setAttr("toDate", "readonly", isInMove);
-        response.setAttr("periodDurationSelect", "readonly", isInMove);
-        response.setAttr("generatePeriodsBtn", "readonly", isInMove);
       }
 
     } catch (Exception e) {
