@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -39,14 +41,18 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineMoveService fixedAssetLineMoveService;
   private AppBaseService appBaseService;
+  private FixedAssetLineService fixedAssetLineService;
 
   @Inject FixedAssetLineRepository fixedAssetLineRepo;
 
   @Inject
   public BatchRealizeFixedAssetLine(
-      FixedAssetLineMoveService fixedAssetLineMoveService, AppBaseService appBaseService) {
+      FixedAssetLineMoveService fixedAssetLineMoveService,
+      AppBaseService appBaseService,
+      FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -58,7 +64,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         && startDate != null
         && endDate != null
         && startDate.isBefore(endDate)) {
-      query += " AND self.depreciationDate < :endDate AND self.depreciationDate > :startDate";
+      query += " AND self.depreciationDate <= :endDate AND self.depreciationDate >= :startDate";
     } else {
       query += " AND self.depreciationDate < :dateNow";
     }
@@ -82,8 +88,10 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
-        if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetLineMoveService.realize(fixedAssetLine);
+        FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+        if (fixedAsset != null
+            && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
+          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
           incrementDone();
         }
       } catch (Exception e) {

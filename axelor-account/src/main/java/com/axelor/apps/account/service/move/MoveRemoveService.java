@@ -68,7 +68,7 @@ public class MoveRemoveService {
   }
 
   public void archiveDaybookMove(Move move) throws Exception {
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       this.checkDaybookMove(move);
       this.cleanMoveToArchived(move);
       move = this.updateMoveToArchived(move);
@@ -80,7 +80,7 @@ public class MoveRemoveService {
   @Transactional(rollbackOn = {Exception.class})
   protected Move updateMoveToArchived(Move move) throws AxelorException {
 
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -185,7 +185,7 @@ public class MoveRemoveService {
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
-        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
           this.archiveMove(move);

@@ -56,7 +56,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
                 .orElse(null);
         invoice.setPaymentDate(latestPaymentDate);
       }
-
       invoice = super.save(invoice);
       Beans.get(InvoiceService.class).setDraftSequence(invoice);
 

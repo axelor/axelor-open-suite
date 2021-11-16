@@ -184,7 +184,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         moveReverseService.generateReverse(
             advanceOrPaymentMove, true, true, false, advanceOrPaymentMove.getDate());
     rejectionMove.setRejectOk(true);
-    moveValidateService.validate(rejectionMove);
+    moveValidateService.accounting(rejectionMove);
 
     List<MoveLine> moveLineList = new ArrayList<>();
     moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());

@@ -20,7 +20,7 @@ public class AnalyticDistributionTemplateController {
           .validateTemplatePercentages(analyticDistributionTemplate)) {
         response.setError(
             I18n.get(
-                "The distribution is wrong, some axes percentage values are not equal to 100%"));
+                "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

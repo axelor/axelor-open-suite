@@ -70,7 +70,10 @@
           <field name="descriptionIdentificationOk"/>
           <field name="authorizeSimulatedMove"
             showIf="company.accountConfig.isActivateSimulatedMove"/>
+          <field name="allowAccountingDaybook"
+            showIf="company.accountConfig.accountingDaybook"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
+          <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
         <spacer name="moveLineSpacer"/>
         <panel name="paymentsPanel" title="Payments" colSpan="12">
