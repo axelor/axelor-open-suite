@@ -50,7 +50,7 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
   }
 
   @Override
-  public Boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal) {
+  public boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal) {
     return analyticMoveLineRepository
             .all()
             .filter("self.analyticJournal = ?", analyticJournal)

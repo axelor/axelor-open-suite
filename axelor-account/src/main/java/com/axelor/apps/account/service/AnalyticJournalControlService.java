@@ -19,5 +19,5 @@ public interface AnalyticJournalControlService {
    *
    * @param analyticJournal
    */
-  Boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
+  boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
 }
