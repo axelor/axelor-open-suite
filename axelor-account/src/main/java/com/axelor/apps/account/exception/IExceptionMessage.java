@@ -24,6 +24,8 @@ package com.axelor.apps.account.exception;
  */
 public interface IExceptionMessage {
 
+  static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
+      /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
@@ -69,9 +71,10 @@ public interface IExceptionMessage {
   static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
-  static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
-      "Error in move validation, please check the log" /*)*/;
-  static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
+      "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
+  static final String MOVE_ACCOUNTING_OK = /*$$(*/
+      "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
@@ -286,8 +289,8 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
-      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -577,10 +580,6 @@ public interface IExceptionMessage {
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
-  static final String ACCOUNT_CONFIG_46 = /*$$(*/
-      "%s : You must configure a holdback customer account for the company %s" /*)*/;
-  static final String ACCOUNT_CONFIG_47 = /*$$(*/
-      "%s : You must configure a holdback supplier account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -828,23 +827,6 @@ public interface IExceptionMessage {
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
-  static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
-      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
-
-  static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
-      "The sum of invoice payment term lines must be equal to 100%" /*)*/;
-
-  static final String INVOICE_INVOICE_TERM_CREATION_PROHIBITED = /*$$(*/
-      "The invoice had already been paid, therefore invoice term creation is not possible." /*)*/;
-
-  static final String INVOICE_INVOICE_TERM_DELETION_PROHIBITED = /*$$(*/
-      "The invoice had already been paid partially or totally, therefore invoice term deletion is not possible." /*)*/;
-
-  static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
-      "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
-  /** Invoice payment controller */
-  static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
-      "You must select at least one invoice term line to pay" /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;

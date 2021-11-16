@@ -140,10 +140,6 @@
     <field name="durationInMonth" expr="eval: periodicityInMonth * numberOfDepreciation"/>
   </action-record>
 
-  <action-attrs name="action-attrs-account-periodicity-type-select-on-change">
-    <attribute name="value" for="periodicityInMonth" expr="eval:periodicityTypeSelect"/>
-  </action-attrs>
-
   <action-attrs name="action-fixed-asset-attrs-set-degressive-coef">
     <attribute name="value" for="degressiveCoef" expr="eval: 1.25"
       if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &lt;= 4"/>
