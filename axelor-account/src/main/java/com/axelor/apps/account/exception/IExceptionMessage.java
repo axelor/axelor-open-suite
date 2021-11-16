@@ -943,4 +943,10 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY = /*$$(*/
+      "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY = /*$$(*/
+      "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly." /*)*/;
 }
