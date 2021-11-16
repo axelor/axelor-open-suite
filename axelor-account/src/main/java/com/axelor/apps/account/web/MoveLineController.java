@@ -501,4 +501,16 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void getValidatePeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      if (ObjectUtils.notEmpty(parentContext)
+          && Move.class.equals(parentContext.getContextClass())) {
+        response.setValue("$validatePeriod", parentContext.get("validatePeriod"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

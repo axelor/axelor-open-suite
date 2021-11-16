@@ -18,12 +18,10 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
+import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
@@ -34,89 +32,50 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public class InvoiceToolService {
 
   @CallMethod
-  public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
-    LocalDate invoiceDate =
-        isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+  public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate) {
+
+    if (paymentCondition == null) {
       return invoiceDate;
     }
-    LocalDate dueDate = null;
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsPaid()
-          && (dueDate == null || invoiceTerm.getDueDate().isBefore(dueDate))) {
-        dueDate = invoiceTerm.getDueDate();
-      }
-    }
-
-    if (dueDate != null) {
-      return dueDate;
-    }
-    return invoiceDate;
-  }
-
-  /**
-   * Method to compute due date based on paymentConditionLine and invoiceDate
-   *
-   * @param paymentConditionLine
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      PaymentConditionLine paymentConditionLine, LocalDate invoiceDate) {
-
-    return getDueDate(
-        paymentConditionLine.getTypeSelect(),
-        paymentConditionLine.getPaymentTime(),
-        paymentConditionLine.getPeriodTypeSelect(),
-        paymentConditionLine.getDaySelect(),
-        invoiceDate);
-  }
-
-  /**
-   * Method to compute due date based on paymentCondition and invoiceDate
-   *
-   * @param typeSelect
-   * @param paymentTime
-   * @param periodTypeSelect
-   * @param daySelect
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      Integer typeSelect,
-      Integer paymentTime,
-      Integer periodTypeSelect,
-      Integer daySelect,
-      LocalDate invoiceDate) {
 
     LocalDate nDaysDate = null;
-    if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-      nDaysDate = invoiceDate.plusDays(paymentTime);
+    if (paymentCondition
+        .getPeriodTypeSelect()
+        .equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+      nDaysDate = invoiceDate.plusDays(paymentCondition.getPaymentTime());
     } else {
-      nDaysDate = invoiceDate.plusMonths(paymentTime);
+      nDaysDate = invoiceDate.plusMonths(paymentCondition.getPaymentTime());
     }
 
-    switch (typeSelect) {
-      case PaymentConditionLineRepository.TYPE_NET:
+    switch (paymentCondition.getTypeSelect()) {
+      case PaymentConditionRepository.TYPE_NET:
         return nDaysDate;
 
-      case PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS:
-        if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentTime);
+      case PaymentConditionRepository.TYPE_END_OF_MONTH_N_DAYS:
+        if (paymentCondition
+            .getPeriodTypeSelect()
+            .equals(PaymentConditionRepository.PERIOD_TYPE_DAYS)) {
+          return invoiceDate
+              .withDayOfMonth(invoiceDate.lengthOfMonth())
+              .plusDays(paymentCondition.getPaymentTime());
         } else {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusMonths(paymentTime);
+          return invoiceDate
+              .withDayOfMonth(invoiceDate.lengthOfMonth())
+              .plusMonths(paymentCondition.getPaymentTime());
         }
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH:
+      case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH:
         return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
 
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(daySelect);
+      case PaymentConditionRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
+        return nDaysDate
+            .withDayOfMonth(nDaysDate.lengthOfMonth())
+            .plusDays(paymentCondition.getDaySelect());
+
       default:
         return invoiceDate;
     }
@@ -257,10 +216,8 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
-    copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
-    copy.setPaymentProgress(0);
     copy.clearBatchSet();
     copy.setDebitNumber(null);
     copy.setDoubtfulCustomerOk(false);
@@ -286,6 +243,5 @@ public class InvoiceToolService {
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
-    copy.clearInvoiceTermList();
   }
 }

@@ -330,4 +330,3 @@
     type="com.axelor.apps.base.db.MainActivity" search="self.code= :code"/>
 
 </csv-inputs>
-

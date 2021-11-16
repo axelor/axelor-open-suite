@@ -52,7 +52,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       // barcode generation
       if (!ObjectUtils.isEmpty(fixedAsset.getSerialNumber())
           && fixedAsset.getBarcode() == null
-          && appAcccountService.getAppAccount().getActivateSerialNumberBarcodeGeneration()) {
+          && appAcccountService.getAppAccount().getActivateFixedAssetBarCodeGeneration()) {
         if (!isSerialNumberUniqueForCompany(fixedAsset)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
@@ -83,8 +83,8 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     BarcodeTypeConfig barcodeTypeConfig;
 
     AppAccount appAccount = appAcccountService.getAppAccount();
-    if (!appAccount.getEditSerialNumberBarcodeType() || fixedAsset.getBarcodeTypeConfig() == null) {
-      barcodeTypeConfig = appAccount.getSerialNumberBarcodeTypeConfig();
+    if (!appAccount.getEditFixedAssetBarcodeType() || fixedAsset.getBarcodeTypeConfig() == null) {
+      barcodeTypeConfig = appAccount.getFixedAssetBarcodeTypeConfig();
 
     } else {
       barcodeTypeConfig = fixedAsset.getBarcodeTypeConfig();

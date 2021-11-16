@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
@@ -39,11 +40,15 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -155,7 +160,20 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED)
                 .order("date")
                 .fetch();
-        if (!moveList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(moveList)) {
+          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          User user = AuthUtils.getUser();
+          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
+            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
+            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  String.format(
+                      I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                      move.getReference()));
+            }
+          }
           String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
           if (error.length() > 0) {
             response.setFlash(
@@ -163,6 +181,7 @@ public class MoveController {
           } else {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
           }
+
           response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
@@ -192,6 +211,19 @@ public class MoveController {
                 .fetch();
 
         if (!moveList.isEmpty()) {
+          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          User user = AuthUtils.getUser();
+          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
+            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
+            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  String.format(
+                      I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                      move.getReference()));
+            }
+          }
           Beans.get(MoveValidateService.class).simulateMultiple(moveList);
           response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
@@ -510,6 +542,24 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       if (move.getOrigin() == null && move.getDescription() == null) {
         response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validatePeriodPermission(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+      User user = AuthUtils.getUser();
+      if (move.getPeriod() != null
+          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+        response.setError(
+            I18n.get(
+                "This period is temporarily closed and you do not have the necessary permissions to create entries"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
