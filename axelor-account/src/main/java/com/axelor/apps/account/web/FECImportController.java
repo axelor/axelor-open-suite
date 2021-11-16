@@ -17,9 +17,17 @@
  */
 package com.axelor.apps.account.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.repo.FECImportRepository;
-import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImporter;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
@@ -29,13 +37,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 public class FECImportController {
 
@@ -52,19 +53,15 @@ public class FECImportController {
                   new FileInputStream(MetaFiles.getPath(fecImport.getDataMetaFile()).toFile()),
                   "FEC.csv"));
 
-      FECImporter fecImporter = Beans.get(FECImporter.class);
+      FECImporter fecImporter = Beans.get(FECImporter.class).addFecImport(fecImport);
       ImportHistory importHistory = fecImporter.init(importConfig).run();
 
-      Beans.get(FECImportService.class).completeImport(fecImport, fecImporter.getMoves());
-
-      //            ImportHistory importHistory =
-      //                Beans.get(FactoryImporter.class).createImporter(importConfig).run();
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setValue("company", fecImport.getCompany());
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
               .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -24,7 +24,7 @@
       <field name="company" readonly="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="Import" readonlyIf="company != null" 
         onClick="save,action-fec-import-validate-import,action-fec-import-method-run"/>
     </panel>
     <panel-tabs name="mainPanelTab">
