@@ -39,11 +39,17 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   public FixedAssetLine generateProrataDepreciationLine(
       FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine)
       throws AxelorException {
-    FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    FixedAssetLine fixedAssetLine = getExistingLine(fixedAsset, disposalDate);
+    if (fixedAssetLine == null) {
+      fixedAssetLine = new FixedAssetLine();
+      fixedAssetLine.setDepreciationDate(disposalDate);
+      fixedAssetLine.setTypeSelect(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+      fixedAssetLine.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+      fixedAssetLine.setDepreciationBase(previousRealizedLine.getDepreciationBase());
+      fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
+    }
     fixedAssetLine.setDepreciationDate(disposalDate);
     computeDepreciationWithProrata(fixedAsset, fixedAssetLine, previousRealizedLine, disposalDate);
-    this.setFixedAsset(fixedAsset, fixedAssetLine);
-    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     return fixedAssetLine;
   }
 
@@ -246,16 +252,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     if (isLastDayOfTheYear(disposalDate)) {
       correspondingFixedAssetLine = getExistingLineWithSameDate(fixedAsset, disposalDate);
     } else {
-      // If it is not a last day of the year we will apply a prorata on the line.
-      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
-        correspondingFixedAssetLine =
-            getExistingLineWithSameYear(
-                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
-      } else {
-        correspondingFixedAssetLine =
-            getExistingLineWithSameMonth(
-                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
-      }
+      correspondingFixedAssetLine = getExistingLine(fixedAsset, disposalDate);
       FixedAssetLine previousRealizedLine =
           findOldestFixedAssetLine(
                   fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
@@ -270,6 +267,20 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
         computeDepreciationWithProrata(
             fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
       }
+    }
+    return correspondingFixedAssetLine;
+  }
+
+  protected FixedAssetLine getExistingLine(FixedAsset fixedAsset, LocalDate disposalDate) {
+    FixedAssetLine correspondingFixedAssetLine;
+    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+      correspondingFixedAssetLine =
+          getExistingLineWithSameYear(
+              fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+    } else {
+      correspondingFixedAssetLine =
+          getExistingLineWithSameMonth(
+              fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
     }
     return correspondingFixedAssetLine;
   }
@@ -314,6 +325,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
           .filter(
               line ->
                   line.getDepreciationDate().getMonth() == disposalDate.getMonth()
+                      && line.getDepreciationDate().getYear() == disposalDate.getYear()
                       && line.getStatusSelect() == lineStatus)
           .findAny()
           .orElse(null);
