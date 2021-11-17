@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
@@ -435,9 +434,7 @@ public class MoveController {
       if (move.getCompany() != null) {
         AccountConfig accountConfig =
             Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        if (accountConfig != null
-            && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
-            && accountConfig.getManageAnalyticAccounting()) {
+        if (accountConfig != null) {
           AnalyticAxis analyticAxis = null;
           for (int i = 1; i <= 5; i++) {
             response.setAttr(
@@ -455,12 +452,6 @@ public class MoveController {
                   "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
               analyticAxis = null;
             }
-          }
-        } else {
-          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
-          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
-          for (int i = 1; i <= 5; i++) {
-            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
           }
         }
       }
