@@ -332,7 +332,7 @@ public class FixedAssetController {
     }
   }
 
-  public void setDepreciationPlanSelect(ActionRequest request, ActionResponse response) {
+  public void setDepreciationPlanSelectToNone(ActionRequest request, ActionResponse response) {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
       FixedAssetCategoryService fixedAssetCategoryService =

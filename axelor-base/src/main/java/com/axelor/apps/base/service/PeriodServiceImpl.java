@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -32,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Singleton;
+import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,10 +127,25 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateClosePeriod(period);
   }
 
+  public void closeTemporarily(Period period) throws AxelorException {
+    if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+      adjustHistoryService.setEndDate(period);
+    }
+    this.updateCloseTemporarilyPeriod(period);
+  }
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
+
+    periodRepo.save(period);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void updateCloseTemporarilyPeriod(Period period) {
+    period.setStatusSelect(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
+    period.setTemporarilyCloseDate(LocalDate.now());
 
     periodRepo.save(period);
   }
@@ -196,6 +213,51 @@ public class PeriodServiceImpl implements PeriodService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED),
           period.getName());
+    }
+  }
+
+  @Override
+  public void validateTempClosure(Period period) throws AxelorException {
+    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+      Query resultQuery =
+          JPA.em()
+              .createQuery(
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+      resultQuery.setParameter("date", period.getFromDate().minusDays(1));
+      resultQuery.setParameter("company", period.getYear().getCompany());
+      if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
+        Period previousPeriod =
+            periodRepo.find(
+                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
+        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
+            && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+        }
+      }
+    }
+  }
+
+  @Override
+  public void validateClosure(Period period) throws AxelorException {
+    if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {
+      Query resultQuery =
+          JPA.em()
+              .createQuery(
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+      resultQuery.setParameter("date", period.getFromDate().minusDays(1));
+      resultQuery.setParameter("company", period.getYear().getCompany());
+      if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
+        Period previousPeriod =
+            periodRepo.find(
+                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
+        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+        }
+      }
     }
   }
 }
