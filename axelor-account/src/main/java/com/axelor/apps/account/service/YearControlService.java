@@ -21,5 +21,5 @@ public interface YearControlService {
    * @param year
    * @return true if year is linked, else false.
    */
-  Boolean isLinkedToMove(Year year);
+  boolean isLinkedToMove(Year year);
 }
