@@ -161,4 +161,6 @@ public interface MoveToolService {
 
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+
+  boolean getEditAuthorization(Move move) throws AxelorException;
 }
