@@ -212,7 +212,7 @@ public interface IExceptionMessage {
   static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
       "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
   static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
-      "Curernt bank statement doesn't contain an initial line" /*)*/;
+      "Current bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit
@@ -243,16 +243,17 @@ public interface IExceptionMessage {
   static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
       "Please select a reconciliation line" /*)*/;
   static final String BANK_RECONCILIATION_INCOMPLETE_LINE = /*$$(*/
-      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Accounting account, Third party). This in order to generate automatically a move line on the accounting account and journal associated with the reconciliation session" /*)*/;
+      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session." /*)*/;
 
   static final String BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/
-      "Please select one bank reconciliation line and one move line";
+      "Please select one bank reconciliation line and one move line" /*)*/;
   static final String BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE = /*$$(*/
-      "Please select one bank reconciliation line";
-  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/ "Please select one move line";
+      "Please select one bank reconciliation line" /*)*/;
+  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/
+      "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
-      "Can't load while another reconciliation is open";
+      "Can't load while another reconciliation is open" /*)*/;
 
   /** Bank Statement Query */
-  static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used";
+  static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
 }
