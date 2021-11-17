@@ -66,8 +66,6 @@
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
-        <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
-          showIf="useForPartnerBalance"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
