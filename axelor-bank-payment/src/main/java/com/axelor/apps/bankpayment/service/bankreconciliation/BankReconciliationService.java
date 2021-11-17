@@ -868,7 +868,7 @@ public class BankReconciliationService {
               .toString();
     }
     fileLink =
-        ReportFactory.createReport(IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
+        ReportFactory.createReport(IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
             .addParam("BankReconciliationId", bankReconciliation.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam(
