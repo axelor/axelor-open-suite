@@ -11,7 +11,7 @@
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"
-    width="large">
+    onLoad="action-method-account-set-read-only-if-in-move" width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>

@@ -107,6 +107,8 @@ import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.apps.account.service.NotificationServiceImpl;
+import com.axelor.apps.account.service.PaymentModeControlService;
+import com.axelor.apps.account.service.PaymentModeControlServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -441,5 +443,7 @@ public class AccountModule extends AxelorModule {
     bind(PeriodControlService.class).to(PeriodControlServiceImpl.class);
 
     bind(YearControlService.class).to(YearControlServiceImpl.class);
+
+    bind(PaymentModeControlService.class).to(PaymentModeControlServiceImpl.class);
   }
 }
