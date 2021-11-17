@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -39,6 +38,4 @@ public interface MoveLineService {
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
 
   public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
-
-  public boolean checkManageAnalytic(Move move) throws AxelorException;
 }

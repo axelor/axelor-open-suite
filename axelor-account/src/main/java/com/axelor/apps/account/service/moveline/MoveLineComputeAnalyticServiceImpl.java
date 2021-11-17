@@ -125,12 +125,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     } else {
       moveLine.setAnalyticDistributionTemplate(null);
     }
-    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-    if (analyticMoveLineList != null) {
-      analyticMoveLineList.clear();
-    } else {
-      moveLine.setAnalyticMoveLineList(new ArrayList<AnalyticMoveLine>());
-    }
+    moveLine.getAnalyticMoveLineList().clear();
     moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
   }
