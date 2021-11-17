@@ -25,7 +25,7 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="importBtn" title="Import" readonlyIf="company != null"
-        onClick="save,action-fec-import-validate-import,action-fec-import-method-run"/>
+        onClick="save,action-fec-import-validate-import,action-fec-import-method-run,save"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -52,6 +53,9 @@ public class ImportMove {
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
+  @Inject private AppAccountService appAccountService;
+
+  private String lastImportDate;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
@@ -63,12 +67,20 @@ public class ImportMove {
       if (values.get("EcritureNum") == null) {
         return null;
       }
-      String moveReference = values.get("EcritureNum").toString();
+      Company company = getCompany(values);
+      String csvReference = values.get("EcritureNum").toString();
+      if (lastImportDate == null) {
+        lastImportDate =
+            appAccountService
+                .getTodayDateTime(company)
+                .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
+      }
+      String importReference = String.format("#%s-%s", csvReference, lastImportDate);
 
       MoveLine mvLine =
           moveLineRepo
               .all()
-              .filter("self.name LIKE '" + moveReference + "-%'")
+              .filter("self.name LIKE '" + importReference + "-%'")
               .order("-counter")
               .fetchOne();
       if (mvLine != null) {
@@ -83,10 +95,10 @@ public class ImportMove {
         moveLine.setDate(moveLineDate);
       }
 
-      Move move = moveRepository.all().filter("self.reference = ?", moveReference).fetchOne();
+      Move move = moveRepository.all().filter("self.reference = ?", importReference).fetchOne();
       if (move == null) {
         move = new Move();
-        move.setReference(moveReference);
+        move.setReference(importReference);
 
         if (values.get("ValidDate") != null) {
           move.setValidationDate(
@@ -94,7 +106,7 @@ public class ImportMove {
                   values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         }
         move.setStatusSelect(MoveRepository.STATUS_NEW);
-        move.setCompany(getCompany(values));
+        move.setCompany(company);
         move.setCompanyCurrency(move.getCompany().getCurrency());
 
         move.setDate(

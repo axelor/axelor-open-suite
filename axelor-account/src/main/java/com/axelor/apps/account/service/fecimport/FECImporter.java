@@ -1,10 +1,5 @@
 package com.axelor.apps.account.service.fecimport;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -12,7 +7,9 @@ import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
@@ -20,6 +17,10 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class FECImporter extends Importer {
 
@@ -27,19 +28,23 @@ public class FECImporter extends Importer {
   protected AppAccountService appAccountService;
   protected MoveRepository moveRepository;
   protected FECImportRepository fecImportRepository;
+  protected CompanyRepository companyRepository;
   private final List<Move> moveList = new ArrayList<>();
   private FECImport fecImport;
+  private Company company;
 
   @Inject
   public FECImporter(
       MoveValidateService moveValidateService,
       AppAccountService appAccountService,
       MoveRepository moveRepository,
-      FECImportRepository fecImportRepository) {
+      FECImportRepository fecImportRepository,
+      CompanyRepository companyRepository) {
     this.moveValidateService = moveValidateService;
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
     this.fecImportRepository = fecImportRepository;
+    this.companyRepository = companyRepository;
   }
 
   @Override
@@ -104,57 +109,91 @@ public class FECImporter extends Importer {
     return this.moveList;
   }
 
-  @Transactional
-  protected void completeAndvalidateMoves(FECImport fecImport, List<Move> moveList, ImporterListener listener) {
+  protected void completeAndvalidateMoves(
+      FECImport fecImport, List<Move> moveList, ImporterListener listener) {
     if (fecImport != null) {
       int i = 0;
-      fecImport = fecImportRepository.find(fecImport.getId());
+      Long companyId = null;
       for (Move move : moveList) {
-        try {
-          move = moveRepository.find(move.getId());
-          if (move != null) {
-            move.setDescription(fecImport.getMoveDescription());
-            String csvReference = move.getReference();
-            String importReference = String.format(
-			    "#%s%s%s",
-			    fecImport.getId().toString(),
-			    move.getReference(),
-			    appAccountService.getTodayDate(move.getCompany()).toString());
-			move.setReference(importReference);
-			
-            if (fecImport.getCompany() == null) {
-              fecImport.setCompany(move.getCompany());
-            }
-            
-            move.setFecImport(fecImport);
-            
-            if (move.getValidationDate() != null) {
-            	move.setReference(String.format("#%s", csvReference));
-            }
-            else {
-            	move.setReference(String.format("#%s", move.getId().toString()));
-            }
-            
-            if (fecImport.getValidGeneratedMove()) {
-              moveValidateService.validate(move);
-              i++;
-            } else {
-              moveRepository.save(move);
-              i++;
-            }
-            
-          }
-
-        } catch (Exception e) {
-          move.setStatusSelect(MoveRepository.STATUS_NEW);
-          listener.handle(move, e);
-        } finally {
-            if (i % 10 == 0) {
-            	JPA.clear();
-            	fecImportRepository.find(fecImport.getId());
-            }
+        move = moveRepository.find(move.getId());
+        if (companyId == null && move != null) {
+          companyId = move.getCompany().getId();
         }
+        // We modify move in two parts. First part we set description and fecImport on the move
+        // Second part we set reference and validate the move if necessary.
+        // We do this in two parts because reference for move must be unique, and in case there is
+        // an error the rollback must not undo description and fecImport.
+        move = setDescriptionAndFecImport(fecImport, listener, move);
+        move = setReferenceAndValidate(fecImport, listener, move);
+        if (i % 10 == 0) {
+          JPA.clear();
+        }
+        i++;
+      }
+      this.company = companyRepository.find(companyId);
+    }
+  }
+
+  @Transactional
+  protected Move setReferenceAndValidate(
+      FECImport fecImport, ImporterListener listener, Move move) {
+    try {
+
+      if (move != null) {
+        String csvReference = extractCSVMoveReference(move.getReference());
+
+        if (move.getValidationDate() != null) {
+          move.setReference(String.format("%s", csvReference));
+        } else {
+          move.setReference(String.format("#%s", move.getId().toString()));
+        }
+
+        if (fecImport.getValidGeneratedMove()) {
+          moveValidateService.validate(move);
+        } else {
+          return moveRepository.save(move);
+        }
+        return move;
+      }
+
+    } catch (Exception e) {
+      move.setStatusSelect(MoveRepository.STATUS_NEW);
+      listener.handle(move, e);
+    }
+    return null;
+  }
+
+  @Transactional
+  protected Move setDescriptionAndFecImport(
+      FECImport fecImport, ImporterListener listener, Move move) {
+    try {
+      if (move != null) {
+        fecImport = fecImportRepository.find(fecImport.getId());
+        move.setDescription(fecImport.getMoveDescription());
+        move.setFecImport(fecImport);
+        return moveRepository.save(move);
+      }
+
+    } catch (Exception e) {
+      move.setStatusSelect(MoveRepository.STATUS_NEW);
+      listener.handle(move, e);
+    }
+    return null;
+  }
+
+  protected String extractCSVMoveReference(String reference) {
+    if (reference != null) {
+      int indexOfSeparator = reference.indexOf("-");
+      if (indexOfSeparator < 0) {
+        return reference.replaceFirst("#", "");
+      } else {
+        return reference.substring(0, indexOfSeparator).replaceFirst("#", "");
       }
     }
+    return reference;
+  }
+
+  public Company getCompany() {
+    return this.company;
   }
 }

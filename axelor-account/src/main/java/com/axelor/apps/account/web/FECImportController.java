@@ -55,11 +55,10 @@ public class FECImportController {
       ImportHistory importHistory = fecImporter.init(importConfig).run();
 
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
-      response.setValue("company", fecImport.getCompany());
+      response.setValue("company", fecImporter.getCompany());
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
               .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
