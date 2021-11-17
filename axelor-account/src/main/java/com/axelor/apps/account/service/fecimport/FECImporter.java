@@ -16,30 +16,32 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class FECImporter extends Importer {
 
-	  protected MoveValidateService moveValidateService;
-	  protected AppAccountService appAccountService;
-	  protected MoveRepository moveRepository;
-	  protected FECImportRepository fecImportRepository;
+  protected MoveValidateService moveValidateService;
+  protected AppAccountService appAccountService;
+  protected MoveRepository moveRepository;
+  protected FECImportRepository fecImportRepository;
   private final List<Move> moveList = new ArrayList<>();
-private FECImport fecImport;
+  private FECImport fecImport;
 
-  
   @Inject
- public FECImporter(MoveValidateService moveValidateService,
-		 AppAccountService appAccountService,
-		 MoveRepository moveRepository,
-		 FECImportRepository fecImportRepository) {
-	this.moveValidateService = moveValidateService;
-	this.appAccountService = appAccountService;
-	this.moveRepository = moveRepository;
-	this.fecImportRepository = fecImportRepository;
-}
+  public FECImporter(
+      MoveValidateService moveValidateService,
+      AppAccountService appAccountService,
+      MoveRepository moveRepository,
+      FECImportRepository fecImportRepository) {
+    this.moveValidateService = moveValidateService;
+    this.appAccountService = appAccountService;
+    this.moveRepository = moveRepository;
+    this.fecImportRepository = fecImportRepository;
+  }
+
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException {
@@ -55,11 +57,11 @@ private FECImport fecImport;
 
           @Override
           public void imported(Integer total, Integer success) {
-        	  try {
-				completeAndvalidateMoves(fecImport, moveList);
-			} catch (Exception e) {
-				this.handle(null, e);
-			}
+            try {
+              completeAndvalidateMoves(fecImport, moveList, this);
+            } catch (Exception e) {
+              this.handle(null, e);
+            }
             super.imported(total, success);
           }
 
@@ -87,10 +89,10 @@ private FECImport fecImport;
       }
     }
   }
-  
+
   public FECImporter addFecImport(FECImport fecImport) {
-	  this.fecImport = fecImport;
-	  return this;
+    this.fecImport = fecImport;
+    return this;
   }
 
   @Override
@@ -101,38 +103,56 @@ private FECImport fecImport;
   public List<Move> getMoves() {
     return this.moveList;
   }
-  
+
   @Transactional
-  protected void completeAndvalidateMoves(FECImport fecImport, List<Move> moveList) throws Exception {
+  protected void completeAndvalidateMoves(FECImport fecImport, List<Move> moveList, ImporterListener listener) {
     if (fecImport != null) {
+      int i = 0;
       fecImport = fecImportRepository.find(fecImport.getId());
       for (Move move : moveList) {
         try {
           move = moveRepository.find(move.getId());
           if (move != null) {
             move.setDescription(fecImport.getMoveDescription());
-            if (move.getValidationDate() != null) {
-              move.setReference(
-                  String.format(
-                      "%s%s%s",
-                      fecImport.getId().toString(),
-                      move.getReference(),
-                      appAccountService.getTodayDate(move.getCompany()).toString()));
-            }
+            String csvReference = move.getReference();
+            String importReference = String.format(
+			    "#%s%s%s",
+			    fecImport.getId().toString(),
+			    move.getReference(),
+			    appAccountService.getTodayDate(move.getCompany()).toString());
+			move.setReference(importReference);
+			
             if (fecImport.getCompany() == null) {
               fecImport.setCompany(move.getCompany());
             }
+            
             move.setFecImport(fecImport);
+            
+            if (move.getValidationDate() != null) {
+            	move.setReference(String.format("#%s", csvReference));
+            }
+            else {
+            	move.setReference(String.format("#%s", move.getId().toString()));
+            }
+            
             if (fecImport.getValidGeneratedMove()) {
               moveValidateService.validate(move);
+              i++;
             } else {
               moveRepository.save(move);
+              i++;
             }
+            
           }
 
         } catch (Exception e) {
           move.setStatusSelect(MoveRepository.STATUS_NEW);
-          throw e;
+          listener.handle(move, e);
+        } finally {
+            if (i % 10 == 0) {
+            	JPA.clear();
+            	fecImportRepository.find(fecImport.getId());
+            }
         }
       }
     }

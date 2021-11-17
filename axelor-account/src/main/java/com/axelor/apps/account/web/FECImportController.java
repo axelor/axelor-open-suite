@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.service.fecimport.FECImporter;
@@ -37,6 +28,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class FECImportController {
 

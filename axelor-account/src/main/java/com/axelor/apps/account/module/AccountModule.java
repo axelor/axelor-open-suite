@@ -383,6 +383,5 @@ public class AccountModule extends AxelorModule {
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
-
   }
 }
