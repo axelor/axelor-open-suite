@@ -23,9 +23,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,6 +55,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppBaseService appBaseService;
+  protected AppAccountService appAccountService;
+  protected AccountConfigService accountConfigService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -61,12 +66,16 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
       AppBaseService appBaseService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
+    this.appAccountService = appAccountService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -269,5 +278,13 @@ public class MoveLineServiceImpl implements MoveLineService {
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public boolean checkManageAnalytic(Move move) throws AxelorException {
+    return move != null
+        && move.getCompany() != null
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 }
