@@ -265,7 +265,8 @@ public class BankReconciliationController {
               .generate()
               .getFileLink();
 
-      response.setView(ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
+      response.setView(
+          ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -277,7 +278,8 @@ public class BankReconciliationController {
       String fileLink =
           Beans.get(BankReconciliationService.class).printNewBankReconciliation(bankReconciliation);
       if (StringUtils.notEmpty(fileLink)) {
-        response.setView(ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
+        response.setView(
+            ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
