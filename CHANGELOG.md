@@ -1,3 +1,32 @@
+## [6.0.16] (2021-11-17)
+
+#### Changes
+
+* ACCOUNTING SITUATION: Add filters on customer account and supplier account.
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* Forecast Recap: fix display of bank details last update balance date in form view.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* BatchLeaveManagement: Leave lines created by batch will now correctly have their name set.
+* LeaveLine: Fixed demo data where leave lines did not have a name.
+* AbstractBatch: Fixed duration which was computed in minutes instead of seconds.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when setting last purchase price as product cost price.
+* Sale Order: correctly hide availability request label when stock module is not included.
+* Product: fix stock details never showing any stock location line.
+* Human resources: restored chart view for leave per employee.
+* Accounting Move: fix NPE when we click on delete move without any moves selected.
+* PRINTING SETTINGS: Fix display error when pdfHeader is not filled.
+* Fix french translation "Personnalisé" to "Personnaliser".
+* PRODUCTION/STOCK: Add missing / fix wrong translations.
+* INTERCO: Fix analytical distribution model of generated interco invoice.
+* Product Category: change wrong grid view of parentProductCategory.
+
 ## [6.0.15] (2021-10-14)
 
 #### Fixed
@@ -603,6 +632,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.16]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.0.16
 [6.0.15]: https://github.com/axelor/axelor-open-suite/compare/v6.0.14...v6.0.15
 [6.0.14]: https://github.com/axelor/axelor-open-suite/compare/v6.0.13...v6.0.14
 [6.0.13]: https://github.com/axelor/axelor-open-suite/compare/v6.0.12...v6.0.13
