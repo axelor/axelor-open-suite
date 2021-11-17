@@ -140,12 +140,15 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + " "
               + personalizedBOM.getId()
               + ")");
+      personalizedBOM.setCustomizable(false);
       personalizedBOM.setPersonalized(true);
       Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
       for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
         personalizedBOMSet.add(customizeBillOfMaterial(childBillOfMaterial, depth + 1));
       }
       personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
+
+      billOfMaterialRepo.save(personalizedBOM);
 
       return personalizedBOM;
     }

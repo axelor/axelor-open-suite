@@ -385,10 +385,14 @@
         <field name="billOfMaterial"
           onSelect="action-sale-order-line-attrs-bill-of-material-domain"
           if-module="axelor-production" form-view="bill-of-material-form"
-          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
+          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"
+          canEdit="!billOfMaterial.customizable"/>
+        <field name="billOfMaterial.customizable" if-module="axelor-production"
+          if="__config__.app.isApp('production')" hidden="true"/>
         <button name="customizeBOMBtn" title="Customize BOM"
           onClick="action-production-method-customize-bill-of-material"
-          if-module="axelor-production" if="__config__.app.isApp('production')"/>
+          if-module="axelor-production" if="__config__.app.isApp('production')"
+          showIf="billOfMaterial.customizable"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
