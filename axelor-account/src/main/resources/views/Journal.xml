@@ -14,13 +14,14 @@
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
-    onNew="account-journal-record-default" width="large"
-    onLoad="action-journal-group-on-load-actions">
+    onNew="account-journal-record-default,action-method-account-journal-readonly-if-journal-in-move"
+    width="large" onLoad="action-journal-group-on-load-actions">
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
       <button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1"
-        onClick="account-journal-record-status-active,save" colSpan="2"/>
+        onClick="account-journal-record-status-active,save,action-method-account-journal-readonly-if-journal-in-move"
+        colSpan="2"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>

@@ -49,14 +49,23 @@ public class JournalController {
 
   public void setReadOnly(ActionRequest request, ActionResponse response) {
     try {
-      Journal journal =
-          Beans.get(JournalRepository.class)
-              .find(request.getContext().asType(Journal.class).getId());
-      if (journal != null) {
-        Boolean isInMove = Beans.get(JournalControlService.class).isLinkedToMove(journal);
-        response.setAttr("name", "readonly", isInMove);
-        response.setAttr("code", "readonly", isInMove);
-        response.setAttr("journalType", "readonly", isInMove);
+      Journal journalContext = request.getContext().asType(Journal.class);
+      if (journalContext.getId() != null) {
+        Journal journal = Beans.get(JournalRepository.class).find(journalContext.getId());
+        if (journal != null) {
+          Boolean isInMove = Beans.get(JournalControlService.class).isLinkedToMove(journal);
+          boolean isActive = journal.getStatusSelect() == JournalRepository.STATUS_ACTIVE;
+          response.setAttr("name", "readonly", isInMove || isActive);
+          response.setAttr("code", "readonly", isInMove || isActive);
+          response.setAttr("journalType", "readonly", isInMove || isActive);
+          response.setAttr("company", "readonly", isInMove || isActive);
+        }
+      } else {
+        // We need to do that because setReadOnly is called onNew too.
+        response.setAttr("name", "readonly", false);
+        response.setAttr("code", "readonly", false);
+        response.setAttr("journalType", "readonly", false);
+        response.setAttr("company", "readonly", false);
       }
 
     } catch (Exception e) {
