@@ -260,7 +260,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.saleOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)

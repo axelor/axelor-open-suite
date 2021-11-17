@@ -776,7 +776,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           List<StockLocation> stockLocationList =
               Beans.get(StockLocationService.class)
                   .getAllLocationAndSubLocation(stockLocation, false);
-          if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          if (!stockLocationList.isEmpty()
+              && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
                 " AND self.stockMove.fromStockLocation.id IN ("
                     + StringTool.getIdListString(stockLocationList)
@@ -813,7 +814,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.stockMove.toStockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)
