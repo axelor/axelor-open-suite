@@ -94,6 +94,8 @@ import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticGroupingService;
 import com.axelor.apps.account.service.AnalyticGroupingServiceImpl;
+import com.axelor.apps.account.service.AnalyticJournalControlService;
+import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -431,6 +433,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticAxisControlService.class).to(AnalyticAxisControlServiceImpl.class);
 
     bind(InvoiceControlService.class).to(InvoiceControlServiceImpl.class);
+
+    bind(AnalyticJournalControlService.class).to(AnalyticJournalControlServiceImpl.class);
 
     bind(PeriodRepository.class).to(PeriodManagementRepository.class);
 
