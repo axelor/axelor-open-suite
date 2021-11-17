@@ -352,7 +352,7 @@
 
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
-      if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect == 2 || statusSelect == 5))"/>
+      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
     <action name="save"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -450,10 +450,10 @@
   <action-attrs name="action-move-attrs-validate-button-title">
     <attribute name="title" for="accountingBtn"
       expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
-      if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_DAYBOOK || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
+      if="eval: (!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) || (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED || statusSelect == MoveRepository.STATUS_DAYBOOK)"/>
     <attribute name="title" for="accountingBtn"
       expr="eval: com.axelor.i18n.I18n.get('DayBook')"
-      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_DAYBOOK &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)"/>
+      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; journal?.allowAccountingDaybook &amp;&amp; (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
   </action-attrs>
 
   <action-attrs
