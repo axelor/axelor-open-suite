@@ -984,7 +984,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
     BigDecimal sumInvoices = computeSumInvoices(invoices);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
