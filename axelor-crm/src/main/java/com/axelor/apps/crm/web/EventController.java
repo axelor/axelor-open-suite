@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
@@ -184,15 +185,11 @@ public class EventController {
     if (request.getContext().get("id") != null) {
       Lead lead = leadRepo.find((Long) request.getContext().get("id"));
       lead.setUser(AuthUtils.getUser());
-      if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
-        lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
       leadService.saveLead(lead);
     } else if (((List) request.getContext().get("_ids")) != null) {
       for (Lead lead :
           leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
         lead.setUser(AuthUtils.getUser());
-        if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW)
-          lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
         leadService.saveLead(lead);
       }
     }
@@ -216,17 +213,6 @@ public class EventController {
       }
     }
     response.setReload(true);
-  }
-
-  public void manageFollowers(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      Beans.get(EventService.class).manageFollowers(event);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -540,6 +526,38 @@ public class EventController {
           eventReminderRepository.find((long) request.getContext().get("id"));
       eventReminderRepository.remove(eventReminder);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void realizeEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      event = Beans.get(EventRepository.class).find(event.getId());
+      event.setStatusSelect(
+          event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
+                  && event.getTypeSelect() != EventRepository.TYPE_NOTE
+              ? EventRepository.STATUS_REALIZED
+              : EventRepository.STATUS_FINISHED);
+      Beans.get(EventService.class).saveEvent(event);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      event = Beans.get(EventRepository.class).find(event.getId());
+      event.setStatusSelect(
+          event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
+                  && event.getTypeSelect() != EventRepository.TYPE_NOTE
+              ? EventRepository.STATUS_CANCELED
+              : EventRepository.STATUS_REPORTED);
+      Beans.get(EventService.class).saveEvent(event);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

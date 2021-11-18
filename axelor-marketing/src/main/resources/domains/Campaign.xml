@@ -62,6 +62,7 @@
       title="Lead reminder template"/>
     <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets"
       default="true"/>
+    <string name="description" title="Description" large="true"/>
 
   </entity>
 

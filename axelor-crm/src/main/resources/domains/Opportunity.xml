@@ -9,6 +9,7 @@
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="expectedCloseDate" title="Expected close date"/>
     <decimal name="amount" title="Amount"/>
@@ -19,7 +20,6 @@
     <integer name="salesStageSelect" title="Sales stage"
       selection="crm.opportunity.sales.stage.select"/>
     <decimal name="probability" title="Probability (%)"/>
-    <string name="nextStep" title="Next step"/>
     <string name="description" large="true" title="Description"/>
     <string name="customerDescription" large="true" title="Customer Description"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
@@ -37,6 +37,15 @@
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
+
+    <date name="payingDate" title="Paying date"/>
+    <decimal name="recurrentAmount" title="Recurrent amount"/>
+    <integer name="periodicitySelect" title="Periodicity"
+      selection="crm.opportunity.periodicity.select"/>
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
+    <integer name="opportunityRating" title="Opportunity score"
+      selection="yellow.rating.icon.select"/>
 
     <extra-code>
 		<![CDATA[

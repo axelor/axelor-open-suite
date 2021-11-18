@@ -39,7 +39,6 @@
     <boolean name="isRecycled" title="Recycled"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
     <string name="statusDescription" title="Status description" large="true"/>
-    <decimal name="estimatedBudget" title="Estimated budget"/>
     <string name="sourceDescription" title="Source description" large="true"/>
     <string name="referredBy" title="Referred by"/>
     <boolean name="isDoNotCall" title="Rejection of calls"/>
@@ -65,13 +64,19 @@
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <string name="fullName" title="Contact name" namecolumn="true"/>
 
+    <integer name="closedReason" title="Closed reason"
+      selection="crm.lead.closed.reason.select"/>
+    <boolean name="isNurturing" title="Nurturing"/>
+
     <extra-code>
     <![CDATA[
     	public static final int LEAD_STATUS_NEW = 1;
-    	public static final int LEAD_STATUS_ASSIGNED = 2;
-    	public static final int LEAD_STATUS_IN_PROCESS = 3;
-    	public static final int LEAD_STATUS_CONVERTED = 4;
-    	public static final int LEAD_STATUS_LOST = 5;
+    	public static final int LEAD_STATUS_IN_PROCESS = 2;
+    	public static final int LEAD_STATUS_CLOSED = 3;
+
+		public static final int CLOSED_REASON_CANCELED = 1;
+    	public static final int CLOSED_REASON_LOST = 2;
+    	public static final int CLOSED_REASON_CONVERTED = 3;
 
     	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
     	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;
@@ -85,8 +90,8 @@
       <field name="name"/>
       <field name="statusSelect" on="UPDATE"/>
       <message if="true" on="CREATE">Lead created</message>
-      <message if="statusSelect == 2" tag="important">Lead Assigned</message>
-      <message if="statusSelect == 5" tag="success">Lead Converted</message>
+      <message if="statusSelect == 2" tag="important">Lead In progress</message>
+      <message if="statusSelect == 3" tag="success">Lead Converted/Closed</message>
     </track>
 
   </entity>

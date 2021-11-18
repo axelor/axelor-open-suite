@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.service;
+package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface OpportunityService {
+@Singleton
+public class MessageController extends com.axelor.apps.base.web.MessageController {
 
-  @Transactional
-  public void saveOpportunity(Opportunity opportunity);
-
-  @Transactional(rollbackOn = {Exception.class})
-  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
-
-  public void setSequence(Opportunity opportunity) throws AxelorException;
-
-  public String computeAndGetName(Opportunity opportunity);
-
-  public void closeLead(Opportunity opportunity);
+  public void setValues(ActionRequest request, ActionResponse response) {
+    try {
+      response.setValues(request.getContext().get("_message"));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
