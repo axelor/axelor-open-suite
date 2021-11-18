@@ -73,7 +73,8 @@
             onChange="action-move-account-record-set-journal-technical-type-select"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false"/>
-          <field name="date" onChange="action-move-method-get-period"
+          <field name="date"
+            onChange="action-move-method-get-period,action-move-method-set-moveline-dates"
             hideIf="statusSelect == 3" colSpan="3"/>
           <field name="originDate" colSpan="3"/>
           <field name="tradingName"
@@ -515,6 +516,10 @@
   <action-method name="action-account-move-method-set-origin-description-on-lines">
     <call class="com.axelor.apps.account.web.MoveController"
       method="setOriginAndDescriptionOnLines"/>
+  </action-method>
+
+  <action-method name="action-move-method-set-moveline-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineDates"/>
   </action-method>
 
 

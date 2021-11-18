@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -14,6 +15,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -24,11 +26,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
-  public MoveLineToolServiceImpl(TaxService taxService, CurrencyService currencyService) {
+  public MoveLineToolServiceImpl(
+      TaxService taxService,
+      CurrencyService currencyService,
+      MoveLineRepository moveLineRepository) {
     this.taxService = taxService;
     this.currencyService = currencyService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   /**
@@ -280,5 +287,22 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     moveLine.setCurrencyAmount(
         unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     return moveLine;
+  }
+
+  @Override
+  @Transactional
+  public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
+    if (!(move != null
+        && move.getPeriod() != null
+        && moveLine.getDate().isAfter(move.getPeriod().getFromDate())
+        && moveLine.getDate().isBefore(move.getPeriod().getToDate()))) {
+      moveLine.setDate(moveLineRepository.find(moveLine.getId()).getDate());
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
+    } else {
+      moveLineRepository.save(moveLine);
+    }
   }
 }
