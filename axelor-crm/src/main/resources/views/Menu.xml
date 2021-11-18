@@ -13,11 +13,14 @@
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
+    <view-param name="default-search-filters" value="active-team-leads-filter"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_statusNewLead" expr="eval: __repo__(Lead).LEAD_STATUS_NEW"/>
+    <context name="_statusInProgressLead" expr="eval: __repo__(Lead).LEAD_STATUS_IN_PROCESS"/>
   </action-view>
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
@@ -224,7 +227,7 @@
     <view type="form" name="event-form"/>
     <view type="calendar" name="event-calendar-color-by-calendar"/>
     <view-param name="search-filters" value="event-filters"/>
-    <domain>self.typeSelect = 1</domain>
+    <domain>self.typeSelect = 1 OR self.typeSelect = 6</domain>
     <context name="_internalUserId" expr="eval: __user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

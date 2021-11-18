@@ -18,7 +18,6 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarService;
@@ -38,10 +37,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.mail.db.MailAddress;
-import com.axelor.mail.db.MailFollower;
-import com.axelor.mail.db.repo.MailAddressRepository;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -132,29 +127,6 @@ public class EventServiceImpl implements EventService {
     }
 
     return null;
-  }
-
-  @Override
-  @Transactional
-  public void manageFollowers(Event event) {
-    MailFollowerRepository mailFollowerRepo = Beans.get(MailFollowerRepository.class);
-    List<MailFollower> followers = mailFollowerRepo.findAll(event);
-    List<ICalendarUser> attendeesSet = event.getAttendees();
-
-    if (followers != null) followers.forEach(x -> mailFollowerRepo.remove(x));
-    mailFollowerRepo.follow(event, event.getUser());
-
-    if (attendeesSet != null) {
-      for (ICalendarUser user : attendeesSet) {
-        if (user.getUser() != null) {
-          mailFollowerRepo.follow(event, user.getUser());
-        } else {
-          MailAddress mailAddress =
-              Beans.get(MailAddressRepository.class).findOrCreate(user.getEmail(), user.getName());
-          mailFollowerRepo.follow(event, mailAddress);
-        }
-      }
-    }
   }
 
   @Override
