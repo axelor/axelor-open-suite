@@ -44,6 +44,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
@@ -583,4 +585,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     multiRelated.setRelatedToSelectId(relatedToSelectId);
     message.addMultiRelatedListItem(multiRelated);
   }
+
+  @Override
+  public void fillContext(
+      ActionViewBuilder builder, Map<String, Object> contextMap, String model, Long objectId) {}
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,11 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.service.app;
+package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface AppCrmService extends AppBaseService {
+@Singleton
+public class MessageController extends com.axelor.apps.base.web.MessageController {
 
-  public void generateCrmConfigurations();
+  public void setValues(ActionRequest request, ActionResponse response) {
+    try {
+      response.setValues(request.getContext().get("_message"));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

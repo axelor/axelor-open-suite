@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.message.db.repo;
 
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MessageManagementRepository extends MessageRepository {
   @Override
@@ -29,5 +34,25 @@ public class MessageManagementRepository extends MessageRepository {
     entity.setBccEmailAddressSet(null);
     entity.setRecipientUser(null);
     return super.copy(entity, deep);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    Long messageId = (Long) json.get("id");
+    Message message = find(messageId);
+
+    Set<EmailAddress> toEmailAddressSet = message.getToEmailAddressSet();
+
+    if (CollectionUtils.isEmpty(toEmailAddressSet)) {
+      return super.populate(json, context);
+    }
+
+    String toEmailAddresses =
+        toEmailAddressSet.stream()
+            .map(email -> email.getAddress())
+            .collect(Collectors.joining(", "));
+
+    json.put("toEmailAddresses", toEmailAddresses);
+    return super.populate(json, context);
   }
 }
