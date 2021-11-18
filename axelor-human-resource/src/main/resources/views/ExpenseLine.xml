@@ -16,11 +16,11 @@
     <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
     <field name="user" hidden="true" form-view="user-form" grid-view="user-grid"
       onSelect="action-expense-line-attrs-company"/>
-    <field name="totalAmount" aggregate="sum"
-      onChange="action-expense-on-change-tax-untaxt-amount" width="170"/>
-    <field name="totalTax" aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax"
-      width="80"
-      onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+    <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+      aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount" width="170"/>
+    <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+      aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
+      onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
@@ -76,9 +76,9 @@
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
         form-view="product-expense-form" grid-view="product-expense-grid"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-      <field name="totalAmount"
+      <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
-      <field name="totalTax"
+      <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
         readonlyIf="expenseProduct.blockExpenseTax == true"/>
       <field name="untaxedAmount"/>
