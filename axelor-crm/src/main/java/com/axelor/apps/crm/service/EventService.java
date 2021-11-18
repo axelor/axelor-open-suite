@@ -43,8 +43,6 @@ public interface EventService {
   @CallMethod
   String getInvoicingAddressFullName(Partner partner);
 
-  void manageFollowers(Event event);
-
   void addRecurrentEventsByDays(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
 

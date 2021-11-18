@@ -107,4 +107,6 @@ public interface IExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  public static final String CONVERT_LEAD = /*$$(*/ "Convert lead %s" /*)*/;
 }

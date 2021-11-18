@@ -6,7 +6,6 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="AppCrm" lang="java">
-
     <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
     <integer name="assignableUsers" title="Assignable Users"
@@ -15,6 +14,9 @@
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
       title="Display customer description in opportunity"/>
+    <boolean name="isManageRecurrent" title="Manage recurrent"/>
+    <boolean name="isAutomaticConvertLead" title="Automatically convert a lead"
+      help="Offer to automatically convert a lead into a partner when an opportunity is won"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
