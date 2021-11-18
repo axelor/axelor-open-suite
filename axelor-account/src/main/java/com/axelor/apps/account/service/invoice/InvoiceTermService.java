@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -191,4 +192,7 @@ public interface InvoiceTermService {
    * @return
    */
   public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice);
+
+  public void refusalToPay(
+      InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 }

@@ -32,6 +32,15 @@
     <boolean name="isCustomized" title="Is customized" default="false"/>
     <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
 
+    <date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <integer name="pfpValidateStatusSelect" title="PFP Status"
+      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="1"/>
+    <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+
     <string name="name" namecolumn="true" search="invoice,dueDate,amount" title="Name">
             <![CDATA[
             if( invoice != null ){
@@ -46,6 +55,26 @@
             }
 	    ]]>
     </string>
+
+    <extra-code><![CDATA[
+
+	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
+
+	]]></extra-code>
+
+    <track>
+      <field name="amount" on="UPDATE"/>
+      <field name="amountRemaining" on="UPDATE"/>
+      <field name="isPaid" on="UPDATE"/>
+      <field name="financialDiscount" on="UPDATE"/>
+      <field name="percentage" on="UPDATE"/>
+      <field name="decisionPfpTakenDate" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+    </track>
 
   </entity>
 
