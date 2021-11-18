@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -338,32 +339,27 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public List<Long> findPartnerMails(Partner partner) {
+  public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(this.findMailsFromPartner(partner, emailType));
+
+    if (partner.getIsContact()) {
+      return idList;
+    }
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
+        idList.addAll(this.findMailsFromPartner(contact, emailType));
       }
     }
     return idList;
   }
 
-  @Override
-  public List<Long> findContactMails(Partner partner) {
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner));
-
-    return idList;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
-  public List<Long> findMailsFromPartner(Partner partner) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
 
     String query =
         String.format(
@@ -372,7 +368,24 @@ public class PartnerServiceImpl implements PartnerService {
             partner.getId());
 
     if (partner.getEmailAddress() != null) {
-      query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
+      if (emailType == MessageRepository.TYPE_RECEIVED) {
+        query =
+            query.substring(0, query.length() - 1)
+                + " AND (email.fromEmailAddress.address = '"
+                + partner.getEmailAddress().getAddress()
+                + "'))";
+
+      } else {
+        query =
+            query.substring(0, query.length() - 1)
+                + " AND (:emailAddress IN (SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet)))";
+        return JPA.em()
+            .createQuery(query)
+            .setParameter("emailAddress", partner.getEmailAddress().getAddress())
+            .getResultList();
+      }
+    } else {
+      query += " AND email.typeSelect = " + emailType;
     }
 
     return JPA.em().createQuery(query).getResultList();
