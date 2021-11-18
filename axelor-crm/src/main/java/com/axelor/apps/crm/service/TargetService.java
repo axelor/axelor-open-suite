@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.crm.db.Target;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -172,11 +173,12 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-                  EventRepository.TYPE_CALL,
+                  "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = ?5",
+                  ICalendarEventRepository.TYPE_CALL,
                   user,
                   fromDateTime,
-                  toDateTime)
+                  toDateTime,
+                  EventRepository.CALL_TYPE_OUTBOUND)
               .count();
 
       target.setCallEmittedNumber(callEmittedNumber.intValue());
@@ -186,7 +188,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-                  EventRepository.TYPE_MEETING,
+                  ICalendarEventRepository.TYPE_MEETING,
                   user,
                   fromDateTime,
                   toDateTime)
@@ -237,11 +239,12 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-                  EventRepository.TYPE_CALL,
+                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = ?5",
+                  ICalendarEventRepository.TYPE_CALL,
                   team,
                   fromDateTime,
-                  toDateTime)
+                  toDateTime,
+                  EventRepository.CALL_TYPE_OUTBOUND)
               .count();
 
       target.setCallEmittedNumber(callEmittedNumber.intValue());
@@ -251,7 +254,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-                  EventRepository.TYPE_MEETING,
+                  ICalendarEventRepository.TYPE_MEETING,
                   team,
                   fromDateTime,
                   toDateTime)

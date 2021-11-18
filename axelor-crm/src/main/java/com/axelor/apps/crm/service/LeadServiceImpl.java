@@ -31,6 +31,8 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.message.db.MultiRelated;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -41,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class LeadServiceImpl implements LeadService {
@@ -56,6 +59,8 @@ public class LeadServiceImpl implements LeadService {
   @Inject protected LeadRepository leadRepo;
 
   @Inject protected EventRepository eventRepo;
+
+  @Inject private MultiRelatedRepository multiRelatedRepository;
 
   /**
    * Convert lead into a partner
@@ -76,9 +81,32 @@ public class LeadServiceImpl implements LeadService {
       partner.getContactPartnerSet().add(contactPartner);
       contactPartner.setMainPartner(partner);
     }
+
     if (partner != null) {
       partner = partnerRepo.save(partner);
       lead.setPartner(partner);
+
+      List<MultiRelated> multiRelateds =
+          multiRelatedRepository
+              .all()
+              .filter(
+                  "self.relatedToSelect = ?1 and self.relatedToSelectId = ?2",
+                  Lead.class.getName(),
+                  lead.getId())
+              .fetch();
+
+      for (MultiRelated multiRelated : multiRelateds) {
+        multiRelated.setRelatedToSelect(Partner.class.getName());
+        multiRelated.setRelatedToSelectId(partner.getId());
+        multiRelatedRepository.save(multiRelated);
+        if (contactPartner != null) {
+          MultiRelated contactMultiRelated = new MultiRelated();
+          contactMultiRelated.setRelatedToSelect(Partner.class.getName());
+          contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
+          contactMultiRelated.setMessage(multiRelated.getMessage());
+          multiRelatedRepository.save(contactMultiRelated);
+        }
+      }
     }
 
     for (Event event : lead.getEventList()) {
@@ -92,7 +120,8 @@ public class LeadServiceImpl implements LeadService {
       opportunityRepo.save(opportunity);
     }
 
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
+    lead.setClosedReason(LeadRepository.CLOSED_REASON_CONVERTED);
 
     return leadRepo.save(lead);
   }
@@ -232,7 +261,8 @@ public class LeadServiceImpl implements LeadService {
 
   @Transactional
   public void loseLead(Lead lead, LostReason lostReason) {
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
+    lead.setClosedReason(LeadRepository.CLOSED_REASON_LOST);
     lead.setLostReason(lostReason);
   }
 
