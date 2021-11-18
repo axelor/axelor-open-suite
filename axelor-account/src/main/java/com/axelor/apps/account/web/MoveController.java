@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -509,6 +510,21 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       if (move.getOrigin() == null && move.getDescription() == null) {
         response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setMoveLineDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+        MoveLineToolService moveLineToolService = Beans.get(MoveLineToolService.class);
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          moveLine.setDate(move.getDate());
+          moveLineToolService.checkDateInPeriod(move, moveLine);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

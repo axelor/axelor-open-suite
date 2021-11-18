@@ -842,22 +842,13 @@
     </filter>
   </search-filters>
 
-  <action-validate name="action-move-line-validate-check-date-in-period">
-    <error message="The selected date is out of the accounting period."
-      if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
-			|| (__parent__ &amp;&amp; __parent__.period &amp;&amp; (date &lt; __parent__.period.fromDate || date &gt; __parent__.period.toDate))"
-      action="action-update-move-line-record-update-date-from-move"/>
-  </action-validate>
+  <action-method name="action-move-line-validate-check-date-in-period">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="checkDateInPeriod"/>
+  </action-method>
 
   <action-method name="action-account-move-line-method-set-partner-readonly">
     <call class="com.axelor.apps.account.web.MoveLineController" method="setPartnerReadonlyIf"/>
   </action-method>
-
-  <action-record name="action-update-move-line-record-update-date-from-move"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="date" expr="eval: move.date" if="move"/>
-    <field name="date" expr="eval: __parent__.date" if="__parent__"/>
-  </action-record>
 
   <action-method name="action-method-move-line-axis-create-analytic-line">
     <call class="com.axelor.apps.account.web.MoveLineController"
@@ -867,7 +858,6 @@
   <action-method name="action-attrs-move-line-set-domain-axis">
     <call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains"/>
   </action-method>
-
 
   <action-method name="action-method-move-line-set-required-analytic-accounts">
     <call class="com.axelor.apps.account.web.MoveLineController"

@@ -35,4 +35,6 @@ public interface MoveLineToolService {
   TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
 
   MoveLine setCurrencyAmount(MoveLine moveLine);
+
+  void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 }
