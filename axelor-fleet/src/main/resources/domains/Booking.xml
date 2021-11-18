@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-		<module name="fleet" package="com.axelor.apps.fleet.db"/>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-	<entity name="Booking" lang="java" cacheable="true">
-		<string name="name" />
-		<date name="bookingDate" title="BookingDate" />
-		<many-to-many name="contactSet" ref="com.axelor.apps.base.db.Partner"/>
-		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"/>
-		<boolean name="isConfirmed" title="Confirmed"/>
-		<many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category"/>
-	</entity>
-	
+  <entity name="Booking" lang="java" cacheable="true">
+    <string name="name"/>
+    <date name="bookingDate" title="BookingDate"/>
+    <many-to-many name="contactSet" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"/>
+    <boolean name="isConfirmed" title="Confirmed"/>
+    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
+      title="Category"/>
+  </entity>
+
 </domain-models>

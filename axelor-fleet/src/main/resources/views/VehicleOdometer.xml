@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="vehicle-odometer-grid" title="Odometers" model="com.axelor.apps.fleet.db.VehicleOdometer">
-       <field name="date" />
-       <field name="value" />
-       <field name="vehicle"/>
-       <field name="unit" />
-    </grid>
-    
-    <form name="vehicle-odometer-form" title="Odometer" model="com.axelor.apps.fleet.db.VehicleOdometer" width="large">
-       <panel name="mainPanel">
-       	   <field name="name"/>
-     	   <field name="date" />
-	       <field name="vehicle" required="true"/>
-	       <field name="value" />
-	       <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
-	   </panel>
-    </form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="vehicle-odometer-grid" title="Odometers"
+    model="com.axelor.apps.fleet.db.VehicleOdometer">
+    <field name="date"/>
+    <field name="value"/>
+    <field name="vehicle"/>
+    <field name="unit"/>
+  </grid>
+
+  <form name="vehicle-odometer-form" title="Odometer"
+    model="com.axelor.apps.fleet.db.VehicleOdometer" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="date"/>
+      <field name="vehicle" required="true"/>
+      <field name="value"/>
+      <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
+    </panel>
+  </form>
+
 </object-views>

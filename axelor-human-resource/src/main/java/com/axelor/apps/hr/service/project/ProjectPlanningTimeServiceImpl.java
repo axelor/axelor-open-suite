@@ -24,13 +24,13 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -48,7 +48,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   protected ProjectPlanningTimeRepository planningTimeRepo;
   protected ProjectRepository projectRepo;
-  protected TeamTaskRepository teamTaskRepo;
+  protected ProjectTaskRepository projectTaskRepo;
   protected WeeklyPlanningService weeklyPlanningService;
   protected PublicHolidayHrService holidayService;
   protected ProductRepository productRepo;
@@ -58,7 +58,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   public ProjectPlanningTimeServiceImpl(
       ProjectPlanningTimeRepository planningTimeRepo,
       ProjectRepository projectRepo,
-      TeamTaskRepository teamTaskRepo,
+      ProjectTaskRepository projectTaskRepo,
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
@@ -66,7 +66,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
-    this.teamTaskRepo = teamTaskRepo;
+    this.projectTaskRepo = projectTaskRepo;
     this.weeklyPlanningService = weeklyPlanningService;
     this.holidayService = holidayService;
     this.productRepo = productRepo;
@@ -74,12 +74,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  public BigDecimal getTaskPlannedHrs(TeamTask task) {
+  public BigDecimal getTaskPlannedHrs(ProjectTask task) {
 
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.task = ?1", task).fetch();
+          planningTimeRepo.all().filter("self.projectTask = ?1", task).fetch();
       if (plannings != null) {
         totalPlanned =
             plannings.stream()
@@ -131,7 +131,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
     LocalDateTime toDate = LocalDateTime.parse(datas.get("toDate").toString(), formatter);
 
-    TeamTask teamTask = null;
+    ProjectTask projectTask = null;
 
     Map<String, Object> objMap = (Map) datas.get("project");
     Project project = projectRepo.find(Long.parseLong(objMap.get("id").toString()));
@@ -150,7 +150,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     if (datas.get("task") != null) {
       objMap = (Map) datas.get("task");
-      teamTask = teamTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
+      projectTask = projectTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
     Product activity = null;
@@ -177,7 +177,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
         ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
-        planningTime.setTask(teamTask);
+        planningTime.setProjectTask(projectTask);
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
         planningTime.setUser(user);

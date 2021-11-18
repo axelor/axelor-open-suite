@@ -55,12 +55,16 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoicePrintServiceImpl(
-      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo) {
+      InvoiceRepository invoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      AppBaseService appBaseService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override

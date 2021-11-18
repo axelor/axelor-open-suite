@@ -20,11 +20,11 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -34,31 +34,30 @@ import java.util.List;
 
 public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateService {
 
-  protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
-  protected TeamTaskRepository teamTaskRepository;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTaskRepository projectTaskRepo;
   protected ProductCompanyService productCompanyService;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
-      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
-      TeamTaskRepository teamTaskRepository,
-      ProductCompanyService productCompanyService) {
-    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
-    this.teamTaskRepository = teamTaskRepository;
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskRepository projectTaskRepo) {
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
   }
 
   @Override
   @Transactional
-  public List<TeamTask> convert(
+  public List<ProjectTask> convert(
       List<? extends TaskTemplate> templates,
       Project project,
-      TeamTask parent,
+      ProjectTask parent,
       LocalDateTime startDate,
       BigDecimal qty,
       SaleOrderLine saleOrderLine)
       throws AxelorException {
-    List<TeamTask> tasks = new ArrayList<>();
+    List<ProjectTask> tasks = new ArrayList<>();
     Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
@@ -67,8 +66,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       while (qtyTmp.signum() > 0) {
         LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-        TeamTask task =
-            teamTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+        ProjectTask task =
+            projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
         task.setParentTask(parent);
         task.setProduct(product);
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
@@ -78,12 +77,12 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);
-          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
         }
-        tasks.add(teamTaskRepository.save(task));
+        tasks.add(projectTaskRepo.save(task));
 
         // Only parent task can have multiple quantities
-        List<TeamTask> children =
+        List<ProjectTask> children =
             convert(
                 template.getTaskTemplateList(),
                 project,

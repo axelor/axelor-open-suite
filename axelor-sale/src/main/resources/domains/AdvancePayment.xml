@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="AdvancePayment" lang="java">
-  
- 	<decimal name="amount" title="Amount" required="true" default="0"/>
- 	
- 	<date name="advancePaymentDate" title="Date" required="true"/>
- 	
- 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
- 	
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
-  	<integer name="statusSelect" title="Status" selection="advance.payment.status.select"/>
-  	
-  	 <extra-code>
+
+    <decimal name="amount" title="Amount" required="true" default="0"/>
+
+    <date name="advancePaymentDate" title="Date" required="true"/>
+
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
+
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
+      required="true"/>
+    <integer name="statusSelect" title="Status" selection="advance.payment.status.select"/>
+
+    <extra-code>
    		<![CDATA[
    			public static final int STATUS_DRAFT = 0;
    			public static final int STATUS_VALIDATED = 1;
    			public static final int STATUS_CANCELED = 2;
    		]]>
-   	</extra-code>
-  	
-  	<track>
-  		<field name="amount" on="UPDATE"/>
-  		<field name="advancePaymentDate" on="UPDATE"/>
-  		<field name="saleOrder" on="UPDATE"/>
-  		<field name="currency" on="UPDATE"/>
-  		<field name="statusSelect" on="UPDATE"/>
-  	</track>
-  	
+    </extra-code>
+
+    <track>
+      <field name="amount" on="UPDATE"/>
+      <field name="advancePaymentDate" on="UPDATE"/>
+      <field name="saleOrder" on="UPDATE"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="statusSelect" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>

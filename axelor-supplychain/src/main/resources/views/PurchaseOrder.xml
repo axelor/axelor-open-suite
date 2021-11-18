@@ -1,44 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <action-method name="action-purchase-order-method-generate-control-invoice">
- 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
-	</action-method>
-	
-	<action-method name="action-purchase-order-create-stock-move">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="createStockMove"/>
-	</action-method>
-	
-	<action-method name="action-purchase-order-method-get-stock-location">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getStockLocation"/>
-    </action-method>
-    
-    <action-method name="action-purchase-order-method-cancel-receipt">
-    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="cancelReceipt"/>
-    </action-method>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="purchase-order-form" title="Purchase order"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" id="supplychain-purchase-order-form"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase"/>
+    </extend>
+    <extend target="//field[@name='shipmentMode']">
+      <attribute name="onChange"
+        value="action-purchase-order-record-empty-freight-carrier-mode,supplychain-action-create-shipment-cost-line-purchase"/>
+      <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
+    </extend>
+    <extend target="//panel-related[@name='purchaseOrderLineListPanel']">
+      <attribute name="onChange"
+        value="action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase"/>
+    </extend>
+  </form>
+
+  <action-method name="action-purchase-order-method-generate-control-invoice">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
+      method="generateInvoice"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-create-stock-move">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="createStockMove"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-get-stock-location">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="getStockLocation"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-cancel-receipt">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="cancelReceipt"/>
+  </action-method>
 
 
-	<action-attrs name="action-purchase-order-attrs-interco">
-		<attribute for="interco" name="hidden"
-				   expr="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
-		<attribute for="interco" name="readonly" expr="eval: true"
-				   if="eval: statusSelect &gt; 3"/>
-	</action-attrs>
+  <action-attrs name="action-purchase-order-attrs-interco">
+    <attribute for="interco" name="hidden"
+      expr="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
+    <attribute for="interco" name="readonly" expr="eval: true"
+      if="eval: statusSelect &gt; 3"/>
+  </action-attrs>
 
-	<action-record name="action-purchase-order-record-interco"
-				   model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromPurchase
+  <action-record name="action-purchase-order-record-interco"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="interco"
+      expr="eval: __config__.app.getApp('supplychain')?.intercoFromPurchase
             &amp;&amp; !createdByInterco &amp;&amp; supplierPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne()"/>
-	</action-record>
+  </action-record>
 
-	<action-view name="action-view-show-invoices-from-purchase-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">	
-		<view type="grid" name="invoice-light-grid" />
-		<view type="form" name="invoice-form" />
-		<domain>self.purchaseOrder.id = :purchaseOrderId OR (self.purchaseOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.purchaseOrderLine.id IN (:purchaseOrderLineIdList)))</domain>
-		<context name="purchaseOrderId" expr="eval: id" />
-		<context name="purchaseOrderLineIdList" expr="eval: (id != null &amp;&amp; purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()) ? purchaseOrderLineList.collect{it.id} : null"/>
-    </action-view>
+  <action-view name="action-view-show-invoices-from-purchase-order" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-light-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.purchaseOrder.id = :purchaseOrderId OR (self.purchaseOrder.id IS NULL AND
+      EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.purchaseOrderLine.id IN
+      (:purchaseOrderLineIdList)))</domain>
+    <context name="purchaseOrderId" expr="eval: id"/>
+    <context name="purchaseOrderLineIdList"
+      expr="eval: (id != null &amp;&amp; purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()) ? purchaseOrderLineList.collect{it.id} : null"/>
+  </action-view>
+
+  <action-method name="supplychain-action-create-shipment-cost-line-purchase">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="createShipmentCostLine"/>
+  </action-method>
 
 </object-views>

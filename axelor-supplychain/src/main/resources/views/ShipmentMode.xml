@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="shipment-mode-grid" title="Shipment Mode"
+    model="com.axelor.apps.stock.db.ShipmentMode" id="supplychain-shipment-mode-grid">
+    <field name="name"/>
+    <field name="shippingCostsProduct"/>
+    <field name="carriagePaidThreshold"/>
+  </grid>
+
+  <form name="shipment-mode-form" model="com.axelor.apps.stock.db.ShipmentMode"
+    title="Shipment Mode" id="supplychain-shipment-mode-form">
+    <panel name="mainPanel">
+      <field name="name" required="true" colSpan="12"/>
+      <field name="freightCarrierMode" form-view="freight-carrier-mode-shipment-mode-form"
+        grid-view="freight-carrier-mode-shipment-mode-grid" colSpan="12"/>
+      <field name="shippingCostsProduct" domain="self.isShippingCostsProduct = true"
+        form-view="product-form" grid-view="product-grid"/>
+      <field name="hasCarriagePaidPossibility" widget="boolean-switch"/>
+      <field name="carriagePaidThreshold" hideIf="!hasCarriagePaidPossibility"
+        requiredIf="hasCarriagePaidPossibility"/>
+    </panel>
+  </form>
+
+  <grid name="shipment-mode-freight-carrier-mode-grid" title="Shipment Mode"
+    model="com.axelor.apps.stock.db.ShipmentMode"
+    id="supplychain-shipment-mode-freight-carrier-mode-grid">
+    <field name="name"/>
+    <field name="shippingCostsProduct"/>
+    <field name="carriagePaidThreshold"/>
+  </grid>
+</object-views>

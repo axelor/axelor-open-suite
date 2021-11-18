@@ -1,0 +1,5 @@
+importId;name;status;priority;project.importId;assignedTo.importId;taskDate;taskDuration
+2;Prepare offer for tender;new;normal;1;1;TODAY;10
+3;Audit;new;normal;1;2;TODAY[+10d];20
+4;Document preparation;new;normal;1;3;TODAY[+20d];20
+5;Presentation;new;normal;1;4;TODAY[+30d];10

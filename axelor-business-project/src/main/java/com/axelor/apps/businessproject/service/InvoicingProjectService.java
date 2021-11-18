@@ -47,7 +47,9 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -63,8 +65,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -85,7 +85,7 @@ public class InvoicingProjectService {
 
   @Inject protected PartnerService partnerService;
 
-  @Inject protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
+  @Inject protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
 
@@ -105,7 +105,7 @@ public class InvoicingProjectService {
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectSet().isEmpty()
-        && invoicingProject.getTeamTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -149,6 +149,7 @@ public class InvoicingProjectService {
             null,
             null,
             null,
+            null,
             null) {
 
           @Override
@@ -183,7 +184,7 @@ public class InvoicingProjectService {
         new ArrayList<PurchaseOrderLine>(folder.getPurchaseOrderLineSet());
     List<TimesheetLine> timesheetLineList = new ArrayList<TimesheetLine>(folder.getLogTimesSet());
     List<ExpenseLine> expenseLineList = new ArrayList<ExpenseLine>(folder.getExpenseLineSet());
-    List<TeamTask> teamTaskList = new ArrayList<TeamTask>(folder.getTeamTaskSet());
+    List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     invoiceLineList.addAll(
@@ -199,8 +200,8 @@ public class InvoicingProjectService {
         expenseService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        teamTaskBusinessProjectService.createInvoiceLines(
-            invoice, teamTaskList, folder.getTeamTaskSetPrioritySelect()));
+        projectTaskBusinessProjectService.createInvoiceLines(
+            invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
@@ -370,7 +371,7 @@ public class InvoicingProjectService {
 
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
-    taskQueryMap.put("invoicingTypePackage", TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+    taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
@@ -423,9 +424,9 @@ public class InvoicingProjectService {
                 .fetch());
 
     invoicingProject
-        .getTeamTaskSet()
+        .getProjectTaskSet()
         .addAll(
-            Beans.get(TeamTaskRepository.class)
+            Beans.get(ProjectTaskRepository.class)
                 .all()
                 .filter(taskQueryBuilder.toString())
                 .bind(taskQueryMap)
@@ -439,7 +440,7 @@ public class InvoicingProjectService {
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectSet(new HashSet<Project>());
-    invoicingProject.setTeamTaskSet(new HashSet<TeamTask>());
+    invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
   }
 
   public Company getRootCompany(Project project) {
@@ -471,7 +472,7 @@ public class InvoicingProjectService {
 
     toInvoiceCount += Beans.get(TimesheetLineRepository.class).all().filter(query, project).count();
 
-    toInvoiceCount += Beans.get(TeamTaskRepository.class).all().filter(query, project).count();
+    toInvoiceCount += Beans.get(ProjectTaskRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
   }
@@ -494,9 +495,11 @@ public class InvoicingProjectService {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
+      Invoice invoice = invoicingProject.getInvoice();
+
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF, null));
+              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
@@ -543,7 +546,7 @@ public class InvoicingProjectService {
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectSet().isEmpty()
-        && invoicingProject.getTeamTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()) {
 
       return invoicingProject;
     }

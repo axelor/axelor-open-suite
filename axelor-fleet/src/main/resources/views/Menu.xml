@@ -1,103 +1,130 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<menuitem name="fleet-root" title="Fleet" order="-83" if="__config__.app.isApp('fleet')"
-		icon="fa-car" icon-background="orange"/>
-	
-	<menuitem name="fleet-root-vehicle" title="Vehicle" action="fleet.root.vehicle" parent="fleet-root" order="1"/>
-	
-	<action-view name="fleet.root.vehicle" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle">
-		<view type="cards" name="vehicle-cards"/>
-		<view type="grid" name="vehicle-grid"/>
-		<view type="form" name="vehicle-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-root-vehicle-models" title="Vehicle models" action="fleet.root.vehicle.models" parent="fleet-root" order="2"/>
-	
-	<action-view name="fleet.root.vehicle.models" title="Vehicle models" model="com.axelor.apps.fleet.db.VehicleModel">
-		<view type="grid" name="vehicle-model-grid"/>
-		<view type="form" name="vehicle-model-form"/>
-	</action-view>
+  <menuitem name="fleet-root" title="Fleet" order="-83" if="__config__.app.isApp('fleet')"
+    icon="fa-car" icon-background="orange"/>
 
-	<menuitem name="fleet-root-vehicle-rent" title="Vehicle rent" action="fleet.root.vehicle.rent" parent="fleet-root" order="3"/>
+  <menuitem name="fleet-root-vehicle" title="Vehicle" action="fleet.root.vehicle"
+    parent="fleet-root" order="1"/>
 
-	<action-view name="fleet.root.vehicle.rent" title="Vehicle rent" model="com.axelor.apps.fleet.db.VehicleRent">
-		<view type="grid" name="vehicle-rent-grid"/>
-		<view type="form" name="vehicle-rent-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-root-vehicle-contract" title="Vehicle contracts" action="fleet.root.vehicle.contract" parent="fleet-root" order="4"/>
-	
-	<action-view name="fleet.root.vehicle.contract" title="Vehicle contracts" model="com.axelor.apps.fleet.db.VehicleContract">
-		<view type="grid" name="vehicle-contract-grid"/>
-		<view type="form" name="vehicle-contract-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-root-vehicle-fuel-log" title="Vehicle fuel log" action="fleet.root.vehicle.fuel.log" parent="fleet-root" order="5"/>
-	
-	<action-view name="fleet.root.vehicle.fuel.log" title="Vehicle fuel log" model="com.axelor.apps.fleet.db.VehicleFuelLog">
-		<view type="grid" name="vehicle-fuel-log-grid"/>
-		<view type="form" name="vehicle-fuel-log-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-root-vehicle-service-log" title="Vehicle service log" action="fleet.root.vehicle.service.log" parent="fleet-root" order="6"/>
-	
-	<action-view name="fleet.root.vehicle.service.log" title="Vehicle service log" model="com.axelor.apps.fleet.db.VehicleServiceLog">
-		<view type="grid" name="vehicle-service-log-grid"/>
-		<view type="form" name="vehicle-service-log-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-root-vehicle-cost" title="Vehicle cost" action="fleet.root.vehicle.cost" parent="fleet-root" order="7"/>
-	
-	<action-view name="fleet.root.vehicle.cost" title="Vehicle cost" model="com.axelor.apps.fleet.db.VehicleCost">
-		<view type="grid" name="vehicle-cost-grid"/>
-		<view type="form" name="vehicle-cost-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="fa-cog" order="8"/>
-	
-	<menuitem name="fleet-conf-recurring-cost" title="Recurring Costs" action="fleet.conf.recurring.cost" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.recurring.cost" title="Recurring Costs" model="com.axelor.apps.fleet.db.RecurringCost">
-		<view type="grid" name="recurring-cost-grid"/>
-		<view type="form" name="recurring-cost-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-conf-vehicle-make" title="Vehicle brands" action="fleet.conf.vehicle.makes" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.vehicle.makes" title="Vehicle brands" model="com.axelor.apps.fleet.db.VehicleMake">
-		<view type="grid" name="vehicle-make-grid"/>
-		<view type="form" name="vehicle-make-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-conf-vehicle-odometer" title="Vehicle odometer" action="fleet.conf.vehicle.odometer" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.vehicle.odometer" title="Vehicle odometer" model="com.axelor.apps.fleet.db.VehicleOdometer">
-		<view type="grid" name="vehicle-odometer-grid"/>
-		<view type="form" name="vehicle-odometer-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-conf-vehicle-service-type" title="Vehicle service type" action="fleet.conf.vehicle.service.type" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.vehicle.service.type" title="Vehicle sevice type" model="com.axelor.apps.fleet.db.VehicleServiceType">
-		<view type="grid" name="vehicle-service-type-grid"/>
-		<view type="form" name="vehicle-service-type-form"/>
-	</action-view>
-	
-	<menuitem name="fleet-conf-vehicle-tag" title="Vehicle tags" action="fleet.conf.vehicle.tag" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.vehicle.tag" title="Vehicle tags" model="com.axelor.apps.fleet.db.VehicleTag">
-		<view type="grid" name="vehicle-tag-grid"/>
-		<view type="form" name="vehicle-tag-form"/>
-	</action-view>	
+  <action-view name="fleet.root.vehicle" title="Vehicle"
+    model="com.axelor.apps.fleet.db.Vehicle">
+    <view type="cards" name="vehicle-cards"/>
+    <view type="grid" name="vehicle-grid"/>
+    <view type="form" name="vehicle-form"/>
+  </action-view>
 
-	<menuitem name="fleet-conf-vehicle-repair-cause" title="Cause of repair" action="fleet.conf.vehicle.repair.cause" parent="fleet-conf" />
+  <menuitem name="fleet-root-vehicle-models" title="Vehicle models"
+    action="fleet.root.vehicle.models" parent="fleet-root" order="2"/>
 
-	<action-view name="fleet.conf.vehicle.repair.cause" title="Cause of repair" model="com.axelor.apps.fleet.db.RepairCause">
-		<view type="grid" name="vehicle-repair-cause-grid"/>
-		<view type="form" name="vehicle-repair-cause-form"/>
-	</action-view>
+  <action-view name="fleet.root.vehicle.models" title="Vehicle models"
+    model="com.axelor.apps.fleet.db.VehicleModel">
+    <view type="grid" name="vehicle-model-grid"/>
+    <view type="form" name="vehicle-model-form"/>
+  </action-view>
+
+  <menuitem name="fleet-root-vehicle-rent" title="Vehicle rent"
+    action="fleet.root.vehicle.rent" parent="fleet-root" order="3"/>
+
+  <action-view name="fleet.root.vehicle.rent" title="Vehicle rent"
+    model="com.axelor.apps.fleet.db.VehicleRent">
+    <view type="grid" name="vehicle-rent-grid"/>
+    <view type="form" name="vehicle-rent-form"/>
+  </action-view>
+
+  <menuitem name="fleet-root-vehicle-contract" title="Vehicle contracts"
+    action="fleet.root.vehicle.contract" parent="fleet-root" order="4"/>
+
+  <action-view name="fleet.root.vehicle.contract" title="Vehicle contracts"
+    model="com.axelor.apps.fleet.db.VehicleContract">
+    <view type="grid" name="vehicle-contract-grid"/>
+    <view type="form" name="vehicle-contract-form"/>
+  </action-view>
+
+  <menuitem name="fleet-root-vehicle-fuel-log" title="Vehicle fuel log"
+    action="fleet.root.vehicle.fuel.log" parent="fleet-root" order="5"/>
+
+  <action-view name="fleet.root.vehicle.fuel.log" title="Vehicle fuel log"
+    model="com.axelor.apps.fleet.db.VehicleFuelLog">
+    <view type="grid" name="vehicle-fuel-log-grid"/>
+    <view type="form" name="vehicle-fuel-log-form"/>
+  </action-view>
+
+  <menuitem name="fleet-root-vehicle-service-log" title="Vehicle service log"
+    action="fleet.root.vehicle.service.log" parent="fleet-root" order="6"/>
+
+  <action-view name="fleet.root.vehicle.service.log" title="Vehicle service log"
+    model="com.axelor.apps.fleet.db.VehicleServiceLog">
+    <view type="grid" name="vehicle-service-log-grid"/>
+    <view type="form" name="vehicle-service-log-form"/>
+  </action-view>
+
+  <menuitem name="fleet-root-vehicle-cost" title="Vehicle cost"
+    action="fleet.root.vehicle.cost" parent="fleet-root" order="7"/>
+
+  <action-view name="fleet.root.vehicle.cost" title="Vehicle cost"
+    model="com.axelor.apps.fleet.db.VehicleCost">
+    <view type="grid" name="vehicle-cost-grid"/>
+    <view type="form" name="vehicle-cost-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="fa-cog"
+    order="8"/>
+
+  <menuitem name="fleet-conf-recurring-cost" title="Recurring Costs"
+    action="fleet.conf.recurring.cost" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.recurring.cost" title="Recurring Costs"
+    model="com.axelor.apps.fleet.db.RecurringCost">
+    <view type="grid" name="recurring-cost-grid"/>
+    <view type="form" name="recurring-cost-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf-vehicle-make" title="Vehicle brands"
+    action="fleet.conf.vehicle.makes" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.vehicle.makes" title="Vehicle brands"
+    model="com.axelor.apps.fleet.db.VehicleMake">
+    <view type="grid" name="vehicle-make-grid"/>
+    <view type="form" name="vehicle-make-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf-vehicle-odometer" title="Vehicle odometer"
+    action="fleet.conf.vehicle.odometer" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.vehicle.odometer" title="Vehicle odometer"
+    model="com.axelor.apps.fleet.db.VehicleOdometer">
+    <view type="grid" name="vehicle-odometer-grid"/>
+    <view type="form" name="vehicle-odometer-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf-vehicle-service-type" title="Vehicle service type"
+    action="fleet.conf.vehicle.service.type" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.vehicle.service.type" title="Vehicle sevice type"
+    model="com.axelor.apps.fleet.db.VehicleServiceType">
+    <view type="grid" name="vehicle-service-type-grid"/>
+    <view type="form" name="vehicle-service-type-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf-vehicle-tag" title="Vehicle tags"
+    action="fleet.conf.vehicle.tag" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.vehicle.tag" title="Vehicle tags"
+    model="com.axelor.apps.fleet.db.VehicleTag">
+    <view type="grid" name="vehicle-tag-grid"/>
+    <view type="form" name="vehicle-tag-form"/>
+  </action-view>
+
+  <menuitem name="fleet-conf-vehicle-repair-cause" title="Cause of repair"
+    action="fleet.conf.vehicle.repair.cause" parent="fleet-conf"/>
+
+  <action-view name="fleet.conf.vehicle.repair.cause" title="Cause of repair"
+    model="com.axelor.apps.fleet.db.RepairCause">
+    <view type="grid" name="vehicle-repair-cause-grid"/>
+    <view type="form" name="vehicle-repair-cause-form"/>
+  </action-view>
 
 </object-views>

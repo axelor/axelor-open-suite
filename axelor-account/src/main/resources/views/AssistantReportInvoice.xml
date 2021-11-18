@@ -1,102 +1,122 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
-		<field name="fromDate"/>
-		<field name="toDate"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	</grid>
-    
-	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-grid">
-		<field name="fromDate"/>
-		<field name="toDate"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	</grid>
-    
-     <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-form"
-    	onNew="action-print-invoices-details-record-on-new-sales">
-    	<panel name="mainPanel" >
-    		<field name="fromDate" required="true"/>
-    		<field name="toDate" required="true"/>
-    		<field name="company" canEdit="false" required="true"/>
-    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="self.dtype = 'Product'"/>
-    		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="self.dtype = 'Product'"/>
-    	</panel>
-    	<panel name="optionsPanel" title="Options" sidebar="true">
-    		<field name="graphTypeSelect" widget="RadioSelect"/>
-    		<field name="formatSelect" widget="RadioSelect"/>
-			<field name="turnoverTypeSelect" widget="RadioSelect"/>
-    		<button name="printReportBtn" title="Print" onClick="action-print-invoices-details-group-print-sales"/>
-            <field name="publicationDateTime"/>
-    		<field name="type" hidden="true"/>
-    	</panel>
-    </form>
-    
-    <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-form"
-    	onNew="action-print-invoices-details-record-on-new-purchases">
-    	<panel name="mainPanel" >
-    		<field name="fromDate" required="true"/>
-    		<field name="toDate" required="true"/>
-    		<field name="company" canEdit="false" required="true"/>
-    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="self.dtype = 'Product'"/>
-    		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="self.dtype = 'Product'"/>
-    	</panel>
-    	<panel name="optionsPanel" title="Options" sidebar="true">
-            <field name="graphTypeSelect" widget="RadioSelect"/>
-            <field name="formatSelect" widget="RadioSelect"/>
-			<field name="turnoverTypeSelect" widget="RadioSelect"/>
-    		<button name="printReportBtn" title="Print" onClick="action-print-invoices-details-group-print-purchases"/>
-			<field name="publicationDateTime"/>
-    		<field name="type" hidden="true"/>
-    	</panel>
-    </form>
-    
-    
-    <action-record name="action-print-invoices-details-record-on-new-sales" model="com.axelor.apps.account.db.AssistantReportInvoice">
-    	<field name="fromDate" expr="eval: __date__"/>
-    	<field name="toDate" expr="eval: __date__"/>
-    	<field name="company" expr="eval: __user__.activeCompany"/>
-    	<field name="type" expr="1"/>
-    </action-record>
-    
-    <action-record name="action-print-invoices-details-record-on-new-purchases" model="com.axelor.apps.account.db.AssistantReportInvoice">
-    	<field name="fromDate" expr="eval: __date__"/>
-    	<field name="toDate" expr="eval: __date__"/>
-    	<field name="company" expr="eval: __user__.activeCompany"/>
-    	<field name="type" expr="2"/>
-    </action-record>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<action-record name="action-print-invoices-details-record-set-publication-date-time" model="com.axelor.apps.account.db.AssistantReportInvoice">
-		<field name="publicationDateTime" expr="eval: __datetime__"/>
-	</action-record>
+  <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details"
+    name="print-sale-invoices-details-grid">
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
 
-	<action-group name="action-print-invoices-details-group-print-sales">
-		<action name="action-print-invoices-details-record-set-publication-date-time"/>
-		<action name="save"/>
-		<action name="action-print-invoices-details-method-print-sales"/>
-	</action-group>
+  <grid model="com.axelor.apps.account.db.AssistantReportInvoice"
+    title="Purchase Invoices Details" name="print-purchase-invoices-details-grid">
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
 
-	<action-group name="action-print-invoices-details-group-print-purchases">
-		<action name="action-print-invoices-details-record-set-publication-date-time"/>
-		<action name="save"/>
-		<action name="action-print-invoices-details-method-print-purchases"/>
-	</action-group>
+  <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details"
+    name="print-sale-invoices-details-form"
+    onNew="action-print-invoices-details-record-on-new-sales">
+    <panel name="mainPanel">
+      <field name="fromDate" required="true"/>
+      <field name="toDate" required="true"/>
+      <field name="company" canEdit="false" required="true"/>
+      <field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers"
+        domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
+      <field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"
+        domain="self.dtype = 'Product'"/>
+      <label name="orLabel" title="OR"/>
+      <field name="productCategorySet" colSpan="12" widget="TagSelect"
+        domain="self.dtype = 'Product'"/>
+    </panel>
+    <panel name="optionsPanel" title="Options" sidebar="true">
+      <field name="graphTypeSelect" widget="RadioSelect"/>
+      <field name="formatSelect" widget="RadioSelect"/>
+      <field name="turnoverTypeSelect" widget="RadioSelect"/>
+      <button name="printReportBtn" title="Print"
+        onClick="action-print-invoices-details-group-print-sales"/>
+      <field name="publicationDateTime"/>
+      <field name="type" hidden="true"/>
+    </panel>
+  </form>
 
-    <action-method name="action-print-invoices-details-method-print-sales">
-    	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="printSales"/>
-    </action-method>
-    
-    <action-method name="action-print-invoices-details-method-print-purchases">
-    	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="printPurchases"/>
-    </action-method>
-    
-    <search-filters name="accounting-report-invoice-filters" model="com.axelor.apps.account.db.AssistantReportInvoice" title="Accounting report invoice filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    </search-filters>
+  <form model="com.axelor.apps.account.db.AssistantReportInvoice"
+    title="Purchase Invoices Details" name="print-purchase-invoices-details-form"
+    onNew="action-print-invoices-details-record-on-new-purchases">
+    <panel name="mainPanel">
+      <field name="fromDate" required="true"/>
+      <field name="toDate" required="true"/>
+      <field name="company" canEdit="false" required="true"/>
+      <field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers"
+        domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
+      <field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"
+        domain="self.dtype = 'Product'"/>
+      <label name="orLabel" title="OR"/>
+      <field name="productCategorySet" colSpan="12" widget="TagSelect"
+        domain="self.dtype = 'Product'"/>
+    </panel>
+    <panel name="optionsPanel" title="Options" sidebar="true">
+      <field name="graphTypeSelect" widget="RadioSelect"/>
+      <field name="formatSelect" widget="RadioSelect"/>
+      <field name="turnoverTypeSelect" widget="RadioSelect"/>
+      <button name="printReportBtn" title="Print"
+        onClick="action-print-invoices-details-group-print-purchases"/>
+      <field name="publicationDateTime"/>
+      <field name="type" hidden="true"/>
+    </panel>
+  </form>
+
+
+  <action-record name="action-print-invoices-details-record-on-new-sales"
+    model="com.axelor.apps.account.db.AssistantReportInvoice">
+    <field name="fromDate" expr="eval: __config__.date"/>
+    <field name="toDate" expr="eval: __config__.date"/>
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="type" expr="1"/>
+  </action-record>
+
+  <action-record name="action-print-invoices-details-record-on-new-purchases"
+    model="com.axelor.apps.account.db.AssistantReportInvoice">
+    <field name="fromDate" expr="eval: __config__.date"/>
+    <field name="toDate" expr="eval: __config__.date"/>
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="type" expr="2"/>
+  </action-record>
+
+  <action-record name="action-print-invoices-details-record-set-publication-date-time"
+    model="com.axelor.apps.account.db.AssistantReportInvoice">
+    <field name="publicationDateTime" expr="eval: __datetime__"/>
+  </action-record>
+
+  <action-group name="action-print-invoices-details-group-print-sales">
+    <action name="action-print-invoices-details-record-set-publication-date-time"/>
+    <action name="save"/>
+    <action name="action-print-invoices-details-method-print-sales"/>
+  </action-group>
+
+  <action-group name="action-print-invoices-details-group-print-purchases">
+    <action name="action-print-invoices-details-record-set-publication-date-time"/>
+    <action name="save"/>
+    <action name="action-print-invoices-details-method-print-purchases"/>
+  </action-group>
+
+  <action-method name="action-print-invoices-details-method-print-sales">
+    <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"
+      method="printSales"/>
+  </action-method>
+
+  <action-method name="action-print-invoices-details-method-print-purchases">
+    <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"
+      method="printPurchases"/>
+  </action-method>
+
+  <search-filters name="accounting-report-invoice-filters"
+    model="com.axelor.apps.account.db.AssistantReportInvoice"
+    title="Accounting report invoice filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 </object-views>

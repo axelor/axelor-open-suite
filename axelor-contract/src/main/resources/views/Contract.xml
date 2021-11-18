@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+              http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
-		<field name="contractId" width="120"/>
-		<field name="name"/>
-		<field name="targetTypeSelect"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="partner"/>
-		<field name="startDate"/>
-		<field name="supposedEndDate"/>
-		<field name="statusSelect"/>
-	</grid>
+  <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+    <field name="contractId" width="120"/>
+    <field name="name"/>
+    <field name="targetTypeSelect"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="partner"/>
+    <field name="startDate"/>
+    <field name="currentContractVersion.supposedEndDate"/>
+    <field name="statusSelect"/>
+  </grid>
 
-    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" readonlyIf="statusSelect == 3"
-          onNew="action-contract-record-default"
-          onLoad="action-contract-group-on-load"
-          onSave="action-contract-method-is-valid">
-        <toolbar>
-            <button name="printContractBtn" title="Print" hidden="true" icon="fa-print" onClick="notImplementedYet"/>
-        </toolbar>
-        <panel name="mainPanel">
-            <panel colSpan="9" name="generalInfoPanel">
-                <field name="currentContractVersion.statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
-                <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
-                    <viewer depends="targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
+  <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
+    width="large" readonlyIf="statusSelect == 3" onNew="action-contract-record-default"
+    onLoad="action-contract-group-on-load" onSave="action-contract-method-is-valid">
+    <toolbar>
+      <button name="printContractBtn" title="Print" hidden="true" icon="fa-print"
+        onClick="notImplementedYet"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <panel colSpan="9" name="generalInfoPanel">
+        <field name="currentContractVersion.statusSelect" showTitle="false" readonly="true"
+          colSpan="6" widget="NavSelect"/>
+        <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
+          <viewer depends="targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
 					<h3 class="text-right">
                         <span style="margin-right: 10px;"><span x-translate>Contract</span><span ng-show="record.contractId"> - {{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span></span>
 
@@ -38,385 +39,530 @@
                         <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
 					</h3>
                     ]]></viewer>
-                </field>
-                <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
-                <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
-                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
-                <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
-                <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
-                <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
-                    <field name="createdOn" colSpan="3"/>
-                    <field name="createdBy" colSpan="3"/>
-                    <field name="startDate" readonly="true" showIf="statusSelect >= 2" colSpan="3"/>
-                    <field name="endDate" hidden="true" showIf="statusSelect == 3" colSpan="3"/>
-                </panel>
-                <panel name="currentVersionPanel" title="Current version" colSpan="12">
-                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <panel   colSpan="6">
-                                <panel  hideIf="statusSelect >= 3" colSpan="12">
-                                    <field name="supposedActivationDate"/>
-                                    <field name="supposedEndDate"/>
-                                </panel>
-                                <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
-                                    <field name="activatedByUser" colSpan="4"/>
-                                    <field name="activationDate" colSpan="4"/>
-                                    <panel colSpan="4" >
-                                        <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
-                                        <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
-                                    </panel>
-                                </panel>
-                            </panel>
-                            <panel showIf="id" colSpan="6" >
-                                <field name="createdOn"/>
-                                <field name="createdBy"/>
-                            </panel>
-                        </editor>
-                    </field>
-                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
-                </panel>
-            </panel>
-            <panel colSpan="3" stacked="true" name="actionPanel">
-                <panel name="templatePanel" hidden="true" showIf="statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2" stacked="true">
-                    <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
-                    <button name="copyFromTemplateBtn" title="Use this template" showIf="$contractTemplate" prompt="Do you really wish to fill your contract based on this template ?" onClick="save,action-contract-method-copy-from-template"/>
-                </panel>
-                <panel stacked="true" name="btnsPanel">
-                    <field name="nextVersion" hidden="true"/>
-                    <button if="__config__.app.getApp('contract').isAmendmentManagement" name="newVersionBtn" title="New version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-view-contract-add-version,close"/>
-                    <button if="__config__.app.getApp('contract').isAmendmentManagement" name="showNextVersionBtn" title="Show next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-view-contract-show-version,close"/>
-                    <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
-                    <button name="waitingBtn" title="Put on hold" showIf="id &amp;&amp; currentContractVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
-                    <button name="ongoingBtn" title="Activate" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
-                    <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
-                </panel>
-                <panel title="Notes" stacked="true" name="notesPanel">
-                    <field name="note" showTitle="false"/>
-                </panel>
-            </panel>
+        </field>
+        <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
+        <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner"
+          showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
+          onChange="action-contract-attrs-partner-payment-config" required="true"
+          form-view="partner-form"/>
+        <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4"
+          name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
+        <field name="name" colSpan="12" css="highlight"
+          hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
+        <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
+        <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
+          colSpan="12">
+          <field name="createdOn" colSpan="3"/>
+          <field name="createdBy" colSpan="3"/>
+          <field name="startDate" readonly="true" showIf="statusSelect >= 2" colSpan="3"/>
+          <field name="endDate" hidden="true" showIf="statusSelect == 3" colSpan="3"/>
         </panel>
-        <panel-tabs name="mainPanelTab">
-            <panel title="Content" name="contentPanel">
-                <label name="saveLabel" title="You need to save your contract for add lines." hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
-                <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
-                            <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
-                        </editor>
-                    </field>
+        <panel name="currentVersionPanel" title="Current version" colSpan="12">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+              <panel colSpan="6">
+                <panel hideIf="statusSelect >= 3" colSpan="12">
+                  <field name="supposedActivationDate"/>
+                  <field name="supposedEndDate"/>
                 </panel>
-                <field name="consumptionLineList" showIf="isConsumptionManagement" readonlyIf="!id" colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
-                <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement" readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form" grid-view="additional-contract-line-grid"/>
-                <panel name="currentContractVersionDescriptionPanel" colSpan="12">
-                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="description" colSpan="9" widget="html"/>
-                            <field name="metaFile" colSpan="3" widget="binary-link"/>
-                        </editor>
-                    </field>
-                </panel>
-            </panel>
-            <panel name="invoicingPanel" title="Invoicing" hidden="true" showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
-                <field name="invoicePeriodStartDate" showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
-                <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
-                <field name="invoicingDate" colSpan="4"/>
-                <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-invoicing"/>
-                <panel-dashlet name="contractInvoicingPanel" readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
-            </panel>
-            <panel name="terminationPanel" title="Termination" hidden="true" showIf="statusSelect != 1" onTabSelect="action-contract-attrs-show-close-btn">
-                <panel name="renewalPanel" if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal" hidden="true" showIf="currentContractVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentContractVersion.isTacitRenewal)" colSpan="12">
-                    <field name="renewalNumber" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
-                    <field name="lastRenewalDate" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
-                    <field name="currentContractVersion" showTitle="false" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="doNotRenew" colSpan="12"/>
-                        </editor>
-                    </field>
-                </panel>
-                <panel name="terminatePanel" title="Terminate" colSpan="12">
-                  <panel colSpan="12">
-                    <button name="closeContractBtn" title="Close contract" onClick="action-contract-method-close" hidden="true" colSpan="3"/>
+                <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                  <field name="activatedByUser" colSpan="4"/>
+                  <field name="activationDate" colSpan="4"/>
+                  <panel colSpan="4">
+                    <field name="supposedEndDate" hidden="true" readonly="true"
+                      showIf="statusSelect == 3" colSpan="12"/>
+                    <field name="endDate" hidden="true" readonly="true"
+                      showIf="statusSelect == 4" colSpan="12"/>
                   </panel>
-                    <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
-                    <panel name="terminationInfoPanel" colSpan="9">
-                        <panel name="terminationDetailPanel" hidden="true" showIf="terminatedManually" colSpan="12">
-                            <field name="terminatedByUser" readonly="true" colSpan="4"/>
-                            <field name="terminationDemandDate" hidden="true" readonly="true" showIf="terminationDemandDate" colSpan="4"/>
-                            <field name="terminatedManually" hidden="true" readonly="true" showIf="terminatedManually" colSpan="4"/>
-                        </panel>
-                        <panel name="durationPanel" if="__config__.app.getApp('contract').isConfigContract" hidden="true" showIf="id &amp;&amp; (currentContractVersion.isWithEngagement || currentContractVersion.isWithPriorNotice) &amp;&amp; !terminatedManually" colSpan="12">
-                            <panel name="engagementPanel" hidden="true" readonly="true" showIf="currentContractVersion.isWithEngagement" colSpan="6">
-                                <field name="engagementStartDate" colSpan="6"/>
-                                <field name="currentContractVersion.engagementDuration" colSpan="6"/>
-                            </panel>
-                            <panel hidden="true" readonly="true" showIf="currentContractVersion.isWithPriorNotice" colSpan="3" name="priorNoticeDurationPanel">
-                                <field name="currentContractVersion.priorNoticeDuration" colSpan="12"/>
-                            </panel>
-                            <panel hidden="true" readonly="true" showIf="currentContractVersion.isTacitRenewal" colSpan="3" name="renewalDurationPanel">
-                                <field name="currentContractVersion.renewalDuration" colSpan="12"/>
-                            </panel>
-                        </panel>
-                    </panel>
-                    <button name="terminatedBtn" title="Terminate" hideIf="terminatedManually || statusSelect == 3" colSpan="3" onClick="save,action-contract-method-terminated"/>
                 </panel>
-            </panel>
-            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config." name="configPanel">
-              <panel name="configSubPanel" title="Invoicing" if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
-                <field name="isInvoicingManagement" onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config" colSpan="12" widget="boolean-switch"/>
-                <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                  <field name="isAdditionaBenefitManagement" if="__config__.app.getApp('contract').isAdditionalBenefitManagement" widget="boolean-switch" colSpan="12"/>
-                  <field name="isConsumptionManagement" if="__config__.app.getApp('contract').isConsumptionManagement" onChange="action-contract-record-update-field-in-version" widget="boolean-switch" colSpan="3"/>
-                  <field name="currentContractVersion" if="__config__.app.getApp('contract').isConsumptionManagement" showTitle="false" hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
-                    <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                      <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
-                    </editor>
-                  </field>
-                </panel>
-
-                    <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                        <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                <panel colSpan="6">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid" onSelect="action-contract-attrs-set-payment-mode-domain"/>
-                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-                                </panel>
-                                <panel  colSpan="6">
-                                    <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
-                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="4" requiredIf="automaticInvoicing"/>
-                                    <field name="numberOfDays" showIf="invoicingMomentSelect == 3 || invoicingMomentSelect == 4" colSpan="4"/>
-                                </panel>
-                            </editor>
-                        </field>
-                        <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
-                                <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingDuration" domain="self.applicationTypeSelect = 2" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
-                                    <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
-                                    <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
-                                </panel>
-                            </editor>
-                        </field>
-                    </panel>
-                </panel>
-                <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12" name="renewalDetailsPanel"> 
-                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
-                            <field name="renewalDuration" domain="self.applicationTypeSelect = 2" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
-                            <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
-                        </editor>
-                    </field>
-                </panel>
-                <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
-                    <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                        <panel title="Engagement" >
-                            <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
-                            <field name="engagementDuration" domain="self.applicationTypeSelect = 2" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
-                            <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
-                        </panel>
-                        <panel title="Prior notice" >
-                            <field name="isWithPriorNotice" widget="boolean-switch"/>
-                            <field name="priorNoticeDuration" domain="self.applicationTypeSelect = 2" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
-                        </panel>
-                    </editor>
-                </field>
-            </panel>
-            <panel-related name="versionHistoryPanel" hidden="true" readonly="true" showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory" form-view="contract-archived-version-form">
+              </panel>
+              <panel showIf="id" colSpan="6">
                 <field name="createdOn"/>
-                <field name="activationDate"/>
-                <field name="endDate"/>
-                <field name="statusSelect"/>
-            </panel-related>
-        </panel-tabs>
-        <panel-mail name="mailsPanel">
-            <mail-messages limit="4"/>
-            <mail-followers/>
-        </panel-mail>
-    </form>
+                <field name="createdBy"/>
+              </panel>
+            </editor>
+          </field>
+          <field name="firstPeriodEndDate" title="First period invoicing end date"
+            hidden="true"
+            showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing"
+            colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+        </panel>
+      </panel>
+      <panel colSpan="3" stacked="true" name="actionPanel">
+        <panel name="templatePanel" hidden="true"
+          showIf="statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2"
+          stacked="true">
+          <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
+            canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
+          <button name="copyFromTemplateBtn" title="Use this template"
+            showIf="$contractTemplate"
+            prompt="Do you really wish to fill your contract based on this template ?"
+            onClick="save,action-contract-method-copy-from-template"/>
+        </panel>
+        <panel stacked="true" name="btnsPanel">
+          <field name="nextVersion" hidden="true"/>
+          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+            name="newVersionBtn" title="New version"
+            showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3"
+            onClick="save,action-view-contract-add-version,close"/>
+          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+            name="showNextVersionBtn" title="Show next version"
+            showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
+            onClick="save,action-view-contract-show-version,close"/>
+          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+            name="deleteNextVersionBtn" title="Delete next version"
+            showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
+            onClick="save,action-contract-method-delete-next-version"/>
+          <button name="waitingBtn" title="Put on hold"
+            showIf="id &amp;&amp; currentContractVersion.statusSelect == 1"
+            onClick="save,action-contract-method-waiting"/>
+          <button name="ongoingBtn" title="Activate"
+            showIf="id &amp;&amp; currentContractVersion.statusSelect == 2"
+            onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
+          <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn"
+            title="Renew" hidden="true"
+            showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
+            onClick="save,action-contract-method-renew"/>
+        </panel>
+        <panel title="Notes" stacked="true" name="notesPanel">
+          <field name="note" showTitle="false"/>
+        </panel>
+      </panel>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel title="Content" name="contentPanel">
+        <label name="saveLabel" title="You need to save your contract for add lines."
+          hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
+        <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement"
+          colSpan="12">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
+              <field name="contractLineList" showTitle="false" colSpan="12"
+                form-view="contract-line-form" grid-view="contract-line-grid"/>
+            </editor>
+          </field>
+        </panel>
+        <field name="consumptionLineList" showIf="isConsumptionManagement" readonlyIf="!id"
+          colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
+        <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement"
+          readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form"
+          grid-view="additional-contract-line-grid"/>
+        <panel name="currentContractVersionDescriptionPanel" colSpan="12">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+              <field name="description" colSpan="9" widget="html"/>
+              <field name="metaFile" colSpan="3" widget="binary-link"/>
+            </editor>
+          </field>
+        </panel>
+      </panel>
+      <panel name="invoicingPanel" title="Invoicing" hidden="true"
+        showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
+        <field name="invoicePeriodStartDate"
+          showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
+        <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing"
+          colSpan="4"/>
+        <field name="invoicingDate" colSpan="4"/>
+        <button name="invoicingBtn" title="Invoicing"
+          showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
+          onClick="save,action-contract-method-invoicing"/>
+        <panel-dashlet name="contractInvoicingPanel" readonly="false" colSpan="12"
+          height="350" action="action-contract-view-invoicing"/>
+      </panel>
+      <panel name="terminationPanel" title="Termination" hidden="true"
+        showIf="statusSelect != 1" onTabSelect="action-contract-attrs-show-close-btn">
+        <panel name="renewalPanel"
+          if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal"
+          hidden="true"
+          showIf="currentContractVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentContractVersion.isTacitRenewal)"
+          colSpan="12">
+          <field name="renewalNumber" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
+          <field name="lastRenewalDate" hidden="true" readonly="true"
+            showIf="renewalNumber > 0"/>
+          <field name="currentContractVersion" showTitle="false" x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+              <field name="doNotRenew" colSpan="12"/>
+            </editor>
+          </field>
+        </panel>
+        <panel name="terminatePanel" title="Terminate" colSpan="12">
+          <panel colSpan="12">
+            <button name="closeContractBtn" title="Close contract"
+              onClick="action-contract-method-close" hidden="true" colSpan="3"/>
+          </panel>
+          <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
+          <panel name="terminationInfoPanel" colSpan="9">
+            <panel name="terminationDetailPanel" hidden="true" showIf="terminatedManually"
+              colSpan="12">
+              <field name="terminatedByUser" readonly="true" colSpan="4"/>
+              <field name="terminationDemandDate" hidden="true" readonly="true"
+                showIf="terminationDemandDate" colSpan="4"/>
+              <field name="terminatedManually" hidden="true" readonly="true"
+                showIf="terminatedManually" colSpan="4"/>
+            </panel>
+            <panel name="durationPanel"
+              if="__config__.app.getApp('contract').isConfigContract" hidden="true"
+              showIf="id &amp;&amp; (currentContractVersion.isWithEngagement || currentContractVersion.isWithPriorNotice) &amp;&amp; !terminatedManually"
+              colSpan="12">
+              <panel name="engagementPanel" hidden="true" readonly="true"
+                showIf="currentContractVersion.isWithEngagement" colSpan="6">
+                <field name="engagementStartDate" colSpan="6"/>
+                <field name="currentContractVersion.engagementDuration" colSpan="6"/>
+              </panel>
+              <panel hidden="true" readonly="true"
+                showIf="currentContractVersion.isWithPriorNotice" colSpan="3"
+                name="priorNoticeDurationPanel">
+                <field name="currentContractVersion.priorNoticeDuration" colSpan="12"/>
+              </panel>
+              <panel hidden="true" readonly="true"
+                showIf="currentContractVersion.isTacitRenewal" colSpan="3"
+                name="renewalDurationPanel">
+                <field name="currentContractVersion.renewalDuration" colSpan="12"/>
+              </panel>
+            </panel>
+          </panel>
+          <button name="terminatedBtn" title="Terminate"
+            hideIf="terminatedManually || statusSelect == 3" colSpan="3"
+            onClick="save,action-contract-method-terminated"/>
+        </panel>
+      </panel>
+      <panel if="__config__.app.getApp('contract').isConfigContract" title="Config."
+        name="configPanel">
+        <panel name="configSubPanel" title="Invoicing"
+          if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
+          <field name="isInvoicingManagement"
+            onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"
+            colSpan="12" widget="boolean-switch"/>
+          <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
+            colSpan="12">
+            <field name="isAdditionaBenefitManagement"
+              if="__config__.app.getApp('contract').isAdditionalBenefitManagement"
+              widget="boolean-switch" colSpan="12"/>
+            <field name="isConsumptionManagement"
+              if="__config__.app.getApp('contract').isConsumptionManagement"
+              onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
+              colSpan="3"/>
+            <field name="currentContractVersion"
+              if="__config__.app.getApp('contract').isConsumptionManagement" showTitle="false"
+              hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
+              </editor>
+            </field>
+          </panel>
+
+          <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement"
+            colSpan="12">
+            <field name="currentContractVersion" showTitle="false" colSpan="12"
+              x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                <panel colSpan="6">
+                  <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false"
+                    form-view="payment-mode-form" grid-view="payment-mode-grid"
+                    onSelect="action-contract-attrs-set-payment-mode-domain"/>
+                  <field name="paymentCondition" colSpan="6" widget="SuggestBox"
+                    canEdit="false" form-view="payment-condition-form"
+                    grid-view="payment-condition-grid"/>
+                </panel>
+                <panel colSpan="6">
+                  <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
+                  <field name="invoicingMomentSelect" hidden="true"
+                    showIf="automaticInvoicing" colSpan="4" requiredIf="automaticInvoicing"/>
+                  <field name="numberOfDays"
+                    showIf="invoicingMomentSelect == 3 || invoicingMomentSelect == 4" colSpan="4"/>
+                </panel>
+              </editor>
+            </field>
+            <field name="currentContractVersion" showTitle="false" colSpan="12"
+              x-show-icons="false">
+              <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+                <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
+                  <field name="invoicingDuration" domain="self.applicationTypeSelect = 2"
+                    colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                  <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
+                  <field name="isVersionProratedInvoice" hidden="true"
+                    showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
+                </panel>
+              </editor>
+            </field>
+          </panel>
+        </panel>
+        <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal"
+          colSpan="12" name="renewalDetailsPanel">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+              <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
+              <field name="renewalDuration" domain="self.applicationTypeSelect = 2"
+                hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
+              <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal"
+                colSpan="6" widget="boolean-switch"/>
+            </editor>
+          </field>
+        </panel>
+        <field name="currentContractVersion" showTitle="false" colSpan="12"
+          x-show-icons="false">
+          <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+            <panel title="Engagement">
+              <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
+              <field name="engagementDuration" domain="self.applicationTypeSelect = 2"
+                showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
+              <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12"
+                requiredIf="isWithEngagement" widget="boolean-switch"/>
+            </panel>
+            <panel title="Prior notice">
+              <field name="isWithPriorNotice" widget="boolean-switch"/>
+              <field name="priorNoticeDuration" domain="self.applicationTypeSelect = 2"
+                showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
+            </panel>
+          </editor>
+        </field>
+      </panel>
+      <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
+        showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
+        form-view="contract-archived-version-form">
+        <field name="createdOn"/>
+        <field name="activationDate"/>
+        <field name="endDate"/>
+        <field name="statusSelect"/>
+      </panel-related>
+    </panel-tabs>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
 
   <action-attrs name="action-contract-attrs-show-close-btn">
-    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate(__user__.activeCompany) &lt; terminatedDate"/>
+    <attribute for="closeContractBtn" name="hidden"
+      expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate(__user__.activeCompany) &lt; terminatedDate"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">
     <call class="com.axelor.apps.contract.web.ContractController" method="close"/>
   </action-method>
 
-    <action-group name="action-contract-group-on-load">
-        <action name="action-contract-attrs-require-payment-config"/>
-        <action name="action-contract-attrs-readonly-by-config"/>
-        <action name="action-contract-readonly-if-unchangable"/>
-    </action-group>
+  <action-group name="action-contract-group-on-load">
+    <action name="action-contract-attrs-require-payment-config"/>
+    <action name="action-contract-attrs-readonly-by-config"/>
+    <action name="action-contract-readonly-if-unchangable"/>
+  </action-group>
 
-    <action-attrs name="action-contract-attrs-readonly-by-config">
-        <attribute for="currentContractVersionDescriptionPanel" name="readonly" expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; statusSelect > 1"/>
-    </action-attrs>
+  <action-attrs name="action-contract-attrs-readonly-by-config">
+    <attribute for="currentContractVersionDescriptionPanel" name="readonly"
+      expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; statusSelect > 1"/>
+  </action-attrs>
 
-    <action-record name="action-contract-record-default" model="com.axelor.apps.contract.db.Contract">
-        <field name="statusSelect" expr="eval: 1"/>
-        <field name="company"  expr="eval: __user__.activeCompany"/>
-        <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
-        <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
-        <field name="partner" expr="eval: _partner"/>
-        <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
-        <field name="project" expr="eval:_project" if="_project != null"/>
-    </action-record>
+  <action-record name="action-contract-record-default"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="statusSelect" expr="eval: 1"/>
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
+    <field name="currentContractVersion"
+      expr="action:action-record-contract-version-default-record"/>
+    <field name="partner" expr="eval: _partner"/>
+    <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
+    <field name="project" expr="eval:_project" if="_project != null"/>
+  </action-record>
 
-    <action-record name="action-record-contract-version-default-record" model="com.axelor.apps.contract.db.ContractVersion">
-        <field name="statusSelect" expr="eval: 1"/>
-    </action-record>
+  <action-record name="action-record-contract-version-default-record"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <field name="statusSelect" expr="eval: 1"/>
+  </action-record>
 
-    <action-attrs name="action-attrs-contract-partner-domain">
-        <attribute for="partner" name="domain" expr="eval: &quot;self IS NULL AND :company member of self.companySet&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE AND :company member of self.companySet&quot;" if="targetTypeSelect == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE AND :company member of self.companySet&quot;" if="targetTypeSelect == 2"/>
-    </action-attrs>
+  <action-attrs name="action-attrs-contract-partner-domain">
+    <attribute for="partner" name="domain"
+      expr="eval: &quot;self IS NULL AND :company member of self.companySet&quot;"/>
+    <attribute for="partner" name="domain"
+      expr="eval: &quot;self.isCustomer IS TRUE AND :company member of self.companySet&quot;"
+      if="targetTypeSelect == 1"/>
+    <attribute for="partner" name="domain"
+      expr="eval: &quot;self.isSupplier IS TRUE AND :company member of self.companySet&quot;"
+      if="targetTypeSelect == 2"/>
+  </action-attrs>
 
-    <action-method name="action-contract-method-copy-from-template">
-        <call class="com.axelor.apps.contract.web.ContractController" method="copyFromTemplate"/>
-    </action-method>
+  <action-method name="action-contract-method-copy-from-template">
+    <call class="com.axelor.apps.contract.web.ContractController" method="copyFromTemplate"/>
+  </action-method>
 
-    <action-method name="action-contract-method-delete-next-version">
-        <call class="com.axelor.apps.contract.web.ContractController" method="deleteNextVersion"/>
-    </action-method>
+  <action-method name="action-contract-method-delete-next-version">
+    <call class="com.axelor.apps.contract.web.ContractController" method="deleteNextVersion"/>
+  </action-method>
 
-    <action-method name="action-contract-method-waiting">
-        <call class="com.axelor.apps.contract.web.ContractController" method="waiting"/>
-    </action-method>
+  <action-method name="action-contract-method-waiting">
+    <call class="com.axelor.apps.contract.web.ContractController" method="waiting"/>
+  </action-method>
 
-    <action-method name="action-contract-method-ongoing">
-        <call class="com.axelor.apps.contract.web.ContractController" method="ongoing"/>
-    </action-method>
+  <action-method name="action-contract-method-ongoing">
+    <call class="com.axelor.apps.contract.web.ContractController" method="ongoing"/>
+  </action-method>
 
-    <action-method name="action-contract-method-renew">
-        <call class="com.axelor.apps.contract.web.ContractController" method="renew"/>
-    </action-method>
+  <action-method name="action-contract-method-renew">
+    <call class="com.axelor.apps.contract.web.ContractController" method="renew"/>
+  </action-method>
 
-    <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
-        <panel title="Information" name="informationsPanel">
-            <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
-            <panel showIf="id" colSpan="12" name="creationDetailsPanel">
-                <field name="createdOn"/>
-                <field name="createdBy"/>
-            </panel>
-            <panel name="activationPanel" showIf="statusSelect >= 3" colSpan="12" readonly="true">
-                <field name="activationDate"/>
-                <field name="activatedByUser"/>
-            </panel>
-            <field name="supposedEndDate"/>
-            <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
-            <field name="description" widget="html"/>
-            <field name="metaFile" widget="binary-link"/>
-            <field name="contractLineList" showTitle="false" hidden="true"
-              showIf="contractHistory.isInvoicingManagement" colSpan="12"
-              form-view="contract-line-form" grid-view="contract-line-grid"/>
-            <field name="contractHistory.isInvoicingManagement" hidden="true"/>
-        </panel>
-    </form>
+  <form name="contract-archived-version-form" title="Version"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <panel title="Information" name="informationsPanel">
+      <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect"
+        showTitle="false"/>
+      <panel showIf="id" colSpan="12" name="creationDetailsPanel">
+        <field name="createdOn"/>
+        <field name="createdBy"/>
+      </panel>
+      <panel name="activationPanel" showIf="statusSelect >= 3" colSpan="12" readonly="true">
+        <field name="activationDate"/>
+        <field name="activatedByUser"/>
+      </panel>
+      <field name="supposedEndDate"/>
+      <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
+      <field name="description" widget="html"/>
+      <field name="metaFile" widget="binary-link"/>
+      <field name="contractLineList" showTitle="false" hidden="true"
+        showIf="contractHistory.isInvoicingManagement" colSpan="12" form-view="contract-line-form"
+        grid-view="contract-line-grid"/>
+      <field name="contractHistory.isInvoicingManagement" hidden="true"/>
+    </panel>
+  </form>
 
-    <action-view name="action-view-contract-show-version" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
-        <view type="grid" name="contract-version-next-grid"/>
-        <view type="form" name="contract-version-next-form"/>
-        <context name="_showRecord" expr="eval: nextVersion.id"/>
-    </action-view>
+  <action-view name="action-view-contract-show-version" title="Version"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <view type="grid" name="contract-version-next-grid"/>
+    <view type="form" name="contract-version-next-form"/>
+    <context name="_showRecord" expr="eval: nextVersion.id"/>
+  </action-view>
 
-    <action-view name="action-view-contract-add-version" title="Nouvelle version" model="com.axelor.apps.contract.db.ContractVersion">
-        <view type="form" name="contract-version-next-form"/>
-        <view type="grid" name="contract-version-next-grid"/>
-        <view-param name="forceEdit"  value="true"/>
-        <context name="_xContractId" expr="eval: id"/>
-        <context name="_xIsNextVersion" expr="true"/>
-    </action-view>
+  <action-view name="action-view-contract-add-version" title="Nouvelle version"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <view type="form" name="contract-version-next-form"/>
+    <view type="grid" name="contract-version-next-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_xContractId" expr="eval: id"/>
+    <context name="_xIsNextVersion" expr="true"/>
+  </action-view>
 
-    <action-view name="action.contract.view.contract" model="com.axelor.apps.contract.db.Contract" title="Contract">
-        <view type="form" name="contract-form"/>
-        <view type="grid" name="contract-grid"/>
-        <context name="_showRecord" expr="eval: nextContract.id"/>
-    </action-view>
+  <action-view name="action.contract.view.contract"
+    model="com.axelor.apps.contract.db.Contract" title="Contract">
+    <view type="form" name="contract-form"/>
+    <view type="grid" name="contract-grid"/>
+    <context name="_showRecord" expr="eval: nextContract.id"/>
+  </action-view>
 
-    <action-view name="action-contract-view-invoicing" model="com.axelor.apps.account.db.Invoice" title="Invoices">
-        <view type="grid" name="invoice-lite-grid" />
-        <view type="form" name="invoice-form" />
-        <domain>self.contract.id = :contractId</domain>
-        <context name="contractId" expr="eval: id"/>
-    </action-view>
+  <action-view name="action-contract-view-invoicing"
+    model="com.axelor.apps.account.db.Invoice" title="Invoices">
+    <view type="grid" name="invoice-lite-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.contract.id = :contractId</domain>
+    <context name="contractId" expr="eval: id"/>
+  </action-view>
 
-    <action-attrs name="action-contract-attrs-domains-template">
-        <attribute for="$contractTemplate" name="domain" expr="eval: &quot;self.targetTypeSelect = ${targetTypeSelect}&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true AND :company member of self.companySet&quot;" if="targetTypeSelect == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true AND :company member of self.companySet&quot;" if="targetTypeSelect == 2"/>
-    </action-attrs>
+  <action-attrs name="action-contract-attrs-domains-template">
+    <attribute for="$contractTemplate" name="domain"
+      expr="eval: &quot;self.targetTypeSelect = ${targetTypeSelect}&quot;"/>
+    <attribute for="partner" name="domain"
+      expr="eval: &quot;self.isCustomer = true AND :company member of self.companySet&quot;"
+      if="targetTypeSelect == 1"/>
+    <attribute for="partner" name="domain"
+      expr="eval: &quot;self.isSupplier = true AND :company member of self.companySet&quot;"
+      if="targetTypeSelect == 2"/>
+  </action-attrs>
 
-    <action-method name="action-contract-method-terminated">
-        <call class="com.axelor.apps.contract.web.ContractController" method="terminated"/>
-    </action-method>
+  <action-method name="action-contract-method-terminated">
+    <call class="com.axelor.apps.contract.web.ContractController" method="terminated"/>
+  </action-method>
 
-    <action-attrs name="action-contract-attrs-required-payment-config">
-        <attribute for="currentContractVersion.paymentMode" name="required" expr="eval: isInvoicingManagement"/>
-        <attribute for="currentContractVersion.paymentCondition" name="required" expr="eval: isInvoicingManagement"/>
-    </action-attrs>
+  <action-attrs name="action-contract-attrs-required-payment-config">
+    <attribute for="currentContractVersion.paymentMode" name="required"
+      expr="eval: isInvoicingManagement"/>
+    <attribute for="currentContractVersion.paymentCondition" name="required"
+      expr="eval: isInvoicingManagement"/>
+  </action-attrs>
 
-    <action-attrs name="action-contract-attrs-partner-payment-config">
-        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1"/>
-        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2"/>
-        <attribute for="currentContractVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
-    </action-attrs>
+  <action-attrs name="action-contract-attrs-partner-payment-config">
+    <attribute for="currentContractVersion.paymentMode" name="value"
+      expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1"/>
+    <attribute for="currentContractVersion.paymentMode" name="value"
+      expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2"/>
+    <attribute for="currentContractVersion.paymentCondition" name="value"
+      expr="eval: partner?.paymentCondition"/>
+  </action-attrs>
 
-    <action-method name="action-method-contract-change-product">
-        <call class="com.axelor.apps.contract.web.ContractController" method="changeProduct"/>
-    </action-method>
+  <action-method name="action-method-contract-change-product">
+    <call class="com.axelor.apps.contract.web.ContractController" method="changeProduct"/>
+  </action-method>
 
-    <action-method name="action-contract-method-invoicing">
-        <call class="com.axelor.apps.contract.web.ContractController" method="invoicing"/>
-    </action-method>
+  <action-method name="action-contract-method-invoicing">
+    <call class="com.axelor.apps.contract.web.ContractController" method="invoicing"/>
+  </action-method>
 
-    <action-method name="action-contract-method-is-valid">
-        <call class="com.axelor.apps.contract.web.ContractController"
-              method="isValid"/>
-    </action-method>
+  <action-method name="action-contract-method-is-valid">
+    <call class="com.axelor.apps.contract.web.ContractController" method="isValid"/>
+  </action-method>
 
-    <action-validate name="action-contract-validate-on-going">
-        <alert message="Attention the contract will have as starting date the provisional activation
+  <action-validate name="action-contract-validate-on-going">
+    <alert
+      message="Attention the contract will have as starting date the provisional activation
         date ${currentContractVersion.supposedActivationDate}, Are you sure?"
-          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __date__"/>
-    </action-validate>
+      if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __config__.date"/>
+  </action-validate>
 
-    <action-attrs name="action-contract-readonly-if-unchangable" model="com.axelor.apps.contract.db.Contract">
-        <attribute for="currentContractVersion.contractLineList,isInvoicingManagement,isAdditionaBenefitManagement,isConsumptionManagement,
+  <action-attrs name="action-contract-readonly-if-unchangable"
+    model="com.axelor.apps.contract.db.Contract">
+    <attribute
+      for="currentContractVersion.contractLineList,isInvoicingManagement,isAdditionaBenefitManagement,isConsumptionManagement,
           currentContractVersion.isConsumptionBeforeEndDate,currentContractVersion.paymentMode,currentContractVersion.paymentCondition,
           currentContractVersion.automaticInvoicing,currentContractVersion.invoicingMomentSelect,currentContractVersion.invoicingDuration,
           currentContractVersion.isTimeProratedInvoice,currentContractVersion.isVersionProratedInvoice,currentContractVersion.isTacitRenewal,
           currentContractVersion.renewalDuration,currentContractVersion.isAutoEnableVersionOnRenew,currentContractVersion.isWithEngagement,
           currentContractVersion.engagementDuration,currentContractVersion.engagementStartFromVersion,currentContractVersion.isWithPriorNotice,
           currentContractVersion.priorNoticeDuration,currentContractVersion.isPeriodicInvoicing,firstPeriodEndDate,currentContractVersion.numberOfDays"
-          name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+      name="readonly"
+      expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
           || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)"/>
-        <attribute for="currentContractVersion.contractLineList"
-          name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+    <attribute for="currentContractVersion.contractLineList" name="readonly"
+      expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
           || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)
           || !id"/>
-    </action-attrs>
+  </action-attrs>
 
-    <action-attrs name="action-contract-attrs-domains-partner">
-		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND (self.isProspect = true OR self.isCustomer = true) &quot;" if="_xTargetType == 1"/>
-		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND self.isSupplier = true &quot;" if="_xTargetType == 2"/>
-    </action-attrs>
-    
-    <action-attrs name="action-contract-attrs-set-payment-mode-domain">
-    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 1" if="__parent__?.targetTypeSelect == 1"/>
-    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2" if="__parent__?.targetTypeSelect == 2"/>
-    </action-attrs>
+  <action-attrs name="action-contract-attrs-domains-partner">
+    <attribute name="domain" for="partner"
+      expr="eval: &quot; :company member of self.companySet AND (self.isProspect = true OR self.isCustomer = true) &quot;"
+      if="_xTargetType == 1"/>
+    <attribute name="domain" for="partner"
+      expr="eval: &quot; :company member of self.companySet AND self.isSupplier = true &quot;"
+      if="_xTargetType == 2"/>
+  </action-attrs>
 
-    <search-filters name="contract-filters" model="com.axelor.apps.contract.db.Contract" title="Contract filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-        <field name="currency" hidden="true" if="!__config__.app.getApp('contract').getIsInvoicingManagement()"/>
-        <field name="renewalNumber" hidden="true" if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
-        <field name="lastRenewalDate" hidden="true" if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
-        <field name="engagementStartDate" hidden="true" if="!__config__.app.getApp('contract').isConfigContract"/>
-        <field name="isInvoicingManagement" hidden="true" if="!__config__.app.getApp('contract').isInvoicingManagement"/>
-        <field name="isAdditionaBenefitManagement" hidden="true" if="!__config__.app.getApp('contract').isAdditionalBenefitManagement"/>
-        <field name="isConsumptionManagement" hidden="true" if="!__config__.app.getApp('contract').isConsumptionManagement"/>
-    </search-filters>
-    
+  <action-attrs name="action-contract-attrs-set-payment-mode-domain">
+    <attribute name="domain" for="paymentMode" expr="self.inOutSelect = 1"
+      if="__parent__?.targetTypeSelect == 1"/>
+    <attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2"
+      if="__parent__?.targetTypeSelect == 2"/>
+  </action-attrs>
+
+  <search-filters name="contract-filters"
+    model="com.axelor.apps.contract.db.Contract" title="Contract filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="currency" hidden="true"
+      if="!__config__.app.getApp('contract').getIsInvoicingManagement()"/>
+    <field name="renewalNumber" hidden="true"
+      if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
+    <field name="lastRenewalDate" hidden="true"
+      if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
+    <field name="engagementStartDate" hidden="true"
+      if="!__config__.app.getApp('contract').isConfigContract"/>
+    <field name="isInvoicingManagement" hidden="true"
+      if="!__config__.app.getApp('contract').isInvoicingManagement"/>
+    <field name="isAdditionaBenefitManagement" hidden="true"
+      if="!__config__.app.getApp('contract').isAdditionalBenefitManagement"/>
+    <field name="isConsumptionManagement" hidden="true"
+      if="!__config__.app.getApp('contract').isConsumptionManagement"/>
+  </search-filters>
+
 </object-views>

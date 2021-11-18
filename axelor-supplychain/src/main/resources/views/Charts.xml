@@ -1,118 +1,125 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<chart name="chart.nbr.product.per.family" title="Number of Product per Accounting Family">
-		<dataset type="sql">
-			SELECT
-				COUNT(_product.id) AS _num_prod,
-				_family.name AS _prod_family
-			FROM
-				base_product AS _product
-			RIGHT JOIN
-				base_product_family AS _family
-			ON
-				_family.id = _product.product_family
-			WHERE _product.dtype = 'Product'
-			GROUP BY
-				_prod_family
-			ORDER BY
-				_prod_family
-		</dataset>
-		<category key="_prod_family" type="text" title="Product Accounting Family"/>
-		<series key="_num_prod" type="bar" title="Products"/>
-	</chart>
-		
-	<chart name="chart.nbr.product.per.category" title="Number of Product per Category">
-		<dataset type="sql">
-			SELECT
-			  COUNT(_product.id) AS _num_prod,
-			  _category.name AS _prod_category
-			FROM
-			  base_product AS _product
-			JOIN
-			  base_product_category AS _category
-			ON
-			  _category.id = _product.product_category
-			WHERE _product.dtype = 'Product'
-			GROUP BY
-			  _prod_category
-			ORDER BY
-			  _prod_category
-		</dataset>
-		<category key="_prod_category" type="text" title="Product Category"/>
-		<series key="_num_prod" type="donut" title="Products"/>
-	</chart>
-	
-	<chart name="chart.product.type.distribution" title="Product type distribution">
-		<dataset type="sql">
-			SELECT
-			  COUNT(self.id) AS _num_prod,
-			  _item.title AS _type
-			FROM
-			  base_product AS self
-			JOIN
-			  meta_select AS selection
-			  ON selection.name = 'product.product.type.select'
-			JOIN
-			  meta_select_item AS _item
-			  ON _item.select_id = selection.id
-			  AND _item.value = self.product_type_select
-			WHERE self.dtype = 'Product'
-			GROUP BY
-			  _type
-		</dataset>
-		<category key="_type" type="text" title="Product Type"/>
-		<series key="_num_prod" type="donut" title="Products"/>
-	</chart>
-	
-	<chart onInit="action.base.chart.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
-		<search-fields>
-			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field type="date" name="toDate" title="To Date" x-required="true"/>
-		</search-fields>
-	  	<dataset type="sql">
-			SELECT
-				_num_prod,
-				_month,
-				_label
-			FROM
-				(
-					(SELECT
-						COUNT(self.id) AS _num_prod,
-				   		TO_CHAR(self.start_date,'yyyy-MM') AS _month,
-				    	'Launch' AS _label
-					FROM
-						base_product AS self
-					WHERE
-						self.start_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.dtype = 'Product'
-					GROUP BY
-					  _month)
-				UNION ALL
-					(SELECT
-				    	COUNT(self.id) AS _num_prod,
-				    	TO_CHAR(self.end_date,'yyyy-MM') AS _month,
-				    	'Withdrawal' AS _label
-				  	FROM
-				    	base_product AS self
-				  	WHERE
-				    	self.end_date BETWEEN DATE(:fromDate)  AND DATE(:toDate) AND self.dtype = 'Product'
-				  	GROUP BY
-				    	_month)
-				) prod_status
-			ORDER BY
-			    _month 
-		</dataset>
-		<category key="_month" type="month" title="Month"/>
-		<series key="_num_prod" groupBy="_label" type="bar" title="Products"/>
-		<config name="xFormat" value="MM-YYYY"/>
-	</chart>
-  
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <chart name="chart.nbr.product.per.family" title="Number of Product per Accounting Family">
+    <dataset type="sql">
+      SELECT
+      COUNT(_product.id) AS _num_prod,
+      _family.name AS _prod_family
+      FROM
+      base_product AS _product
+      RIGHT JOIN
+      base_product_family AS _family
+      ON
+      _family.id =
+      _product.product_family
+      WHERE _product.dtype = 'Product'
+      GROUP BY
+      _prod_family
+      ORDER BY
+      _prod_family
+    </dataset>
+    <category key="_prod_family" type="text" title="Product Accounting Family"/>
+    <series key="_num_prod" type="bar" title="Products"/>
+  </chart>
+
+  <chart name="chart.nbr.product.per.category" title="Number of Product per Category">
+    <dataset type="sql">
+      SELECT
+      COUNT(_product.id) AS _num_prod,
+      _category.name AS _prod_category
+      FROM
+      base_product AS _product
+      JOIN
+      base_product_category AS _category
+      ON
+      _category.id =
+      _product.product_category
+      WHERE _product.dtype = 'Product'
+      GROUP BY
+      _prod_category
+      ORDER BY
+      _prod_category
+    </dataset>
+    <category key="_prod_category" type="text" title="Product Category"/>
+    <series key="_num_prod" type="donut" title="Products"/>
+  </chart>
+
+  <chart name="chart.product.type.distribution" title="Product type distribution">
+    <dataset type="sql">
+      SELECT
+      COUNT(self.id) AS _num_prod,
+      _item.title AS _type
+      FROM
+      base_product AS
+      self
+      JOIN
+      meta_select AS selection
+      ON selection.name = 'product.product.type.select'
+      JOIN
+      meta_select_item AS _item
+      ON _item.select_id = selection.id
+      AND _item.value =
+      self.product_type_select
+      WHERE self.dtype = 'Product'
+      GROUP BY
+      _type
+    </dataset>
+    <category key="_type" type="text" title="Product Type"/>
+    <series key="_num_prod" type="donut" title="Products"/>
+  </chart>
+
+  <chart onInit="action.base.chart.set.date.6m"
+    name="chart.product.launches.withdrawal.each.month"
+    title="Product launches/withdrawal each month">
+    <search-fields>
+      <field type="date" name="fromDate" title="From Date" x-required="true"/>
+      <field type="date" name="toDate" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      _num_prod,
+      _month,
+      _label
+      FROM
+      (
+      (SELECT
+      COUNT(self.id) AS _num_prod,
+      TO_CHAR(self.start_date,'yyyy-MM') AS _month,
+      'Launch' AS _label
+      FROM
+      base_product AS self
+      WHERE
+      self.start_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.dtype = 'Product'
+      GROUP BY
+      _month)
+      UNION ALL
+      (SELECT
+      COUNT(self.id) AS _num_prod,
+      TO_CHAR(self.end_date,'yyyy-MM') AS _month,
+      'Withdrawal' AS _label
+      FROM
+      base_product AS self
+      WHERE
+      self.end_date BETWEEN DATE(:fromDate) AND
+      DATE(:toDate) AND self.dtype = 'Product'
+      GROUP BY
+      _month)
+      ) prod_status
+      ORDER BY
+      _month
+    </dataset>
+    <category key="_month" type="month" title="Month"/>
+    <series key="_num_prod" groupBy="_label" type="bar" title="Products"/>
+    <config name="xFormat" value="MM-YYYY"/>
+  </chart>
+
   <chart name="chart.projected.stock" title="Projected stock">
     <dataset type="rpc">com.axelor.apps.supplychain.web.ProjectedStockController:showChartProjectedStock</dataset>
     <category key="name" type="date" title="Date"/>
     <series key="cumulativeQty" type="line" title="Cumulative qty"/>
- </chart>
+  </chart>
 
 </object-views>

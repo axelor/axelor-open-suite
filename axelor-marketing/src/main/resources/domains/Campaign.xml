@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
   <entity name="Campaign" lang="java" sequential="true">
-  	
-  	<string name="name" title="Name" required="true"/>
-  	<integer name="stageSelect" title="Stage" selection="campaign.stage.select"/>
-  	<many-to-many name="targetModelSet" ref="com.axelor.apps.marketing.db.TargetList" title="Target Model" />
-  	<many-to-one name="partnerTemplate" ref="com.axelor.apps.message.db.Template" title="Contact/Partners template" />
-  	<many-to-one name="leadTemplate" ref="com.axelor.apps.message.db.Template" title="Leads template" />
-  	<many-to-one name="emailLog" ref="com.axelor.meta.db.MetaFile" title="Email sending log" />
-  	<many-to-one name="campaignType" ref="CampaignType" title="Campaign Type" />
-  	<boolean name="emailing" title="Emailing" />
-  	<boolean name="manageAnEventPerTarget" title="Manage an event per target" />
-  	<boolean name="manageAttendees" title="Manage attendees" />
-  	<boolean name="generateEventPerPartnerOrLead" title="Generate event to the team and salesperson in charge of the partner/leads" />
-  	<many-to-many name="leads" ref="com.axelor.apps.crm.db.Lead" title="Leads" />
-  	<many-to-many name="partners" ref="com.axelor.apps.base.db.Partner" title="Partners" />
-  	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-  	<many-to-one name="emailAccount" ref="com.axelor.apps.message.db.EmailAccount" title="Email Account"/>
-  	<string name="subject" title="Subject"/>
-  	<integer name="eventTypeSelect" title="Event type" selection="icalendar.event.type.select"/>
-  	<datetime name="eventStartDateTime" title="Start date time"/>
-  	<long name="duration" title="Duration"/>
-	<datetime name="eventEndDateTime" title="End date time"/>
-  	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partner/Contacts Target List" />
-  	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads Target List" />
+
+    <string name="name" title="Name" required="true"/>
+    <integer name="stageSelect" title="Stage" selection="campaign.stage.select"/>
+    <many-to-many name="targetModelSet" ref="com.axelor.apps.marketing.db.TargetList"
+      title="Target Model"/>
+    <many-to-one name="partnerTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Contact/Partners template"/>
+    <many-to-one name="leadTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Leads template"/>
+    <many-to-one name="emailLog" ref="com.axelor.meta.db.MetaFile"
+      title="Email sending log"/>
+    <many-to-one name="campaignType" ref="CampaignType" title="Campaign Type"/>
+    <boolean name="emailing" title="Emailing"/>
+    <boolean name="manageAnEventPerTarget" title="Manage an event per target"/>
+    <boolean name="manageAttendees" title="Manage attendees"/>
+    <boolean name="generateEventPerPartnerOrLead"
+      title="Generate event to the team and salesperson in charge of the partner/leads"/>
+    <many-to-many name="leads" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
+    <many-to-many name="partners" ref="com.axelor.apps.base.db.Partner"
+      title="Partners"/>
+    <many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
+    <many-to-one name="emailAccount" ref="com.axelor.apps.message.db.EmailAccount"
+      title="Email Account"/>
+    <string name="subject" title="Subject"/>
+    <integer name="eventTypeSelect" title="Event type"
+      selection="icalendar.event.type.select"/>
+    <datetime name="eventStartDateTime" title="Start date time"/>
+    <long name="duration" title="Duration"/>
+    <datetime name="eventEndDateTime" title="End date time"/>
+    <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"
+      title="Partner/Contacts Target List"/>
+    <many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead"
+      title="Leads Target List"/>
     <integer name="sequence"/>
-    <string name="report" />
+    <string name="report"/>
     <datetime name="eventStartDateT" title="Event start"/>
     <datetime name="eventEndDateT" title="Event end"/>
-    <many-to-many name="invitedPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="invitedPartnerSet" title="Partners"
+      ref="com.axelor.apps.base.db.Partner"/>
     <many-to-many name="invitedLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
-    <many-to-many name="notParticipatingPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
-    <many-to-many name="notParticipatingLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
-    <many-to-many name="presentPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="notParticipatingPartnerSet" title="Partners"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="notParticipatingLeadSet" title="Leads"
+      ref="com.axelor.apps.crm.db.Lead"/>
+    <many-to-many name="presentPartnerSet" title="Partners"
+      ref="com.axelor.apps.base.db.Partner"/>
     <many-to-many name="presentLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
-    <one-to-many name="campaignReminderList" title="Reminders" ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
-    <many-to-one name="partnerReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Contact/Partner reminder template"/>
-    <many-to-one name="leadReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Lead reminder template"/>
-    <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets" default="true"/>
+    <one-to-many name="campaignReminderList" title="Reminders"
+      ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
+    <many-to-one name="partnerReminderTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Contact/Partner reminder template"/>
+    <many-to-one name="leadReminderTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Lead reminder template"/>
+    <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets"
+      default="true"/>
 
   </entity>
 

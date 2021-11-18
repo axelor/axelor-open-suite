@@ -24,7 +24,6 @@ public interface ITranslation {
   public static final String LEAD_TITLE = /*$$(*/ "Lead.title"; /*)*/
   public static final String LEAD_EMAIL = /*$$(*/ "Lead.email"; /*)*/
   public static final String LEAD_PHONE = /*$$(*/ "Lead.phone"; /*)*/
-  public static final String LEAD_FAX = /*$$(*/ "Lead.fax"; /*)*/
   public static final String LEAD_LEAD_OWNER = /*$$(*/ "Lead.lead_owner"; /*)*/
   public static final String LEAD_COMPANY = /*$$(*/ "Lead.company"; /*)*/
   public static final String LEAD_INDUSTRY = /*$$(*/ "Lead.industry"; /*)*/

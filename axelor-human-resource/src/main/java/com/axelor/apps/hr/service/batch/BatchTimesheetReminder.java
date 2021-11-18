@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
@@ -39,7 +40,9 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
@@ -96,7 +99,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   private List<Employee> getEmployeesWithoutRecentTimesheet(Company company) {
     LocalDate now = appBaseService.getTodayDate(company);
-    long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder().longValue();
+    long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder();
 
     List<Employee> employees =
         employeeRepository
@@ -106,7 +109,10 @@ public class BatchTimesheetReminder extends BatchStrategy {
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
 
-    employees.removeIf(employee -> hasRecentTimesheet(now, daysBeforeReminder, employee));
+    employees.removeIf(
+        employee ->
+            hasRecentTimesheet(now, daysBeforeReminder, employee)
+                || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
     return employees;
   }
 
@@ -135,7 +141,10 @@ public class BatchTimesheetReminder extends BatchStrategy {
           InstantiationException, IllegalAccessException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))) {
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList())) {
       Message message = templateMessageService.generateMessage(employee, template);
       messageService.sendByEmail(message);
       incrementDone();
@@ -147,7 +156,13 @@ public class BatchTimesheetReminder extends BatchStrategy {
           InstantiationException, IllegalAccessException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))) {
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList())) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
       if (timeSheet != null) {
         Message message = templateMessageService.generateMessage(timeSheet, template);

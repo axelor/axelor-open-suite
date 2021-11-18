@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<form name="app-purchase-config-form" title="App purchase" model="com.axelor.apps.base.db.AppPurchase" canDelete="false" canNew="false" width="large">
-		<panel name="mainPanel">
-			<field name="managePurchasesUnits" widget="boolean-switch"/>
-			<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
-			<field name="supplierRequestMgt"  widget="boolean-switch" if-module="axelor-supplier-management"/>
-            <field name="manageMultiplePurchaseQuantity" widget="boolean-switch"/>
-			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
-			<field name="manageSupplierCatalog" widget="boolean-switch"/>
-			<field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"></field>
-		</panel>
-		<panel name="actionsPanel">
-			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />
-			<panel-dashlet name="confPurchaseConfigPanel" action="admin.root.conf.purchase.config" colSpan="12"/> 
-		</panel>
-		
-		<panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail>
-		
-	</form>
-	
-	<action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
-		model="com.axelor.apps.purchase.db.PurchaseConfig" >
-		<view type="grid" name="purchase-config-grid" />
-		<view type="form" name="purchase-config-form" />
-	</action-view>
-	
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="app-purchase-config-form" title="App purchase"
+    model="com.axelor.apps.base.db.AppPurchase" canDelete="false" canNew="false" width="large"
+    onLoad="action-purchase-attrs-set-hidden">
+    <panel name="mainPanel">
+      <field name="managePurchasesUnits" widget="boolean-switch"/>
+      <field name="managePurchaseOrderVersion" widget="boolean-switch"/>
+      <field name="supplierRequestMgt" widget="boolean-switch"
+        if-module="axelor-supplier-management"/>
+      <field name="manageMultiplePurchaseQuantity" widget="boolean-switch"/>
+      <field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
+      <field name="manageSupplierCatalog" widget="boolean-switch"/>
+      <field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"/>
+      <field name="enablePurchasesProductByTradName" widget="boolean-switch"/>
+      <field name="purchaseUnit" form-view="unit-form" grid-view="unit-grid"/>
+    </panel>
+    <panel name="actionsPanel">
+      <button name="generatePurchaseConfigurationsBtn" colSpan="4"
+        title="Generate purchase configurations"
+        onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"/>
+      <panel-dashlet name="confPurchaseConfigPanel"
+        action="admin.root.conf.purchase.config" colSpan="12"/>
+    </panel>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+
+  </form>
+
+  <action-view name="admin.root.conf.purchase.config" title="Purchase configurations"
+    model="com.axelor.apps.purchase.db.PurchaseConfig">
+    <view type="grid" name="purchase-config-grid"/>
+    <view type="form" name="purchase-config-form"/>
+  </action-view>
+
+  <action-attrs name="action-purchase-attrs-set-hidden"
+    model="com.axelor.apps.base.db.AppPurchase">
+    <attribute name="hidden" for="enablePurchasesProductByTradName"
+      expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+  </action-attrs>
+
 </object-views>

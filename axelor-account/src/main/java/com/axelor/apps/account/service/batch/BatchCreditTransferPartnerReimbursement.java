@@ -134,7 +134,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                     + "AND self.move.partner = ?3 AND self.move.company = ?4 "
                     + "AND self.reimbursementStatusSelect = ?5",
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
                 partner,
                 company,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)

@@ -1,2 +1,3 @@
 "name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
 "perm.project.all";"com.axelor.apps.project.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.projectTask.rwc";"com.axelor.apps.project.db.ProjectTask";"x";"x";"x";;;;;

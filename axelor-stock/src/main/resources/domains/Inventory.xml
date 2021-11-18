@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="Inventory" lang="java">
 
-  	<string name="inventorySeq" title="Inventory N°" readonly="true" namecolumn="true"/>
-  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>
-    <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>
-	<datetime name="plannedStartDateT" title="Planned Start Date" tz="true"/>
-	<datetime name="plannedEndDateT" title="Planned End Date" tz="true"/>
-	<string name="inventoryTitle" title="Inventory Title"/>
-  	<string name="description" title="Description" large="true"/>
-  	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
-  	<string name="formatSelect" title="File Format" selection="inventory.export.format.select"/>
-  	<many-to-one name="importFile" title="File (CSV)" ref="com.axelor.meta.db.MetaFile" />
-  	
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Accounting family"/>
-  	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<boolean name="excludeOutOfStock" title="Excl. out of stock products"/>
-  	<boolean name="includeObsolete" title="Incl. obsolete products"/>
-  	<string name="fromRack" title="From rack"/>
-  	<string name="toRack" title="To rack"/>
-  	<many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
-  	<many-to-one name="completedBy" title="User" ref="com.axelor.auth.db.User"/>
-  	<date name="validatedOn" title="Validated On"/>
-    <integer name="typeSelect" title="Type" selection="product.inventory.type.select" required="true"/>
-  	
-  	<unique-constraint columns="inventorySeq,stockLocation"/>
-  	
-  	<extra-code><![CDATA[
-	
+    <string name="inventorySeq" title="Inventory N°" readonly="true" namecolumn="true"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location" required="true"/>
+    <integer name="statusSelect" title="Status" selection="inventory.status.select"
+      readonly="true"/>
+    <datetime name="plannedStartDateT" title="Planned Start Date" tz="true"/>
+    <datetime name="plannedEndDateT" title="Planned End Date" tz="true"/>
+    <string name="inventoryTitle" title="Inventory Title"/>
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine"
+      mappedBy="inventory" title="Inventory lines"/>
+    <string name="formatSelect" title="File Format"
+      selection="inventory.export.format.select"/>
+    <many-to-one name="importFile" title="File (CSV)" ref="com.axelor.meta.db.MetaFile"/>
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
+      title="Accounting family"/>
+    <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
+      title="Product category"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <boolean name="excludeOutOfStock" title="Excl. out of stock products"/>
+    <boolean name="includeObsolete" title="Incl. obsolete products"/>
+    <string name="fromRack" title="From rack"/>
+    <string name="toRack" title="To rack"/>
+    <many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="completedBy" title="User" ref="com.axelor.auth.db.User"/>
+    <date name="validatedOn" title="Validated On"/>
+    <integer name="typeSelect" title="Type" selection="product.inventory.type.select"
+      required="true"/>
+
+    <unique-constraint columns="inventorySeq,stockLocation"/>
+
+    <extra-code><![CDATA[
+
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_PLANNED = 2;
@@ -42,7 +49,7 @@
 		public static final int STATUS_COMPLETED = 4;
 		public static final int STATUS_VALIDATED = 5;
 		public static final int STATUS_CANCELED = 6;
-		
+
 		//FORMAT SELECT
 		public static final String FORMAT_PDF = "pdf";
 		public static final String FORMAT_XLSX = "xlsx";
@@ -50,6 +57,6 @@
 		public static final String FORMAT_ODS = "ods";
 
 	]]></extra-code>
-  	
+
   </entity>
 </domain-models>

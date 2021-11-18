@@ -1,58 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="resource-booking-grid" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
-		<field name="name"/>
-		<field name="resource"/>
-		<field name="project"/>
-		<field name="task"/>
-		<field name="user"/>
-		<field name="fromDate"/>
-		<field name="toDate"/>
-	</grid>
+  <grid name="resource-booking-grid" title="Resource bookings"
+    model="com.axelor.apps.project.db.ResourceBooking">
+    <field name="name"/>
+    <field name="resource"/>
+    <field name="project"/>
+    <field name="projectTask"/>
+    <field name="user"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </grid>
 
-	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults">
-		<panel name="mainPanel">
-			<panel name="namePanel" colSpan="12">
-				<field name="name" colSpan="12" css="label-bold bold large" required="true"/>
-			</panel>
-			<field name="resource" canEdit="false"/>
-			<field name="user" canEdit="false"/>
-			<field name="project" canEdit="false"/>
-			<field name="task" canEdit="false" onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
-			<field name="fromDate" colSpan="4"/>
-			<field name="toDate" colSpan="4"/>
-			<field name="updateTaskFromPeriod" onChange="action-resource-booking-attrs-update-period" colSpan="4"/>
-			<field name="notes" colSpan="12"/>
-		</panel>
-	</form>
+  <form name="resource-booking-form" title="Resource booking"
+    model="com.axelor.apps.project.db.ResourceBooking" width="large"
+    onNew="action-resource-booking-defaults"
+    onSave="action-resource-booking-method-check-resource-availibility">
+    <panel name="mainPanel">
+      <panel name="namePanel" colSpan="12">
+        <field name="name" colSpan="12" css="label-bold bold large" required="true"/>
+      </panel>
+      <field name="resource" canEdit="false"/>
+      <field name="user" canEdit="false"/>
+      <field name="project" canEdit="false"/>
+      <field name="projectTask" canEdit="false"
+        onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
+      <field name="fromDate" colSpan="4"/>
+      <field name="toDate" colSpan="4"/>
+      <field name="updateTaskFromPeriod"
+        onChange="action-resource-booking-attrs-update-period" colSpan="4"/>
+      <field name="notes" colSpan="12"/>
+    </panel>
+  </form>
 
-	<grid name="resource-booking-grid-incl-project" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking">
-		<field name="name"/>
-		<field name="resource"/>
-		<field name="task"/>
-		<field name="user"/>
-		<field name="fromDate"/>
-		<field name="toDate"/>
-	</grid>
+  <grid name="resource-booking-grid-incl-project" title="Resource booking"
+    model="com.axelor.apps.project.db.ResourceBooking">
+    <field name="name"/>
+    <field name="resource"/>
+    <field name="projectTask"/>
+    <field name="user"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </grid>
 
-	<calendar name="resource-booking-calendar" model="com.axelor.apps.project.db.ResourceBooking" eventStart="fromDate" title="Resource booking" eventStop="toDate" colorBy="resource">
-		<field name="project"/>
-	</calendar>
+  <calendar name="resource-booking-calendar"
+    model="com.axelor.apps.project.db.ResourceBooking" eventStart="fromDate"
+    title="Resource booking" eventStop="toDate" colorBy="resource">
+    <field name="project"/>
+  </calendar>
 
-	<action-record name="action-resource-booking-defaults" model="com.axelor.apps.project.db.ResourceBooking">
-		<field name="project" expr="eval:_project" if="_project != null"/>
-		<field name="task" expr="eval:_task" if="_task != null"/>
-		<field name="resource" expr="eval:_resource" if="_resource != null"/>
-		<field name="user" expr="eval:__user__" />
-	</action-record>
+  <action-record name="action-resource-booking-defaults"
+    model="com.axelor.apps.project.db.ResourceBooking">
+    <field name="project" expr="eval:_project" if="_project != null"/>
+    <field name="projectTask" expr="eval:_task" if="_task != null"/>
+    <field name="resource" expr="eval:_resource" if="_resource != null"/>
+    <field name="user" expr="eval:__user__"/>
+  </action-record>
 
-	<action-attrs name="action-resource-booking-attrs-update-period" model="com.axelor.apps.project.db.ResourceBooking">
-		<attribute name="value" expr="#{updateTaskFromPeriod ? task.taskDate.atStartOfDay() : null}" for="fromDate"/>
-		<attribute name="readonly" expr="#{updateTaskFromPeriod}" for="fromDate"/>
-		<attribute name="value" expr="#{updateTaskFromPeriod ? task.taskEndDate.atStartOfDay() : null}" for="toDate"/>
-		<attribute name="readonly" expr="#{updateTaskFromPeriod}" for="toDate"/>
-	</action-attrs>
+  <action-attrs name="action-resource-booking-attrs-update-period"
+    model="com.axelor.apps.project.db.ResourceBooking">
+    <attribute name="value"
+      expr="#{updateTaskFromPeriod ? projectTask.taskDate.atStartOfDay() : null}" for="fromDate"/>
+    <attribute name="readonly" expr="#{updateTaskFromPeriod}" for="fromDate"/>
+    <attribute name="value"
+      expr="#{updateTaskFromPeriod ? projectTask.taskEndDate.atStartOfDay() : null}" for="toDate"/>
+    <attribute name="readonly" expr="#{updateTaskFromPeriod}" for="toDate"/>
+  </action-attrs>
+
+  <action-method name="action-resource-booking-method-check-resource-availibility">
+    <call class="com.axelor.apps.project.web.ResourceBookingController"
+      method="checkIfResourceBooked"/>
+  </action-method>
 
 </object-views>

@@ -22,6 +22,7 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.portal.service.ClientViewService;
 import com.axelor.apps.portal.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,7 +35,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.filter.Filter;
-import com.axelor.team.db.TeamTask;
 import java.util.Map;
 
 public class ClientViewController {
@@ -168,10 +168,10 @@ public class ClientViewController {
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("New tasks"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -192,10 +192,10 @@ public class ClientViewController {
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("Tasks in progress"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -216,10 +216,10 @@ public class ClientViewController {
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("Tasks due"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }

@@ -18,19 +18,20 @@
 package com.axelor.apps.businesssupport.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.businessproject.db.repo.TeamTaskBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
-import com.axelor.apps.businesssupport.db.repo.TeamTaskBusinessSupportRepository;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businesssupport.db.repo.ProjectTaskBusinessSupportRepository;
 import com.axelor.apps.businesssupport.service.ProjectBusinessSupportServiceImpl;
-import com.axelor.apps.businesssupport.service.TeamTaskBusinessSupportServiceImpl;
+import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
 
 public class BusinessSupportModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(TeamTaskBusinessProjectServiceImpl.class).to(TeamTaskBusinessSupportServiceImpl.class);
-    bind(TeamTaskBusinessProjectRepository.class).to(TeamTaskBusinessSupportRepository.class);
+    bind(ProjectTaskBusinessProjectServiceImpl.class)
+        .to(ProjectTaskBusinessSupportServiceImpl.class);
+    bind(ProjectTaskBusinessProjectRepository.class).to(ProjectTaskBusinessSupportRepository.class);
     bind(ProjectBusinessServiceImpl.class).to(ProjectBusinessSupportServiceImpl.class);
   }
 }

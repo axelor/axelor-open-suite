@@ -110,7 +110,7 @@ public class AccountClearanceService {
                     + "AND self.amountRemaining > 0 AND self.amountRemaining <= ?4 AND self.credit > 0 AND self.account in ?5 AND self.date <= ?6",
                 company,
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
                 accountClearance.getAmountThreshold(),
                 company.getAccountConfig().getClearanceAccountSet(),
                 accountClearance.getDateThreshold())
@@ -177,7 +177,13 @@ public class AccountClearanceService {
         moveService
             .getMoveCreateService()
             .createMove(
-                journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                journal,
+                company,
+                null,
+                partner,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                moveLine.getMove().getFunctionalOriginSelect());
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

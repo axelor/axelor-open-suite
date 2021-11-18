@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="payroll-leave-grid" title="Payroll Leaves" model="com.axelor.apps.hr.db.PayrollLeave" canNew="false">
-		<field name="fromDate"/>
-		<field name="toDate"/>
-		<field name="duration"/>
-		<field name="leaveReason"/>
-		<field name="leaveRequest"/>
-	</grid>
+  <grid name="payroll-leave-grid" title="Payroll Leaves"
+    model="com.axelor.apps.hr.db.PayrollLeave" canNew="false">
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="duration"/>
+    <field name="leaveReason"/>
+    <field name="leaveRequest"/>
+  </grid>
 
-	<form name="payroll-leave-form" title="Payroll Leave" model="com.axelor.apps.hr.db.PayrollLeave" cols="12" width="large">
-		<panel name="mainPanel" readonly="true">
-			<field name="fromDate" colSpan="4"/>
-			<field name="toDate" colSpan="4"/>
-			<field name="duration" colSpan="4"/>
-			<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form" />
-			<field name="leaveRequest" grid-view="leave-request-grid" form-view="leave-request-form"/>
-		</panel>
-	</form>
+  <form name="payroll-leave-form" title="Payroll Leave"
+    model="com.axelor.apps.hr.db.PayrollLeave" cols="12" width="large">
+    <panel name="mainPanel" readonly="true">
+      <field name="fromDate" colSpan="4"/>
+      <field name="toDate" colSpan="4"/>
+      <field name="duration" colSpan="4"/>
+      <field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form"/>
+      <field name="leaveRequest" grid-view="leave-request-grid" form-view="leave-request-form"/>
+    </panel>
+  </form>
 
 </object-views>

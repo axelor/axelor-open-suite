@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="ShipmentMode" sequential="true" lang="java">
+    <many-to-one name="shippingCostsProduct" ref="com.axelor.apps.base.db.Product"
+      title="Shipping cost"/>
+    <decimal name="carriagePaidThreshold" title="Carriage paid threshold"/>
+    <boolean name="hasCarriagePaidPossibility" title="Has carriage paid possibility"/>
+  </entity>
+
+</domain-models>

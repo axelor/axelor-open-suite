@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public interface UserService {
@@ -144,7 +145,7 @@ public interface UserService {
    */
   void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException;
+          MessagingException, IOException, AxelorException, JSONException;
 
   /**
    * Match password with configured pattern.

@@ -59,8 +59,10 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -73,8 +75,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -99,6 +99,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections4.ListUtils;
+import wslite.json.JSONException;
 
 /** @author axelor */
 public class TimesheetServiceImpl extends JpaSupport implements TimesheetService {
@@ -112,7 +113,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected UserHrService userHrService;
   protected TimesheetLineService timesheetLineService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
-  protected TeamTaskRepository teamTaskRepository;
+  protected ProjectTaskRepository projectTaskRepo;
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetlineRepo;
   protected TimesheetRepository timeSheetRepository;
@@ -131,7 +132,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
       TimesheetRepository timeSheetRepository) {
@@ -144,7 +145,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.userHrService = userHrService;
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
-    this.teamTaskRepository = teamTaskRepository;
+    this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
     this.timesheetlineRepo = timesheetlineRepo;
     this.timeSheetRepository = timeSheetRepository;
@@ -164,7 +165,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getSentTimesheetTemplate();
@@ -232,7 +233,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     confirm(timesheet);
     return sendConfirmationEmail(timesheet);
   }
@@ -250,7 +251,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getValidatedTimesheetTemplate();
@@ -267,7 +268,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -285,7 +286,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getRefusedTimesheetTemplate();
@@ -302,7 +303,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     refuse(timesheet);
     return sendRefusalEmail(timesheet);
   }
@@ -323,7 +324,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getCanceledTimesheetTemplate();
@@ -340,7 +341,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     cancel(timesheet);
     return sendCancellationEmail(timesheet);
   }
@@ -749,7 +750,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             });
       }
     }
-    this.setTeamTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
+    this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   private Project findProject(Long projectId) {
@@ -1096,7 +1097,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
-      timesheetLine.setTeamTask(projectPlanningTime.getTask());
+      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
@@ -1118,7 +1119,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.task != null ",
+                      + "AND self.projectTask != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -1134,7 +1135,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.task != null ",
+                      + "AND self.projectTask != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
@@ -1198,17 +1199,17 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
   @Override
   @Transactional
-  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
+  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
     for (TimesheetLine timesheetLine : timesheetLines) {
-      TeamTask teamTask = timesheetLine.getTeamTask();
-      if (teamTask != null) {
-        teamTask = teamTaskRepository.find(teamTask.getId());
+      ProjectTask projectTask = timesheetLine.getProjectTask();
+      if (projectTask != null) {
+        projectTask = projectTaskRepo.find(projectTask.getId());
         BigDecimal totalrealhrs =
             isAdd
-                ? teamTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
-                : teamTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
-        teamTask.setTotalRealHrs(totalrealhrs);
-        teamTaskRepository.save(teamTask);
+                ? projectTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
+                : projectTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
+        projectTask.setTotalRealHrs(totalrealhrs);
+        projectTaskRepo.save(projectTask);
       }
     }
   }

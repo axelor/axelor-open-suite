@@ -52,18 +52,26 @@ import com.axelor.script.ScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   protected AppBaseService appBaseService;
+  protected MetaFieldRepository metaFieldRepository;
 
   @Inject
-  public ConfiguratorServiceImpl(AppBaseService appBaseService) {
+  public ConfiguratorServiceImpl(
+      AppBaseService appBaseService, MetaFieldRepository metaFieldRepository) {
     this.appBaseService = appBaseService;
+    this.metaFieldRepository = metaFieldRepository;
   }
 
   @Override
@@ -74,6 +82,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    indicators =
+        indicators.stream()
+            .filter(metaJsonField -> !"one-to-many".equals(metaJsonField.getType()))
+            .collect(Collectors.toList());
     for (MetaJsonField indicator : indicators) {
       try {
         Object calculatedValue =
@@ -95,14 +107,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     String wantedClassName;
     String wantedType = MetaTool.jsonTypeToType(indicator.getType());
-    String calculatedValueClassName =
-        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
-    if (wantedType.equals("ManyToOne")
-        || wantedType.equals("ManyToMany")
+
+    // do not check one-to-many or many-to-many
+    if (wantedType.equals("ManyToMany")
         || wantedType.equals("OneToMany")
-        || wantedType.equals("Custom-ManyToOne")
         || wantedType.equals("Custom-ManyToMany")
         || wantedType.equals("Custom-OneToMany")) {
+      return;
+    }
+    String calculatedValueClassName =
+        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
+    if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
       // it is a relational field so we get the target model class
       String targetName = indicator.getTargetModel();
       // get only the class without the package
@@ -148,6 +163,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       mapper.set(product, key, jsonIndicators.get(key));
     }
     fixRelationalFields(product);
+    fetchManyToManyFields(product);
+    fillOneToManyFields(configurator, product, jsonAttributes);
     if (product.getProductTypeSelect() == null) {
       product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
     }
@@ -299,7 +316,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"))
-        || (targetClassName.equals("String") && fromClassName.equals("GStringImpl"));
+        || (targetClassName.equals("String") && fromClassName.equals("GStringImpl"))
+        || "ArrayList".equals(fromClassName);
   }
 
   /**
@@ -321,6 +339,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
     fixRelationalFields(saleOrderLine);
+    fetchManyToManyFields(saleOrderLine);
+    fillOneToManyFields(configurator, saleOrderLine, jsonAttributes);
     this.fillSaleOrderWithProduct(saleOrderLine);
     this.overwriteFieldToUpdate(configurator, saleOrderLine, jsonAttributes);
     if (saleOrderLine.getProductName() == null) {
@@ -351,16 +371,91 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     jsonIndicators.putAll(newKeyMap);
   }
 
+  protected void fillOneToManyFields(
+      Configurator configurator, Model model, JsonContext jsonAttributes) throws AxelorException {
+    try {
+
+      ConfiguratorCreator creator = configurator.getConfiguratorCreator();
+      List<? extends ConfiguratorFormula> configuratorFormulaList;
+      Class[] methodArg = new Class[1];
+      if (creator.getGenerateProduct()) {
+        configuratorFormulaList = creator.getConfiguratorProductFormulaList();
+        methodArg[0] = Product.class;
+      } else {
+        configuratorFormulaList = creator.getConfiguratorSOLineFormulaList();
+        methodArg[0] = SaleOrderLine.class;
+      }
+      configuratorFormulaList =
+          configuratorFormulaList.stream()
+              .filter(
+                  configuratorFormula ->
+                      "OneToMany".equals(configuratorFormula.getMetaField().getRelationship()))
+              .collect(Collectors.toList());
+      for (ConfiguratorFormula formula : configuratorFormulaList) {
+        List<? extends Model> computedValue =
+            (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
+        if (computedValue == null) {
+          continue;
+        }
+        Method setMappedByMethod = computeMappedByMethod(formula);
+        for (Model listElement : computedValue) {
+          setMappedByMethod.invoke(listElement, model);
+          JPA.save(listElement);
+        }
+      }
+    } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
+    }
+  }
+
+  /**
+   * Find the method used to fill the mapped by many-to-one of a one-to-many relationship. Example:
+   * for a one-to-many "purchaseProductMultipleQtyList" with a mapped by many-to-one called
+   * "purchaseProduct", this method will return the method "setPurchaseProduct"
+   *
+   * @param oneToManyFormula a ConfiguratorFormula used to fill a one-to-many
+   * @return the found method
+   * @throws AxelorException if the mapped by field in meta field is empty.
+   */
+  protected Method computeMappedByMethod(ConfiguratorFormula oneToManyFormula)
+      throws AxelorException, ClassNotFoundException {
+    MetaField metaField = oneToManyFormula.getMetaField();
+    String mappedBy = metaField.getMappedBy();
+    if (mappedBy == null || "".equals(mappedBy)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED));
+    }
+    return Mapper.of(Class.forName(MetaTool.computeFullClassName(metaField))).getSetter(mappedBy);
+  }
+
   /**
    * Fix relational fields of a product or a sale order line generated from a configurator. This
    * method may become useless on a future ADK update.
    *
    * @param model
    */
+  protected void fetchManyToManyFields(Model model) throws AxelorException {
+    // get all many to many fields
+    List<MetaField> manyToManyFields =
+        metaFieldRepository
+            .all()
+            .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToMany'")
+            .bind("name", model.getClass().getSimpleName())
+            .fetch();
+
+    Mapper mapper = Mapper.of(model.getClass());
+    for (MetaField manyToManyField : manyToManyFields) {
+      Set<? extends Model> manyToManyValue =
+          (Set<? extends Model>) mapper.get(model, manyToManyField.getName());
+      fetchManyToManyField(model, manyToManyValue, manyToManyField);
+    }
+  }
+
   protected void fixRelationalFields(Model model) throws AxelorException {
     // get all many to one fields
     List<MetaField> manyToOneFields =
-        Beans.get(MetaFieldRepository.class)
+        metaFieldRepository
             .all()
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToOne'")
             .bind("name", model.getClass().getSimpleName())
@@ -378,10 +473,28 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (value != null) {
       Mapper mapper = Mapper.of(parentModel.getClass());
       try {
-        String className =
-            String.format("%s.%s", metaField.getPackageName(), metaField.getTypeName());
+        String className = MetaTool.computeFullClassName(metaField);
         Model manyToOneDbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());
         mapper.set(parentModel, metaField.getName(), manyToOneDbValue);
+      } catch (Exception e) {
+        throw new AxelorException(
+            Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+      }
+    }
+  }
+
+  protected void fetchManyToManyField(
+      Model parentModel, Set<? extends Model> values, MetaField metaField) throws AxelorException {
+    if (values != null) {
+      Mapper mapper = Mapper.of(parentModel.getClass());
+      try {
+        String className = MetaTool.computeFullClassName(metaField);
+        Set<Model> dbValues = new HashSet<>();
+        for (Model value : values) {
+          Model dbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());
+          dbValues.add(dbValue);
+        }
+        mapper.set(parentModel, metaField.getName(), dbValues);
       } catch (Exception e) {
         throw new AxelorException(
             Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());

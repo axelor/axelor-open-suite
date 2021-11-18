@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -34,8 +35,9 @@ import com.google.inject.persist.Transactional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
-  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService) {
-    super(appBaseService);
+  public ConfiguratorServiceProductionImpl(
+      AppBaseService appBaseService, MetaFieldRepository metaFieldRepository) {
+    super(appBaseService, metaFieldRepository);
   }
 
   /**

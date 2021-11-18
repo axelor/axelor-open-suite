@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+		
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashletBuilderRepository' as Class).all()
+		
+	if(__ids__ != null) {
+				
+		query = query.filter('self.appBuilder.id in ?1 or (self.appBuilder is null and self.dashboardBuilder.appBuilder.id in ?1)',__ids__)
+		
+	} 
+	
+	dashletBuilders = ""
+	query.fetch().each({
+		dashlet -> 
+				dashletBuilders += """\n\t\t<dashlet-builder>
+				\n\t\t\t<name>${dashlet.name}</name>
+				\n\t\t\t<metaView>${dashlet.metaView?.name}</metaView>
+				\n\t\t\t<action>${dashlet.action?.name}</action>
+				\n\t\t\t<dashboardBuilder>${dashlet.dashboardBuilder?.name}</dashboardBuilder>
+				\n\t\t\t<sequence>${dashlet.sequence}</sequence>
+				\n\t\t\t<viewType>${dashlet.viewType}</viewType>
+				\n\t\t\t<colspan>${dashlet.colspan}</colspan>
+				\n\t\t\t<paginationLimit>${dashlet.paginationLimit}</paginationLimit>
+				\n\t\t\t<appBuilder>${dashlet.appBuilder?.code}</appBuilder>
+				\n\t\t\t<parentAppBuilder>${dashlet.dashboardBuilder.appBuilder?.code}</parentAppBuilder>
+				\n\t\t</dashlet-builder>""" 
+				
+	})
+	
+	if (!dashletBuilders.isEmpty()) {
+		dashletBuilders = """<dashlet-builders>\n""" +  dashletBuilders + """\n</dashlet-builders>"""
+	}
+	
+	out << """$dashletBuilders"""
+%>

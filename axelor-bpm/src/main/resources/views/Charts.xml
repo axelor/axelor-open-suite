@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <chart name="chart.wkf.model.status.per.month" title="Status per month"
+    onInit="action-chart-wkf-model-status-per-month-default">
+    <search-fields>
+      <field name="fromDate" type="date" title="From" x-required="true"/>
+      <field name="toDate" type="date" title="To" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+    <![CDATA[
+	    SELECT
+			COUNT(*) AS total,
+			CASE
+				WHEN self.act_name_ IS null OR self.act_name_ = '' THEN
+					self.act_id_
+				ELSE
+					self.act_name_
+			END as status,
+		    TO_CHAR(self.start_time_,'yyyy-MM') AS month
+		FROM
+			act_hi_actinst self
+		LEFT JOIN
+			act_hi_procinst instance ON instance.id_ = self.proc_inst_id_
+		LEFT JOIN
+			bpm_wkf_instance bpmInstance ON bpmInstance.instance_id = instance.id_
+		LEFT JOIN
+			bpm_wkf_process process ON process.id = bpmInstance.wkf_process
+		LEFT JOIN
+			bpm_wkf_model wkfModel ON wkfModel.id = process.wkf_model
+		WHERE
+			wkfModel.id = :_wkfId
+			AND self.proc_def_key_ = :_process
+			AND (self.act_type_ = 'userTask' OR self.act_type_ LIKE '%Catch%' OR self.act_type_ LIKE '%Timer%')
+			AND DATE(self.start_time_) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+		GROUP BY
+		        status,
+		        TO_CHAR(self.start_time_,'yyyy-MM')
+		ORDER BY
+	        month
+    ]]>
+    </dataset>
+    <category key="month" type="text"/>
+    <series key="total" groupBy="status" type="bar"/>
+    <config name="onClick" value="action-chart-wkf-view-open-wizard"/>
+  </chart>
+
+  <action-attrs name="action-chart-wkf-model-status-per-month-default">
+    <attribute name="value" for="fromDate" expr="eval: __date__.minusMonths(6)"/>
+    <attribute name="value" for="toDate" expr="eval: __date__"/>
+  </action-attrs>
+
+  <chart name="chart.wkf.model.status.per.day" title="Status per day"
+    onInit="action-chart-wkf-model-status-per-day-default">
+    <search-fields>
+      <field name="fromDate" type="date" title="From" x-required="true"/>
+      <field name="toDate" type="date" title="To" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+    <![CDATA[
+    SELECT
+		COUNT(*) AS total,
+		CASE
+			WHEN self.act_name_ IS null OR self.act_name_ = '' THEN
+				self.act_id_
+			ELSE
+				self.act_name_
+		END as status,
+	    TO_CHAR(self.start_time_,'MM/dd/yyyy') AS day
+	FROM
+		act_hi_actinst self
+	LEFT JOIN
+		act_hi_procinst instance ON instance.id_ = self.proc_inst_id_
+	LEFT JOIN
+		bpm_wkf_instance bpmInstance ON bpmInstance.instance_id = instance.id_
+	LEFT JOIN
+		bpm_wkf_process process ON process.id = bpmInstance.wkf_process
+	LEFT JOIN
+		bpm_wkf_model wkfModel ON wkfModel.id = process.wkf_model
+	WHERE
+		wkfModel.id = :_wkfId
+		AND self.proc_def_key_ = :_process
+		AND (self.act_type_ = 'userTask' OR self.act_type_ LIKE '%Catch%' OR self.act_type_ LIKE '%Timer%')
+		AND DATE(self.start_time_) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	GROUP BY
+	        status,
+	        TO_CHAR(self.start_time_,'MM/dd/yyyy')
+	ORDER BY
+        day
+    ]]>
+    </dataset>
+    <category key="day" type="date"/>
+    <series key="total" groupBy="status" type="bar"/>
+    <config name="xFormat" value="DD/MM/YYYY"/>
+    <config name="onClick" value="action-chart-wkf-view-open-wizard"/>
+  </chart>
+
+  <action-attrs name="action-chart-wkf-model-status-per-day-default">
+    <attribute name="value" for="fromDate" expr="eval: __date__.minusMonths(1)"/>
+    <attribute name="value" for="toDate" expr="eval: __date__"/>
+  </action-attrs>
+
+  <chart name="chart.wkf.model.time.spent.per.status" title="Time spent per status (hours)"
+    onInit="action-chart-wkf-model-status-per-spent-time-default">
+    <search-fields>
+      <field name="fromDate" type="date" title="From" x-required="true"/>
+      <field name="toDate" type="date" title="To" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+    <![CDATA[
+    	SELECT
+    		CASE
+    			WHEN self.end_time_ IS NULL THEN
+					EXTRACT(EPOCH FROM NOW() - self.start_time_) / 3600
+    			ELSE
+					EXTRACT(EPOCH FROM self.end_time_ - self.start_time_) / 3600
+    		END AS total,
+			CASE
+				WHEN self.act_name_ IS NULL OR self.act_name_ = '' THEN
+					self.act_id_
+				ELSE
+					self.act_name_
+			END as status
+		FROM
+			act_hi_actinst self
+		LEFT JOIN
+			act_hi_procinst instance ON instance.id_ = self.proc_inst_id_
+		LEFT JOIN
+			bpm_wkf_instance bpmInstance ON bpmInstance.instance_id = instance.id_
+		LEFT JOIN
+			bpm_wkf_process process ON process.id = bpmInstance.wkf_process
+		LEFT JOIN
+			bpm_wkf_model wkfModel ON wkfModel.id = process.wkf_model
+		WHERE
+			wkfModel.id = :_wkfId
+			AND self.proc_def_key_ = :_process
+			AND (self.act_type_ = 'userTask' OR self.act_type_ LIKE '%Catch%' OR self.act_type_ LIKE '%Timer%')
+			AND DATE(self.start_time_) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+    ]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="bar" scale="2"/>
+    <config name="onClick" value="action-chart-wkf-view-open-wizard"/>
+  </chart>
+
+  <action-attrs name="action-chart-wkf-model-status-per-spent-time-default">
+    <attribute name="value" for="fromDate" expr="eval:__date__.minusYears(1)"/>
+    <attribute name="value" for="toDate" expr="eval:__date__"/>
+  </action-attrs>
+
+  <custom name="custom.wkf.instance.node.activation.time" title="Node activation time">
+    <dataset type="sql">
+  	<![CDATA[
+  		SELECT
+			CASE
+				WHEN self.act_name_ IS null OR self.act_name_ = '' THEN
+					self.act_id_
+				ELSE
+					self.act_name_
+			END as node,
+			CASE
+			    WHEN (self.assignee_ IS NOT NULL AND usr.full_name IS NOT null) THEN
+			      usr.full_name
+			    WHEN (self.assignee_ IS NOT NULL and usr.full_name IS null) THEN
+			      'System'
+            END AS completed_by,
+			TO_CHAR(self.start_time_, 'dd/MM/yyyy hh:mm:ss') as date_time,
+			sequence_counter_
+		FROM
+			act_hi_actinst self
+		LEFT JOIN
+			act_hi_procinst instance ON instance.id_ = self.proc_inst_id_
+		LEFT JOIN
+			bpm_wkf_instance bpmInstance ON bpmInstance.instance_id = instance.id_
+		LEFT JOIN
+			auth_user usr ON usr.id = cast(self.assignee_ as bigint)
+		WHERE
+			bpmInstance.id = :_wkfInstanceId
+			AND (self.act_type_ = 'userTask' OR self.act_type_ LIKE '%Catch%' OR self.act_type_ LIKE '%Timer%')
+		ORDER BY
+			sequence_counter_
+  	]]>
+    </dataset>
+    <template>
+  	<![CDATA[
+		<report-table data='data' columns='node,date_time,completed_by'></report-table>
+	]]>
+    </template>
+  </custom>
+
+  <chart name="chart.wkf.instance.timespent.per.node" title="Timespent per node">
+    <dataset type="sql">
+  		<![CDATA[
+  			SELECT
+  				CASE
+	    			WHEN self.end_time_ IS NULL THEN
+						EXTRACT(EPOCH FROM NOW() - self.start_time_) / 3600
+	    			ELSE
+						EXTRACT(EPOCH FROM self.end_time_ - self.start_time_) / 3600
+    			END AS total,
+  				CASE
+					WHEN self.act_name_ IS null OR self.act_name_ = '' THEN
+						self.act_id_
+					ELSE
+						self.act_name_
+				END as node,
+				sequence_counter_
+			FROM
+				act_hi_actinst self
+			LEFT JOIN
+				act_hi_procinst instance ON instance.id_ = self.proc_inst_id_
+			LEFT JOIN
+				bpm_wkf_instance bpmInstance ON bpmInstance.instance_id = instance.id_
+			WHERE
+				bpmInstance.id = :_wkfInstanceId
+				AND (self.act_type_ = 'userTask' OR self.act_type_ LIKE '%Catch%' OR self.act_type_ LIKE '%Timer%')
+			ORDER BY
+				sequence_counter_
+  		]]>
+    </dataset>
+    <category key="node" type="text"/>
+    <series key="total" type="bar"/>
+  </chart>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Select model"
+    name="chart-wkf-select-model-form" onNew="action-chart-wkf-wizard-method-onnew">
+    <panel>
+      <field name="metaModel" type="many-to-one" target="com.axelor.meta.db.MetaModel"
+        title="Meta model"/>
+      <field name="metaJsonModel" type="many-to-one" target-name="title"
+        target="com.axelor.meta.db.MetaJsonModel" title="Custom model"/>
+      <button onClick="action-chart-wkf-method-show-record" name="showBtn" title="Show"
+        showIf="metaModel != null || metaJsonModel != null"/>
+    </panel>
+  </form>
+
+  <action-view name="action-chart-wkf-view-open-wizard" title="Select model"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="chart-wkf-select-model-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="wkfId" expr="eval: _wkfId"/>
+    <context name="status" expr="eval: status"/>
+    <context name="month" expr="eval: month"/>
+    <context name="day" expr="eval: day"/>
+    <context name="fromDate" expr="eval: fromDate"/>
+    <context name="toDate" expr="eval: toDate"/>
+    <context name="_chart" expr="eval: _chart"/>
+    <context name="_process" expr="eval:_process"/>
+  </action-view>
+
+  <action-method name="action-chart-wkf-wizard-method-onnew">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="setModelsDomain"/>
+  </action-method>
+
+  <action-method name="action-chart-wkf-method-show-record">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showRecord"/>
+  </action-method>
+
+</object-views>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="app-loader-grid" title="App Loader" model="com.axelor.studio.db.AppLoader">
+    <field name="name"/>
+  </grid>
+
+  <form name="app-loader-form" title="App Loader" model="com.axelor.studio.db.AppLoader"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+    </panel>
+    <panel-tabs>
+      <panel name="importPanel" title="Import" colSpan="12">
+        <field name="importMetaFile" widget="BinaryLink" colSpan="3"/>
+        <spacer name="spacerImportBtn" colSpan="9"/>
+        <button name="btnImportApps" title="Import"
+          onClick="save,action-app-loader-method-import-apps" colSpan="2"/>
+        <field name="importedAppBuilderSet" widget="TagSelect" readonly="true" colSpan="12"/>
+        <field name="importLog" widget="BinaryLink" readonly="true" colSpan="3"/>
+        <field name="importedOn" colSpan="3" readonly="true"/>
+      </panel>
+      <panel name="exportPanel" title="Export" colSpan="12">
+        <field name="exportedAppBuilderSet" widget="TagSelect" colSpan="12"/>
+        <button name="btnExportApps" title="Export"
+          onClick="save,action-app-loader-method-export-apps" colSpan="2"/>
+        <spacer name="spacerExportBtn" colSpan="10"/>
+        <field name="exportMetaFile" widget="BinaryLink" colSpan="3" readonly="true"/>
+        <field name="exportedOn" colSpan="3" readonly="true"/>
+        <panel-related field="appDataLoaderList" colSpan="12"
+          grid-view="app-data-loader-grid" form-view="app-data-loader-form" orderBy="sequence"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <action-method name="action-app-loader-method-export-apps">
+    <call class="com.axelor.studio.web.AppLoaderController" method="exportApps"/>
+  </action-method>
+
+  <action-method name="action-app-loader-method-import-apps">
+    <call class="com.axelor.studio.web.AppLoaderController" method="importApps"/>
+  </action-method>
+
+  <action-attrs name="action-app-data-loader-attrs-on-new">
+    <attribute name="value" for="isJson" expr="eval:true"/>
+  </action-attrs>
+
+
+</object-views>

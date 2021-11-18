@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockLocationLine" lang="java">
-  
-  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" readonly="true"/>
-  	
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" readonly="true"/>
-	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-	<decimal name="currentQty" title="Current Qty" precision="20" scale="10" readonly="true"/>
-	<decimal name="futureQty" title="Future Qty" precision="20" scale="10" readonly="true"/>
-	<decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
-	<boolean name="isAvgPriceChanged" transient="true"/>
-	<date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
-	
-    <string name="rack" title="Rack"/>
-	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr" readonly="true"/>
-	<many-to-one name="detailsStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details" readonly="true"/>
 
-	<decimal name="lastInventoryRealQty" precision="20" scale="10"/>
-	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>
-	
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location" readonly="true"/>
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      readonly="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="currentQty" title="Current Qty" precision="20" scale="10" readonly="true"/>
+    <decimal name="futureQty" title="Future Qty" precision="20" scale="10" readonly="true"/>
+    <decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
+    <boolean name="isAvgPriceChanged" transient="true"/>
+    <date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
+
+    <string name="rack" title="Rack"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking Nbr" readonly="true"/>
+    <many-to-one name="detailsStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details" readonly="true"/>
+
+    <decimal name="lastInventoryRealQty" precision="20" scale="10"/>
+    <datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>
+
   </entity>
 </domain-models>

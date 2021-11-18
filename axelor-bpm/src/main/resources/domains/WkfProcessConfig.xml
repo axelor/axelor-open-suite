@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="WkfProcessConfig" cacheable="true">
+
+    <string name="title" title="Title"/>
+    <many-to-one name="wkfProcess" ref="WkfProcess"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Meta model"/>
+    <many-to-one name="metaJsonModel" ref="com.axelor.meta.db.MetaJsonModel"
+      title="Custom model"/>
+    <string name="processPath" title="Process path"/>
+    <string name="pathCondition" title="Condition"/>
+    <boolean name="isStartModel" title="Start model ?"/>
+    <string name="model" title="Model" index="true"/>
+    <string name="userDefaultPath" title="User default path"/>
+    <boolean name="isDirectCreation" title="Direct creation" default="true"/>
+    <entity-listener class="com.axelor.apps.bpm.listener.WkfProcessConfigListener"/>
+
+  </entity>
+
+</domain-models>

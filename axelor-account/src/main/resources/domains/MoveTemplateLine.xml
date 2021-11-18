@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="MoveTemplateLine" lang="java" cacheable="true">
-  	<many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate" />
-  	<string name="name" title="Label"/>
-  	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select"/>
-  	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
-  	<many-to-one name="account" title="Accounting.Account" ref="Account" required="true"/>
-    <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate"/>
+    <string name="name" title="Label"/>
+    <string name="debitCreditSelect" title="Debit/Credit"
+      selection="move.template.line.debit.credit.select"/>
+    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="account" title="Accounting.Account" ref="Account" required="true"/>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     <decimal name="debit" title="Debit"/>
     <decimal name="credit" title="Credit"/>
-	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100"/>
-	<boolean name="hasPartnerToDebit" title="Partner to debit" />
-	<boolean name="hasPartnerToCredit" title="Partner to credit" />
-	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
-	<boolean name="isValid" title="Valid"/>  	
-  	<extra-code><![CDATA[
+    <decimal name="percentage" title="Percentage" precision="20" scale="2" min="0" max="100"/>
+    <boolean name="hasPartnerToDebit" title="Partner to debit"/>
+    <boolean name="hasPartnerToCredit" title="Partner to credit"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
+    <boolean name="isValid" title="Valid"/>
+    <extra-code><![CDATA[
 
 	// DEBIT CREDIT SELECT
 	public static final String DEBIT = "D";
 	public static final String CREDIT = "C";
-	
+
 	]]></extra-code>
-    
+
   </entity>
- 
+
 </domain-models>

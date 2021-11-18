@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	 <grid name="booking-grid" title="Booking" model="com.axelor.apps.fleet.db.Booking" >
-	 	<field name="name"/>
-	 	<field name="bookingDate"/>
-  	</grid>
-  	
-  	  <form name="booking-form" title="Booking" model="com.axelor.apps.fleet.db.Booking" width="large">
-  	  		<panel name="mainPanel">
-	  	  		<field name="name"/>
-		 		<field name="bookingDate"/>
-		 		<field name="contactSet"/>
-		 		<field name="partnerSet"/>
-		 		<field name="isConfirmed" widget="Boolean-switch"/>
-		 		<field name="partnerCategory"/>
-		 	</panel>
-  	  </form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="booking-grid" title="Booking" model="com.axelor.apps.fleet.db.Booking">
+    <field name="name"/>
+    <field name="bookingDate"/>
+  </grid>
+
+  <form name="booking-form" title="Booking" model="com.axelor.apps.fleet.db.Booking"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="bookingDate"/>
+      <field name="contactSet"/>
+      <field name="partnerSet"/>
+      <field name="isConfirmed" widget="Boolean-switch"/>
+      <field name="partnerCategory"/>
+    </panel>
+  </form>
 </object-views>

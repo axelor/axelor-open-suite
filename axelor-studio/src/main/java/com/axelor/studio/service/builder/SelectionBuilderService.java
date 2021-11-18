@@ -22,6 +22,7 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.views.Selection.Option;
+import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.SelectionBuilder;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -76,14 +77,18 @@ public class SelectionBuilderService {
 
   public void build(SelectionBuilder selectionBuilder) {
 
-    String xmlId = SELECTION_PREFIX + selectionBuilder.getId();
+    String xmlId = SELECTION_PREFIX + selectionBuilder.getName().replace(" ", "-");
 
     updateMetaSelectFromText(
-        selectionBuilder.getSelectionText(), selectionBuilder.getName(), xmlId);
+        selectionBuilder.getSelectionText(),
+        selectionBuilder.getName(),
+        selectionBuilder.getAppBuilder(),
+        xmlId);
   }
 
   @Transactional
-  public String updateMetaSelectFromText(String selectionText, String name, String xmlId) {
+  public String updateMetaSelectFromText(
+      String selectionText, String name, AppBuilder appBuilder, String xmlId) {
 
     if (name == null && xmlId == null) {
       return null;
@@ -92,6 +97,7 @@ public class SelectionBuilderService {
     MetaSelect metaSelect = updateSelectItems(selectionText, name, xmlId);
 
     metaSelect.setIsCustom(true);
+    metaSelect.setAppBuilder(appBuilder);
     metaSelect.setName(name);
 
     if (xmlId != null) {
@@ -109,7 +115,7 @@ public class SelectionBuilderService {
 
   private MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
 
-    String[] selection = selectionText.split("\n");
+    String[] selection = selectionText.trim().split("\n");
 
     MetaSelect metaSelect = xmlId != null ? findMetaSelectById(xmlId) : findMetaSelectByName(name);
 
@@ -128,6 +134,9 @@ public class SelectionBuilderService {
 
     for (String option : selection) {
       option = option.trim();
+      if (option.isEmpty()) {
+        continue;
+      }
       final String title;
       final String value;
 

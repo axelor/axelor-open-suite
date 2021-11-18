@@ -46,7 +46,7 @@ public interface IExceptionMessage {
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
-      "Please select 'Draft' or 'Daybook' or 'Canceled' moves" /*)*/;
+      "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
       "Move(s) has been removed or archived successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
@@ -150,8 +150,11 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/;
   static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
+  static final String ACCOUNTING_REPORT_7 = /*$$(*/
+      "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
+  static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
   static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
 

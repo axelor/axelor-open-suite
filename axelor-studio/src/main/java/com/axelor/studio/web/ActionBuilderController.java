@@ -26,8 +26,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
+import com.axelor.studio.service.mapper.MapperScriptGeneratorService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ActionBuilderController {
 
@@ -75,5 +77,16 @@ public class ActionBuilderController {
     builderView.setSequence(sequence);
 
     views.add(builderView);
+  }
+
+  public void createMapperScript(ActionRequest request, ActionResponse response) {
+
+    Map<String, Object> ctx = (Map<String, Object>) request.getData().get("context");
+    String jsonString = (String) ctx.get("_jsonString");
+
+    if (jsonString != null) {
+      String scriptString = Beans.get(MapperScriptGeneratorService.class).generate(jsonString);
+      response.setValue("_scriptString", scriptString);
+    }
   }
 }

@@ -1,34 +1,44 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="LeaveRequest" cacheable="true">
-      
-      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-      <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
-      <date name="requestDate" title="Request date" readonly="true" />
-      <datetime name="fromDateT" title="From" required="true"/>
-      <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
-      <datetime name="toDateT" title="To (included)" />
-      <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
-      <decimal name="duration" title="Duration" scale="1" precision="20"/>
-      <string name="comments" title="Comments" large="true"/>
-      <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
-	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>
-	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>
-      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
-      <date name="validationDate" title="Validation Date" readonly="true"  />
-      <date name="refusalDate" title="Refusal Date" readonly="true"  />
-      <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
-      <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
-      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Leave reason" />
-      <decimal name="quantityBeforeValidation" title="Available quantity (before validation)" scale="4" precision="8" />
-      <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
-	
-      <string name="fullName" namecolumn="true" readonly="true">
+
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
+      column="user_id"/>
+    <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select"
+      default="1" readonly="true"/>
+    <date name="requestDate" title="Request date" readonly="true"/>
+    <datetime name="fromDateT" title="From" required="true"/>
+    <integer name="startOnSelect" title="Start On" selection="hr.start.on.select"
+      required="true" default="1"/>
+    <datetime name="toDateT" title="To (included)"/>
+    <integer name="endOnSelect" title="End On" selection="hr.start.on.select"
+      required="true" default="2"/>
+    <decimal name="duration" title="Duration" scale="1" precision="20"/>
+    <string name="comments" title="Comments" large="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+    <integer name="injectConsumeSelect" title="Inject/Consume"
+      selection="hrs.leave.reason.inject.consume.select" default="1"/>
+    <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
+      readonly="true"/>
+    <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
+      readonly="true"/>
+    <date name="validationDate" title="Validation Date" readonly="true"/>
+    <date name="refusalDate" title="Refusal Date" readonly="true"/>
+    <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
+    <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent"
+      title="Event"/>
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
+      title="Leave reason"/>
+    <decimal name="quantityBeforeValidation" title="Available quantity (before validation)"
+      scale="4" precision="8"/>
+    <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
+
+    <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
       		if(this.getUser() != null && this.getCreatedOn() != null)
 	  			return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthValue()
@@ -36,23 +46,23 @@
 	  		else
 	  			return " ";
 	  ]]>
-      </string>
-	  
-	  <extra-code>
+    </string>
+
+    <extra-code>
    		<![CDATA[
    			public static final int SELECT_CONSUME = 1;
    			public static final int SELECT_INJECT = 2;
-   			
+
    			public static final int STATUS_DRAFT = 1;
    			public static final int STATUS_AWAITING_VALIDATION = 2;
    			public static final int STATUS_VALIDATED = 3;
    			public static final int STATUS_REFUSED = 4;
    			public static final int STATUS_CANCELED = 5;
-			
+
 			public static final int SELECT_MORNING = 1;
    			public static final int SELECT_AFTERNOON = 2;
    		]]>
-   	</extra-code>
+    </extra-code>
   </entity>
-  
+
 </domain-models>

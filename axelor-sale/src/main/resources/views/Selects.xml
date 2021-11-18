@@ -1,75 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
-	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
-	<selection name="sale.batch.action.select">
-		<option value="1">Invoicing</option>
-	</selection>
-	
-	<selection name="sale.order.status.select">
-		<option value="1">Draft quotation</option>
-		<option value="2">Finalized quotation</option>
-		<option value="3">Order confirmed</option>
-		<option value="4">Order completed</option>
-		<option value="5">Canceled</option>
-	</selection>
-	
-	<selection name="sale.order.delivery.state">
-		<option value="1">Not delivered</option>
-		<option value="2">Partially delivered</option>
-		<option value="3">Delivered</option>
-	</selection>
-	
-	<selection name="message.related.to.select" id="sale.message.related.to.select">
-	    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
-	</selection>
-	
-	<selection name="crm.event.related.to.select" id="sale.crm.event.related.to.select">
-		<option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
-	</selection>
-	
-	<selection name="advance.payment.status.select">
-  		<option value="0">Draft</option>
-		<option value="1">Validated</option>
-		<option value="2">Canceled</option>
-	</selection>
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-	<selection name="configurator.update.sale.order.line">
-		<option value="0">Update from product</option>
-		<option value="1">Update from configurator</option>
-	</selection>
+  <selection name="sale.batch.action.select">
+    <option value="1">Invoicing</option>
+  </selection>
 
-    <selection name="base.blocking.select" id="sale.blocking.select">
-        <option value="5">Sale blocking</option>
-    </selection>
-    
-    <selection name="product.periodicity.subscription.select">
-        <option value="1">Monthly</option>
-        <option value="2">Bi-monthly</option>
-        <option value="3">Quarterly</option>
-        <option value="6">Half-yearly</option>
-        <option value="12">Yearly</option>
-	</selection>
-	
-	<selection name="sale.subscription.periodicity.type.select">
-		<option value="1">Day</option>
-		<option value="2">Month</option>
-	</selection>
-	
-	<selection name="sequence.generic.code.select" id="sale.sequence.generic.code.select">
-		<option value="saleOrder">Sales order</option>
-	</selection>
-	
-	<selection name="sale.order.fill.saleman.select">
-		<option value="1">Current Login user</option>
-		<option value="2">User assigned to customer</option>
-	</selection>
+  <selection name="sale.order.status.select">
+    <option value="1">Draft quotation</option>
+    <option value="2">Finalized quotation</option>
+    <option value="3">Order confirmed</option>
+    <option value="4">Order completed</option>
+    <option value="5">Canceled</option>
+  </selection>
 
-	<selection name="abc.analysis.type.select" id="sale.abc.analysis.type.select">
-		<option value="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl">Sale</option>
-	</selection>
+  <selection name="sale.order.delivery.state">
+    <option value="1">Not delivered</option>
+    <option value="2">Partially delivered</option>
+    <option value="3">Delivered</option>
+  </selection>
+
+  <selection name="message.related.to.select" id="sale.message.related.to.select">
+    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
+  </selection>
+
+  <selection name="crm.event.related.to.select" id="sale.crm.event.related.to.select">
+    <option value="com.axelor.apps.sale.db.SaleOrder">Quote/Order</option>
+  </selection>
+
+  <selection name="advance.payment.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Validated</option>
+    <option value="2">Canceled</option>
+  </selection>
+
+  <selection name="configurator.update.sale.order.line">
+    <option value="0">Update from product</option>
+    <option value="1">Update from configurator</option>
+  </selection>
+
+  <selection name="base.blocking.select" id="sale.blocking.select">
+    <option value="5">Sale blocking</option>
+  </selection>
+
+  <selection name="product.periodicity.subscription.select">
+    <option value="1">Monthly</option>
+    <option value="2">Bi-monthly</option>
+    <option value="3">Quarterly</option>
+    <option value="6">Half-yearly</option>
+    <option value="12">Yearly</option>
+  </selection>
+
+  <selection name="sale.subscription.periodicity.type.select">
+    <option value="1">Day</option>
+    <option value="2">Month</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select" id="sale.sequence.generic.code.select">
+    <option value="saleOrder">Sales order</option>
+  </selection>
+
+  <selection name="sale.order.fill.saleman.select">
+    <option value="1">Current Login user</option>
+    <option value="2">User assigned to customer</option>
+  </selection>
+
+  <selection name="abc.analysis.type.select" id="sale.abc.analysis.type.select">
+    <option value="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl">Sale</option>
+  </selection>
+
+  <!-- REPORTS -->
+  <selection name="sale.order.report.type">
+    <option value="1">Original sale order</option>
+    <option value="2">Proforma invoice</option>
+  </selection>
+
+  <selection name="sale.order.report.format">
+    <option value="xls">Excel</option>
+    <option value="doc">Word</option>
+    <option value="pdf">PDF</option>
+  </selection>
 </object-views>

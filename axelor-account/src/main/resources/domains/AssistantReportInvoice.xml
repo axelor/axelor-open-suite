@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AssistantReportInvoice">
-  
-  	<date name="fromDate" title="From"/>
-	<date name="toDate" title="To"/>
-	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
-	<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
-	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
-	<integer name="graphTypeSelect" title="Graph type" selection="assistant.report.invoice.graph.type.select" default="1"/>
-	<string name="formatSelect" title="Format" selection="iadministration.export.type.select" default="pdf"/>
-	<datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
-	<integer name="turnoverTypeSelect" selection="assistant.report.invoice.turnover.type.select" default="3" title="Turnover type"/>
-	<integer name="type"/>
-	
- 	<extra-code><![CDATA[
-	
+
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"
+      title="Partners"/>
+    <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
+      title="Products"/>
+    <many-to-many name="productCategorySet"
+      ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+    <integer name="graphTypeSelect" title="Graph type"
+      selection="assistant.report.invoice.graph.type.select" default="1"/>
+    <string name="formatSelect" title="Format" selection="iadministration.export.type.select"
+      default="pdf"/>
+    <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
+    <integer name="turnoverTypeSelect"
+      selection="assistant.report.invoice.turnover.type.select" default="3" title="Turnover type"/>
+    <integer name="type"/>
+
+    <extra-code><![CDATA[
+
 	   	// GRAPH TYPE SELECT
 		public static final int GRAPH_TYPE_GRAPH = 1;
 		public static final int GRAPH_TYPE_TABLE = 2;
-	
+
 	   	// TURNOVER TYPE SELECT
 		public static final int TURNOVER_TYPE_ORDER = 1;
 		public static final int TURNOVER_TYPE_INVOICE = 2;
 		public static final int TURNOVER_TYPE_ORDER_AND_INVOICE = 3;
 	]]></extra-code>
-	
+
   </entity>
 
 </domain-models>

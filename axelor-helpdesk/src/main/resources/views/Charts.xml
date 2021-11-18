@@ -1,461 +1,527 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	  
-	<chart name="chart.ticket.no.of.solved.my.ticket" title="My tickets" onInit="action.ticket.chart.set.date.1m">
-	  	<search-fields>
-	    	<field name="fromDate" title="From Date" type="date" x-required="true"/>
-	    	<field name="toDate" title="To Date" type="date" x-required="true"/>
-	  	</search-fields>
-	  	<dataset type="sql">
-			SELECT 
-				COUNT(*) AS total_row, 
-				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'ALL'
-		    	ELSE  
-					translation.message_value
-				END) as _status
-			FROM 
-				helpdesk_ticket
-			LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'ALL' AND translation.language = :_language
-			WHERE
-				DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-				AND assigned_to_user = :_user_id
-			GROUP BY
-				translation.message_value
-       		UNION ALL
-      		SELECT 
-      			COUNT(*) AS total_row, 
-      			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'Resolved'
-		    	ELSE  
-					translation.message_value
-				END) as _status
-      		FROM 
-      			helpdesk_ticket
-      		LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'chart.resolved' AND translation.language = :_language 
-      		WHERE 
-      			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      			AND assigned_to_user = :_user_id
-      			AND status_select = 2
-      		GROUP BY
-				translation.message_value
-		</dataset>
-  	<category key="_status" type="text" title="Status"/>
-	<series key="total_row" type="bar" title="Total tickets"/>
-	</chart>
-	
-	<chart name="chart.ticket.no.of.solved.my.team.ticket" title="My team tickets" onInit="action.ticket.chart.set.date.1m">
-		<search-fields>
-		    <field name="fromDate" title="From Date" type="date" x-required="true"/>
-		    <field name="toDate" title="To Date" type="date" x-required="true"/>
-		</search-fields>
-  		<dataset type="sql">
-			SELECT 
-				COUNT(*) AS total_row, 
-				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'ALL'
-		    	ELSE  
-					translation.message_value
-				END) as _status
-			FROM 
-				helpdesk_ticket AS self
-			JOIN
-				auth_user AS _user
-			ON
-				_user.id = :_user_id
-			JOIN
-				team_team AS _team
-			ON
-				_user.active_team = _team.id
-			LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'ALL' AND translation.language = :_language
-			WHERE
-				DATE(self.created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-				AND _team.id = :_myActiveTeam
-			GROUP BY
-				translation.message_value
-     		UNION ALL
-    		SELECT 
-    			COUNT(*) AS total_row, 
-    			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'Resolved'
-		    	ELSE  
-					translation.message_value
-				END) as _status
-    		FROM 
-    			helpdesk_ticket AS _ticket
-    		JOIN
-				auth_user AS _user
-			ON
-				_user.id = :_user_id
-			JOIN
-				team_team AS _team
-			ON
-				_user.active_team = _team.id
-			LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'chart.resolved' AND translation.language = :_language
-    		WHERE 
-    			DATE(_ticket.created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-    			AND _team.id = :_myActiveTeam
-    			AND _ticket.status_select = 2
-    		GROUP BY
-				translation.message_value
-		</dataset>
-		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" type="bar" title="Total tickets"/>
-	</chart>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	
-	<chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket" title="All tickets">
-		<search-fields>
-			<field type="date" name="fromDate" title="From Date" x-required="true" />
-			<field type="date" name="toDate" title="To Date" x-required="true" />
-		</search-fields>
-		<dataset type="sql">
-			SELECT 
-				COUNT(*) AS total_row, 
-				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'ALL'
-		    	ELSE  
-					translation.message_value
-				END) as _status 
-			FROM 
-				helpdesk_ticket
-			LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'ALL' AND translation.language = :_language
-			WHERE
-				DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-			GROUP BY
-				translation.message_value
-       		UNION ALL
-      		SELECT 
-      			COUNT(*) AS total_row, 
-      			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		        	'Resolved'
-		    	ELSE  
-					translation.message_value
-				END) as _status
-      		FROM 
-      			helpdesk_ticket
-      		LEFT JOIN
-		         meta_translation as translation
-		    ON
-		         translation.message_key = 'chart.resolved' AND translation.language = :_language 
-      		WHERE 
-      			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      			AND status_select = 2
-      		GROUP BY
-				translation.message_value 
-		</dataset>
-		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" type="bar" title="Total tickets"/>
-	</chart>
-	
-	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of tickets per SLA &amp; per team">
-	  <search-fields>
-	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="sla.team.name" title="Team"/>
-	  </search-fields>
-	  <dataset type="sql">
-		SELECT
-			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Solved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM 
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			team_team AS _team
-		ON
-			_team.id = _user.active_team
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-		    translation.message_key = 'Solved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = true
-			AND _sla.id = :sla
-			AND _team.id = _sla.team
-		GROUP BY
-			translation.message_value
-		UNION ALL
-		SELECT
-			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Unsolved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			team_team AS _team
-		ON
-			_team.id = _user.active_team
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-			translation.message_key = 'Unsolved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = false
-			AND _sla.id = :sla
-			AND _team.id = _sla.team
-		GROUP BY
-			translation.message_value
-	</dataset>
-	  <category key="_status" type="text" title="Status"/>
-	  <series key="_percentage" type="pie" title="Percentage"/>
-	  <config name="percent" value="true"/>
-	</chart>
-	
-	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Percentage of tickets per SLA &amp; per user">
-	  <search-fields>
-	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true" domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
-	  </search-fields>
-	  <dataset type="sql">
-		SELECT
-			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Solved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM 
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-		    translation.message_key = 'Solved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = true
-			AND _sla.id = :sla
-			AND _user.id = :user
-		GROUP BY
-			translation.message_value
-		UNION ALL
-		SELECT
-			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Unsolved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-			translation.message_key = 'Unsolved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = false
-			AND _sla.id = :sla
-			AND _user.id = :user
-		GROUP BY
-			translation.message_value
-	</dataset>
-	  <category key="_status" type="text" title="Status"/>
-	  <series key="_percentage" type="pie" title="Percentage"/>
-	  <config name="percent" value="true"/>
-	</chart>
-	
-	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of tickets per SLA &amp; per team">
-	  <search-fields>
-	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="sla.team.name" title="Team"/>
-	  </search-fields>
-	  <dataset type="sql">
-		SELECT
-			COUNT(*) AS _total,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Solved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM 
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			team_team AS _team
-		ON
-			_team.id = _user.active_team
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-		    translation.message_key = 'Solved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = true
-			AND _sla.id = :sla
-			AND _team.id = _sla.team
-		GROUP BY
-			translation.message_value
-		UNION ALL
-		SELECT
-			COUNT(*) AS _total,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Unsolved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			team_team AS _team
-		ON
-			_team.id = _user.active_team
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-			translation.message_key = 'Unsolved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = false
-			AND _sla.id = :sla
-			AND _team.id = _sla.team
-		GROUP BY
-			translation.message_value
-	</dataset>
-	  <category key="_status" type="text" title="Status"/>
-	  <series key="_total" type="bar" title="Total tickets"/>
-	</chart>
-	
-	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Number of tickets per SLA &amp; per user">
-	  <search-fields>
-	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true" domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
-	  </search-fields>
-	  <dataset type="sql">
-		SELECT
-			COUNT(*) AS _total,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Solved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM 
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-		    translation.message_key = 'Solved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = true
-			AND _sla.id = :sla
-			AND _user.id = :user
-		GROUP BY
-			translation.message_value
-		UNION ALL
-		SELECT
-			COUNT(*) AS _total,
-			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
-		    	'Unsolved'
-		    ELSE  
-				translation.message_value
-			END) AS _status
-		FROM
-			helpdesk_ticket AS _ticket1
-		JOIN
-			auth_user AS _user
-		ON
-			_user.id = _ticket1.assigned_to_user
-		JOIN
-			helpdesk_sla AS _sla
-		ON
-			_sla.id = _ticket1.sla_policy
-		LEFT JOIN
-		    meta_translation as translation
-		ON
-			translation.message_key = 'Unsolved' AND translation.language = :_language
-		WHERE 
-			_ticket1.is_sla_completed = false
-			AND _sla.id = :sla
-			AND _user.id = :user
-		GROUP BY
-			translation.message_value
-	</dataset>
-	  <category key="_status" type="text" title="Status"/>
-	  <series key="_total" type="bar" title="Total tickets"/>
-	</chart>
-	
-	<action-record model="com.axelor.apps.helpdesk.db.Ticket" name="action.ticket.chart.set.date.1m">
-	  <field name="toDate" expr="eval:__date__" />
-	  <field name="fromDate" expr="eval:__date__.minusMonths(1)" />	  
-	</action-record>
+  <chart name="chart.ticket.no.of.solved.my.ticket" title="My tickets"
+    onInit="action.ticket.chart.set.date.1m">
+    <search-fields>
+      <field name="fromDate" title="From Date" type="date" x-required="true"/>
+      <field name="toDate" title="To Date" type="date" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'ALL'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'ALL' AND
+      translation.language = :_language
+      WHERE
+      DATE(created_on) BETWEEN DATE(:fromDate) AND
+      DATE(:toDate)
+      AND assigned_to_user = :_user_id
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE WHEN(translation.message_value = '' OR translation.message_value
+      IS NULL) THEN
+      'Resolved'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket
+      LEFT
+      JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'chart.resolved' AND
+      translation.language = :_language
+      WHERE
+      DATE(created_on) BETWEEN DATE(:fromDate) AND
+      DATE(:toDate)
+      AND assigned_to_user = :_user_id
+      AND status_select = 2
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="total_row" type="bar" title="Total tickets"/>
+  </chart>
+
+  <chart name="chart.ticket.no.of.solved.my.team.ticket" title="My team tickets"
+    onInit="action.ticket.chart.set.date.1m">
+    <search-fields>
+      <field name="fromDate" title="From Date" type="date" x-required="true"/>
+      <field name="toDate" title="To Date" type="date" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'ALL'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket AS self
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = :_user_id
+      JOIN
+      team_team AS _team
+      ON
+      _user.active_team = _team.id
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key
+      = 'ALL' AND translation.language = :_language
+      WHERE
+      DATE(self.created_on) BETWEEN
+      DATE(:fromDate) AND DATE(:toDate)
+      AND _team.id = :_myActiveTeam
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE
+      WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+      'Resolved'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket AS _ticket
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = :_user_id
+      JOIN
+      team_team AS _team
+      ON
+      _user.active_team = _team.id
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'chart.resolved' AND
+      translation.language = :_language
+      WHERE
+      DATE(_ticket.created_on) BETWEEN DATE(:fromDate) AND
+      DATE(:toDate)
+      AND _team.id = :_myActiveTeam
+      AND _ticket.status_select = 2
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="total_row" type="bar" title="Total tickets"/>
+  </chart>
 
 
-    <chart name="chart.ticket.type.percentage.repartition.ticket.per.state"
-        title="Percentage of repartition tickets per state">
-        <dataset type="jpql">
+  <chart onInit="action.ticket.chart.set.date.1m" name="chart.ticket.no.of.solved.all.ticket"
+    title="All tickets">
+    <search-fields>
+      <field type="date" name="fromDate" title="From Date" x-required="true"/>
+      <field type="date" name="toDate" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'ALL'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'ALL' AND
+      translation.language = :_language
+      WHERE
+      DATE(created_on) BETWEEN DATE(:fromDate) AND
+      DATE(:toDate)
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) AS total_row,
+      (CASE
+      WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+      'Resolved'
+      ELSE
+      translation.message_value
+      END) as _status
+      FROM
+      helpdesk_ticket
+      LEFT JOIN
+      meta_translation as
+      translation
+      ON
+      translation.message_key = 'chart.resolved' AND translation.language = :_language
+      WHERE
+      DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+      AND status_select = 2
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="total_row" type="bar" title="Total tickets"/>
+  </chart>
+
+  <chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team"
+    title="Percentage of tickets per SLA &amp; per team">
+    <search-fields>
+      <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla"
+        x-required="true"/>
+      <field name="sla.team.name" title="Team"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS
+      _percentage,
+      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL)
+      THEN
+      'Solved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      team_team AS _team
+      ON
+      _team.id =
+      _user.active_team
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id = _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'Solved' AND translation.language =
+      :_language
+      WHERE
+      _ticket1.is_sla_completed = true
+      AND _sla.id = :sla
+      AND _team.id = _sla.team
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) * 100 / (SELECT COUNT(*) FROM
+      helpdesk_ticket) AS _percentage,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'Unsolved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      team_team AS _team
+      ON
+      _team.id = _user.active_team
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id =
+      _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key =
+      'Unsolved' AND translation.language = :_language
+      WHERE
+      _ticket1.is_sla_completed = false
+      AND
+      _sla.id = :sla
+      AND _team.id = _sla.team
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="_percentage" type="pie" title="Percentage"/>
+    <config name="percent" value="true"/>
+  </chart>
+
+  <chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user"
+    title="Percentage of tickets per SLA &amp; per user">
+    <search-fields>
+      <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla"
+        x-required="true"/>
+      <field name="user" title="User" type="reference" target="com.axelor.auth.db.User"
+        x-required="true"
+        domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS
+      _percentage,
+      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL)
+      THEN
+      'Solved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id =
+      _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key =
+      'Solved' AND translation.language = :_language
+      WHERE
+      _ticket1.is_sla_completed = true
+      AND _sla.id
+      = :sla
+      AND _user.id = :user
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) * 100 /
+      (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+      (CASE WHEN(translation.message_value =
+      '' OR translation.message_value IS NULL) THEN
+      'Unsolved'
+      ELSE
+      translation.message_value
+      END) AS
+      _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id =
+      _ticket1.assigned_to_user
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id = _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'Unsolved' AND translation.language
+      = :_language
+      WHERE
+      _ticket1.is_sla_completed = false
+      AND _sla.id = :sla
+      AND _user.id = :user
+      GROUP
+      BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="_percentage" type="pie" title="Percentage"/>
+    <config name="percent" value="true"/>
+  </chart>
+
+  <chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team"
+    title="Number of tickets per SLA &amp; per team">
+    <search-fields>
+      <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla"
+        x-required="true"/>
+      <field name="sla.team.name" title="Team"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) AS _total,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'Solved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      team_team AS _team
+      ON
+      _team.id = _user.active_team
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id =
+      _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key =
+      'Solved' AND translation.language = :_language
+      WHERE
+      _ticket1.is_sla_completed = true
+      AND _sla.id
+      = :sla
+      AND _team.id = _sla.team
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) AS
+      _total,
+      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+      'Unsolved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      team_team AS _team
+      ON
+      _team.id =
+      _user.active_team
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id = _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'Unsolved' AND translation.language
+      = :_language
+      WHERE
+      _ticket1.is_sla_completed = false
+      AND _sla.id = :sla
+      AND _team.id = _sla.team
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="_total" type="bar" title="Total tickets"/>
+  </chart>
+
+  <chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user"
+    title="Number of tickets per SLA &amp; per user">
+    <search-fields>
+      <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla"
+        x-required="true"/>
+      <field name="user" title="User" type="reference" target="com.axelor.auth.db.User"
+        x-required="true"
+        domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
+    </search-fields>
+    <dataset type="sql">
+      SELECT
+      COUNT(*) AS _total,
+      (CASE WHEN(translation.message_value = '' OR
+      translation.message_value IS NULL) THEN
+      'Solved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id = _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as
+      translation
+      ON
+      translation.message_key = 'Solved' AND translation.language = :_language
+      WHERE
+      _ticket1.is_sla_completed = true
+      AND _sla.id = :sla
+      AND _user.id = :user
+      GROUP BY
+      translation.message_value
+      UNION ALL
+      SELECT
+      COUNT(*) AS _total,
+      (CASE
+      WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+      'Unsolved'
+      ELSE
+      translation.message_value
+      END) AS _status
+      FROM
+      helpdesk_ticket AS _ticket1
+      JOIN
+      auth_user AS _user
+      ON
+      _user.id = _ticket1.assigned_to_user
+      JOIN
+      helpdesk_sla AS _sla
+      ON
+      _sla.id = _ticket1.sla_policy
+      LEFT JOIN
+      meta_translation as translation
+      ON
+      translation.message_key = 'Unsolved' AND
+      translation.language = :_language
+      WHERE
+      _ticket1.is_sla_completed = false
+      AND _sla.id = :sla
+      AND
+      _user.id = :user
+      GROUP BY
+      translation.message_value
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="_total" type="bar" title="Total tickets"/>
+  </chart>
+
+  <action-record model="com.axelor.apps.helpdesk.db.Ticket"
+    name="action.ticket.chart.set.date.1m">
+    <field name="toDate" expr="eval:__config__.date"/>
+    <field name="fromDate" expr="eval:__config__.date.minusMonths(1)"/>
+  </action-record>
+
+
+  <chart name="chart.ticket.type.percentage.repartition.ticket.per.state"
+    title="Percentage of repartition tickets per state">
+    <dataset type="jpql">
         <![CDATA[
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType = :id) AS _percentage,
 	            CASE self.statusSelect WHEN 0 THEN 'New' WHEN 1 THEN 'In progress' WHEN 2 THEN 'Resolved' ELSE 'Closed' END AS _status
@@ -464,10 +530,10 @@
 	        GROUP BY self.statusSelect
 	        ORDER BY self.statusSelect
         ]]>
-        </dataset>
-        <category key="_status" type="text" title="Status" />
-        <series key="_percentage" groupBy="_status" type="pie" title="Percentage" />
-        <config name="percent" value="true" />
-    </chart>
+    </dataset>
+    <category key="_status" type="text" title="Status"/>
+    <series key="_percentage" groupBy="_status" type="pie" title="Percentage"/>
+    <config name="percent" value="true"/>
+  </chart>
 
 </object-views>

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <form name="incl-freight-carrer-customer-account-number-list-partner-form" title="Partner"
-        model="com.axelor.apps.base.db.Partner">
-        <panel-related name="freightCarrierCustomerAccountNumberListPanel" field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
-            grid-view="freight-carrier-customer-account-number-grid" colSpan="12" editable="true" />
-    </form>
-    
-    <action-attrs id="action-stock-partner-attrs-set-domain" name="action-partner-attrs-set-domain">
-		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true OR self.isCarrier = true) AND self.isEmployee = false &quot;"/>
-	</action-attrs>
+  <form name="incl-freight-carrer-customer-account-number-list-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner">
+    <panel-related name="freightCarrierCustomerAccountNumberListPanel"
+      field="freightCarrierCustomerAccountNumberList"
+      form-view="freight-carrier-customer-account-number-form"
+      grid-view="freight-carrier-customer-account-number-grid" colSpan="12" editable="true"/>
+  </form>
+
+  <action-attrs id="action-stock-partner-attrs-set-domain"
+    name="action-partner-attrs-set-domain">
+    <attribute name="domain" for="partner"
+      expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true OR self.isCarrier = true) AND self.isEmployee = false &quot;"/>
+  </action-attrs>
 
 </object-views>

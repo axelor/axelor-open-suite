@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="contract" package="com.axelor.apps.contract.db" />
+  <module name="contract" package="com.axelor.apps.contract.db"/>
 
-	<entity name="ContractLine">
-	
-		<integer name="sequence"/>
+  <entity name="ContractLine">
 
-		<string name="fullName" namecolumn="true">
+    <integer name="sequence"/>
+
+    <string name="fullName" namecolumn="true">
 			<![CDATA[
 	  		String fullName = "";
 	  		if(productName != null && productName.length() > 255)  {
@@ -17,34 +18,41 @@
 			else  {  fullName += productName;  }
 	  		return fullName;
 	  	]]>
-		</string>
+    </string>
 
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true" />
-		<decimal name="qty" title="Qty" default="1"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <decimal name="qty" title="Qty" default="1"/>
 
-		<string name="productName" title="Displayed Product name" required="true"/>
-		<decimal name="price" title="Unit price"/>
+    <string name="productName" title="Displayed Product name" required="true"/>
+    <decimal name="price" title="Unit price"/>
 
-		<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-		<decimal name="exTaxTotal" title="Total W.T."/>
-		<decimal name="inTaxTotal" title="Total A.T.I."/>
-		<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <decimal name="exTaxTotal" title="Total W.T."/>
+    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
 
-		<string name="description" title="Description" large="true"/>
-		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 
-		<boolean name="isConsumptionLine" title="Invoice from consumption" default="false"/>
-		
-		<boolean name="isInvoiced" title="Is invoiced" />
+    <boolean name="isConsumptionLine" title="Invoice from consumption" default="false"/>
 
-        <many-to-one name="contractVersion" ref="com.axelor.apps.contract.db.ContractVersion"/>
-        
-        <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines" mappedBy="contractLine"/>
-        <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <boolean name="isInvoiced" title="Is invoiced"/>
 
-		<finder-method name="findOneBy"
-					   using="contractVersion, product, productName,
+    <many-to-one name="contractVersion"
+      ref="com.axelor.apps.contract.db.ContractVersion"/>
+
+    <one-to-many name="analyticMoveLineList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines"
+      mappedBy="contractLine"/>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+
+    <finder-method name="findOneBy"
+      using="contractVersion, product, productName,
 					   isConsumptionLine"/>
-	</entity>
+  </entity>
 
 </domain-models>

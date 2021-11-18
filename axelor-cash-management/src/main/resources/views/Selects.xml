@@ -1,82 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<selection name="forecast.opportunities.type.select">
-		<option value="1">No</option>
-		<option value="2">Base</option>
-		<option value="3">Worst</option>
-		<option value="4">Best</option>
-	</selection>
-	
-	<selection name="display.type.select">
-		<option value="1">Sales</option>
-		<option value="2">Spending</option>
-		<option value="3">Both</option>
-	</selection>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<selection name="forecast.recap.line.related.to.select">
-		<option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid" data-form="sale-order-form">Sale order</option>
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
-		<option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid" data-form="invoice-form">Invoice</option>
-		<option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid" data-form="expense-form">Expense</option>
-		<option value="com.axelor.apps.cash.management.db.ForecastReason" data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
-		<option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid" data-form="employee-form">Employee</option>
-		<option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid" data-form="opportunity-form">Opportunity</option>
-	</selection>
-	
-	<selection name="sequence.generic.code.select" id="cash.management.sequence.generic.code.select">
-		<option value="forecastRecap">Forecast Recap</option>
-	</selection>
-  
-	<selection name="forecast.recap.report.type.select">
-		<option value="pdf">PDF</option>
-		<option value="xlsx">XLS</option>
-		<option value="ods">ODS</option>
-	</selection>
-  
-    <selection name="forecast.recap.line.type.element.select">
-        <option value="1">Invoice</option>
-        <option value="2">Sale order</option>
-        <option value="3">Purchase order</option>
-        <option value="4">Expense</option>
-        <option value="5">Forecast</option>
-        <option value="6">Opportunity</option>
-        <option value="7">Salary</option>
-    </selection>
-    
-    <selection name="forecast.recap.line.type.pay.day.select">
-    	<option value="1">1</option>
-    	<option value="2">2</option>
-    	<option value="3">3</option>
-    	<option value="4">4</option>
-    	<option value="5">5</option>
-    	<option value="6">6</option>
-    	<option value="7">7</option>
-    	<option value="8">8</option>
-    	<option value="9">9</option>
-    	<option value="10">10</option>
-    	<option value="11">11</option>
-    	<option value="12">12</option>
-    	<option value="13">13</option>
-    	<option value="14">14</option>
-    	<option value="15">15</option>
-    	<option value="16">16</option>
-    	<option value="17">17</option>
-    	<option value="18">18</option>
-    	<option value="19">19</option>
-    	<option value="20">20</option>
-    	<option value="21">21</option>
-    	<option value="22">22</option>
-    	<option value="23">23</option>
-    	<option value="24">24</option>
-    	<option value="25">25</option>
-    	<option value="26">26</option>
-    	<option value="27">27</option>
-    	<option value="28">28</option>
-    	<option value="0">End Of Month</option>
-    </selection>
+  <selection name="forecast.opportunities.type.select">
+    <option value="1">No</option>
+    <option value="2">Base</option>
+    <option value="3">Worst</option>
+    <option value="4">Best</option>
+  </selection>
+
+  <selection name="display.type.select">
+    <option value="1">Sales</option>
+    <option value="2">Spending</option>
+    <option value="3">Both</option>
+  </selection>
+
+  <selection name="forecast.recap.line.related.to.select">
+    <option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid"
+      data-form="sale-order-form">Sale order</option>
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
+      data-form="purchase-order-form">Purchase order</option>
+    <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
+      data-form="invoice-form">Invoice</option>
+    <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
+      data-form="expense-form">Expense</option>
+    <option value="com.axelor.apps.cash.management.db.ForecastReason"
+      data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
+    <option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid"
+      data-form="employee-form">Employee</option>
+    <option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid"
+      data-form="opportunity-form">Opportunity</option>
+    <option value="com.axelor.apps.cash.management.db.Forecast" data-grid="forecast-grid"
+      data-form="forecast-form">Manual Forecast</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select"
+    id="cash.management.sequence.generic.code.select">
+    <option value="forecastRecap">Forecast Recap</option>
+    <option value="forecast">Forecast</option>
+  </selection>
+
+  <selection name="forecast.recap.report.type.select">
+    <option value="pdf">PDF</option>
+    <option value="xlsx">XLS</option>
+    <option value="ods">ODS</option>
+  </selection>
+
+  <selection name="forecast.recap.line.type.element.select">
+    <option value="1">Invoice</option>
+    <option value="2">Sale order</option>
+    <option value="3">Purchase order</option>
+    <option value="4">Expense</option>
+    <option value="5">Forecast</option>
+    <option value="6">Opportunity</option>
+    <option value="7">Salary</option>
+  </selection>
+
+  <selection name="forecast.recap.line.type.pay.day.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="21">21</option>
+    <option value="22">22</option>
+    <option value="23">23</option>
+    <option value="24">24</option>
+    <option value="25">25</option>
+    <option value="26">26</option>
+    <option value="27">27</option>
+    <option value="28">28</option>
+    <option value="0">End Of Month</option>
+  </selection>
 
 
 </object-views>

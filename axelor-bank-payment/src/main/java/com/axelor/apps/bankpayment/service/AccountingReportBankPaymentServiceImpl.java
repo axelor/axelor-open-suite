@@ -50,7 +50,7 @@ public class AccountingReportBankPaymentServiceImpl extends AccountingReportServ
   @Override
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException {
-    if (accountingReport.getTypeSelect()
+    if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_BANK_RECONCILIATION_STATEMENT) {
       return ReportFactory.createReport(IReport.BANK_PAYMENT_REPORT_TYPE, name + "-${date}")
           .addParam("AccountingReportId", accountingReport.getId())

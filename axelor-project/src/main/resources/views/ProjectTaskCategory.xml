@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <grid name="project-task-category-grid" title="Category"
+    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    <field name="name"/>
+    <field name="defaultInvoicingType" if="__config__.app.isApp('business-project')"
+      if-module="axelor-business-project"/>
+  </grid>
+
+  <form title="Category" name="project-task-category-form"
+    model="com.axelor.apps.project.db.ProjectTaskCategory">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="defaultProduct"
+        domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'" form-view="product-form"
+        grid-view="product-grid" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"/>
+      <field name="defaultInvoicingType" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" validIf="$number(defaultInvoicingType) > 0"/>
+    </panel>
+  </form>
+
+  <search-filters name="project-task-category-filters"
+    model="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category filters">
+    <field name="defaultInvoicingType" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+  </search-filters>
+
+</object-views>
