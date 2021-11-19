@@ -12,7 +12,7 @@
     <field name="analyticAccountSet"/>
   </grid>
 
-  <form name="analytic-rules-form" title="Analytic Rules"
+  <form name="analytic-rules-form" title="Analytic Rule"
     model="com.axelor.apps.account.db.AnalyticRules">
     <panel name="mainPanel">
       <field name="name"/>
