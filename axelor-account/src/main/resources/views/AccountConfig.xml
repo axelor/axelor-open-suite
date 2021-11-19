@@ -457,7 +457,7 @@
 
   <action-group name="action-account-config-group-on-save">
     <action name="action-account-config-validate-is-activate-simulated-move"/>
-    <action name="action-account-config-method-deactivate-simultated-moves"/>
+    <action name="action-account-config-method-deactivate-simulated-moves"/>
     <action name="action-validate-account-config-on-save-analytic"/>
   </action-group>
 
@@ -468,7 +468,7 @@
       if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
   </action-validate>
 
-  <action-method name="action-account-config-method-deactivate-simultated-moves">
+  <action-method name="action-account-config-method-deactivate-simulated-moves">
     <call class="com.axelor.apps.account.web.AccountConfigController"
       method="deactivateSimulatedMoves"
       if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
