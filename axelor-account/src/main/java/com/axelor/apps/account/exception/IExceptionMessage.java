@@ -905,4 +905,6 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String MOVE_CURRENCY_MISSING = /*$$(*/ "Currency is missing on move" /*)*/;
 }
