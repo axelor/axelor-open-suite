@@ -1,0 +1,3 @@
+---
+title: "Payment Voucher: fix error display on delete when linked to a move"
+type: fix
