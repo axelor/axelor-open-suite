@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -89,29 +90,25 @@ public class ImportMove {
       }
 
       if (values.get("EcritureDate") != null) {
-        LocalDate moveLineDate =
-            LocalDate.parse(
-                values.get("EcritureDate").toString(), DateTimeFormatter.BASIC_ISO_DATE);
-        moveLine.setDate(moveLineDate);
+        moveLine.setDate(parseDate(values.get("EcritureDate").toString()));
       }
 
       Move move = moveRepository.all().filter("self.reference = ?", importReference).fetchOne();
       if (move == null) {
         move = new Move();
         move.setReference(importReference);
+        move.setOrigin(csvReference);
 
         if (values.get("ValidDate") != null) {
-          move.setValidationDate(
-              LocalDate.parse(
-                  values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+          move.setValidationDate(parseDate(values.get("ValidDate").toString()));
         }
         move.setStatusSelect(MoveRepository.STATUS_NEW);
         move.setCompany(company);
         move.setCompanyCurrency(move.getCompany().getCurrency());
 
-        move.setDate(
-            LocalDate.parse(
-                values.get("EcritureDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+        if (values.get("EcritureDate") != null) {
+          move.setDate(parseDate(values.get("EcritureDate").toString()));
+        }
 
         move.setPeriod(
             Beans.get(PeriodService.class)
@@ -144,9 +141,7 @@ public class ImportMove {
           move.setPartner(partner);
         }
         if (values.get("PieceDate") != null) {
-          move.setOriginDate(
-              LocalDate.parse(
-                  values.get("PieceDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+          move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
         move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_IMPORT);
         moveRepository.save(move);
@@ -206,5 +201,17 @@ public class ImportMove {
     }
     moveRepository.save(move);
     return move;
+  }
+
+  protected LocalDate parseDate(String date) throws Exception {
+    if (!StringUtils.isEmpty(date)) {
+      try {
+        return LocalDate.parse(date, DateTimeFormatter.BASIC_ISO_DATE);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        throw e;
+      }
+    }
+    return null;
   }
 }

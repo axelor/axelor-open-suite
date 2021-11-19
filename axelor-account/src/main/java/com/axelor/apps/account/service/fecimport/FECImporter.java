@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.fecimport;
 
 import com.axelor.apps.account.db.FECImport;
+import com.axelor.apps.account.db.FECImportLog;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FECImportRepository;
@@ -18,6 +19,8 @@ import com.axelor.db.Model;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class FECImporter extends Importer {
   protected FECImportRepository fecImportRepository;
   protected CompanyRepository companyRepository;
   private final List<Move> moveList = new ArrayList<>();
+  private final List<FECImportLog> fecImportLogList = new ArrayList<>();
   private FECImport fecImport;
   private Company company;
 
@@ -57,6 +61,16 @@ public class FECImporter extends Importer {
         new ImporterListener(getConfiguration().getName()) {
           @Override
           public void handle(Model bean, Exception e) {
+            if (fecImport != null) {
+              FECImportLog fecImportLog = new FECImportLog();
+              StringWriter sw = new StringWriter();
+              e.printStackTrace(new PrintWriter(sw));
+              fecImportLog.setException(e.toString());
+              ;
+              fecImportLog.setMessage(e.getMessage());
+              fecImportLog.setLog(sw.toString());
+              fecImportLogList.add(fecImportLog);
+            }
             super.handle(bean, e);
           }
 
@@ -80,7 +94,19 @@ public class FECImporter extends Importer {
     importer.addListener(listener);
     importer.setContext(importContext);
     importer.run();
+    saveFecImport();
     return addHistory(listener);
+  }
+
+  @Transactional
+  protected void saveFecImport() {
+    FECImport fecImportToSave = fecImportRepository.find(fecImport.getId());
+    fecImportLogList.forEach(fecImportLog -> fecImportToSave.addFecImportLogListItem(fecImportLog));
+    if (fecImportToSave.getCompany() == null) {
+      fecImportToSave.setCompany(company);
+    }
+
+    fecImportRepository.save(fecImportToSave);
   }
 
   protected void addMoveFromMoveLine(Model bean) {

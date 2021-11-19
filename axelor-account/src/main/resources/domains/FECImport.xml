@@ -18,7 +18,10 @@
     <boolean name="validGeneratedMove" title="Valid the generated move"/>
     <many-to-one ref="com.axelor.apps.base.db.Company" name="company" title="Company"/>
     <string name="moveDescription" title="Move description"/>
-
+    <one-to-many ref="com.axelor.apps.account.db.Move" name="moveList"
+      title="Generated moves" mappedBy="fecImport"/>
+    <one-to-many ref="com.axelor.apps.account.db.FECImportLog" name="fecImportLogList"
+      mappedBy="fecImport"/>
 
   </entity>
 

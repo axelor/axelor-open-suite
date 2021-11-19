@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="fec-import-log-grid" title="FEC import Log"
+    model="com.axelor.apps.account.db.FECImportLog">
+    <field name="id" hidden="false"/>
+    <field name="exception"/>
+  </grid>
+
+  <form name="fec-import-log-form" title="FEC import Log"
+    model="com.axelor.apps.account.db.FECImportLog" width="large">
+    <panel name="exceptionGroupPanel" title="Anomaly" canCollapse="true">
+      <field name="exception" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="messageGroupPanel" title="Message" canCollapse="true">
+      <field name="message" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="logGroupPanel" title="Log" canCollapse="true">
+      <field name="log" showTitle="false" colSpan="12"/>
+    </panel>
+
+  </form>
+
+</object-views>
