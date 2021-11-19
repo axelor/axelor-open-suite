@@ -66,7 +66,6 @@ public class FECImporter extends Importer {
               StringWriter sw = new StringWriter();
               e.printStackTrace(new PrintWriter(sw));
               fecImportLog.setException(e.toString());
-              ;
               fecImportLog.setMessage(e.getMessage());
               fecImportLog.setLog(sw.toString());
               fecImportLogList.add(fecImportLog);
@@ -102,7 +101,7 @@ public class FECImporter extends Importer {
   protected void saveFecImport() {
     FECImport fecImportToSave = fecImportRepository.find(fecImport.getId());
     fecImportLogList.forEach(fecImportLog -> fecImportToSave.addFecImportLogListItem(fecImportLog));
-    if (fecImportToSave.getCompany() == null) {
+    if (fecImportToSave.getCompany() == null && company != null) {
       fecImportToSave.setCompany(company);
     }
 
@@ -156,7 +155,9 @@ public class FECImporter extends Importer {
         }
         i++;
       }
-      this.company = companyRepository.find(companyId);
+      if (companyId != null) {
+        this.company = companyRepository.find(companyId);
+      }
     }
   }
 
