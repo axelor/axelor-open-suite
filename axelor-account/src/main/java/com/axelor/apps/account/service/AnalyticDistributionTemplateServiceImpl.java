@@ -190,18 +190,16 @@ public class AnalyticDistributionTemplateServiceImpl
     if (CollectionUtils.isNotEmpty(analyticDistributionLineList)) {
       analyticDistributionLineList.forEach(
           line ->
-              personnalizeLine(
-                  line, analyticAxis, line.getAnalyticJournal(), newAnalyticDistributionTemplate));
+              personalizeLine(line, analyticAxis, accountConfig, newAnalyticDistributionTemplate));
     } else {
-      personnalizeLine(
-          null, analyticAxis, accountConfig.getAnalyticJournal(), newAnalyticDistributionTemplate);
+      personalizeLine(null, analyticAxis, accountConfig, newAnalyticDistributionTemplate);
     }
   }
 
-  protected void personnalizeLine(
+  protected void personalizeLine(
       AnalyticDistributionLine analyticDistributionLine,
       AnalyticAxis analyticAxis,
-      AnalyticJournal analyticJournal,
+      AccountConfig accountConfig,
       AnalyticDistributionTemplate newAnalyticDistributionTemplate) {
     if (analyticDistributionLine != null) {
       personalizeAnalyticDistributionLine(
@@ -214,7 +212,7 @@ public class AnalyticDistributionTemplateServiceImpl
       personalizeAnalyticDistributionLine(
           analyticAxis,
           null,
-          analyticJournal,
+          accountConfig.getAnalyticJournal(),
           new BigDecimal(100),
           newAnalyticDistributionTemplate);
     }
