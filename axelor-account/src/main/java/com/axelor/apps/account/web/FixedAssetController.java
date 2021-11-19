@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -324,6 +325,18 @@ public class FixedAssetController {
       FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
       fixedAssetService.onChangeDepreciationPlan(fixedAsset);
       response.setValues(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void hideAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      response.setAttr(
+          "analyticPanel",
+          "hidden",
+          !Beans.get(AnalyticToolService.class).isManageAnalytic(fixedAsset.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
