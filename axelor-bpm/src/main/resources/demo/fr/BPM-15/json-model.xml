@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-models>
+
+
+  <json-model>
+
+    <name>BillSubscription</name>
+
+    <title>Bill subscription</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-menu-billsubscription' title='Bill subscription'
+      xmlId='studio-menu-billsubscription'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>CreditCardBillSubcription</name>
+
+    <title>Credit card bill subscription</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-menu-creditcardbillsubcription'
+      title='CC bill subscription' xmlId='studio-menu-creditcardbillsubcription'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>1</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>ElectricityBillSubscription</name>
+
+    <title>Electricity bill subscription</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-menu-electricitybillsubscription'
+      title='Electricity bill subcription' xmlId='studio-menu-electricitybillsubscription'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>2</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </json-model>
+
+
+</json-models>

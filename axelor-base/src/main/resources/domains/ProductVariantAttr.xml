@@ -6,11 +6,13 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ProductVariantAttr" lang="java">
-	
-	<string name="name" title="Name" required="true"/>
-	<string name="code" title="Code" required="true"/>
-	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr" title="Values list"/>
-	
+
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true"/>
+    <one-to-many name="productVariantValueList"
+      ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttr"
+      title="Values list"/>
+
   </entity>
 
 </domain-models>

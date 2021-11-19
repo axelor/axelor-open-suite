@@ -37,7 +37,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,6 +54,7 @@ public class MoveValidateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected MoveLineControlService moveLineControlService;
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
@@ -65,6 +65,7 @@ public class MoveValidateService {
 
   @Inject
   public MoveValidateService(
+      MoveLineControlService moveLineControlService,
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
@@ -72,7 +73,7 @@ public class MoveValidateService {
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService) {
-
+    this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
@@ -104,7 +105,11 @@ public class MoveValidateService {
       }
 
       if (moveLine.getOriginDate() == null) {
-        moveLine.setOriginDate(date);
+        if (ObjectUtils.notEmpty(move.getOriginDate())) {
+          moveLine.setOriginDate(move.getOriginDate());
+        } else {
+          moveLine.setOriginDate(date);
+        }
       }
 
       if (partner != null) {
@@ -153,8 +158,6 @@ public class MoveValidateService {
           String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
     }
 
-    MoveLineService moveLineService = Beans.get(MoveLineService.class);
-
     if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
       for (MoveLine moveLine : move.getMoveLineList()) {
@@ -188,7 +191,7 @@ public class MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
-        moveLineService.validateMoveLine(moveLine);
+        moveLineControlService.validateMoveLine(moveLine);
       }
       this.validateWellBalancedMove(move);
     }
