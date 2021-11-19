@@ -19,8 +19,10 @@ package com.axelor.apps.account.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.AccountAccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
@@ -383,5 +385,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+
+    bind(AccountManagementRepository.class).to(AccountAccountManagementRepository.class);
   }
 }
