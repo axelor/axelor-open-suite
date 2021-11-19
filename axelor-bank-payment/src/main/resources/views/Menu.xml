@@ -136,8 +136,8 @@
   </action-view>
 
 
-  <menuitem name="account-root-bank-statement" parent="account-root" title="Bank Statements"
-    order="17" if="__config__.app.isApp('bank-payment')"/>
+  <menuitem name="account-root-bank-statement" parent="account-root"
+    title="Bank Statements" order="17" if="__config__.app.isApp('bank-payment')"/>
 
   <menuitem name="account-root-bank-statement-bank-statement"
     parent="account-root-bank-statement" title="Bank Statements" action="account.bank.statement"/>
