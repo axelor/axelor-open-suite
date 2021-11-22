@@ -79,7 +79,7 @@ public class TestFixedAssetGenerationService {
 
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService, fixedAssetFailOverControlService);
+            analyticFixedAssetService, fixedAssetFailOverControlService, fixedAssetLineService);
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);

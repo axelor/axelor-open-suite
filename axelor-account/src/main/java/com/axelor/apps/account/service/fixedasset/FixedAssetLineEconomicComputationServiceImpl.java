@@ -37,8 +37,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Inject
   public FixedAssetLineEconomicComputationServiceImpl(
       AnalyticFixedAssetService analyticFixedAssetService,
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
-    super(fixedAssetFailOverControlService);
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      FixedAssetLineService fixedAssetLineService) {
+    super(fixedAssetFailOverControlService, fixedAssetLineService);
     this.analyticFixedAssetService = analyticFixedAssetService;
   }
 

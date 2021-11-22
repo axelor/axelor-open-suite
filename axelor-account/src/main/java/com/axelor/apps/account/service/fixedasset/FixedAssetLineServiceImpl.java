@@ -41,11 +41,16 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       throws AxelorException {
     FixedAssetLine fixedAssetLine = getExistingLine(fixedAsset, disposalDate);
     if (fixedAssetLine == null) {
-      fixedAssetLine = new FixedAssetLine();
-      fixedAssetLine.setDepreciationDate(disposalDate);
-      fixedAssetLine.setTypeSelect(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-      fixedAssetLine.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-      fixedAssetLine.setDepreciationBase(previousRealizedLine.getDepreciationBase());
+      fixedAssetLine =
+          createFixedAssetLine(
+              fixedAsset,
+              disposalDate,
+              BigDecimal.ZERO,
+              BigDecimal.ZERO,
+              BigDecimal.ZERO,
+              previousRealizedLine.getDepreciationBase(),
+              FixedAssetLineRepository.STATUS_PLANNED,
+              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     }
     fixedAssetLine.setDepreciationDate(disposalDate);
@@ -375,5 +380,27 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             "Fixed asset line type is not recognized to set fixed asset");
     }
+  }
+
+  @Override
+  public FixedAssetLine createFixedAssetLine(
+      FixedAsset fixedAsset,
+      LocalDate depreciationDate,
+      BigDecimal depreciation,
+      BigDecimal cumulativeDepreciation,
+      BigDecimal accountingValue,
+      BigDecimal depreciationBase,
+      int statusSelect,
+      int typeSelect) {
+
+    FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setStatusSelect(statusSelect);
+    fixedAssetLine.setDepreciationDate(depreciationDate);
+    fixedAssetLine.setDepreciation(depreciation);
+    fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
+    fixedAssetLine.setAccountingValue(accountingValue);
+    fixedAssetLine.setDepreciationBase(depreciationBase);
+    fixedAssetLine.setTypeSelect(typeSelect);
+    return fixedAssetLine;
   }
 }

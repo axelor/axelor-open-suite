@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -139,4 +140,27 @@ public interface FixedAssetLineService {
    * @param line
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  /**
+   * Method to create a {@link FixedAssetLine}
+   *
+   * @param fixedAsset
+   * @param depreciationDate
+   * @param depreciation
+   * @param cumulativeDepreciation
+   * @param accountingValue
+   * @param depreciationBase
+   * @param statusSelect
+   * @param typeSelect
+   * @return
+   */
+  FixedAssetLine createFixedAssetLine(
+      FixedAsset fixedAsset,
+      LocalDate depreciationDate,
+      BigDecimal depreciation,
+      BigDecimal cumulativeDepreciation,
+      BigDecimal accountingValue,
+      BigDecimal depreciationBase,
+      int statusSelect,
+      int typeSelect);
 }

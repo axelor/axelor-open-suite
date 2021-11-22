@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class FixedAssetLineEconomicUpdateComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
-  protected FixedAssetLineService fixedAssetLineService;
   protected AnalyticFixedAssetService analyticFixedAssetService;
   private boolean canGenerateLines = false;
   private FixedAssetLine firstPlannedFixedAssetLine;
@@ -39,8 +38,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       FixedAssetLineService fixedAssetLineService,
       AnalyticFixedAssetService analyticFixedAssetService) {
-    super(fixedAssetFailOverControlService);
-    this.fixedAssetLineService = fixedAssetLineService;
+    super(fixedAssetFailOverControlService, fixedAssetLineService);
     this.analyticFixedAssetService = analyticFixedAssetService;
   }
 
@@ -76,13 +74,14 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
 
-    return createPlannedFixedAssetLine(
+    return fixedAssetLineService.createFixedAssetLine(
         fixedAsset,
         firstDepreciationDate,
         depreciation,
         depreciation.add(this.firstPlannedFixedAssetLine.getCumulativeDepreciation()),
         accountingValue,
         depreciationBase,
+        FixedAssetLineRepository.STATUS_PLANNED,
         getTypeSelect());
   }
 

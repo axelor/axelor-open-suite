@@ -14,8 +14,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Inject
   public FixedAssetLineIfrsComputationServiceImpl(
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
-    super(fixedAssetFailOverControlService);
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      FixedAssetLineService fixedAssetLineService) {
+    super(fixedAssetFailOverControlService, fixedAssetLineService);
   }
 
   @Override

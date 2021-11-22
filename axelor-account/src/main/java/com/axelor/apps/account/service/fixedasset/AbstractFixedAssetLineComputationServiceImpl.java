@@ -25,6 +25,7 @@ import java.util.List;
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected FixedAssetLineService fixedAssetLineService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
 
@@ -54,8 +55,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   @Inject
   public AbstractFixedAssetLineComputationServiceImpl(
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetFailOverControlService = fixedAssetFailOverControlService;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -72,13 +75,14 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     LocalDate depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine);
 
-    return createPlannedFixedAssetLine(
+    return fixedAssetLineService.createFixedAssetLine(
         fixedAsset,
         depreciationDate,
         depreciation,
         cumulativeDepreciation,
         accountingValue,
         depreciationBase,
+        FixedAssetLineRepository.STATUS_PLANNED,
         getTypeSelect());
   }
 
@@ -92,13 +96,14 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
 
     FixedAssetLine line =
-        createPlannedFixedAssetLine(
+        fixedAssetLineService.createFixedAssetLine(
             fixedAsset,
             firstDepreciationDate,
             depreciation,
             depreciation,
             accountingValue,
             depreciationBase,
+            FixedAssetLineRepository.STATUS_PLANNED,
             getTypeSelect());
 
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
@@ -265,25 +270,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     calendar.set(year, Calendar.FEBRUARY, 1);
     int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     return maxDays == day;
-  }
-
-  protected FixedAssetLine createPlannedFixedAssetLine(
-      FixedAsset fixedAsset,
-      LocalDate depreciationDate,
-      BigDecimal depreciation,
-      BigDecimal cumulativeDepreciation,
-      BigDecimal accountingValue,
-      BigDecimal depreciationBase,
-      int typeSelect) {
-    FixedAssetLine fixedAssetLine = new FixedAssetLine();
-    fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
-    fixedAssetLine.setDepreciationDate(depreciationDate);
-    fixedAssetLine.setDepreciation(depreciation);
-    fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
-    fixedAssetLine.setAccountingValue(accountingValue);
-    fixedAssetLine.setDepreciationBase(depreciationBase);
-    fixedAssetLine.setTypeSelect(typeSelect);
-    return fixedAssetLine;
   }
 
   protected BigDecimal computeInitialDegressiveDepreciation(

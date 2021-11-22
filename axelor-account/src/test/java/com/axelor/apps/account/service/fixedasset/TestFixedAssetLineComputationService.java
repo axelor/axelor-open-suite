@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.exception.AxelorException;
@@ -39,14 +40,16 @@ public class TestFixedAssetLineComputationService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
   protected AnalyticFixedAssetService analyticFixedAssetService;
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected FixedAssetLineService fixedAssetLineService;
 
   @Before
   public void prepare() {
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
+    fixedAssetLineService = new FixedAssetLineServiceImpl(mock(FixedAssetLineRepository.class));
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService, fixedAssetFailOverControlService);
+            analyticFixedAssetService, fixedAssetFailOverControlService, fixedAssetLineService);
   }
 
   @Test
