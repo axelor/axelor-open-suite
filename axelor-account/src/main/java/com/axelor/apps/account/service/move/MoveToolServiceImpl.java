@@ -432,14 +432,4 @@ public class MoveToolServiceImpl implements MoveToolService {
       moveLine.setOrigin(move.getOrigin());
     }
   }
-
-  @Override
-  public void checkCurrency(Move move) throws AxelorException {
-    if (move != null && move.getCurrency() == null) {
-      throw new AxelorException(
-          move,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MOVE_CURRENCY_MISSING));
-    }
-  }
 }
