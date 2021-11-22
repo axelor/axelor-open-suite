@@ -54,6 +54,8 @@
     model="com.axelor.apps.message.db.EmailAccount">
     <field name="user" expr="eval:__user__"
       if="__config__.app.getApp('base').getEmailAccountByUser()"/>
+    <field name="company" expr="eval: __parent__"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Company' &amp;&amp;__config__.app.getApp('base').getEmailAccountByCompany()"/>
   </action-record>
 
 </object-views>
