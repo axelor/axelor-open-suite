@@ -30,10 +30,8 @@
           grid-view="period-hr-grid" form-view="period-hr-form"
           onChange="action-payroll-preparation-group-fill-in" colSpan="4" canView="false"/>
         <button name="refreshBtn" title="Refresh"
-          onClick="validate,action-payroll-preparation-group-fill-in,action-payroll-preparation-method-fill-in-leaves,save"
-          colSpan="4" colOffset="4"/>
-        <field name="$payrollLeavesList" type="many-to-many"
-          target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
+          onClick="validate,action-payroll-preparation-group-fill-in,save" colSpan="4" colOffset="4"/>
+        <field name="payrollLeaveList" readonly="true" colSpan="12"/>
         <panel-related name="extraHoursLineListPanel" field="extraHoursLineList"
           readonly="true" colSpan="12"/>
         <field name="duration"/>
@@ -91,11 +89,6 @@
   <action-method name="action-payroll-preparation-method-fill-in">
     <call class="com.axelor.apps.hr.web.PayrollPreparationController"
       method="fillInPayrollPreparation"/>
-  </action-method>
-
-  <action-method name="action-payroll-preparation-method-fill-in-leaves">
-    <call class="com.axelor.apps.hr.web.PayrollPreparationController"
-      method="fillInPayrollPreparationLeaves"/>
   </action-method>
 
   <action-record name="action-payroll-preparation-record-default-on-new"

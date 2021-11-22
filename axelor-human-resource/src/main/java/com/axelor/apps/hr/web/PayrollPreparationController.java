@@ -54,7 +54,7 @@ public class PayrollPreparationController {
         Beans.get(PayrollPreparationService.class).fillInPayrollPreparation(payrollPreparation);
 
     response.setValue("extraHoursLineList", payrollPreparation.getExtraHoursLineList());
-    response.setValue("$payrollLeavesList", payrollLeaveList);
+    response.setValue("payrollLeaveList", payrollLeaveList);
     response.setValue("duration", payrollPreparation.getDuration());
     response.setValue("leaveDuration", payrollPreparation.getLeaveDuration());
     response.setValue("expenseAmount", payrollPreparation.getExpenseAmount());
@@ -69,16 +69,6 @@ public class PayrollPreparationController {
     response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
     response.setValue("employeeBonusAmount", payrollPreparation.getEmployeeBonusAmount());
     response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
-  }
-
-  public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
-
-    List<PayrollLeave> payrollLeaveList =
-        Beans.get(PayrollPreparationService.class).fillInLeaves(payrollPreparation);
-
-    response.setValue("$payrollLeavesList", payrollLeaveList);
   }
 
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)

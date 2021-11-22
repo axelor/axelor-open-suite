@@ -26,6 +26,8 @@
 
     <string name="comments" title="Comments" large="true"/>
 
+    <one-to-many name="payrollLeaveList" ref="com.axelor.apps.hr.db.PayrollLeave"
+      title="Leaves" mappedBy="payrollPreparation"/>
     <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine"
       title="Extra hours" mappedBy="payrollPreparation" orphanRemoval="false"/>
     <one-to-many name="expenseList" ref="com.axelor.apps.hr.db.Expense" title="Expenses"
