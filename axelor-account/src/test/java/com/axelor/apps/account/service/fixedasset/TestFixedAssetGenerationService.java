@@ -73,7 +73,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
     sequenceService = mock(SequenceService.class);
     appBaseService = mock(AppBaseService.class);
-    fixedAssetLineService = mock(FixedAssetLineService.class);
+    fixedAssetLineService = new FixedAssetLineServiceImpl(mock(FixedAssetLineRepository.class));
     fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
 
