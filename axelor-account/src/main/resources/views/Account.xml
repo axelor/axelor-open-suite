@@ -259,13 +259,7 @@
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name"
-      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
-    <attribute name="readonly" for="code"
-      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
-    <attribute name="readonly" for="reconcileOk"
-      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
-    <attribute name="readonly" for="analyticDistributionAuthorized"
+    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
   </action-attrs>
 
