@@ -122,6 +122,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fecimport.FECImportService;
+import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
@@ -383,5 +385,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+
+    bind(FECImportService.class).to(FECImportServiceImpl.class);
   }
 }

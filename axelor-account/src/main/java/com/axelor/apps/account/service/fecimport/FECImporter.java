@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service.fecimport;
 
 import com.axelor.apps.account.db.FECImport;
-import com.axelor.apps.account.db.FECImportLog;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FECImportRepository;
@@ -16,11 +15,12 @@ import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,6 @@ public class FECImporter extends Importer {
   protected FECImportRepository fecImportRepository;
   protected CompanyRepository companyRepository;
   private final List<Move> moveList = new ArrayList<>();
-  private final List<FECImportLog> fecImportLogList = new ArrayList<>();
   private FECImport fecImport;
   private Company company;
 
@@ -62,13 +61,12 @@ public class FECImporter extends Importer {
           @Override
           public void handle(Model bean, Exception e) {
             if (fecImport != null) {
-              FECImportLog fecImportLog = new FECImportLog();
-              StringWriter sw = new StringWriter();
-              e.printStackTrace(new PrintWriter(sw));
-              fecImportLog.setException(e.toString());
-              fecImportLog.setMessage(e.getMessage());
-              fecImportLog.setLog(sw.toString());
-              fecImportLogList.add(fecImportLog);
+              TraceBackService.trace(
+                  new AxelorException(
+                      e,
+                      fecImport,
+                      TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                      e.getMessage()));
             }
             super.handle(bean, e);
           }
@@ -100,11 +98,9 @@ public class FECImporter extends Importer {
   @Transactional
   protected void saveFecImport() {
     FECImport fecImportToSave = fecImportRepository.find(fecImport.getId());
-    fecImportLogList.forEach(fecImportLog -> fecImportToSave.addFecImportLogListItem(fecImportLog));
     if (fecImportToSave.getCompany() == null && company != null) {
       fecImportToSave.setCompany(company);
     }
-
     fecImportRepository.save(fecImportToSave);
   }
 
@@ -203,6 +199,7 @@ public class FECImporter extends Importer {
 
     } catch (Exception e) {
       move.setStatusSelect(MoveRepository.STATUS_NEW);
+
       listener.handle(move, e);
     }
     return null;

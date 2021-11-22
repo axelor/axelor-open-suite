@@ -97,7 +97,9 @@ public class ImportMove {
       if (move == null) {
         move = new Move();
         move.setReference(importReference);
-        move.setOrigin(csvReference);
+        if (values.get("PieceRef") != null) {
+          move.setOrigin(values.get("PieceRef").toString());
+        }
 
         if (values.get("ValidDate") != null) {
           move.setValidationDate(parseDate(values.get("ValidDate").toString()));
