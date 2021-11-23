@@ -131,6 +131,8 @@ import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearControlServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -449,5 +451,7 @@ public class AccountModule extends AxelorModule {
     bind(YearControlService.class).to(YearControlServiceImpl.class);
 
     bind(PaymentModeControlService.class).to(PaymentModeControlServiceImpl.class);
+
+    bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
   }
 }

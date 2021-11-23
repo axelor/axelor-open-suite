@@ -26,8 +26,8 @@
   <form name="fixed-asset-form" title="Fixed asset"
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
-    onNew="action-fixed-asset-record-default, action-record-account-fixed-asset-set-default-serial-number-config-type"
-    onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation,action-attrs-fixed-asset-clear-residual-value,action-method-fixed-asset-change-button-title">
+    onNew="action-group-fixed-asset-onnew"
+    onLoad="action-group-fixed-asset-onload">
     <toolbar>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard"/>
@@ -79,16 +79,18 @@
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
         domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
         form-view="account-form" grid-view="account-grid"/>
-      <field
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
-        onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
-        domain="self.company = :company AND self.isSpecific = false" form-view="analytic-distribution-template-form"
-        grid-view="analytic-distribution-template-grid"/>
-      <button onClick="action-method-fixed-asset-analytic-distribution-template-personalize" name="personalizeBtn" 
-        title="Create personalized analytic template" colSpan="6" 
-       hideIf="analyticDistributionTemplate != null &amp;&amp; analyticDistributionTemplate.isSpecific"/>
-      <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
+	  <panel name="analyticPanel">
+	      <field
+	        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+	        name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
+	        onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
+	        domain="self.company = :company AND self.isSpecific = false" form-view="analytic-distribution-template-form"
+	        grid-view="analytic-distribution-template-grid"/>
+	      <button onClick="action-method-fixed-asset-analytic-distribution-template-personalize" name="personalizeBtn" 
+	        title="Create personalized analytic template" colSpan="6" 
+	       hideIf="analyticDistributionTemplate != null &amp;&amp; analyticDistributionTemplate.isSpecific"/>
+	      <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
+      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="fiscalPanel" title="Fiscal information" readonlyIf="statusSelect > 1"
@@ -411,6 +413,19 @@
     <action name="action-fixed-asset-method-compute-depreciation"/>
     <action name="save"/>
   </action-group>
+  
+  <action-group name="action-group-fixed-asset-onload">
+  	<action name="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
+  	<action name="action-attrs-fixed-asset-clear-residual-value"/>
+  	<action name="action-method-fixed-asset-change-button-title"/>
+  	<action name="action-method-fixed-asset-hide-analytic"/>
+  </action-group>
+  
+  <action-group name="action-group-fixed-asset-onnew">
+  	<action name="action-fixed-asset-record-default"/>
+  	<action name="action-record-account-fixed-asset-set-default-serial-number-config-type"/>
+  	<action name="action-method-fixed-asset-hide-analytic"/>
+  </action-group>
 
   <action-method name="action-fixed-asset-method-create-analytic-distribution">
     <call class="com.axelor.apps.account.web.FixedAssetController"
@@ -427,6 +442,10 @@
   </action-method>
   <action-method name="action-fixed-asset-method-mass-validation">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="massValidation"/>
+  </action-method>
+  
+  <action-method name="action-method-fixed-asset-hide-analytic">
+  	<call class="com.axelor.apps.account.web.FixedAssetController" method="hideAnalytic"/>
   </action-method>
   
   <action-method name="action-method-fixed-asset-analytic-distribution-template-personalize">
