@@ -2235,6 +2235,7 @@
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.",,,
 "The deposit slip has already been published.",,,
 "The from date is incorrect",,,
+"The import failed: the move %s already exist.",,,
 "The move %s cannot be empty",,,
 "The move fields origin and description are empty, do you wish to continue ?",,,
 "The move is validated and so can not be canceled.",,,

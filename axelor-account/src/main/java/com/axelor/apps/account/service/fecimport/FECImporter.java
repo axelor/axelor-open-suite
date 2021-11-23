@@ -199,7 +199,6 @@ public class FECImporter extends Importer {
 
     } catch (Exception e) {
       move.setStatusSelect(MoveRepository.STATUS_NEW);
-
       listener.handle(move, e);
     }
     return null;

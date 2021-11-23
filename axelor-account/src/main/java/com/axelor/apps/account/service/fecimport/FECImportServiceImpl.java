@@ -1,13 +1,12 @@
 package com.axelor.apps.account.service.fecimport;
 
-import java.util.Optional;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.util.Optional;
 
 public class FECImportServiceImpl implements FECImportService {
 
@@ -25,14 +24,13 @@ public class FECImportServiceImpl implements FECImportService {
       String fileName = dataMetaFile.getFileName();
       int separatorIndex = fileName.indexOf('F');
       if (separatorIndex > 0) {
-          String registrationCode = fileName.substring(0, separatorIndex);
-          company =
-              companyRepository
-                  .all()
-                  .filter("self.partner.registrationCode = ?", registrationCode)
-                  .fetchOne();  
+        String registrationCode = fileName.substring(0, separatorIndex);
+        company =
+            companyRepository
+                .all()
+                .filter("self.partner.registrationCode = ?", registrationCode)
+                .fetchOne();
       }
-
     }
 
     if (company != null) {

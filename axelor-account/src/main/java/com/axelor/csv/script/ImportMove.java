@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -55,6 +56,7 @@ public class ImportMove {
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
   @Inject private AppAccountService appAccountService;
+  @Inject private PeriodService periodService;
 
   private String lastImportDate;
 
@@ -93,6 +95,9 @@ public class ImportMove {
         moveLine.setDate(parseDate(values.get("EcritureDate").toString()));
       }
 
+      Period period =
+          periodService.getPeriod(moveLine.getDate(), company, YearRepository.TYPE_FISCAL);
+
       Move move = moveRepository.all().filter("self.reference = ?", importReference).fetchOne();
       if (move == null) {
         move = new Move();
@@ -111,10 +116,7 @@ public class ImportMove {
         if (values.get("EcritureDate") != null) {
           move.setDate(parseDate(values.get("EcritureDate").toString()));
         }
-
-        move.setPeriod(
-            Beans.get(PeriodService.class)
-                .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+        move.setPeriod(period);
 
         if (values.get("Idevise") != null) {
           move.setCurrency(
