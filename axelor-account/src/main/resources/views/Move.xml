@@ -158,7 +158,7 @@
         onChange="save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
-        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal currency &amp;&amp; &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="false" canRemove="false" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
         onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
