@@ -262,18 +262,6 @@
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
-        <field name="fixedAssetCategory"
-          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-      </panel>
-      <panel name="invoiceTermPanel" title="Invoice term" readonly="true"
-        showIf="account.hasInvoiceTerm" colSpan="12">
-        <field name="account.hasInvoiceTerm" hidden="true"/>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-form"
-          grid-view="invoice-term-grid"/>
-      </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
         field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid"
@@ -422,7 +410,6 @@
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
-      <field name="account.hasInvoiceTerm" hidden="true"/>
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
@@ -463,18 +450,6 @@
 
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
-        <field name="fixedAssetCategory"
-          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-      </panel>
-      <panel name="invoiceTermPanel" title="Invoice term" readonly="true"
-        showIf="account.hasInvoiceTerm" colSpan="12">
-        <field name="account.hasInvoiceTerm" hidden="true"/>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-form"
-          grid-view="invoice-term-grid"/>
-      </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
         field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid"
