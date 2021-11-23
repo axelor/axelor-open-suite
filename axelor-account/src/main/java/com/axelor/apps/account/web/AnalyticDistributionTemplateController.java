@@ -1,7 +1,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;

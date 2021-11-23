@@ -286,6 +286,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
         .toAttach(purchaseOrder)
         .generate()
         .getFileLink();
