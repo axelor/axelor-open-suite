@@ -15,7 +15,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
@@ -290,7 +289,6 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  @Transactional
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
     if (!(move != null
         && move.getPeriod() != null
@@ -301,8 +299,6 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
           moveLine,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
-    } else {
-      moveLineRepository.save(moveLine);
     }
   }
 }

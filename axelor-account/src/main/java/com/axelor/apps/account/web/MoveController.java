@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -38,7 +39,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -519,13 +519,8 @@ public class MoveController {
   public void setMoveLineDates(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-        MoveLineToolService moveLineToolService = Beans.get(MoveLineToolService.class);
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLine.setDate(move.getDate());
-          moveLineToolService.checkDateInPeriod(move, moveLine);
-        }
-      }
+      move = Beans.get(MoveLineControlService.class).setMoveLineDates(move);
+      response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
