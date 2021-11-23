@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +90,10 @@ public class FECImporter extends Importer {
         };
 
     importer.addListener(listener);
+    if (importContext == null) {
+      importContext = new HashMap<>();
+    }
+    importContext.put("FECImport", fecImport);
     importer.setContext(importContext);
     importer.run();
     saveFecImport();

@@ -18,10 +18,12 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -57,6 +59,7 @@ public class ImportMove {
   @Inject private MoveValidateService moveValidateService;
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
+  @Inject private FECImportRepository fecImportRepository;
 
   private String lastImportDate;
 
@@ -65,12 +68,22 @@ public class ImportMove {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
     try {
+      FECImport fecImport = null;
+      if (values.get("FECImport") != null) {
+        fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
+      }
       moveLine.setCounter(1);
 
       if (values.get("EcritureNum") == null) {
         return null;
       }
-      Company company = getCompany(values);
+      Company company = null;
+      if (fecImport != null) {
+        company = fecImport.getCompany();
+      } else {
+        company = getCompany(values);
+      }
+
       String csvReference = values.get("EcritureNum").toString();
       if (lastImportDate == null) {
         lastImportDate =
