@@ -245,4 +245,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
     return fixedAsset.getNbrOfPastDepreciations();
   }
+
+  @Override
+  protected Integer getDurationInMonth(FixedAsset fixedAsset) {
+
+    return fixedAsset.getDurationInMonth();
+  }
 }

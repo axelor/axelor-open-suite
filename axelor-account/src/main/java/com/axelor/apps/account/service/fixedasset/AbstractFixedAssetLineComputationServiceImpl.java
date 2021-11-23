@@ -40,6 +40,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract String getComputationMethodSelect(FixedAsset fixedAsset);
 
+  protected abstract Integer getDurationInMonth(FixedAsset fixedAsset);
+
   protected abstract BigDecimal getDegressiveCoef(FixedAsset fixedAsset);
 
   protected abstract LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset);
@@ -356,9 +358,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected LocalDate computeDepreciationDate(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
     LocalDate depreciationDate;
-    depreciationDate =
-        DateTool.plusMonths(
-            previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
+    // In prorataTemporis, the system will generate one additional line.
+    // This check if we are generating the additional line, and in this case, the depreciation date
+    // is different.
+    if (isProrataTemporis(fixedAsset)
+        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset)) {
+      depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
+    } else {
+      depreciationDate =
+          DateTool.plusMonths(
+              previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
+    }
 
     return depreciationDate;
   }
@@ -366,10 +376,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
-    if (getFixedAssetLineList(fixedAsset) != null
-        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
-      depreciation = previousFixedAssetLine.getAccountingValue();
-    } else if (getComputationMethodSelect(fixedAsset)
+
+    if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
 
@@ -392,5 +400,16 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       return previousFixedAssetLine.getAccountingValue();
     }
     return previousFixedAssetLine.getDepreciationBase();
+  }
+
+  protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
+
+    LocalDate d =
+        DateTool.plusMonths(fixedAsset.getFirstServiceDate(), getDurationInMonth(fixedAsset));
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        getComputationMethodSelect(fixedAsset))) {
+      d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+    }
+    return d;
   }
 }
