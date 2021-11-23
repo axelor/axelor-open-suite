@@ -1,0 +1,3 @@
+---
+title: "HR(Timesheet/LeaveRequest/Expense) : Fix user domain search all contract even the closed one"
+type: fix
