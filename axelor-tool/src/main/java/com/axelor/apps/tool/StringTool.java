@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -268,19 +269,20 @@ public final class StringTool {
    * @return
    */
   public static String getIdListString(Collection<? extends Model> collection) {
-    List<Long> idList = new ArrayList<>();
-    String idString;
     if (CollectionUtils.isEmpty(collection)) {
-      idString = "0";
-    } else {
-      for (Model item : collection) {
-        if (item != null) {
-          idList.add(item.getId());
-        }
-      }
-      idString = idList.stream().map(l -> l.toString()).collect(Collectors.joining(","));
+      return "0";
     }
-    return idString;
+    StringBuilder idStringBuilder = new StringBuilder();
+    for (Model item : collection) {
+      if (item != null) {
+        idStringBuilder.append(String.valueOf(item.getId()));
+        idStringBuilder.append(",");
+      }
+    }
+    if (ObjectUtils.notEmpty(idStringBuilder)) {
+      idStringBuilder.deleteCharAt(idStringBuilder.length() - 1);
+    }
+    return idStringBuilder.toString();
   }
 
   public static String getFilename(String name) {
