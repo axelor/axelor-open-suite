@@ -11,7 +11,7 @@
     <many-to-one name="type" ref="AnalyticJournalType" title="Type"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     
-    <integer name="statusSelect" title="Status" selection="ianalytic.journal.status.select" default="1"/>
+    <integer name="statusSelect" title="Status" selection="ianalytic.journal.status.select" default="0"/>
 
 	<extra-code>
       	<![CDATA[
