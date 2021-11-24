@@ -29,8 +29,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -123,5 +125,14 @@ public class BankStatementLineService {
               .getFileLink();
     }
     return fileLink;
+  }
+
+  @Transactional
+  public void removeBankReconciliationLines(BankStatement bankStatement) {
+    JPA.em()
+        .createQuery(
+            "delete from BankStatementLineAFB120 self where self.bankStatement.id = "
+                + bankStatement.getId())
+        .executeUpdate();
   }
 }
