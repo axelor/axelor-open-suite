@@ -85,6 +85,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   @Override
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
+
+    if (isAlreadyDepreciated(fixedAsset)) {
+      return null;
+    }
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
@@ -112,6 +116,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     }
 
     return line;
+  }
+
+  protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
+
+    return getNumberOfDepreciation(fixedAsset) == getNumberOfPastDepreciation(fixedAsset);
   }
 
   @Override

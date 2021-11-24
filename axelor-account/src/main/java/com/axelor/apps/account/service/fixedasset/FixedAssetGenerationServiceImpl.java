@@ -153,13 +153,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
+      if (initialFiscalFixedAssetLine != null) {
+        fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLines(
-          fixedAsset,
-          initialFiscalFixedAssetLine,
-          fixedAsset.getIfrsFixedAssetLineList(),
-          fixedAssetLineComputationService);
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            initialFiscalFixedAssetLine,
+            fixedAsset.getIfrsFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
     }
   }
 
@@ -181,13 +183,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
+      if (initialFiscalFixedAssetLine != null) {
+        fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLines(
-          fixedAsset,
-          initialFiscalFixedAssetLine,
-          fixedAsset.getFiscalFixedAssetLineList(),
-          fixedAssetLineComputationService);
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            initialFiscalFixedAssetLine,
+            fixedAsset.getFiscalFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
     }
   }
   /**
@@ -207,13 +211,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
+      if (initialFixedAssetLine != null) {
+        fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLines(
-          fixedAsset,
-          initialFixedAssetLine,
-          fixedAsset.getFixedAssetLineList(),
-          fixedAssetLineComputationService);
+        generateComputedPlannedFixedAssetLines(
+            fixedAsset,
+            initialFixedAssetLine,
+            fixedAsset.getFixedAssetLineList(),
+            fixedAssetLineComputationService);
+      }
     }
   }
 
