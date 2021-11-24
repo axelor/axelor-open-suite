@@ -19,9 +19,12 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
+import javax.validation.ValidationException;
 
 public class BankReconciliationManagementRepository extends BankReconciliationRepository {
   @Override
@@ -46,5 +49,18 @@ public class BankReconciliationManagementRepository extends BankReconciliationRe
     }
 
     return super.save(entity);
+  }
+
+  @Override
+  public void remove(BankReconciliation entity) {
+    if (!entity.getStatusSelect().equals(BankReconciliationRepository.STATUS_VALIDATED)) {
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      bankReconciliationService.unreconcileLines(entity.getBankReconciliationLineList());
+      super.remove(entity);
+    } else {
+      throw new ValidationException(
+          I18n.get("Selected bank reconciliation is validated and can not be deleted"));
+    }
   }
 }

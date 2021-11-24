@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <dashboard name="dasbhoard-wkf-model" title="Workflow dashboard">
+    <dashlet action="chart:chart.wkf.model.status.per.month" title="Status per month"
+      height="350" colSpan="12"/>
+    <dashlet action="chart:chart.wkf.model.status.per.day" title="Status per day"
+      height="350" colSpan="12"/>
+    <dashlet action="chart:chart.wkf.model.time.spent.per.status"
+      title="Time spent per status (hours)" height="350" colSpan="12"/>
+  </dashboard>
+
+  <dashboard name="dasbhoard-wkf-instance" title="Wkf instance dashboard">
+    <dashlet action="chart:chart.wkf.instance.timespent.per.node" title="Timespent per node"
+      height="350" colSpan="12"/>
+    <dashlet action="custom:custom.wkf.instance.node.activation.time"
+      title="Node activation time" height="350" colSpan="12"/>
+  </dashboard>
+
+  <form name="bpm-manager-dashboard-form" title="BPM Manager"
+    model="com.axelor.apps.base.db.Wizard" onNew="action-wkf-bpm-manager-dashboard-method-on-new"
+    width="large" canNew="false" canEdit="false" canDelete="false">
+    <panel name="wkfModelPanel">
+      <label name="$noData" title="No data to display" showIf="$totalRecord == 0"/>
+      <field name="$models" colSpan="12" showTitle="false" readonly="true">
+        <viewer><![CDATA[
+  				<div>
+	  				<table ng-repeat="model in record.$modelList" class="table" style="border-bottom:1px solid #bbb;">
+		 				<thead>
+		 					<tr>
+		 						<th style="font-size:14px;">{{model.title}}</th>
+		 					</tr>
+		 				</thead>
+		 				<tbody>
+		 					<tr ng-repeat="process in model.processList">
+	 							<td style="padding-left: 20px;">
+	 								<div style="font-weight:bolder;padding-bottom:8px;border-bottom:1px solid #ddd;margin-bottom:8px;">
+	 									<span>{{process.title}}</span>
+	 								</div>
+									<div ng-repeat="item in process.itemList">
+										<div ng-if="item.type == 'model'" style="padding-left: 20px;">
+											<p><a style="font-weight:bold;" href="" ui-action-context="item" ui-action-click="action-wkf-model-method-model-per-view">{{_t('value:' + item.title) == 'value:'+item.title ? item.title : _t('value:' + item.title)}} ({{item.modelRecordCount}})</a></p>
+											<div ng-if="model.isSuperAdmin || model.isAdmin || model.isManager || model.isUser" style="padding:8px 8px 8px 8px;display: flex;border-top: 1px solid #ddd;">
+												<div>
+													<p>Assigned to me</p>
+													<p ng-if="item.userStatuses.length == 0" style="margin-left:9px;font-style:italic;" x-translate>No status</p>
+				 									<p ng-if="item.userStatuses.length > 0" style="display:list-item;margin-left:25px" ng-repeat="userStatus in item.userStatuses">
+				 										<a href="" ui-action-context="userStatus" ui-action-click="action-wkf-model-method-status-per-view">{{_t('value:' + userStatus.title) == 'value:'+userStatus.title ? userStatus.title : _t('value:' + userStatus.title)}} ({{userStatus.statusCount}})</a>
+				 									</p>
+			 									</div>
+				 							</div>
+				 							<div ng-if="model.isSuperAdmin || model.isAdmin || model.isManager" style="padding:8px 8px 8px 8px;display: flex;border-top: 1px solid #ddd;">
+				 								<div>
+			 										<p>Assigned to others</p>
+			 										<p ng-if="item.statuses.length == 0" style="margin-left:9px;font-style:italic;" x-translate>No status</p>
+			 										<p ng-if="item.statuses.length > 0" style="display:list-item;margin-left:25px;" ng-repeat="status in item.statuses">
+			 											<a href="" ui-action-context="status" ui-action-click="action-wkf-model-method-status-per-view">{{_t('value:' + status.title) == 'value:'+status.title ? status.title : _t('value:' + status.title)}} ({{status.statusCount}})</a>
+			 										</p>
+			 									</div>
+			 								</div>
+										</div>
+									</div>
+	 							</td>
+	 						</tr>
+		 				</tbody>
+		 			</table>
+	 			</div>
+  			]]></viewer>
+      </field>
+      <button name="previousBtn" title="&lt;&lt; Previous"
+        onClick="action-wkf-bpm-manager-dashboard-method-pre-manager-data" colSpan="2"
+        hideIf="$offset == 0"/>
+      <spacer colSpan="8"/>
+      <button name="nextBtn" title="Next &gt;&gt;"
+        onClick="action-wkf-bpm-manager-dashboard-method-nxt-manager-data" colSpan="2"
+        hideIf="$offset + $limit &gt;= $totalRecord"/>
+      <field name="$limit" type="integer" hidden="true"/>
+      <field name="$offset" type="integer" hidden="true"/>
+      <field name="$totalRecord" type="long" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-wkf-bpm-manager-dashboard-method-on-new">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="getBpmManagerData"/>
+  </action-method>
+
+  <action-method name="action-wkf-bpm-manager-dashboard-method-pre-manager-data">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="getPreManagerData"/>
+  </action-method>
+
+  <action-method name="action-wkf-bpm-manager-dashboard-method-nxt-manager-data">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="getNxtManagerData"/>
+  </action-method>
+
+</object-views>
