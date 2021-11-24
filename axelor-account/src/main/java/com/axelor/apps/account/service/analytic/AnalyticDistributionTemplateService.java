@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
