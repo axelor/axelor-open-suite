@@ -3,7 +3,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.service.AnalyticAxisControlService;
-import com.axelor.apps.account.service.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;

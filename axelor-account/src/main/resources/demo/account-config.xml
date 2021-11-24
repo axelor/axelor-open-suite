@@ -262,7 +262,12 @@
   <input file="account_analyticAxisByCompany.csv" separator=";"
     type="com.axelor.apps.account.db.AnalyticAxisByCompany" search="self.importId = :importId"/>
 
+  <input file="account_analyticDistributionTemplate.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    search="self.importId = :importId"/>
 
+  <input file="account_analyticDistributionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionLine" search="self.importId = :importId"/>
 
   <input file="account_das2Activity.csv" separator=";"
     type="com.axelor.apps.account.db.Das2Activity" search="self.code = :code"/>
