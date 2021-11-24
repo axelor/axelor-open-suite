@@ -16,7 +16,7 @@
   <form name="analytic-journal-form" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default,action-attrs-account-analytic-journal-status-show-title"
     onLoad="action-analytic-journal-on-load"
-    onSave="action-validate-for-analytic-journal-without-company">
+    onSave="action-validate-for-analytic-journal-without-company,action-method-accounting-analytic-journal-check-on-unicity">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
@@ -25,6 +25,7 @@
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
+      <field name="code"/>
       <field name="type" form-view="analytic-journal-type-form"
         grid-view="analytic-journal-type-grid"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -49,6 +50,7 @@
   <action-group name="action-analytic-journal-on-load">
     <action name="action-attrs-analytic-journal-on-load"/>
     <action name="action-attrs-account-analytic-journal-status-show-title"/>
+    <action name="action-method-account-analytic-journal-readonly-if-in-analytic-move-lines"/>
   </action-group>
 
   <action-attrs name="action-attrs-analytic-journal-on-load">
@@ -73,5 +75,15 @@
   	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
   	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
   </action-attrs>
+
+  <action-method name="action-method-accounting-analytic-journal-check-on-unicity">
+    <call class="com.axelor.apps.account.web.AnalyticJournalController"
+      method="controlUniqueCode"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-analytic-journal-readonly-if-in-analytic-move-lines">
+    <call class="com.axelor.apps.account.web.AnalyticJournalController" method="setReadOnly"/>
+  </action-method>
 
 </object-views>

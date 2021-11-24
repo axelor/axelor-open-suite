@@ -14,13 +14,14 @@
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
-    onNew="account-journal-record-default" width="large"
-    onLoad="action-journal-group-on-load-actions">
+    onNew="account-journal-record-default,action-method-account-journal-readonly-if-journal-in-move"
+    width="large" onLoad="action-journal-group-on-load-actions">
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
       <button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1"
-        onClick="account-journal-record-status-active,save" colSpan="2"/>
+        onClick="account-journal-record-status-active,save,action-method-account-journal-readonly-if-journal-in-move"
+        colSpan="2"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
@@ -97,6 +98,8 @@
 
     </panel-tabs>
 
+
+
   </form>
 
   <action-view name="action-journal-view-move-line" title="Move lines"
@@ -132,8 +135,14 @@
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
-    <action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+    <action name="action-journal-method-set-totals"
+      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+    <action name="action-method-account-journal-readonly-if-journal-in-move"/>
   </action-group>
+
+  <action-method name="action-method-account-journal-readonly-if-journal-in-move">
+    <call class="com.axelor.apps.account.web.JournalController" method="setReadOnly"/>
+  </action-method>
 
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>

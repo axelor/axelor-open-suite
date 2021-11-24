@@ -1,0 +1,5 @@
+---
+title: "AnalyticAxis: Added unicity control and set on readonly when linked to analytic move line"
+type: feature
+description: |
+  Name and code can not be modified if the record is linked to a analytic move line and analyticAxis's code are now unique by company (null value included)
