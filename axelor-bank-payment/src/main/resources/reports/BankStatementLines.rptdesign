@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -748,8 +748,10 @@ left join base_company as Company
 on Account.company = Company.id
 left join base_printing_settings as PrintingSettings 
 on Company.printing_settings = PrintingSettings.id
+left join bankpayment_bank_statement as BankStatement 
+on BankStatementLine.bank_statement = BankStatement.id
 where BankStatementLine.id = ? or BankStatementLine.id = ? or (BankStatementLine.operation_date >= ? and BankStatementLine.operation_date <= ? and BankStatementLine.bank_details = ?)
-order by BankStatementLine.operation_date, BankStatementLine.sequence]]></xml-property>
+order by BankStatement.from_date, BankStatementLine.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <property name="nullsOrdering">nulls lowest</property>
