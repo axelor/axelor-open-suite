@@ -45,7 +45,10 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       fixedAssetLine.setDepreciationDate(disposalDate);
       fixedAssetLine.setTypeSelect(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       fixedAssetLine.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-      fixedAssetLine.setDepreciationBase(previousRealizedLine.getDepreciationBase());
+      fixedAssetLine.setDepreciationBase(
+          previousRealizedLine != null
+              ? previousRealizedLine.getDepreciationBase()
+              : fixedAsset.getGrossValue());
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     }
     fixedAssetLine.setDepreciationDate(disposalDate);

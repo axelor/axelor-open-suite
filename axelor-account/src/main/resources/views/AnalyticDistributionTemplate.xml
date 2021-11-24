@@ -22,6 +22,25 @@
       form-view="analytic-distribution-line-form"/>
   </form>
 
+  <form name="analytic-distribution-template-fixed-asset-form"
+    title="Analytic distribution template"
+    model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save,action-method-parent-fixed-asset-calculate-analytic">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company" required="true" onChange="save"/>
+      <field name="isSpecific" hidden="true"/>
+    </panel>
+    <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
+      form-view="analytic-distribution-line-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+    <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
+      form-view="analytic-distribution-line-personalized-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+  </form>
+
   <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="validateLines"/>

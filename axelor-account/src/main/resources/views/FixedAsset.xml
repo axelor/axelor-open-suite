@@ -199,7 +199,7 @@
     </panel-tabs>
     <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
       <button name="computeDepreciationBtn" title="Compute depreciation"
-        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || (statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0))"
+        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || statusSelect > 1"
         onClick="action-group-account-fixed-asset-failover-control, action-fixed-asset-group-compute-depreciation-click"/>
       <button name="validteBtn" title="Validate"
         showIf="statusSelect &lt; 2 &amp;&amp; grossValue > 0"
