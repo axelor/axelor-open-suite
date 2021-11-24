@@ -964,10 +964,10 @@ public interface IExceptionMessage {
   /*Period */
   static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
       "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
-  
+
   static final String INACTIVE_ANALYTIC_ACCOUNT_FOUND =
-	      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 
   static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
-	      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 }
