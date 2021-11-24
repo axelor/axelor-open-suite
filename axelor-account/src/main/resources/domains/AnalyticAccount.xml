@@ -46,7 +46,7 @@
     <many-to-one name="analyticGroupingValue10"
       ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 10"/>
       
-    <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select" default="1"/>
+    <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select" default="0"/>
 
     <unique-constraint columns="code,name,analyticAxis"/>
 
