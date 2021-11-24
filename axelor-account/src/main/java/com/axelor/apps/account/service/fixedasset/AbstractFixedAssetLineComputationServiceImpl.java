@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
@@ -83,11 +84,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+  public Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
 
     if (isAlreadyDepreciated(fixedAsset)) {
-      return null;
+      return Optional.empty();
     }
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
@@ -115,7 +116,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       }
     }
 
-    return line;
+    return Optional.ofNullable(line);
   }
 
   protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
