@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -151,14 +152,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
-      FixedAssetLine initialFiscalFixedAssetLine =
+      Optional<FixedAssetLine> initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFiscalFixedAssetLine != null) {
-        fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
+      if (initialFiscalFixedAssetLine.isPresent()) {
+        fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine.get());
 
         generateComputedPlannedFixedAssetLines(
             fixedAsset,
-            initialFiscalFixedAssetLine,
+            initialFiscalFixedAssetLine.get(),
             fixedAsset.getIfrsFixedAssetLineList(),
             fixedAssetLineComputationService);
       }
@@ -181,14 +182,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
-      FixedAssetLine initialFiscalFixedAssetLine =
+      Optional<FixedAssetLine> initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFiscalFixedAssetLine != null) {
-        fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
+      if (initialFiscalFixedAssetLine.isPresent()) {
+        fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine.get());
 
         generateComputedPlannedFixedAssetLines(
             fixedAsset,
-            initialFiscalFixedAssetLine,
+            initialFiscalFixedAssetLine.get(),
             fixedAsset.getFiscalFixedAssetLineList(),
             fixedAssetLineComputationService);
       }
@@ -209,14 +210,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-      FixedAssetLine initialFixedAssetLine =
+      Optional<FixedAssetLine> initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFixedAssetLine != null) {
-        fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
+      if (initialFixedAssetLine.isPresent()) {
+        fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine.get());
 
         generateComputedPlannedFixedAssetLines(
             fixedAsset,
-            initialFixedAssetLine,
+            initialFixedAssetLine.get(),
             fixedAsset.getFixedAssetLineList(),
             fixedAssetLineComputationService);
       }
