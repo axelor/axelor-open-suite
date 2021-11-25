@@ -104,10 +104,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.realDate >= :beginDate "
             + "AND self.stockMove.realDate < :endDate ";
 
-    if (incoming) {
-      filter += "AND self.stockMove.toStockLocation.id = :stockLocationId ";
-    } else {
-      filter += "AND self.stockMove.fromStockLocation.id = :stockLocationId ";
+    if (stockLocationId != null) {
+      if (incoming) {
+        filter += "AND self.stockMove.toStockLocation.id = :stockLocationId ";
+      } else {
+        filter += "AND self.stockMove.fromStockLocation.id = :stockLocationId ";
+      }
     }
 
     List<StockMoveLine> stockMoveLineList =
