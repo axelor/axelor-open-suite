@@ -50,13 +50,13 @@
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)
 	        AND (self.saleOrderLine is NULL OR self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true)"
-	      orderBy="stockMove.realDate,id" all="true"/>
-		
-		<track on="UPDATE">
-			<field name="requestedReservedQty"/>
-			<field name="reservedQty"/>
-		</track>
+      orderBy="stockMove.realDate,id" all="true"/>
 
-	</entity>
+    <track on="UPDATE">
+      <field name="requestedReservedQty"/>
+      <field name="reservedQty"/>
+    </track>
+
+  </entity>
 
 </domain-models>
