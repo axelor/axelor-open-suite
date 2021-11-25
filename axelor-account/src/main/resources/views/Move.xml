@@ -104,6 +104,10 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="$validatePeriod" hidden="true"/>
         </panel>
+        <panel name="cutOffPanel" colSpan="12" readonlyIf="statusSelect == 3">
+          <field name="cutOffStartDate"/>
+          <field name="cutOffEndDate"/>
+        </panel>
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3"

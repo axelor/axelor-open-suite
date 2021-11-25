@@ -94,6 +94,9 @@
           </field>
         </panel>
       </panel>
+      <panel name="cutOffPanel" title="Cut off configuration" colSpan="12">
+        <field name="manageCutOffPeriod" widget="boolean-switch"/>
+      </panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
         <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
       </panel>

@@ -264,6 +264,7 @@
       <field name="account.reconcileOk" hidden="true"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
+      <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
@@ -335,6 +336,14 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="move.statusSelect" hidden="true"/>
+        <field name="move.technicalOriginSelect" hidden="true"/>
+      </panel>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
@@ -418,6 +427,7 @@
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
+      <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
@@ -538,6 +548,14 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="move.statusSelect" hidden="true"/>
+        <field name="move.technicalOriginSelect" hidden="true"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
