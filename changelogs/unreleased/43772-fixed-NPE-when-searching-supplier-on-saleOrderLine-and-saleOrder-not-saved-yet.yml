@@ -1,0 +1,3 @@
+---
+title: "Fix NPE when searching supplier on saleOrderLine and saleOrder not saved yet"
+type: fix
