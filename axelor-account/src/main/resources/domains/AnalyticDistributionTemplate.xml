@@ -12,6 +12,8 @@
       ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines"
       mappedBy="analyticDistributionTemplate"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <boolean name="isSpecific" title="Specific"/>
+
   </entity>
 
 </domain-models>

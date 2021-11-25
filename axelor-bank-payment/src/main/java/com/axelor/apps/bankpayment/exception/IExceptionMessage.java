@@ -238,7 +238,11 @@ public interface IExceptionMessage {
 
   /** Bank reconciliation */
   static final String BANK_RECONCILIATION_MISSING_JOURNAL = /*$$(*/
-      "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled" /*)*/;
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries." /*)*/;
+
+  /** Bank reconciliation */
+  static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
 
   static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
       "Please select a reconciliation line" /*)*/;
