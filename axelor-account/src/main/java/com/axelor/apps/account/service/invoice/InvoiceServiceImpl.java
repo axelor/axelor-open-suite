@@ -1175,4 +1175,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         calculateFinancialDiscountTotalAmount(invoice, amount));
     return invoicePayment;
   }
+
+  @Override
+  public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
+    return invoice.getInvoiceLineList() == null
+        || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);
+  }
 }

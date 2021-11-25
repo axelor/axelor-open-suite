@@ -123,8 +123,7 @@
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
-          canEdit="false"
-          onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange"/>
+          canEdit="false" onChange="action-invoice-line-group-account-onchange"/>
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
@@ -420,6 +419,13 @@
     <action name="action-invoice-line-attrs-readonly-menu-form"/>
     <action name="action-invoice-line-attrs-hidden-menu-form"/>
   </action-group>
+
+  <action-group name="action-invoice-line-group-account-onchange">
+    <action name="action-attrs-account-invoice-line-account-onchange"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="account == null || !account.manageCutOffPeriod"/>
+    <action name="action-method-account-invoice-line-account-onchange"/>
+  </action-group>
   <!-- ACTION RECORDS -->
 
   <action-record name="action-invoice-line-record-new"
@@ -438,6 +444,12 @@
   <action-record name="action-invoice-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.account.db.InvoiceLine">
     <field name="isHideUnitAmounts" expr="eval: false"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-account-onchange"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="cutOffStartDate" expr=""/>
+    <field name="cutOffEndDate" expr=""/>
   </action-record>
 
   <!-- ACTION METHOD -->

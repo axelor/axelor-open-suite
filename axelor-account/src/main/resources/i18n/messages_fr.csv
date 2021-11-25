@@ -1946,6 +1946,7 @@
 "Personalize selected analytic template","Personnaliser le modèle de répartition analytique",,
 "Pfp validator changed successfully","Délégation effectuée avec succés",,
 "Planned","Planifié",,
+"Please enter a Cut off start and end date for the invoice lines that have an account Cut off management","Veuillez renseigner des dates d'application de la période de Cut off sur les lignes de facture ayant un compte comptable gérant le Cut off",,
 "Please enter valid start date and end date","Veuillez sélectionner des dates de début et date de fin valides.",,
 "Please fill analytic accounts in all analytic distribution lines.","Veuillez sélectionner des comptes analytiques pour chaque ligne analytique.",,
 "Please fill input lines","Merci de renseigner les lignes en entré",,

@@ -828,6 +828,10 @@ public interface IExceptionMessage {
   static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+
+  static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
+
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 

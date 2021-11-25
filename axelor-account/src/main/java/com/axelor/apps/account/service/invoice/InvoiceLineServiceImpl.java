@@ -588,4 +588,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     return invoiceLine;
   }
+
+  @Override
+  public boolean checkCutOffDates(InvoiceLine invoiceLine) {
+    return invoiceLine == null
+        || invoiceLine.getAccount() == null
+        || !invoiceLine.getAccount().getManageCutOffPeriod()
+        || (invoiceLine.getCutOffStartDate() != null && invoiceLine.getCutOffEndDate() != null);
+  }
 }
