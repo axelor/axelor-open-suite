@@ -947,6 +947,10 @@ public interface IExceptionMessage {
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
+
   static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
       "Please fill analytic accounts in all analytic distribution lines." /*)*/;
 

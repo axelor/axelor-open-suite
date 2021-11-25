@@ -15,6 +15,9 @@
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file"
       required="true"/>
     <string name="description" large="true" title="Description"/>
+    <boolean name="validGeneratedMove" title="Valid the generated move"/>
+    <many-to-one ref="com.axelor.apps.base.db.Company" name="company" title="Company"/>
+    <string name="moveDescription" title="Move description"/>
 
   </entity>
 
