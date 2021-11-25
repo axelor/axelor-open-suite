@@ -337,10 +337,12 @@
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
-        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
-        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffStartDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffEndDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -549,10 +551,12 @@
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
-        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
-        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-               readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffStartDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+        <field name="cutOffEndDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
+          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>

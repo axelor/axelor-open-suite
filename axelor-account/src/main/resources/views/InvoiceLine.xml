@@ -144,9 +144,12 @@
             showIf="fixedAssets &amp;&amp; $contains([1,2], $_operationTypeSelect)"/>
         </panel>
         <field name="account.manageCutOffPeriod" hidden="true"/>
-        <panel name="cutOffPanel" title="Cut off period " colSpan="12" showIf="account.manageCutOffPeriod">
-          <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod" readonlyIf="invoice.statusSelect == 3"/>
-          <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod" readonlyIf="invoice.statusSelect == 3"/>
+        <panel name="cutOffPanel" title="Cut off period " colSpan="12"
+          showIf="account.manageCutOffPeriod">
+          <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
+            readonlyIf="invoice.statusSelect == 3"/>
+          <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
+            readonlyIf="invoice.statusSelect == 3"/>
           <field name="invoice.statusSelect" hidden="true"/>
         </panel>
       </panel>
