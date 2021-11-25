@@ -230,18 +230,19 @@ public class SaleOrderLineController {
       }
     }
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    if (saleOrder == null) {
+    if (saleOrder == null || saleOrder.getCompany() == null) {
       Context parentContext = request.getContext().getParent();
       if (parentContext == null) {
         response.setAttr("supplierPartner", "domain", domain);
         return;
       }
       saleOrder = parentContext.asType(SaleOrder.class);
-      if (saleOrder == null) {
+      if (saleOrder == null || saleOrder.getCompany() == null) {
         response.setAttr("supplierPartner", "domain", domain);
         return;
       }
     }
+
     String blockedPartnerQuery =
         Beans.get(BlockingService.class)
             .listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
