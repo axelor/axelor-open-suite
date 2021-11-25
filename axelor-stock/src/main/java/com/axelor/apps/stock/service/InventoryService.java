@@ -17,6 +17,31 @@
  */
 package com.axelor.apps.stock.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
@@ -49,29 +74,6 @@ import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InventoryService {
 
@@ -572,14 +574,20 @@ public class InventoryService {
         if (stockLocationLine.getTrackingNumber()
             == null) { // if no tracking number on stockLocationLine, check if there is a tracking
           // number on the product
-          long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
-                  .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
-                  .count();
+        long numberOfTrackingNumberOnAProduct = stockLocationLineList.stream()
+          .filter(
+        		  sll -> sll.getProduct() == stockLocationLine.getProduct()
+        		  && sll.getTrackingNumber() != null
+        		  && sll.getDetailsStockLocation() == inventory.getStockLocation())
+          .count();
+//          long numberOfTrackingNumberOnAProduct =
+//              stockLocationLineRepository
+//                  .all()
+//                  .filter(
+//                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
+//                      stockLocationLine.getProduct(),
+//                      inventory.getStockLocation())
+//                  .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
             continue;
