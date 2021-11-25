@@ -74,7 +74,7 @@
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false"/>
           <field name="date" onChange="action-move-method-get-period"
-            hideIf="statusSelect == 3" colSpan="3"/>
+            hideIf="statusSelect == 3" colSpan="3" required="true"/>
           <field name="originDate" colSpan="3"/>
           <field name="tradingName"
             if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
@@ -84,7 +84,8 @@
             form-view="partner-form" grid-view="partner-grid"
             onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency"/>
-          <field name="currency" colSpan="3" onChange="action-move-record-set-currency-code"/>
+          <field name="currency" colSpan="3" onChange="action-move-record-set-currency-code"
+            required="true"/>
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
@@ -151,13 +152,13 @@
     <panel>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
         colSpan="12" height="6"
-        showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+        showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
         onChange="save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
-        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="false" canRemove="false" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
         onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
