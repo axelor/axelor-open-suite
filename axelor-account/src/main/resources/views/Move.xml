@@ -108,7 +108,7 @@
           <field name="cutOffStartDate"/>
           <field name="cutOffEndDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates" onClick=""
-                  readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
+            readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
         </panel>
       </panel>
 

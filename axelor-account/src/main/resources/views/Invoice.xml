@@ -507,18 +507,18 @@
 
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
-        <panel name="cutOffPanel" title="Cut off period" itemSpan="4" readonlyIf="statusSelect == 3">
+        <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
+          readonlyIf="statusSelect == 3">
           <field name="cutOffStartDate"/>
           <field name="cutOffEndDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates" onClick=""
-                  readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
+            readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
-          readonlyIf="statusSelect == 3 || partner == null"
-          form-view="invoice-line-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-group-invoice-line-list-on-change" canMove="true"
-          orderBy="sequence" height="30"/>
+          readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"
+          grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
+          canMove="true" orderBy="sequence" height="30"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
