@@ -966,8 +966,8 @@ public interface IExceptionMessage {
       "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
 
   static final String INACTIVE_ANALYTIC_JOURNAL_FOUND = /*$$(*/
-	      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 
   static final String INACTIVE_ANALYTIC_JOURNALS_FOUND = /*$$(*/
-	      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 }
