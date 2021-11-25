@@ -16,6 +16,9 @@
     <bind to="currencyAmount" eval="Montantdevise.replace(',', '.')" column="Montantdevise"/>
     <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet"
       update="true"/>
+    <bind to="taxLine" column="taxCode"
+      search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
+      update="true"/>
   </input>
 
 </csv-inputs>
