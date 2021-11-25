@@ -9,8 +9,6 @@
 
     <many-to-one name="taxNumber" title="Tax number"
       ref="com.axelor.apps.account.db.TaxNumber"/>
-    <many-to-one name="fiscalPosition" title="Fiscal position"
-      ref="com.axelor.apps.account.db.FiscalPosition"/>
 
   </entity>
 

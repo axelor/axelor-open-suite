@@ -158,6 +158,9 @@
     <date name="lastReminderDate" title="Last reminder"/>
     <string name="lastReminderComments" title="Comment" large="true"/>
 
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
