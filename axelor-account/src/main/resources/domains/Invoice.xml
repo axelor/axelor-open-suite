@@ -51,6 +51,8 @@
     <date name="dueDate" title="Due Date"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
 
     <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>
