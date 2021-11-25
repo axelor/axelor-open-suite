@@ -452,7 +452,7 @@
       expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
       if="eval: (!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) || (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED || statusSelect == MoveRepository.STATUS_DAYBOOK)"/>
     <attribute name="title" for="accountingBtn"
-      expr="eval: com.axelor.i18n.I18n.get('DayBook')"
+      expr="eval: com.axelor.i18n.I18n.get('DayBook.button')"
       if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; journal?.allowAccountingDaybook &amp;&amp; (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
   </action-attrs>
 
