@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -84,6 +85,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
@@ -99,6 +101,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           priceList,
           clientPartner,
           team,
+          fiscalPosition,
           tradingName);
     }
     return createSaleOrder(
@@ -113,6 +116,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         priceList,
         clientPartner,
         team,
+        fiscalPosition,
         tradingName);
   }
 
@@ -128,6 +132,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
@@ -149,6 +154,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             priceList,
             clientPartner,
             team,
+            fiscalPosition,
             tradingName);
 
     if (stockLocation == null) {
@@ -185,7 +191,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       StockLocation stockLocation,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
     String numSeq = "";
     String externalRef = "";
@@ -216,8 +223,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             priceList,
             clientPartner,
             team,
+            fiscalPosition,
             null);
-
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);

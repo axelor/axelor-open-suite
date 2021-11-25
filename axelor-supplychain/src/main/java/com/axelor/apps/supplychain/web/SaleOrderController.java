@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
@@ -414,6 +415,7 @@ public class SaleOrderController {
     Partner commonClientPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
+    FiscalPosition commonFiscalPosition = null;
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
@@ -442,6 +444,7 @@ public class SaleOrderController {
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
         commonLocation = saleOrderTemp.getStockLocation();
+        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -470,6 +473,10 @@ public class SaleOrderController {
           commonLocation = null;
           existLocationDiff = true;
         }
+        if (commonFiscalPosition != null
+            && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition())) {
+          commonFiscalPosition = null;
+        }
       }
       count++;
     }
@@ -496,6 +503,16 @@ public class SaleOrderController {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+
+    if (commonFiscalPosition == null) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -577,7 +594,8 @@ public class SaleOrderController {
                   commonLocation,
                   commonContactPartner,
                   commonPriceList,
-                  commonTeam);
+                  commonTeam,
+                  commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
