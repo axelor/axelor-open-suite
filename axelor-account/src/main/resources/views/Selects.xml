@@ -641,4 +641,9 @@
     <option value="4" order="40">Financial asset</option>
   </selection>
 
+  <selection name='iaccount.status.select.selection'>
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </selection>
+
 </object-views>
