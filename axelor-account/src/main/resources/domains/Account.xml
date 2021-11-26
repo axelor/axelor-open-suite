@@ -50,17 +50,23 @@
     <many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate"
       title="Analytic Distribution Template" massUpdate="true"
       help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
+    <integer name="statusSelect" title="Status" selection="iaccount.status.select.selection"
+      default="0"/>
+
     <unique-constraint columns="code,company"/>
 
-    <extra-code>
-      	<![CDATA[
+    <extra-code><![CDATA[
 
-      		// COMMON POSITION
-      		public static final int COMMON_POSITION_NONE = 0;
-      		public static final int COMMON_POSITION_CREDIT = 1;
-      		public static final int COMMON_POSITION_DEBIT = 2;
-      	]]>
-    </extra-code>
+      	// COMMON POSITION
+      	public static final int COMMON_POSITION_NONE = 0;
+      	public static final int COMMON_POSITION_CREDIT = 1;
+      	public static final int COMMON_POSITION_DEBIT = 2;
+
+      	// STATUS SELECT
+      	public static final int STATUS_INACTIVE = 0;
+      	public static final int STATUS_ACTIVE = 1;
+
+    ]]></extra-code>
 
     <track>
       <field name="name"/>
@@ -77,6 +83,7 @@
       <field name="isTaxRequiredOnMoveLine"/>
       <field name="commonPosition"/>
       <field name="defaultTax"/>
+      <field name="statusSelect"/>
     </track>
 
 

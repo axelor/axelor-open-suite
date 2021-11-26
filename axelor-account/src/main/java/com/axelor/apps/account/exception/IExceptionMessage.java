@@ -989,4 +989,10 @@ public interface IExceptionMessage {
   /*Period */
   static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
       "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
+
+  static final String INACTIVE_ACCOUNT_FOUND =
+      /*$$(*/ "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ACCOUNTS_FOUND =
+      /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
 }

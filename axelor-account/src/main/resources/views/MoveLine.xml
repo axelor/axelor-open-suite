@@ -701,6 +701,15 @@
       expr="eval: move?.statusSelect == 3 "/>
   </action-attrs>
 
+  <action-attrs name="action-move-line-attrs-domain-account">
+    <attribute for="account" name="domain"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+    <attribute for="account" name="domain"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+  </action-attrs>
+
   <action-attrs name="action-move-line-attrs-domain-partner">
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;"
