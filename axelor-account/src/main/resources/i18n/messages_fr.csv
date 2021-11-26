@@ -2392,6 +2392,7 @@
 "Temporary","Provisoire",,
 "Temporary Closure Authorized Role","Rôles autorisés à la clôture provisoire",,
 "Terms and Conditions","Conditions générales",,
+"The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off applicationt","Le paramétrage du Cut off sur le(s) compte(s) comptable(s) associé(s) à la(aux) ligne(s) de facture ne permet pas l'application du Cut off",,
 "The Move Balance must be positive","La balance de l'écriture doit être positive.",,
 "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company.","Le code du compte comptable %s est déja en cours d'utilisation pour la société %s, il ne peut pas y avoir deux comptes avec le même code pour la même société.",,
 "The account code field allows to add every account whose code will fulfill the given regular expression.","Le champ de code compte comptable permet d'ajouter tous les comptes dont le code respecte l'expression régulière renseignée",,

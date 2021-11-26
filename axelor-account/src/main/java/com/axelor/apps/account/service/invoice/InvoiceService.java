@@ -315,4 +315,6 @@ public interface InvoiceService {
       throws AxelorException;
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
+
+  boolean applyCutOffDates(Invoice invoice);
 }

@@ -511,7 +511,8 @@
           readonlyIf="statusSelect == 3">
           <field name="cutOffStartDate"/>
           <field name="cutOffEndDate"/>
-          <button name="applyCutOffDatesBtn" title="Apply Cut off dates" onClick=""
+          <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
+            onClick="action-invoice-method-apply-cut-off-dates"
             readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
@@ -1915,6 +1916,10 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceController" method="hideSendEmailPfpBtn"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-apply-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="applyCutOffDates"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

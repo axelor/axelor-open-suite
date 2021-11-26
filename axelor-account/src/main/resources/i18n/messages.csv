@@ -2392,6 +2392,7 @@
 "Temporary",,,
 "Temporary Closure Authorized Role",,,
 "Terms and Conditions",,,
+"The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off applicationt",,,
 "The Move Balance must be positive",,,
 "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company.",,,
 "The account code field allows to add every account whose code will fulfill the given regular expression.",,,

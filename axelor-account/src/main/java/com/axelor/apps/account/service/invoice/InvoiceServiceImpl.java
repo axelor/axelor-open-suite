@@ -86,6 +86,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1180,5 +1181,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
     return invoice.getInvoiceLineList() == null
         || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);
+  }
+
+  @Override
+  public boolean applyCutOffDates(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getInvoiceLineList().stream()
+            .allMatch(invoiceLine -> invoiceLineService.applyCutOffDates(invoiceLine, invoice));
   }
 }

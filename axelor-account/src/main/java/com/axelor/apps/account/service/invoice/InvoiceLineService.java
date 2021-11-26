@@ -114,4 +114,6 @@ public interface InvoiceLineService {
       throws AxelorException;
 
   boolean checkCutOffDates(InvoiceLine invoiceLine);
+
+  boolean applyCutOffDates(InvoiceLine invoiceLine, Invoice invoice);
 }

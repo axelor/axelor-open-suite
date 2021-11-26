@@ -1027,4 +1027,18 @@ public class InvoiceController {
       TraceBackService.trace(e);
     }
   }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (Beans.get(InvoiceService.class).applyCutOffDates(invoice)) {
+        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
+      } else {
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
