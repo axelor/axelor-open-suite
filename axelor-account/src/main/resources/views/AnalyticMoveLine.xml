@@ -161,8 +161,8 @@
 
   <action-attrs name="action-analytic-move-line-attrs-account-domain">
     <attribute for="account" name="domain" expr="eval: 'self.statusSelect = 1'"/>
-    <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'"
-      if="accountType"/>
+    <attribute for="account" name="domain"
+      expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'" if="accountType"/>
   </action-attrs>
 
   <action-attrs if-module="axelor-business-project"

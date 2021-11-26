@@ -51,7 +51,8 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-account-record-toggle-status-active,save,action-attrs-account-account-status-show-title" colSpan="3"/>
+        onClick="account-account-record-toggle-status-active,save,action-attrs-account-account-status-show-title"
+        colSpan="3"/>
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
@@ -157,12 +158,12 @@
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-  
+
   <action-group name="action-group-account-account-onload">
-  	<action name="action-account-method-compute-balance"/>
-  	<action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
-  	<action name="action-method-account-hide-analytic"/>
-  	<action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-account-method-compute-balance"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+    <action name="action-method-account-hide-analytic"/>
+    <action name="action-attrs-account-account-status-show-title"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -247,7 +248,7 @@
     model="com.axelor.apps.account.db.Account">
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
   </action-record>
-  
+
   <action-record name="account-account-record-toggle-status-active"
     model="com.axelor.apps.account.db.Account">
     <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
@@ -277,10 +278,12 @@
   <action-method name="action-on-change-distribution-template-account">
     <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
   </action-method>
-  
+
   <action-attrs name="action-attrs-account-account-status-show-title">
-  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
-  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
   </action-attrs>
 
   <action-method name="action-method-account-hide-analytic">

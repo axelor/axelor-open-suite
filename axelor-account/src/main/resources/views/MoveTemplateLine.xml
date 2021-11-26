@@ -112,7 +112,8 @@
 
   <action-attrs name="action-move-template-line-set-account-domain">
     <attribute name="domain" for="account"
-      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ != null"/>
+      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
+      if="__parent__ != null"/>
     <attribute name="domain" for="account"
       expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${moveTemplate?.company?.id} &quot;"
       if="moveTemplate != null"/>
