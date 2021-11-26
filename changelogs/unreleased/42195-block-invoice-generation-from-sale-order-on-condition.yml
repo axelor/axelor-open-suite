@@ -1,0 +1,3 @@
+---
+title: "SALE ORDER : Blocking invoice generation when the full amount of the order has already been invoiced"
+type: fix

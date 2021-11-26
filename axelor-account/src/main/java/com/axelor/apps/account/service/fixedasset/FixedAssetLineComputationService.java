@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /** This service is used to compute new lines from an existing fixed asset header. */
 public interface FixedAssetLineComputationService {
@@ -34,7 +35,8 @@ public interface FixedAssetLineComputationService {
    * @return the created fixed asset line
    * @throws AxelorException
    */
-  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset) throws AxelorException;
+  Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+      throws AxelorException;
 
   /**
    * Compute the next fixed asset line from a fixed asset and the previous line.

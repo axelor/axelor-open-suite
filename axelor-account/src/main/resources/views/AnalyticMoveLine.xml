@@ -206,7 +206,7 @@
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
     <attribute name="value" for="isValidAnalyticMoveLineList"
-      expr="call: com.axelor.apps.account.service.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
   </action-attrs>
 
   <action-condition

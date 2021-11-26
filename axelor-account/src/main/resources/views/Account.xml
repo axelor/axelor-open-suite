@@ -43,8 +43,8 @@
 
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
-    onNew="action-account-record-new,action-attrs-account-account-readonly-if-account-in-move-line"
-    onLoad="action-account-method-compute-balance,action-attrs-account-account-readonly-if-account-in-move-line"
+    onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
+    onLoad="action-account-method-compute-balance,action-attrs-account-account-readonly-if-account-in-move-line,action-method-account-hide-analytic"
     onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
@@ -256,6 +256,10 @@
 
   <action-method name="action-on-change-distribution-template-account">
     <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
+  </action-method>
+
+  <action-method name="action-method-account-hide-analytic">
+    <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
