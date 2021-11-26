@@ -6,31 +6,43 @@
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="SupplyChainConfig" lang="java">
-     
+
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    
-  	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
-  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
-  	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"/>
-  	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"/>
+
+    <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
+    <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
+    <boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"/>
+    <boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"/>
 
     <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
-    <boolean name="autoAllocateOnAllocation" title="Auto allocate stock on other stock moves" help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
-    <boolean name="autoRequestReservedQty" title="Auto request reserved qty" help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
-    <boolean name="autoAllocateOnAvailabilityRequest" title="Auto allocate during an availability request"/>
+    <boolean name="autoAllocateOnAllocation"
+      title="Auto allocate stock on other stock moves"
+      help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
+    <boolean name="autoRequestReservedQty" title="Auto request reserved qty"
+      help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
+    <boolean name="autoAllocateOnAvailabilityRequest"
+      title="Auto allocate during an availability request"/>
 
-		<integer name="saleOrderReservationDateSelect" selection="supplychain.sale.order.reservation.date.field" title="Sale order date used for stock reservation" default="0"/>
+    <integer name="saleOrderReservationDateSelect"
+      selection="supplychain.sale.order.reservation.date.field"
+      title="Sale order date used for stock reservation" default="0"/>
 
-    <integer name="defaultEstimatedDate" title="Default estimated date in stock move from sale order" selection="supplychain.estimated.date.select" default="1"/>
-    
-    <decimal name="numberOfDays" title="Number of days" min="0" />
+    <integer name="defaultEstimatedDate"
+      title="Default estimated date in stock move from sale order"
+      selection="supplychain.estimated.date.select" default="1"/>
 
-    <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
-    
-    <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
-		
-		<boolean name="activateIncStockMovePartialInvoicing" title="Activate partial invoicing for incoming moves" default="true"/>
-		<boolean name="activateOutStockMovePartialInvoicing" title="Activate partial invoicing for outgoing moves" default="false"/>
+    <decimal name="numberOfDays" title="Number of days" min="0"/>
+
+    <integer name="defaultEstimatedDateForPurchaseOrder"
+      title="Default estimated date in stock move from purchase order"
+      selection="supplychain.estimated.date.select" default="1"/>
+
+    <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0"/>
+
+    <boolean name="activateIncStockMovePartialInvoicing"
+      title="Activate partial invoicing for incoming moves" default="true"/>
+    <boolean name="activateOutStockMovePartialInvoicing"
+      title="Activate partial invoicing for outgoing moves" default="false"/>
 
     <extra-code><![CDATA[
 
@@ -46,29 +58,29 @@
     ]]></extra-code>
 
     <track>
-    	<field name="company" on="UPDATE"/>
-    	
-    	<field name="hasOutSmForStorableProduct" on="UPDATE"/>
-    	<field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
-    	<field name="hasInSmForStorableProduct" on="UPDATE"/>
-    	<field name="hasInSmForNonStorableProduct" on="UPDATE"/>
-    	
-    	<field name="autoAllocateOnReceipt" on="UPDATE"/>
-    	<field name="autoAllocateOnAllocation" on="UPDATE"/>
-    	<field name="autoRequestReservedQty" on="UPDATE"/>
-    	<field name="autoAllocateOnAvailabilityRequest" on="UPDATE"/>
+      <field name="company" on="UPDATE"/>
 
-			<field name="saleOrderReservationDateSelect" on="UPDATE"/>
-    	
-    	<field name="defaultEstimatedDate" on="UPDATE"/>
-    
-    	<field name="numberOfDays" on="UPDATE"/>
+      <field name="hasOutSmForStorableProduct" on="UPDATE"/>
+      <field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
+      <field name="hasInSmForStorableProduct" on="UPDATE"/>
+      <field name="hasInSmForNonStorableProduct" on="UPDATE"/>
 
-    	<field name="defaultEstimatedDateForPurchaseOrder" on="UPDATE"/>
-    
-    	<field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
+      <field name="autoAllocateOnReceipt" on="UPDATE"/>
+      <field name="autoAllocateOnAllocation" on="UPDATE"/>
+      <field name="autoRequestReservedQty" on="UPDATE"/>
+      <field name="autoAllocateOnAvailabilityRequest" on="UPDATE"/>
+
+      <field name="saleOrderReservationDateSelect" on="UPDATE"/>
+
+      <field name="defaultEstimatedDate" on="UPDATE"/>
+
+      <field name="numberOfDays" on="UPDATE"/>
+
+      <field name="defaultEstimatedDateForPurchaseOrder" on="UPDATE"/>
+
+      <field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
     </track>
-    
+
   </entity>
-  
+
 </domain-models>

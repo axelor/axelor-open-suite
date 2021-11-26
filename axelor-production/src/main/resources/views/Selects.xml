@@ -1,153 +1,157 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
-	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
-	<selection name="production.manuf.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Canceled</option>
-		<option value="3">Planned</option>
-		<option value="4">In progress</option>
-		<option value="5">Standby</option>
-		<option value="6">Finished</option>	
-		<option value="7">Merged</option>	
-	</selection>
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-    <selection name="production.bill.of.material.status.select">
-        <option value="1">Draft</option>
-        <option value="2">Validated</option>
-        <option value="3">Applicable</option>
-        <option value="4">Obsolete</option>
-    </selection>
-    
-    <selection name="production.prod.process.status.select">
-        <option value="1">Draft</option>
-        <option value="2">Validated</option>
-        <option value="3">Applicable</option>
-        <option value="4">Obsolete</option>
-    </selection>
+  <selection name="production.manuf.order.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Canceled</option>
+    <option value="3">Planned</option>
+    <option value="4">In progress</option>
+    <option value="5">Standby</option>
+    <option value="6">Finished</option>
+    <option value="7">Merged</option>
+  </selection>
 
-	<selection name="production.manuf.order.stock.move.realize.order.select">
-		<option value="0">On Start</option>
-		<option value="1">On Finish</option>
-	</selection>
+  <selection name="production.bill.of.material.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Validated</option>
+    <option value="3">Applicable</option>
+    <option value="4">Obsolete</option>
+  </selection>
 
-	<selection name="manuf.order.type.select">
-		<option value="1">Production</option>
-		<option value="2">Permanent</option>
-	</selection>
+  <selection name="production.prod.process.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Validated</option>
+    <option value="3">Applicable</option>
+    <option value="4">Obsolete</option>
+  </selection>
 
-	<selection name="production.order.priority.select">
-		<option value="1" color="cyan">Low</option>
-		<option value="2" color="blue">Normal</option>
-		<option value="3" color="orange">High</option>
-		<option value="4" color="red">Urgent</option>
-	</selection>
-	
-	<selection name="iproduction.work.center.type.select">
-		<option value="1">Human</option>
-		<option value="2">Machine</option>
-		<option value="3">Human and Machine</option>
-	</selection>
-	
-	<selection name="iproduction.work.center.cost.type.select">
-		<option value="1">Per hour</option>
-		<option value="2">Per Cycle</option>
-		<option value="3">Per piece</option>
-	</selection>
-	
-	<selection name="supplychain.mrp.line.element.select" id="production.supplychain.mrp.line.element.select">
-	    <option value="6">Manufacturing order</option>
-	    <option value="7">Need / Manufacturing order</option>
-   	    <option value="8">Manufacturing proposal</option>
-  	    <option value="9">Need / Manufacturing proposal</option>
-	</selection>
-	
-	<selection name="supplychain.mrp.line.related.to.select" id="production.supplychain.mrp.line.related.to.select">
-		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
-	</selection>
-	
-	<selection name="production.cost.sheet.line.type.select">
-	    <option value="1" icon="img/32px/produceProduct.png">Produced product</option>
-	    <option value="2" icon="img/32px/consumeProduct.png">Consumed product</option>
-	    <option value="3" icon="img/32px/workCenter.png">Work center</option>
-	    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
-  	    <option value="5" icon="img/32px/consumeProductWaste.png">Consumed product waste</option>
-  	    <option value="6" icon="img/32px/worker.png">Human</option>
-	</selection>
-	
-	<selection name="production.cost.sheet.group.cost.type.select">
-	    <option value="1">Direct Material</option>
-	    <option value="2">Direct Manufacturing</option>
-	    <option value="3">Indirect</option>
-	</selection>
-	
-	<selection name="production.cost.sheet.group.rate.type.select">
-	    <option value="1">Surcharge</option>
-	    <option value="2">Rate</option>
-	</selection>
-	
-	<selection name="mrp.line.proposal.ref.select" id="production.mrp.line.proposal.ref.select">
-		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-	</selection>
+  <selection name="production.manuf.order.stock.move.realize.order.select">
+    <option value="0">On Start</option>
+    <option value="1">On Finish</option>
+  </selection>
 
-	<selection name="production.product.price.method.select">
-		<option value="1">Forecast</option>
-		<option value="2">Real</option>
-	</selection>
-	
-	<selection name="production.product.components.valuation.select">
-		<option value="1">Average Price</option>
-		<option value="2">Cost Price</option>
-	</selection>
-	
-	<selection name="sequence.generic.code.select" id="production.sequence.generic.code.select">
-		<option value="productionOrder">Production order</option>
-		<option value="manufOrder">Manufacturing order</option>
-		<option value="rawMaterialRequirement">Raw material requirement</option>
-	</selection>
-	
-	<selection name="production.batch.action.select">
-		<option value="1">Compute work in progress valuation</option>
-	</selection>
-	
-	<selection name="production.cost.sheet.calculation.type.select">
-		<option value="1">Partial end of production</option>
-		<option value="2">End of production</option>
-		<option value="3">Work in progress</option>
-		<option value="4">Bill of materials</option>
-	</selection>
+  <selection name="manuf.order.type.select">
+    <option value="1">Production</option>
+    <option value="2">Permanent</option>
+  </selection>
 
-	<selection name="production.weekly.planning.type.select">
-		<option value="1">Human resources</option>
-		<option value="2">Machine</option>
-	</selection>
-	
-	<selection name="production.sop.line.status">
-		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
-	</selection>
+  <selection name="production.order.priority.select">
+    <option value="1" color="cyan">Low</option>
+    <option value="2" color="blue">Normal</option>
+    <option value="3" color="orange">High</option>
+    <option value="4" color="red">Urgent</option>
+  </selection>
 
-	<selection name="production.cost.calculations.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Costs computed</option>
-		<option value="3">Costs updated</option>
-	</selection>
+  <selection name="iproduction.work.center.type.select">
+    <option value="1">Human</option>
+    <option value="2">Machine</option>
+    <option value="3">Human and Machine</option>
+  </selection>
 
-	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
-		<option value='costSheet'>Cost sheet valuation</option>
-	</selection>
-	
-	<selection name="production.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Planned</option>
-		<option value="3">Started</option>
-		<option value="4">Canceled</option>
-		<option value="5">Completed</option>
-	</selection>
+  <selection name="iproduction.work.center.cost.type.select">
+    <option value="1">Per hour</option>
+    <option value="2">Per Cycle</option>
+    <option value="3">Per piece</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.element.select"
+    id="production.supplychain.mrp.line.element.select">
+    <option value="6">Manufacturing order</option>
+    <option value="7">Need / Manufacturing order</option>
+    <option value="8">Manufacturing proposal</option>
+    <option value="9">Need / Manufacturing proposal</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.related.to.select"
+    id="production.supplychain.mrp.line.related.to.select">
+    <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
+    <option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+  </selection>
+
+  <selection name="production.cost.sheet.line.type.select">
+    <option value="1" icon="img/32px/produceProduct.png">Produced product</option>
+    <option value="2" icon="img/32px/consumeProduct.png">Consumed product</option>
+    <option value="3" icon="img/32px/workCenter.png">Work center</option>
+    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
+    <option value="5" icon="img/32px/consumeProductWaste.png">Consumed product waste</option>
+    <option value="6" icon="img/32px/worker.png">Human</option>
+  </selection>
+
+  <selection name="production.cost.sheet.group.cost.type.select">
+    <option value="1">Direct Material</option>
+    <option value="2">Direct Manufacturing</option>
+    <option value="3">Indirect</option>
+  </selection>
+
+  <selection name="production.cost.sheet.group.rate.type.select">
+    <option value="1">Surcharge</option>
+    <option value="2">Rate</option>
+  </selection>
+
+  <selection name="mrp.line.proposal.ref.select"
+    id="production.mrp.line.proposal.ref.select">
+    <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
+  </selection>
+
+  <selection name="production.product.price.method.select">
+    <option value="1">Forecast</option>
+    <option value="2">Real</option>
+  </selection>
+
+  <selection name="production.product.components.valuation.select">
+    <option value="1">Average Price</option>
+    <option value="2">Cost Price</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select"
+    id="production.sequence.generic.code.select">
+    <option value="productionOrder">Production order</option>
+    <option value="manufOrder">Manufacturing order</option>
+    <option value="rawMaterialRequirement">Raw material requirement</option>
+  </selection>
+
+  <selection name="production.batch.action.select">
+    <option value="1">Compute work in progress valuation</option>
+  </selection>
+
+  <selection name="production.cost.sheet.calculation.type.select">
+    <option value="1">Partial end of production</option>
+    <option value="2">End of production</option>
+    <option value="3">Work in progress</option>
+    <option value="4">Bill of materials</option>
+  </selection>
+
+  <selection name="production.weekly.planning.type.select">
+    <option value="1">Human resources</option>
+    <option value="2">Machine</option>
+  </selection>
+
+  <selection name="production.sop.line.status">
+    <option value="1">Draft</option>
+    <option value="2">Confirmed</option>
+  </selection>
+
+  <selection name="production.cost.calculations.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Costs computed</option>
+    <option value="3">Costs updated</option>
+  </selection>
+
+  <selection name='trace.back.origin.select' id="trace.back.origin.select.production">
+    <option value='costSheet'>Cost sheet valuation</option>
+  </selection>
+
+  <selection name="production.order.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">Started</option>
+    <option value="4">Canceled</option>
+    <option value="5">Completed</option>
+  </selection>
 
 </object-views>

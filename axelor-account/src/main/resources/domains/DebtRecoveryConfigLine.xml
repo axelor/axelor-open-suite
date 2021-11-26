@@ -4,17 +4,19 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
-  
+
   <entity name="DebtRecoveryConfigLine" lang="java" cacheable="true">
-  
-    <many-to-one name="partnerCategory" required="true" ref="com.axelor.apps.base.db.PartnerCategory" title="Partner category"/>  
-    <many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-    <many-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Account configuration"/>
-  
+
+    <many-to-one name="partnerCategory" required="true"
+      ref="com.axelor.apps.base.db.PartnerCategory" title="Partner category"/>
+    <many-to-one name="debtRecoveryMethod"
+      ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
+    <many-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig"
+      title="Account configuration"/>
+
   </entity>
 
- 
+
 </domain-models>
 
- 
- 
+
