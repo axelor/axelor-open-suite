@@ -14,14 +14,16 @@
   </grid>
 
   <form name="analytic-journal-form" title="Analytic Journal"
-    model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default,action-attrs-account-analytic-journal-status-show-title"
+    model="com.axelor.apps.account.db.AnalyticJournal"
+    onNew="action-analytic-journal-set-default,action-attrs-account-analytic-journal-status-show-title"
     onLoad="action-analytic-journal-on-load"
     onSave="action-validate-for-analytic-journal-without-company,action-method-accounting-analytic-journal-check-on-unicity">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-analytic-journal-record-toggle-status-active,save,action-attrs-account-analytic-journal-status-show-title" colSpan="3"/>
+        onClick="account-analytic-journal-record-toggle-status-active,save,action-attrs-account-analytic-journal-status-show-title"
+        colSpan="3"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
@@ -64,16 +66,18 @@
       message="This analytic journal will not be selectable in any account configurations due to the absence of company."
       if="company == null"/>
   </action-validate>
-  
+
   <action-record name="account-analytic-journal-record-toggle-status-active"
     model="com.axelor.apps.account.db.AnalyticJournal">
     <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
     <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
   </action-record>
-  
+
   <action-attrs name="action-attrs-account-analytic-journal-status-show-title">
-  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
-  	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
   </action-attrs>
 
   <action-method name="action-method-accounting-analytic-journal-check-on-unicity">
