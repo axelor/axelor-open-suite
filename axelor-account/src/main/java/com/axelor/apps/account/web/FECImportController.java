@@ -73,7 +73,7 @@ public class FECImportController {
 
       File configFile = File.createTempFile("input-config", ".xml");
       InputStream bindFileInputStream =
-          this.getClass().getResourceAsStream("/FEC-config/import-FEC-config.xml");
+          this.getClass().getResourceAsStream("/FEC-config/input-config-with-tva.xml");
       FileOutputStream outputStream = new FileOutputStream(configFile);
       IOUtils.copy(bindFileInputStream, outputStream);
       fecImport.setBindMetaFile(Beans.get(MetaFiles.class).upload(configFile));

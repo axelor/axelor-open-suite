@@ -67,7 +67,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
    * FixedAsset#getFixedAssetLineList()} is not null or empty.
    */
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+  public Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
     prepareRecomputation(fixedAsset);
     LocalDate firstDepreciationDate;
@@ -76,14 +76,15 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
 
-    return createPlannedFixedAssetLine(
-        fixedAsset,
-        firstDepreciationDate,
-        depreciation,
-        depreciation.add(this.firstPlannedFixedAssetLine.getCumulativeDepreciation()),
-        accountingValue,
-        depreciationBase,
-        getTypeSelect());
+    return Optional.ofNullable(
+        createPlannedFixedAssetLine(
+            fixedAsset,
+            firstDepreciationDate,
+            depreciation,
+            depreciation.add(this.firstPlannedFixedAssetLine.getCumulativeDepreciation()),
+            accountingValue,
+            depreciationBase,
+            getTypeSelect()));
   }
 
   @Override
