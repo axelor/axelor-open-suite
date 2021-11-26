@@ -185,7 +185,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
 
-        exceptionInactiveAccount(move);
+        checkInactiveAccount(move);
 
         moveLineControlService.validateMoveLine(moveLine);
       }
@@ -479,26 +479,26 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void exceptionInactiveAccount(Move move) throws AxelorException {
+  protected void checkInactiveAccount(Move move) throws AxelorException {
     if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       int inactiveNbr = 0;
-      List<String> inactiveList = new ArrayList();
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        Account account = moveLine.getAccount();
-        if (account != null
-            && account.getStatusSelect() != null
-            && account.getStatusSelect() != AccountRepository.STATUS_ACTIVE
-            && !inactiveList.contains(account.getCode())) {
-          inactiveNbr++;
-          inactiveList.add(account.getCode());
-        }
-      }
-      if (inactiveNbr == 1) {
+      List<String> inactiveList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getAccount)
+              .filter(Objects::nonNull)
+              .filter(
+                  account ->
+                      account.getStatusSelect() != null
+                          && account.getStatusSelect() != AccountRepository.STATUS_ACTIVE)
+              .distinct()
+              .map(Account::getCode)
+              .collect(Collectors.toList());
+      if (inactiveList.size() == 1) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ACCOUNT_FOUND),
             inactiveList.get(0));
-      } else if (inactiveNbr > 1) {
+      } else if (inactiveList.size() > 1) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ACCOUNTS_FOUND),
