@@ -481,7 +481,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void checkInactiveAccount(Move move) throws AxelorException {
     if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      int inactiveNbr = 0;
       List<String> inactiveList =
           move.getMoveLineList().stream()
               .map(MoveLine::getAccount)
