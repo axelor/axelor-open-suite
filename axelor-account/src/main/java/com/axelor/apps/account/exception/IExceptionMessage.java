@@ -592,6 +592,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
       "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
+      "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
