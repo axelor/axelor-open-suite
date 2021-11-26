@@ -44,7 +44,7 @@
 
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
-    onNew="action-account-record-new,action-attrs-account-account-readonly-if-account-in-move-line"
+    onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
     onLoad="action-group-account-account-onload"
     onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
     <panel name="statusPanel">
@@ -161,6 +161,7 @@
   <action-group name="action-group-account-account-onload">
   	<action name="action-account-method-compute-balance"/>
   	<action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+  	<action name="action-method-account-hide-analytic"/>
   	<action name="action-attrs-account-account-status-show-title"/>
   </action-group>
 
@@ -281,6 +282,10 @@
   	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
   	<attribute name="title" for="activeStatusBtn" expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
   </action-attrs>
+
+  <action-method name="action-method-account-hide-analytic">
+    <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
     <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
