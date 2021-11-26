@@ -26,11 +26,8 @@
     type="com.axelor.apps.account.db.AnalyticLevel"/>
 
   <input file="account_importFecType.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.account.db.ImportFECType">
-    <bind to="name" column="name"/>
-    <bind to="bindMetaFile" column="bindMetaFile"
-      eval="call:com.axelor.apps.account.service.fecimport.FECImportService:getMetaFile(bindMetaFile)"/>
-  </input>
+    type="com.axelor.apps.account.db.ImportFECType"
+    call="com.axelor.csv.script.ImportImportFECType:importFECType"/>
 
 
 
