@@ -62,6 +62,7 @@
 "%s : Please, configure a currency for the company %s",,,
 "%s : Please, configure a sequence for the customer invoices and the company %s",,,
 "%s : Please, configure a sequence for the customer refunds and the company %s",,,
+"%s : Please, configure a sequence for the fixed assets and the company %s",,,
 "%s : Please, configure a sequence for the supplier invoices and the company %s",,,
 "%s : Please, configure a sequence for the supplier refunds and the company %s",,,
 "%s : Reconciliation %s: Reconciliated amount (%s) must be lower or equal to remaining amount to reconciliate from moves lines.",,,
