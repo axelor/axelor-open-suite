@@ -76,7 +76,7 @@
           <field name="date"
             readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-method-get-period,action-move-method-check-period-permissions"
-            hideIf="statusSelect == 3" colSpan="3"/>
+            hideIf="statusSelect == 3" colSpan="3" required="true"/>
           <field name="originDate" colSpan="3"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
           <field name="tradingName"
@@ -91,7 +91,7 @@
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            colSpan="3" onChange="action-move-record-set-currency-code"/>
+            colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
           <field name="period.statusSelect" hidden="true"/>
@@ -163,13 +163,13 @@
     <panel readonlyIf="$validatePeriod">
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
         colSpan="12" height="6"
-        showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+        showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
         onChange="save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
-        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="false" canRemove="false" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
         onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
