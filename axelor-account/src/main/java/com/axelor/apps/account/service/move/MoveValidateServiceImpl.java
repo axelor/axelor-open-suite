@@ -32,6 +32,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -188,7 +189,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
 
-        exceptionInactiveAnalyticAccount(move);
+        checkInactiveAnalyticAccount(move);
 
         moveLineControlService.validateMoveLine(moveLine);
       }
@@ -482,33 +483,32 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void exceptionInactiveAnalyticAccount(Move move) throws AxelorException {
+  protected void checkInactiveAnalyticAccount(Move move) throws AxelorException {
     if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      int inactiveNbr = 0;
-      List<String> inactiveList = new ArrayList();
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
-          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-            if (analyticAccount.getStatusSelect() != null
-                && analyticAccount.getStatusSelect() != AnalyticAccountRepository.STATUS_ACTIVE
-                && !inactiveList.contains(analyticAccount.getCode())) {
-              inactiveNbr++;
-              inactiveList.add(analyticAccount.getCode());
-            }
-          }
-        }
-        if (inactiveNbr == 1) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNT_FOUND),
-              inactiveList.get(0));
-        } else if (inactiveNbr > 1) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNTS_FOUND),
-              inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
-        }
+      List<String> inactiveList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getAnalyticMoveLineList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .map(AnalyticMoveLine::getAnalyticAccount)
+              .filter(
+                  analyticAccount ->
+                      analyticAccount.getStatusSelect() != null
+                          && analyticAccount.getStatusSelect()
+                              != AnalyticAccountRepository.STATUS_ACTIVE)
+              .distinct()
+              .map(AnalyticAccount::getCode)
+              .collect(Collectors.toList());
+      if (inactiveList.size() == 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNT_FOUND),
+            inactiveList.get(0));
+      } else if (inactiveList.size() > 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNTS_FOUND),
+            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
       }
     }
   }

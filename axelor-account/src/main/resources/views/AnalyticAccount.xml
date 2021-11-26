@@ -36,7 +36,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-analytic-account-record-status-active,save,action-attrs-account-analytic-account-status-show-title" colSpan="3"/>
+        onClick="account-analytic-account-record-toggle-status-active,save,action-attrs-account-analytic-account-status-show-title" colSpan="3"/>
     </panel>
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -222,7 +222,7 @@
       if="analyticAxis &amp;&amp; !analyticAxis.manageParentAccount"/>
   </action-record>
   
-  <action-record name="account-analytic-account-record-status-active"
+  <action-record name="account-analytic-account-record-toggle-status-active"
     model="com.axelor.apps.account.db.AnalyticAccount">
     <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
     <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
