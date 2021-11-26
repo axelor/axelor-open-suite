@@ -238,6 +238,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void validate(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+
+      if (StringUtils.isEmpty(fixedAsset.getFixedAssetSeq())) {
+        fixedAsset.setFixedAssetSeq(fixedAssetGenerationService.generateSequence(fixedAsset));
+      }
+
       if (fixedAsset.getFixedAssetLineList() != null
           && !fixedAsset.getFixedAssetLineList().isEmpty()) {
         fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
@@ -273,7 +278,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.setAccountingValue(
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
       }
-      fixedAsset.setFixedAssetSeq(fixedAssetGenerationService.generateSequence(fixedAsset));
 
     } else {
       fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
