@@ -165,6 +165,9 @@ public interface IExceptionMessage {
   /** Journal service */
   static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
+  /** AnalyticJournal service */
+  static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
+      /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
   /** Move line export service */
   static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -589,6 +592,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
       "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
+      "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
@@ -721,7 +726,7 @@ public interface IExceptionMessage {
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
   static final String MOVE_CANCEL_4 = /*$$(*/
-      "The move is validated and so can not be canceled." /*)*/;
+      "The move is accounted and so can not be canceled." /*)*/;
 
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
@@ -943,4 +948,32 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
+
+  static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
+      "Please fill analytic accounts in all analytic distribution lines." /*)*/;
+
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY = /*$$(*/
+      "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY = /*$$(*/
+      "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly." /*)*/;
+
+  /*Period */
+  static final String PERIOD_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
+      "This period is already in use by some accounting moves. The dates can't be modified." /*)*/;
+
+  /*Period */
+  static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
+      "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
+
+  static final String INACTIVE_ACCOUNT_FOUND =
+      /*$$(*/ "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ACCOUNTS_FOUND =
+      /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
 }

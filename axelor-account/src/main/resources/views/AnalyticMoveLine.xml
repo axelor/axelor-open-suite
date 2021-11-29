@@ -160,9 +160,9 @@
   </action-record>
 
   <action-attrs name="action-analytic-move-line-attrs-account-domain">
-    <attribute for="account" name="domain" expr="eval: null"/>
-    <attribute for="account" name="domain" expr="eval: 'self.accountType = :accountType'"
-      if="accountType"/>
+    <attribute for="account" name="domain" expr="eval: 'self.statusSelect = 1'"/>
+    <attribute for="account" name="domain"
+      expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'" if="accountType"/>
   </action-attrs>
 
   <action-attrs if-module="axelor-business-project"
@@ -206,7 +206,7 @@
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
     <attribute name="value" for="isValidAnalyticMoveLineList"
-      expr="call: com.axelor.apps.account.service.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
   </action-attrs>
 
   <action-condition

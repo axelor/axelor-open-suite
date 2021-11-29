@@ -11,6 +11,7 @@
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <many-to-many name="fiscalPositionSet" title="Fiscal positions"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
+    <boolean name="includeInDEB" title="Include in DEB"/>
 
   </entity>
 

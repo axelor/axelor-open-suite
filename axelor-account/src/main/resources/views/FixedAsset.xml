@@ -26,8 +26,7 @@
   <form name="fixed-asset-form" title="Fixed asset"
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
-    onNew="action-fixed-asset-record-default, action-record-account-fixed-asset-set-default-serial-number-config-type"
-    onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation">
+    onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload">
     <toolbar>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard"/>
@@ -80,12 +79,20 @@
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
         domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
         form-view="account-form" grid-view="account-grid"/>
-      <field
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        name="analyticDistributionTemplate" canEdit="false"
-        onChange="action-fixed-asset-method-create-analytic-distribution"
-        domain="self.company = :company" form-view="analytic-distribution-template-form"
-        grid-view="analytic-distribution-template-grid"/>
+      <panel name="analyticPanel">
+        <field
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+          name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
+          onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
+          domain="self.company = :company AND self.isSpecific = false"
+          form-view="analytic-distribution-template-form"
+          grid-view="analytic-distribution-template-grid"/>
+        <button
+          onClick="action-method-fixed-asset-analytic-distribution-template-personalize"
+          name="personalizeBtn" title="Create personalized analytic template" colSpan="6"
+          hideIf="analyticDistributionTemplate != null &amp;&amp; analyticDistributionTemplate.isSpecific"/>
+        <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
+      </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="fiscalPanel" title="Fiscal information" readonlyIf="statusSelect > 1"
@@ -121,7 +128,7 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-fixed-asset-clear-residual-value"/>
         <field name="computationMethodSelect"
           onChange="action-fixed-asset-attrs-set-degressive-coef"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
@@ -156,7 +163,7 @@
       <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1"
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="isIfrsEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-ifrs-depreciation-equal"/>
+          onChange="action-attrs-fixed-asset-ifrs-depreciation-equal,action-attrs-fixed-asset-clear-residual-value"/>
         <field name="ifrsComputationMethodSelect"/>
         <field name="ifrsDegressiveCoef" showIf="ifrsComputationMethodSelect == 'degressive'"/>
         <field name="ifrsNumberOfDepreciation"
@@ -200,7 +207,7 @@
     </panel-tabs>
     <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
       <button name="computeDepreciationBtn" title="Compute depreciation"
-        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || (statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0))"
+        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || statusSelect > 1"
         onClick="action-group-account-fixed-asset-failover-control, action-fixed-asset-group-compute-depreciation-click"/>
       <button name="validteBtn" title="Validate"
         showIf="statusSelect &lt; 2 &amp;&amp; grossValue > 0"
@@ -228,9 +235,9 @@
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" min="0"
         readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-      <field name="residualValue"
-        readonlyIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3"/>
-      <field name="accountingValue" hideIf="depreciationPlanSelect.includes('0')"/>
+      <field name="residualValue"/>
+      <field name="accountingValue"
+        hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"/>
     </panel>
     <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters"
       sidebar="true" readonlyIf="statusSelect > 1">
@@ -409,6 +416,19 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-group-fixed-asset-onload">
+    <action name="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
+    <action name="action-attrs-fixed-asset-clear-residual-value"/>
+    <action name="action-method-fixed-asset-change-button-title"/>
+    <action name="action-method-fixed-asset-hide-analytic"/>
+  </action-group>
+
+  <action-group name="action-group-fixed-asset-onnew">
+    <action name="action-fixed-asset-record-default"/>
+    <action name="action-record-account-fixed-asset-set-default-serial-number-config-type"/>
+    <action name="action-method-fixed-asset-hide-analytic"/>
+  </action-group>
+
   <action-method name="action-fixed-asset-method-create-analytic-distribution">
     <call class="com.axelor.apps.account.web.FixedAssetController"
       method="createAnalyticDistributionWithTemplate"/>
@@ -424,6 +444,20 @@
   </action-method>
   <action-method name="action-fixed-asset-method-mass-validation">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="massValidation"/>
+  </action-method>
+
+  <action-method name="action-method-fixed-asset-hide-analytic">
+    <call class="com.axelor.apps.account.web.FixedAssetController" method="hideAnalytic"/>
+  </action-method>
+
+  <action-method
+    name="action-method-fixed-asset-analytic-distribution-template-personalize">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="personalizeAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method name="action-method-fixed-asset-change-button-title">
+    <call class="com.axelor.apps.account.web.FixedAssetController" method="setTitleForButton"/>
   </action-method>
 
   <search-filters name="fixed-asset-filters"
@@ -521,6 +555,7 @@
       if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     <action name="action-fixed-asset-account-method-set-depreciation-plan-select-to-none"/>
     <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
+    <action name="action-attrs-fixed-asset-clear-residual-value"/>
   </action-group>
 
   <action-group name="action-group-account-record-on-change-asset-category">
@@ -535,6 +570,7 @@
       if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     <action name="action-fixed-asset-method-onchange-set-values"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
+    <action name="action-attrs-fixed-asset-clear-residual-value"/>
   </action-group>
 
   <action-attrs name="action-account-attrs-fill-depreciation-plan">
@@ -675,6 +711,28 @@
     <attribute name="value" for="computationMethodSelect" expr="eval:'linear'"/>
   </action-attrs>
 
+  <action-attrs name="action-attrs-fixed-asset-clear-residual-value">
+    <attribute name="value" for="residualValue" expr="eval:0"
+      if="isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
+    <attribute name="value" for="residualValue" expr="eval:0"
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
+    <attribute name="value" for="residualValue" expr="eval:0"
+      if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
+    <attribute name="value" for="residualValue" expr="eval:0"
+      if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; isEqualToFiscalDepreciation"/>
+    <attribute name="readonly" for="residualValue"
+      expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>
+    <attribute name="readonly" for="residualValue"
+      expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;)"/>
+    <attribute name="readonly" for="residualValue"
+      expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      if="depreciationPlanSelect != null &amp;&amp;  depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+    <attribute name="readonly" for="residualValue" expr="eval:false"
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
+  </action-attrs>
+
   <action-record
     name="action-record-account-fixed-asset-set-default-serial-number-config-type"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -683,3 +741,4 @@
       if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"/>
   </action-record>
 </object-views>
+

@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,6 +184,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
+
+        checkInactiveAccount(move);
+
         moveLineControlService.validateMoveLine(moveLine);
       }
       this.validateWellBalancedMove(move);
@@ -471,6 +476,33 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return partner.getFirstName();
     } else {
       return "" + partner.getId();
+    }
+  }
+
+  protected void checkInactiveAccount(Move move) throws AxelorException {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      List<String> inactiveList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getAccount)
+              .filter(Objects::nonNull)
+              .filter(
+                  account ->
+                      account.getStatusSelect() != null
+                          && account.getStatusSelect() != AccountRepository.STATUS_ACTIVE)
+              .distinct()
+              .map(Account::getCode)
+              .collect(Collectors.toList());
+      if (inactiveList.size() == 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ACCOUNT_FOUND),
+            inactiveList.get(0));
+      } else if (inactiveList.size() > 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ACCOUNTS_FOUND),
+            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+      }
     }
   }
 }

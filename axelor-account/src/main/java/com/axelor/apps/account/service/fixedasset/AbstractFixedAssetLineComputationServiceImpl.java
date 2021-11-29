@@ -10,12 +10,16 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
@@ -24,6 +28,8 @@ import java.util.List;
  */
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
@@ -83,8 +89,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+  public Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
+
+    if (isAlreadyDepreciated(fixedAsset)) {
+      return Optional.empty();
+    }
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
@@ -111,7 +121,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       }
     }
 
-    return line;
+    return Optional.ofNullable(line);
+  }
+
+  protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
+
+    return getNumberOfDepreciation(fixedAsset).equals(getNumberOfPastDepreciation(fixedAsset));
   }
 
   @Override

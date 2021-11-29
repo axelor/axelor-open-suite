@@ -122,7 +122,7 @@
       <!-- PAYMENT -->
       <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
         <field name="cashAccount"
-          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
         <field name="paymentMode" hidden="true" form-view="payment-mode-form"

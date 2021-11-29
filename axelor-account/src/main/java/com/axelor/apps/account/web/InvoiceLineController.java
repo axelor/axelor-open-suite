@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -369,7 +370,9 @@ public class InvoiceLineController {
           "self.company.id = "
               + invoice.getCompany().getId()
               + " AND self.accountType.technicalTypeSelect IN "
-              + technicalTypeSelectList.stream().collect(Collectors.joining("','", "('", "')"));
+              + technicalTypeSelectList.stream().collect(Collectors.joining("','", "('", "')"))
+              + " AND self.statusSelect = "
+              + AccountRepository.STATUS_ACTIVE;
       response.setAttr("account", "domain", domain);
     }
   }

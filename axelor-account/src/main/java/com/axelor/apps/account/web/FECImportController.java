@@ -19,13 +19,15 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.repo.FECImportRepository;
+import com.axelor.apps.account.service.fecimport.FECImportService;
+import com.axelor.apps.account.service.fecimport.FECImporter;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.File;
@@ -51,13 +53,14 @@ public class FECImportController {
                   new FileInputStream(MetaFiles.getPath(fecImport.getDataMetaFile()).toFile()),
                   "FEC.csv"));
 
-      ImportHistory importHistory =
-          Beans.get(FactoryImporter.class).createImporter(importConfig).run();
+      FECImporter fecImporter = Beans.get(FECImporter.class).addFecImport(fecImport);
+      ImportHistory importHistory = fecImporter.init(importConfig).run();
+
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setNotify(
           FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
               .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -70,7 +73,7 @@ public class FECImportController {
 
       File configFile = File.createTempFile("input-config", ".xml");
       InputStream bindFileInputStream =
-          this.getClass().getResourceAsStream("/FEC-config/import-FEC-config.xml");
+          this.getClass().getResourceAsStream("/FEC-config/input-config-with-tva.xml");
       FileOutputStream outputStream = new FileOutputStream(configFile);
       IOUtils.copy(bindFileInputStream, outputStream);
       fecImport.setBindMetaFile(Beans.get(MetaFiles.class).upload(configFile));
@@ -78,6 +81,19 @@ public class FECImportController {
       FileUtils.forceDelete(configFile);
 
       response.setValues(fecImport);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCompany(ActionRequest request, ActionResponse response) {
+    try {
+      FECImport fecImport = request.getContext().asType(FECImport.class);
+      if (fecImport.getCompany() == null) {
+        MetaFile dataMetaFile = fecImport.getDataMetaFile();
+        response.setValue("company", Beans.get(FECImportService.class).getCompany(dataMetaFile));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

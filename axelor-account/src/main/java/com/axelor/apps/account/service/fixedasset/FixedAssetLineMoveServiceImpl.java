@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -66,6 +67,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveRepository moveRepo;
 
+  protected MoveLineRepository moveLineRepo;
+
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
@@ -79,6 +82,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAssetLineRepository fixedAssetLineRepo,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
+      MoveLineRepository moveLineRepo,
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetRepository fixedAssetRepo,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
@@ -89,6 +93,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
+    this.moveLineRepo = moveLineRepo;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetLineService = fixedAssetLineService;
@@ -556,7 +561,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
+      moveLine = moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
+      moveLineRepo.save(moveLine);
     }
   }
 
