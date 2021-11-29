@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -64,6 +65,7 @@ public interface SaleOrderCreateService {
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException {
     return createSaleOrder(
@@ -77,6 +79,7 @@ public interface SaleOrderCreateService {
         priceList,
         clientPartner,
         team,
+            taxNumber,
         fiscalPosition,
         null);
   }
@@ -113,6 +116,7 @@ public interface SaleOrderCreateService {
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException;
@@ -127,6 +131,7 @@ public interface SaleOrderCreateService {
       Partner contactPartner,
       PriceList priceList,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException;
 
