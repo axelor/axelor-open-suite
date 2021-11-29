@@ -142,7 +142,7 @@
   <menuitem name="account-root-bank-statement-bank-statement"
     parent="account-root-bank-statement" title="Bank Statements" action="account.bank.statement"/>
 
-  <action-view name="account.bank.statement" title="Bank Statement"
+  <action-view name="account.bank.statement" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement">
     <view type="grid" name="bank-statement-grid"/>
     <view type="form" name="bank-statement-form"/>

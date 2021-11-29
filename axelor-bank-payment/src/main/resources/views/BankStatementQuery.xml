@@ -9,9 +9,8 @@
     <field name="ruleTypeSelect"/>
   </grid>
 
-  <form model="com.axelor.apps.bankpayment.db.BankStatementQuery"
-    title="Bank statement queries" name="bank-statement-query-form"
-    onSave="action-bank-payment-method-check-sequence-unicity">
+  <form model="com.axelor.apps.bankpayment.db.BankStatementQuery" title="Bank statement query"
+    name="bank-statement-query-form" onSave="action-bank-payment-method-check-sequence-unicity">
     <panel>
       <field name="name" required="true"/>
       <field name="ruleTypeSelect" required="true"/>
