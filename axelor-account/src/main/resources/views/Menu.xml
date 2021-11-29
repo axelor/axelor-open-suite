@@ -587,7 +587,8 @@
   </action-view>
 
   <menuitem name="account-conf-financial-financial-discount" title="Financial Discount"
-    parent="account-conf-financial" action="financial.discount"/>
+    parent="account-conf-financial" action="financial.discount"
+    if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
 
   <action-view name="financial.discount" title="Financial Discount"
     model="com.axelor.apps.account.db.FinancialDiscount">
