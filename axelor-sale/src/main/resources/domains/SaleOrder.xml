@@ -162,7 +162,7 @@
       ref="com.axelor.apps.account.db.FiscalPosition"/>
 
     <many-to-one name="taxNumber" title="Tax number"
-                 ref="com.axelor.apps.account.db.TaxNumber"/>
+      ref="com.axelor.apps.account.db.TaxNumber"/>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 

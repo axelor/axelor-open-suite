@@ -79,7 +79,7 @@ public interface SaleOrderCreateService {
         priceList,
         clientPartner,
         team,
-            taxNumber,
+        taxNumber,
         fiscalPosition,
         null);
   }
