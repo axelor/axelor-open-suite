@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -94,10 +95,13 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return stockHistoryLineList;
   }
 
-  public String getStockHistoryLineExportName() {
+  public String getStockHistoryLineExportName(String productName) {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     return I18n.get("Stock History")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString();
+        + productName
+        + " - "
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().format(dtf);
   }
 
   private String[] getStockHistoryLineExportHeader() {
@@ -113,8 +117,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return headers;
   }
 
-  public MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList)
-      throws IOException {
+  public MetaFile exportStockHistoryLineList(
+      List<StockHistoryLine> stockHistoryLineList, String fileName) throws IOException {
     List<String[]> list = new ArrayList<>();
 
     for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
@@ -129,14 +133,14 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       list.add(item);
     }
 
-    String fileName = getStockHistoryLineExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    fileName = fileName + ".csv";
 
     CsvTool.csvWriter(
         file.getParent(), file.getName(), ';', getStockHistoryLineExportHeader(), list);
 
     FileInputStream inStream = new FileInputStream(file);
-    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, fileName);
 
     return metaFile;
   }
