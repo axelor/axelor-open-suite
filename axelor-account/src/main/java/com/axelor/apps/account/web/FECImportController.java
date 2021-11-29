@@ -32,11 +32,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 public class FECImportController {
 
@@ -46,7 +43,7 @@ public class FECImportController {
       fecImport = Beans.get(FECImportRepository.class).find(fecImport.getId());
 
       ImportConfiguration importConfig = new ImportConfiguration();
-      importConfig.setBindMetaFile(fecImport.getBindMetaFile());
+      importConfig.setBindMetaFile(fecImport.getImportFECType().getBindMetaFile());
       importConfig.setDataMetaFile(
           Beans.get(MetaFiles.class)
               .upload(
@@ -70,15 +67,6 @@ public class FECImportController {
     try {
       FECImport fecImport = request.getContext().asType(FECImport.class);
       fecImport.setUser(AuthUtils.getUser());
-
-      File configFile = File.createTempFile("input-config", ".xml");
-      InputStream bindFileInputStream =
-          this.getClass().getResourceAsStream("/FEC-config/input-config-with-tva.xml");
-      FileOutputStream outputStream = new FileOutputStream(configFile);
-      IOUtils.copy(bindFileInputStream, outputStream);
-      fecImport.setBindMetaFile(Beans.get(MetaFiles.class).upload(configFile));
-
-      FileUtils.forceDelete(configFile);
 
       response.setValues(fecImport);
     } catch (Exception e) {

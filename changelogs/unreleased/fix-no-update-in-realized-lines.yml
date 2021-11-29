@@ -1,0 +1,5 @@
+---
+title: "Budget: Fix No update in realized lines"
+type: fix
+description : |
+      fix no update in realized lines when we cancel an invoice and when we get the invoice back to draft.
