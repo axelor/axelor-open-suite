@@ -437,13 +437,15 @@ public class SaleOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
-        if((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null) || (commonTaxNumber != saleOrderTemp.getTaxNumber() &&
-                !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
           commonTaxNumber = null;
           existTaxNumberDiff = true;
         }
-        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null) || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
-            && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
           commonFiscalPosition = null;
           existFiscalPositionDiff = true;
         }
@@ -468,15 +470,14 @@ public class SaleOrderController {
       fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
     }
 
-            if(existTaxNumberDiff) {
-              if (fieldErrors.length() > 0) {
-                fieldErrors.append("<br/>");
-              }
-              fieldErrors.append(
-                      I18n.get(
-                              com.axelor.apps.sale.exception.IExceptionMessage
-                                      .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
-            }
+    if (existTaxNumberDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
 
     if (existFiscalPositionDiff) {
       if (fieldErrors.length() > 0) {
