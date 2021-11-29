@@ -1,0 +1,2 @@
+title: "Import FEC: added a new object ImportFECType to manage xml config and added a submenu entry (Exports/Imports -> Import FEC Type)"
+type: feature
