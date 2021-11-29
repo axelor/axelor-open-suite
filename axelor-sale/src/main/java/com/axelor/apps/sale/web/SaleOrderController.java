@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -384,7 +385,12 @@ public class SaleOrderController {
     Company commonCompany = null;
     Partner commonContactPartner = null;
     Team commonTeam = null;
+    TaxNumber commonTaxNumber = null;
+    // Useful to determine if a difference exists between tax number of all sale orders
+    boolean existTaxNumberDiff = false;
     FiscalPosition commonFiscalPosition = null;
+    // Useful to determine if a difference exists between fiscal positions of all sale orders
+    boolean existFiscalPositionDiff = false;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
     // Useful to determine if a difference exists between contact partners of all sale orders
@@ -405,6 +411,7 @@ public class SaleOrderController {
         commonContactPartner = saleOrderTemp.getContactPartner();
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
+        commonTaxNumber = saleOrderTemp.getTaxNumber();
         commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
@@ -430,9 +437,15 @@ public class SaleOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
-        if (commonFiscalPosition != null
-            && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition())) {
+        if((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null) || (commonTaxNumber != saleOrderTemp.getTaxNumber() &&
+                !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+          commonTaxNumber = null;
+          existTaxNumberDiff = true;
+        }
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null) || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+            && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
           commonFiscalPosition = null;
+          existFiscalPositionDiff = true;
         }
       }
       count++;
@@ -455,7 +468,17 @@ public class SaleOrderController {
       fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
     }
 
-    if (commonFiscalPosition == null) {
+            if(existTaxNumberDiff) {
+              if (fieldErrors.length() > 0) {
+                fieldErrors.append("<br/>");
+              }
+              fieldErrors.append(
+                      I18n.get(
+                              com.axelor.apps.sale.exception.IExceptionMessage
+                                      .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+            }
+
+    if (existFiscalPositionDiff) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
@@ -534,6 +557,7 @@ public class SaleOrderController {
                   commonContactPartner,
                   commonPriceList,
                   commonTeam,
+                  commonTaxNumber,
                   commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab

@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -85,6 +86,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
@@ -101,6 +103,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           priceList,
           clientPartner,
           team,
+          taxNumber,
           fiscalPosition,
           tradingName);
     }
@@ -116,6 +119,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         priceList,
         clientPartner,
         team,
+        taxNumber,
         fiscalPosition,
         tradingName);
   }
@@ -132,6 +136,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
@@ -154,6 +159,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             priceList,
             clientPartner,
             team,
+            taxNumber,
             fiscalPosition,
             tradingName);
 
@@ -192,6 +198,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Partner contactPartner,
       PriceList priceList,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException {
     String numSeq = "";
@@ -223,6 +230,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             priceList,
             clientPartner,
             team,
+            taxNumber,
             fiscalPosition,
             null);
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
