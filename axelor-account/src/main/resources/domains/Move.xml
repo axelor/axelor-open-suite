@@ -29,6 +29,8 @@
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
@@ -97,6 +99,7 @@
       <field name="reference"/>
       <field name="period"/>
       <field name="partner"/>
+      <field name="fiscalPosition" on="UPDATE"/>
       <field name="currency"/>
       <field name="companyCurrency"/>
       <field name="ignoreInAccountingOk"/>

@@ -224,6 +224,8 @@
           onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
         <field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form"
           canNew="false" canEdit="false" if-module="axelor-supplychain"/>
+        <field name="fiscalPosition" grid-view="fiscal-position-grid"
+          form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       </panel>
 
       <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1"

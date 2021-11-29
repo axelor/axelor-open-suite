@@ -300,6 +300,7 @@
 "AccountingReportType15.currency",,,
 "AccountingReportType15.date",,,
 "AccountingReportType15.deductibleVAT",,,
+"AccountingReportType15.fiscalPositionCode",,,
 "AccountingReportType15.from",,,
 "AccountingReportType15.moveLine",,,
 "AccountingReportType15.moveLineAccount",,,
