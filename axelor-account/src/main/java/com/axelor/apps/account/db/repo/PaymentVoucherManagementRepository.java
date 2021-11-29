@@ -73,8 +73,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK),
-            null);
+            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK));
       } catch (AxelorException e) {
         throw new PersistenceException(e);
       }

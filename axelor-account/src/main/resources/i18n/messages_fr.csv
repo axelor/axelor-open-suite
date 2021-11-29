@@ -2136,7 +2136,7 @@
 "Year or period or date is null, you must set a period.","L’année ou la période ou la date est nulle, vous devez sélectionner une période.",,
 "You can't archive this move %s","Vous ne pouvez pas archiver cette écriture %s",,
 "You can't remove this move %s","Vous ne pouvez pas supprimer cette écriture %s",,
-"You can't remove this payment voucher as it is already used in a move.","Vous ne pouvez pas supprimer cette saisie paiement, car elle est utilisée dans une écriture %s",,
+"You can't remove this payment voucher as it is already used in a move.","Vous ne pouvez pas supprimer cette saisie paiement, car elle est utilisée dans une écriture.",,
 "You cannot delete this deposit slip.","Vous ne pouvez pas supprimer ce bordereau.",,
 "You have to choose at least one invoice","Vous devez sélectionner au moins une facture",,
 "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s","Vous devez saisir un préfixe pour la création automatique de compte client dans les paramètres comptables de la société %s",,
