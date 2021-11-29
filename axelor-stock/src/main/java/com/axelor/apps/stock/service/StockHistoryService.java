@@ -41,8 +41,8 @@ public interface StockHistoryService {
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException;
 
-  MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList)
+  MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList, String fileName)
       throws IOException;
 
-  public String getStockHistoryLineExportName();
+  public String getStockHistoryLineExportName(String productName);
 }

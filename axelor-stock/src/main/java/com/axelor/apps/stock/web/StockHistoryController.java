@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.exception.AxelorException;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StockHistoryController {
 
@@ -51,7 +53,7 @@ public class StockHistoryController {
 
   /**
    * Called from stock history form view, on click on the export button. Call {@link
-   * StockHistoryService#exportStockHistoryLineList(List<StockHistoryLine>)}
+   * StockHistoryService#exportStockHistoryLineList(List<StockHistoryLine>, String)}
    *
    * @param request
    * @param response
@@ -59,17 +61,15 @@ public class StockHistoryController {
   public void exportStockHistoryLineList(ActionRequest request, ActionResponse response) {
     try {
       List<StockHistoryLine> stockHistoryLineList = getStockHistoryLineList(request);
+      String productName =
+          Beans.get(ProductRepository.class)
+              .find(new Long((Integer) ((Map) request.getContext().get("product")).get("id")))
+              .getCode();
+      String fileName =
+          Beans.get(StockHistoryService.class).getStockHistoryLineExportName(productName);
       MetaFile csv =
-          Beans.get(StockHistoryService.class).exportStockHistoryLineList(stockHistoryLineList);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-
-    try {
-      List<StockHistoryLine> stockHistoryLineList = getStockHistoryLineList(request);
-      String fileName = Beans.get(StockHistoryService.class).getStockHistoryLineExportName();
-      MetaFile csv =
-          Beans.get(StockHistoryService.class).exportStockHistoryLineList(stockHistoryLineList);
+          Beans.get(StockHistoryService.class)
+              .exportStockHistoryLineList(stockHistoryLineList, fileName);
 
       response.setView(
           ActionView.define(fileName)
