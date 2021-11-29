@@ -20,7 +20,8 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-journal-record-status-active,save,action-attrs-account-journal-status-show-title" colSpan="2"/>
+        onClick="account-journal-record-status-active,save,action-attrs-account-journal-status-show-title"
+        colSpan="2"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
@@ -126,10 +127,12 @@
     <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
     <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
   </action-record>
-  
+
   <action-attrs name="action-attrs-account-journal-status-show-title">
-  	<attribute name="title" for="activeStatusBtn" expr="eval: com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
-  	<attribute name="title" for="activeStatusBtn" expr="eval: com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
   </action-attrs>
 
   <action-record name="account-journal-on-change-not-export-ok"

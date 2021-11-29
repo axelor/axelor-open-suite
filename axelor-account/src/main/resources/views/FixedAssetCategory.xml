@@ -58,8 +58,8 @@
       </panel>
       <panel name="accountingInfoPanel" title="Accounting information" colspan="12">
         <panel name="journalPanel" title="Journal" colspan="12">
-          <field name="journal" domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
-            grid-view="journal-grid"/>
+          <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
+            form-view="journal-form" grid-view="journal-grid"/>
         </panel>
         <panel name="depreciationAccountsPanel" title="Depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">

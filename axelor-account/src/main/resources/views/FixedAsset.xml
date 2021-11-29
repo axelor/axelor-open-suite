@@ -74,7 +74,8 @@
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
       <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
       <field name="journal" readonlyIf="statusSelect > 1" canEdit="false"
-        domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form" grid-view="journal-grid"/>
+        domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
+        grid-view="journal-grid"/>
       <field name="purchaseAccount"
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
         domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
