@@ -480,12 +480,14 @@ public class SaleOrderController {
           commonLocation = null;
           existLocationDiff = true;
         }
-        if((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null) || (commonTaxNumber != saleOrderTemp.getTaxNumber() &&
-                !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
           commonTaxNumber = null;
           existTaxNumberDiff = true;
         }
-        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null) || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
                 && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
           commonFiscalPosition = null;
           existFiscalPositionDiff = true;
@@ -523,9 +525,8 @@ public class SaleOrderController {
         fieldErrors.append("<br/>");
       }
       fieldErrors.append(
-              I18n.get(
-                      com.axelor.apps.sale.exception.IExceptionMessage
-                              .SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
     }
 
     if (existFiscalPositionDiff) {
