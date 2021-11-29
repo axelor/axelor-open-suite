@@ -25,8 +25,7 @@
         target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12" readonly="true"
         x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
       <button name="exportStockHistoryLineListBtn"
-        onClick="action-stock-history-line-method-export-stock-history-line-list"
-        title="Export"/>
+        onClick="action-stock-history-line-method-export-stock-history-line-list" title="Export"/>
     </panel>
   </form>
 
