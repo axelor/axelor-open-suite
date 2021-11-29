@@ -152,7 +152,7 @@
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
       showIf="stepStatusSelect == 5">
-      <field name="today"/>
+      <field name="todayDate"/>
     </panel>
     <panel name="mainUserPanel" showIf="stepStatusSelect == 5" colSpan="12">
       <!-- from axelor-core -->

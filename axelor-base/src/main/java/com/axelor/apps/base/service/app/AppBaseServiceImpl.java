@@ -66,8 +66,8 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
-      if (user != null && user.getToday() != null) {
-        todayDateTime = user.getToday();
+      if (user != null && user.getTodayDate() != null) {
+        todayDateTime = user.getTodayDate();
       } else {
         AppBase appBase = getAppBase();
         if (appBase != null && appBase.getToday() != null) {
