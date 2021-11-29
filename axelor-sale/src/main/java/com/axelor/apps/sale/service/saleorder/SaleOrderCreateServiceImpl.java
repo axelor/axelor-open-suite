@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -97,6 +98,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
@@ -114,6 +116,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setDeliveryDate(deliveryDate);
+    saleOrder.setTaxNumber(taxNumber);
     saleOrder.setFiscalPosition(fiscalPosition);
 
     saleOrder.setPrintingSettings(
@@ -165,6 +168,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Partner contactPartner,
       PriceList priceList,
       Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException {
 
@@ -196,6 +200,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             priceList,
             clientPartner,
             team,
+            taxNumber,
             fiscalPosition);
 
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
