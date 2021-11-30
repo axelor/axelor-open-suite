@@ -58,8 +58,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     if (stockLocationId == null) {
       stockLocationIdList.addAll(
           Beans.get(StockLocationRepository.class).all()
-              .filter("self.typeSelect != 3 AND self.company.id = :company")
-              .bind("company", companyId).fetch().stream()
+              .filter("self.typeSelect != :typeSelect AND self.company.id = :company")
+              .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL).bind("company", companyId)
+              .fetch().stream()
               .map(stockLocation -> stockLocation.getId())
               .collect(Collectors.toList()));
     } else {
