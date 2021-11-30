@@ -4,5 +4,5 @@ import com.axelor.apps.account.db.AnalyticAccount;
 
 public interface AnalyticAccountService {
 
-  int toggleStatusSelect(AnalyticAccount analyticAccount);
+  void toggleStatusSelect(AnalyticAccount analyticAccount);
 }

@@ -21,5 +21,5 @@ public interface AnalyticJournalControlService {
    */
   boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
 
-  int toggleStatusSelect(AnalyticJournal analyticJournal);
+  void toggleStatusSelect(AnalyticJournal analyticJournal);
 }

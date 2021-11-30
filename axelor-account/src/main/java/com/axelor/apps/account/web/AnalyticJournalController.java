@@ -60,11 +60,11 @@ public class AnalyticJournalController {
   public void toggleStatus(ActionRequest request, ActionResponse response) {
     try {
       AnalyticJournal analyticJournal = request.getContext().asType(AnalyticJournal.class);
-      int newStatus =
-          Beans.get(AnalyticJournalControlService.class).toggleStatusSelect(analyticJournal);
-      if (newStatus >= 0) {
-        response.setValue("statusSelect", newStatus);
-      }
+      analyticJournal = Beans.get(AnalyticJournalRepository.class).find(analyticJournal.getId());
+
+      Beans.get(AnalyticJournalControlService.class).toggleStatusSelect(analyticJournal);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

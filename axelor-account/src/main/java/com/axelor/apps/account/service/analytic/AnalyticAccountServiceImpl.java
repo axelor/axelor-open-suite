@@ -2,22 +2,28 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
 
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
-  public AnalyticAccountServiceImpl() {
-    // TODO Auto-generated constructor stub
+  protected AnalyticAccountRepository analyticAccountRepository;
+
+  @Inject
+  public AnalyticAccountServiceImpl(AnalyticAccountRepository analyticAccountRepository) {
+    this.analyticAccountRepository = analyticAccountRepository;
   }
 
   @Override
-  public int toggleStatusSelect(AnalyticAccount analyticAccount) {
+  @Transactional
+  public void toggleStatusSelect(AnalyticAccount analyticAccount) {
     if (analyticAccount != null) {
       if (analyticAccount.getStatusSelect() == AnalyticAccountRepository.STATUS_INACTIVE) {
-        return AnalyticAccountRepository.STATUS_ACTIVE;
+        analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_ACTIVE);
       } else {
-        return AnalyticAccountRepository.STATUS_INACTIVE;
+        analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_INACTIVE);
       }
+      analyticAccountRepository.save(analyticAccount);
     }
-    return -1;
   }
 }

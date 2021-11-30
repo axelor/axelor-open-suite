@@ -22,7 +22,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-analytic-journal-method-toggle-status-active,save,action-attrs-account-analytic-journal-status-show-title"
+        onClick="save,account-analytic-journal-method-toggle-status-active,action-attrs-account-analytic-journal-status-show-title"
         colSpan="3"/>
     </panel>
     <panel name="mainPanel">

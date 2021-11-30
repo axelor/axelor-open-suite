@@ -8,6 +8,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -59,14 +60,15 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
   }
 
   @Override
-  public int toggleStatusSelect(AnalyticJournal analyticJournal) {
+  @Transactional
+  public void toggleStatusSelect(AnalyticJournal analyticJournal) {
     if (analyticJournal != null) {
       if (analyticJournal.getStatusSelect() == AnalyticJournalRepository.STATUS_INACTIVE) {
-        return AnalyticJournalRepository.STATUS_ACTIVE;
+        analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_ACTIVE);
       } else {
-        return AnalyticJournalRepository.STATUS_INACTIVE;
+        analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_INACTIVE);
       }
+      analyticJournalRepository.save(analyticJournal);
     }
-    return -1;
   }
 }
