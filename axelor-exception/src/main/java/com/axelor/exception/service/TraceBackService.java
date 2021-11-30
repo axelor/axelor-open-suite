@@ -110,7 +110,7 @@ public class TraceBackService {
    * @param response
    * @param e L'exception cible.
    */
-  private static void _response(
+  protected static void _response(
       ActionResponse response, Throwable e, ResponseMessageType responseMessageType) {
 
     String message = e.getMessage() != null ? e.getMessage() : e.toString();
