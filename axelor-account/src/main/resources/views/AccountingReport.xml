@@ -138,6 +138,8 @@
           grid-view="analytic-distribution-template-grid"/>
         <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
           widget="boolean-switch"/>
+        <field name="fixedAssetLineTypeSelect" showIf="reportType.typeSelect == 17"
+          requiredIf="reportType.typeSelect == 17"/>
         <field name="minAmountExcl"
           showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
       </panel>
