@@ -7,8 +7,8 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -145,22 +145,23 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   }
 
   protected MoveLine generateReverseMoveLine(
-      Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
+      Move reverseMove, MoveLine originMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(
             reverseMove,
-            orgineMoveLine.getPartner(),
-            orgineMoveLine.getAccount(),
-            orgineMoveLine.getCurrencyAmount(),
-            orgineMoveLine.getDebit().add(orgineMoveLine.getCredit()),
-            orgineMoveLine.getCurrencyRate(),
+            originMoveLine.getPartner(),
+            originMoveLine.getAccount(),
+            originMoveLine.getCurrencyAmount(),
+            originMoveLine.getTaxLine(),
+            originMoveLine.getDebit().add(originMoveLine.getCredit()),
+            originMoveLine.getCurrencyRate(),
             !isDebit,
             dateOfReversion,
             dateOfReversion,
             dateOfReversion,
-            orgineMoveLine.getCounter(),
-            orgineMoveLine.getName(),
+            originMoveLine.getCounter(),
+            originMoveLine.getName(),
             null);
     return reverseMoveLine;
   }

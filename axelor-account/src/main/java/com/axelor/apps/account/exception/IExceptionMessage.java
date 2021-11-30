@@ -61,8 +61,6 @@ public interface IExceptionMessage {
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
-  static final String MOVE_LINE_RECONCILE_SELECT_A_PARTNER = /*$$(*/
-      "Please select a partner" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -239,7 +237,7 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
-      "Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed." /*)*/;
+      "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -732,7 +730,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -907,4 +905,8 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
 }

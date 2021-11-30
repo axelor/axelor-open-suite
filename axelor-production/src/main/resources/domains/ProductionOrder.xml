@@ -7,27 +7,33 @@
 
   <entity name="ProductionOrder" lang="java">
 
-  	<integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2"/>
-  	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true" required="true" unique="true"/>
-  	
- 	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
-	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
-  	
-    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing orders" orderBy="prioritySelect"/>
-    <integer name="statusSelect" title="Status" selection="production.order.status.select" default="1" />
-    
-    <boolean name="isClosed" >
+    <integer name="prioritySelect" title="Priority"
+      selection="production.order.priority.select" default="2"/>
+    <string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true"
+      required="true" unique="true"/>
+
+    <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Customer"/>
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Sale order"/>
+
+    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder"
+      title="Manufacturing orders" orderBy="prioritySelect"/>
+    <integer name="statusSelect" title="Status" selection="production.order.status.select"
+      default="1"/>
+
+    <boolean name="isClosed">
 	    <![CDATA[
 	    if(manufOrderSet == null || manufOrderSet.isEmpty())
 	      	return false;
 	   	for(ManufOrder mf : manufOrderSet){
 	   		if(mf.getStatusSelect() != 2 && mf.getStatusSelect() != 6 )
 	   		   return false;
-	    }    
+	    }
     	return true;
 	    ]]>
     </boolean>
-    
+
     <extra-code><![CDATA[
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -36,8 +42,8 @@
 		public static final int STATUS_CANCELED= 4;
 		public static final int STATUS_COMPLETED = 5;
 	]]></extra-code>
-    
-    
-    
+
+
+
   </entity>
 </domain-models>

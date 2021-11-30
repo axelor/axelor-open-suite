@@ -27,12 +27,14 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
@@ -56,6 +58,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -246,7 +249,7 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-      if (!moveIds.isEmpty()) {
+      if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
@@ -432,7 +435,9 @@ public class MoveController {
       if (move.getCompany() != null) {
         AccountConfig accountConfig =
             Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        if (accountConfig != null) {
+        if (accountConfig != null
+            && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+            && accountConfig.getManageAnalyticAccounting()) {
           AnalyticAxis analyticAxis = null;
           for (int i = 1; i <= 5; i++) {
             response.setAttr(
@@ -450,6 +455,12 @@ public class MoveController {
                   "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
               analyticAxis = null;
             }
+          }
+        } else {
+          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
+          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
           }
         }
       }
@@ -491,11 +502,12 @@ public class MoveController {
     }
   }
 
-  public void checkPreconditions(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setSimulate(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveValidateService.class).checkPreconditions(move);
+      Move move =
+          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Beans.get(MoveSimulateService.class).simulate(move);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

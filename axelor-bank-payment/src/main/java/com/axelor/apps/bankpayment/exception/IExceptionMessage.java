@@ -209,6 +209,8 @@ public interface IExceptionMessage {
       "Bank statement already imported. Aborted." /*)*/;
   static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
+  static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
+      "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
   static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
       "Curernt bank statement doesn't contain an initial line" /*)*/;
 
@@ -236,7 +238,11 @@ public interface IExceptionMessage {
 
   /** Bank reconciliation */
   static final String BANK_RECONCILIATION_MISSING_JOURNAL = /*$$(*/
-      "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled" /*)*/;
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries." /*)*/;
+
+  /** Bank reconciliation */
+  static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
 
   static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
       "Please select a reconciliation line" /*)*/;

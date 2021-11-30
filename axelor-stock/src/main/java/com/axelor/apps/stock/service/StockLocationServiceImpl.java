@@ -119,7 +119,7 @@ public class StockLocationServiceImpl implements StockLocationService {
           BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
-                stockLocationLineService.getOrCreateStockLocationLine(
+                stockLocationLineService.getStockLocationLine(
                     stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 
             if (stockLocationLine != null) {
@@ -141,7 +141,7 @@ public class StockLocationServiceImpl implements StockLocationService {
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocationLineService.getStockLocationLine(
                 stockLocationRepo.find(locationId), productRepo.find(productId));
 
         if (stockLocationLine != null) {

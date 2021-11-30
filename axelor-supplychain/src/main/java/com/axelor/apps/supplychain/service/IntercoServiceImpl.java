@@ -99,6 +99,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
+            null,
+            null,
             null);
 
     // in ati
@@ -464,6 +466,17 @@ public class IntercoServiceImpl implements IntercoService {
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
       invoiceLine.setCompanyInTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), intercoInvoice));
+
+      if (invoiceLine.getAnalyticDistributionTemplate() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            accountManagementAccountService.getAnalyticDistributionTemplate(
+                invoiceLine.getProduct(), intercoInvoice.getCompany()));
+        List<AnalyticMoveLine> analyticMoveLineList =
+            invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+        analyticMoveLineList.forEach(
+            analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
+        invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+      }
     }
     return invoiceLine;
   }

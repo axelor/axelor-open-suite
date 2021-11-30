@@ -7,13 +7,15 @@
 
   <entity name="CalendarConfiguration" lang="java">
 
-	<string name="name" title="Name" required="true"/>  
+    <string name="name" title="Name" required="true"/>
     <many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>
     <many-to-one name="calendarUser" ref="com.axelor.auth.db.User" title="User"/>
     <many-to-one name="calendarGroup" ref="com.axelor.auth.db.Group" title="Group"/>
-    <many-to-many name="calendarSet" ref="com.axelor.apps.base.db.ICalendar" title="Calendars"/>
+    <many-to-many name="calendarSet" ref="com.axelor.apps.base.db.ICalendar"
+      title="Calendars"/>
     <many-to-one name="role" ref="com.axelor.auth.db.Role" title="Role"/>
-    <many-to-one name="parentMetaMenu" ref="com.axelor.meta.db.MetaMenu" title="Parent Menu"/>
+    <many-to-one name="parentMetaMenu" ref="com.axelor.meta.db.MetaMenu"
+      title="Parent Menu"/>
   </entity>
 
 </domain-models>

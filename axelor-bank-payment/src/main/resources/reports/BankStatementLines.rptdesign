@@ -701,8 +701,13 @@ left join base_company as Company
 on Account.company = Company.id
 left join base_printing_settings as PrintingSettings 
 on Company.printing_settings = PrintingSettings.id
-where BankStatementLine.operation_date >= ? and BankStatementLine.operation_date <= ? and BankStatementLine.bank_details = ?
-order by BankStatementLine.operation_date, BankStatementLine.sequence]]></xml-property>
+left join bankpayment_bank_statement as BankStatement 
+on BankStatementLine.bank_statement = BankStatement.id
+where BankStatementLine.operation_date >= ? 
+and BankStatementLine.operation_date <= ? 
+and BankStatementLine.bank_details = ?
+order by BankStatement.from_date, BankStatementLine.sequence]]></xml-property>
+
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <property name="nullsOrdering">nulls lowest</property>

@@ -19,7 +19,6 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
@@ -42,16 +41,14 @@ public class BankStatementController {
 
       BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
       BankStatementService bankStatementService = Beans.get(BankStatementService.class);
-      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository =
-          Beans.get(BankPaymentBankStatementLineAFB120Repository.class);
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
       bankStatementService.checkImport(bankStatement);
 
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+    response.setReload(true);
   }
 
   public void print(ActionRequest request, ActionResponse response) {
