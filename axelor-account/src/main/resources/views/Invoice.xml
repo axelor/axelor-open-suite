@@ -561,8 +561,9 @@
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
           <field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3"
-            onSelect="action-invoice-partner-account-domain" domain="self.company = :company"
-            form-view="account-form" grid-view="account-grid"/>
+            onSelect="action-invoice-partner-account-domain"
+            domain="self.statusSelect = 1 AND self.company = :company" form-view="account-form"
+            grid-view="account-grid"/>
           <panel name="movePanel" showIf="move != null">
             <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
             <field name="move.accountingOk" readonly="true"/>
