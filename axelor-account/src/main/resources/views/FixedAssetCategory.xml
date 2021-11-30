@@ -104,8 +104,10 @@
         </panel>
         <panel name="ifrsAccountsPanel" title="IFRS depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
-          <field name="ifrsDepreciationAccount" form-view="account-form" domain="self.statusSelect = 1"/>
-          <field name="ifrsChargeAccount" form-view="account-form" domain="self.statusSelect = 1"/>
+          <field name="ifrsDepreciationAccount" form-view="account-form"
+            domain="self.statusSelect = 1"/>
+          <field name="ifrsChargeAccount" form-view="account-form"
+            domain="self.statusSelect = 1"/>
         </panel>
       </panel>
       <panel

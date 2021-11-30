@@ -44,8 +44,9 @@
               domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
               grid-view="account-grid" form-view="account-form"
               help="Select the default customer account to be used in sales invoices. It will also be used as parent account if automatic account creation is enabled."/>
-            <field name="irrecoverableAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
+            <field name="irrecoverableAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
             <field name="doubtfulCustomerAccount"
               domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
               grid-view="account-grid" form-view="account-form"/>
@@ -90,8 +91,9 @@
               requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
           </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
-            <field name="employeeAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"
+            <field name="employeeAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"
               help="Select the default employee account to be used in eg. expense payments. It will also be used as parent account if automatic account creation is enabled."/>
             <field name="employeeAccountPrefix"
               help="Prefix to be prepended on employee accounts' codes, the code will be [prefix]PARTNERNAME"
@@ -105,21 +107,27 @@
           </panel>
           <panel name="accountFactorPanel"
             if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
-            <field name="factorDebitAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="factorCreditAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
+            <field name="factorDebitAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="factorCreditAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
           </panel>
           <panel name="accountGeneralPanel" colSpan="12">
-            <field name="yearOpeningAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="yearClosureAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form"/>
-            <field name="forecastedInvCustAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain"
+            <field name="yearOpeningAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="yearClosureAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="forecastedInvCustAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')"/>
-            <field name="forecastedInvSuppAccount" domain="self.statusSelect = 1 AND self.company = :company"
-              grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain"
+            <field name="forecastedInvSuppAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')"/>
           </panel>
 
@@ -131,8 +139,9 @@
         </panel>
         <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
-          <field name="cashPositionVariationAccount" domain="self.statusSelect = 1 AND self.company = :company"
-            grid-view="account-grid" form-view="account-form"/>
+          <field name="cashPositionVariationAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
@@ -147,10 +156,12 @@
           <!-- <field name="exportFileName"/> -->
         </panel>
         <panel name="holdBackPanel" title="Holdback" colSpan="12">
-          <field name="holdBackCustomerAccount" domain="self.statusSelect = 1 AND self.company = :company"
-            form-view="account-form" grid-view="account-grid"/>
-          <field name="holdBackSupplierAccount" domain="self.statusSelect = 1 AND self.company = :company"
-            form-view="account-form" grid-view="account-grid"/>
+          <field name="holdBackCustomerAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" form-view="account-form"
+            grid-view="account-grid"/>
+          <field name="holdBackSupplierAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" form-view="account-form"
+            grid-view="account-grid"/>
         </panel>
         <panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
           <field name="irrecoverableReasonPassage"/>
@@ -171,7 +182,8 @@
             form-view="payment-condition-form"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
-          <field name="expenseTaxAccount" domain="self.statusSelect = 1 AND self.company = :company"
+          <field name="expenseTaxAccount"
+            domain="self.statusSelect = 1 AND self.company = :company"
             if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"
             if="__config__.app.isApp('expense')"/>
         </panel>
@@ -349,8 +361,9 @@
           <field name="reimbursementExportFolderPathCFONB"/>
           <field name="lowerThresholdReimbursement"/>
           <field name="upperThresholdReimbursement"/>
-          <field name="reimbursementAccount" domain="self.statusSelect = 1 AND self.company = :company"
-            grid-view="account-grid" form-view="account-form"/>
+          <field name="reimbursementAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
           <field name="reimbursementTemplate" form-view="template-form"
             grid-view="template-grid"/>
         </panel>
@@ -382,8 +395,8 @@
         </panel>
       </panel>
       <panel name="accClearancePanel" title="Acc. Clearance">
-        <field name="profitAccount" domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-          form-view="account-form"/>
+        <field name="profitAccount" domain="self.statusSelect = 1 AND self.company = :company"
+          grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
         <field name="clearanceAccountSet"
           domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
