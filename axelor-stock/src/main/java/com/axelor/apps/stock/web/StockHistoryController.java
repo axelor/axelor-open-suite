@@ -115,11 +115,7 @@ public class StockHistoryController {
     }
 
     List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
-    if (productId != null
-        && companyId != null
-        && stockLocationId != null
-        && beginDate != null
-        && endDate != null) {
+    if (productId != null && companyId != null && beginDate != null && endDate != null) {
       stockHistoryLineList =
           Beans.get(StockHistoryService.class)
               .computeStockHistoryLineList(

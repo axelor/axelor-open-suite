@@ -59,8 +59,7 @@
           <button name="projectedStockButton" title="See projected stock"
             onClick="action-supplychain-method-projected-stock" showIf="$product"/>
           <button name="stockHistoryButton" title="See stock history"
-            showIf="$product &amp;&amp; $company &amp;&amp; $stockLocation"
-            onClick="action-supplychain-view-projected-stock"/>
+            showIf="$product &amp;&amp; $company" onClick="action-supplychain-view-projected-stock"/>
           <field name="$stockLocationIdList" hidden="true"/>
         </panel>
       </panel>
