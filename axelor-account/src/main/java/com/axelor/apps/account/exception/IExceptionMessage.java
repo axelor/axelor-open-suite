@@ -976,4 +976,10 @@ public interface IExceptionMessage {
 
   static final String INACTIVE_ACCOUNTS_FOUND =
       /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNAL_FOUND = /*$$(*/
+      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNALS_FOUND = /*$$(*/
+      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 }

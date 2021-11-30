@@ -646,4 +646,9 @@
     <option value="1">Active</option>
   </selection>
 
+  <selection name='ianalytic.journal.status.select'>
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </selection>
+
 </object-views>
