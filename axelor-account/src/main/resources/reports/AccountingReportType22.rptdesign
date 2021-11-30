@@ -478,6 +478,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportFixedAssetLineDS" id="4415">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="computedColumns">
                 <structure>
                     <property name="name">depreciation_d</property>
@@ -502,7 +503,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">depreciation_b_total</property>
-                    <property name="dataType">float</property>
+                    <property name="dataType">decimal</property>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
                         <structure>
@@ -578,7 +579,50 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </list-property>
                 </structure>
             </list-property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">fixed_asset_type</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">fixed_asset_type</text-property>
+                    <text-property name="heading">fixed_asset_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">depreciation_a</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">depreciation_a</text-property>
+                    <text-property name="heading">depreciation_a</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">depreciation_b</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">depreciation_b</text-property>
+                    <text-property name="heading">depreciation_b</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">depreciation_c</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">depreciation_c</text-property>
+                    <text-property name="heading">depreciation_c</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">impairment_value_a</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">impairment_value_a</text-property>
+                    <text-property name="heading">impairment_value_a</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">impairment_value_b</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">impairment_value_b</text-property>
+                    <text-property name="heading">impairment_value_b</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">impairment_value_c</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">impairment_value_c</text-property>
+                    <text-property name="heading">impairment_value_c</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -646,7 +690,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">11</property>
                         <property name="name">depreciation_b_total</property>
-                        <property name="dataType">float</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
@@ -687,84 +731,107 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">fixed_asset_type</property>
                     <property name="nativeName">fixed_asset_type</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">depreciation_a</property>
                     <property name="nativeName">depreciation_a</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">depreciation_b</property>
                     <property name="nativeName">depreciation_b</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">depreciation_c</property>
                     <property name="nativeName">depreciation_c</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">impairment_value_a</property>
                     <property name="nativeName">impairment_value_a</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">impairment_value_b</property>
                     <property name="nativeName">impairment_value_b</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">impairment_value_c</property>
                     <property name="nativeName">impairment_value_c</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	FixedAssetType.technical_type_select AS fixed_asset_type,
 	SUM(CASE
 		WHEN 
-			FixedAsset.first_service_date < AccountingReport.date_from
+			FixedAssetLine.depreciation_date < AccountingReport.date_from
+			AND FixedAsset.status_select < 4
 		THEN FixedAssetLine.depreciation
+		ELSE 0
+	END + CASE
+		WHEN 
+			FixedAsset.origin_select = 99 
+			AND FixedAsset.failover_date < AccountingReport.date_from
+			AND FixedAsset.status_select < 4
+			AND FixedAssetLine.id = (
+				SELECT MIN(FixedAssetLine2.id)
+				FROM account_fixed_asset_line AS FixedAssetLine2
+				WHERE FixedAssetLine2.fixed_asset = FixedAsset.id)
+		THEN FixedAsset.already_depreciated_amount
 		ELSE 0
 	END) AS depreciation_a,
 	SUM(CASE
 		WHEN 
-			FixedAsset.first_service_date >= AccountingReport.date_from
-			AND FixedAsset.first_service_date <= AccountingReport.date_to
+			FixedAssetLine.depreciation_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_b,
 	SUM(CASE
 		WHEN 
-			FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to
-		THEN FixedAssetLine.depreciation
+			FixedAssetLine.depreciation_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
+			AND FixedAsset.disposal_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
+		THEN FixedAssetLine.cumulative_depreciation
 		ELSE 0
 	END) AS depreciation_c,
 	SUM(CASE
 		WHEN 
-			FixedAsset.first_service_date < AccountingReport.date_from
+			FixedAssetLine.depreciation_date < AccountingReport.date_from
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_a,
 	SUM(CASE
 		WHEN 
-			FixedAsset.first_service_date >= AccountingReport.date_from
-			AND FixedAsset.first_service_date <= AccountingReport.date_to
+			FixedAssetLine.depreciation_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_b,
 	SUM(CASE
 		WHEN 
-			FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to
-		THEN FixedAssetLine.impairment_value
+			FixedAssetLine.depreciation_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
+			AND FixedAsset.disposal_date BETWEEN 
+				AccountingReport.date_from AND AccountingReport.date_to
+		THEN FixedAssetLine.cumulative_depreciation
 		ELSE 0
 	END) AS impairment_value_c
 	
