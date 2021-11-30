@@ -24,7 +24,7 @@
   </form>
 
   <action-method name="action-method-analytic-grouping-compute-full-name">
-    <call class="com.axelor.apps.account.service.AnalyticGroupingService"
+    <call class="com.axelor.apps.account.service.analytic.AnalyticGroupingService"
       method="calculateFullName(__self__)" if="__id__"/>
   </action-method>
 
