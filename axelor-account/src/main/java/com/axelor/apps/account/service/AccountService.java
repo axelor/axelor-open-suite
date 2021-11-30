@@ -184,4 +184,15 @@ public class AccountService {
     query.setParameter("account", account.getCode());
     return query.getResultList();
   }
+
+  public int toggleStatusSelect(Account account) {
+    if (account != null) {
+      if (account.getStatusSelect() == AccountRepository.STATUS_INACTIVE) {
+        return AccountRepository.STATUS_ACTIVE;
+      } else {
+        return AccountRepository.STATUS_INACTIVE;
+      }
+    }
+    return -1;
+  }
 }

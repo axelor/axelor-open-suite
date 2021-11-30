@@ -51,7 +51,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-account-record-toggle-status-active,save,action-attrs-account-account-status-show-title"
+        onClick="account-account-method-toggle-status-active,save,action-attrs-account-account-status-show-title"
         colSpan="3"/>
     </panel>
     <panel name="mainPanel">
@@ -249,12 +249,6 @@
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
   </action-record>
 
-  <action-record name="account-account-record-toggle-status-active"
-    model="com.axelor.apps.account.db.Account">
-    <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
-    <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
-  </action-record>
-
   <action-method name="action-account-method-compute-balance">
     <call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
   </action-method>
@@ -277,6 +271,10 @@
 
   <action-method name="action-on-change-distribution-template-account">
     <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
+  </action-method>
+
+  <action-method name="account-account-method-toggle-status-active">
+    <call class="com.axelor.apps.account.web.AccountController" method="toggleStatus"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-status-show-title">

@@ -22,7 +22,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="account-analytic-journal-record-toggle-status-active,save,action-attrs-account-analytic-journal-status-show-title"
+        onClick="account-analytic-journal-method-toggle-status-active,save,action-attrs-account-analytic-journal-status-show-title"
         colSpan="3"/>
     </panel>
     <panel name="mainPanel">
@@ -67,11 +67,9 @@
       if="company == null"/>
   </action-validate>
 
-  <action-record name="account-analytic-journal-record-toggle-status-active"
-    model="com.axelor.apps.account.db.AnalyticJournal">
-    <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
-    <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
-  </action-record>
+  <action-method name="account-analytic-journal-method-toggle-status-active">
+    <call class="com.axelor.apps.account.web.AnalyticJournalController" method="toggleStatus"/>
+  </action-method>
 
   <action-attrs name="action-attrs-account-analytic-journal-status-show-title">
     <attribute name="title" for="activeStatusBtn"

@@ -20,4 +20,6 @@ public interface AnalyticJournalControlService {
    * @param analyticJournal
    */
   boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
+
+  int toggleStatusSelect(AnalyticJournal analyticJournal);
 }

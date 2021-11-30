@@ -57,4 +57,16 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
             .count()
         > 0;
   }
+
+  @Override
+  public int toggleStatusSelect(AnalyticJournal analyticJournal) {
+    if (analyticJournal != null) {
+      if (analyticJournal.getStatusSelect() == AnalyticJournalRepository.STATUS_INACTIVE) {
+        return AnalyticJournalRepository.STATUS_ACTIVE;
+      } else {
+        return AnalyticJournalRepository.STATUS_INACTIVE;
+      }
+    }
+    return -1;
+  }
 }

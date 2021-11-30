@@ -134,4 +134,16 @@ public class AccountController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void toggleStatus(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      int newStatus = Beans.get(AccountService.class).toggleStatusSelect(account);
+      if (newStatus >= 0) {
+        response.setValue("statusSelect", newStatus);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
