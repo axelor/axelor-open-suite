@@ -1,0 +1,3 @@
+---
+title: "Sale Order : Add a check when updating tax number to that the ensure fiscal position is compatible"
+type: fix
