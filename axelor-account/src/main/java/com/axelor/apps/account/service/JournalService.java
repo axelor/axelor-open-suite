@@ -21,12 +21,21 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
 public class JournalService {
+
+  protected JournalRepository journalRepository;
+
+  @Inject
+  public JournalService(JournalRepository journalRepository) {
+    this.journalRepository = journalRepository;
+  }
 
   /**
    * Compute the balance of the journal, depending of the account type and balance type
@@ -60,14 +69,15 @@ public class JournalService {
     return resultMap;
   }
 
-  public int toggleStatusSelect(Journal journal) {
+  @Transactional
+  public void toggleStatusSelect(Journal journal) {
     if (journal != null) {
       if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
-        return JournalRepository.STATUS_ACTIVE;
+        journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
       } else {
-        return JournalRepository.STATUS_INACTIVE;
+        journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
       }
+      journalRepository.save(journal);
     }
-    return -1;
   }
 }
