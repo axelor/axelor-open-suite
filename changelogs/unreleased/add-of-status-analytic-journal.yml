@@ -1,0 +1,5 @@
+title: "Analytic journal :  add of a status active/inactive"
+type: feature
+description: |
+  The objective of this feature is to be able to manage inactive analytic journal on AOS. 
+  A move can't be validated if an analytic journal of the movelines is inactive 

@@ -98,7 +98,7 @@
 
   <action-attrs name="action-attrs-domain-journal-distribution-line">
     <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
       if="__parent__ &amp;&amp; __parent__.company"/>
     <attribute name="domain" for="analyticJournal" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
@@ -108,7 +108,7 @@
     model="com.axelor.apps.account.db.AnalyticDistributionLine">
     <field name="analyticJournal"
       expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal"/>
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal.statusSelect == 1"/>
   </action-record>
 
 </object-views>

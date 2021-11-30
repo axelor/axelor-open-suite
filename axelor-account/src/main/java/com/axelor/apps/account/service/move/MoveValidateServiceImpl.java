@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -9,6 +10,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -188,6 +190,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
+
+        checkInactiveAnalyticJournal(move);
+
+        checkInactiveAccount(move);
 
         checkInactiveAnalyticAccount(move);
 
@@ -508,6 +514,63 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNTS_FOUND),
+            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+      }
+    }
+  }
+
+  protected void checkInactiveAnalyticJournal(Move move) throws AxelorException {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      List<String> inactiveList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getAnalyticMoveLineList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .map(AnalyticMoveLine::getAnalyticJournal)
+              .filter(
+                  analyticJournal ->
+                      analyticJournal.getStatusSelect() != null
+                          && analyticJournal.getStatusSelect()
+                              != AnalyticJournalRepository.STATUS_ACTIVE)
+              .distinct()
+              .map(AnalyticJournal::getName)
+              .collect(Collectors.toList());
+      if (inactiveList.size() == 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNAL_FOUND),
+            inactiveList.get(0));
+      } else if (inactiveList.size() > 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNALS_FOUND),
+            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+      }
+    }
+  }
+
+  protected void checkInactiveAccount(Move move) throws AxelorException {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      List<String> inactiveList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getAccount)
+              .filter(Objects::nonNull)
+              .filter(
+                  account ->
+                      account.getStatusSelect() != null
+                          && account.getStatusSelect() != AccountRepository.STATUS_ACTIVE)
+              .distinct()
+              .map(Account::getCode)
+              .collect(Collectors.toList());
+      if (inactiveList.size() == 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ACCOUNT_FOUND),
+            inactiveList.get(0));
+      } else if (inactiveList.size() > 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INACTIVE_ACCOUNTS_FOUND),
             inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
       }
     }

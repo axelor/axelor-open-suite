@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.util.Optional;
@@ -11,10 +12,12 @@ import java.util.Optional;
 public class FECImportServiceImpl implements FECImportService {
 
   protected CompanyRepository companyRepository;
+  protected MetaFiles metaFiles;
 
   @Inject
-  public FECImportServiceImpl(CompanyRepository companyRepository) {
+  public FECImportServiceImpl(CompanyRepository companyRepository, MetaFiles metaFiles) {
     this.companyRepository = companyRepository;
+    this.metaFiles = metaFiles;
   }
 
   @Override
