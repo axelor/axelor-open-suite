@@ -11,7 +11,7 @@
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="cashAccount" form-view="account-form" grid-view="account-grid"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
       canEdit="false"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"
       domain="self.company = :company AND self.statusSelect = 1"/>
@@ -32,20 +32,20 @@
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
     <field name="purchFixedAssetsAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
     <field name="saleAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
     <field name="financialDiscountAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
   </grid>
 

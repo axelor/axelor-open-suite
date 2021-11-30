@@ -64,48 +64,48 @@
         <panel name="depreciationAccountsPanel" title="Depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="chargeAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="depreciationAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="debtReceivableAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
             form-view="account-form"/>
           <field name="provisionTangibleFixedAssetAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form"/>
           <field name="wbProvisionTangibleFixedAssetAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
         </panel>
         <panel name="derogatoryAccountsPanel" title="Derogatory depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="expenseDepreciationDerogatoryAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form"/>
           <field name="capitalDepreciationDerogatoryAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'equity'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'equity'"
             form-view="account-form"/>
           <field name="incomeDepreciationDerogatoryAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
         </panel>
         <panel name="exitAccountPanel" title="Assets cession" colspan="12"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="realisedAssetsValueAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form"/>
           <field name="realisedAssetsIncomeAccount"
-            domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income' "
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income' "
             form-view="account-form"/>
         </panel>
         <panel name="ifrsAccountsPanel" title="IFRS depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
-          <field name="ifrsDepreciationAccount" form-view="account-form"/>
-          <field name="ifrsChargeAccount" form-view="account-form"/>
+          <field name="ifrsDepreciationAccount" form-view="account-form" domain="self.statusSelect = 1"/>
+          <field name="ifrsChargeAccount" form-view="account-form" domain="self.statusSelect = 1"/>
         </panel>
       </panel>
       <panel

@@ -76,7 +76,7 @@
         domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
       <field name="purchaseAccount"
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
         form-view="account-form" grid-view="account-grid"/>
       <panel name="analyticPanel">
         <field
