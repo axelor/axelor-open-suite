@@ -596,6 +596,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
       "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
+      "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
@@ -770,7 +772,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -995,4 +997,16 @@ public interface IExceptionMessage {
 
   static final String INACTIVE_ACCOUNTS_FOUND =
       /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNAL_FOUND = /*$$(*/
+      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNALS_FOUND = /*$$(*/
+      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNT_FOUND =
+      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
+      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
 }

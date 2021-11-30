@@ -88,8 +88,9 @@ public interface FixedAssetGenerationService {
    *
    * @param fixedAsset
    * @return
+   * @throws AxelorException
    */
-  String generateSequence(FixedAsset fixedAsset);
+  String generateSequence(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Copy FixedAsset including all lines.
@@ -97,8 +98,9 @@ public interface FixedAssetGenerationService {
    * @param fixedAsset
    * @param disposalQty
    * @return
+   * @throws AxelorException
    */
-  FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty);
+  FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) throws AxelorException;
 
   /**
    * Copy fixedAssetCategory infos such as computationMethodSelect, numberOfDepreciation, etc.. in

@@ -408,7 +408,8 @@
           requiredIf="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"/>
         <field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
-        <field name="analyticJournal" domain="self.company = :company"
+        <field name="analyticJournal"
+          domain="self.company = :company AND self.statusSelect = 1"
           showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
         <field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew"
           showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"

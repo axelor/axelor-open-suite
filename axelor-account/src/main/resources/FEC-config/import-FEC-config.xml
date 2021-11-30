@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+
+  <input file="FEC.csv" separator="|" type="com.axelor.apps.account.db.MoveLine"
+    call="com.axelor.csv.script.ImportMove:importFECMove">
+    <!-- <header>journalCode, journalName, move_reference, moveLine_date, accountCode, accountName, partnerSeq,
+      partnerName, moveLine_origin, moveLineOriginDate, description, debit, credit, reconcileGroupCode, reconcileGroupDateOfLettering,
+      validationDate, currencyAmount, move_currency</header> -->
+    <bind to="partner" column="CompAuxNum" search="self.partnerSeq = :CompAuxNum" update="true"/>
+    <bind to="debit" eval="Debit.replace(',', '.')" column="Debit"/>
+    <bind to="credit" eval="Credit.replace(',', '.')" column="Credit"/>
+    <bind to="origin" column="PieceRef"/>
+    <bind to="description" column="EcritureLib"/>
+    <bind to="currencyAmount" eval="Montantdevise.replace(',', '.')" column="Montantdevise"/>
+    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet"
+      update="true"/>
+  </input>
+
+</csv-inputs>

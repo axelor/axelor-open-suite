@@ -374,7 +374,16 @@
     <domain>self.reportType.typeSelect &gt;= 1000 and self.reportType.typeSelect &lt; 2000</domain>
   </action-view>
 
-  <menuitem name="account-conf-reporting" parent="account-conf" title="Reportings/Exports"/>
+  <menuitem name="account-conf-reporting" parent="account-conf" title="Exports/Imports"/>
+
+  <menuitem title="Import FEC Type" name="account-conf-import-fec-type"
+    parent="account-conf-reporting" action="account.conf.import.fec.type"/>
+
+  <action-view name="account.conf.import.fec.type" title="Import FEC Type"
+    model="com.axelor.apps.account.db.ImportFECType">
+    <view type="grid" name="import-fec-type-grid"/>
+    <view type="form" name="import-fec-type-form"/>
+  </action-view>
 
   <menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
     title="Interbank codes" action="account.conf.reporting.interbank.code"/>

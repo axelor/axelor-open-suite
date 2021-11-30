@@ -209,4 +209,12 @@ public class PaymentVoucherController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void reloadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    try {
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
