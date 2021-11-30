@@ -23,7 +23,6 @@
     <integer name="periodDurationSelect" title="Period duration"
       selection="account.year.period.duration.select" default="0"/>
     <decimal name="amountForGeneration" title="Amount for each line"/>
-    <boolean name="checkAvailableBudget" title="Check available budget"/>
 
     <extra-code><![CDATA[
 

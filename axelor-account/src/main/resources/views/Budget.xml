@@ -80,7 +80,6 @@
     </panel>
     <panel name="configuration" title="Configuration" canCollapse="true" sidebar="true"
       collapseIf="true" readonlyIf="statusSelect == 2">
-      <field name="checkAvailableBudget" widget="boolean-switch"/>
     </panel>
   </form>
 
@@ -105,8 +104,6 @@
     model="com.axelor.apps.account.db.Budget">
     <field name="company" expr="eval:__user__.activeCompany"/>
     <field name="inChargeUser" expr="eval: __user__"/>
-    <field name="checkAvailableBudget"
-      expr="eval: __config__.app.getApp('budget')?.checkAvailableBudget"/>
   </action-record>
 
   <action-method name="action-budget-method-compute-total-amount">
