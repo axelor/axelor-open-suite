@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
 import java.math.BigDecimal;
@@ -57,5 +58,16 @@ public class JournalService {
     resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
 
     return resultMap;
+  }
+
+  public int toggleStatusSelect(Journal journal) {
+    if (journal != null) {
+      if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
+        return JournalRepository.STATUS_ACTIVE;
+      } else {
+        return JournalRepository.STATUS_INACTIVE;
+      }
+    }
+    return -1;
   }
 }

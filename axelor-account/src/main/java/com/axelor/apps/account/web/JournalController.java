@@ -72,4 +72,16 @@ public class JournalController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void toggleStatus(ActionRequest request, ActionResponse response) {
+    try {
+      Journal journal = request.getContext().asType(Journal.class);
+      int newStatus = Beans.get(JournalService.class).toggleStatusSelect(journal);
+      if (newStatus >= 0) {
+        response.setValue("statusSelect", newStatus);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

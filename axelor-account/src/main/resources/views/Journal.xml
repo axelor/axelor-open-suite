@@ -19,8 +19,8 @@
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
-      <button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1"
-        onClick="account-journal-record-status-active,save,action-method-account-journal-readonly-if-journal-in-move,action-attrs-account-journal-status-show-title"
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="account-journal-method-status-active,save,action-method-account-journal-readonly-if-journal-in-move,action-attrs-account-journal-status-show-title"
         colSpan="2"/>
     </panel>
     <panel name="mainPanel">
@@ -124,17 +124,15 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
 
-  <action-record name="account-journal-record-status-active"
-    model="com.axelor.apps.account.db.Account">
-    <field name="statusSelect" expr="eval: 1" if="statusSelect == 0"/>
-    <field name="statusSelect" expr="eval: 0" if="statusSelect == 1"/>
-  </action-record>
+  <action-method name="account-journal-method-status-active">
+    <call class="com.axelor.apps.account.web.JournalController" method="toggleStatus"/>
+  </action-method>
 
   <action-attrs name="action-attrs-account-journal-status-show-title">
     <attribute name="title" for="activeStatusBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
+      expr="eval: com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
     <attribute name="title" for="activeStatusBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
+      expr="eval: com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
   </action-attrs>
 
   <action-record name="account-journal-on-change-not-export-ok"
