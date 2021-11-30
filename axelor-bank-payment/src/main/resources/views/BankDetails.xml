@@ -20,9 +20,18 @@
     <field name="bank.code"/>
     <field name="company" hidden="true"/>
     <field name="balanceUpdatedDate" if-module="axelor-bank-payment"
-      if="__config__.app.isApp('bank-payment')"/>
+      if="__config__.app.isApp('bank-payment')">
+      <hilite
+        if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment(__config__.date).diff(balanceUpdatedDate,'days') &lt; 7"
+        color="warning"/>
+      <hilite if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 7"
+        color="danger"/>
+    </field>
     <field name="balance" aggregate="sum" if-module="axelor-bank-payment"
-      if="__config__.app.isApp('bank-payment')"/>
+      if="__config__.app.isApp('bank-payment')">
+      <hilite if="balance == 0" color="warning"/>
+      <hilite if="balance &lt; 0" color="danger"/>
+    </field>
     <button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment"
       if="__config__.app.isApp('bank-payment')"
       onClick="action-bank-details-view-show-bank-statement-lines"/>
@@ -35,6 +44,7 @@
     <column name="balanceUpdatedDate" type="date"/>
     <column name="balance" type="decimal"/>
     <column name="balanceBtn" type="button"/>
+    <column name="finalBalanceBtn" type="button"/>
 
     <node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
       <field name="name" as="company"/>
@@ -48,6 +58,8 @@
       <field name="balance" as="balance"/>
       <button name="balanceBtn" icon="fa-search"
         onClick="action-bank-details-view-show-bank-statement-lines"/>
+      <button name="finalBalanceBtn" icon="fa-indent"
+        onClick="action-bank-details-view-show-bank-statement-lines-final-balance"/>
     </node>
   </tree>
 

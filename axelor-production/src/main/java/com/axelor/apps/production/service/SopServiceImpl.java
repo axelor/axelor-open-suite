@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -43,6 +44,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SopServiceImpl implements SopService {
 
@@ -116,14 +119,20 @@ public class SopServiceImpl implements SopService {
     for (SopLine sopLine : sop.getSopLineList()) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
-        this.setSalesForecast(sopLine, sop.getProductCategory(), sop.getCompany());
+        this.setSalesForecast(
+            sopLine, sop.getProductCategory(), sop.getStockLocationSet(), sop.getCompany());
       }
     }
   }
 
   @Transactional
-  protected void setSalesForecast(SopLine sopLine, ProductCategory category, Company company)
+  protected void setSalesForecast(
+      SopLine sopLine,
+      ProductCategory category,
+      Set<StockLocation> stockLocationSet,
+      Company company)
       throws AxelorException {
+
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
@@ -136,15 +145,25 @@ public class SopServiceImpl implements SopService {
     ArrayList<Integer> statusList = new ArrayList<Integer>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+
+    List<Long> stockLocationIds =
+        stockLocationSet.stream()
+            .map(stockLocation -> stockLocation.getId())
+            .collect(Collectors.toList());
+
     BigDecimal exTaxSum = BigDecimal.ZERO;
     Query<SaleOrderLine> query =
         saleOrderLineRepo
             .all()
             .filter(
-                "self.saleOrder.company = ?1 AND self.saleOrder.statusSelect in (?2) AND self.product.productCategory = ?3",
+                "self.saleOrder.company = ?1 "
+                    + "AND self.saleOrder.statusSelect in (?2) "
+                    + "AND self.product.productCategory = ?3 "
+                    + "AND self.saleOrder.stockLocation.id in (?4)",
                 company,
                 statusList,
-                category)
+                category,
+                stockLocationIds)
             .order("id");
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;

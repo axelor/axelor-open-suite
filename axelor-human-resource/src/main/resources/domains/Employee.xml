@@ -61,7 +61,8 @@
     <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary"
       default="false" massUpdate="true"/>
     <many-to-one name="imposedDayEventsPlanning"
-      ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
+      ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed holidays planning"
+      massUpdate="true"/>
     <string name="socialSecurityNumber" title="Social security number" encrypted="true"/>
     <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance"
       title="Employee advances" readonly="true" mappedBy="employee"/>

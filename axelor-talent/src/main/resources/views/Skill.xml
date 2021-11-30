@@ -5,12 +5,16 @@
 
   <grid name="tag-skill-grid" title="Tag skills" model="com.axelor.apps.talent.db.Skill">
     <field name="name"/>
+    <field name="validityDuration"/>
+    <field name="typeSelect"/>
   </grid>
 
   <form name="tag-skill-form" title="Tag skill" model="com.axelor.apps.talent.db.Skill"
     width="large">
     <panel name="namePanel">
       <field name="name"/>
+      <field name="validityDuration" canNew="true" required="true"/>
+      <field name="typeSelect"/>
     </panel>
   </form>
 

@@ -36,6 +36,16 @@
     <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Other bank order types"/>
 
+    <boolean name="hasAutomaticReconciliation" title="Automatic pointing"
+      help="Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete"/>
+    <boolean name="hasAutoMoveFromStatementRule" title="Automatic accounting ?"
+      help="If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed"/>
+
+    <decimal name="bnkStmtAutoReconcileAmountMargin"
+      title="Amount of the semi-interval of confidence for the amounts" min="0.00" max="1000.00"/>
+    <integer name="bnkStmtAutoReconcileDateMargin"
+      title="Duration (days) of the semi-interval of convidence for the dates" min="0" max="90"/>
+
     <!-- SEPA Direct Debit -->
     <string name="icsNumber" title="ICS Number" min="13" max="13"/>
 

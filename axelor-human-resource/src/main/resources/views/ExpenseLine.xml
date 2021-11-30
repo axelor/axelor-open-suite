@@ -203,7 +203,7 @@
 
   <action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
   <action-attrs name="action-expense-line-attrs-domain-project">

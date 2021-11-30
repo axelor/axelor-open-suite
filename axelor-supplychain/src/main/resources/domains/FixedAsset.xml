@@ -7,7 +7,7 @@
 
   <entity name="FixedAsset" lang="java" cacheable="true">
 
-    <many-to-one name="stockLocation" title="Stock location"
+    <many-to-one name="stockLocation" title="FixedAsset.Location"
       ref="com.axelor.apps.stock.db.StockLocation"/>
     <many-to-one name="trackingNumber" title="Tracking Number"
       ref="com.axelor.apps.stock.db.TrackingNumber"/>

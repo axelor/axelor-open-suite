@@ -41,6 +41,16 @@
         <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
           showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
       </panel>
+      <panel name="workshopStockLocationPanel" title="Workshop"
+        if="__config__.app.getApp('production').getManageWorkshop()">
+        <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
+        <field name="workshopStockLocation" colSpan="12"
+          showIf="!defWorkshopStockLocationAsFormula"
+          domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
+        <field name="workshopStockLocationFormula" colSpan="12" height="120"
+          widget="CodeEditor" showTitle="false" x-code-syntax="groovy"
+          showIf="defWorkshopStockLocationAsFormula"/>
+      </panel>
       <panel name="productionProcessPanel" title="Production process">
         <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator"
           colSpan="6"/>
@@ -51,7 +61,7 @@
         <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
           showTitle="false" x-code-syntax="groovy"
           showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-        <field name="configuratorProdProcess" colSpan="12"
+        <field name="configuratorProdProcess" colSpan="12" canNew="true" canEdit="true"
           showIf="defProdProcessAsConfigurator"/>
       </panel>
     </panel>

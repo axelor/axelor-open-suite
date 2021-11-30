@@ -34,13 +34,15 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -51,7 +53,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
@@ -101,9 +102,11 @@ import wslite.json.JSONException;
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected ExpenseRepository expenseRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineConsolidateService moveLineConsolidateService;
   protected AccountManagementAccountService accountManagementService;
   protected AppAccountService appAccountService;
   protected AccountConfigHRService accountConfigService;
@@ -115,9 +118,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Inject
   public ExpenseServiceImpl(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
@@ -125,11 +129,13 @@ public class ExpenseServiceImpl implements ExpenseService {
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveLineConsolidateService moveLineConsolidateService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.expenseRepository = expenseRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.accountManagementService = accountManagementService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -138,13 +144,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
+    this.moveLineConsolidateService = moveLineConsolidateService;
   }
 
   @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService
+            .getAccountConfig(expense.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;
     }
 
@@ -376,6 +386,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       moveDate = appAccountService.getTodayDate(expense.getCompany());
       expense.setMoveDate(moveDate);
     }
+    String origin = expense.getExpenseSeq();
+    String description = expense.getFullName();
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
@@ -391,17 +403,18 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                accountConfigService.getExpenseJournal(accountConfig),
-                company,
-                null,
-                partner,
-                moveDate,
-                partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
+        moveCreateService.createMove(
+            accountConfigService.getExpenseJournal(accountConfig),
+            company,
+            null,
+            partner,
+            moveDate,
+            moveDate,
+            partner.getInPaymentMode(),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+            origin,
+            description);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -412,7 +425,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     int expenseLineId = 1;
     Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
     moveLines.add(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
@@ -443,7 +456,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
       exTaxTotal = expenseLine.getUntaxedAmount();
       MoveLine moveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,
@@ -466,7 +479,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       expenseLineId++;
     }
 
-    moveLineService.consolidateMoveLines(moveLines);
+    moveLineConsolidateService.consolidateMoveLines(moveLines);
     account = accountConfigService.getExpenseTaxAccount(accountConfig);
     BigDecimal taxTotal = BigDecimal.ZERO;
     for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
@@ -476,7 +489,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     if (taxTotal.signum() != 0) {
       MoveLine moveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,
@@ -492,7 +505,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     expense.setMove(move);
     return move;
@@ -594,6 +607,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     LocalDate paymentDate = expense.getPaymentDate();
     BigDecimal paymentAmount = expense.getInTaxTotal();
     BankDetails companyBankDetails = company.getDefaultBankDetails();
+    String origin = expense.getExpenseSeq();
 
     Account employeeAccount;
 
@@ -608,20 +622,21 @@ public class ExpenseServiceImpl implements ExpenseService {
     employeeAccount = expenseMoveLine.getAccount();
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                expense.getMove().getCurrency(),
-                partner,
-                paymentDate,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+        moveCreateService.createMove(
+            journal,
+            company,
+            expense.getMove().getCurrency(),
+            partner,
+            paymentDate,
+            null,
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
@@ -630,11 +645,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             paymentDate,
             null,
             1,
-            expense.getExpenseSeq(),
+            origin,
             null));
 
     MoveLine employeeMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
@@ -643,13 +658,13 @@ public class ExpenseServiceImpl implements ExpenseService {
             paymentDate,
             null,
             2,
-            expense.getExpenseSeq(),
+            origin,
             null);
     employeeMoveLine.setTaxAmount(expense.getTaxTotal());
 
     move.addMoveLineListItem(employeeMoveLine);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
     expense.setPaymentMove(move);
 
     Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);

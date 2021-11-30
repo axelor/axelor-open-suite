@@ -156,7 +156,8 @@ public interface SaleOrderLineService {
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence);
+      Integer sequence)
+      throws AxelorException;
 
   /**
    * Get unique values of type field from pack lines
@@ -300,14 +301,16 @@ public interface SaleOrderLineService {
   /**
    * To manage Complementary Product sale order line.
    *
-   * @param saleOrderLine
+   * @param complementaryProduct
    * @param saleOrder
-   * @param complementaryProducts
+   * @param saleOrderLine
+   * @return New complementary sales order lines
    * @throws AxelorException
    */
   public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      List<ComplementaryProduct> complementaryProducts)
+      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
+      throws ClassNotFoundException, AxelorException;
 }

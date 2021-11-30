@@ -144,6 +144,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
       "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
 
+  String CONFIGURATOR_BOM_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -204,4 +207,52 @@ public interface IExceptionMessage {
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+
+  // Configurator Prod Process Service
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA = /*$$(*/
+      "The formula script to fill the checkbox manage consumed products on phases returns null value or is not consistent. Please correct on prod process configurator id : %s." /*)*/;
+
+  // Configurator Prod Process Line Service
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA = /*$$(*/
+      "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
+      "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  // Configurator Prod Product Service
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA = /*$$(*/
+      "The formula script to fill the product returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_PRODUCT = /*$$(*/
+      "Product cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_QTY_FORMULA = /*$$(*/
+      "The formula script to fill the qty returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_QTY = /*$$(*/
+      "Qty cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA = /*$$(*/
+      "The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_UNIT = /*$$(*/
+      "Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s." /*)*/;
 }

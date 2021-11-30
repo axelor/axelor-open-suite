@@ -41,8 +41,8 @@
         showIf="$get('company.defaultBankDetails.balanceUpdatedDate')" colSpan="3"/>
       <button name="populateRecapBtn" title="Populate"
         onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
-      <panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500"
-        action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
+      <panel-dashlet name="forecastRecapLineListPanel" canSearch="true" showIf="id"
+        height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
       <field name="endingBalance" readonly="true" colSpan="4"/>
       <field name="currency" readonly="true" colSpan="4"/>
       <field name="calculationDate" colSpan="4"/>

@@ -7,7 +7,7 @@
     title="App project" model="com.axelor.apps.base.db.AppProject" canDelete="false" canNew="false"
     width="large" extension="true">
 
-    <extend target="//field[@name='generateProjectSequence']">
+    <extend target="//field[@name='projectLabel']">
       <insert position="after">
         <field name="defaultIncrement"/>
       </insert>

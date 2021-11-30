@@ -19,7 +19,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -53,7 +53,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -89,7 +89,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -97,6 +97,7 @@
     <field name="registrationCode"/>
     <field name="mainAddress"/>
     <field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
@@ -114,8 +115,8 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
     <field name="jobTitleFunction"/>
@@ -131,8 +132,8 @@
     groupBy="user">
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -416,11 +417,11 @@
             colSpan="12"/>
         </panel>
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
-          <field name="fixedPhone" colSpan="3" placeholder="+33100000000"
+          <field name="fixedPhone" colSpan="3" placeholder="+33100000000" widget="phone"
             pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="fax" colSpan="3" placeholder="+33000000000"
+          <field name="fax" colSpan="3" placeholder="+33000000000" widget="phone"
             pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"
+          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"
             placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
             onChange="action-partner-method-normalize-mobilePhone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
@@ -519,6 +520,11 @@
           form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid"
           if-module="axelor-sale"
           if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
+        <panel name="accountblockedPanel">
+          <field name="hasBlockedAccount"
+            onChange="action-attrs-update-manually-blocked-account"/>
+          <field name="hasManuallyBlockedAccount" hidden="true"/>
+        </panel>
         <panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
           colSpan="12">
           <field name="saleOrderComments" widget="html" colSpan="12" showTitle="false"/>
@@ -593,8 +599,8 @@
 
   <grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
 
@@ -652,10 +658,10 @@
             </editor>
           </field>
           <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            onChange="action-partner-method-normalize-fax"/>
+            widget="phone" onChange="action-partner-method-normalize-fax"/>
           <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="mobilePhone" placeholder="+33100000000"
+            widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
+          <field name="mobilePhone" placeholder="+33100000000" widget="phone"
             pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
           <field name="webSite" placeholder="http://www.url.com"
             pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
@@ -753,9 +759,9 @@
         <field name="functionBusinessCard"/>
         <field name="reportsTo" domain="self.isContact = true"/>
         <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fixedPhone"/>
+          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
         <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-mobilePhone"/>
+          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -765,7 +771,7 @@
           </editor>
         </field>
         <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fax"/>
+          widget="phone" onChange="action-partner-method-normalize-fax"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid" colSpan="12"/>
         <field name="timeSlot" colSpan="12"/>
@@ -826,11 +832,11 @@
         </editor>
       </field>
       <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        onChange="action-partner-method-normalize-fax"/>
+        widget="phone" onChange="action-partner-method-normalize-fax"/>
       <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        onChange="action-partner-method-normalize-fixedPhone"/>
+        widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
       <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        onChange="action-partner-method-normalize-mobilePhone"/>
+        widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
       <field name="webSite" placeholder="http://www.url.com"
         pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
@@ -937,8 +943,8 @@
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
     <field name="firstName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
 
@@ -998,9 +1004,9 @@
         <field name="jobTitleFunction"/>
         <field name="reportsTo" domain="self.isContact = true"/>
         <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fixedPhone"/>
+          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
         <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-mobilePhone"/>
+          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -1009,7 +1015,7 @@
           </editor>
         </field>
         <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          onChange="action-partner-method-normalize-fax"/>
+          widget="phone" onChange="action-partner-method-normalize-fax"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid"/>
       </panel>
@@ -1511,6 +1517,8 @@
     </filter>
   </search-filters>
 
-
+  <action-attrs name="action-attrs-update-manually-blocked-account">
+    <attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
+  </action-attrs>
 
 </object-views>

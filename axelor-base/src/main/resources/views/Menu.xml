@@ -457,13 +457,7 @@
     order="20" if="__config__.app.isApp('base')"/>
 
   <menuitem name="admin-root-organisation-territory" parent="admin-root-organisation"
-    title="Territories" action="admin.root.organisation.territory"/>
-
-  <action-view name="admin.root.organisation.territory" title="Territories"
-    model="com.axelor.apps.base.db.Territory">
-    <view type="grid" name="territory-grid"/>
-    <view type="form" name="territory-form"/>
-  </action-view>
+    title="Territories"/>
 
   <menuitem name="admin-root-organisation-territory-street"
     parent="admin-root-organisation-territory" title="Streets"

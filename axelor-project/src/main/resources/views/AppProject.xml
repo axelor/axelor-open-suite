@@ -7,12 +7,19 @@
     model="com.axelor.apps.base.db.AppProject" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="projectLabel"/>
-      <spacer/>
       <field name="resourceManagement" widget="boolean-switch"/>
       <field name="checkResourceAvailibility" widget="boolean-switch"
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
-      <field name="generateProjectSequence" widget="boolean-switch"/>
+      <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
+      <field name="defaultTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
+      <field name="defaultPrioritySet" widget="TagSelect"/>
+      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
+        <panel-related field="taskCustomFieldsList" colSpan="6"
+          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+        <panel-related field="projectCustomFieldsList" colSpan="6"
+          form-view="project-project-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+      </panel>
     </panel>
 
     <panel-mail name="mailPanel">

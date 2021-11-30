@@ -263,4 +263,12 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
+
+  /**
+   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
+   * {@link ManufOrder} on the header of every page.
+   *
+   * @return
+   */
+  public void createBarcode(ManufOrder manufOrder);
 }

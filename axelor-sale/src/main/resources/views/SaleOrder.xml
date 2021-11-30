@@ -34,6 +34,8 @@
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="statusSelect"/>
+    <field name="lastReminderDate"/>
+    <field name="lastReminderComments"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -302,7 +304,7 @@
 		      </h3>
 		    ]]></viewer>
       </field>
-      <panel name="detailsPanel" colSpan="12">
+      <panel name="detailsPanel" colSpan="10">
         <field name="saleOrderTypeSelect" colSpan="3" css="label-bold bold" showTitle="false"
           readonlyIf="statusSelect >= 2"
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()"
@@ -370,6 +372,7 @@
 					]]></viewer>
         </field>
       </panel>
+      <field name="oneoffSale" colSpan="2"/>
       <field name="company.tradingNameSet" hidden="true"/>
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
@@ -420,6 +423,12 @@
         <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
           colSpan="3" name="directOrderLocation"
           onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
+        <field if="__config__.app.isApp('account')" name="taxNumber" colSpan="3"
+          canNew="false" canEdit="false"
+          onSelect="action-sale-order-attrs-compute-tax-number-domain"
+          onChange="action-sale-order-record-check-fiscal-position"/>
+        <field if="__config__.app.isApp('account')" name="fiscalPosition" colSpan="3"
+          canNew="false" canEdit="false" domain=":taxNumber MEMBER OF self.taxNumberSet"/>
         <panel name="otherInfoPanel" colSpan="3">
           <field name="inAti" hidden="true"
             readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2"
@@ -682,6 +691,11 @@
       <button if="__config__.app.getApp('sale').getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
+      <button name="seperateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
+      <button name="computeBtn" title="Compute lines with pricing scale"
+        onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
+        if="__config__.app.getApp('sale').getIsEnableCalculationEntireQuatationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -792,6 +806,8 @@
         <hilite color="danger"
           if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
       </field>
+      <field name="lastReminderDate" colSpan="6"/>
+      <field name="lastReminderComments"/>
       <field
         if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"
         name="expectedRealisationDate" colSpan="6"/>
@@ -1352,6 +1368,7 @@
     <action name="action-sale-order-method-fill-company-bank-details"/>
     <action name="action-sale-record-update-info-company"/>
     <action name="action-sale-order-record-compute-end-of-validity-date"/>
+    <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
   <action-group name="action-sale-group-onchange-client-partner">
@@ -1456,7 +1473,7 @@
     <action name="action-supplychain-sale-order-method-get-stock-location"
       if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
-    <action name="action-sale-order-method-change-sale-order-line-tax" if="template"/>
+    <action name="action-sale-order-method-update-sale-order-line-list" if="template"/>
     <action name="action-sale-order-method-compute" if="template"/>
     <action name="action-sale-order-attrs-set-is-ispm-required"
       if="__config__.app.isApp('supplychain')"/>
@@ -1598,6 +1615,10 @@
       method="handleComplementaryProducts"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-seperate-in-new-quotation">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
+  </action-method>
+
   <action-record name="action-sale-record-newVersion"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="statusSelect" expr="eval: 1"/>
@@ -1731,6 +1752,12 @@
     <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
   </action-record>
 
+  <action-record name="action-sale-order-record-check-fiscal-position"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="fiscalPosition" expr="eval: null"
+      if="fiscalPosition != null &amp;&amp; !taxNumber?.fiscalPositionSet?.contains(fiscalPosition)"/>
+  </action-record>
+
   <action-method name="action-sale-order-record-compute-end-of-validity-date">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="computeEndOfValidityDate"/>
@@ -1779,6 +1806,19 @@
     <attribute for="companyBankDetails" name="hidden"
       expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
   </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-compute-tax-number-domain">
+    <attribute name="domain" for="taxNumber"
+      expr="eval: company?.taxNumberList?.collect{it.id}?.size > 0 ? &quot;self.id IN (${company?.taxNumberList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      if="__config__.app.isApp('account')"/>
+  </action-attrs>
+
+  <action-record name="action-sale-order-record-set-default-tax-number"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="taxNumber"
+      expr="eval: company?.taxNumberList?.size() == 1 ? company.taxNumberList.collect{it}[0] : null"
+      if="__config__.app.isApp('account')"/>
+  </action-record>
 
   <action-method name="action-sale-order-method-set-client-partner-domain">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
@@ -2087,8 +2127,8 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="generateSaleOrderWizard"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-change-sale-order-line-tax">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineTax"/>
+  <action-method name="action-sale-order-method-update-sale-order-line-list">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineList"/>
   </action-method>
 
   <action-attrs name="action-sale-order-attrs-template-deafult-currency">

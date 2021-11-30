@@ -10,7 +10,7 @@
     title="Project Folder" action="business.project.folder" order="5"/>
 
   <action-view name="business.project.folder" title="Project Folder"
-    model="com.axelor.apps.project.db.ProjectFolder">
+    model="com.axelor.apps.businessproject.db.ProjectFolder">
     <view type="grid" name="project-folder-grid"/>
     <view type="form" name="project-folder-form"/>
   </action-view>
@@ -26,7 +26,6 @@
     <view-param name="search-filters" value="project-filters"/>
     <domain>self.isBusinessProject = true</domain>
     <context name="_fromBusinessProject" expr="eval:true"/>
-    <context name="_fromProject" expr="eval:false"/>
   </action-view>
 
   <menuitem name="business-project-root-invoicing-project" order="-102"

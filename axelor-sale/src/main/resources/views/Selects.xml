@@ -84,4 +84,10 @@
     <option value="doc">Word</option>
     <option value="pdf">PDF</option>
   </selection>
+
+  <selection name="sale.complementary.product.generation.type.select">
+    <option value="1">Creation for the sale order</option>
+    <option value="2">Creation for every sale order lines</option>
+  </selection>
+
 </object-views>

@@ -18,6 +18,20 @@
     <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
     <many-to-one name="stockUnit" title="Default unit"
       ref="com.axelor.apps.base.db.Unit"/>
+    <boolean name="activateTrackingNumberBarCodeGeneration"
+      title="Activate bar code generation for tracking number" default="false"/>
+    <boolean name="editTrackingNumberBarcodeType"
+      title="Specify the barcode type by tracking number configuration" default="false"/>
+    <many-to-one name="trackingNumberBarcodeTypeConfig"
+      title="Tracking number barcode type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"
+      default="EAN_13"/>
+    <boolean name="activateStockLocationBarCodeGeneration"
+      title="Activate bar code generation for stock location" default="false"/>
+    <boolean name="editStockLocationBarcodeType"
+      title="Specify the barcode type by stock location" default="false"/>
+    <many-to-one name="stockLocationBarcodeTypeConfig"
+      title="Stock location barcode type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"
+      default="EAN_13"/>
 
     <track>
       <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>

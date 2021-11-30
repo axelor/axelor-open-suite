@@ -27,6 +27,16 @@ import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
+import com.axelor.apps.project.db.repo.WikiProjectRepository;
+import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.project.service.MetaJsonFieldProjectService;
+import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectActivityDashboardService;
+import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectDashboardService;
+import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectMenuService;
+import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -55,9 +65,14 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
     bind(TeamRepository.class).to(TeamProjectRepository.class);
     bind(TimerProjectTaskService.class).to(TimerProjectTaskServiceImpl.class);
+    bind(MetaJsonFieldProjectService.class).to(MetaJsonFieldProjectServiceImpl.class);
+    bind(ProjectMenuService.class).to(ProjectMenuServiceImpl.class);
     bind(TaskTemplateService.class).to(TaskTemplateServiceImpl.class);
     bind(ProjectTemplateService.class).to(ProjectTemplateServiceImpl.class);
     bind(TaskTemplateRepository.class).to(TaskTemplateManagementRepository.class);
     bind(ResourceBookingService.class).to(ResourceBookingServiceImpl.class);
+    bind(ProjectDashboardService.class).to(ProjectDashboardServiceImpl.class);
+    bind(ProjectActivityDashboardService.class).to(ProjectActivityDashboardServiceImpl.class);
+    bind(WikiRepository.class).to(WikiProjectRepository.class);
   }
 }

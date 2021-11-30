@@ -193,6 +193,24 @@
 
     <string name="headOfficeAddress" title="Head office address"/>
 
+    <boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries on printing"
+      default="false"/>
+
+    <many-to-one name="paymentDelayReason" title="Payment delay reason"
+      ref="com.axelor.apps.account.db.PaymentDelayReason"/>
+    <string name="paymentDelayReasonComments" title="Payment delay reason comments"
+      large="true"/>
+    <date name="nextActionDate" title="Next action date"/>
+
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <string name="legalNotice" title="Legal notice" large="true"
+      help="Legal notice displayed on invoices where a discount was granted"/>
+    <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <extra-code><![CDATA[
@@ -271,6 +289,10 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

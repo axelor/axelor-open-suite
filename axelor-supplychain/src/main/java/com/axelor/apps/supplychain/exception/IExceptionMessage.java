@@ -274,4 +274,10 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
       "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
+
+  static final String SALE_ORDER_BANK_DETAILS_MISSING = /*$$(*/
+      "%s : The advance payment generation failed. Please configure the bank details for the company %s and the associated payment mode %s either on the payment mode side or this Sale order %s record (hidden field)." /*)*/;
+
+  static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
+      "The customer account is blocked because he has late payments." /*)*/;
 }

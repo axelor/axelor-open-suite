@@ -45,6 +45,7 @@
   </grid>
 
 
+
   <form name="account-management-form" title="Account management"
     model="com.axelor.apps.account.db.AccountManagement"
     onNew="action-account-management-group-onNew" onLoad="action-account-management-group-on-load"
@@ -150,7 +151,6 @@
 
     </panel>
   </form>
-
 
   <!-- ACTION RECORD -->
   <action-record name="action-account-management-record-default"

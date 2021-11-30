@@ -490,7 +490,8 @@
 
   <menuitem name="validate-timesheet" parent="timesheet-root"
     title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default"
-    tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"/>
+    tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getNeedValidation()"/>
 
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
@@ -623,6 +624,18 @@
 
   <action-view name="hr.user.dashboard.view" title="Human Resources User">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
+  </action-view>
+
+  <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"
+    order="30" action="project.spent.time"/>
+  <action-view name="project.spent.time" title="Spent time"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="grid" name="timesheet-line-grid"/>
+    <view type="form" name="timesheet-line-form"/>
+    <domain>self.project.id IN :_projectIds</domain>
+    <context name="_showLogTime" expr="eval: true"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetService:getContextProjectIds()"/>
   </action-view>
 
   <!-- Top Menus -->

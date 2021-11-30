@@ -21,7 +21,7 @@
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="partner.partnerSeq"/>
     <field name="partner.simpleFullName"/>
-    <field name="partner.fixedPhone"/>
+    <field name="partner.fixedPhone" widget="phone"/>
     <field name="partner.emailAddress.address"/>
     <field name="partner.mainAddress"/>
     <field name="partner.companyStr"/>
@@ -33,8 +33,10 @@
     onLoad="action-accounting-situation-group-form-onload"
     onNew="action-accounting-situation-group-form-onnew" width="large">
     <panel name="mainPanel">
-      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
+      <field name="company" widget="SuggestBox" canEdit="false"
+        onChange="action-supplychain-method-compute-used-credit" form-view="company-form"
+        grid-view="company-grid"/>
+      <spacer/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
@@ -43,21 +45,27 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="customerAccount"
         domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
-        form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
+        canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
         domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
-        form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
+        canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="defaultIncomeAccount" canNew="true"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+        form-view="employee-account-form" grid-view="account-grid"/>
+      <field name="defaultExpenseAccount" canNew="true"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
+        form-view="employee-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
         domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
-        form-view="employee-account-form" grid-view="account-grid" canNew="true"/>
-      <field name="pfpValidatorUser" required="true"
-        domain=":company member of self.companySet and self.isPfpValidator = true" canEdit="false"
-        showIf="company.accountConfig.isManagePassedForPayment"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <field name="company.accountConfig" hidden="true"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+        canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
+      <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        name="pfpValidatorUser" showIf="company.accountConfig.isManagePassedForPayment"
+        canEdit="false" domain=":company member of self.companySet and self.isPfpValidator = true"
+        required="true"/>
+      <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        name="company.accountConfig" hidden="true"/>
+      <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount"/>

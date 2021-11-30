@@ -64,6 +64,11 @@
 
     <boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
 
+    <track>
+      <field name="desiredDelivDate"/>
+      <field name="estimatedDelivDate"/>
+    </track>
+
   </entity>
 
 </domain-models>

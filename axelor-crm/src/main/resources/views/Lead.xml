@@ -30,7 +30,7 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -162,7 +162,7 @@
 							]]>
             </viewer>
           </field>
-          <field name="mobilePhone" colSpan="4" placeholder="+33100000000"
+          <field name="mobilePhone" widget="phone" colSpan="4" placeholder="+33100000000"
             onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
@@ -171,7 +171,7 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="fixedPhone" colSpan="4" placeholder="+33100000000"
+          <field name="fixedPhone" widget="phone" colSpan="4" placeholder="+33100000000"
             onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
           <field name="webSite" colSpan="6" placeholder="http://www.url.com"
             pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
@@ -285,7 +285,7 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -306,8 +306,8 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address"/>
     <field name="statusSelect"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -424,11 +424,10 @@
     model="com.axelor.apps.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
-    <domain>self.mediaTypeSelect = 2 AND ((self.relatedTo1Select = 'com.axelor.apps.crm.db.Lead' AND
-      self.relatedTo1SelectId = :id)
-      OR (self.relatedTo2Select = 'com.axelor.apps.crm.db.Lead' AND
-      self.relatedTo2SelectId = :id)
-      OR (self.fromEmailAddress.id = :idEmail))</domain>
+    <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
+      WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
+      related.relatedToSelectId =
+      :id) OR (self.fromEmailAddress.id = :idEmail))</domain>
     <context name="id" expr="eval: id"/>
     <context name="idEmail" expr="eval: emailAddress?.id"/>
   </action-view>

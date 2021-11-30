@@ -287,6 +287,18 @@
           onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-related name="diffStockMoveLineListPanel"
           field="diffConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
@@ -304,6 +316,18 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-dashlet name="operationOrderConsumedProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
       </panel>
@@ -347,6 +371,11 @@
         <panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order"
           colSpan="12">
           <field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
+        </panel>
+        <panel name="moCommentFromSaleOrderLinePanel"
+          title="MO's comment from sale order line" colSpan="12">
+          <field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12"
+            widget="Html"/>
         </panel>
       </panel>
       <panel name="residualProductsPanel" title="Residual products"
@@ -398,6 +427,19 @@
     </panel>
   </form>
 
+  <form name="multi-level-planing-wizard-form" title="Multi-level planning"
+    model="com.axelor.apps.production.db.ManufOrder"
+    onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
+    <panel name="mainPanel" colSpan="12">
+      <field name="$components" title="Products" type="one-to-many" canView="false"
+        readonly="true" target="com.axelor.apps.production.db.ProdProduct"
+        grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
+      <button name="generateMO" title="Generate MO"
+        onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
+        colSpan="4" colOffset="8"/>
+    </panel>
+  </form>
+
   <action-view name="action-manuf-order-update-planned-qty-popup-form-view"
     title="Update planned quantities (Components and FP)"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -421,19 +463,6 @@
     <context name="_showOnlyMissingQty" expr="eval: planOnlyMissingQuantities"/>
   </action-view>
 
-  <form name="multi-level-planing-wizard-form" title="Multi-level planning"
-    model="com.axelor.apps.production.db.ManufOrder"
-    onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
-    <panel name="mainPanel" colSpan="12">
-      <field name="$components" title="Products" type="one-to-many" canView="false"
-        readonly="true" target="com.axelor.apps.production.db.ProdProduct"
-        grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-      <button name="generateMO" title="Generate MO"
-        onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
-        colSpan="4" colOffset="8"/>
-    </panel>
-  </form>
-
   <grid name="generated-manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
     canEdit="false" canDelete="false">
@@ -451,7 +480,6 @@
     <view type="grid" name="manuf-order-grid"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-
   <action-view name="action-manuf-order-update-real-qty-popup-form-view"
     title="Update real quantities (Components and FP)"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -703,6 +731,23 @@
   <action-method name="action-manuf-order-method-update-produced-stock-move">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="updateProducedStockMoveFromManufOrder"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-allocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-deallocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="deallocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-reserve-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="reserveAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-cancel-reservation">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="cancelReservation"/>
   </action-method>
 
   <action-view name="action-manuf-order-view-operation-order-to-consume-product"

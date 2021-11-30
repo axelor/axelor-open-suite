@@ -17,6 +17,7 @@
     <boolean name="isRelativeDate" title="Relative Date"/>
     <boolean name="updateImportId" title="Update Import Id"/>
     <boolean name="checkAllErrorFirst" title="Check all error first"/>
+    <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
     <extra-code>
 	   		<![CDATA[
 				// DATABACKUP STATUS

@@ -153,52 +153,52 @@ public class DataBackupCreateService {
         try {
           List<String> subClasses = subClassesMap.get(metaModel.getFullName());
           long totalRecord = getMetaModelDataCount(metaModel, subClasses);
-          if (totalRecord > 0) {
-            LOG.debug("Exporting Model : " + metaModel.getFullName());
-
-            notNullReferenceFlag = false;
-            referenceFlag = false;
-
-            CSVWriter csvWriter =
-                new CSVWriter(
-                    new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
-                    SEPARATOR,
-                    QUOTE_CHAR);
-            CSVInput csvInput =
-                writeCSVData(
-                    metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
-            csvWriter.close();
-
-            if (notNullReferenceFlag) {
-              notNullReferenceCsvs.add(csvInput);
-            } else if (referenceFlag) {
-              refernceCsvs.add(csvInput);
-              CSVInput temcsv = new CSVInput();
-              temcsv.setFileName(csvInput.getFileName());
-              temcsv.setTypeName(csvInput.getTypeName());
-
-              if (dataBackup.getIsRelativeDate()) {
-                temcsv.setBindings(new ArrayList<>());
-                getCsvInputForDateorDateTime(metaModel, temcsv);
-              }
-              if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
-                temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-              }
-              if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-                temcsv.setSearch("self.code = :code");
-              }
-              if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
-                  && !((Class.forName(metaModel.getFullName()).getSuperclass())
-                      .equals(App.class))) {
-                temcsv.setSearch("self.importId = :importId");
-              }
-              simpleCsvs.add(temcsv);
-            } else {
-              simpleCsvs.add(csvInput);
-            }
-
-            fileNameList.add(metaModel.getName() + ".csv");
+          if (!dataBackup.getIsProcessEmptyTable() && totalRecord < 1) {
+            continue;
           }
+
+          LOG.debug("Exporting Model : " + metaModel.getFullName());
+          notNullReferenceFlag = false;
+          referenceFlag = false;
+
+          CSVWriter csvWriter =
+              new CSVWriter(
+                  new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
+                  SEPARATOR,
+                  QUOTE_CHAR);
+          CSVInput csvInput =
+              writeCSVData(
+                  metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
+          csvWriter.close();
+
+          if (notNullReferenceFlag) {
+            notNullReferenceCsvs.add(csvInput);
+          } else if (referenceFlag) {
+            refernceCsvs.add(csvInput);
+            CSVInput temcsv = new CSVInput();
+            temcsv.setFileName(csvInput.getFileName());
+            temcsv.setTypeName(csvInput.getTypeName());
+
+            if (dataBackup.getIsRelativeDate()) {
+              temcsv.setBindings(new ArrayList<>());
+              getCsvInputForDateorDateTime(metaModel, temcsv);
+            }
+            if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
+              temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
+            }
+            if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
+              temcsv.setSearch("self.code = :code");
+            }
+            if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
+                && !((Class.forName(metaModel.getFullName()).getSuperclass()).equals(App.class))) {
+              temcsv.setSearch("self.importId = :importId");
+            }
+            simpleCsvs.add(temcsv);
+          } else {
+            simpleCsvs.add(csvInput);
+          }
+
+          fileNameList.add(metaModel.getName() + ".csv");
         } catch (ClassNotFoundException | IOException | InterruptedException e) {
           TraceBackService.trace(e, DataBackupService.class.getName());
         } catch (Exception e) {
@@ -416,45 +416,61 @@ public class DataBackupCreateService {
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
 
-      for (int i = 0; i < totalRecord; i = i + fetchLimit) {
+      if (totalRecord > 0) {
+        for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
-        dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
+          dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
-        if (dataList != null && dataList.size() > 0) {
-          for (Object dataObject : dataList) {
-            dataArr = new ArrayList<>();
+          if (dataList != null && dataList.size() > 0) {
+            for (Object dataObject : dataList) {
+              dataArr = new ArrayList<>();
 
-            for (Property property : pro) {
-              if (isPropertyExportable(property)) {
-                if (headerFlag) {
-                  String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
-                  headerArr.add(headerStr);
+              for (Property property : pro) {
+                if (isPropertyExportable(property)) {
+                  if (headerFlag) {
+                    String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
+                    headerArr.add(headerStr);
+                  }
+                  dataArr.add(
+                      getMetaModelData(
+                          metaModel.getName(),
+                          metaModelMapper,
+                          property,
+                          dataObject,
+                          dirPath,
+                          isRelativeDate,
+                          updateImportId));
                 }
-                dataArr.add(
-                    getMetaModelData(
-                        metaModel.getName(),
-                        metaModelMapper,
-                        property,
-                        dataObject,
-                        dirPath,
-                        isRelativeDate,
-                        updateImportId));
               }
-            }
 
-            if (headerFlag) {
-              if (byteArrFieldFlag) {
-                csvInput.setCallable(
-                    "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
-                byteArrFieldFlag = false;
+              if (headerFlag) {
+                if (byteArrFieldFlag) {
+                  csvInput.setCallable(
+                      "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
+                  byteArrFieldFlag = false;
+                }
+                csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
+                headerFlag = false;
               }
-              csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
-              headerFlag = false;
+              csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
-            csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
           }
         }
+      } else {
+        for (Property property : pro) {
+          if (isPropertyExportable(property)) {
+            String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
+            headerArr.add(headerStr);
+          }
+        }
+        if (byteArrFieldFlag) {
+          csvInput.setCallable(
+              "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
+          byteArrFieldFlag = false;
+        }
+        csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
       }
+
       if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
       } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {

@@ -81,6 +81,8 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
             .getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE),
         opportunity.getPartner(),
         opportunity.getTeam(),
+        null,
+        opportunity.getPartner().getFiscalPosition(),
         opportunity.getTradingName());
   }
 }

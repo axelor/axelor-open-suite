@@ -318,13 +318,9 @@
 
   <action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
     <attribute name="hidden" for="consumedProductPanel"
-      expr="eval: !manufOrder?.isConsProOnOperation"/>
+      expr="eval: !(manufOrder?.isConsProOnOperation || __parent__?.isConsProOnOperation)"/>
     <attribute name="hidden" for="stockMovesPanel"
-      expr="eval: !manufOrder?.isConsProOnOperation"/>
-    <attribute name="hidden" for="consumedProductPanel"
-      expr="eval: !__parent__?.isConsProOnOperation"/>
-    <attribute name="hidden" for="stockMovesPanel"
-      expr="eval: !__parent__?.isConsProOnOperation"/>
+      expr="eval: !(manufOrder?.isConsProOnOperation || __parent__?.isConsProOnOperation)"/>
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
   </action-attrs>

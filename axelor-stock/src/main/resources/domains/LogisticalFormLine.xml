@@ -16,8 +16,18 @@
     <decimal name="grossMass" nullable="true" precision="19" scale="2"/>
     <string name="dimensions" title="Dimensions (cm)" nullable="true"/>
     <decimal name="unitNetMass" readonly="true" nullable="true" precision="20" scale="10"/> <!-- Workaround to be nullable in grid -->
+    <long name="stockMoveId" title="Stock move">
+        <![CDATA[
+            if(stockMoveLine != null && stockMoveLine.getStockMove() != null) {
+              return stockMoveLine.getStockMove().getId();
+            } else {
+              return 0l;
+            }
+        ]]>
+    </long>
 
-    <unique-constraint columns="typeSelect,parcelPalletNumber,logisticalForm"/>
+    <unique-constraint
+      columns="typeSelect,parcelPalletNumber,logisticalForm,stockMoveId"/>
 
     <extra-code>
         <![CDATA[

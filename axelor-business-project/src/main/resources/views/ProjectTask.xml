@@ -11,10 +11,15 @@
     <field name="status"/>
     <field name="progressSelect" widget="SelectProgress"/>
     <field name="exTaxTotal"/>
-    <field name="toInvoice"/>
+    <field name="toInvoice"
+      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+    <field name="toInvoice" readonly="true"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="invoiced"/>
-    <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"
-      icon="fa-check-circle" onClick="action-project-task-method-update-to-invoice"/>
+    <button name="updateToInvoiceBtn" title="Update to invoice"
+      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
+      readonlyIf="invoiced" icon="fa-check-circle"
+      onClick="action-project-task-method-update-to-invoice"/>
   </grid>
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
@@ -26,10 +31,14 @@
     <field name="progressSelect" widget="SelectProgress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
-    <field name="toInvoice"/>
+    <field name="toInvoice" readonly="true"
+      if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+    <field name="toInvoice" if="__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="invoiced"/>
-    <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"
-      icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
+    <button name="updateToInvoiceBtn" title="Update to invoice"
+      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
+      readonlyIf="invoiced" icon="fa-check-circle"
+      onClick="action-team-task-method-update-to-invoice"/>
   </grid>
 
   <action-method name="action-project-task-method-update-to-invoice">

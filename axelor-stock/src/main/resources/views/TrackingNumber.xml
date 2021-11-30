@@ -35,6 +35,12 @@
       <field name="origin"/>
       <field name="note" colSpan="12"/>
     </panel>
+    <panel name="barcodePanel" title="Barcode"
+      if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
+      <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
+      <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
+      <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
+    </panel>
   </form>
 
   <form name="tracking-number-stock-move-line-form" title="Tracking Number"

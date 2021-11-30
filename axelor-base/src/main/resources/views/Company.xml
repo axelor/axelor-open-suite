@@ -113,6 +113,8 @@
           grid-view="events-planning-grid" canNew="true"/>
         <field name="language" colSpan="6" canEdit="false"/>
         <field name="timezone" colSpan="6"/>
+        <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"
+          canEdit="false" domain="self.company.id = :id" if="__config__.app.isApp('account')"/>
       </panel>
       <panel name="bankDetailsPanel" title="Bank details">
         <field name="defaultBankDetails"

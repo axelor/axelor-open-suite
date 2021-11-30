@@ -67,6 +67,9 @@
 
     <many-to-one name="customerAddress" title="Address"
       ref="com.axelor.apps.base.db.Address"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-many name="projectFolderSet"
+      ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT
