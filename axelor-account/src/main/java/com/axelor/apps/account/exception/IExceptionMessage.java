@@ -833,7 +833,7 @@ public interface IExceptionMessage {
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
   static final String INVOICE_NO_CUT_OFF_TO_APPLY = /*$$(*/
-      "The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off applicationt" /*)*/;
+      "The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off application" /*)*/;
 
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
@@ -844,6 +844,12 @@ public interface IExceptionMessage {
   static final String MOVE_TEMPLATE_2 = /*$$(*/ "Error in move generation" /*)*/;
   static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
+
+  static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
+
+  static final String MOVE_NO_CUT_OFF_TO_APPLY = /*$$(*/
+      "The Cut off configuration on move line(s) associated account(s) doesn't support Cut off application" /*)*/;
 
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;

@@ -478,4 +478,10 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return result;
   }
+
+  @Override
+  public boolean checkMoveLinesCutOffDates(Move move) {
+    return move.getMoveLineList() == null
+        || move.getMoveLineList().stream().allMatch(moveLineToolService::checkCutOffDates);
+  }
 }

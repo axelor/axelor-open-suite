@@ -281,4 +281,12 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     return moveLine;
   }
+
+  @Override
+  public boolean checkCutOffDates(MoveLine moveLine) {
+    return moveLine == null
+        || moveLine.getAccount() == null
+        || !moveLine.getAccount().getManageCutOffPeriod()
+        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+  }
 }

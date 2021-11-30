@@ -104,10 +104,12 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="$validatePeriod" hidden="true"/>
         </panel>
-        <panel name="cutOffPanel" colSpan="12" readonlyIf="statusSelect == 3" itemSpan="4">
+        <panel name="cutOffPanel" colSpan="12" readonlyIf="statusSelect == 3"
+          showIf="technicalOriginSelect != 2" itemSpan="4">
           <field name="cutOffStartDate"/>
           <field name="cutOffEndDate"/>
-          <button name="applyCutOffDatesBtn" title="Apply Cut off dates" onClick=""
+          <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
+            onClick="action-move-method-apply-cut-off-dates"
             readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
         </panel>
       </panel>
@@ -558,6 +560,10 @@
 
   <action-method name="action-move-method-check-period-permissions">
     <call class="com.axelor.apps.account.web.MoveController" method="validatePeriodPermission"/>
+  </action-method>
+
+  <action-method name="action-move-method-apply-cut-off-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
   </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move"

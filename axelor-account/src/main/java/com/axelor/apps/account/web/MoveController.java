@@ -574,4 +574,18 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      if (Beans.get(MoveComputeService.class).applyCutOffDates(move)) {
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
+      } else {
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

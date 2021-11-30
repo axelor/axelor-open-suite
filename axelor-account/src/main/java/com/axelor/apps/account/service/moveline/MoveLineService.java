@@ -41,4 +41,6 @@ public interface MoveLineService {
   public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
 
   public boolean checkManageAnalytic(Move move) throws AxelorException;
+
+  boolean applyCutOffDates(MoveLine moveLine, Move move);
 }

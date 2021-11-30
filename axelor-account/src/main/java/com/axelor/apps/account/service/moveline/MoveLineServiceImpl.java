@@ -287,4 +287,19 @@ public class MoveLineServiceImpl implements MoveLineService {
         && appAccountService.getAppAccount().getManageAnalyticAccounting()
         && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
+
+  @Override
+  public boolean applyCutOffDates(MoveLine moveLine, Move move) {
+    if (move.getCutOffStartDate() != null
+        && move.getCutOffEndDate() != null
+        && moveLine.getAccount() != null
+        && moveLine.getAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(move.getCutOffStartDate());
+      moveLine.setCutOffEndDate(move.getCutOffEndDate());
+
+      return false;
+    }
+
+    return true;
+  }
 }

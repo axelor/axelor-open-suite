@@ -163,4 +163,6 @@ public interface MoveToolService {
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
   boolean getEditAuthorization(Move move) throws AxelorException;
+
+  boolean checkMoveLinesCutOffDates(Move move);
 }

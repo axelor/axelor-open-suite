@@ -246,7 +246,7 @@
         grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+        onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange"
@@ -336,13 +336,12 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2">
         <field name="cutOffStartDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -550,13 +549,12 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2">
         <field name="cutOffStartDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"
-          readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2"/>
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -641,6 +639,8 @@
   </action-group>
 
   <action-group name="action-account-move-line-account-group-on-change">
+    <action name="action-move-line-record-empty-cut-off-dates"
+      if="move?.technicalOriginSelect == 2"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
@@ -668,6 +668,13 @@
     <action name="account-move-line-record-date-onchange"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
+  </action-group>
+
+  <action-group name="action-move-line-group-account-onchange">
+    <action name="action-move-line-record-empty-cut-off-dates"
+      if="move?.technicalOriginSelect == 2"/>
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-attrs-show-tax-amount"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -827,6 +834,12 @@
       if="account?.commonPosition == 2"/>
     <field name="credit" expr="eval: currencyAmount * currencyRate"
       if="account?.commonPosition == 1"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-empty-cut-off-dates"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="cutOffStartDate" expr=""/>
+    <field name="cutOffEndDate" expr=""/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
