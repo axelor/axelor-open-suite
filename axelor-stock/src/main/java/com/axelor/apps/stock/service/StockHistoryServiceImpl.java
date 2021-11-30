@@ -21,6 +21,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.file.CsvTool;
@@ -41,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StockHistoryServiceImpl implements StockHistoryService {
 
@@ -59,6 +61,18 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
     List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
+    List<Long> stockLocationIdList = new ArrayList<>();
+    if (stockLocationId == null) {
+      stockLocationIdList.addAll(
+          Beans.get(StockLocationRepository.class).all()
+              .filter("self.typeSelect != :typeSelect AND self.company.id = :company")
+              .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL).bind("company", companyId)
+              .fetch().stream()
+              .map(stockLocation -> stockLocation.getId())
+              .collect(Collectors.toList()));
+    } else {
+      stockLocationIdList.add(stockLocationId);
+    }
 
     // one line per month
     for (LocalDate periodBeginDate = beginDate.withDayOfMonth(1);
@@ -71,7 +85,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           stockHistoryLine,
           productId,
           companyId,
-          stockLocationId,
+          stockLocationIdList,
           periodBeginDate,
           periodEndDate,
           true);
@@ -79,7 +93,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           stockHistoryLine,
           productId,
           companyId,
-          stockLocationId,
+          stockLocationIdList,
           periodBeginDate,
           periodEndDate,
           false);
@@ -149,7 +163,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       StockHistoryLine stockHistoryLine,
       Long productId,
       Long companyId,
-      Long stockLocationId,
+      List<Long> stockLocationIdList,
       LocalDate periodBeginDate,
       LocalDate periodEndDate,
       boolean incoming)
@@ -162,9 +176,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.realDate < :endDate ";
 
     if (incoming) {
-      filter += "AND self.stockMove.toStockLocation.id = :stockLocationId ";
+      filter += "AND self.stockMove.toStockLocation.id IN :stockLocationIdList ";
     } else {
-      filter += "AND self.stockMove.fromStockLocation.id = :stockLocationId ";
+      filter += "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -173,7 +187,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .filter(filter)
             .bind("productId", productId)
             .bind("companyId", companyId)
-            .bind("stockLocationId", stockLocationId)
+            .bind("stockLocationIdList", stockLocationIdList)
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("beginDate", periodBeginDate)
             .bind("endDate", periodEndDate)
