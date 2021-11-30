@@ -48,7 +48,7 @@
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true"
-        domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL"/>
+        domain="((:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)) AND self.statusSelect = 1"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form" required="true"/>

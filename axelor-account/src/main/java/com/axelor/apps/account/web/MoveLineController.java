@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -413,7 +414,12 @@ public class MoveLineController {
                     .map(id -> id.toString())
                     .collect(Collectors.joining(","));
             response.setAttr(
-                "axis" + i + "AnalyticAccount", "domain", "self.id IN (" + idList + ")");
+                "axis" + i + "AnalyticAccount",
+                "domain",
+                "self.id IN ("
+                    + idList
+                    + ") AND self.statusSelect = "
+                    + AnalyticAccountRepository.STATUS_ACTIVE);
           }
         }
       }

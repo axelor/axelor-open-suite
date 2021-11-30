@@ -2423,6 +2423,8 @@
 "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted",,,
 "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted",,,
+"The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
+"The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The from date is incorrect",,,
 "The import failed: the move %s already exist.",,,
 "The input failover date is not conforme compare with the dates and configured depreciation duration.",,,

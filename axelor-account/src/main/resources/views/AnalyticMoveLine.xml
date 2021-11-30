@@ -244,7 +244,8 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id} &quot;"
+      if="analyticAxis"/>
   </action-attrs>
 
   <action-record name="action-record-onchange-axis-analytic-move-line"
