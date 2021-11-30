@@ -191,7 +191,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
         checkInactiveAnalyticJournal(move);
 
-
         checkInactiveAccount(move);
 
         moveLineControlService.validateMoveLine(moveLine);
