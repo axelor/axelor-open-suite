@@ -1245,7 +1245,7 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
-   	AND AssetLine.type_select = AccountingReport.type_select
+   	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
