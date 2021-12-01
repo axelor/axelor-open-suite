@@ -80,14 +80,14 @@ public class JournalService {
       journalRepository.save(journal);
     }
   }
-  
+
   protected Journal activate(Journal journal) {
-	  journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
-	  return journal;
+    journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+    return journal;
   }
-  
+
   protected Journal desactivate(Journal journal) {
-	  journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
-	  return journal;
+    journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+    return journal;
   }
 }
