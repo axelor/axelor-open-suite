@@ -70,8 +70,8 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
         todayDateTime = user.getToday();
       } else {
         AppBase appBase = getAppBase();
-        if (appBase != null && appBase.getToday() != null) {
-          return appBase.getToday();
+        if (appBase != null && appBase.getTodayDate() != null) {
+          return appBase.getTodayDate();
         }
       }
     }
