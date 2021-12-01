@@ -13,8 +13,10 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +42,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected MoveRepository moveRepo;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected MoveValidateService moveValidateService;
+  protected BatchRepository batchRepository;
+  private Batch batch;
 
   @Inject
   public FixedAssetDerogatoryLineMoveServiceImpl(
@@ -48,13 +52,15 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveRepository moveRepo,
       FixedAssetLineMoveService fixedAssetLineMoveService,
       MoveValidateService moveValidateService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BatchRepository batchRepository) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
+    this.batchRepository = batchRepository;
   }
 
   @Override
@@ -233,6 +239,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               fixedAsset.getName());
       moveLines.add(creditMoveLine);
       move.getMoveLineList().addAll(moveLines);
+      if (batch != null) {
+        move.addBatchSetItem(batchRepository.find(batch.getId()));
+      }
     }
 
     return moveRepo.save(move);
@@ -285,5 +294,10 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       return fixedAsset.getJournal().getAuthorizeSimulatedMove();
     }
     return false;
+  }
+
+  @Override
+  public void setBatch(Batch batch) {
+    this.batch = batch;
   }
 }

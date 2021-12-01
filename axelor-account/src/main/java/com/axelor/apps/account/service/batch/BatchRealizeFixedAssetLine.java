@@ -34,14 +34,20 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineMoveService fixedAssetLineMoveService;
   private AppBaseService appBaseService;
   private FixedAssetLineService fixedAssetLineService;
+  private final Set<FixedAsset> setFixedAssets = new HashSet<>();
+  private final Map<Integer, Integer> typeCountMap = new HashMap<>();
 
   @Inject FixedAssetLineRepository fixedAssetLineRepo;
 
@@ -85,14 +91,17 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
                             .orElse(null)))
             .fetch();
 
+    fixedAssetLineMoveService.setBatch(batch);
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
         FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
+          setFixedAssets.add(fixedAsset);
           fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
           incrementDone();
+          countFixedAssetLineType(fixedAssetLine);
         }
       } catch (Exception e) {
         incrementAnomaly();
@@ -102,19 +111,68 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     }
   }
 
+  protected void countFixedAssetLineType(FixedAssetLine fixedAssetLine) {
+    if (typeCountMap.containsKey(fixedAssetLine.getTypeSelect())) {
+      typeCountMap.compute(fixedAssetLine.getTypeSelect(), (k, v) -> ++v);
+    } else {
+      typeCountMap.put(fixedAssetLine.getTypeSelect(), 1);
+    }
+  }
+
   @Override
   protected void stop() {
 
-    String comment =
+    StringBuilder sbComment =
+        new StringBuilder(
+            String.format(
+                "\t* %s " + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET) + "\n",
+                setFixedAssets.size()));
+
+    sbComment.append(
         String.format(
             "\t* %s " + I18n.get(IExceptionMessage.BATCH_REALIZED_FIXED_ASSET_LINE) + "\n",
-            batch.getDone());
+            batch.getDone()));
 
-    comment +=
+    appendTypeComments(sbComment);
+
+    sbComment.append(
         String.format(
             "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
-    addComment(comment);
+            batch.getAnomaly()));
+
+    addComment(sbComment.toString());
     super.stop();
+  }
+
+  protected void appendTypeComments(StringBuilder sbComment) {
+    typeCountMap.forEach(
+        (type, count) -> {
+          switch (type) {
+            case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
+              sbComment.append(
+                  String.format(
+                      "\t* %s "
+                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC)
+                          + "\n",
+                      count));
+              break;
+            case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
+              sbComment.append(
+                  String.format(
+                      "\t* %s "
+                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL)
+                          + "\n",
+                      count));
+              break;
+            case FixedAssetLineRepository.TYPE_SELECT_IFRS:
+              sbComment.append(
+                  String.format(
+                      "\t* %s "
+                          + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS)
+                          + "\n",
+                      count));
+              break;
+          }
+        });
   }
 }
