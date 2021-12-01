@@ -64,21 +64,37 @@
       <panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration"
         showIf="actionSelect == 1" colSpan="12">
         <field name="accountingCutOffTypeSelect"
-          onChange="action-supplychain-batch-attrs-show-label"/>
-        <field name="moveDescription" requiredIf="actionSelect == 1"/>
+          onChange="action-group-supplychain-batch-onchange-accounting-type"/>
+        <field name="moveDescription"
+          requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
         <panel colSpan="6" itemSpan="12">
-          <field name="moveDate" requiredIf="actionSelect == 1"
-            onChange="action-supplychain-batch-attrs-show-label"/>
+          <field name="moveDate"
+            requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"
+            onChange="action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
           <label name="adviseUser"
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
         <panel colSpan="6" itemSpan="12">
-          <field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
+          <field name="reverseMoveDate"
+            requiredIf="actionSelect == 1 &amp;&amp; automaticReconcile"
+            hideIf="!automaticReverse &amp;&amp; actionSelect != 1"/>
         </panel>
         <field name="recoveredTax"/>
         <field name="ati" showIf="!recoveredTax"/>
         <field name="includeNotStockManagedProduct"/>
+        <panel name="expensesIncomesPanel" colSpan="12"
+          showIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1">
+          <field name="automaticReverse" colSpan="6"/>
+          <field name="automaticReconcile" colSpan="6" hideIf="!automaticReverse"/>
+          <field name="miscOpeJournal" colSpan="6"
+            onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
+            requiredIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1"/>
+          <field name="researchJournal" colSpan="6"
+            onSelect="action-attrs-supplychain-batch-set-journal-domain"/>
+          <field name="cutOffMoveStatusSelect" colSpan="6"/>
+          <field name="previewMoveLinesToProcess" colSpan="6"/>
+        </panel>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -109,6 +125,13 @@
 
   <action-group name="action-group-supplychain-batch-group-onload">
     <action name="action-supplychain-batch-attrs-show-label"/>
+    <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
+  </action-group>
+
+  <action-group name="action-group-supplychain-batch-onchange-accounting-type">
+    <action name="action-supplychain-batch-attrs-show-label"/>
+    <action name="action-record-supplychain-batch-set-expenses-incomes"/>
+    <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
   </action-group>
 
 
@@ -117,6 +140,26 @@
     <attribute name="hidden"
       expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)"
       for="adviseUser"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-supplychain-batch-set-journal-domain">
+    <attribute name="domain" for="researchJournal"
+      expr="eval: &quot;self.journalType.technicalTypeSelect = 2&quot;"
+      if="accountingCutOffTypeSelect == 3"/>
+    <attribute name="domain" for="researchJournal"
+      expr="eval: &quot;self.journalType.technicalTypeSelect = 1&quot;"
+      if="accountingCutOffTypeSelect == 4"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-supplychain-batch-cutoff-move-status-domain">
+    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[3]"
+      if="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[3,5]"
+      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; !miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[2,3]"
+      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[2,3,4]"
+      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
   </action-attrs>
 
   <!-- ACTION VALIDATE -->
@@ -142,6 +185,44 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
 
+  <action-record name="action-record-supplychain-batch-set-expenses-incomes"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="automaticReconcile" expr="eval: accountingCutOffTypeSelect &gt;= 3"/>
+    <field name="automaticReverse" expr="eval: accountingCutOffTypeSelect &gt;= 3"/>
+    <field name="previewMoveLinesToProcess" expr="eval: accountingCutOffTypeSelect &gt;= 3"/>
+    <field name="moveDate"
+      expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
+      if="accountingCutOffTypeSelect &gt;= 3"/>
+    <field name="moveDate"
+      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
+      if="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; __user__.activeCompany != null"/>
+    <field name="reverseMoveDate"
+      expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
+      if="accountingCutOffTypeSelect &gt;= 3"/>
+    <field name="reverseMoveDate"
+      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
+      if="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; __user__.activeCompany != null"/>
+    <field name="cutOffMoveStatusSelect"
+      expr="eval: __repo__(SupplychainBatch).STATUS_ACCOUNTED"
+      if="accountingCutOffTypeSelect &gt;= 3"/>
+  </action-record>
+
+  <action-record name="action-record-supplychain-batch-movedate-onchange"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="reverseMoveDate" expr="eval: moveDate.plusDays(1)"
+      if="accountingCutOffTypeSelect &gt;= 3 &amp;&amp;moveDate != null"/>
+  </action-record>
+
+  <action-record name="action-record-supplychain-batch-journal-onchange"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="cutOffMoveStatusSelect"
+      expr="eval: __repo__(SupplychainBatch).STATUS_SIMULATED"
+      if="miscOpeJournal?.authorizeSimulatedMove"/>
+    <field name="cutOffMoveStatusSelect"
+      expr="eval: __repo__(SupplychainBatch).STATUS_DAYBOOK"
+      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
@@ -158,7 +239,6 @@
     <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
       method="accountingCutOff"/>
   </action-method>
-
 
   <!-- BATCH -->
 

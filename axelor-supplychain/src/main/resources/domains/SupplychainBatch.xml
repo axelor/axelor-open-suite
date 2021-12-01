@@ -40,6 +40,16 @@
     <string name="moveDescription" title="Move description"/>
     <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
 
+    <boolean name="automaticReverse" title="Automatic reverse"/>
+    <boolean name="automaticReconcile" title="Automatic reconcile"/>
+    <many-to-one name="miscOpeJournal" title="Misc. Operation Journal"
+      ref="com.axelor.apps.account.db.Journal"/>
+    <many-to-one name="researchJournal" title="Research Journal"
+      ref="com.axelor.apps.account.db.Journal"/>
+    <integer name="cutOffMoveStatusSelect" title="Cut off moves status"
+      selection="iaccount.move.status.select" default="1"/>
+    <boolean name="previewMoveLinesToProcess" title="Preview move lines to process"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -56,6 +66,15 @@
 		// ACCOUNTING CUT OFF
 		public static final int ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES = 1;
 		public static final int ACCOUNTING_CUT_OFF_TYPE_CUSTOMER_INVOICES = 2;
+		public static final int ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES = 3;
+		public static final int ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES = 4;
+
+		// STATUS SELECT
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 3;
+		public static final int STATUS_CANCELED = 4;
+		public static final int STATUS_SIMULATED = 5;
 
 	]]></extra-code>
 
