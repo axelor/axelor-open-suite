@@ -64,11 +64,21 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
   public void toggleStatusSelect(AnalyticJournal analyticJournal) {
     if (analyticJournal != null) {
       if (analyticJournal.getStatusSelect() == AnalyticJournalRepository.STATUS_INACTIVE) {
-        analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_ACTIVE);
+        analyticJournal = activate(analyticJournal);
       } else {
-        analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_INACTIVE);
+        analyticJournal = desactivate(analyticJournal);
       }
       analyticJournalRepository.save(analyticJournal);
     }
+  }
+
+  protected AnalyticJournal activate(AnalyticJournal analyticJournal) {
+    analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_ACTIVE);
+    return analyticJournal;
+  }
+
+  protected AnalyticJournal desactivate(AnalyticJournal analyticJournal) {
+    analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_INACTIVE);
+    return analyticJournal;
   }
 }

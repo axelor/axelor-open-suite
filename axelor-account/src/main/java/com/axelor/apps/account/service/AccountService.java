@@ -190,11 +190,21 @@ public class AccountService {
   public void toggleStatusSelect(Account account) {
     if (account != null) {
       if (account.getStatusSelect() == AccountRepository.STATUS_INACTIVE) {
-        account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
+        account = activate(account);
       } else {
-        account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+        account = desactivate(account);
       }
       accountRepository.save(account);
     }
+  }
+
+  protected Account activate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
+    return account;
+  }
+
+  protected Account desactivate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+    return account;
   }
 }

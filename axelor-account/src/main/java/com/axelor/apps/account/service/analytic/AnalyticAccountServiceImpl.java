@@ -19,11 +19,21 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
   public void toggleStatusSelect(AnalyticAccount analyticAccount) {
     if (analyticAccount != null) {
       if (analyticAccount.getStatusSelect() == AnalyticAccountRepository.STATUS_INACTIVE) {
-        analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_ACTIVE);
+        analyticAccount = activate(analyticAccount);
       } else {
-        analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_INACTIVE);
+        analyticAccount = desactivate(analyticAccount);
       }
       analyticAccountRepository.save(analyticAccount);
     }
+  }
+
+  protected AnalyticAccount activate(AnalyticAccount analyticAccount) {
+    analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_ACTIVE);
+    return analyticAccount;
+  }
+
+  protected AnalyticAccount desactivate(AnalyticAccount analyticAccount) {
+    analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_INACTIVE);
+    return analyticAccount;
   }
 }
