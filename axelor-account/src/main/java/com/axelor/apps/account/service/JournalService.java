@@ -73,11 +73,21 @@ public class JournalService {
   public void toggleStatusSelect(Journal journal) {
     if (journal != null) {
       if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
-        journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+        journal = activate(journal);
       } else {
-        journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+        journal = desactivate(journal);
       }
       journalRepository.save(journal);
     }
+  }
+  
+  protected Journal activate(Journal journal) {
+	  journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+	  return journal;
+  }
+  
+  protected Journal desactivate(Journal journal) {
+	  journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+	  return journal;
   }
 }
