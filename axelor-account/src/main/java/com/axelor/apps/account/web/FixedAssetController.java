@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
@@ -90,6 +91,8 @@ public class FixedAssetController {
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    AssetDisposalReason assetDisposalReason =
+        (AssetDisposalReason) context.get("assetDisposalReason");
     String comments = null;
     if (context.get("comments") != null) {
       comments = context.get("comments").toString();
@@ -133,6 +136,7 @@ public class FixedAssetController {
                   disposalQty,
                   disposalAmount,
                   transferredReason,
+                  assetDisposalReason,
                   comments);
       if (createdFixedAsset != null) {
         response.setView(

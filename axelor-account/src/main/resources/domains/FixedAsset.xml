@@ -122,6 +122,8 @@
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="barcode" title="Barcode"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
+    <many-to-one name="assetDisposalReason"
+      ref="com.axelor.apps.account.db.AssetDisposalReason" title="Disposal Reason"/>
     <extra-code><![CDATA[
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
@@ -167,6 +169,10 @@
 		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
 
 	]]></extra-code>
+
+    <track>
+      <field name="assetDisposalReason"/>
+    </track>
 
   </entity>
 
