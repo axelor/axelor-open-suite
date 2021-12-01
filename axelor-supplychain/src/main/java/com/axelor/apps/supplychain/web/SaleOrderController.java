@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.IncotermRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
@@ -1004,5 +1005,19 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void fillIncoterm(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    if (!"FR".equals(saleOrder.getDeliveryAddress().getAddressL7Country().getAlpha2Code())) {
+      return;
+    }
+    for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
+      if (soLine.getProduct().getIsShippingCostsProduct()) {
+        response.setValue("incoterm", Beans.get(IncotermRepository.class).findByCode("DAP"));
+        return;
+      }
+    }
+    response.setValue("incoterm", Beans.get(IncotermRepository.class).findByCode("EXW"));
   }
 }

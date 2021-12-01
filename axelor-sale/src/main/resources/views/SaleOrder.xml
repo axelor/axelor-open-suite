@@ -446,7 +446,7 @@
           <field name="deliveryAddress"
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
             canEdit="false"
-            onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required"
+            onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required,action-sale-order-method-fill-incoterm"
             onSelect="action-sale-order-attrs-domain-delivery-address"
             form-view="address-partner-address-form" grid-view="address-grid"/>
           <field name="deliveryAddressStr"
@@ -1464,6 +1464,8 @@
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
       if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+    <action name="action-sale-order-method-fill-incoterm"
+      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -2016,9 +2018,17 @@
       method="fillDefaultPrintingSettings"/>
   </action-method>
 
-  <action-validate name="action-sale-order-validate-check-on-confirm">
+  <action-method name="action-sale-order-method-fill-incoterm"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillIncoterm"/>
+  </action-method>
+
+  <action-validate name="action-sale-order-validate-check-on-confirm"
+    model="com.axelor.apps.sale.db.SaleOrder">
     <alert message="The total amount of quotation is zero. Do you want to proceed ?"
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <error message="Incoterm must be filled"
+      if="__config__.app.isApp('supplychain') &amp;&amp; incoterm == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != &quot;FR&quot;"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"
