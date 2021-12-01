@@ -1,0 +1,5 @@
+---
+title: "SaleOrderWorkflowServiceSupplychainImpl : completeSaleOrder - hard coded value"
+type: fix
+description: | 
+	On completing sale order replace the StockMove.statusSelect hard coded values to existing static variables defined in the StockMove repository.

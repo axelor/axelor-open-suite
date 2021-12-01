@@ -177,7 +177,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {
-        if (stockMove.getStatusSelect() == 1 || stockMove.getStatusSelect() == 2) {
+        Integer statusSelect = stockMove.getStatusSelect();
+        if (statusSelect == StockMoveRepository.STATUS_DRAFT
+            || statusSelect == StockMoveRepository.STATUS_PLANNED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
