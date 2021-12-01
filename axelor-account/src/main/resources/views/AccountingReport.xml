@@ -168,9 +168,12 @@
           showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
         <field name="displayOnlyNotCompletelyLetteredMoveLines"
           hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"/>
-        <field name="displayCodeAccountColumnOnPrinting" showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
-        <field name="displayNameAccountColumnOnPrinting" showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
-        <field name="displayMoveLineSequenceOnPrinting" showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
+        <field name="displayCodeAccountColumnOnPrinting"
+          showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
+        <field name="displayNameAccountColumnOnPrinting"
+          showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
+        <field name="displayMoveLineSequenceOnPrinting"
+          showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
         <field name="displayCumulativeBalance"
           showIf="reportType.typeSelect==7 || reportType.typeSelect==1"/>
       </panel>
