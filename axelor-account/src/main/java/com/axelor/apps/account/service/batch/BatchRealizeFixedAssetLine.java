@@ -43,22 +43,24 @@ import java.util.Set;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
-  private FixedAssetLineMoveService fixedAssetLineMoveService;
-  private AppBaseService appBaseService;
-  private FixedAssetLineService fixedAssetLineService;
-  private final Set<FixedAsset> setFixedAssets = new HashSet<>();
-  private final Map<Integer, Integer> typeCountMap = new HashMap<>();
+  protected FixedAssetLineMoveService fixedAssetLineMoveService;
+  protected AppBaseService appBaseService;
+  protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineRepository fixedAssetLineRepo;
 
-  @Inject FixedAssetLineRepository fixedAssetLineRepo;
+  protected final Set<FixedAsset> fixedAssetSet = new HashSet<>();
+  protected final Map<Integer, Integer> typeCountMap = new HashMap<>();
 
   @Inject
   public BatchRealizeFixedAssetLine(
       FixedAssetLineMoveService fixedAssetLineMoveService,
       AppBaseService appBaseService,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetLineRepository fixedAssetLineRepo) {
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
     this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineRepo = fixedAssetLineRepo;
   }
 
   @Override
@@ -98,7 +100,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          setFixedAssets.add(fixedAsset);
+          fixedAssetSet.add(fixedAsset);
           fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
           incrementDone();
           countFixedAssetLineType(fixedAssetLine);
@@ -126,7 +128,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         new StringBuilder(
             String.format(
                 "\t* %s " + I18n.get(IExceptionMessage.BATCH_PROCESSED_FIXED_ASSET) + "\n",
-                setFixedAssets.size()));
+                fixedAssetSet.size()));
 
     sbComment.append(
         String.format(
