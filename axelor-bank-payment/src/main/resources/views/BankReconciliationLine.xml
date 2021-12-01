@@ -89,8 +89,8 @@
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"
       if="__parent__ != null"/>
-    <attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false"
-      if="__parent__ == null"/>
+    <attribute name="domain" for="partner"
+      expr="eval: &quot;self.isContact = false &quot;" if="__parent__ == null"/>
   </action-attrs>
 
   <action-record name="action-bank-reconciliation-line-record-set-account"
