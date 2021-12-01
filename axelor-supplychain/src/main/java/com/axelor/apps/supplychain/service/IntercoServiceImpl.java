@@ -99,6 +99,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
+            null,
+            null,
             null);
 
     // in ati
