@@ -17,12 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -249,14 +244,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = partner.getFiscalPosition();
+      }
 
       taxLine =
           accountManagementService.getTaxLine(
-              today,
-              product,
-              company,
-              partner.getFiscalPosition(),
-              InvoiceToolService.isPurchase(invoice));
+              today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
 

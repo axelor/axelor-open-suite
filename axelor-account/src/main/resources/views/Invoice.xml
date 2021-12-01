@@ -429,6 +429,8 @@
       <field name="companyBankDetails" canEdit="false"
         onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
+      <field name="fiscalPosition" grid-view="fiscal-position-grid"
+        form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
@@ -1004,6 +1006,8 @@ InvoiceSet.length > 0))"
       <field name="companyBankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
+      <field name="fiscalPosition" grid-view="fiscal-position-grid"
+        form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       <field name="currency" canEdit="false"
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>

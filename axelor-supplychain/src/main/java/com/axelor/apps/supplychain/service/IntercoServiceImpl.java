@@ -17,15 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -440,11 +432,16 @@ public class IntercoServiceImpl implements IntercoService {
     Invoice intercoInvoice = invoiceLine.getInvoice();
     Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
+      FiscalPosition fiscalPosition = invoiceLine.getInvoice().getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = partner.getFiscalPosition();
+      }
+
       Account account =
           accountManagementAccountService.getProductAccount(
               invoiceLine.getProduct(),
               intercoInvoice.getCompany(),
-              partner.getFiscalPosition(),
+              fiscalPosition,
               isPurchase,
               false);
       invoiceLine.setAccount(account);
@@ -456,9 +453,14 @@ public class IntercoServiceImpl implements IntercoService {
       Tax tax =
           accountManagementAccountService.getProductTax(
               invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
+
+      FiscalPosition intercoFiscalPosition = intercoInvoice.getFiscalPosition();
+      if (intercoFiscalPosition == null) {
+        intercoFiscalPosition = intercoInvoice.getPartner().getFiscalPosition();
+      }
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
+          Beans.get(FiscalPositionService.class).getTaxEquiv(intercoFiscalPosition, tax);
+
       invoiceLine.setTaxEquiv(taxEquiv);
       invoiceLine.setCompanyExTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));

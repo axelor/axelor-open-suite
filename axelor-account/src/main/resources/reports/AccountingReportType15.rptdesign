@@ -440,10 +440,10 @@ CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
-LEFT JOIN Public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 LEFT JOIN public.account_tax_payment_move_line as TaxPaymentMoveLine on (MoveLine.id = TaxPaymentMoveLine.move_line)
 LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_line = TaxLine.id) 
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
+LEFT JOIN Public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
@@ -866,10 +866,10 @@ CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
-LEFT JOIN public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 LEFT JOIN public.account_tax_payment_move_line as TaxPaymentMoveLine on (MoveLine.id = TaxPaymentMoveLine.move_line)
 LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_line = TaxLine.id) 
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
+LEFT JOIN public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)

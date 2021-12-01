@@ -17,11 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator.tax;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -65,8 +61,11 @@ public class TaxInvoiceLine extends TaxGenerator {
       }
     }
 
-    if (invoice.getPartner().getFiscalPosition() == null
-        || !invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    if (fiscalPosition == null) {
+      fiscalPosition = invoice.getPartner().getFiscalPosition();
+    }
+    if (fiscalPosition == null || !fiscalPosition.getCustomerSpecificNote()) {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
             invoiceLines.stream()

@@ -19,14 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -453,9 +446,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     Product product = stockMoveLine.getProduct();
 
+    FiscalPosition fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
+    if (fiscalPosition == null) {
+      fiscalPosition = saleOrderLine.getSaleOrder().getClientPartner().getFiscalPosition();
+    }
+
     Account account =
         accountManagementAccountService.getProductAccount(
-            product, company, partner.getFiscalPosition(), isPurchase, isFixedAssets);
+            product, company, fiscalPosition, isPurchase, isFixedAssets);
 
     boolean isDebit = false;
     if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == 1)
@@ -487,7 +485,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     if (recoveredTax) {
       TaxLine taxLine =
           accountManagementAccountService.getTaxLine(
-              originDate, product, company, partner.getFiscalPosition(), isPurchase);
+              originDate, product, company, fiscalPosition, isPurchase);
       if (taxLine != null) {
         moveLine.setTaxLine(taxLine);
         moveLine.setTaxRate(taxLine.getValue());

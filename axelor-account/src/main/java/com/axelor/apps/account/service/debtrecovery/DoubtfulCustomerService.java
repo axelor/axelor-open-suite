@@ -17,12 +17,7 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -349,10 +344,15 @@ public class DoubtfulCustomerService {
 
       invoice.setOldMove(invoice.getMove());
       invoice.setMove(move);
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = invoice.getPartner().getFiscalPosition();
+      }
+
       if (invoice.getPartner() != null) {
         doubtfulCustomerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), doubtfulCustomerAccount);
+                .getAccount(fiscalPosition, doubtfulCustomerAccount);
       }
       invoice.setPartnerAccount(doubtfulCustomerAccount);
       invoice.setDoubtfulCustomerOk(true);

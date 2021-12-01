@@ -17,12 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -332,12 +327,16 @@ public class InvoiceLineController {
         Invoice invoice = this.getInvoice(request.getContext());
 
         if (product != null) {
+          FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+          if (fiscalPosition == null) {
+            fiscalPosition = invoice.getPartner().getFiscalPosition();
+          }
           Account account =
               Beans.get(AccountManagementServiceAccountImpl.class)
                   .getProductAccount(
                       product,
                       invoice.getCompany(),
-                      invoice.getPartner().getFiscalPosition(),
+                      fiscalPosition,
                       InvoiceToolService.isPurchase(invoice),
                       invoiceLine.getFixedAssets());
           response.setValue("account", account);

@@ -167,11 +167,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException {
 
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    if (fiscalPosition == null) {
+      fiscalPosition = invoice.getPartner().getFiscalPosition();
+    }
+
     return accountManagementAccountService.getTaxLine(
         appAccountService.getTodayDate(invoice.getCompany()),
         invoiceLine.getProduct(),
         invoice.getCompany(),
-        invoice.getPartner().getFiscalPosition(),
+        fiscalPosition,
         isPurchase);
   }
 
@@ -450,7 +455,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
     Company company = invoice.getCompany();
-    FiscalPosition fiscalPosition = invoice.getPartner().getFiscalPosition();
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    if (fiscalPosition == null) {
+      fiscalPosition = invoice.getPartner().getFiscalPosition();
+    }
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);
