@@ -259,6 +259,10 @@
       <field name="saleAccountMove" domain="self.company = :company"
         showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
     </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
 
