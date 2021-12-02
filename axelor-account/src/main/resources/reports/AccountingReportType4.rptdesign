@@ -3968,7 +3968,7 @@ row["amount_remaining"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 600){
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 60){
 row["amount_remaining"]
 }</expression>
                                     </structure>
