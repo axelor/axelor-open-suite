@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 
 public interface ImportCityService {
 
@@ -31,7 +32,8 @@ public interface ImportCityService {
    * @param dataFile
    * @return
    */
-  public ImportHistory importCity(String typeSelect, MetaFile dataFile);
+  public ImportHistory importCity(String typeSelect, MetaFile dataFile)
+      throws AxelorException, IOException;
 
   public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
       throws AxelorException;

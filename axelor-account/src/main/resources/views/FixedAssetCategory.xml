@@ -58,8 +58,8 @@
       </panel>
       <panel name="accountingInfoPanel" title="Accounting information" colspan="12">
         <panel name="journalPanel" title="Journal" colspan="12">
-          <field name="journal" domain="self.company = :company" form-view="journal-form"
-            grid-view="journal-grid"/>
+          <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
+            form-view="journal-form" grid-view="journal-grid"/>
         </panel>
         <panel name="depreciationAccountsPanel" title="Depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
@@ -104,8 +104,10 @@
         </panel>
         <panel name="ifrsAccountsPanel" title="IFRS depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
-          <field name="ifrsDepreciationAccount" form-view="account-form"/>
-          <field name="ifrsChargeAccount" form-view="account-form"/>
+          <field name="ifrsDepreciationAccount" form-view="account-form"
+            domain="self.company = :company"/>
+          <field name="ifrsChargeAccount" form-view="account-form"
+            domain="self.company = :company"/>
         </panel>
       </panel>
       <panel
