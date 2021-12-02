@@ -449,6 +449,9 @@ public interface IExceptionMessage {
   static final String BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS = /*$$(*/
       "Realized fixed assets ifrs lines" /*)*/;
 
+  static final String BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE = /*$$(*/
+      "Realized fixed assets derogatory lines" /*)*/;
+
   /** Batch close / open the year account */
   static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
       "Report for close/open annual accounts batch:" /*)*/;
