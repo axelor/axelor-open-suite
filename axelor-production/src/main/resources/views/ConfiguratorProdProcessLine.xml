@@ -18,7 +18,7 @@
 
   <!-- FORMS -->
 
-  <form name="configurator-prod-process-line-form" title="Configurator Phases"
+  <form name="configurator-prod-process-line-form" title="Configurator Phase"
     model="com.axelor.apps.production.db.ConfiguratorProdProcessLine"
     onNew="action-configurator-prod-process-line-attrs-default,action-configurator-prod-process-line-record-default-workcenter-type-select"
     onLoad="action-configurator-prod-process-line-attrs-default">
