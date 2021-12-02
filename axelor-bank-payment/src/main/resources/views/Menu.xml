@@ -168,16 +168,16 @@
   </action-view>
 
   <menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"
-    parent="account-root-bank-reconciliation" title="Bank Reconciliation Line"
+    parent="account-root-bank-reconciliation" title="Bank Reconciliation Lines"
     action="account.bank.reconciliation.line"/>
 
-  <action-view name="account.bank.reconciliation.line" title="Bank Reconciliation Line"
+  <action-view name="account.bank.reconciliation.line" title="Bank Reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <view type="grid" name="bank-reconciliation-line-grid"/>
     <view type="form" name="bank-reconciliation-line-form"/>
   </action-view>
 
-  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank order"/>
+  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank orders"/>
 
   <menuitem name="account-conf-bank-order-bank-order-file-format"
     parent="account-conf-bank-order" title="Bank order file formats"
@@ -293,7 +293,7 @@
   <!-- Bank statement rule -->
 
   <menuitem name="account-conf-bank-accounting-reconciliation" parent="account-conf"
-    title="Bank Statement / Reconciliation"/>
+    title="Bank Statement / Reconciliations"/>
 
   <menuitem title="Bank statement rules" name="account-bank-statement-rule"
     parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.rule"/>

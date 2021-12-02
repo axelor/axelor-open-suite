@@ -587,10 +587,10 @@
     <view type="form" name="tax-number-form"/>
   </action-view>
 
-  <menuitem name="account-conf-financial-financial-discount" title="Financial Discount"
+  <menuitem name="account-conf-financial-financial-discount" title="Financial Discounts"
     parent="account-conf-financial" action="financial.discount"/>
 
-  <action-view name="financial.discount" title="Financial Discount"
+  <action-view name="financial.discount" title="Financial Discounts"
     model="com.axelor.apps.account.db.FinancialDiscount">
     <view type="grid" name="financial-discount-grid"/>
     <view type="form" name="financial-discount-form"/>
