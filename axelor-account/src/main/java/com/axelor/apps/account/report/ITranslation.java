@@ -209,6 +209,10 @@ public interface ITranslation {
       "AccountingReportType4.60days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_60_90_DAYS = /*$$(*/
       "AccountingReportType4.6090days"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_30_DAYS = /*$$(*/
+      "AccountingReportType4.30days"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_30_60_DAYS = /*$$(*/
+      "AccountingReportType4.3060days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_90_120_DAYS = /*$$(*/
       "AccountingReportType4.90120days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_120_150_DAYS = /*$$(*/
