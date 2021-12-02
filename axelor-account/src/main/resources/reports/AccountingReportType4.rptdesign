@@ -1625,7 +1625,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </grid>
         <label id="487"/>
         <grid id="970">
-            <property name="height">1.90625in</property>
+            <property name="height">1.8958333333333333in</property>
             <property name="width">11.239583333333334in</property>
             <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility">
@@ -1670,10 +1670,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">11.239583333333334in</property>
             </column>
             <row id="972">
-                <property name="height">1.90625in</property>
+                <property name="height">1.8958333333333333in</property>
                 <cell id="973">
                     <table id="1143">
-                        <property name="width">11.135416666666666in</property>
+                        <property name="width">10.958333333333334in</property>
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -2228,37 +2228,37 @@ row["amount_remaining"]
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
-                            <property name="width">1.96875in</property>
+                            <property name="width">1.0104166666666667in</property>
                         </column>
                         <column id="1169">
-                            <property name="width">1.3020833333333333in</property>
+                            <property name="width">1.3333333333333333in</property>
                         </column>
                         <column id="1543">
-                            <property name="width">1.6875in</property>
+                            <property name="width">1.3645833333333333in</property>
                         </column>
                         <column id="1170">
-                            <property name="width">0.8645833333333334in</property>
+                            <property name="width">1.375in</property>
                         </column>
                         <column id="6280">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.7708333333333334in</property>
                         </column>
                         <column id="6288">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">1in</property>
                         </column>
                         <column id="1172">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.7708333333333334in</property>
                         </column>
                         <column id="1173">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.8333333333333334in</property>
                         </column>
                         <column id="1174">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.8958333333333334in</property>
                         </column>
                         <column id="1551">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.8333333333333334in</property>
                         </column>
                         <column id="1559">
-                            <property name="width">0.8854166666666666in</property>
+                            <property name="width">0.7708333333333334in</property>
                         </column>
                         <header>
                             <row id="1144">
@@ -3488,7 +3488,7 @@ row["amount_remaining"]
                 <property name="height">2.6458333333333335in</property>
                 <cell id="1228">
                     <table id="1615">
-                        <property name="width">11.125in</property>
+                        <property name="width">11.104166666666666in</property>
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -4040,40 +4040,40 @@ row["amount_remaining"]
                             </structure>
                         </list-property>
                         <column id="1716">
-                            <property name="width">1.3229166666666667in</property>
+                            <property name="width">0.6979166666666666in</property>
                         </column>
                         <column id="1717">
-                            <property name="width">1.1041666666666667in</property>
+                            <property name="width">0.9583333333333334in</property>
                         </column>
                         <column id="1718">
-                            <property name="width">1.4166666666666667in</property>
+                            <property name="width">1.3229166666666667in</property>
                         </column>
                         <column id="1719">
-                            <property name="width">0.7291666666666666in</property>
+                            <property name="width">0.9270833333333334in</property>
                         </column>
                         <column id="1771">
-                            <property name="width">1.75in</property>
+                            <property name="width">1.3229166666666667in</property>
                         </column>
                         <column id="6305">
                             <property name="width">0.7708333333333334in</property>
                         </column>
                         <column id="6298">
-                            <property name="width">0.7708333333333334in</property>
+                            <property name="width">1in</property>
                         </column>
                         <column id="1721">
-                            <property name="width">0.8020833333333334in</property>
+                            <property name="width">0.7708333333333334in</property>
                         </column>
                         <column id="1722">
                             <property name="width">0.8333333333333334in</property>
                         </column>
                         <column id="1723">
-                            <property name="width">0.8333333333333334in</property>
+                            <property name="width">0.8958333333333334in</property>
                         </column>
                         <column id="1724">
                             <property name="width">0.8333333333333334in</property>
                         </column>
                         <column id="1725">
-                            <property name="width">0.7291666666666666in</property>
+                            <property name="width">0.7708333333333334in</property>
                         </column>
                         <header>
                             <row id="1616">
