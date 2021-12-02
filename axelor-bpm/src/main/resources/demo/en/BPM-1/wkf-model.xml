@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+  <wkf-model>
+
+    <code>BPM-1</code>
+
+    <name>Purchase req</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-1" camunda:diagramName="Purchase req" camunda:appBuilder="BPM-1" camunda:wkfStatusColor="blue">
+  <bpmn2:collaboration id="Collaboration_0et4xgd">
+    <bpmn2:participant id="Participant_14obht3" processRef="Purchase_Req" />
+    <bpmn2:participant id="Participant_184qfnl" name="" processRef="Process_0ocwbmd" />
+    <bpmn2:messageFlow id="Flow_1pfxvuw" sourceRef="Event_0q8lx82" targetRef="Event_1grj2i3" />
+    <bpmn2:messageFlow id="Flow_0uxjz7f" sourceRef="Event_14pdiz8" targetRef="Event_0hlg3gv" />
+  </bpmn2:collaboration>
+  <bpmn2:process id="Purchase_Req" name="Purchase Request Flow" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaJsonModel="PurchaseReq" isStartModel="true" model="com.axelor.meta.db.MetaJsonRecord" title="Purchase Request" metaJsonModelLabel="PurchaseReq (Demande d&#39;achat)" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:laneSet id="LaneSet_154fcs4">
+      <bpmn2:lane id="Lane_1b5afdf" name="Management" />
+      <bpmn2:lane id="Lane_02jxh12" name="Direction">
+        <bpmn2:flowNodeRef>Activity_1erwbqk</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_018rzk3</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_0x15tph</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_091r5aw</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Event_16vrljk</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+      <bpmn2:lane id="Lane_18yvkd6" name="Buyer">
+        <bpmn2:flowNodeRef>Activity_142yurz</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_0ln52it</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_16b3q0y</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Event_1torlrz</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_0aszw4a</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_1lq8itp</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_1f2b2zl</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_18d8nvs</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_1ecb7vr</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_0lxazth</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_1v3oroc</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_1c1762p</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>StartEvent_1</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_02pn3of</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Event_0q8lx82</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Event_0hlg3gv</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Activity_1u2ow7w</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Event_1x4mdwo</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+    <bpmn2:sequenceFlow id="Flow_0srt9t7" name="Nouveau budget requis" sourceRef="Gateway_18d8nvs" targetRef="Activity_0x15tph" camunda:isTranslations="false" camunda:key="New budget needed" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;existingBudgetSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;no&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">purchaseReq?.existingBudgetSelect == 'no'</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1pp8021" sourceRef="StartEvent_1" targetRef="Activity_1c1762p" />
+    <bpmn2:sequenceFlow id="Flow_0yr8luh" name="Budget existant" sourceRef="Gateway_18d8nvs" targetRef="Gateway_1f2b2zl" camunda:isTranslations="true" camunda:key="No, there is an existing budget" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;existingBudgetSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;yes&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">purchaseReq?.existingBudgetSelect == 'yes'</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1fqwcw1" sourceRef="Activity_0x15tph" targetRef="Gateway_018rzk3" />
+    <bpmn2:sequenceFlow id="Flow_0pa8q8d" name="Oui éligible" sourceRef="Gateway_018rzk3" targetRef="Activity_1erwbqk" camunda:isTranslations="false" camunda:key="Yes" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;eligible&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;yes&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">purchaseReq?.eligible == 'yes'</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1lq8acw" name="Pas éligible" sourceRef="Gateway_018rzk3" targetRef="Activity_091r5aw" camunda:isTranslations="false" camunda:key="No" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;eligible&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;no&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">purchaseReq?.eligible == 'no'</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0x6aafh" sourceRef="Activity_091r5aw" targetRef="Event_16vrljk" />
+    <bpmn2:sequenceFlow id="Flow_0u1asig" sourceRef="Activity_1erwbqk" targetRef="Gateway_1f2b2zl" />
+    <bpmn2:sequenceFlow id="Flow_0g38ix5" sourceRef="Gateway_1f2b2zl" targetRef="Activity_1lq8itp" />
+    <bpmn2:sequenceFlow id="Flow_0x2e0hq" sourceRef="Activity_142yurz" targetRef="Activity_02pn3of" />
+    <bpmn2:sequenceFlow id="Flow_0lb0yk3" sourceRef="Activity_1lq8itp" targetRef="Activity_0aszw4a" />
+    <bpmn2:sequenceFlow id="Flow_0gjcczf" sourceRef="Activity_0aszw4a" targetRef="Gateway_0ln52it">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[0]&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;User&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;dmn&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;dmnRes.assignedTo&#34;}},&#34;name&#34;:&#34;assignedTo&#34;,&#34;modelSubField&#34;:[],&#34;dmn&#34;:{&#34;dmnNodeId&#34;:&#34;Activity_0aszw4a&#34;,&#34;dmnNodeNameId&#34;:&#34;Définir responsable et dossier&#34;,&#34;name&#34;:&#34;Définir responsable et dossier&#34;,&#34;resultVariable&#34;:&#34;dmnRes&#34;,&#34;outputDmnFieldList&#34;:[{&#34;name&#34;:&#34;needPO&#34;},{&#34;name&#34;:&#34;assignedTo&#34;},{&#34;name&#34;:&#34;file&#34;}]},&#34;searchField&#34;:{&#34;name&#34;:&#34;name&#34;,&#34;title&#34;:&#34;Name&#34;},&#34;jsonModel&#34;:&#34;PurchaseReq&#34;},{&#34;dataPath&#34;:&#34;[1]&#34;,&#34;type&#34;:&#34;json-many-to-one&#34;,&#34;target&#34;:&#34;File&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;dmn&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;dmnRes.file&#34;}},&#34;name&#34;:&#34;file&#34;,&#34;modelSubField&#34;:[],&#34;dmn&#34;:{&#34;dmnNodeId&#34;:&#34;Activity_0aszw4a&#34;,&#34;dmnNodeNameId&#34;:&#34;Définir responsable et dossier&#34;,&#34;name&#34;:&#34;Définir responsable et dossier&#34;,&#34;resultVariable&#34;:&#34;dmnRes&#34;,&#34;outputDmnFieldList&#34;:[{&#34;name&#34;:&#34;needPO&#34;},{&#34;name&#34;:&#34;assignedTo&#34;},{&#34;name&#34;:&#34;file&#34;}]},&#34;searchField&#34;:{&#34;name&#34;:&#34;name&#34;,&#34;title&#34;:&#34;Libellé du dossier&#34;}}],&#34;targetModel&#34;:&#34;PurchaseReq&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;isJson&#34;:true,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;},&#34;savedRecord&#34;:false}">purchaseReq.assignedTo = $ctx.filterOne('User','self.name = ?1',dmnRes.assignedTo)?.getTarget()
+purchaseReq.file = $ctx.filterOne('File','self.name = ?1',dmnRes.file)?.getTarget()
+</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1x41m3k" sourceRef="Gateway_0ln52it" targetRef="Activity_142yurz">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">dmnRes.needPO == true</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_030voxv" sourceRef="Gateway_0ln52it" targetRef="Activity_16b3q0y">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">dmnRes.needPO == false</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_10jklfn" sourceRef="Activity_16b3q0y" targetRef="Event_1torlrz" />
+    <bpmn2:sequenceFlow id="Flow_1r9lf6b" sourceRef="Activity_1c1762p" targetRef="Activity_1v3oroc" />
+    <bpmn2:sequenceFlow id="Flow_0vv86i2" sourceRef="Activity_1v3oroc" targetRef="Activity_0lxazth" />
+    <bpmn2:sequenceFlow id="Flow_1dh2xgv" sourceRef="Activity_0lxazth" targetRef="Activity_1ecb7vr" />
+    <bpmn2:sequenceFlow id="Flow_03hwpyd" sourceRef="Activity_1ecb7vr" targetRef="Gateway_18d8nvs" />
+    <bpmn2:task id="Activity_142yurz" name="Demande validée" camunda:isTranslations="false" camunda:key="Request validated" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="axelor">purchaseReq.statusSelect = 'validated'</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1x41m3k</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0x2e0hq</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:exclusiveGateway id="Gateway_0ln52it">
+      <bpmn2:incoming>Flow_0gjcczf</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1x41m3k</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_030voxv</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:task id="Activity_16b3q0y" name="Recevoir demande" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_030voxv</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_10jklfn</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:endEvent id="Event_1torlrz" name="Refusée">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="axelor">purchaseReq.statusSelect = 'refused'</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_10jklfn</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:businessRuleTask id="Activity_0aszw4a" name="Définir responsable et dossier" camunda:resultVariable="dmnRes" camunda:decisionRef="Decision_1cw6wm0" camunda:mapDecisionResult="singleResult" camunda:decisionName="Définir responsable et dossier">
+      <bpmn2:incoming>Flow_0lb0yk3</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0gjcczf</bpmn2:outgoing>
+    </bpmn2:businessRuleTask>
+    <bpmn2:userTask id="Activity_1lq8itp" name="Envoyer demande" camunda:isTranslations="false" camunda:key="Select the budget and pass to requested status" camunda:completedIf="" camunda:completedIfValue="undefined" camunda:completedIfCombinator="undefined" camunda:buttons="requestBtn" camunda:displayStatus="true" camunda:metaJsonModel="PurchaseReq" camunda:metaJsonModelModelName="PurchaseReq" camunda:defaultForm="custom-model-PurchaseReq-form" camunda:buttonLabels="Demander" camunda:userFieldPath="requester" camunda:deadlineFieldPath="dueDate">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="axelor">purchaseReq.statusSelect = 'requested'</camunda:script>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="item" value="requestBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Demander" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0g38ix5</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0lb0yk3</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="Gateway_1f2b2zl">
+      <bpmn2:incoming>Flow_0u1asig</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0yr8luh</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0g38ix5</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:userTask id="Activity_1erwbqk" name="Créer nouveau budget" camunda:buttons="createBudgetBtn" camunda:isTranslations="false" camunda:key="Create a new budget" camunda:displayStatus="true" camunda:metaJsonModel="PurchaseReq" camunda:metaJsonModelModelName="PurchaseReq" camunda:defaultForm="custom-model-PurchaseReq-form" camunda:buttonLabels="Créer budget">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="axelor">def budget = $ctx.create('Budget')
+budget.code = purchaseReq.requestNumber
+budget.name = purchaseReq.requestNumber
+budget = $ctx.save(budget)
+purchaseReq.budget = budget.getTarget()</camunda:script>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="item" value="createBudgetBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Créer budget" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0pa8q8d</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0u1asig</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="Gateway_018rzk3" name="éligible" camunda:isTranslations="false" camunda:key="Eligible ?">
+      <bpmn2:incoming>Flow_1fqwcw1</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0pa8q8d</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1lq8acw</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:userTask id="Activity_0x15tph" name="Vérifier la demande" camunda:completedIf="purchaseReq?.eligible != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;eligible&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;eligible&#34;,&#34;title&#34;:&#34;Eligible ?&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Qui\nno:Non&#34;,&#34;showIf&#34;:&#34;existingBudget != true&#34;,&#34;sequence&#34;:25,&#34;selection&#34;:&#34;custom-json-select-150&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;eligible&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;isSelectionField&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="eligible" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="Eligible ?" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0srt9t7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1fqwcw1</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="Gateway_18d8nvs" name="Nouveau budget requis" camunda:isTranslations="true" camunda:key="New budget needed ?">
+      <bpmn2:incoming>Flow_03hwpyd</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0yr8luh</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0srt9t7</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:userTask id="Activity_091r5aw" name="Mettre la demande en attente avant prochaine année fiscale" camunda:isTranslations="true" camunda:key="Put request on hold until next fiscal year" camunda:buttons="putOnHoldBtn" camunda:completedIf="" camunda:displayStatus="true" camunda:buttonLabels="Mettre en attente">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="item" value="putOnHoldBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Mettre en attente" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1lq8acw</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0x6aafh</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="Event_16vrljk" name="Demande en attente" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="axelor">purchaseReq.statusSelect = 'pending'</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0x6aafh</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Activity_1ecb7vr" name="Compléter budget" camunda:completedIf="purchaseReq?.existingBudgetSelect != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;existingBudgetSelect&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;existingBudgetSelect&#34;,&#34;title&#34;:&#34;Budget existant&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;yes:Oui\nno:Non&#34;,&#34;sequence&#34;:28,&#34;selection&#34;:&#34;custom-json-select-181&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;yes&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Oui&#34;},{&#34;value&#34;:&#34;no&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Non&#34;}],&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true" camunda:help="Please complete all fields of tab 3rd" camunda:buttonLabels="Suivant" camunda:buttons="nextBtn" camunda:isCustom="true" camunda:metaJsonModel="PurchaseReq" camunda:metaJsonModelModelName="PurchaseReq" camunda:metaJsonModelLabel="Demande d&#39;achat" camunda:defaultForm="custom-model-PurchaseReq-form" camunda:userFieldPath="requester" camunda:deadlineFieldPath="dueDate">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="panelTab3" />
+          <camunda:property name="active" value="true" />
+          <camunda:property name="itemLabel" value="3- Rens. budgétaire" />
+          <camunda:property name="item" value="nextBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="item" value="budget" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="Budget" />
+          <camunda:property name="item" value="existingBudgetSelect" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="Budget existant" />
+        </camunda:properties>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="axelor">purchaseReq.statusSelect = 'budgeting'</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1dh2xgv</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_03hwpyd</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_0lxazth" name="Compléter r. produit" camunda:completedIf="purchaseReq?.supplier != null &#38;&#38; purchaseReq?.product != null &#38;&#38; purchaseReq?.unitPrice != null &#38;&#38; purchaseReq?.qty != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;supplier&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;many-to-one&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;supplier&#34;,&#34;title&#34;:&#34;Fournisseur&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.Partner&#34;,&#34;sequence&#34;:19,&#34;columnSequence&#34;:0,&#34;domain&#34;:&#34;self.isSupplier = true&#34;,&#34;name&#34;:&#34;supplier&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;supplier&#34;,&#34;title&#34;:&#34;Fournisseur&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.Partner&#34;,&#34;sequence&#34;:19,&#34;columnSequence&#34;:0,&#34;domain&#34;:&#34;self.isSupplier = true&#34;,&#34;name&#34;:&#34;supplier&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]},{&#34;fieldName&#34;:&#34;product&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;many-to-one&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;onChange&#34;:&#34;action-purchase-request-update-purchase-price&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;product&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;sequence&#34;:20,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;product&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;onChange&#34;:&#34;action-purchase-request-update-purchase-price&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;product&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;sequence&#34;:20,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;product&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]},{&#34;fieldName&#34;:&#34;unitPrice&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;decimal&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;unitPrice&#34;,&#34;jsonType&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Prix unitaire&#34;,&#34;type&#34;:&#34;decimal&#34;,&#34;sequence&#34;:21,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;unitPrice&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;unitPrice&#34;,&#34;jsonType&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Prix unitaire&#34;,&#34;type&#34;:&#34;decimal&#34;,&#34;sequence&#34;:21,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;unitPrice&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]},{&#34;fieldName&#34;:&#34;qty&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;integer&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;qty&#34;,&#34;jsonType&#34;:&#34;integer&#34;,&#34;title&#34;:&#34;Quantité&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;sequence&#34;:22,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;qty&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: \&#34;12\&#34;, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;qty&#34;,&#34;jsonType&#34;:&#34;integer&#34;,&#34;title&#34;:&#34;Quantité&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;sequence&#34;:22,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;qty&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true" camunda:newMenu="true" camunda:menuName="Demandes prod à comp" camunda:menuParent="studio-men-purchase-req-root" camunda:menuParentLabel="Demande d&#39;achat" camunda:metaJsonModel="PurchaseReq" camunda:metaJsonModelModelName="PurchaseReq" camunda:defaultForm="custom-model-PurchaseReq-form" camunda:tagCount="true" camunda:help="Please complete all fields of tab 2nd" camunda:buttonLabels="Suivant" camunda:buttons="nextBtn" camunda:deadlineFieldPath="dueDate" camunda:userFieldPath="requester">
+      <bpmn2:documentation textFormat="text/x-comments" />
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="panelTab2" />
+          <camunda:property name="active" value="true" />
+          <camunda:property name="itemLabel" value="2- Produit" />
+          <camunda:property name="item" value="nextBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="item" value="panelTab2" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="2- Produit" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0vv86i2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1dh2xgv</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1v3oroc" name="Compléter r. administratifs" camunda:completedIf="purchaseReq?.requester != null &#38;&#38; purchaseReq?.service != null &#38;&#38; purchaseReq?.beneficiary != null &#38;&#38; purchaseReq?.office != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;requester&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;many-to-one&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;defaultValue&#34;:&#34;__user__&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;requester&#34;,&#34;title&#34;:&#34;Demandeur&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.auth.db.User&#34;,&#34;sequence&#34;:11,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;requester&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;defaultValue&#34;:&#34;__user__&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;requester&#34;,&#34;title&#34;:&#34;Demandeur&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.auth.db.User&#34;,&#34;sequence&#34;:11,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;requester&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]},{&#34;fieldName&#34;:&#34;service&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;many-to-one&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;name&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;service&#34;,&#34;title&#34;:&#34;Service.&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.CompanyDepartment&#34;,&#34;sequence&#34;:14,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;service&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;name&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;service&#34;,&#34;title&#34;:&#34;Service.&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.CompanyDepartment&#34;,&#34;sequence&#34;:14,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;service&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;}]},{&#34;fieldName&#34;:&#34;beneficiary&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;many-to-one&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;defaultValue&#34;:&#34;__user__&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;beneficiary&#34;,&#34;title&#34;:&#34;Bénéficiaire&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.auth.db.User&#34;,&#34;sequence&#34;:12,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;beneficiary&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;targetName&#34;:&#34;fullName&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;defaultValue&#34;:&#34;__user__&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;beneficiary&#34;,&#34;title&#34;:&#34;Bénéficiaire&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;com.axelor.auth.db.User&#34;,&#34;sequence&#34;:12,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;beneficiary&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;visibleInGrid&#34;:true}]},{&#34;fieldName&#34;:&#34;office&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;office&#34;,&#34;title&#34;:&#34;Bureau&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;Paris\nLyon\nMarseille\nLille&#34;,&#34;sequence&#34;:13,&#34;selection&#34;:&#34;custom-json-select-122&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;office&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;Paris&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Paris&#34;},{&#34;value&#34;:&#34;Lyon&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Lyon&#34;},{&#34;value&#34;:&#34;Marseille&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Marseille&#34;},{&#34;value&#34;:&#34;Lille&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Lille&#34;}],&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;office&#34;,&#34;title&#34;:&#34;Bureau&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;Paris\nLyon\nMarseille\nLille&#34;,&#34;sequence&#34;:13,&#34;selection&#34;:&#34;custom-json-select-122&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;office&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;Paris&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Paris&#34;},{&#34;value&#34;:&#34;Lyon&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Lyon&#34;},{&#34;value&#34;:&#34;Marseille&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Marseille&#34;},{&#34;value&#34;:&#34;Lille&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Lille&#34;}],&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true" camunda:help="Please complete all fields of tab 1st" camunda:buttonLabels="Suivant" camunda:buttons="nextBtn">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="panelTab1" />
+          <camunda:property name="active" value="true" />
+          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
+          <camunda:property name="item" value="nextBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="item" value="panelTab1" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1r9lf6b</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0vv86i2</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1c1762p" name="Création demande d&#39;achat" camunda:isTranslations="false" camunda:key="Purchase request creation" camunda:displayStatus="true" camunda:completedIf="purchaseReq?.requestType != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseReq&#34;,&#34;metaModalType&#34;:&#34;metaJsonModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;requestType&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;string&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;requestType&#34;,&#34;title&#34;:&#34;Type de demande&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;Demande courante:Demande courante\nDemande fournitures:Demande fournitures\nDemande matériel informatique:Demande matériel informatique\nDemande logiciel:Demande logiciel\nDemande prestation:Demande prestation&#34;,&#34;sequence&#34;:3,&#34;selection&#34;:&#34;custom-json-select-119&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;requestType&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;Demande courante&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande courante&#34;},{&#34;value&#34;:&#34;Demande fournitures&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande fournitures&#34;},{&#34;value&#34;:&#34;Demande matériel informatique&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande matériel informatique&#34;},{&#34;value&#34;:&#34;Demande logiciel&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande logiciel&#34;},{&#34;value&#34;:&#34;Demande prestation&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande prestation&#34;}],&#34;visibleInGrid&#34;:true,&#34;isSelectionField&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;requestType&#34;,&#34;title&#34;:&#34;Type de demande&#34;,&#34;type&#34;:&#34;string&#34;,&#34;selectionText&#34;:&#34;Demande courante:Demande courante\nDemande fournitures:Demande fournitures\nDemande matériel informatique:Demande matériel informatique\nDemande logiciel:Demande logiciel\nDemande prestation:Demande prestation&#34;,&#34;sequence&#34;:3,&#34;selection&#34;:&#34;custom-json-select-119&#34;,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;requestType&#34;,&#34;model&#34;:&#34;com.axelor.meta.db.MetaJsonRecord&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;Demande courante&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande courante&#34;},{&#34;value&#34;:&#34;Demande fournitures&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande fournitures&#34;},{&#34;value&#34;:&#34;Demande matériel informatique&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande matériel informatique&#34;},{&#34;value&#34;:&#34;Demande logiciel&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande logiciel&#34;},{&#34;value&#34;:&#34;Demande prestation&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Demande prestation&#34;}],&#34;visibleInGrid&#34;:true,&#34;isSelectionField&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:buttonLabels="undefined" camunda:buttons="undefined">
+      <bpmn2:extensionElements>
+        <camunda:properties />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1pp8021</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1r9lf6b</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:startEvent id="StartEvent_1" name="Nouvelle demande" camunda:displayStatus="true">
+      <bpmn2:outgoing>Flow_1pp8021</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="Activity_02pn3of" name="Créer devis fournisseur" camunda:isTranslations="false" camunda:key="Create purchase quotation" camunda:buttons="createQuotationBtn" camunda:displayStatus="true" camunda:completedIf="" camunda:metaJsonModel="PurchaseReq" camunda:metaJsonModelModelName="PurchaseReq" camunda:defaultForm="custom-model-PurchaseReq-form" camunda:buttonLabels="Créer devis" camunda:userFieldPath="requester" camunda:deadlineFieldPath="dueDate">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="item" value="createQuotationBtn" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Créer devis" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0x2e0hq</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1wl4c5q</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_1wl4c5q" name="" sourceRef="Activity_02pn3of" targetRef="Event_0q8lx82" />
+    <bpmn2:intermediateThrowEvent id="Event_0q8lx82" name="Create Purchase Order">
+      <bpmn2:incoming>Flow_1wl4c5q</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0xv3uk2</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_0z70if5" messageRef="Message_0ux5n68" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="Flow_0xv3uk2" sourceRef="Event_0q8lx82" targetRef="Event_0hlg3gv" />
+    <bpmn2:intermediateCatchEvent id="Event_0hlg3gv" name="Wait for purchase flow">
+      <bpmn2:incoming>Flow_0xv3uk2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_17qm00n</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_15uc33w" messageRef="Message_0gsgtzc" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_17qm00n" sourceRef="Event_0hlg3gv" targetRef="Activity_1u2ow7w" />
+    <bpmn2:scriptTask id="Activity_1u2ow7w" name="Update PO request status" scriptFormat="axelor">
+      <bpmn2:incoming>Flow_17qm00n</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0rtact7</bpmn2:outgoing>
+      <bpmn2:script>$ctx.find('PurchaseReq',purchaseReqId).statusSelect = 'validated'</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="Flow_0rtact7" sourceRef="Activity_1u2ow7w" targetRef="Event_1x4mdwo" />
+    <bpmn2:endEvent id="Event_1x4mdwo" name="PO Request completed" camunda:displayStatus="true" camunda:metaModel="PurchaseOrder" camunda:metaModelModelName="com.axelor.apps.purchase.db.PurchaseOrder">
+      <bpmn2:incoming>Flow_0rtact7</bpmn2:incoming>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmn2:process id="Process_0ocwbmd" name="Purchase Order Flow" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="PurchaseOrder" isStartModel="false" model="com.axelor.apps.purchase.db.PurchaseOrder" metaModelFullName="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase Order" metaModelLabel="PurchaseOrder (Supplier RFQ/PO)" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:userTask id="Activity_1dwq8ov" name="Valider commande" camunda:completedIf="purchaseOrder?.statusSelect == 3" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseOrder&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;purchase.purchase.order.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Requested&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;purchase.purchase.order.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Requested&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0jy3mg3</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0jt313h</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_0rgbvl7" name="Demande de devis" camunda:metaModel="PurchaseOrder" camunda:metaModelModelName="com.axelor.apps.purchase.db.PurchaseOrder" camunda:metaModelLabel="Supplier RFQ/PO" camunda:buttonLabels="Requested" camunda:buttons="requestedBtn" camunda:userFieldPath="responsible" camunda:deadlineFieldPath="orderDate">
+      <bpmn2:extensionElements>
+        <camunda:properties />
+        <camunda:properties />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_162gvo9</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1d0qf3l</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_0u53buh" name="Validation directeur" camunda:completedIf="purchaseOrder?.directorValidation == true" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseOrder&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;directorValidation&#34;,&#34;operator&#34;:&#34;isTrue&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;boolean&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;hidden&#34;:true,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;directorValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation direction&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:3,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;directorValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;hidden&#34;:true,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;directorValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation direction&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:3,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;directorValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:metaModel="PurchaseOrder" camunda:metaModelModelName="com.axelor.apps.purchase.db.PurchaseOrder" camunda:metaModelLabel="Supplier RFQ/PO" camunda:userFieldPath="responsible" camunda:deadlineFieldPath="orderDate">
+      <bpmn2:documentation textFormat="text/x-comments">Admin:05/05/2021:15.23:fsdfsnnssfsdfsf</bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.apps.purchase.db.PurchaseOrder" />
+          <camunda:property name="modelName" value="PurchaseOrder" />
+          <camunda:property name="modelType" value="metaModel" />
+          <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="item" value="directorValidation" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Validation direction" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1ioxfs2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0bf4ss7</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1s7bhaj" name="Validation acheteur" camunda:completedIf="purchaseOrder?.buyerValidation == true" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseOrder&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;buyerValidation&#34;,&#34;operator&#34;:&#34;isTrue&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;boolean&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;buyerValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation acheteur&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:1,&#34;readonly&#34;:true,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;buyerValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 1, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;buyerValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation acheteur&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:1,&#34;readonly&#34;:true,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;buyerValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:metaModel="PurchaseOrder" camunda:metaModelModelName="com.axelor.apps.purchase.db.PurchaseOrder" camunda:metaModelLabel="Supplier RFQ/PO">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.apps.purchase.db.PurchaseOrder" />
+          <camunda:property name="modelName" value="PurchaseOrder" />
+          <camunda:property name="modelType" value="metaModel" />
+          <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="item" value="buyerValidation" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="Validation acheteur" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_19tlxt8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1cle2hl</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_08ictqw" name="Validation responsable" camunda:completedIf="purchaseOrder?.managerValidation == true" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;PurchaseOrder&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;managerValidation&#34;,&#34;operator&#34;:&#34;isTrue&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;boolean&#34;,&#34;field&#34;:{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;managerValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation Responsable&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:2,&#34;readonly&#34;:true,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;managerValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;modelField&#34;:&#34;attrs&#34;,&#34;onClick&#34;:&#34;save&#34;,&#34;includeIf&#34;:&#34;__config__.app.isApp(&#39;PurchaseReq&#39;)&#34;,&#34;jsonField&#34;:&#34;attrs&#34;,&#34;precision&#34;:0,&#34;scale&#34;:0,&#34;widgetAttrs&#34;:&#34;{\&#34;col\&#34;: 2, \&#34;tab\&#34;: \&#34;false\&#34;, \&#34;width\&#34;: \&#34;default\&#34;, \&#34;colSpan\&#34;: 6, \&#34;showTitle\&#34;: \&#34;true\&#34;}&#34;,&#34;jsonPath&#34;:&#34;managerValidation&#34;,&#34;jsonType&#34;:&#34;boolean&#34;,&#34;title&#34;:&#34;Validation Responsable&#34;,&#34;type&#34;:&#34;boolean&#34;,&#34;sequence&#34;:2,&#34;readonly&#34;:true,&#34;columnSequence&#34;:0,&#34;name&#34;:&#34;managerValidation&#34;,&#34;model&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;visibleInGrid&#34;:true}]}]}]}]" camunda:completedIfCombinator="and" camunda:metaModel="PurchaseOrder" camunda:metaModelModelName="com.axelor.apps.purchase.db.PurchaseOrder" camunda:metaModelLabel="Supplier RFQ/PO" camunda:userFieldPath="responsible" camunda:deadlineFieldPath="orderDate">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="model" value="com.axelor.apps.purchase.db.PurchaseOrder" />
+          <camunda:property name="modelName" value="PurchaseOrder" />
+          <camunda:property name="modelType" value="metaModel" />
+          <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="item" value="managerValidation" />
+          <camunda:property name="readonly" value="false" />
+          <camunda:property name="itemLabel" value="Validation Responsable" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0w2fn0v</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0w40pqv</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:inclusiveGateway id="Gateway_1895i93">
+      <bpmn2:incoming>Flow_0bf4ss7</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1cle2hl</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0w40pqv</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0jy3mg3</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:parallelGateway id="Gateway_1jarsfb">
+      <bpmn2:incoming>Flow_1raadb3</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_19tlxt8</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0w2fn0v</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:inclusiveGateway id="Gateway_0fr67y4">
+      <bpmn2:incoming>Flow_1d0qf3l</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1ioxfs2</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1raadb3</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:scriptTask id="Activity_11m3qc9" name="Create PO" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[0]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Budget&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;budget&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;budget&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;budget&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Budget&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.account.db.Budget&#34;,&#34;id&#34;:174}]},{&#34;dataPath&#34;:&#34;[1]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Company&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;Axelor&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;company&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[2]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Currency&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;Euro&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;currency&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[3]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;PaymentCondition&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;15 jours fin de mois&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;paymentCondition&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[4]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;PaymentMode&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;Dec. Chèque&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;paymentMode&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[5]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;PrintingSettings&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;Default print settings&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;printingSettings&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[6]&#34;,&#34;type&#34;:&#34;INTEGER&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;1&#34;}},&#34;name&#34;:&#34;statusSelect&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[7]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;StockLocation&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;Entrepôt principal&#34;,&#34;targetName&#34;:&#34;name&#34;}},&#34;name&#34;:&#34;stockLocation&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[8]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Partner&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;supplier&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;supplierPartner&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;supplier&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Fournisseur&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Partner&#34;,&#34;id&#34;:159}]},{&#34;dataPath&#34;:&#34;[9]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;inTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[10]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;companyExTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[11]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[12]&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;MetaJsonRecord&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;SOURCE&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;purchaseRequest&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;PurchaseReq&#34;,&#34;version&#34;:1,&#34;modelType&#34;:&#34;CUSTOM&#34;,&#34;title&#34;:&#34;SOURCE&#34;,&#34;id&#34;:11}],&#34;jsonModel&#34;:&#34;PurchaseReq&#34;},{&#34;dataPath&#34;:&#34;[23]&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;MetaJsonRecord&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;file&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;file&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;file&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;json-many-to-one&#34;,&#34;title&#34;:&#34;Dossier&#34;,&#34;targetJsonModel&#34;:{&#34;id&#34;:12,&#34;$version&#34;:1,&#34;title&#34;:&#34;Dossier&#34;},&#34;jsonModel&#34;:{&#34;id&#34;:11,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;,&#34;name&#34;:&#34;PurchaseReq&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:216}],&#34;jsonModel&#34;:&#34;File&#34;},{&#34;dataPath&#34;:&#34;[47]&#34;,&#34;type&#34;:&#34;many-to-one&#34;,&#34;target&#34;:&#34;User&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;assignedTo&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;responsible&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;assignedTo&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Assigné à&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:11,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;,&#34;name&#34;:&#34;PurchaseReq&#34;},&#34;targetModel&#34;:&#34;com.axelor.auth.db.User&#34;,&#34;id&#34;:214}]}],&#34;targetModel&#34;:&#34;PurchaseOrder&#34;,&#34;sourceModel&#34;:&#34;PurchaseReq&#34;,&#34;sourceModelList&#34;:[{&#34;importOrigin&#34;:null,&#34;menuIcon&#34;:null,&#34;roles&#34;:[],&#34;menuBackground&#34;:null,&#34;nameField&#34;:&#34;requestNumber&#34;,&#34;orderBy&#34;:null,&#34;formWidth&#34;:&#34;large&#34;,&#34;groupBy&#34;:null,&#34;title&#34;:&#34;Demande d&#39;achat&#34;,&#34;createdOn&#34;:&#34;2021-08-10T13:23:45.480Z&#34;,&#34;onNew&#34;:&#34;action-purchase-request-defaults&#34;,&#34;menuTop&#34;:false,&#34;action&#34;:null,&#34;id&#34;:18,&#34;menuBuilder&#34;:{&#34;name&#34;:&#34;studio-menu-purchasereq&#34;,&#34;id&#34;:17,&#34;$version&#34;:3},&#34;selected&#34;:false,&#34;processInstanceId&#34;:null,&#34;onSave&#34;:&#34;save,action-refresh-record&#34;,&#34;updatedBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:3},&#34;menuParent&#34;:null,&#34;menuTitle&#34;:null,&#34;updatedOn&#34;:&#34;2021-08-10T13:23:52.620Z&#34;,&#34;menu&#34;:null,&#34;showProcessTracking&#34;:false,&#34;version&#34;:1,&#34;$wkfStatus&#34;:null,&#34;menuOrder&#34;:0,&#34;importId&#34;:null,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:3},&#34;formView&#34;:{&#34;id&#34;:2173,&#34;$version&#34;:0,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;isGenerateMenu&#34;:true,&#34;name&#34;:&#34;PurchaseReq&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;panel1&#34;,&#34;id&#34;:185,&#34;$version&#34;:0},{&#34;name&#34;:&#34;statusSelect&#34;,&#34;id&#34;:206,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestNumber&#34;,&#34;id&#34;:194,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestType&#34;,&#34;id&#34;:203,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab1&#34;,&#34;id&#34;:208,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requester&#34;,&#34;id&#34;:209,&#34;$version&#34;:0},{&#34;name&#34;:&#34;beneficiary&#34;,&#34;id&#34;:181,&#34;$version&#34;:0},{&#34;name&#34;:&#34;office&#34;,&#34;id&#34;:199,&#34;$version&#34;:0},{&#34;name&#34;:&#34;service&#34;,&#34;id&#34;:175,&#34;$version&#34;:0},{&#34;name&#34;:&#34;urgent&#34;,&#34;id&#34;:198,&#34;$version&#34;:0},{&#34;name&#34;:&#34;phone&#34;,&#34;id&#34;:193,&#34;$version&#34;:0},{&#34;name&#34;:&#34;dueDate&#34;,&#34;id&#34;:205,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab2&#34;,&#34;id&#34;:200,&#34;$version&#34;:0},{&#34;name&#34;:&#34;supplier&#34;,&#34;id&#34;:176,&#34;$version&#34;:0},{&#34;name&#34;:&#34;product&#34;,&#34;id&#34;:177,&#34;$version&#34;:0},{&#34;name&#34;:&#34;unitPrice&#34;,&#34;id&#34;:207,&#34;$version&#34;:0},{&#34;name&#34;:&#34;qty&#34;,&#34;id&#34;:172,&#34;$version&#34;:0},{&#34;name&#34;:&#34;amountTotal&#34;,&#34;id&#34;:195,&#34;$version&#34;:0},{&#34;name&#34;:&#34;description&#34;,&#34;id&#34;:197,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab3&#34;,&#34;id&#34;:210,&#34;$version&#34;:0},{&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;id&#34;:211,&#34;$version&#34;:0},{&#34;name&#34;:&#34;eligible&#34;,&#34;id&#34;:201,&#34;$version&#34;:0},{&#34;name&#34;:&#34;budget&#34;,&#34;id&#34;:202,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panel2&#34;,&#34;id&#34;:183,&#34;$version&#34;:0},{&#34;name&#34;:&#34;assignedTo&#34;,&#34;id&#34;:178,&#34;$version&#34;:0},{&#34;name&#34;:&#34;file&#34;,&#34;id&#34;:180,&#34;$version&#34;:0},{&#34;name&#34;:&#34;nextBtn&#34;,&#34;id&#34;:212,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createBudgetBtn&#34;,&#34;id&#34;:204,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestBtn&#34;,&#34;id&#34;:179,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createQuotationBtn&#34;,&#34;id&#34;:196,&#34;$version&#34;:0},{&#34;name&#34;:&#34;putOnHoldBtn&#34;,&#34;id&#34;:171,&#34;$version&#34;:0}],&#34;gridView&#34;:{&#34;id&#34;:2174,&#34;$version&#34;:0,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;appBuilder&#34;:{&#34;code&#34;:&#34;PurchaseReq&#34;,&#34;name&#34;:&#34;Purchase request&#34;,&#34;id&#34;:3,&#34;$version&#34;:0},&#34;modelType&#34;:&#34;CUSTOM&#34;,&#34;type&#34;:&#34;metaJsonModel&#34;}],&#34;newRecord&#34;:true,&#34;createVariable&#34;:true,&#34;processId&#34;:&#34;Purchase_Req&#34;,&#34;isJson&#34;:false,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Process&#34;,&#34;id&#34;:&#34;process&#34;}}">
+      <bpmn2:extensionElements />
+      <bpmn2:incoming>Flow_1elebge</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_04wv1u8</bpmn2:outgoing>
+      <bpmn2:script>def rec = $ctx.create('PurchaseOrder')
+def src = $ctx.getVariable(Purchase_Req,'purchaseReq')
+rec.budget = $ctx.find('Budget',src.budget?.id)?.getTarget()
+rec.company = $ctx.filterOne('Company','self.name = ?1','Axelor')?.getTarget()
+rec.currency = $ctx.filterOne('Currency','self.name = ?1','Euro')?.getTarget()
+rec.paymentCondition = $ctx.filterOne('PaymentCondition','self.name = ?1','15 jours fin de mois')?.getTarget()
+rec.paymentMode = $ctx.filterOne('PaymentMode','self.name = ?1','Dec. Ch\u00E8que')?.getTarget()
+rec.printingSettings = $ctx.filterOne('PrintingSettings','self.name = ?1','Default print settings')?.getTarget()
+rec.statusSelect = 1
+rec.stockLocation = $ctx.filterOne('StockLocation','self.name = ?1','Entrep\u00F4t principal')?.getTarget()
+rec.supplierPartner = $ctx.find('Partner',src.supplier?.id)?.getTarget()
+rec.inTaxTotal = src.amountTotal
+rec.companyExTaxTotal = src.amountTotal
+rec.exTaxTotal = src.amountTotal
+rec.purchaseRequest = $ctx.find('MetaJsonRecord',src?.id)?.getTarget()
+rec.file = $ctx.find('MetaJsonRecord',src.file?.id)?.getTarget()
+rec.responsible = $ctx.find('User',src.assignedTo?.id)?.getTarget()
+$ctx.createVariable($ctx.save(rec), execution)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="Flow_0jt313h" sourceRef="Activity_1dwq8ov" targetRef="Event_14pdiz8" />
+    <bpmn2:sequenceFlow id="Flow_0jy3mg3" sourceRef="Gateway_1895i93" targetRef="Activity_1dwq8ov" />
+    <bpmn2:sequenceFlow id="Flow_1d0qf3l" sourceRef="Activity_0rgbvl7" targetRef="Gateway_0fr67y4" />
+    <bpmn2:sequenceFlow id="Flow_1ioxfs2" name=" &#62; 2000" sourceRef="Gateway_0fr67y4" targetRef="Activity_0u53buh">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">purchaseOrder?.inTaxTotal &gt; 2000</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0bf4ss7" sourceRef="Activity_0u53buh" targetRef="Gateway_1895i93" />
+    <bpmn2:sequenceFlow id="Flow_19tlxt8" sourceRef="Gateway_1jarsfb" targetRef="Activity_1s7bhaj" />
+    <bpmn2:sequenceFlow id="Flow_1cle2hl" sourceRef="Activity_1s7bhaj" targetRef="Gateway_1895i93" />
+    <bpmn2:sequenceFlow id="Flow_0w2fn0v" sourceRef="Gateway_1jarsfb" targetRef="Activity_08ictqw" />
+    <bpmn2:sequenceFlow id="Flow_0w40pqv" sourceRef="Activity_08ictqw" targetRef="Gateway_1895i93" />
+    <bpmn2:sequenceFlow id="Flow_1raadb3" name="Toujours" sourceRef="Gateway_0fr67y4" targetRef="Gateway_1jarsfb" />
+    <bpmn2:sequenceFlow id="Flow_04wv1u8" sourceRef="Activity_11m3qc9" targetRef="Activity_0jzha52" />
+    <bpmn2:sequenceFlow id="Flow_1elebge" sourceRef="Event_1grj2i3" targetRef="Activity_11m3qc9" />
+    <bpmn2:startEvent id="Event_1grj2i3">
+      <bpmn2:extensionElements />
+      <bpmn2:outgoing>Flow_1elebge</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1oputfc" messageRef="Message_0vvm3yc" />
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="Event_14pdiz8" name="Achat validé">
+      <bpmn2:incoming>Flow_0jt313h</bpmn2:incoming>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_0u1fth2" messageRef="Message_0gsgtzc" />
+    </bpmn2:endEvent>
+    <bpmn2:scriptTask id="Activity_0jzha52" name="Create PO Line" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[0]&#34;,&#34;type&#34;:&#34;INTEGER&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;0&#34;}},&#34;name&#34;:&#34;discountTypeSelect&#34;,&#34;modelSubField&#34;:[]},{&#34;dataPath&#34;:&#34;[1]&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;product?.name&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;productName&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;product&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;id&#34;:160},{&#34;name&#34;:&#34;name&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Name&#34;}]},{&#34;dataPath&#34;:&#34;[2]&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;product?.fullName&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;fullName&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;product&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;id&#34;:160},{&#34;name&#34;:&#34;fullName&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Full name&#34;}]},{&#34;dataPath&#34;:&#34;[3]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Product&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;product&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;product&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;product&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;id&#34;:160}]},{&#34;dataPath&#34;:&#34;[4]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;PurchaseOrder&#34;,&#34;value&#34;:{&#34;from&#34;:&#34;context&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;purchaseOrder&#34;}},&#34;name&#34;:&#34;purchaseOrder&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;PurchaseOrder&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;metaModel&#34;,&#34;fullName&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;id&#34;:178}]},{&#34;dataPath&#34;:&#34;[5]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;qty&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;qty&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;qty&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;integer&#34;,&#34;title&#34;:&#34;Quantité&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:152}]},{&#34;dataPath&#34;:&#34;[6]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Partner&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;supplier&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;supplierPartner&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;supplier&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Fournisseur&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Partner&#34;,&#34;id&#34;:159}]},{&#34;dataPath&#34;:&#34;[7]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;inTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[8]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;companyInTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[9]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[10]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;amountTotal&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;companyExTaxTotal&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;amountTotal&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Montant&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:167}]},{&#34;dataPath&#34;:&#34;[11]&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;target&#34;:&#34;Unit&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;product?.unit&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;unit&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;product&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;many-to-one&#34;,&#34;title&#34;:&#34;Produit&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:&#34;com.axelor.apps.base.db.Product&#34;,&#34;id&#34;:160},{&#34;name&#34;:&#34;unit&#34;,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Unit&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.Unit&#34;}]},{&#34;dataPath&#34;:&#34;[12]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;unitPrice&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;inTaxPrice&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;unitPrice&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Prix unitaire&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:179}]},{&#34;dataPath&#34;:&#34;[13]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;unitPrice&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;price&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;unitPrice&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Prix unitaire&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:179}]},{&#34;dataPath&#34;:&#34;[14]&#34;,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;unitPrice&#34;},&#34;from&#34;:&#34;source&#34;},&#34;name&#34;:&#34;priceDiscounted&#34;,&#34;modelSubField&#34;:[{&#34;name&#34;:&#34;unitPrice&#34;,&#34;version&#34;:0,&#34;type&#34;:&#34;decimal&#34;,&#34;title&#34;:&#34;Prix unitaire&#34;,&#34;targetJsonModel&#34;:null,&#34;jsonModel&#34;:{&#34;id&#34;:15,&#34;$version&#34;:1,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;targetModel&#34;:null,&#34;id&#34;:179}]}],&#34;targetModel&#34;:&#34;PurchaseOrderLine&#34;,&#34;sourceModel&#34;:&#34;PurchaseReq&#34;,&#34;sourceModelList&#34;:[{&#34;importOrigin&#34;:null,&#34;menuIcon&#34;:null,&#34;roles&#34;:[],&#34;menuBackground&#34;:null,&#34;nameField&#34;:&#34;requestNumber&#34;,&#34;orderBy&#34;:null,&#34;formWidth&#34;:&#34;large&#34;,&#34;groupBy&#34;:null,&#34;title&#34;:&#34;Demande d&#39;achat&#34;,&#34;createdOn&#34;:&#34;2021-08-10T13:23:45.480Z&#34;,&#34;onNew&#34;:&#34;action-purchase-request-defaults&#34;,&#34;menuTop&#34;:false,&#34;action&#34;:null,&#34;id&#34;:18,&#34;menuBuilder&#34;:{&#34;name&#34;:&#34;studio-menu-purchasereq&#34;,&#34;id&#34;:17,&#34;$version&#34;:3},&#34;selected&#34;:false,&#34;processInstanceId&#34;:null,&#34;onSave&#34;:&#34;save,action-refresh-record&#34;,&#34;updatedBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:3},&#34;menuParent&#34;:null,&#34;menuTitle&#34;:null,&#34;updatedOn&#34;:&#34;2021-08-10T13:23:52.620Z&#34;,&#34;menu&#34;:null,&#34;showProcessTracking&#34;:false,&#34;version&#34;:1,&#34;$wkfStatus&#34;:null,&#34;menuOrder&#34;:0,&#34;importId&#34;:null,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:3},&#34;formView&#34;:{&#34;id&#34;:2173,&#34;$version&#34;:0,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;isGenerateMenu&#34;:true,&#34;name&#34;:&#34;PurchaseReq&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;panel1&#34;,&#34;id&#34;:185,&#34;$version&#34;:0},{&#34;name&#34;:&#34;statusSelect&#34;,&#34;id&#34;:206,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestNumber&#34;,&#34;id&#34;:194,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestType&#34;,&#34;id&#34;:203,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab1&#34;,&#34;id&#34;:208,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requester&#34;,&#34;id&#34;:209,&#34;$version&#34;:0},{&#34;name&#34;:&#34;beneficiary&#34;,&#34;id&#34;:181,&#34;$version&#34;:0},{&#34;name&#34;:&#34;office&#34;,&#34;id&#34;:199,&#34;$version&#34;:0},{&#34;name&#34;:&#34;service&#34;,&#34;id&#34;:175,&#34;$version&#34;:0},{&#34;name&#34;:&#34;urgent&#34;,&#34;id&#34;:198,&#34;$version&#34;:0},{&#34;name&#34;:&#34;phone&#34;,&#34;id&#34;:193,&#34;$version&#34;:0},{&#34;name&#34;:&#34;dueDate&#34;,&#34;id&#34;:205,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab2&#34;,&#34;id&#34;:200,&#34;$version&#34;:0},{&#34;name&#34;:&#34;supplier&#34;,&#34;id&#34;:176,&#34;$version&#34;:0},{&#34;name&#34;:&#34;product&#34;,&#34;id&#34;:177,&#34;$version&#34;:0},{&#34;name&#34;:&#34;unitPrice&#34;,&#34;id&#34;:207,&#34;$version&#34;:0},{&#34;name&#34;:&#34;qty&#34;,&#34;id&#34;:172,&#34;$version&#34;:0},{&#34;name&#34;:&#34;amountTotal&#34;,&#34;id&#34;:195,&#34;$version&#34;:0},{&#34;name&#34;:&#34;description&#34;,&#34;id&#34;:197,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panelTab3&#34;,&#34;id&#34;:210,&#34;$version&#34;:0},{&#34;name&#34;:&#34;existingBudgetSelect&#34;,&#34;id&#34;:211,&#34;$version&#34;:0},{&#34;name&#34;:&#34;eligible&#34;,&#34;id&#34;:201,&#34;$version&#34;:0},{&#34;name&#34;:&#34;budget&#34;,&#34;id&#34;:202,&#34;$version&#34;:0},{&#34;name&#34;:&#34;panel2&#34;,&#34;id&#34;:183,&#34;$version&#34;:0},{&#34;name&#34;:&#34;assignedTo&#34;,&#34;id&#34;:178,&#34;$version&#34;:0},{&#34;name&#34;:&#34;file&#34;,&#34;id&#34;:180,&#34;$version&#34;:0},{&#34;name&#34;:&#34;nextBtn&#34;,&#34;id&#34;:212,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createBudgetBtn&#34;,&#34;id&#34;:204,&#34;$version&#34;:0},{&#34;name&#34;:&#34;requestBtn&#34;,&#34;id&#34;:179,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createQuotationBtn&#34;,&#34;id&#34;:196,&#34;$version&#34;:0},{&#34;name&#34;:&#34;putOnHoldBtn&#34;,&#34;id&#34;:171,&#34;$version&#34;:0}],&#34;gridView&#34;:{&#34;id&#34;:2174,&#34;$version&#34;:0,&#34;title&#34;:&#34;Demande d&#39;achat&#34;},&#34;appBuilder&#34;:{&#34;code&#34;:&#34;PurchaseReq&#34;,&#34;name&#34;:&#34;Purchase request&#34;,&#34;id&#34;:3,&#34;$version&#34;:0},&#34;modelType&#34;:&#34;CUSTOM&#34;,&#34;type&#34;:&#34;metaJsonModel&#34;}],&#34;newRecord&#34;:true,&#34;processId&#34;:&#34;Purchase_Req&#34;,&#34;isJson&#34;:false,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Process&#34;,&#34;id&#34;:&#34;process&#34;}}">
+      <bpmn2:incoming>Flow_04wv1u8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_162gvo9</bpmn2:outgoing>
+      <bpmn2:script>def rec = $ctx.create('PurchaseOrderLine')
+def src = $ctx.getVariable(Purchase_Req,'purchaseReq')
+rec.discountTypeSelect = 0
+rec.productName = src.product?.name
+rec.fullName = src.product?.fullName
+rec.product = $ctx.find('Product',src.product?.id)?.getTarget()
+rec.purchaseOrder = $ctx.find('PurchaseOrder',purchaseOrder?.id)?.getTarget()
+rec.qty = src.qty
+rec.supplierPartner = $ctx.find('Partner',src.supplier?.id)?.getTarget()
+rec.inTaxTotal = src.amountTotal
+rec.companyInTaxTotal = src.amountTotal
+rec.exTaxTotal = src.amountTotal
+rec.companyExTaxTotal = src.amountTotal
+rec.unit = $ctx.find('Unit',src.product?.unit?.id)?.getTarget()
+rec.inTaxPrice = src.unitPrice
+rec.price = src.unitPrice
+rec.priceDiscounted = src.unitPrice
+return $ctx.save(rec)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="Flow_162gvo9" sourceRef="Activity_0jzha52" targetRef="Activity_0rgbvl7" />
+  </bpmn2:process>
+  <bpmn2:message id="Message_1tzb067" name="CreatePO" />
+  <bpmn2:message id="Message_0vvm3yc" name="CreatePO" />
+  <bpmn2:message id="Message_12vmrbm" name="PODone" />
+  <bpmn2:message id="Message_0dt0k3c" name="CreatePO" />
+  <bpmn2:message id="Message_0gsgtzc" name="PODone-${Purchase_Req}" />
+  <bpmn2:message id="Message_0ux5n68" name="CreatePO" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0et4xgd">
+      <bpmndi:BPMNShape id="Participant_14obht3_di" bpmnElement="Participant_14obht3" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="2505" y="-1315" width="3545" height="1615" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_18yvkd6_di" bpmnElement="Lane_18yvkd6" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="2535" y="-405" width="3515" height="705" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_02jxh12_di" bpmnElement="Lane_02jxh12" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="2535" y="-915" width="3515" height="510" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1b5afdf_di" bpmnElement="Lane_1b5afdf" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="2535" y="-1315" width="3515" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0rtact7_di" bpmnElement="Flow_0rtact7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="5850" y="-80" />
+        <di:waypoint x="5932" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17qm00n_di" bpmnElement="Flow_17qm00n" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="5678" y="-80" />
+        <di:waypoint x="5750" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xv3uk2_di" bpmnElement="Flow_0xv3uk2" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="5568" y="-80" />
+        <di:waypoint x="5642" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wl4c5q_di" bpmnElement="Flow_1wl4c5q" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="5350" y="-80" />
+        <di:waypoint x="5532" y="-80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5400" y="-98" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03hwpyd_di" bpmnElement="Flow_03hwpyd" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3390" y="-80" />
+        <di:waypoint x="3475" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dh2xgv_di" bpmnElement="Flow_1dh2xgv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3200" y="-80" />
+        <di:waypoint x="3290" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vv86i2_di" bpmnElement="Flow_0vv86i2" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3020" y="-80" />
+        <di:waypoint x="3100" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r9lf6b_di" bpmnElement="Flow_1r9lf6b" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="2820" y="-80" />
+        <di:waypoint x="2920" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10jklfn_di" bpmnElement="Flow_10jklfn" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4860" y="-245" />
+        <di:waypoint x="4860" y="-332" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_030voxv_di" bpmnElement="Flow_030voxv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4860" y="-105" />
+        <di:waypoint x="4860" y="-165" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x41m3k_di" bpmnElement="Flow_1x41m3k" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4885" y="-80" />
+        <di:waypoint x="5070" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gjcczf_di" bpmnElement="Flow_0gjcczf" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4690" y="-80" />
+        <di:waypoint x="4835" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lb0yk3_di" bpmnElement="Flow_0lb0yk3" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4440" y="-80" />
+        <di:waypoint x="4590" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x2e0hq_di" bpmnElement="Flow_0x2e0hq" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="5170" y="-80" />
+        <di:waypoint x="5250" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g38ix5_di" bpmnElement="Flow_0g38ix5" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4195" y="-80" />
+        <di:waypoint x="4340" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u1asig_di" bpmnElement="Flow_0u1asig" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4100" y="-575" />
+        <di:waypoint x="4170" y="-575" />
+        <di:waypoint x="4170" y="-105" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x6aafh_di" bpmnElement="Flow_0x6aafh" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3570" y="-730" />
+        <di:waypoint x="3498" y="-730" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lq8acw_di" bpmnElement="Flow_1lq8acw" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3820" y="-600" />
+        <di:waypoint x="3820" y="-730" />
+        <di:waypoint x="3670" y="-730" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3842" y="-666" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pa8q8d_di" bpmnElement="Flow_0pa8q8d" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3845" y="-575" />
+        <di:waypoint x="4000" y="-575" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3864" y="-593" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fqwcw1_di" bpmnElement="Flow_1fqwcw1" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3690" y="-575" />
+        <di:waypoint x="3795" y="-575" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yr8luh_di" bpmnElement="Flow_0yr8luh" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3525" y="-80" />
+        <di:waypoint x="4145" y="-80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3967" y="-114" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pp8021_di" bpmnElement="Flow_1pp8021" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="2643" y="-80" />
+        <di:waypoint x="2720" y="-80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0srt9t7_di" bpmnElement="Flow_0srt9t7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3500" y="-105" />
+        <di:waypoint x="3500" y="-575" />
+        <di:waypoint x="3590" y="-575" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3437" y="-312" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_142yurz_di" bpmnElement="Activity_142yurz" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="5070" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ln52it_di" bpmnElement="Gateway_0ln52it" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="4835" y="-105" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16b3q0y_di" bpmnElement="Activity_16b3q0y" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="4810" y="-245" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1torlrz_di" bpmnElement="Event_1torlrz" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="4842" y="-368" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4843" y="-398" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rjnzt0_di" bpmnElement="Activity_0aszw4a" bioc:stroke="#e76092" bioc:fill="#f8cfde" color:background-color="#f8cfde" color:border-color="#e76092">
+        <dc:Bounds x="4590" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00s9k2i_di" bpmnElement="Activity_1lq8itp" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="4340" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1f2b2zl_di" bpmnElement="Gateway_1f2b2zl" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="4145" y="-105" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02f3try_di" bpmnElement="Activity_1erwbqk" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="4000" y="-615" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_018rzk3_di" bpmnElement="Gateway_018rzk3" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="3795" y="-600" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3821" y="-540" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jobz4u_di" bpmnElement="Activity_0x15tph" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3590" y="-615" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18d8nvs_di" bpmnElement="Gateway_18d8nvs" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="3475" y="-105" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3478" y="-48" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13yk8be_di" bpmnElement="Activity_091r5aw" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3570" y="-770" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16vrljk_di" bpmnElement="Event_16vrljk" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="3462" y="-748" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3451" y="-705" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_151tdli_di" bpmnElement="Activity_1ecb7vr" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3290" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1eikqni_di" bpmnElement="Activity_0lxazth" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3100" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zr4815_di" bpmnElement="Activity_1v3oroc" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="2920" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eytpt1_di" bpmnElement="Activity_1c1762p" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="2720" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="2607" y="-98" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2606" y="-55" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13lm9l1_di" bpmnElement="Activity_02pn3of" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="5250" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tsfddu_di" bpmnElement="Event_0q8lx82" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="5532" y="-98" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5509" y="-128" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ngp3ti_di" bpmnElement="Event_0hlg3gv" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="5642" y="-98" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5618" y="-128" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s46xwa_di" bpmnElement="Activity_1u2ow7w" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="5750" y="-120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1x4mdwo_di" bpmnElement="Event_1x4mdwo" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="5932" y="-98" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5932" y="-55" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_184qfnl_di" bpmnElement="Participant_184qfnl" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="2490" y="440" width="3430" height="850" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_162gvo9_di" bpmnElement="Flow_162gvo9" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3270" y="880" />
+        <di:waypoint x="3330" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1elebge_di" bpmnElement="Flow_1elebge" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="2888" y="880" />
+        <di:waypoint x="3020" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04wv1u8_di" bpmnElement="Flow_04wv1u8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3120" y="880" />
+        <di:waypoint x="3170" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1raadb3_di" bpmnElement="Flow_1raadb3" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3595" y="880" />
+        <di:waypoint x="3695" y="880" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3627" y="862" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w40pqv_di" bpmnElement="Flow_0w40pqv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4020" y="830" />
+        <di:waypoint x="4118" y="830" />
+        <di:waypoint x="4118" y="880" />
+        <di:waypoint x="4235" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w2fn0v_di" bpmnElement="Flow_0w2fn0v" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3720" y="855" />
+        <di:waypoint x="3720" y="830" />
+        <di:waypoint x="3920" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cle2hl_di" bpmnElement="Flow_1cle2hl" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4020" y="940" />
+        <di:waypoint x="4260" y="940" />
+        <di:waypoint x="4260" y="905" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19tlxt8_di" bpmnElement="Flow_19tlxt8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3720" y="905" />
+        <di:waypoint x="3720" y="940" />
+        <di:waypoint x="3920" y="940" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bf4ss7_di" bpmnElement="Flow_0bf4ss7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4020" y="690" />
+        <di:waypoint x="4260" y="690" />
+        <di:waypoint x="4260" y="855" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ioxfs2_di" bpmnElement="Flow_1ioxfs2" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3570" y="850" />
+        <di:waypoint x="3570" y="690" />
+        <di:waypoint x="3920" y="690" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3645" y="673" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d0qf3l_di" bpmnElement="Flow_1d0qf3l" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="3430" y="880" />
+        <di:waypoint x="3545" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jy3mg3_di" bpmnElement="Flow_0jy3mg3" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4285" y="880" />
+        <di:waypoint x="4500" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jt313h_di" bpmnElement="Flow_0jt313h" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="4600" y="880" />
+        <di:waypoint x="4762" y="880" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1dwq8ov_di" bpmnElement="Activity_1dwq8ov" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="4500" y="840" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rgbvl7_di" bpmnElement="Activity_0rgbvl7" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3330" y="840" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u53buh_di" bpmnElement="Activity_0u53buh" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3920" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s7bhaj_di" bpmnElement="Activity_1s7bhaj" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3920" y="900" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08ictqw_di" bpmnElement="Activity_08ictqw" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="3920" y="790" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1895i93_di" bpmnElement="Gateway_1895i93" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="4235" y="855" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1jarsfb_di" bpmnElement="Gateway_1jarsfb" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="3695" y="855" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0fr67y4_di" bpmnElement="Gateway_0fr67y4" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="3545" y="855" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11m3qc9_di" bpmnElement="Activity_11m3qc9" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="3020" y="840" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17e70jx_di" bpmnElement="Event_1grj2i3" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="2852" y="862" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tktz9u_di" bpmnElement="Event_14pdiz8" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="4762" y="862" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4761" y="905" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jzha52_di" bpmnElement="Activity_0jzha52" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="3170" y="840" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1pfxvuw_di" bpmnElement="Flow_1pfxvuw">
+        <di:waypoint x="5550" y="-62" />
+        <di:waypoint x="5550" y="400" />
+        <di:waypoint x="2870" y="400" />
+        <di:waypoint x="2870" y="862" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uxjz7f_di" bpmnElement="Flow_0uxjz7f">
+        <di:waypoint x="4798" y="880" />
+        <di:waypoint x="5660" y="900" />
+        <di:waypoint x="5660" y="-62" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </wkf-model>
+</wkf-models>

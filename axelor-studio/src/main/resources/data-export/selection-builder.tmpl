@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.SelectionBuilderRepository' as Class).all()
 
@@ -17,7 +18,7 @@
 	})
 	
 	if (!selectionBuilders.isEmpty()) {
-		selectionBuilders = """<?xml version="1.0" encoding="utf-8"?>\n<selection-builders>\n""" +  selectionBuilders + """\n</selection-builders>"""
+		selectionBuilders = """<selection-builders>\n""" +  selectionBuilders + """\n</selection-builders>"""
 	}
 	
 	out << """$selectionBuilders"""

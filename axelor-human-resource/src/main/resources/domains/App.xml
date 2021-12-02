@@ -3,16 +3,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  	<entity name="App" lang="java" cacheable="true">
-		
-		<one-to-one ref="com.axelor.apps.base.db.AppEmployee" name="appEmployee" mappedBy="app" />
-		<one-to-one ref="com.axelor.apps.base.db.AppExpense" name="appExpense" mappedBy="app" />
-		<one-to-one ref="com.axelor.apps.base.db.AppExtraHours" name="appExthrs" mappedBy="app" />
-		<one-to-one ref="com.axelor.apps.base.db.AppLeave" name="appLeave" mappedBy="app" />
-		<one-to-one ref="com.axelor.apps.base.db.AppTimesheet" name="appTimesheet" mappedBy="app" />
-		
-  	</entity>
+  <entity name="App" lang="java" cacheable="true">
+
+    <one-to-one ref="com.axelor.apps.base.db.AppEmployee" name="appEmployee"
+      mappedBy="app"/>
+    <one-to-one ref="com.axelor.apps.base.db.AppExpense" name="appExpense" mappedBy="app"/>
+    <one-to-one ref="com.axelor.apps.base.db.AppExtraHours" name="appExthrs"
+      mappedBy="app"/>
+    <one-to-one ref="com.axelor.apps.base.db.AppLeave" name="appLeave" mappedBy="app"/>
+    <one-to-one ref="com.axelor.apps.base.db.AppTimesheet" name="appTimesheet"
+      mappedBy="app"/>
+
+  </entity>
 
 </domain-models>

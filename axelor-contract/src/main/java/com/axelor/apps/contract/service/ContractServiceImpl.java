@@ -75,8 +75,6 @@ import org.slf4j.LoggerFactory;
 public class ContractServiceImpl extends ContractRepository implements ContractService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  // TODO: put this var in another place
-  private static final int QTY_SCALE = 2;
 
   protected AppBaseService appBaseService;
   protected ContractVersionService versionService;
@@ -437,7 +435,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : lines) {
         ContractLine tmp = contractLineRepo.copy(line, false);
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
-        tmp.setQty(tmp.getQty().multiply(ratio).setScale(QTY_SCALE, RoundingMode.HALF_UP));
+        tmp.setQty(
+            tmp.getQty()
+                .multiply(ratio)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);

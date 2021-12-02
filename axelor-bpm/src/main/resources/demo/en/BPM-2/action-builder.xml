@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<action-builders>
+
+  <action-builder>
+
+    <name>studio-pizza</name>
+
+    <xmlId>studio-pizza</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>Pizza</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Pizza</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-Pizza-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-Pizza-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-pizza-order</name>
+
+    <xmlId>studio-pizza-order</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>PizzaOrder</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Pizza order</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-PizzaOrder-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-PizzaOrder-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-hungry-pizza</name>
+
+    <xmlId>studio-hungry-pizza</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>HungryPizza</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Hungry Pizza</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-HungryPizza-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-HungryPizza-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-pizza-calm-customer</name>
+
+    <xmlId>studio-pizza-calm-customer</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>CalmCustomer</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Calm customer</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-CalmCustomer-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-CalmCustomer-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-ask-pizza</name>
+
+    <xmlId>studio-ask-pizza</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>AskPizza</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Ask Pizza</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-AskPizza-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-AskPizza-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </action-builder>
+</action-builders>

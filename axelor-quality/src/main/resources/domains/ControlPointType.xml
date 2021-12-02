@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="quality" package="com.axelor.apps.quality.db"/>
-	
-	<entity name="ControlPointType">
-	    <string name="name" title="Name"/>
-	</entity>
-  
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlPointType">
+    <string name="name" title="Name"/>
+  </entity>
+
 </domain-models>

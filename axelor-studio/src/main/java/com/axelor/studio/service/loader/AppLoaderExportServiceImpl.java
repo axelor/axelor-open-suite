@@ -533,6 +533,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       writer.close();
       if (file.length() == 0) {
         file.delete();
+      } else {
+        long lines = java.nio.file.Files.lines(file.toPath()).count();
+        if (lines == 1) {
+          file.delete();
+        }
       }
     }
   }
