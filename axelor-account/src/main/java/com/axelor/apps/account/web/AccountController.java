@@ -123,7 +123,7 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
+      if (account.getAnalyticDistributionTemplate() == null
           && account.getAnalyticDistributionAuthorized()) {
         AnalyticDistributionTemplate analyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
