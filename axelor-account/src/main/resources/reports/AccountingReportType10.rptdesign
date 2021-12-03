@@ -1757,6 +1757,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="464">
                 <property name="width">1.71875in</property>
             </column>
