@@ -82,7 +82,7 @@
           <field name="analyticDistributionRequiredOnMoveLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
-            domain="self.company = :company" colSpan="12" canNew="true"
+            domain="self.company = :company" colSpan="12" canNew="true" canSelect="true"
             onChange="action-account-account-method-new-analytic-dist-template">
             <editor>
               <field name="name"/>
@@ -225,6 +225,8 @@
     <field name="analyticDistributionRequiredOnInvoiceLines" expr="eval: false"
       if="!analyticDistributionAuthorized"/>
     <field name="analyticDistributionRequiredOnMoveLines" expr="eval: false"
+      if="!analyticDistributionAuthorized"/>
+    <field name="analyticDistributionTemplate" expr="eval: null"
       if="!analyticDistributionAuthorized"/>
   </action-record>
 
