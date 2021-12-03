@@ -438,6 +438,20 @@ public interface IExceptionMessage {
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
 
+  static final String BATCH_PROCESSED_FIXED_ASSET = /*$$(*/ "Processed fixed assets" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC = /*$$(*/
+      "Realized fixed asset economic lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL = /*$$(*/
+      "Realized fixed asset fiscal lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS = /*$$(*/
+      "Realized fixed assets ifrs lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE = /*$$(*/
+      "Realized fixed assets derogatory lines" /*)*/;
+
   /** Batch close / open the year account */
   static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
       "Report for close/open annual accounts batch:" /*)*/;
