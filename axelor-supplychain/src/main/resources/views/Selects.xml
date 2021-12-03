@@ -153,5 +153,10 @@
     <option value="0">Confirmation date</option>
     <option value="1">Estimated shipping date</option>
   </selection>
+  
+  <selection name="supplychain.declaration.of.exchange.stock.move.type.select">
+    <option value="2">Outgoing move</option>
+    <option value="3">Incoming move</option>
+  </selection>
 
 </object-views>

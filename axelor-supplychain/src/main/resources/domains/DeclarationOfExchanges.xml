@@ -13,7 +13,7 @@
     <string name="productTypeSelect"
       selection="supplychain.declaration.of.exchanges.product.type.select" required="true"
       default="storable" title="Product type"/>
-    <integer name="stockMoveTypeSelect" required="true" selection="stock.move.type.select"
+    <integer name="stockMoveTypeSelect" required="true" selection="supplychain.declaration.of.exchange.stock.move.type.select"
       default="2" title="Stock move type"/>
     <string name="formatSelect"
       selection="iadministration.declaration.of.exchanges.export.type.select" required="true"
