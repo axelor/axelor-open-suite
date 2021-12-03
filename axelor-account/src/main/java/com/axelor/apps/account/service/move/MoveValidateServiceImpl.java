@@ -157,6 +157,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
     }
 
+    checkInactiveAnalyticJournal(move);
+    checkInactiveAccount(move);
+    checkInactiveAnalyticAccount(move);
+
     if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
       for (MoveLine moveLine : move.getMoveLineList()) {
@@ -190,12 +194,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
-
-        checkInactiveAnalyticJournal(move);
-
-        checkInactiveAccount(move);
-
-        checkInactiveAnalyticAccount(move);
 
         moveLineControlService.validateMoveLine(moveLine);
       }
@@ -514,7 +512,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_ACCOUNTS_FOUND),
-            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+            inactiveList.stream().collect(Collectors.joining(", ")));
       }
     }
   }
@@ -544,7 +542,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ANALYTIC_JOURNALS_FOUND),
-            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+            inactiveList.stream().collect(Collectors.joining(", ")));
       }
     }
   }
@@ -571,7 +569,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INACTIVE_ACCOUNTS_FOUND),
-            inactiveList.stream().map(code -> code).collect(Collectors.joining(", ")));
+            inactiveList.stream().collect(Collectors.joining(", ")));
       }
     }
   }
