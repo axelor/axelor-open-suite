@@ -519,7 +519,8 @@ Account.code as account_code , Account.name as account_name , Move.reference as 
 				MetaTranslation.message_value
 			END) as select_title,
 MoveLine.amount_remaining,
-MoveLine.currency_amount
+MoveLine.currency_amount,
+Move.currency_code
 from public.account_accounting_report as AccountingReport
 left outer join public.account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -1357,7 +1358,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     </page-setup>
     <body>
         <grid id="491">
-            <property name="width">11.125in</property>
+            <property name="width">11.15625in</property>
             <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility"/>
             <list-property name="boundDataColumns">
@@ -1522,7 +1523,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">1.6in</property>
             </column>
             <column id="495">
-                <property name="width">1.5625in</property>
+                <property name="width">1.59375in</property>
             </column>
             <row id="1246">
                 <property name="height">0.3020833333333333in</property>
@@ -2128,12 +2129,12 @@ else{
                             <structure>
                                 <property name="name">currencyDebit</property>
                                 <expression name="expression" type="javascript">if (dataSetRow["debit"] >= 0.01 || dataSetRow["debit"] &lt;= -0.01) {
-dataSetRow["amount_remaining"]
+dataSetRow["currency_amount"]
 }
 else {
 0
 }</expression>
-                                <property name="dataType">decimal</property>
+                                <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
@@ -2144,7 +2145,43 @@ dataSetRow["currency_amount"]
 else {
 0
 }</expression>
-                                <property name="dataType">decimal</property>
+                                <property name="dataType">float</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sum_currency_debit</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>account_group</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["currencyDebit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sum_currency_credit</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>account_group</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["currencyCredit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currencyCode</property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
+                                <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -2207,6 +2244,9 @@ else {
                         <column id="4153">
                             <property name="width">9%</property>
                         </column>
+                        <column id="5188">
+                            <property name="width">9%</property>
+                        </column>
                         <column id="5146">
                             <property name="width">9%</property>
                         </column>
@@ -2215,15 +2255,6 @@ else {
                         </column>
                         <column id="5154">
                             <property name="width">9%</property>
-                        </column>
-                        <column id="4225">
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["report_type"] == 1</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="5125">
@@ -2240,9 +2271,11 @@ else {
                                 <cell id="5136"/>
                                 <cell id="5137"/>
                                 <cell id="5138"/>
+                                <cell id="5182"/>
                                 <cell id="5140">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
+                                    <property name="backgroundColor">silver</property>
                                     <text id="5147">
                                         <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
@@ -2278,7 +2311,6 @@ else {
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5139"/>
                             </row>
                             <row id="4052">
                                 <cell id="4142"/>
@@ -2680,7 +2712,44 @@ else {
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5183">
+                                    <text id="5189">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType7.reconcileGroup'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="5141">
+                                    <property name="backgroundColor">silver</property>
                                     <text id="5162">
                                         <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
@@ -2717,6 +2786,7 @@ else {
                                     </text>
                                 </cell>
                                 <cell id="5156">
+                                    <property name="backgroundColor">silver</property>
                                     <text id="5163">
                                         <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
@@ -2753,6 +2823,7 @@ else {
                                     </text>
                                 </cell>
                                 <cell id="5149">
+                                    <property name="backgroundColor">silver</property>
                                     <text id="5164">
                                         <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
@@ -2767,42 +2838,6 @@ else {
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
                                                     <value type="javascript">'AccountingReportType1.currencyCode'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="4220">
-                                    <text id="4243">
-                                        <property name="fontSize">9.5pt</property>
-                                        <property name="fontWeight">bold</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">center</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'AccountingReportType7.reconcileGroup'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2905,10 +2940,18 @@ else {
                                             <property name="resultSetColumn">sum_balance</property>
                                         </data>
                                     </cell>
-                                    <cell id="5144"/>
-                                    <cell id="5159"/>
-                                    <cell id="5152"/>
-                                    <cell id="4223"/>
+                                    <cell id="5186"/>
+                                    <cell id="5144">
+                                        <property name="backgroundColor">silver</property>
+                                    </cell>
+                                    <cell id="5159">
+                                        <property name="backgroundColor">silver</property>
+                                    </cell>
+                                    <cell id="5152">
+                                        <property name="backgroundColor">silver</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                    </cell>
                                 </row>
                             </footer>
                         </group>
@@ -3038,7 +3081,16 @@ else {
                                         <property name="resultSetColumn">balance</property>
                                     </data>
                                 </cell>
+                                <cell id="5185">
+                                    <data id="5190">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="marginLeft">1pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">reconcile_group_code</property>
+                                    </data>
+                                </cell>
                                 <cell id="5143">
+                                    <property name="backgroundColor">silver</property>
                                     <data id="5168">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
@@ -3050,6 +3102,7 @@ else {
                                     </data>
                                 </cell>
                                 <cell id="5158">
+                                    <property name="backgroundColor">silver</property>
                                     <data id="5169">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
@@ -3060,13 +3113,12 @@ else {
                                         <property name="resultSetColumn">currencyCredit</property>
                                     </data>
                                 </cell>
-                                <cell id="5151"/>
-                                <cell id="4222">
-                                    <data id="4242">
+                                <cell id="5151">
+                                    <property name="backgroundColor">silver</property>
+                                    <data id="5172">
                                         <property name="fontSize">8.5pt</property>
-                                        <property name="marginLeft">1pt</property>
-                                        <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">reconcile_group_code</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">currencyCode</property>
                                     </data>
                                 </cell>
                             </row>
@@ -3086,10 +3138,16 @@ else {
                                 <cell id="4088"/>
                                 <cell id="4089"/>
                                 <cell id="4152"/>
-                                <cell id="5145"/>
-                                <cell id="5160"/>
-                                <cell id="5153"/>
-                                <cell id="4224"/>
+                                <cell id="5187"/>
+                                <cell id="5145">
+                                    <property name="backgroundColor">silver</property>
+                                </cell>
+                                <cell id="5160">
+                                    <property name="backgroundColor">silver</property>
+                                </cell>
+                                <cell id="5153">
+                                    <property name="backgroundColor">silver</property>
+                                </cell>
                             </row>
                         </footer>
                     </table>
