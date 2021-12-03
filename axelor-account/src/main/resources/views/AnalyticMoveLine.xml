@@ -122,8 +122,8 @@
     <panel name="mainPanel">
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form"
-        onChange="action-attrs-domain-onselect-axis-analytic-move-line"
-        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"
+        onChange="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-attrs-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
