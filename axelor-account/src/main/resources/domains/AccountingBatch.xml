@@ -72,6 +72,10 @@
     <!-- REALIZED FIXED ASSET LINES -->
     <boolean name="updateAllRealizedFixedAssetLines"
       title="Update all realized fixed asset lines"/>
+
+    <!-- Bill of exchange -->
+    <integer name="billOfExchangeTypeSelect" title="Bill of exchange type"
+      selection="iaccount.account.batch.bill.of.exchange.type.select"/>
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -112,7 +116,9 @@
 
 	]]></extra-code>
 
-
+    <track>
+      <field name="billOfExchangeTypeSelect" on="UPDATE"/>
+    </track>
 
   </entity>
 

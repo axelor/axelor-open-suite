@@ -204,6 +204,7 @@
     <option value="21">Close the annual accounts of the past year</option>
     <option value="22">Open the annual accounts of the next year</option>
     <option value="23">Block customer with late payment issues</option>
+    <option value="24">Exchanges</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -637,6 +638,10 @@
     <option value="2" order="20">Tangible asset</option>
     <option value="3" order="30">Intangible asset</option>
     <option value="4" order="40">Financial asset</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.bill.of.exchange.type.select">
+    <option value="1">LCR</option>
   </selection>
 
 </object-views>

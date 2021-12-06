@@ -61,6 +61,9 @@
               canEdit="true" showIf="partnerAccountGenerationModeSelect == 2"
               requiredIf="partnerAccountGenerationModeSelect == 2"
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
+            <field name="billOfExchReceivAccount"
+              if=" eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
+              domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"/>
           </panel>
           <panel title="AccountConfig.Suppliers" colSpan="12">
             <field name="supplierAccount"

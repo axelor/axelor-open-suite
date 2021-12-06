@@ -34,6 +34,7 @@
     <option value="5">National Treasury transfer</option>
     <option value="6">International Treasury transfer</option>
     <option value="7">Send bank order</option>
+    <option value="8">LCR</option>
   </selection>
 
   <selection name="bankpayment.bank.order.partner.type.select">
@@ -268,6 +269,28 @@
     <option value="1">Green</option>
     <option value="2">Orange</option>
     <option value="3">Red</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.entry.code.select">
+    <option value="1">Discount</option>
+    <option value="2">Discount in value</option>
+    <option value="3">Collection and credit lump sum after maturity</option>
+    <option value="4">Cash out after expiration of unpaid bills return period </option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.daily.code.select">
+    <option value="0">No indication</option>
+    <option value="1">Discount to be processed in the part of an agreement assignment of
+      receivables in conditions provided by law Dailly</option>
+    <option value="2">Discount to be processed in the framework of an agreement pledging of
+      receivables</option>
+    <option value="3">Discount to be processed in</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.accept.per.line.code.select">
+    <option value="0">Not accepted LCR</option>
+    <option value="1">Accepted LCR</option>
+    <option value="2">BOR</option>
   </selection>
 
 </object-views>
