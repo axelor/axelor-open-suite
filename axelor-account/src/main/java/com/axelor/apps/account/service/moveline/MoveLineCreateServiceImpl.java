@@ -414,6 +414,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxCode(taxLine.getTax().getCode());
         }
 
+        // Cut off
+        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
+        }
+
         moveLines.add(moveLine);
       }
     }
