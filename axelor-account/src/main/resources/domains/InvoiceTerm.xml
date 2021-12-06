@@ -47,6 +47,22 @@
 	    ]]>
     </string>
 
+    <track>
+      <field name="paymentMode"/>
+      <field name="dueDate"/>
+      <field name="estimatedPaymentDate"/>
+      <field name="percentage"/>
+      <field name="amount"/>
+      <field name="amountRemaining"/>
+      <field name="isPaid"/>
+      <field name="isHoldBack"/>
+      <field name="paymentConditionLine"/>
+      <field name="bankDetails"/>
+      <field name="financialDiscount"/>
+      <field name="invoice"/>
+      <field name="moveLine"/>
+    </track>
+
   </entity>
 
 </domain-models>
