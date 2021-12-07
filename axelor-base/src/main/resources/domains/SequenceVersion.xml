@@ -20,6 +20,7 @@
       name="idx_sequence_version_sequence_start_date_end_date"/>
 
     <finder-method name="findByDate" using="sequence,LocalDate:date"
+      orderBy="-startDate"
       filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)"/>
     <finder-method name="findByMonth" using="sequence,int:month,int:year"
       filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year"/>
