@@ -45,23 +45,27 @@
   <form name="invoice-term-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-method-invoice-init-invoice-term">
     <panel name="mainPanel">
-      <field name="sequence" colSpan="4" readonly="true"/>
-      <field name="name" readonly="true" colSpan="4"/>
-      <field name="isPaid" readonly="true" colSpan="4"/>
-      <field name="invoice" colSpan="4" hidden="true"/>
-      <field name="isCustomized" readonly="true" colSpan="4"/>
+      <panel name="headerPanel" itemSpan="4">
+        <field name="sequence" readonly="true"/>
+        <field name="name" readonly="true"/>
+        <field name="isPaid" readonly="true"/>
+        <field name="invoice" hidden="true"/>
+        <field name="moveLine" readonly="true" form-view="move-line-form"
+          grid-view="move-line-grid"/>
+        <field name="isCustomized" readonly="true"/>
+      </panel>
       <separator colSpan="12"/>
-      <field name="amount" readonly="true"/>
-      <field name="amountRemaining" readonly="true"/>
-      <field name="dueDate" readonly="true"/>
-      <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
-        if="__config__.app.isApp('cash-management')"/>
-      <field name="percentage" readonly="true"/>
-      <field name="isHoldBack" readonly="true"/>
-      <field name="paymentMode" readonly="true"/>
-      <field name="bankDetails" readonly="true"/>
-      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"
-        readonly="true"/>
+      <panel name="amountDatePanel" itemSpan="4">
+        <field name="amount" readonly="true"/>
+        <field name="amountRemaining" readonly="true"/>
+        <field name="dueDate" readonly="true"/>
+        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
+          if="__config__.app.isApp('cash-management')"/>
+        <field name="percentage" readonly="true"/>
+        <field name="isHoldBack" readonly="true"/>
+        <field name="paymentMode" readonly="true"/>
+        <field name="bankDetails" readonly="true"/>
+      </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         hidden="true" showIf="financialDiscount != null">
         <field name="financialDiscount" readonly="true"/>
@@ -100,7 +104,8 @@
 	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1
 	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
             colSpan="12" onClick="save"/>
-          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
+            hidden="true"/>
           <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
           <field name="invoice.operationTypeSelect" hidden="true"/>
           <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
@@ -120,24 +125,28 @@
   <form name="invoice-term-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <panel name="mainPanel">
-      <field name="sequence" colSpan="4" readonly="true"/>
-      <field name="name" readonly="true" colSpan="4"/>
-      <field name="isPaid" readonly="true" colSpan="4"/>
-      <field name="invoice" readonly="true" colSpan="4" form-view="invoice-form"
-        grid-view="invoice-grid"/>
-      <field name="isCustomized" readonly="true" colSpan="4"/>
+      <panel name="headerPanel" itemSpan="4">
+        <field name="sequence" readonly="true"/>
+        <field name="name" readonly="true"/>
+        <field name="isPaid" readonly="true"/>
+        <field name="invoice" readonly="true" form-view="invoice-form"
+          grid-view="invoice-grid"/>
+        <field name="moveLine" readonly="true" form-view="move-line-form"
+          grid-view="move-line-grid"/>
+        <field name="isCustomized" readonly="true"/>
+      </panel>
       <separator colSpan="12"/>
-      <field name="amount" readonly="true"/>
-      <field name="amountRemaining" readonly="true"/>
-      <field name="dueDate" readonly="true"/>
-      <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
-        if="__config__.app.isApp('cash-management')"/>
-      <field name="percentage" readonly="true"/>
-      <field name="isHoldBack" readonly="true"/>
-      <field name="paymentMode" readonly="true"/>
-      <field name="bankDetails" readonly="true"/>
-      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"
-        readonly="true"/>
+      <panel name="amountDatePanel" itemSpan="4">
+        <field name="amount" readonly="true"/>
+        <field name="amountRemaining" readonly="true"/>
+        <field name="dueDate" readonly="true"/>
+        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
+          if="__config__.app.isApp('cash-management')"/>
+        <field name="percentage" readonly="true"/>
+        <field name="isHoldBack" readonly="true"/>
+        <field name="paymentMode" readonly="true"/>
+        <field name="bankDetails" readonly="true"/>
+      </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         hidden="true" showIf="financialDiscount != null">
         <field name="financialDiscount" readonly="true"/>
@@ -176,7 +185,8 @@
 	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1
 	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
             colSpan="12" onClick="save"/>
-          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
+            hidden="true"/>
           <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
           <field name="invoice.operationTypeSelect" hidden="true"/>
           <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
