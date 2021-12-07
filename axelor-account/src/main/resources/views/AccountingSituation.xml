@@ -67,9 +67,11 @@
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"/>
+        grid-view="account-grid" canNew="true"
+        domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"/>
+        grid-view="account-grid" canNew="true"
+        domain="self.statusSelect = 1 AND self.company = :company"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -156,9 +158,11 @@
         onSelect="action-account-accounting-situation-set-outbd-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"/>
+        grid-view="account-grid" canNew="true"
+        domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"/>
+        grid-view="account-grid" canNew="true"
+        domain="self.statusSelect = 1 AND self.company = :company"/>
     </panel>
 
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
