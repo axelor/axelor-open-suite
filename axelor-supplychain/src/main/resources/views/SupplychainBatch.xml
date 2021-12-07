@@ -68,25 +68,29 @@
         <field name="moveDescription"
           requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
         <panel colSpan="6" itemSpan="12">
+          <label name="adviceDates"
+            title="Please, enter only dates with the last day of month" css="label-danger"/>
           <field name="moveDate"
             requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"
-            onChange="action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
+            onChange="action-method-supplychain-batch-validate-movedate,action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
           <label name="adviseUser"
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
-        <panel colSpan="6" itemSpan="12">
-          <field name="reverseMoveDate"
-            requiredIf="actionSelect == 1 &amp;&amp; automaticReconcile"
-            hideIf="!automaticReverse &amp;&amp; actionSelect != 1"/>
-        </panel>
-        <field name="recoveredTax"/>
-        <field name="ati" showIf="!recoveredTax"/>
-        <field name="includeNotStockManagedProduct"/>
+
+        <field name="recoveredTax" hideIf="accountingCutOffTypeSelect &gt;= 3"/>
+        <field name="ati" showIf="!recoveredTax &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
+        <field name="includeNotStockManagedProduct"
+          hideIf="accountingCutOffTypeSelect &gt;= 3"/>
         <panel name="expensesIncomesPanel" colSpan="12"
           showIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1">
-          <field name="automaticReverse" colSpan="6"/>
-          <field name="automaticReconcile" colSpan="6" hideIf="!automaticReverse"/>
+          <field name="automaticReverse" colSpan="3"/>
+          <field name="automaticReconcile" colSpan="3" hideIf="!automaticReverse"/>
+          <panel colSpan="6" itemSpan="12">
+            <field name="reverseMoveDate"
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse &amp;&amp; accountingCutOffTypeSelect &gt;= 3"
+              hideIf="automaticReverse &amp;&amp; actionSelect != 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+          </panel>
           <field name="miscOpeJournal" colSpan="6"
             onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
             requiredIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1"/>
@@ -106,7 +110,8 @@
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
-        showIf="actionSelect == 1" onClick="save,action-supplychain-batch-group-accounting-cut-off"
+        showIf="actionSelect == 1"
+        onClick="action-method-supplychain-batch-validate-movedate,save,action-supplychain-batch-group-accounting-cut-off"
         colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
         showIf="actionSelect == 2"
@@ -158,7 +163,7 @@
       if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; !miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
     <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[2,3]"
       if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
-    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[2,3,4]"
+    <attribute name="selection-in" for="cutOffMoveStatusSelect" expr="[5,2,3]"
       if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
   </action-attrs>
 
@@ -238,6 +243,11 @@
   <action-method name="action-supplychain-batch-method-accounting-cut-off">
     <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
       method="accountingCutOff"/>
+  </action-method>
+
+  <action-method name="action-method-supplychain-batch-validate-movedate">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
+      method="validateDates"/>
   </action-method>
 
   <!-- BATCH -->

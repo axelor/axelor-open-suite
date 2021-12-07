@@ -422,6 +422,7 @@
 "Please select an element to run calculation",,,
 "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry.",,,
 "Please validate the purchase order before invoicing.",,,
+"Please, enter only dates with the last day of month",,,
 "Please, select a currency for the order %s",,,
 "Please, select a supplier for the line %s",,,
 "Prepaid expenses",,,
