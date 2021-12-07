@@ -2277,27 +2277,29 @@ InvoiceSet.length > 0))"
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
     <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
-      if="partner &amp;&amp; partner.financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
-      if="dueDate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate"/>
   </action-record>
 
   <action-record name="action-record-invoice-set-financial-discount-informations"
     model="com.axelor.apps.account.db.Invoice">
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
-      if="financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="financialDiscount &amp;&amp; financialDiscount.discountRate"/>
-    <field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp;  financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+    <field name="legalNotice" expr="eval: null"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
-      if="dueDate &amp;&amp; financialDiscount"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 
   <action-method

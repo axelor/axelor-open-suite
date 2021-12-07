@@ -16,9 +16,12 @@
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
-    <field name="financialDiscount.discountRate"/>
-    <field name="financialDiscountAmount"/>
-    <field name="invoice.financialDiscountDeadlineDate"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="invoice.financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </grid>
 
   <grid name="invoice-term-invoice-grid" title="Invoice terms"
@@ -32,10 +35,14 @@
     <field name="isPaid"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
-    <field name="financialDiscount" hidden="true"/>
-    <field name="financialDiscount.discountRate"/>
-    <field name="financialDiscountAmount"/>
-    <field name="invoice.financialDiscountDeadlineDate"/>
+    <field name="financialDiscount" hidden="true"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="invoice.financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
@@ -65,7 +72,8 @@
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"
         readonly="true"/>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        hidden="true" showIf="financialDiscount != null">
+        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
+        showIf="financialDiscount != null">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountAmount" readonly="true"/>
@@ -102,7 +110,8 @@
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"
         readonly="true"/>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        hidden="true" showIf="financialDiscount != null">
+        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
+        showIf="financialDiscount != null">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountAmount" readonly="true"/>
