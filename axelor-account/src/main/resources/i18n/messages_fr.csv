@@ -2436,6 +2436,7 @@
 "The import failed: the move %s already exist.","Echec de l'import: l'écriture %s existe déjà.",,
 "The input failover date is not conforme compare with the dates and configured depreciation duration.","La Date saisie de reprise n'est pas conforme par rapport aux dates et durée d'amortissement configurée.",,
 "The input past depreciation amount cannot be greater than the gross value of the fixed asset.","Le montant des amortissements antérieurs ne peut pas être supérieur à la valeur brute de l'immobilisation.",,
+"The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.","Le journal comptable : %s est inactif. Ainsi,l'écriture ne peut être passée en brouillard/comptabilisé.",,
 "The line can not be simulated because there is no journal or it does not authorize simulated move","La ligne ne peut pas être simulée parceque le journal est absent, ou parceque les écritures simulées n'y sont pas autorisées",,
 "The move %s cannot be empty","L'écriture %s ne peut pas être vide",,
 "The move fields origin and description are empty, do you wish to continue ?","Les champs origine et description de l'écriture sont vides, voulez-vous continuer ?",,

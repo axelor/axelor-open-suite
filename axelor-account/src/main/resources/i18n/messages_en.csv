@@ -2436,6 +2436,7 @@
 "The import failed: the move %s already exist.",,,
 "The input failover date is not conforme compare with the dates and configured depreciation duration.",,,
 "The input past depreciation amount cannot be greater than the gross value of the fixed asset.",,,
+"The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.",,,
 "The line can not be simulated because there is no journal or it does not authorize simulated move",,,
 "The move %s cannot be empty",,,
 "The move fields origin and description are empty, do you wish to continue ?",,,

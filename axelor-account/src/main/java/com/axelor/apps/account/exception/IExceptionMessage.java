@@ -1006,4 +1006,7 @@ public interface IExceptionMessage {
 
   static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
       /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_JOURNAL_FOUND =
+      /*$$(*/ "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted." /*)*/;
 }
