@@ -56,7 +56,7 @@
       <field name="amountRemaining"/>
       <field name="isPaid"/>
       <field name="isHoldBack"/>
-      <field name="paymentConditionLine"/>
+      <field name="isCustomized"/>
       <field name="bankDetails"/>
       <field name="financialDiscount"/>
       <field name="invoice"/>
