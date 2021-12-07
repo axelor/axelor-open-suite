@@ -44,26 +44,33 @@
 
   <form name="invoice-term-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-method-invoice-init-invoice-term">
-    <panel name="mainPanel">
-      <panel name="headerPanel" itemSpan="4">
-        <field name="sequence" readonly="true"/>
+    <panel name="mainPanel" colSpan="12">
+      <panel name="headerPanel" colSpan="12" itemSpan="4">
+        <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
         <field name="name" readonly="true"/>
-        <field name="isPaid" readonly="true"/>
         <field name="invoice" hidden="true"/>
+        <field name="isCustomized" readonly="true"/>
+        <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
-        <field name="isCustomized" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" itemSpan="4">
-        <field name="amount" readonly="true"/>
-        <field name="amountRemaining" readonly="true"/>
-        <field name="dueDate" readonly="true"/>
-        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
-          if="__config__.app.isApp('cash-management')"/>
-        <field name="percentage" readonly="true"/>
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+        <field name="dueDate" requiredIf="isCustomized"
+          onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid"/>
         <field name="isHoldBack" readonly="true"/>
-        <field name="paymentMode" readonly="true"/>
+        <field name="estimatedPaymentDate" readonly="true"
+          onChange="action-invoice-term-record-update-customized-true"
+          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
+          if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+        <field name="amount" validIf="amount > 0"
+          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-method-compute-customized-percentage"/>
+        <field name="percentage" validIf="percentage > 0"
+          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+        <field name="amountRemaining" readonly="true"/>
+        <field name="paymentMode" readonlyIf="isPaid"/>
         <field name="bankDetails" readonly="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
@@ -124,26 +131,26 @@
 
   <form name="invoice-term-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm">
-    <panel name="mainPanel">
-      <panel name="headerPanel" itemSpan="4">
+    <panel name="mainPanel" colSpan="12">
+      <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true"/>
         <field name="name" readonly="true"/>
-        <field name="isPaid" readonly="true"/>
         <field name="invoice" readonly="true" form-view="invoice-form"
           grid-view="invoice-grid"/>
+        <field name="isCustomized" readonly="true"/>
+        <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
-        <field name="isCustomized" readonly="true"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" itemSpan="4">
-        <field name="amount" readonly="true"/>
-        <field name="amountRemaining" readonly="true"/>
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
         <field name="dueDate" readonly="true"/>
+        <field name="isHoldBack" readonly="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
+        <field name="amount" readonly="true"/>
         <field name="percentage" readonly="true"/>
-        <field name="isHoldBack" readonly="true"/>
+        <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonly="true"/>
         <field name="bankDetails" readonly="true"/>
       </panel>
