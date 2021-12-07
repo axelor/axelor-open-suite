@@ -82,24 +82,31 @@
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true"
           showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	        || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
-	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidateStatusSelect > 1"
+	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; invoice.statusSelect > 1"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" canEdit="false"/>
         <panel if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpEmailPanel" colSpan="6">
           <field name="decisionPfpTakenDate" hidden="true" colSpan="12"
             showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	          &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	          &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	          || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
 	          &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; decisionPfpTakenDate"/>
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	        || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
 	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1
-	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; pfpValidateStatusSelect > 1"
+	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
             colSpan="12" onClick="save"/>
+          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="invoice.operationTypeSelect" hidden="true"/>
+          <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
+          <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
+          <field name="moveLine.move.company.accountConfig.isManagePFPInRefund" hidden="true"/>
+          <field name="invoice.statusSelect" hidden="true"/>
         </panel>
         <field name="reasonOfRefusalToPayStr" readonly="true"
           showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
@@ -151,24 +158,31 @@
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true"
           showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	        || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
-	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidateStatusSelect > 1"
+	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; invoice.statusSelect > 1"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" canEdit="false"/>
         <panel if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpEmailPanel" colSpan="6">
           <field name="decisionPfpTakenDate" hidden="true" colSpan="12"
             showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	          &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	          &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	          || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
 	          &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; decisionPfpTakenDate"/>
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )
+	        &amp;&amp; ((invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
 	        || moveLine.move.journal.journalType.technicalTypeSelect == 1 || (moveLine.move.company.accountConfig.isManagePFPInRefund
 	        &amp;&amp;  moveLine.move.journal.journalType.technicalTypeSelect == 3)) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1
-	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; pfpValidateStatusSelect > 1"
+	        &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
             colSpan="12" onClick="save"/>
+          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
+          <field name="invoice.operationTypeSelect" hidden="true"/>
+          <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
+          <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
+          <field name="moveLine.move.company.accountConfig.isManagePFPInRefund" hidden="true"/>
+          <field name="invoice.statusSelect" hidden="true"/>
         </panel>
         <field name="reasonOfRefusalToPayStr" readonly="true"
           showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
