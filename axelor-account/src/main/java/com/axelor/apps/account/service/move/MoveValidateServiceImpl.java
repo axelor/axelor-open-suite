@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -160,6 +161,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAnalyticJournal(move);
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
+    checkInactiveJournal(move);
 
     if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
@@ -571,6 +573,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             I18n.get(IExceptionMessage.INACTIVE_ACCOUNTS_FOUND),
             inactiveList.stream().collect(Collectors.joining(", ")));
       }
+    }
+  }
+
+  protected void checkInactiveJournal(Move move) throws AxelorException {
+    if (move.getJournal() != null
+        && move.getJournal().getStatusSelect() != JournalRepository.STATUS_ACTIVE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INACTIVE_JOURNAL_FOUND),
+          move.getJournal().getName());
     }
   }
 }
