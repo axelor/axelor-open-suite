@@ -272,8 +272,8 @@
   </selection>
 
   <selection name="bankpayment.bank.order.entry.code.select">
-    <option value="1">Deposit</option>
-    <option value="2">Deposit in value</option>
+    <option value="1">Discount</option>
+    <option value="2">Discount in value</option>
     <option value="3">Collection and credit lump sum after maturity</option>
     <option value="4">Cash out after expiration of unpaid bills return period </option>
   </selection>
