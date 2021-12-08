@@ -7,6 +7,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
@@ -80,5 +81,17 @@ public class AnalyticJournalControlServiceImpl implements AnalyticJournalControl
   protected AnalyticJournal desactivate(AnalyticJournal analyticJournal) {
     analyticJournal.setStatusSelect(AnalyticJournalRepository.STATUS_INACTIVE);
     return analyticJournal;
+  }
+
+  @Override
+  @CallMethod
+  public boolean isAnalyticJournalNameUnique(AnalyticJournal analyticJournal) {
+    return analyticJournalRepository
+            .all()
+            .filter("LOWER(self.name) = LOWER(:name) AND self.id <> :id")
+            .bind("name", analyticJournal.getName())
+            .bind("id", analyticJournal.getId())
+            .count()
+        == 0;
   }
 }

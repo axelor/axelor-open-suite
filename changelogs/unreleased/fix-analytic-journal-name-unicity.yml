@@ -1,0 +1,3 @@
+---
+title: "Analytic journal : Fix name unique constraint being case sensitive"
+type: fix

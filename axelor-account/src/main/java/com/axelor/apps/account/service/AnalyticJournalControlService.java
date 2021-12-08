@@ -3,6 +3,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 
 public interface AnalyticJournalControlService {
 
@@ -22,4 +23,7 @@ public interface AnalyticJournalControlService {
   boolean isInAnalyticMoveLine(AnalyticJournal analyticJournal);
 
   void toggleStatusSelect(AnalyticJournal analyticJournal);
+
+  @CallMethod
+  boolean isAnalyticJournalNameUnique(AnalyticJournal analyticJournal);
 }
