@@ -215,6 +215,7 @@ public class PaymentVoucherConfirmService {
               payerPartner,
               paymentDate,
               paymentMode,
+              null,
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),

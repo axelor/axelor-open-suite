@@ -221,6 +221,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             paymentDate,
             paymentMode,
+            invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),

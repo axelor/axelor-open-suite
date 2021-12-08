@@ -257,6 +257,9 @@ public class BankReconciliationService {
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
             accountManagement.getPaymentMode(),
+            bankStatementRule.getPartner() != null
+                ? bankStatementRule.getPartner().getFiscalPosition()
+                : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankReconciliationLine.getBankStatementLine().getOrigin(),

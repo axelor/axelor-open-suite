@@ -184,6 +184,7 @@ public class AccountClearanceService {
             null,
             partner,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             null,
