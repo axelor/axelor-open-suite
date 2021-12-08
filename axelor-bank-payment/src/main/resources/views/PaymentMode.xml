@@ -2,7 +2,19 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-
+  
+  <form id="bank-payment-payment-mode-form" name="payment-mode-form" title="Payment Mode"
+    model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"
+    width="large" extension="true">
+    	<extend target="//field[@name='typeSelect']">
+    		<insert position="after">
+    			<field name="orderTypeSelect" colSpan="3"/>
+    		</insert>
+    	</extend>
+  </form>
+  
+  
+  
   <action-record name="action-payment-mode-record-empty"
     model="com.axelor.apps.account.db.PaymentMode">
     <field name="orderTypeSelect" expr=""/>
