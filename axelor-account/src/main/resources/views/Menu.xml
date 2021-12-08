@@ -884,6 +884,17 @@
     <context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.Invoice"/>
   </action-view>
 
+  <menuitem name="invoice-conf-pfp-partial-reason" parent="invoice-conf"
+    title="PFP Partial Reasons" action="invoice.conf.pfp.partial.reason"
+    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+
+  <action-view name="invoice.conf.pfp.partial.reason" title="PFP Partial Reasons"
+    model="com.axelor.apps.account.db.PfpPartialReason">
+    <view type="grid" name="pfp-partial-reason-grid"/>
+    <view type="form" name="pfp-partial-reason-form"/>
+    <view-param name="details-view" value="true"/>
+  </action-view>
+
   <!-- FEC Import -->
 
   <menuitem name="fec-import" title="FEC import" parent="account-conf" action="fec.import"/>

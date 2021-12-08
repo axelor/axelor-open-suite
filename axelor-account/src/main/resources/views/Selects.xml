@@ -462,8 +462,9 @@
 
   <selection name="invoiceterm.pfp.validate.status.select">
     <option value="1">Awaiting</option>
-    <option value="2">PFP validated</option>
-    <option value="3">Litigation</option>
+    <option value="2" order="3">PFP validated</option>
+    <option value="3" order="4">Litigation</option>
+    <option value="4" order="2">Partially validated</option>
   </selection>
 
   <selection name="account.tax.type.select">
