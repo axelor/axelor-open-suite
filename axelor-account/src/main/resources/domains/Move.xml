@@ -60,6 +60,8 @@
       title="FEC Import"/>
     <unique-constraint columns="reference,company"/>
 
+    <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
+
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
