@@ -31,6 +31,7 @@ import com.axelor.apps.bpm.translation.ITranslation;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.Inflector;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
@@ -84,7 +85,7 @@ public class WkfModelServiceImpl implements WkfModelService {
 
   private static final String TASK_TODAY = "taskToday";
   private static final String TASK_NEXT = "taskNext";
-  private static final String LATE_TASK = "lateTask";
+  public static final String LATE_TASK = "lateTask";
 
   @Inject protected WkfModelRepository wkfModelRepository;
 
@@ -444,7 +445,7 @@ public class WkfModelServiceImpl implements WkfModelService {
         }
         _modelList.add(modelName);
 
-        Map<String, Object> _map = this.computeStatus(isMetaModel, modelName, process, null);
+        Map<String, Object> _map = this.computeStatus(isMetaModel, modelName, process, null, null);
 
         List<Long> recordIdsPerModel = (List<Long>) _map.get("recordIdsPerModel");
         List<Map<String, Object>> statusList = (List<Map<String, Object>>) _map.get("statuses");
@@ -487,12 +488,12 @@ public class WkfModelServiceImpl implements WkfModelService {
   }
 
   @SuppressWarnings("serial")
-  private Map<String, Object> computeStatus(
-      boolean isMetaModel, String modelName, WkfProcess process, User user) {
+  public Map<String, Object> computeStatus(
+      boolean isMetaModel, String modelName, WkfProcess process, User user, String assignedType) {
 
     List<WkfTaskConfig> taskConfigs = getTaskConfigs(process, modelName, isMetaModel, user, true);
 
-    Object obj[] = computeTaskConfig(taskConfigs, modelName, isMetaModel, user, true);
+    Object obj[] = computeTaskConfig(taskConfigs, modelName, isMetaModel, user, true, assignedType);
 
     return new HashMap<String, Object>() {
       {
@@ -510,10 +511,12 @@ public class WkfModelServiceImpl implements WkfModelService {
       String modelName,
       boolean isMetaModel,
       User user,
-      boolean withTask) {
+      boolean withTask,
+      String assignedType) {
 
     List<Map<String, Object>> statusList = new ArrayList<>();
     List<Long> recordIdsPerModel = new ArrayList<>();
+    List<Map<String, Object>> lateTaskMapList = new ArrayList<>();
     Map<String, Object> taskMap = new HashMap<String, Object>();
 
     taskConfigs.forEach(
@@ -522,33 +525,20 @@ public class WkfModelServiceImpl implements WkfModelService {
               wkfInstanceService.findProcessInstanceByNode(
                   config.getName(), config.getProcessId(), config.getType(), false);
 
-          List<Long> recordStatusIds = new ArrayList<>();
+          List<Long> recordStatusIds =
+              getStatusRecordIds(
+                  config, processInstanceIds, modelName, isMetaModel, user, assignedType);
 
-          if (!isMetaModel) {
-            List<MetaJsonRecord> jsonModelrecords =
-                this.getMetaJsonRecords(config, processInstanceIds, modelName, user, null);
-
-            recordStatusIds.addAll(
-                jsonModelrecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
-
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
-
-          } else {
-            List<Model> metaModelRecords =
-                this.getMetaModelRecords(config, processInstanceIds, modelName, user, null);
-
-            recordStatusIds.addAll(
-                metaModelRecords.stream()
-                    .map(record -> record.getId())
-                    .collect(Collectors.toList()));
-
-            if (withTask) {
-              this.getTasks(config, processInstanceIds, modelName, isMetaModel, user, taskMap);
-            }
+          if (withTask) {
+            this.getTasks(
+                config,
+                processInstanceIds,
+                modelName,
+                isMetaModel,
+                user,
+                taskMap,
+                lateTaskMapList,
+                assignedType);
           }
 
           if (CollectionUtils.isNotEmpty(recordStatusIds)) {
@@ -573,9 +563,39 @@ public class WkfModelServiceImpl implements WkfModelService {
     if (withTask) {
       taskMap.put("isMetaModel", isMetaModel);
       taskMap.put("modelName", modelName);
+      taskMap.put("lateTaskMapList", lateTaskMapList);
     }
 
     return new Object[] {recordIdsPerModel, statusList, taskMap};
+  }
+
+  @Override
+  public List<Long> getStatusRecordIds(
+      WkfTaskConfig config,
+      List<String> processInstanceIds,
+      String modelName,
+      boolean isMetaModel,
+      User user,
+      String assignedType) {
+
+    List<Long> recordIds = new ArrayList<>();
+
+    if (!isMetaModel) {
+      List<MetaJsonRecord> jsonModelrecords =
+          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, null, assignedType);
+
+      recordIds.addAll(
+          jsonModelrecords.stream().map(record -> record.getId()).collect(Collectors.toList()));
+
+    } else {
+      List<Model> metaModelRecords =
+          this.getMetaModelRecords(config, processInstanceIds, modelName, user, null, assignedType);
+
+      recordIds.addAll(
+          metaModelRecords.stream().map(record -> record.getId()).collect(Collectors.toList()));
+    }
+
+    return recordIds;
   }
 
   @SuppressWarnings({"serial", "unchecked"})
@@ -615,7 +635,9 @@ public class WkfModelServiceImpl implements WkfModelService {
         }
         _modelList.add(modelName);
 
-        Map<String, Object> _map = this.computeStatus(isMetaModel, modelName, process, user);
+        Map<String, Object> _map =
+            this.computeStatus(
+                isMetaModel, modelName, process, user, BpmDashboardServiceImpl.ASSIGNED_ME);
         List<Long> recordIdsPerModel = (List<Long>) _map.get("recordIdsPerModel");
 
         List<Map<String, Object>> statusList = (List<Map<String, Object>>) _map.get("statuses");
@@ -636,6 +658,7 @@ public class WkfModelServiceImpl implements WkfModelService {
                     !StringUtils.isBlank(processConfig.getTitle())
                         ? processConfig.getTitle()
                         : modelName);
+                put("modelName", modelName);
                 put("modelRecordCount", recordIdsPerModel.size());
                 put("isMetaModel", isMetaModel);
                 put("recordIdsPerModel", recordIdsPerModel);
@@ -683,18 +706,30 @@ public class WkfModelServiceImpl implements WkfModelService {
       List<String> processInstanceIds,
       String modelName,
       User user,
-      String type) {
+      String type,
+      String assignedType) {
 
     LocalDate toDate = LocalDate.now();
     String filter =
         "self.processInstanceId IN (:processInstanceIds) AND self.jsonModel = :jsonModel";
 
     String userPath = config.getUserPath();
-    if (user != null) {
+    if (user != null && assignedType != null) {
       if (Strings.isNullOrEmpty(userPath)) {
         return new ArrayList<>();
       }
-      filter += " AND self.attrs." + userPath + ".id = '" + user.getId() + "'";
+      if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_ME)) {
+        filter += " AND self.attrs." + userPath + ".id = '" + user.getId() + "'";
+      } else if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_OTHER)) {
+        filter +=
+            " AND (self.attrs."
+                + userPath
+                + ".id = null OR self.attrs."
+                + userPath
+                + ".id != '"
+                + user.getId()
+                + "')";
+      }
     }
 
     if (type != null) {
@@ -713,7 +748,7 @@ public class WkfModelServiceImpl implements WkfModelService {
               " > '"
                   + toDate
                   + "' AND self.attrs."
-                  + config.getDeadlineFieldPath()
+                  + deadLinePath
                   + " < '"
                   + toDate.plusDays(7)
                   + "'";
@@ -734,7 +769,9 @@ public class WkfModelServiceImpl implements WkfModelService {
   }
 
   @SuppressWarnings("unchecked")
-  private Object[] getMetaModelRecordFilter(WkfTaskConfig config, String modelName, User user) {
+  private Object[] getMetaModelRecordFilter(
+      WkfTaskConfig config, String modelName, User user, String assignedType) {
+
     MetaModel metaModel = metaModelRepo.findByName(modelName);
     String model = metaModel.getFullName();
     String filter = "self.processInstanceId IN (:processInstanceIds)";
@@ -745,13 +782,29 @@ public class WkfModelServiceImpl implements WkfModelService {
       e.printStackTrace();
     }
 
-    if (user != null) {
+    if (user != null && assignedType != null) {
       String path = config.getUserPath();
       Property property = Mapper.of(klass).getProperty(path.split("\\.")[0]);
       if (property == null) {
-        filter += " AND self.attrs." + path + ".id = '" + user.getId() + "'";
+        if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_ME)) {
+          filter += " AND self.attrs." + path + ".id = '" + user.getId() + "'";
+        } else if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_OTHER)) {
+          filter +=
+              " AND (self.attrs."
+                  + path
+                  + ".id = null OR self.attrs."
+                  + path
+                  + ".id != '"
+                  + user.getId()
+                  + "')";
+        }
       } else {
-        filter += " AND self." + path + ".id = " + user.getId();
+        if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_ME)) {
+          filter += " AND self." + path + ".id = " + user.getId();
+        } else if (assignedType.equals(BpmDashboardServiceImpl.ASSIGNED_OTHER)) {
+          filter +=
+              " AND (self." + path + " IS NULL OR self." + path + ".id != " + user.getId() + ")";
+        }
       }
     }
     return new Object[] {klass, filter};
@@ -763,10 +816,11 @@ public class WkfModelServiceImpl implements WkfModelService {
       List<String> processInstanceIds,
       String modelName,
       User user,
-      String type) {
+      String type,
+      String assignedType) {
 
     LocalDate toDate = LocalDate.now();
-    Object obj[] = this.getMetaModelRecordFilter(config, modelName, user);
+    Object obj[] = this.getMetaModelRecordFilter(config, modelName, user, assignedType);
     Class<Model> klass = (Class<Model>) obj[0];
     String filter = (String) obj[1];
 
@@ -829,51 +883,74 @@ public class WkfModelServiceImpl implements WkfModelService {
   }
 
   @SuppressWarnings({"unchecked"})
-  private void getTasks(
+  @Override
+  public void getTasks(
       WkfTaskConfig config,
       List<String> processInstanceIds,
       String modelName,
       boolean isMetaModel,
       User user,
-      Map<String, Object> taskMap) {
+      Map<String, Object> taskMap,
+      List<Map<String, Object>> lateTaskMapList,
+      String assignedType) {
+
     List<Long> taskTodayIds = new ArrayList<>();
     List<Long> taskNextIds = new ArrayList<>();
     List<Long> lateTaskIds = new ArrayList<>();
+    Map<String, Object> lateTaskMap = new HashMap<>();
+    lateTaskMap.put("model", Inflector.getInstance().titleize(modelName));
 
     if (!isMetaModel) {
       List<MetaJsonRecord> taskTodayList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
+          this.getMetaJsonRecords(
+              config, processInstanceIds, modelName, user, TASK_TODAY, assignedType);
       taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
 
       List<MetaJsonRecord> taskNextList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
+          this.getMetaJsonRecords(
+              config, processInstanceIds, modelName, user, TASK_NEXT, assignedType);
       taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
 
       List<MetaJsonRecord> lateTaskList =
-          this.getMetaJsonRecords(config, processInstanceIds, modelName, user, LATE_TASK);
+          this.getMetaJsonRecords(
+              config, processInstanceIds, modelName, user, LATE_TASK, assignedType);
+      lateTaskMap.put("lateTaskIds", lateTaskList.size());
       lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
 
     } else {
       List<Model> taskTodayList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_TODAY);
+          this.getMetaModelRecords(
+              config, processInstanceIds, modelName, user, TASK_TODAY, assignedType);
       taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
 
       List<Model> taskNextList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, TASK_NEXT);
+          this.getMetaModelRecords(
+              config, processInstanceIds, modelName, user, TASK_NEXT, assignedType);
       taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
 
       List<Model> lateTaskList =
-          this.getMetaModelRecords(config, processInstanceIds, modelName, user, LATE_TASK);
+          this.getMetaModelRecords(
+              config, processInstanceIds, modelName, user, LATE_TASK, assignedType);
+      lateTaskMap.put("lateTaskIds", lateTaskList.size());
       lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+    }
+
+    if (lateTaskIds.size() > 0 && lateTaskMapList != null) {
+      lateTaskMap.put(
+          "status",
+          !StringUtils.isBlank(config.getDescription())
+              ? config.getDescription()
+              : config.getName());
+      lateTaskMapList.add(lateTaskMap);
     }
 
     if (taskMap.containsKey("taskTodayIds")) {
       taskTodayIds.addAll((List<Long>) taskMap.get("taskTodayIds"));
     }
-    if (taskMap.containsKey("taskTodayIds")) {
+    if (taskMap.containsKey("taskNextIds")) {
       taskNextIds.addAll((List<Long>) taskMap.get("taskNextIds"));
     }
-    if (taskMap.containsKey("taskTodayIds")) {
+    if (taskMap.containsKey("lateTaskIds")) {
       lateTaskIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
     }
 
