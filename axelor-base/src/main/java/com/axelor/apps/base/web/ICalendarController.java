@@ -26,6 +26,7 @@ import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,6 +46,7 @@ import net.fortuna.ical4j.data.ParserException;
 @Singleton
 public class ICalendarController {
 
+  @HandleExceptionResponse
   public void exportCalendar(ActionRequest request, ActionResponse response)
       throws IOException, ParseException {
     ICalendar cal = request.getContext().asType(ICalendar.class);
@@ -55,6 +57,7 @@ public class ICalendarController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void importCalendarFile(ActionRequest request, ActionResponse response)
       throws IOException, ParserException {
 
@@ -101,6 +104,7 @@ public class ICalendarController {
     }
   }
 
+  @HandleExceptionResponse
   public void synchronizeCalendar(ActionRequest request, ActionResponse response)
       throws MalformedURLException, ICalendarException {
     ICalendar cal = request.getContext().asType(ICalendar.class);

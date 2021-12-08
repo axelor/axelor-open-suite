@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -30,6 +30,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,42 +44,39 @@ public class ImportCityController {
    *
    * @param request
    * @param response
-   * @throws InterruptedException
+   * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
-  public void importCity(ActionRequest request, ActionResponse response) {
-    try {
-      List<ImportHistory> importHistoryList = null;
+  @HandleExceptionResponse
+  public void importCity(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
+    List<ImportHistory> importHistoryList = null;
 
-      String typeSelect = (String) request.getContext().get("typeSelect");
-      if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
+    String typeSelect = (String) request.getContext().get("typeSelect");
+    if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
 
-        String importTypeSelect = (String) request.getContext().get("importTypeSelect");
-        switch (importTypeSelect) {
-          case CityRepository.IMPORT_TYPE_SELECT_AUTO:
-            String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-            importHistoryList = importFromGeonamesAutoConfig(downloadFileName, typeSelect);
-            break;
+      String importTypeSelect = (String) request.getContext().get("importTypeSelect");
+      switch (importTypeSelect) {
+        case CityRepository.IMPORT_TYPE_SELECT_AUTO:
+          String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
+          importHistoryList = importFromGeonamesAutoConfig(downloadFileName, typeSelect);
+          break;
 
-          case CityRepository.IMPORT_TYPE_SELECT_MANUAL:
-            Map<String, Object> map =
-                (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-            importHistoryList = importFromGeonamesManualConfig(map, typeSelect);
-            break;
+        case CityRepository.IMPORT_TYPE_SELECT_MANUAL:
+          Map<String, Object> map =
+              (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+          importHistoryList = importFromGeonamesManualConfig(map, typeSelect);
+          break;
 
-          default:
-            break;
-        }
+        default:
+          break;
       }
-
-      response.setAttr("$importHistoryList", "hidden", false);
-      response.setAttr("$importHistoryList", "value", importHistoryList);
-
-      response.setFlash(I18n.get("City import completed"));
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
+
+    response.setAttr("$importHistoryList", "hidden", false);
+    response.setAttr("$importHistoryList", "value", importHistoryList);
+
+    response.setFlash(I18n.get("City import completed"));
   }
 
   /**

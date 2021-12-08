@@ -43,6 +43,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -57,13 +58,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
@@ -75,6 +74,7 @@ public class PartnerController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void setPartnerSequence(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
@@ -96,9 +96,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void showEnvelope(ActionRequest request, ActionResponse response) throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
 
@@ -123,9 +123,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -151,9 +151,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -178,7 +178,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printClientSituation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -287,6 +289,7 @@ public class PartnerController {
     response.setValue("$emailsList", emailsList);
   }
 
+  @HandleExceptionResponse
   public void checkIbanValidity(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -350,6 +353,7 @@ public class PartnerController {
     }
   }
 
+  @HandleExceptionResponse
   public void convertToIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);

@@ -24,6 +24,7 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,6 +38,7 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class MrpLineController {
 
+  @HandleExceptionResponse
   public void generateProposal(ActionRequest request, ActionResponse response)
       throws AxelorException {
     MrpLine mrpLine = request.getContext().asType(MrpLine.class);

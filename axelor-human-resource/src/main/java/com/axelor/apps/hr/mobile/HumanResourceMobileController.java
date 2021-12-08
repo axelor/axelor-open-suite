@@ -54,6 +54,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,7 +86,6 @@ public class HumanResourceMobileController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    *     <p>POST
    *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
    *     Content-Type: application/json
@@ -98,6 +98,7 @@ public class HumanResourceMobileController {
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
   @Transactional(rollbackOn = {Exception.class})
+  @HandleExceptionResponse
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -149,7 +150,6 @@ public class HumanResourceMobileController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    *     <p>POST
    *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
    *     Content-Type: application/json
@@ -466,6 +466,7 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
+  @HandleExceptionResponse
   @Transactional(rollbackOn = {Exception.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);

@@ -43,6 +43,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -60,7 +61,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -284,51 +284,44 @@ public class ManufOrderController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
    * @throws IOException
+   * @throws AxelorException
    */
-  public void print(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
 
-    try {
-      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      ManufOrderPrintService manufOrderPrintService = Beans.get(ManufOrderPrintService.class);
-      @SuppressWarnings("unchecked")
-      List<Integer> selectedManufOrderList = (List<Integer>) request.getContext().get("_ids");
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    ManufOrderPrintService manufOrderPrintService = Beans.get(ManufOrderPrintService.class);
+    @SuppressWarnings("unchecked")
+    List<Integer> selectedManufOrderList = (List<Integer>) request.getContext().get("_ids");
 
-      if (selectedManufOrderList != null) {
-        String name = manufOrderPrintService.getManufOrdersFilename();
-        String fileLink =
-            manufOrderPrintService.printManufOrders(
-                selectedManufOrderList.stream()
-                    .map(Integer::longValue)
-                    .collect(Collectors.toList()));
-        LOG.debug("Printing {}", name);
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else if (manufOrder != null) {
-        String name = manufOrderPrintService.getFileName(manufOrder);
-        String fileLink = manufOrderPrintService.printManufOrder(manufOrder);
-        LOG.debug("Printing {}", name);
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (selectedManufOrderList != null) {
+      String name = manufOrderPrintService.getManufOrdersFilename();
+      String fileLink =
+          manufOrderPrintService.printManufOrders(
+              selectedManufOrderList.stream().map(Integer::longValue).collect(Collectors.toList()));
+      LOG.debug("Printing {}", name);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } else if (manufOrder != null) {
+      String name = manufOrderPrintService.getFileName(manufOrder);
+      String fileLink = manufOrderPrintService.printManufOrder(manufOrder);
+      LOG.debug("Printing {}", name);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
     }
   }
 
+  @HandleExceptionResponse
   public void preFillOperations(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    try {
-      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      ManufOrderService moService = Beans.get(ManufOrderService.class);
-      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      moService.preFillOperations(manufOrder);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    ManufOrderService moService = Beans.get(ManufOrderService.class);
+    manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+    moService.preFillOperations(manufOrder);
+    response.setReload(true);
   }
 
   public void generateWasteStockMove(ActionRequest request, ActionResponse response) {

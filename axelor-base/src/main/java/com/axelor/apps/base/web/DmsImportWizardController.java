@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
@@ -32,15 +33,13 @@ public class DmsImportWizardController {
 
   @Inject DMSImportWizardService dmsImportWizardService;
 
+  @HandleExceptionResponse
   public void importDMS(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> metaFileMap = (Map<String, Object>) request.getContext().get("metaFile");
-      MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileMap.get("id").toString()));
-      dmsImportWizardService.importDMS(metaFile);
-      response.setReload(true);
-    } catch (AxelorException e) {
-      response.setFlash(e.getMessage());
-    }
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> metaFileMap = (Map<String, Object>) request.getContext().get("metaFile");
+    MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileMap.get("id").toString()));
+    dmsImportWizardService.importDMS(metaFile);
+    response.setReload(true);
   }
 }

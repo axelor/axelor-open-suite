@@ -51,6 +51,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,17 +86,14 @@ public class InvoiceController {
    * @param request
    * @param response
    * @return
+   * @throws AxelorException
    */
-  public void compute(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-
-    try {
-      invoice = Beans.get(InvoiceService.class).compute(invoice);
-      response.setValues(invoice);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    invoice = Beans.get(InvoiceService.class).compute(invoice);
+    response.setValues(invoice);
   }
 
   /**
@@ -105,31 +103,28 @@ public class InvoiceController {
    * @param response
    * @return
    */
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    try {
-      // we have to inject TraceBackService to use non static methods
-      TraceBackService traceBackService = Beans.get(TraceBackService.class);
-      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
-      Beans.get(InvoiceService.class).validate(invoice);
-      response.setReload(true);
-      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
-        traceBackService
-            .findLastMessageTraceBack(invoice)
-            .ifPresent(
-                traceback ->
-                    response.setNotify(
-                        String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
-                            traceback.getMessage())));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    // we have to inject TraceBackService to use non static methods
+    TraceBackService traceBackService = Beans.get(TraceBackService.class);
+    long tracebackCount = traceBackService.countMessageTraceBack(invoice);
+    Beans.get(InvoiceService.class).validate(invoice);
+    response.setReload(true);
+    if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+      traceBackService
+          .findLastMessageTraceBack(invoice)
+          .ifPresent(
+              traceback ->
+                  response.setNotify(
+                      String.format(
+                          I18n.get(
+                              com.axelor.apps.message.exception.IExceptionMessage
+                                  .SEND_EMAIL_EXCEPTION),
+                          traceback.getMessage())));
     }
   }
 
@@ -209,6 +204,7 @@ public class InvoiceController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -234,48 +230,42 @@ public class InvoiceController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    try {
-      if (invoice.getOperationTypeSelect() == null) {
-        return;
-      }
-      PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
-      PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
-      response.setValue("paymentMode", paymentMode);
-      response.setValue("paymentCondition", paymentCondition);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (invoice.getOperationTypeSelect() == null) {
+      return;
     }
+    PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
+    PaymentCondition paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
+    response.setValue("paymentMode", paymentMode);
+    response.setValue("paymentCondition", paymentCondition);
   }
 
-  public void checkNotImputedRefunds(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void checkNotImputedRefunds(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    try {
-      String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
-      if (msg != null) {
-        response.setFlash(msg);
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+    String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
+    if (msg != null) {
+      response.setFlash(msg);
     }
   }
 
+  @HandleExceptionResponse
   public void checkNotLetteredAdvancePaymentMoveLines(
-      ActionRequest request, ActionResponse response) {
+      ActionRequest request, ActionResponse response) throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    try {
-      String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
-      if (msg != null) {
-        response.setFlash(msg);
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+    String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
+    if (msg != null) {
+      response.setFlash(msg);
     }
   }
 
@@ -284,70 +274,58 @@ public class InvoiceController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void createRefund(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void createRefund(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
 
-    try {
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    Invoice refund = Beans.get(InvoiceService.class).createRefund(invoice);
+    response.setReload(true);
+    response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
 
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      Invoice refund = Beans.get(InvoiceService.class).createRefund(invoice);
-      response.setReload(true);
-      response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
-
-      response.setView(
-          ActionView.define(
-                  String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
-              .model(Invoice.class.getName())
-              .add("form", "invoice-form")
-              .add("grid", "invoice-grid")
-              .param("search-filters", "customer-invoices-filters")
-              .param("forceTitle", "true")
-              .context("_showRecord", refund.getId().toString())
-              .domain("self.originalInvoice.id = " + invoice.getId())
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(
+        ActionView.define(
+                String.format(I18n.get(IExceptionMessage.INVOICE_4), invoice.getInvoiceId()))
+            .model(Invoice.class.getName())
+            .add("form", "invoice-form")
+            .add("grid", "invoice-grid")
+            .param("search-filters", "customer-invoices-filters")
+            .param("forceTitle", "true")
+            .context("_showRecord", refund.getId().toString())
+            .domain("self.originalInvoice.id = " + invoice.getId())
+            .map());
   }
 
   public void usherProcess(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-    try {
-      Beans.get(InvoiceService.class).usherProcess(invoice);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(InvoiceService.class).usherProcess(invoice);
   }
 
-  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    try {
-      Beans.get(IrrecoverableService.class).passInIrrecoverable(invoice, true);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(IrrecoverableService.class).passInIrrecoverable(invoice, true);
+    response.setReload(true);
   }
 
-  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    try {
-      Beans.get(IrrecoverableService.class).notPassInIrrecoverable(invoice);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(IrrecoverableService.class).notPassInIrrecoverable(invoice);
+    response.setReload(true);
   }
 
   /** Method to generate invoice as a Pdf */
@@ -727,6 +705,7 @@ public class InvoiceController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -791,7 +770,6 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void setDefaultMail(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);

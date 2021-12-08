@@ -28,6 +28,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,6 +45,7 @@ import java.util.Map;
 public class ProductionOrderController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void addManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

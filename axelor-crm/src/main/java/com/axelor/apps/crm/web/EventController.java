@@ -39,6 +39,7 @@ import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -135,6 +136,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -144,6 +146,7 @@ public class EventController {
     Beans.get(EventService.class).saveEvent(persistEvent);
   }
 
+  @HandleExceptionResponse
   public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -218,38 +221,31 @@ public class EventController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void manageFollowers(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      Beans.get(EventService.class).manageFollowers(event);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Event event = request.getContext().asType(Event.class);
+    event = Beans.get(EventRepository.class).find(event.getId());
+    Beans.get(EventService.class).manageFollowers(event);
   }
 
+  @HandleExceptionResponse
   @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Long eventId = (Long) request.getContext().get("id");
-      if (eventId == null)
-        throw new AxelorException(
-            Event.class,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.EVENT_SAVED));
-      Event event = Beans.get(EventRepository.class).find(eventId);
+    Long eventId = (Long) request.getContext().get("id");
+    if (eventId == null)
+      throw new AxelorException(
+          Event.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EVENT_SAVED));
+    Event event = Beans.get(EventRepository.class).find(eventId);
 
-      RecurrenceConfigurationRepository confRepo =
-          Beans.get(RecurrenceConfigurationRepository.class);
-      RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
-      if (conf != null) {
-        conf = confRepo.save(conf);
-        Beans.get(EventService.class).generateRecurrentEvents(event, conf);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
+    RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
+    if (conf != null) {
+      conf = confRepo.save(conf);
+      Beans.get(EventService.class).generateRecurrentEvents(event, conf);
     }
   }
 
@@ -308,6 +304,7 @@ public class EventController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   @Transactional(rollbackOn = {Exception.class})
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());

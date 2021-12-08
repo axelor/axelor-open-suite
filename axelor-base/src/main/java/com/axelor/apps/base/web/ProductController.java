@@ -32,6 +32,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSecurity;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,6 +54,7 @@ public class ProductController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void generateProductVariants(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Product product = request.getContext().asType(Product.class);
@@ -93,6 +95,7 @@ public class ProductController {
     }
   }
 
+  @HandleExceptionResponse
   public void updateProductsPrices(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Product product = request.getContext().asType(Product.class);
@@ -106,6 +109,7 @@ public class ProductController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = Beans.get(UserService.class).getUser();
@@ -143,37 +147,34 @@ public class ProductController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
+  @HandleExceptionResponse
   public void printProductSheet(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Product product = request.getContext().asType(Product.class);
-      User user = Beans.get(UserService.class).getUser();
+    Product product = request.getContext().asType(Product.class);
+    User user = Beans.get(UserService.class).getUser();
 
-      String name = I18n.get("Product") + " " + product.getCode();
+    String name = I18n.get("Product") + " " + product.getCode();
 
-      if (user.getActiveCompany() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
-      }
-
-      String fileLink =
-          ReportFactory.createReport(IReport.PRODUCT_SHEET, name + "-${date}")
-              .addParam("ProductId", product.getId())
-              .addParam("CompanyId", user.getActiveCompany().getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "Timezone",
-                  user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
-              .generate()
-              .getFileLink();
-
-      logger.debug("Printing " + name);
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (user.getActiveCompany() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
     }
+
+    String fileLink =
+        ReportFactory.createReport(IReport.PRODUCT_SHEET, name + "-${date}")
+            .addParam("ProductId", product.getId())
+            .addParam("CompanyId", user.getActiveCompany().getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
+            .generate()
+            .getFileLink();
+
+    logger.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   @SuppressWarnings("unchecked")

@@ -34,7 +34,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -299,34 +299,28 @@ public class InvoiceController {
     }
   }
 
+  @HandleExceptionResponse
   public void exportAnnex(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
 
-    try {
-      List<String> reportInfo =
-          Beans.get(InvoiceServiceProjectImpl.class)
-              .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
+    List<String> reportInfo =
+        Beans.get(InvoiceServiceProjectImpl.class)
+            .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
 
-      if (reportInfo == null || reportInfo.isEmpty()) {
-        return;
-      }
-
-      response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (reportInfo == null || reportInfo.isEmpty()) {
+      return;
     }
+
+    response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
   }
 
+  @HandleExceptionResponse
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      invoice = Beans.get(InvoiceServiceProject.class).updateLines(invoice);
-      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = Beans.get(InvoiceServiceProject.class).updateLines(invoice);
+    response.setValue("invoiceLineList", invoice.getInvoiceLineList());
   }
 }

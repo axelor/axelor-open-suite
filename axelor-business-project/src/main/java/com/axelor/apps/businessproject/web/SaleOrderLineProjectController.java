@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -112,19 +113,16 @@ public class SaleOrderLineProjectController {
     }
   }
 
+  @HandleExceptionResponse
   public void updateAnalyticDistributionWithProject(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      if (saleOrderLine.getAnalyticMoveLineList() == null) {
-        return;
-      }
-      saleOrderLine =
-          Beans.get(SaleOrderLineProjectService.class)
-              .updateAnalyticDistributionWithProject(saleOrderLine);
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    if (saleOrderLine.getAnalyticMoveLineList() == null) {
+      return;
     }
+    saleOrderLine =
+        Beans.get(SaleOrderLineProjectService.class)
+            .updateAnalyticDistributionWithProject(saleOrderLine);
+    response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 }

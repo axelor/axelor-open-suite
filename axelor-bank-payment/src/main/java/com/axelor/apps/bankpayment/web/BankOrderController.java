@@ -29,6 +29,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,6 +64,7 @@ public class BankOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sign(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
@@ -85,6 +87,7 @@ public class BankOrderController {
     }
   }
 
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -138,6 +141,7 @@ public class BankOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);

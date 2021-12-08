@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,6 +33,7 @@ import java.util.List;
 @Singleton
 public class PartnerController {
 
+  @HandleExceptionResponse
   public void createAccountingSituations(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

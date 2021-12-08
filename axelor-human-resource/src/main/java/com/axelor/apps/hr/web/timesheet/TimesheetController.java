@@ -44,6 +44,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -80,51 +81,44 @@ public class TimesheetController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Context context = request.getContext();
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    Context context = request.getContext();
 
-      LocalDate fromGenerationDate = null;
-      if (context.get("fromGenerationDate") != null)
-        fromGenerationDate =
-            LocalDate.parse(
-                context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-      LocalDate toGenerationDate = null;
-      if (context.get("toGenerationDate") != null)
-        toGenerationDate =
-            LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-      BigDecimal logTime = BigDecimal.ZERO;
-      if (context.get("logTime") != null)
-        logTime = new BigDecimal(context.get("logTime").toString());
+    LocalDate fromGenerationDate = null;
+    if (context.get("fromGenerationDate") != null)
+      fromGenerationDate =
+          LocalDate.parse(context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
+    LocalDate toGenerationDate = null;
+    if (context.get("toGenerationDate") != null)
+      toGenerationDate =
+          LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
+    BigDecimal logTime = BigDecimal.ZERO;
+    if (context.get("logTime") != null) logTime = new BigDecimal(context.get("logTime").toString());
 
-      Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
-      Project project = null;
-      if (projectContext != null) {
-        project =
-            Beans.get(ProjectRepository.class)
-                .find(((Integer) projectContext.get("id")).longValue());
-      }
-
-      Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-      Product product = null;
-      if (productContext != null) {
-        product =
-            Beans.get(ProductRepository.class)
-                .find(((Integer) productContext.get("id")).longValue());
-      }
-      if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getUser());
-      }
-
-      timesheet =
-          Beans.get(TimesheetService.class)
-              .generateLines(
-                  timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
-      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
+    Project project = null;
+    if (projectContext != null) {
+      project =
+          Beans.get(ProjectRepository.class).find(((Integer) projectContext.get("id")).longValue());
     }
+
+    Map<String, Object> productContext = (Map<String, Object>) context.get("product");
+    Product product = null;
+    if (productContext != null) {
+      product =
+          Beans.get(ProductRepository.class).find(((Integer) productContext.get("id")).longValue());
+    }
+    if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+      product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getUser());
+    }
+
+    timesheet =
+        Beans.get(TimesheetService.class)
+            .generateLines(
+                timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+    response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
   }
 
   public void editTimesheet(ActionRequest request, ActionResponse response) {
@@ -433,9 +427,8 @@ public class TimesheetController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -477,7 +470,7 @@ public class TimesheetController {
   }
 
   // action called when refusing a timesheet. Changing status + Sending mail to Applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -514,6 +507,7 @@ public class TimesheetController {
         .countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
   }
 
+  @HandleExceptionResponse
   public void printTimesheet(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

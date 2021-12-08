@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -106,6 +107,7 @@ public class PaymentScheduleController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);

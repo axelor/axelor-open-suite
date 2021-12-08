@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -211,10 +212,9 @@ public class AccountingBatchController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
-
     Batch batch =
         Beans.get(AccountingBatchService.class).run((String) request.getContext().get("code"));
     Map<String, Object> mapData = new HashMap<String, Object>();

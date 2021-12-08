@@ -26,6 +26,7 @@ import com.axelor.apps.dmn.service.DmnImportService;
 import com.axelor.apps.dmn.service.DmnService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -52,6 +53,7 @@ public class WkfDmnModelController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void executeDmn(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

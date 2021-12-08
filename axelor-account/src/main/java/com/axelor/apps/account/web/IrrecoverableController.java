@@ -24,6 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -87,6 +88,7 @@ public class IrrecoverableController {
     }
   }
 
+  @HandleExceptionResponse
   public void printIrrecoverable(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

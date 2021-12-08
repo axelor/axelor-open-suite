@@ -24,90 +24,82 @@ import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.io.IOException;
 
 public class AdvancedImportController {
 
-  public void apply(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
-      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
-      if (advancedImport.getId() != null) {
-        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
-      }
+  @HandleExceptionResponse
+  public void apply(ActionRequest request, ActionResponse response)
+      throws AxelorException, ClassNotFoundException {
 
-      boolean isValid = Beans.get(AdvancedImportService.class).apply(advancedImport);
-      if (isValid) {
-        response.setReload(true);
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+    if (advancedImport.getId() != null) {
+      advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
+    }
+
+    boolean isValid = Beans.get(AdvancedImportService.class).apply(advancedImport);
+    if (isValid) {
+      response.setReload(true);
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
   }
 
-  public void validate(ActionRequest request, ActionResponse response) {
-    try {
-      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
-      if (advancedImport.getId() != null) {
-        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
-      }
+  @HandleExceptionResponse
+  public void validate(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, IOException, AxelorException {
+    AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+    if (advancedImport.getId() != null) {
+      advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
+    }
 
-      boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
-      if (isLog) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
-        response.setReload(true);
-      } else {
-        response.setValue("statusSelect", 1);
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
+    if (isLog) {
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
+      response.setReload(true);
+    } else {
+      response.setValue("statusSelect", 1);
     }
   }
 
-  public void importData(ActionRequest request, ActionResponse response) {
-    try {
-      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
-      if (advancedImport.getId() != null) {
-        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
-      }
+  @HandleExceptionResponse
+  public void importData(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, IOException, AxelorException {
+    AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+    if (advancedImport.getId() != null) {
+      advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
+    }
 
-      MetaFile logFile = Beans.get(DataImportService.class).importData(advancedImport);
-      if (logFile != null) {
-        response.setValue("errorLog", logFile);
-      } else {
-        response.setValue("errorLog", null);
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
-        response.setSignal("refresh-app", true);
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    MetaFile logFile = Beans.get(DataImportService.class).importData(advancedImport);
+    if (logFile != null) {
+      response.setValue("errorLog", logFile);
+    } else {
+      response.setValue("errorLog", null);
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+      response.setSignal("refresh-app", true);
     }
   }
 
-  public void resetImport(ActionRequest request, ActionResponse response) {
-    try {
-      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
-      if (advancedImport.getId() != null) {
-        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
-      }
+  @HandleExceptionResponse
+  public void resetImport(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+    if (advancedImport.getId() != null) {
+      advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
+    }
 
-      boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
-      if (isReset) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
-        response.setSignal("refresh-app", true);
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
+    if (isReset) {
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
+      response.setSignal("refresh-app", true);
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
     }
   }
 }

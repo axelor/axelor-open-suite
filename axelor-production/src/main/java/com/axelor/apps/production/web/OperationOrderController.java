@@ -28,6 +28,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,13 +37,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,54 +205,50 @@ public class OperationOrderController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
-  public void print(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
     String operationOrderIds = "";
-    try {
 
-      @SuppressWarnings("unchecked")
-      List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
-      if (lstSelectedOperationOrder != null) {
-        for (Integer it : lstSelectedOperationOrder) {
-          operationOrderIds += it.toString() + ",";
-        }
+    @SuppressWarnings("unchecked")
+    List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
+    if (lstSelectedOperationOrder != null) {
+      for (Integer it : lstSelectedOperationOrder) {
+        operationOrderIds += it.toString() + ",";
+      }
+    }
+
+    if (!operationOrderIds.equals("")) {
+      operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
+      operationOrder =
+          Beans.get(OperationOrderRepository.class)
+              .find(new Long(lstSelectedOperationOrder.get(0)));
+    } else if (operationOrder.getId() != null) {
+      operationOrderIds = operationOrder.getId().toString();
+    }
+
+    if (!operationOrderIds.equals("")) {
+
+      String name = " ";
+      if (operationOrder.getName() != null) {
+        name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
       }
 
-      if (!operationOrderIds.equals("")) {
-        operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
-        operationOrder =
-            Beans.get(OperationOrderRepository.class)
-                .find(new Long(lstSelectedOperationOrder.get(0)));
-      } else if (operationOrder.getId() != null) {
-        operationOrderIds = operationOrder.getId().toString();
-      }
+      String fileLink =
+          ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam("Timezone", getTimezone(operationOrder))
+              .addParam("OperationOrderId", operationOrderIds)
+              .generate()
+              .getFileLink();
 
-      if (!operationOrderIds.equals("")) {
+      LOG.debug("Printing " + name);
 
-        String name = " ";
-        if (operationOrder.getName() != null) {
-          name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
-        }
-
-        String fileLink =
-            ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addParam("Timezone", getTimezone(operationOrder))
-                .addParam("OperationOrderId", operationOrderIds)
-                .generate()
-                .getFileLink();
-
-        LOG.debug("Printing " + name);
-
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.OPERATION_ORDER_1));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.OPERATION_ORDER_1));
     }
   }
 

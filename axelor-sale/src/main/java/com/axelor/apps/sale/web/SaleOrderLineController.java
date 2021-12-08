@@ -30,6 +30,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,7 +47,8 @@ public class SaleOrderLineController {
 
   @Inject AppBaseService appBaseService;
 
-  public void compute(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
 
@@ -54,13 +56,10 @@ public class SaleOrderLineController {
 
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
 
-    try {
-      compute(response, saleOrder, saleOrderLine);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    compute(response, saleOrder, saleOrderLine);
   }
 
+  @HandleExceptionResponse
   public void computeSubMargin(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

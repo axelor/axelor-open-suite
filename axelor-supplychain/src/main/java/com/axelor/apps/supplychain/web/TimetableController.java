@@ -28,6 +28,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +47,7 @@ public class TimetableController {
 
   @Inject TimetableService timetableService;
 
+  @HandleExceptionResponse
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Timetable timetable = request.getContext().asType(Timetable.class);

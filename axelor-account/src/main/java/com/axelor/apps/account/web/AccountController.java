@@ -29,7 +29,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -42,96 +42,82 @@ import java.util.List;
 public class AccountController {
 
   public void computeBalance(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      if (account.getId() == null) {
-        return;
-      }
-      account = Beans.get(AccountRepository.class).find(account.getId());
-
-      BigDecimal balance =
-          Beans.get(AccountService.class)
-              .computeBalance(account, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
-
-      if (balance.compareTo(BigDecimal.ZERO) >= 0) {
-        response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_DEBIT_BALANCE));
-      } else {
-        balance = balance.multiply(new BigDecimal(-1));
-        response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_CREDIT_BALANCE));
-      }
-
-      response.setValue("$balanceBtn", balance);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    Account account = request.getContext().asType(Account.class);
+    if (account.getId() == null) {
+      return;
     }
+    account = Beans.get(AccountRepository.class).find(account.getId());
+
+    BigDecimal balance =
+        Beans.get(AccountService.class)
+            .computeBalance(account, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+
+    if (balance.compareTo(BigDecimal.ZERO) >= 0) {
+      response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_DEBIT_BALANCE));
+    } else {
+      balance = balance.multiply(new BigDecimal(-1));
+      response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_CREDIT_BALANCE));
+    }
+
+    response.setValue("$balanceBtn", balance);
   }
 
+  @HandleExceptionResponse
   public void checkIfCodeAccountAlreadyExistForCompany(
-      ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      Long accountId = account.getId();
-      if (accountId == null) {
-        accountId = 0L;
-      }
-      List<Account> sameAccountList =
-          Beans.get(AccountRepository.class)
-              .all()
-              .filter(
-                  "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
-                  account.getCompany(),
-                  account.getCode(),
-                  accountId)
-              .fetch();
-      if (!ObjectUtils.isEmpty(sameAccountList)) {
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    Long accountId = account.getId();
+    if (accountId == null) {
+      accountId = 0L;
+    }
+    List<Account> sameAccountList =
+        Beans.get(AccountRepository.class)
+            .all()
+            .filter(
+                "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
+                account.getCompany(),
+                account.getCode(),
+                accountId)
+            .fetch();
+    if (!ObjectUtils.isEmpty(sameAccountList)) {
 
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
-            account.getCode(),
-            account.getCompany().getName());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
+          account.getCode(),
+          account.getCompany().getName());
     }
   }
 
-  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      Beans.get(AccountService.class).checkAnalyticAxis(account);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    Beans.get(AccountService.class).checkAnalyticAxis(account);
+  }
+
+  @HandleExceptionResponse
+  public void manageAnalytic(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+        || !Beans.get(AccountConfigService.class)
+            .getAccountConfig(account.getCompany())
+            .getManageAnalyticAccounting()) {
+      response.setAttr("analyticSettingsPanel", "hidden", true);
     }
   }
 
-  public void manageAnalytic(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
-          || !Beans.get(AccountConfigService.class)
-              .getAccountConfig(account.getCompany())
-              .getManageAnalyticAccounting()) {
-        response.setAttr("analyticSettingsPanel", "hidden", true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
-          && account.getAnalyticDistributionAuthorized()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
+        && account.getAnalyticDistributionAuthorized()) {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .createDistributionTemplateFromAccount(account);
+      response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
     }
   }
 }

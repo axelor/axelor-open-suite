@@ -24,6 +24,7 @@ import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,6 +37,7 @@ import java.util.Set;
 @Singleton
 public class InventoryLineController {
 
+  @HandleExceptionResponse
   public void updateInventoryLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

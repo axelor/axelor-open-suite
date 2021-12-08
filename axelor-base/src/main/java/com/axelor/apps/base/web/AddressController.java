@@ -38,6 +38,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -194,6 +195,7 @@ public class AddressController {
     } else response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
   }
 
+  @HandleExceptionResponse
   public void export(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 

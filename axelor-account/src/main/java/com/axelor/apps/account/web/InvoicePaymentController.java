@@ -37,6 +37,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -118,6 +119,7 @@ public class InvoicePaymentController {
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void fillBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);

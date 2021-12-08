@@ -25,6 +25,7 @@ import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,6 +51,7 @@ public class EmployeeBonusController {
     }
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     EmployeeBonusMgt bonus =

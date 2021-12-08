@@ -56,6 +56,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -69,7 +70,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -80,7 +80,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,16 +88,12 @@ public class SaleOrderController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void compute(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    try {
-      saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-      response.setValues(saleOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    response.setValues(saleOrder);
   }
 
   public void computeMargin(ActionRequest request, ActionResponse response) {
@@ -125,30 +120,21 @@ public class SaleOrderController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public void showSaleOrder(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
   }
 
   /** Method that prints a proforma invoice as a PDF */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
   }
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
@@ -298,6 +284,7 @@ public class SaleOrderController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void createSaleOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder origin =
@@ -598,6 +585,7 @@ public class SaleOrderController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -744,6 +732,7 @@ public class SaleOrderController {
     response.setAttr("priceList", "domain", domain);
   }
 
+  @HandleExceptionResponse
   public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -825,6 +814,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

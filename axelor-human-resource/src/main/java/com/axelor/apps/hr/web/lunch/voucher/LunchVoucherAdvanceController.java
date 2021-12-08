@@ -34,7 +34,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -47,6 +47,7 @@ import java.util.Optional;
 @Singleton
 public class LunchVoucherAdvanceController {
 
+  @HandleExceptionResponse
   public void checkOnNewAdvance(ActionRequest request, ActionResponse response)
       throws AxelorException {
     LunchVoucherAdvance lunchVoucherAdvance =
@@ -76,19 +77,17 @@ public class LunchVoucherAdvanceController {
     }
   }
 
-  public void onNewAdvance(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void onNewAdvance(ActionRequest request, ActionResponse response) throws AxelorException {
     LunchVoucherAdvance lunchVoucherAdvance =
         EntityHelper.getEntity(request.getContext().asType(LunchVoucherAdvance.class));
 
-    try {
-      Beans.get(LunchVoucherAdvanceService.class).onNewAdvance(lunchVoucherAdvance);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(LunchVoucherAdvanceService.class).onNewAdvance(lunchVoucherAdvance);
+    response.setCanClose(true);
   }
 
-  public void print(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     LunchVoucherAdvance lunchVoucherAdvance =
         request.getContext().asType(LunchVoucherAdvance.class);
     String name =
@@ -104,18 +103,14 @@ public class LunchVoucherAdvanceController {
                                 .map(User::getActiveCompany)
                                 .orElse(null)))
                 .format(DateTimeFormatter.ISO_DATE);
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
-              .addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())
-              .addParam("Timezone", getTimezone(lunchVoucherAdvance))
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String fileLink =
+        ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
+            .addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())
+            .addParam("Timezone", getTimezone(lunchVoucherAdvance))
+            .addFormat(ReportSettings.FORMAT_PDF)
+            .generate()
+            .getFileLink();
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   private String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {

@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -206,6 +207,7 @@ public class MoveController {
     }
   }
 
+  @HandleExceptionResponse
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -230,6 +232,7 @@ public class MoveController {
     }
   }
 
+  @HandleExceptionResponse
   protected void removeOneMove(Move move, ActionResponse response) throws Exception {
     MoveRemoveService moveRemoveService = Beans.get(MoveRemoveService.class);
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
@@ -428,6 +431,7 @@ public class MoveController {
     }
   }
 
+  @HandleExceptionResponse
   public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {

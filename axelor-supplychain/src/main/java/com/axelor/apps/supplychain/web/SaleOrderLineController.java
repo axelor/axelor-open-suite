@@ -35,6 +35,7 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
+  @HandleExceptionResponse
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -63,6 +65,7 @@ public class SaleOrderLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);

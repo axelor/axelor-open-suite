@@ -30,6 +30,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -183,6 +184,7 @@ public class WkfModelController {
 
   @SuppressWarnings("unchecked")
   @Transactional
+  @HandleExceptionResponse
   public void importWkfModels(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

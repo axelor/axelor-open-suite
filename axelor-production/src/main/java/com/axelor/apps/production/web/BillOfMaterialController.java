@@ -27,6 +27,7 @@ import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +47,7 @@ public class BillOfMaterialController {
 
   private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
 
+  @HandleExceptionResponse
   public void computeCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -73,6 +75,7 @@ public class BillOfMaterialController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void updateProductCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -151,6 +154,7 @@ public class BillOfMaterialController {
     }
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);

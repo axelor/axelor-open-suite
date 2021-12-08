@@ -18,7 +18,11 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
@@ -33,6 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,6 +58,7 @@ public class PaymentVoucherController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   // Called on onSave event
+  @HandleExceptionResponse
   public void paymentVoucherSetNum(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -143,6 +149,7 @@ public class PaymentVoucherController {
     }
   }
 
+  @HandleExceptionResponse
   public void printPaymentVoucher(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -177,6 +184,7 @@ public class PaymentVoucherController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);

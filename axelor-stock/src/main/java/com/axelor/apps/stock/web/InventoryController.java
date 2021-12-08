@@ -32,6 +32,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,13 +42,11 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,35 +61,31 @@ public class InventoryController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
-  public void showInventory(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory = request.getContext().asType(Inventory.class);
+  @HandleExceptionResponse
+  public void showInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+    Inventory inventory = request.getContext().asType(Inventory.class);
 
-      String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+    String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
 
-      String fileLink =
-          ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
-              .addParam("InventoryId", inventory.getId())
-              .addParam(
-                  "Timezone",
-                  inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "activateBarCodeGeneration",
-                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
-              .addFormat(inventory.getFormatSelect())
-              .generate()
-              .getFileLink();
+    String fileLink =
+        ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
+            .addParam("InventoryId", inventory.getId())
+            .addParam(
+                "Timezone",
+                inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "activateBarCodeGeneration",
+                Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
+            .addFormat(inventory.getFormatSelect())
+            .generate()
+            .getFileLink();
 
-      logger.debug("Printing " + name);
+    logger.debug("Printing " + name);
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void exportInventory(ActionRequest request, ActionResponse response) {
@@ -220,8 +215,7 @@ public class InventoryController {
     }
   }
 
-  public void checkDuplicateProduct(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void checkDuplicateProduct(ActionRequest request, ActionResponse response) {
     Inventory inventory = request.getContext().asType(Inventory.class);
 
     Query query =
@@ -238,6 +232,8 @@ public class InventoryController {
 
     } catch (NoResultException e) {
       // if control came here means no duplicate product.
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

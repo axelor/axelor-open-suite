@@ -28,6 +28,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -124,6 +125,7 @@ public class GenerateMessageController {
     }
   }
 
+  @HandleExceptionResponse
   public Map<String, Object> generateMessage(
       long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,

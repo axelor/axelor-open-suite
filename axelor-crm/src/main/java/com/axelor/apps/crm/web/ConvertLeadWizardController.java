@@ -31,6 +31,7 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -174,6 +175,7 @@ public class ConvertLeadWizardController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Lead lead = findLead(request);
@@ -192,6 +194,7 @@ public class ConvertLeadWizardController {
     response.setAttr("$leadToContactSelect", "value", 1);
   }
 
+  @HandleExceptionResponse
   public void setPartnerDefaults(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -227,6 +230,7 @@ public class ConvertLeadWizardController {
     response.setAttr("nbrEmployees", "value", 0);
   }
 
+  @HandleExceptionResponse
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -241,6 +245,7 @@ public class ConvertLeadWizardController {
     }
   }
 
+  @HandleExceptionResponse
   public void setContactDefaults(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -257,6 +262,7 @@ public class ConvertLeadWizardController {
     response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
   }
 
+  @HandleExceptionResponse
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

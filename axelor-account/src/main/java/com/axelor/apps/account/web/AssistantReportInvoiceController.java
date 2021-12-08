@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +41,7 @@ public class AssistantReportInvoiceController {
 
   private static final DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+  @HandleExceptionResponse
   public void printSales(ActionRequest request, ActionResponse response) throws AxelorException {
 
     AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
@@ -69,6 +71,7 @@ public class AssistantReportInvoiceController {
     return assistant.getFromDate().format(dtFormater) + assistant.getToDate().format(dtFormater);
   }
 
+  @HandleExceptionResponse
   public void printPurchases(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
