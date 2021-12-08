@@ -901,6 +901,25 @@ public class BankReconciliationService {
     return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 
+  public String createDomainForMoveLine(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    String domain = "";
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(getRequestMoveLines(bankReconciliation))
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    String idList = StringTool.getIdListString(authorizedMoveLines);
+    if (idList.equals("")) {
+      domain = "self.id IN (0)";
+    } else {
+      domain = "self.id IN (" + idList + ")";
+    }
+    return domain;
+  }
+
   public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
     boolean uniqueBankDetails = true;
     BankDetails bankDetails = null;
