@@ -3,42 +3,62 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
-public class BankOrderFileAFB160DCOService extends BankOrderFileAFB160Service {
+public class BankOrderFileAFB160DCOService extends BankOrderFileService {
+
+  protected CfonbToolService cfonbToolService;
+  protected PartnerService partnerService;
+  protected final int NB_CHAR_PER_LINE = 160;
 
   private int numberingRecord;
 
+  @Inject
   public BankOrderFileAFB160DCOService(BankOrder bankOrder) throws AxelorException {
     super(bankOrder);
+    this.partnerService = Beans.get(PartnerService.class);
+    this.cfonbToolService = Beans.get(CfonbToolService.class);
+    fileExtension = FILE_EXTENSION_TXT;
     this.numberingRecord = 1;
   }
 
   @Override
-  protected String getB1Area() {
-    return null;
+  public File generateFile()
+      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+
+    List<String> records = Lists.newArrayList();
+
+    records.add(this.createSenderRecord());
+
+    for (BankOrderLine bankOrderLine : bankOrderLineList) {
+
+      records.add(this.createMainDetailRecord(bankOrderLine));
+      records.add(this.createEndorsedDetailRecord(bankOrderLine));
+      records.add(this.createAdditionalDetailRecord(bankOrderLine));
+    }
+
+    records.add(this.createTotalRecord());
+
+    fileToCreate = records;
+
+    return super.generateFile();
   }
 
-  @Override
-  protected String getSenderEArea() {
-    return null;
-  }
-
-  @Override
-  protected String getC11Area() {
-    return null;
-  }
-
-  @Override
-  protected String getB3Area() {
-    return null;
-  }
-
-  @Override
   protected String createSenderRecord() throws AxelorException {
     StringBuilder senderRecordBuilder = new StringBuilder();
 
@@ -219,17 +239,6 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileAFB160Service {
 
   protected String getSenderC2Value() {
     return this.bankOrderDate.format(DateTimeFormatter.ofPattern("ddMMyy"));
-  }
-
-  @Override
-  protected String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException {
-    StringBuilder detailRecordBuilder = new StringBuilder();
-
-    detailRecordBuilder.append(this.createMainDetailRecord(bankOrderLine));
-    detailRecordBuilder.append(this.createEndorsedDetailRecord(bankOrderLine));
-    detailRecordBuilder.append(this.createAdditionalDetailRecord(bankOrderLine));
-
-    return detailRecordBuilder.toString();
   }
 
   protected String createMainDetailRecord(BankOrderLine bankOrderLine) throws AxelorException {
@@ -586,7 +595,6 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileAFB160Service {
     }
   }
 
-  @Override
   protected String createTotalRecord() throws AxelorException {
     StringBuilder totalRecordBuilder = new StringBuilder();
     try {
