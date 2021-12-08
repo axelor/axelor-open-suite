@@ -211,9 +211,8 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileAFB160Service {
   }
 
   protected String getSenderD1Value() {
-    if (senderCompany.getDefaultBankDetails() != null
-        && senderCompany.getDefaultBankDetails().getBankAddress() != null) {
-      return senderCompany.getDefaultBankDetails().getBankAddress().getAddress();
+    if (senderBankDetails.getBankAddress() != null) {
+      return senderBankDetails.getBankAddress().getAddress();
     }
     return "";
   }
