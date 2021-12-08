@@ -84,9 +84,9 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_ENDORSED_DETAIL_RECORD = /*$$(*/
-	      "Anomaly has been detected during file generation for the endorsed detail record of the bank order line %s" /*)*/;
+      "Anomaly has been detected during file generation for the endorsed detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_ADDITIONAL_DETAIL_RECORD = /*$$(*/
-	      "Anomaly has been detected during file generation for the additional detail record of the bank order line %s" /*)*/;
+      "Anomaly has been detected during file generation for the additional detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/
@@ -117,11 +117,11 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_ADDRESS = /*$$(*/
-	      "Please fill the address in the receiver company details." /*)*/;
+      "Please fill the address in the receiver company details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_ZIP = /*$$(*/
-	      "Please fill the zip in the receiver company details." /*)*/;
+      "Please fill the zip in the receiver company details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_CITY = /*$$(*/
-	      "Please fill the city in the receiver company details." /*)*/;
+      "Please fill the city in the receiver company details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
       "Please fill the bank in the receiver bank details." /*)*/;
 
