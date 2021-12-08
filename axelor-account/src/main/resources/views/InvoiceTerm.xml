@@ -74,6 +74,76 @@
     <field name="paymentAmount" aggregate="sum"/>
   </grid>
 
+  <grid name="invoice-term-move-line-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate">
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="paymentMode"/>
+    <field name="amountRemaining"/>
+    <field name="isPaid"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="financialDiscount" hidden="true"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="invoice.financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </grid>
+
+  <form name="invoice-term-move-line-form" title="Invoice term"
+    model="com.axelor.apps.account.db.InvoiceTerm"
+    onNew="action-invoice-term-record-update-customized-true">
+    <panel name="mainPanel">
+      <panel name="headerPanel" colSpan="12" itemSpan="4">
+        <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
+        <field name="name" readonly="true"/>
+        <field name="isCustomized" readonly="true"/>
+        <field name="invoice" readonly="true" form-view="invoice-form"
+          grid-view="invoice-grid"/>
+        <field name="isPaid" readonly="true"/>
+      </panel>
+      <separator colSpan="12"/>
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+        <field name="dueDate" requiredIf="isCustomized" readonlyIf="isPaid"/>
+        <field name="isHoldBack" readonlyIf="isPaid || financialDiscount != null"/>
+        <field if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"
+          name="estimatedPaymentDate" readonlyIf="isPaid || amountRemaining != amount"/>
+        <field name="amount" validIf="amount > 0"
+          readonlyIf="isPaid || amountRemaining != amount"
+          onChange="action-invoice-term-method-compute-customized-percentage"/>
+        <field name="percentage" validIf="percentage > 0"
+          readonlyIf="isPaid || amountRemaining != amount"
+          onChange="action-invoice-term-method-compute-customized-amount"/>
+        <field name="amountRemaining" readonly="true"/>
+        <field name="paymentMode" readonlyIf="isPaid"/>
+        <field name="bankDetails" readonlyIf="isPaid"
+          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+      </panel>
+      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
+        showIf="financialDiscount != null">
+        <field name="financialDiscount" readonly="true"/>
+        <field name="financialDiscount.discountRate"/>
+        <field name="financialDiscountAmount" readonly="true"/>
+        <field name="invoice.financialDiscountDeadlineDate"/>
+        <field name="invoice.company" hidden="true"/>
+      </panel>
+      <field name="invoice.company" hidden="true"/>
+      <field name="invoice.paymentCondition" hidden="true"/>
+      <field name="invoice.paymentCondition.isFree" hidden="true"/>
+      <field name="invoice.operationTypeSelect" hidden="true"/>
+      <field name="invoice.statusSelect" hidden="true"/>
+      <field name="invoice" readonly="true" hidden="true"/>
+      <field name="paymentMode.typeSelect" hidden="true"/>
+    </panel>
+  </form>
+
   <form name="invoice-term-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
     onLoad="action-invoice-term-group-onload,action-invoice-term-attrs-set-readonly">
