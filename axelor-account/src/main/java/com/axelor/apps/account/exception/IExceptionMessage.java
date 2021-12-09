@@ -66,7 +66,7 @@ public interface IExceptionMessage {
 
   /** Account management repostiroy */
   static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
-      "A payment mode already exists with the same informations." /*)*/;
+      "A payment mode already exists with the same information." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
