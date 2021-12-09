@@ -135,6 +135,9 @@
         </field>
       </panel>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <form name="invoice-term-form" title="Invoice term"
@@ -230,6 +233,9 @@
         onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-record name="action-invoice-term-record-update-customized-true"
