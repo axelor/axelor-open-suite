@@ -86,6 +86,10 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      // This case means that prorata temporis was already computed in another software.
+      return false;
+    }
     return fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
   }
 
@@ -108,5 +112,10 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
     return fixedAsset.getIfrsAlreadyDepreciatedAmount();
+  }
+
+  @Override
+  protected Integer getDurationInMonth(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsDurationInMonth();
   }
 }
