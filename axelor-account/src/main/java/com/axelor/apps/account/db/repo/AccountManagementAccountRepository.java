@@ -15,7 +15,7 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
     boolean alreadyExists =
         all()
                 .filter(
-                    "self.interbankCodeLine = :interbankCodeLine and self.bankDetails = :bankDetails and self.paymentMode = :paymentMode and self.id != :id")
+                    "self.interbankCodeLine = :interbankCodeLine and self.bankDetails = :bankDetails and self.paymentMode = :paymentMode and (:id = null or self.id != :id)")
                 .bind("interbankCodeLine", json.get("interbankCodeLine"))
                 .bind("bankDetails", json.get("bankDetails"))
                 .bind("paymentMode", json.get("paymentMode"))
@@ -29,7 +29,7 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
             I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS),
             null);
       } catch (AxelorException e) {
-        TraceBackService.trace(e);
+        TraceBackService.traceExceptionFromSaveMethod(e);
         throw new PersistenceException(e);
       }
     }
