@@ -107,7 +107,7 @@
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
         onClick="save,action-bank-reconciliation-method-reconcile-selected"/>
       <panel-dashlet name="showUnreconciledMoveLinesPanel"
-        title="Accounting Move Lines to reconcile (bank)" colSpan="12" canSearch="true"
+        title="Accounting Move Line(s) to reconcile" colSpan="12" canSearch="true"
         action="action-bank-reconciliation-method-show-unreconciled-move-lines"/>
     </panel>
     <panel name="mainBalancePanel" colSpan="12" showIf="bankReconciliationLineList.length > 0">
