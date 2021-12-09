@@ -240,7 +240,8 @@
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
           onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
         <panel-dashlet name="relatedCutOffMovesPanel" title="Related cut off moves"
-          colSpan="12" action="action-move-view-related-cut-off-moves" showIf="$isThereRelatedCutOffMoves"/>
+          colSpan="12" action="action-move-view-related-cut-off-moves"
+          showIf="$isThereRelatedCutOffMoves"/>
         <field name="$isThereRelatedCutOffMoves" type="boolean" hidden="true"/>
       </panel>
 
@@ -483,7 +484,7 @@
 
   <action-attrs name="action-move-attrs-check-related-cut-off-moves">
     <attribute name="value" for="$isThereRelatedCutOffMoves"
-               expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
+      expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
