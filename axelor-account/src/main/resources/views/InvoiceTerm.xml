@@ -93,25 +93,18 @@
         <field name="pfpValidateStatusSelect" widget="NavSelect" readonly="true" colSpan="8"/>
         <field name="pfpValidatorUser" hidden="true" showIf="invoice.statusSelect &gt; 1"
           readonlyIf="pfpValidateStatusSelect != 1" canEdit="false" colSpan="4"/>
-        <field name="pfpGrantedAmount" readonly="true"/>
-        <field name="pfpRejectedAmount" readonly="true"/>
-        <button name="passedForPaymentValidationBtn" css="btn-success"
-          showIf="[1,3].includes(pfpValidateStatusSelect)" title="Validate PFP" onClick="save"
-          colSpan="6"/>
-        <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-          showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-                        &amp;&amp; $isValidPfpValidatorUser
-                        &amp;&amp; (invoice.operationTypeSelect == 1
-                          || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
-                          || moveLine.move.journal.journalType.technicalTypeSelect == 1
-                          || (moveLine.move.company.accountConfig.isManagePFPInRefund &amp;&amp; moveLine.move.journal.journalType.technicalTypeSelect == 3))
-                        &amp;&amp; ([2,3].includes(invoice) || [2,3].includes(moveLine.move.statusSelect))
-                        &amp;&amp; [1,3].includes(pfpValidateStatusSelect)
-                        &amp;&amp; !isPaid"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()" css="btn-success"
-          onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
-        <button name="refusalToPayBtn" css="btn-danger" showIf="pfpValidateStatusSelect == 1"
-          title="Refuse PFP" onClick="save" colSpan="6"/>
+        <field name="pfpGrantedAmount" readonly="true" showIf="pfpValidateStatusSelect > 1"/>
+        <field name="pfpRejectedAmount" readonly="true" showIf="pfpValidateStatusSelect > 1"/>
+        <panel name="buttonPanel" colSpan="12" itemSpan="4">
+          <button name="passedForPaymentValidationBtn" css="btn-success"
+            showIf="[1,3].includes(pfpValidateStatusSelect)" title="Validate PFP" onClick="save"/>
+          <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
+            showIf="$isValidPfpValidatorUser &amp;&amp; [1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid"
+            if="__config__.app.getApp('account').getActivatePassedForPayment()" css="btn-warning"
+            onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+          <button name="refusalToPayBtn" css="btn-danger"
+            showIf="pfpValidateStatusSelect == 1" title="Refuse PFP" onClick="save"/>
+        </panel>
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true"
           showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
@@ -190,25 +183,18 @@
         <field name="pfpValidateStatusSelect" widget="NavSelect" readonly="true" colSpan="8"/>
         <field name="pfpValidatorUser" hidden="true" showIf="invoice.statusSelect &gt; 1"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="4" canEdit="false"/>
-        <field name="pfpGrantedAmount" readonly="true"/>
-        <field name="pfpRejectedAmount" readonly="true"/>
-        <button name="passedForPaymentValidationBtn" css="btn-success"
-          showIf="[1,3].includes(pfpValidateStatusSelect)" title="Validate PFP" onClick="save"
-          colSpan="6"/>
-        <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-          showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
-                        &amp;&amp; $isValidPfpValidatorUser
-                        &amp;&amp; (invoice.operationTypeSelect == 1
-                          || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )
-                          || moveLine.move.journal.journalType.technicalTypeSelect == 1
-                          || (moveLine.move.company.accountConfig.isManagePFPInRefund &amp;&amp; moveLine.move.journal.journalType.technicalTypeSelect == 3))
-                        &amp;&amp; ([2,3].includes(invoice) || [2,3].includes(moveLine.move.statusSelect))
-                        &amp;&amp; [1,3].includes(pfpValidateStatusSelect)
-                        &amp;&amp; !isPaid"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()" css="btn-success"
-          onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
-        <button name="refusalToPayBtn" css="btn-danger" showIf="pfpValidateStatusSelect == 1"
-          title="Refuse PFP" onClick="save" colSpan="6"/>
+        <field name="pfpGrantedAmount" readonly="true" showIf="pfpValidateStatusSelect > 1"/>
+        <field name="pfpRejectedAmount" readonly="true" showIf="pfpValidateStatusSelect > 1"/>
+        <panel name="buttonPanel" colSpan="12" itemSpan="4">
+          <button name="passedForPaymentValidationBtn" css="btn-success"
+            showIf="[1,3].includes(pfpValidateStatusSelect)" title="Validate PFP" onClick="save"/>
+          <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
+            showIf="$isValidPfpValidatorUser &amp;&amp; [1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid"
+            if="__config__.app.getApp('account').getActivatePassedForPayment()" css="btn-warning"
+            onClick="action-invoice-term-view-pfp-partial-reason-wizard"/>
+          <button name="refusalToPayBtn" css="btn-danger"
+            showIf="pfpValidateStatusSelect == 1" title="Refuse PFP" onClick="save"/>
+        </panel>
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true"
           showIf="(moveLine.move.company.accountConfig.isManagePassedForPayment || invoice.company.accountConfig.isManagePassedForPayment)
@@ -266,7 +252,8 @@
     <panel name="mainPanel">
       <field name="pfpGrantedAmount" required="true" validIf="pfpGrantedAmount > 0"/>
       <field name="pfpPartialReason" required="true"/>
-      <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" onClick=""/>
+      <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
+        onClick=""/>
     </panel>
   </form>
 
