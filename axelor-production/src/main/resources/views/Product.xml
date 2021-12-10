@@ -13,7 +13,8 @@
       <field name="economicManufOrderQty"/>
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
-        grid-view="bill-of-material-grid"/>
+        grid-view="bill-of-material-grid"
+        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <button name="productsTreeBtn" title="Display products tree"
         onClick="action-method-production-open-product-tree"
         showIf="(procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') &amp;&amp; (productSubTypeSelect == 1 || productSubTypeSelect == 2)"

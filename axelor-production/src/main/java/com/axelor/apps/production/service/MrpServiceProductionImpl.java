@@ -75,6 +75,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected ProductCompanyService productCompanyService;
 
+  protected BillOfMaterialService billOfMaterialService;
+
   @Inject
   public MrpServiceProductionImpl(
       AppBaseService appBaseService,
@@ -92,7 +94,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
       ManufOrderRepository manufOrderRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      BillOfMaterialService billOfMaterialService) {
     super(
         appBaseService,
         appPurchaseService,
@@ -110,6 +113,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockLocationService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -389,7 +393,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (!Beans.get(AppProductionService.class).isApp("production")) {
       return;
     }
-    BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
@@ -490,8 +495,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
 
-    if (product.getDefaultBillOfMaterial() != null) {
-      this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    if (billOfMaterial != null) {
+      this.assignProductLevel(billOfMaterial, 0);
     }
   }
 
@@ -548,8 +555,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         if (this.isMrpProduct(subProduct)) {
           this.assignProductLevel(subBillOfMaterial, level);
 
-          if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+          Company company = mrp.getStockLocation().getCompany();
+          BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
+          if (defaultBOM != null) {
+            this.assignProductLevel(defaultBOM, level);
           }
         }
       }

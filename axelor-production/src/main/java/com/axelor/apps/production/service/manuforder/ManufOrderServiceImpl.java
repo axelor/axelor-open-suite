@@ -39,6 +39,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
@@ -901,7 +902,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList) {
+      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
+      throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
     for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
@@ -919,13 +921,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
+        BillOfMaterial defaultBOM =
+            Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
+
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
                 || product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
-            && product.getDefaultBillOfMaterial() != null
-            && product.getDefaultBillOfMaterial().getProdProcess() != null) {
-          bomList.add(Pair.of(product.getDefaultBillOfMaterial(), qtyReq));
+            && defaultBOM != null
+            && defaultBOM.getProdProcess() != null) {
+          bomList.add(Pair.of(defaultBOM, qtyReq));
         }
       }
     }
@@ -971,7 +976,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
       /*
-       * If unit are the same, then add the qty If not, convert the unit and get the converted qty
+       * If unit are the same, then add the qty If not, convert the unit and get the
+       * converted qty
        */
       if (manufOrder.getUnit().equals(unit)) {
         qty = qty.add(manufOrder.getQty());
@@ -1012,8 +1018,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     mergedManufOrder.setNote(note);
 
     /*
-     * Check the config to see if you directly plan the created manuf order or just prefill the
-     * operations
+     * Check the config to see if you directly plan the created manuf order or just
+     * prefill the operations
      */
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getIsManufOrderPlannedAfterMerge()) {
