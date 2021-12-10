@@ -104,7 +104,8 @@
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (invoice.company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2)) &amp;&amp; (invoice.statusSelect == 2 || invoice.statusSelect == 3)">
         <field name="pfpValidateStatusSelect" widget="NavSelect" readonly="true" colSpan="8"/>
         <field name="pfpValidatorUser" hidden="true" showIf="pfpValidateStatusSelect == 1"
-          colSpan="4" canEdit="false" onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
+          colSpan="4" canEdit="false"
+          onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"/>
         <button name="passedForPaymentValidationBtn" css="btn-success"
           showIf="$isValidPfpValidatorUser &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
@@ -114,7 +115,8 @@
           title="Refuse PFP" onClick="save,action-invoiceterm-view-refusal-to-pay" colSpan="6"/>
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true" readonly="true" showIf="pfpValidateStatusSelect > 1"
-          colSpan="6" canEdit="false" onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
+          colSpan="6" canEdit="false"
+          onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"/>
         <panel name="pfpEmailPanel" colSpan="6">
           <field name="decisionPfpTakenDate" hidden="true" colSpan="12"
@@ -146,8 +148,7 @@
   </form>
 
   <form name="invoice-term-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm"
-    onLoad="action-invoice-term-group-onload">
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true"/>
@@ -185,7 +186,8 @@
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (invoice.company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2)) &amp;&amp; (invoice.statusSelect == 2 || invoice.statusSelect == 3)">
         <field name="pfpValidateStatusSelect" widget="NavSelect" readonly="true" colSpan="8"/>
         <field name="pfpValidatorUser" hidden="true" showIf="pfpValidateStatusSelect == 1"
-          colSpan="4" canEdit="false" onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
+          colSpan="4" canEdit="false"
+          onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"/>
         <button name="passedForPaymentValidationBtn" css="btn-success"
           showIf="$isValidPfpValidatorUser &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
@@ -195,7 +197,8 @@
           title="Refuse PFP" onClick="save,action-invoiceterm-view-refusal-to-pay" colSpan="6"/>
         <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpValidatorUser" hidden="true" readonly="true" showIf="pfpValidateStatusSelect > 1"
-          colSpan="6" canEdit="false" onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
+          colSpan="6" canEdit="false"
+          onChange="action-invoice-term-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"/>
         <panel if="__config__.app.getApp('account').getActivatePassedForPayment()"
           name="pfpEmailPanel" colSpan="6">
@@ -283,7 +286,8 @@
   </action-method>
 
   <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
-    <call class="com.axelor.apps.account.web.InvoiceTermController" method="hideSendEmailPfpBtn"/>
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="hideSendEmailPfpBtn"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

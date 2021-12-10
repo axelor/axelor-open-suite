@@ -129,10 +129,10 @@ public class InvoiceTermController {
     }
 
     response.setAttr(
-            "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-            "value",
-            invoiceTerm
-                    .getPfpValidatorUser()
-                    .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+        "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+        "value",
+        invoiceTerm
+            .getPfpValidatorUser()
+            .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
   }
 }
