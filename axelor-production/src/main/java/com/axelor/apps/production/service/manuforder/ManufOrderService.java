@@ -247,7 +247,7 @@ public interface ManufOrderService {
       throws AxelorException;
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial bom, ManufOrder mo, List<Product> productList);
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
 
   /**
    * Merge different manufacturing orders into a single one.
