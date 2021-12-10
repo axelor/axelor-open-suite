@@ -656,7 +656,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
     StockMove stockMove;
-    if (stockMoveOpt.isPresent()) {
+    if (stockMoveOpt.isPresent() && !stockMoveOpt.get().equals(manufOrder.getWasteStockMove())) {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
