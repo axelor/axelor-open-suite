@@ -149,6 +149,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
     }
 
+    if (move.getCurrency() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
+    }
+
     if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
