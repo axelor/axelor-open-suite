@@ -35,6 +35,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -289,13 +290,14 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public boolean applyCutOffDates(MoveLine moveLine, Move move) {
-    if (move.getCutOffStartDate() != null
-        && move.getCutOffEndDate() != null
+  public boolean applyCutOffDates(
+      MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (cutOffStartDate != null
+        && cutOffEndDate != null
         && moveLine.getAccount() != null
         && moveLine.getAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(move.getCutOffStartDate());
-      moveLine.setCutOffEndDate(move.getCutOffEndDate());
+      moveLine.setCutOffStartDate(cutOffStartDate);
+      moveLine.setCutOffEndDate(cutOffEndDate);
 
       return false;
     }

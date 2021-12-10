@@ -336,8 +336,7 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
-        readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
         <field name="cutOffStartDate"
           requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"
@@ -549,8 +548,7 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
-        readonlyIf="move.statusSelect == 3 || move.technicalOriginSelect == 2">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
         <field name="cutOffStartDate"
           requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"

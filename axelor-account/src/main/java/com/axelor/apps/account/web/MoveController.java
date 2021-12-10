@@ -60,6 +60,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -579,7 +580,11 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      if (Beans.get(MoveComputeService.class).applyCutOffDates(move)) {
+      LocalDate cutOffStartDate = (LocalDate) request.getContext().get("$cutOffStartDate");
+      LocalDate cutOffEndDate = (LocalDate) request.getContext().get("$cutOffEndDate");
+
+      if (Beans.get(MoveComputeService.class)
+          .applyCutOffDates(move, cutOffStartDate, cutOffEndDate)) {
         response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
       } else {
         response.setValue("moveLineList", move.getMoveLineList());

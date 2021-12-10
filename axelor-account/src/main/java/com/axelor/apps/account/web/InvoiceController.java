@@ -64,6 +64,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1032,7 +1033,11 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
 
-      if (Beans.get(InvoiceService.class).applyCutOffDates(invoice)) {
+      LocalDate cutOffStartDate = (LocalDate) request.getContext().get("$cutOffStartDate");
+      LocalDate cutOffEndDate = (LocalDate) request.getContext().get("$cutOffEndDate");
+
+      if (Beans.get(InvoiceService.class)
+          .applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate)) {
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
       } else {
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());

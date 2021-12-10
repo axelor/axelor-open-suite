@@ -598,13 +598,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public boolean applyCutOffDates(InvoiceLine invoiceLine, Invoice invoice) {
-    if (invoice.getCutOffStartDate() != null
-        && invoice.getCutOffEndDate() != null
+  public boolean applyCutOffDates(
+      InvoiceLine invoiceLine,
+      Invoice invoice,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate) {
+    if (cutOffStartDate != null
+        && cutOffEndDate != null
         && invoiceLine.getAccount() != null
         && invoiceLine.getAccount().getManageCutOffPeriod()) {
-      invoiceLine.setCutOffStartDate(invoice.getCutOffStartDate());
-      invoiceLine.setCutOffEndDate(invoice.getCutOffEndDate());
+      invoiceLine.setCutOffStartDate(cutOffStartDate);
+      invoiceLine.setCutOffEndDate(cutOffEndDate);
 
       return false;
     }

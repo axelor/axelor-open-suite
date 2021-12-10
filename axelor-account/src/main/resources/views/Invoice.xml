@@ -509,11 +509,11 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3">
-          <field name="cutOffStartDate"/>
-          <field name="cutOffEndDate"/>
+          <field name="$cutOffStartDate" type="date" title="From date"/>
+          <field name="$cutOffEndDate" type="date" title="To date"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-invoice-method-apply-cut-off-dates"
-            readonlyIf="cutOffStartDate == null || cutOffEndDate == null"/>
+            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"

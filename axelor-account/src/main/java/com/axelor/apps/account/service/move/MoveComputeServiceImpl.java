@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,9 +52,12 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   }
 
   @Override
-  public boolean applyCutOffDates(Move move) {
+  public boolean applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     return CollectionUtils.isEmpty(move.getMoveLineList())
         || move.getMoveLineList().stream()
-            .allMatch(moveLine -> moveLineService.applyCutOffDates(moveLine, move));
+            .allMatch(
+                moveLine ->
+                    moveLineService.applyCutOffDates(
+                        moveLine, move, cutOffStartDate, cutOffEndDate));
   }
 }

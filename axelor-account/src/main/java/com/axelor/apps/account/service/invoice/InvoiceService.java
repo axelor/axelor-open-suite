@@ -37,6 +37,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -316,5 +317,5 @@ public interface InvoiceService {
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
-  boolean applyCutOffDates(Invoice invoice);
+  boolean applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }
