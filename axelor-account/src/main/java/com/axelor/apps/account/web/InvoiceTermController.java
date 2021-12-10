@@ -121,4 +121,18 @@ public class InvoiceTermController {
         "domain",
         Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
   }
+
+  public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    if (invoiceTerm.getPfpValidatorUser() == null) {
+      return;
+    }
+
+    response.setAttr(
+            "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+            "value",
+            invoiceTerm
+                    .getPfpValidatorUser()
+                    .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+  }
 }
