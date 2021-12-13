@@ -55,6 +55,8 @@
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
+    <many-to-one name="cutOffOriginMove" title="Cut off origin move"
+      ref="com.axelor.apps.account.db.Move"/>
 
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>

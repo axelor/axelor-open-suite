@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
@@ -117,6 +118,7 @@ public interface FixedAssetService {
       BigDecimal disposalQty,
       BigDecimal disposalAmount,
       int transferredReason,
+      AssetDisposalReason assetDisposalReason,
       String comments)
       throws AxelorException;
 
