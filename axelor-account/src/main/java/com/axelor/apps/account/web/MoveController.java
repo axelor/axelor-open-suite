@@ -580,8 +580,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      LocalDate cutOffStartDate = (LocalDate) request.getContext().get("$cutOffStartDate");
-      LocalDate cutOffEndDate = (LocalDate) request.getContext().get("$cutOffEndDate");
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
       if (Beans.get(MoveComputeService.class)
           .applyCutOffDates(move, cutOffStartDate, cutOffEndDate)) {

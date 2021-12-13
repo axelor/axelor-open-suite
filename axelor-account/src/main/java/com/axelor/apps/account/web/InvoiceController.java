@@ -1033,8 +1033,9 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
 
-      LocalDate cutOffStartDate = (LocalDate) request.getContext().get("$cutOffStartDate");
-      LocalDate cutOffEndDate = (LocalDate) request.getContext().get("$cutOffEndDate");
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
       if (Beans.get(InvoiceService.class)
           .applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate)) {
