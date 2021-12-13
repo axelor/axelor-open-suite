@@ -344,7 +344,7 @@ public class WkfModelController {
             : metaJsonModel.getTitle() + "-" + status;
 
     ActionViewBuilder actionViewBuilder =
-        ActionView.define(title)
+        ActionView.define(I18n.get(title))
             .model(MetaJsonRecord.class.getName())
             .add("grid", metaJsonModel.getGridView().getName())
             .add("form", metaJsonModel.getFormView().getName())
@@ -488,7 +488,14 @@ public class WkfModelController {
     boolean isMetaModel = (boolean) _map.get("isMetaModel");
     List<Long> recordIds = (List<Long>) _map.get(recordkey);
 
+    ActionViewBuilder actionViewBuilder = this.computeActionView(status, modelName, isMetaModel);
+
+    response.setView(actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
+  }
+
+  public ActionViewBuilder computeActionView(String status, String modelName, boolean isMetaModel) {
     ActionViewBuilder actionViewBuilder = null;
+
     if (isMetaModel) {
       MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
       actionViewBuilder = this.createActionBuilder(status, metaModel);
@@ -497,8 +504,7 @@ public class WkfModelController {
       MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).findByName(modelName);
       actionViewBuilder = this.createActionBuilder(status, metaJsonModel);
     }
-
-    response.setView(actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
+    return actionViewBuilder;
   }
 
   public void getStatusPerView(ActionRequest request, ActionResponse response) {
@@ -564,7 +570,7 @@ public class WkfModelController {
       String viewPrefix = Inflector.getInstance().dasherize(metaModel.getName());
 
       actionViewBuilder =
-          ActionView.define(metaModel.getName())
+          ActionView.define(I18n.get(metaModel.getName()))
               .model(metaModel.getFullName())
               .add("form", viewPrefix + "-form");
 
@@ -572,7 +578,7 @@ public class WkfModelController {
       MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).findByName(modelName);
 
       actionViewBuilder =
-          ActionView.define(metaJsonModel.getTitle())
+          ActionView.define(I18n.get(metaJsonModel.getTitle()))
               .model(MetaJsonRecord.class.getName())
               .add("form", metaJsonModel.getFormView().getName())
               .domain("self.jsonModel = :jsonModel")

@@ -1030,4 +1030,7 @@ public interface IExceptionMessage {
 
   static final String INACTIVE_JOURNAL_FOUND =
       /*$$(*/ "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  // Split message
+  static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 }
