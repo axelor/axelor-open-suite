@@ -107,7 +107,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getPaymentCondition() == null
         || CollectionUtils.isEmpty(invoice.getPaymentCondition().getPaymentConditionLineList())) {
-      return null;
+      return invoice;
     }
 
     invoice.clearInvoiceTermList();

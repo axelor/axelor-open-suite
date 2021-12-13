@@ -112,7 +112,12 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBack"; /*)*/
   public static final String INVOICE_INVOICE_TERM_PAID = /*$$(*/ "Invoice.invoiceTermPaid"; /*)*/
   public static final String INVOICE_INVOICE_TERMS = /*$$(*/ "Invoice.invoiceTerms"; /*)*/
-
+  public static final String INVOICE_INVOICE_TERM_PAYMENT_MODE = /*$$(*/
+      "Invoice.invoiceTermPaymentMode"; /*)*/
+  public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_TRUE = /*$$(*/
+      "Invoice.invoiceTermHoldBackTrue"; /*)*/
+  public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_FALSE = /*$$(*/
+      "Invoice.invoiceTermHoldBackFalse"; /*)*/
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
