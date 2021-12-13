@@ -47,6 +47,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -89,6 +90,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
+  protected SaleOrderService saleOrderService;
   protected int counter = 0;
 
   @Inject
@@ -111,7 +113,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      SaleOrderService saleOrderService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -132,6 +135,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.saleOrderService = saleOrderService;
   }
 
   public List<StockMove> getStockMoves(
@@ -447,10 +451,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     Product product = stockMoveLine.getProduct();
 
-    FiscalPosition fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
-    if (fiscalPosition == null) {
-      fiscalPosition = saleOrderLine.getSaleOrder().getClientPartner().getFiscalPosition();
-    }
+    FiscalPosition fiscalPosition =
+        saleOrderService.getFiscalPosition(saleOrderLine.getSaleOrder());
 
     Account account =
         accountManagementAccountService.getProductAccount(

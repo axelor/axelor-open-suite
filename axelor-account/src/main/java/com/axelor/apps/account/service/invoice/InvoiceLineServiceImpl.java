@@ -422,6 +422,40 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
+  public void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
+    BigDecimal exTaxTotal;
+    BigDecimal companyExTaxTotal;
+    BigDecimal inTaxTotal;
+    BigDecimal companyInTaxTotal;
+    BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
+
+    invoiceLine.setPriceDiscounted(priceDiscounted);
+
+    BigDecimal taxRate = BigDecimal.ZERO;
+    if (invoiceLine.getTaxLine() != null) {
+      taxRate = invoiceLine.getTaxLine().getValue();
+      invoiceLine.setTaxRate(taxRate);
+      invoiceLine.setTaxCode(invoiceLine.getTaxLine().getTax().getCode());
+    }
+
+    if (!invoice.getInAti()) {
+      exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+    } else {
+      inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, invoice);
+    companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, invoice);
+
+    invoiceLine.setExTaxTotal(exTaxTotal);
+    invoiceLine.setInTaxTotal(inTaxTotal);
+    invoiceLine.setCompanyInTaxTotal(companyInTaxTotal);
+    invoiceLine.setCompanyExTaxTotal(companyExTaxTotal);
+  }
+
+  @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 

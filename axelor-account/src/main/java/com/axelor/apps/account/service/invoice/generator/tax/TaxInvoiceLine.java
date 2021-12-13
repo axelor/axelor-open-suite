@@ -63,7 +63,8 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
     if (fiscalPosition == null) {
-      fiscalPosition = invoice.getPartner().getFiscalPosition();
+      fiscalPosition =
+          invoice.getPartner() != null ? invoice.getPartner().getFiscalPosition() : null;
     }
     if (fiscalPosition == null || !fiscalPosition.getCustomerSpecificNote()) {
       if (invoiceLines != null) {

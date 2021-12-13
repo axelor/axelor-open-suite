@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
@@ -452,5 +453,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
     newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
     saleOrderComputeService.computeSaleOrder(saleOrder);
+  }
+
+  public FiscalPosition getFiscalPosition(SaleOrder saleOrder) {
+    if (saleOrder.getClientPartner() != null) {
+      return saleOrder.getClientPartner().getFiscalPosition();
+    } else {
+      return null;
+    }
   }
 }

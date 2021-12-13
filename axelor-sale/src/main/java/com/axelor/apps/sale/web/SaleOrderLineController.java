@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -133,7 +134,7 @@ public class SaleOrderLineController {
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
             .getTaxEquiv(
-                saleOrder.getClientPartner().getFiscalPosition(),
+                Beans.get(SaleOrderService.class).getFiscalPosition(saleOrder),
                 saleOrderLine.getTaxLine().getTax()));
   }
 

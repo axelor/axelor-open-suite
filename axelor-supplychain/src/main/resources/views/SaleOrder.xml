@@ -10,6 +10,18 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
+    <extend target="//panel[@name='otherInfoPanel']">
+      <insert position="before">
+        <field colSpan="3" name="directOrderLocation"
+          onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
+        <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
+          onSelect="action-sale-order-attrs-compute-tax-number-domain"
+          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-supplychain-method-fiscal-position-on-change"/>
+        <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
+          domain=":taxNumber MEMBER OF self.taxNumberSet"
+          onChange="action-sale-order-supplychain-method-fiscal-position-on-change"/>
+      </insert>
+    </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
@@ -304,6 +316,7 @@
       expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
     <field name="toStockLocation"
       expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
+
   </action-record>
 
   <action-record name="action-sale-order-record-update-timetable-amounts"
@@ -371,6 +384,11 @@
     name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
+  </action-method>
+
+  <action-method name="action-sale-order-supplychain-method-fiscal-position-on-change">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
 </object-views>

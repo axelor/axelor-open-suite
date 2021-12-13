@@ -433,7 +433,7 @@ public class IntercoServiceImpl implements IntercoService {
     Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = invoiceLine.getInvoice().getFiscalPosition();
-      if (fiscalPosition == null) {
+      if (fiscalPosition == null && partner != null) {
         fiscalPosition = partner.getFiscalPosition();
       }
 
@@ -455,7 +455,7 @@ public class IntercoServiceImpl implements IntercoService {
               invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
 
       FiscalPosition intercoFiscalPosition = intercoInvoice.getFiscalPosition();
-      if (intercoFiscalPosition == null) {
+      if (intercoFiscalPosition == null && intercoInvoice.getPartner() != null) {
         intercoFiscalPosition = intercoInvoice.getPartner().getFiscalPosition();
       }
       TaxEquiv taxEquiv =

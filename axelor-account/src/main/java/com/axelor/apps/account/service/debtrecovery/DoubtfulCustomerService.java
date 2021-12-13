@@ -349,11 +349,12 @@ public class DoubtfulCustomerService {
       invoice.setOldMove(invoice.getMove());
       invoice.setMove(move);
       FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-      if (fiscalPosition == null) {
-        fiscalPosition = invoice.getPartner().getFiscalPosition();
-      }
 
       if (invoice.getPartner() != null) {
+        if (fiscalPosition == null) {
+          fiscalPosition = invoice.getPartner().getFiscalPosition();
+        }
+
         doubtfulCustomerAccount =
             Beans.get(FiscalPositionAccountService.class)
                 .getAccount(fiscalPosition, doubtfulCustomerAccount);

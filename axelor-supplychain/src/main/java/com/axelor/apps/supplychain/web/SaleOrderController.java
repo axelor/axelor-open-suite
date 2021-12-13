@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -985,9 +986,10 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+          Beans.get(SaleOrderLineServiceSupplyChain.class);
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderLineServiceSupplyChain.class)
-            .updateStockMoveReservationDateTime(saleOrderLine);
+        saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1001,6 +1003,30 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
+   * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
+   * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+          Beans.get(SaleOrderLineServiceSupplyChain.class);
+      if (saleOrder.getSaleOrderLineList() != null) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          saleOrderLineServiceSupplyChain.fillPrice(saleOrderLine, saleOrder);
+        }
+        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

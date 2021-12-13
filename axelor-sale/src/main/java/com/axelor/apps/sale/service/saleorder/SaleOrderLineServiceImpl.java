@@ -97,6 +97,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected AppSaleService appSaleService;
   protected AccountManagementService accountManagementService;
   protected SaleOrderLineRepository saleOrderLineRepo;
+  protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -106,7 +107,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo) {
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -114,6 +116,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.appSaleService = appSaleService;
     this.accountManagementService = accountManagementService;
     this.saleOrderLineRepo = saleOrderLineRepo;
+    this.saleOrderService = saleOrderService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -229,7 +232,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
       saleOrderLine.setTaxLine(taxLine);
 
-      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrderService.getFiscalPosition(saleOrder);
 
       Tax tax =
           accountManagementService.getProductTax(
@@ -339,8 +342,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
-   * @param quantity The quantity.
-   * @param price The unit price.
    * @return The excluded tax total amount.
    */
   @Override
@@ -427,7 +428,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCreationDate(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
-            saleOrder.getClientPartner().getFiscalPosition(),
+            saleOrderService.getFiscalPosition(saleOrder),
             false);
   }
 

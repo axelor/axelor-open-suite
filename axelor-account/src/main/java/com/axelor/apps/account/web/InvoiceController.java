@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -48,6 +45,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -61,6 +59,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -1010,5 +1009,41 @@ public class InvoiceController {
       response.setError(e.getMessage());
     }
     response.setAttr("partner", "domain", domain);
+  }
+
+  /**
+   * Called from invoice form view upon changing the fiscalPosition Updates taxLine, taxEquiv and
+   * prices by calling {@link InvoiceLineService#fillProductInformation(Invoice, InvoiceLine)} and
+   * {@link InvoiceLineService#compute(Invoice, InvoiceLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getInvoiceLineList() != null) {
+        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+        Mapper mapper = Mapper.of(InvoiceLine.class);
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+          Map<String, Object> invoiceLineMap =
+              invoiceLineService.fillProductInformation(invoice, invoiceLine);
+
+          String errorMsg = (String) invoiceLineMap.get("error");
+          if (!Strings.isNullOrEmpty(errorMsg)) {
+            response.setFlash(errorMsg);
+          }
+
+          for (Map.Entry<String, Object> entry : invoiceLineMap.entrySet()) {
+            mapper.set(invoiceLine, entry.getKey(), entry.getValue());
+          }
+
+          invoiceLineService.compute(invoice, invoiceLine);
+        }
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
