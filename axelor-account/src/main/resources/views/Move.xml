@@ -104,8 +104,7 @@
             onChange="action-account-move-group-set-origin-and-description-on-lines"/>
           <field name="$validatePeriod" hidden="true"/>
         </panel>
-        <panel name="cutOffPanel" colSpan="12" title="Cut off"
-          showIf="technicalOriginSelect != 2" itemSpan="4">
+        <panel name="cutOffPanel" colSpan="12" title="Cut off" itemSpan="4">
           <field name="$cutOffStartDate" type="date" title="From date"/>
           <field name="$cutOffEndDate" type="date" title="To date"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
