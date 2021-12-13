@@ -103,36 +103,53 @@ public class InvoiceTermController {
   }
 
   public void refusalToPay(ActionRequest request, ActionResponse response) {
-    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-    if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
-      Beans.get(InvoiceTermService.class)
-          .refusalToPay(
-              Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
-              invoiceTerm.getReasonOfRefusalToPay(),
-              invoiceTerm.getReasonOfRefusalToPayStr());
-      response.setCanClose(true);
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (invoiceTerm.getInvoice() != null
+          && invoiceTerm.getInvoice().getCompany() != null
+          && invoiceTerm.getReasonOfRefusalToPay() != null) {
+        Beans.get(InvoiceTermService.class)
+            .refusalToPay(
+                Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
+                invoiceTerm.getReasonOfRefusalToPay(),
+                invoiceTerm.getReasonOfRefusalToPayStr());
+
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
-    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-    response.setAttr(
-        "pfpValidatorUser",
-        "domain",
-        Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
-    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-    if (invoiceTerm.getPfpValidatorUser() == null) {
-      return;
-    }
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-    response.setAttr(
-        "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-        "value",
-        invoiceTerm
-            .getPfpValidatorUser()
-            .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+      if (invoiceTerm.getPfpValidatorUser() != null) {
+        response.setAttr(
+            "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+            "value",
+            invoiceTerm
+                .getPfpValidatorUser()
+                .equals(
+                    Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

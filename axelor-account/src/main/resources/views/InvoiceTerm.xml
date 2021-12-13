@@ -238,11 +238,10 @@
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
-        onChange="action-attrs-invoice-other-reason"/>
+        onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Confirm cancellation"
-        onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
-        colOffset="4" colSpan="4"/>
+        onClick="action-invoice-term-method-refusal-to-pay" colOffset="4" colSpan="4"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -307,10 +306,5 @@
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
   </action-view>
-
-  <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">
-    <check error="A cancel reason must be selected" field="cancelReason"
-      if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
-  </action-condition>
 
 </object-views>
