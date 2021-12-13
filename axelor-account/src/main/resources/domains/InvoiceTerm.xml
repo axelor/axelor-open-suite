@@ -79,6 +79,7 @@
       <field name="financialDiscount"/>
       <field name="invoice"/>
       <field name="moveLine"/>
+      <field name="decisionPfpTakenDate"/>
     </track>
 
   </entity>

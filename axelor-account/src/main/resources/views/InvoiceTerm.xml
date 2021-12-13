@@ -5,6 +5,12 @@
 
   <grid name="invoice-term-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="Valider BAP"
+        onClick="act1"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="Refuser BAP"
+        onClick="act2"/>
+    </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
