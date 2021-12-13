@@ -5908,7 +5908,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["totalDiscountAmount"] >= -0.1 || row["typeSelect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packHideUnitAmounts"])</expression>
+                                                    <expression name="valueExpr" type="javascript">row["typeSelect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packHideUnitAmounts"])</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>

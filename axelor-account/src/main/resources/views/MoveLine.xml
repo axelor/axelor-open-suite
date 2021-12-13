@@ -267,7 +267,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
@@ -473,7 +473,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
