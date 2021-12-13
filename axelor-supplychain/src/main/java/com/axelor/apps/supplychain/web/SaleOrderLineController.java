@@ -344,11 +344,15 @@ public class SaleOrderLineController {
   public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-    BigDecimal qty =
-        Beans.get(SaleOrderLineServiceSupplyChain.class)
-            .checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+    SaleOrderLineServiceSupplyChain saleOrderLineService =
+        Beans.get(SaleOrderLineServiceSupplyChain.class);
+
+    BigDecimal qty = saleOrderLineService.checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+
+    saleOrderLineService.updateDeliveryState(saleOrderLine);
 
     response.setValue("qty", qty);
+    response.setValue("deliveryState", saleOrderLine.getDeliveryState());
   }
 
   /**

@@ -103,12 +103,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   @Override
   public void updateIndicators(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
       throws AxelorException {
     if (configurator.getConfiguratorCreator() == null) {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
     indicators = filterIndicators(configurator, indicators);
     for (MetaJsonField indicator : indicators) {
       try {
@@ -189,26 +193,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
   }
 
-  /**
-   * Here we only generate a product.
-   *
-   * @param configurator
-   * @param jsonAttributes
-   * @param jsonIndicators
-   */
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void generate(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
-      throws AxelorException {
-    generateProduct(configurator, jsonAttributes, jsonIndicators);
-  }
-
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void generateProduct(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
       throws AxelorException {
+
+    addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 
     cleanIndicators(jsonIndicators);
     Mapper mapper = Mapper.of(Product.class);
@@ -261,7 +255,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // generate sale order line from product
       saleOrderLine = new SaleOrderLine();
       saleOrderLine.setSaleOrder(saleOrder);
-      generate(configurator, jsonAttributes, jsonIndicators);
+      generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
 
       saleOrderLine.setProduct(configurator.getProduct());
       this.fillSaleOrderWithProduct(saleOrderLine);
@@ -570,6 +564,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         throw new AxelorException(
             Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
       }
+    }
+  }
+
+  protected void addSpecialAttributeParentSaleOrderId(
+      JsonContext jsonAttributes, Long saleOrderId) {
+    if (saleOrderId != null) {
+      jsonAttributes.put("parentSaleOrderId", saleOrderId);
     }
   }
 }

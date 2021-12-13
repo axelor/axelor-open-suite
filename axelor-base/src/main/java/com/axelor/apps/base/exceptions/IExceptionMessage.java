@@ -443,6 +443,9 @@ public interface IExceptionMessage {
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
+  public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
+      "Please upload csv or txt or zip files only." /*)*/;
+  public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
 
   public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
 
@@ -452,4 +455,10 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
+      "The previous period is not closed or temporarily closed." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
+      "The previous period is not closed." /*)*/;
 }

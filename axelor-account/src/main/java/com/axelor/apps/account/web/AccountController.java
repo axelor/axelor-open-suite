@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -104,6 +106,20 @@ public class AccountController {
     }
   }
 
+  public void manageAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+          || !Beans.get(AccountConfigService.class)
+              .getAccountConfig(account.getCompany())
+              .getManageAnalyticAccounting()) {
+        response.setAttr("analyticSettingsPanel", "hidden", true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
@@ -114,6 +130,20 @@ public class AccountController {
                 .createDistributionTemplateFromAccount(account);
         response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void toggleStatus(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      account = Beans.get(AccountRepository.class).find(account.getId());
+
+      Beans.get(AccountService.class).toggleStatusSelect(account);
+
+      response.setReload(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

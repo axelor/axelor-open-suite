@@ -3,10 +3,10 @@ name: Java CI
 on:
   push:
     branches:
-      - wip
+      - wip-accounting
   pull_request:
     branches:
-      - wip
+      - wip-accounting
 
 jobs:
   build:
@@ -27,6 +27,8 @@ jobs:
       run: chmod +x open-suite-webapp/gradlew
     - name: Check spotless format with gradle task
       run: cd open-suite-webapp && ./gradlew spotlessCheck
+    - name: Check that CSV files use the correct CR/LF EOL char (\r\n)
+      run: cd open-suite-webapp && ./gradlew checkCsvEOL
     - name: Check changelog generation with gradle task
       run: cd open-suite-webapp && ./gradlew generateChangelog
     - name: Build without tests

@@ -1,7 +1,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.service.AnalyticAxisByCompanyService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;

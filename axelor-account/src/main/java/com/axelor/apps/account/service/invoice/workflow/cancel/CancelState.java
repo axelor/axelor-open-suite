@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -30,6 +31,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class CancelState extends WorkflowInvoice {
 
@@ -56,7 +58,6 @@ public class CancelState extends WorkflowInvoice {
         && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       cancelMove();
     }
-
     setStatus();
     if (Beans.get(AccountConfigService.class)
         .getAccountConfig(invoice.getCompany())
@@ -66,9 +67,14 @@ public class CancelState extends WorkflowInvoice {
 
     budgetService.updateBudgetLinesFromInvoice(invoice);
 
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.clearBudgetDistributionList();
+    }
+
     workflowService.afterCancel(invoice);
   }
 
+  @Transactional
   protected void setStatus() {
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
