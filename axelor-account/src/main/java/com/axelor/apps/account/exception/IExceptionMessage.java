@@ -24,6 +24,36 @@ package com.axelor.apps.account.exception;
  */
 public interface IExceptionMessage {
 
+  static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
+      /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
+  static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
+      /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
+      /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
+      /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
+      /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
+      /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
+  static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
+      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
+      /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
+      /*$$(*/ "The input failover date is not conforme compare with the dates and configured depreciation duration." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
+      /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
+      /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
@@ -38,9 +68,14 @@ public interface IExceptionMessage {
   static final String NO_MOVES_SELECTED = /*$$(*/
       "Please select 'Draft' or 'Simulated' moves" /*)*/;
 
-  static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
-      "Error in move validation, please check the log" /*)*/;
-  static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String NO_NEW_MOVES_SELECTED = /*$$(*/
+      "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
+
+  static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
+      "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
+  static final String MOVE_ACCOUNTING_OK = /*$$(*/
+      "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
+  static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
@@ -56,9 +91,15 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
-      "The move lines %s are reconciled and should not have been removed." /*)*/;;
+      "The move lines %s are reconciled and should not have been removed." /*)*/;
+  static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
+      "The move line %s is missing description in order to create fixed asset" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
+
+  /** Account management repostiroy */
+  static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
+      "A payment mode already exists with the same information." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -128,6 +169,9 @@ public interface IExceptionMessage {
   /** Journal service */
   static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
+  /** AnalyticJournal service */
+  static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
+      /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
   /** Move line export service */
   static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -147,16 +191,74 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_REPORT_2 = /*$$(*/
       "%s : Error : You must configure an account export sequence for the company %s" /*)*/;
-  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/;
+  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Lines recovered" /*)*/;
   static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
   static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
+  static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
   static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
+  static final String ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND = /*$$(*/
+      "Report type not found" /*)*/;
+  static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
+      "Company partner is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS = /*$$(*/
+      "Company partner main address is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7 = /*$$(*/
+      "Country is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE = /*$$(*/
+      "Country alpha2code is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY = /*$$(*/
+      "City is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
+      "DAS2 active norm is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_MISSING = /*$$(*/
+      "DAS2 contact partner is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 contact partner : first name is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING = /*$$(*/
+      "DAS2 contact partner : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING = /*$$(*/
+      "DAS2 contact partner : email is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING = /*$$(*/
+      "DAS2 contact partner : phone is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE = /*$$(*/
+      "DAS2 contact partner : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declarant company %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
+      "DAS2 declarant company %s : Activity code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
+      "DAS2 declarant company %s : Address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
+      "Partner is missing on the move %s" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
+      "DAS2 declared partner %s %s : address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY = /*$$(*/
+      "DAS2 declared partner %s %s : address city is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP = /*$$(*/
+      "DAS2 declared partner %s %s : address city zip is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : first name is missing" /*)*/;
 
   /** Move line service */
   static final String MOVE_LINE_1 = /*$$(*/ "Partner is missing on the invoice %s" /*)*/;
@@ -172,7 +274,10 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
+  static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
+  static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
+      "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -191,8 +296,8 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
-      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -336,6 +441,20 @@ public interface IExceptionMessage {
 
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET = /*$$(*/ "Processed fixed assets" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC = /*$$(*/
+      "Realized fixed asset economic lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL = /*$$(*/
+      "Realized fixed asset fiscal lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS = /*$$(*/
+      "Realized fixed assets ifrs lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE = /*$$(*/
+      "Realized fixed assets derogatory lines" /*)*/;
 
   /** Batch close / open the year account */
   static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
@@ -491,6 +610,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
       "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
+      "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
@@ -623,7 +744,7 @@ public interface IExceptionMessage {
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
   static final String MOVE_CANCEL_4 = /*$$(*/
-      "The move is validated and so can not be canceled." /*)*/;
+      "The move is accounted and so can not be canceled." /*)*/;
 
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
@@ -665,7 +786,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -698,6 +819,10 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
 
+  /** Payment voucher controller */
+  static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
+      "You can't remove this payment voucher as it is already used in a move." /*)*/;
+
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
@@ -727,6 +852,8 @@ public interface IExceptionMessage {
   static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+  static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
+      "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -806,6 +933,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED = /*$$(*/
+      "The disposal of the asset cannot be executed while depreciation has already been accounted." /*)*/;
 
   /* MOVE REVERSE*/
   static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
@@ -835,4 +964,56 @@ public interface IExceptionMessage {
 
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
+
+  static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
+      "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves" /*)*/;
+
+  static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
+      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
+
+  static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
+      "Please fill analytic accounts in all analytic distribution lines." /*)*/;
+
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY = /*$$(*/
+      "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY = /*$$(*/
+      "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly." /*)*/;
+
+  /*Period */
+  static final String PERIOD_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
+      "This period is already in use by some accounting moves. The dates can't be modified." /*)*/;
+
+  /*Period */
+  static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
+      "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
+
+  static final String INACTIVE_ACCOUNT_FOUND =
+      /*$$(*/ "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ACCOUNTS_FOUND =
+      /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNAL_FOUND = /*$$(*/
+      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNALS_FOUND = /*$$(*/
+      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNT_FOUND =
+      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
+      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_JOURNAL_FOUND =
+      /*$$(*/ "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  // Split message
+  static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 }

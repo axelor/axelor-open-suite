@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dashlet-builders>
+
+
+  <dashlet-builder>
+
+    <name>Commande produit</name>
+
+    <metaView>custom-model-ProductOrder-grid</metaView>
+
+    <action></action>
+
+    <dashboardBuilder>product-dashboard</dashboardBuilder>
+
+    <sequence>0</sequence>
+
+    <viewType>grid</viewType>
+
+    <colspan>12</colspan>
+
+    <paginationLimit>0</paginationLimit>
+
+    <appBuilder></appBuilder>
+
+    <parentAppBuilder>PRD</parentAppBuilder>
+
+  </dashlet-builder>
+  <dashlet-builder>
+
+    <name>Commandes produit par mois</name>
+
+    <metaView>product-order-chart</metaView>
+
+    <action></action>
+
+    <dashboardBuilder>product-dashboard</dashboardBuilder>
+
+    <sequence>1</sequence>
+
+    <viewType>chart</viewType>
+
+    <colspan>6</colspan>
+
+    <paginationLimit>0</paginationLimit>
+
+    <appBuilder></appBuilder>
+
+    <parentAppBuilder>PRD</parentAppBuilder>
+
+  </dashlet-builder>
+  <dashlet-builder>
+
+    <name>Commandes produit par fournisseurs et catégorie</name>
+
+    <metaView>product-order-per-author-per-category</metaView>
+
+    <action></action>
+
+    <dashboardBuilder>product-dashboard</dashboardBuilder>
+
+    <sequence>2</sequence>
+
+    <viewType>chart</viewType>
+
+    <colspan>6</colspan>
+
+    <paginationLimit>0</paginationLimit>
+
+    <appBuilder></appBuilder>
+
+    <parentAppBuilder>PRD</parentAppBuilder>
+
+  </dashlet-builder>
+
+
+</dashlet-builders>

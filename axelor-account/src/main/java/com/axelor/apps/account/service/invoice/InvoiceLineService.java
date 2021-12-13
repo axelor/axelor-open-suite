@@ -109,4 +109,7 @@ public interface InvoiceLineService {
   public InvoiceLine updateProductQty(
       InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException;
+
+  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
+      throws AxelorException;
 }

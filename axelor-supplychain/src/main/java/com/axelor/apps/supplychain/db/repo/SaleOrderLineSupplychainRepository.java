@@ -38,16 +38,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
-    if (saleOrder == null
-        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
-        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        || saleOrder.getStockLocation() == null
-        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
-        || (saleOrderLine.getProduct() != null
-            && saleOrderLine
-                .getProduct()
-                .getProductTypeSelect()
-                .equals(ProductRepository.PRODUCT_TYPE_SERVICE))) {
+    if (this.availabilityIsNotManaged(saleOrderLine, saleOrder)) {
       return super.populate(json, context);
     }
 
@@ -73,5 +64,18 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     json.put("availableStatusSelect", saleOrderLine.getAvailableStatusSelect());
 
     return super.populate(json, context);
+  }
+
+  protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    return saleOrder == null
+        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        || saleOrder.getStockLocation() == null
+        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+        || (saleOrderLine.getProduct() != null
+            && saleOrderLine
+                .getProduct()
+                .getProductTypeSelect()
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE));
   }
 }

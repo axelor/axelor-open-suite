@@ -740,19 +740,21 @@
                     <metaField>description</metaField>
                     <formula>description = &quot;&quot;
 if (carteMere_1?.description){
-  description += &quot;Carte mère : &quot; + carteMere_1.description + &quot;\n&quot;
+  description += "Carte mère : " + carteMere_1.description + "\n"
 }
-if (disqueDur_1?.description){
-  description += &quot;Disque dur : &quot; + disqueDur_1.description + &quot;\n&quot;
+if (disqueDur_1?.description) {
+  description += "Disque dur : " +
+  disqueDur_1.description + "\n"
 }
-if (ecran_1?.description){
-   description += &quot;Ecran :&quot; + ecran_1.description + &quot;\n&quot;
+if (ecran_1?.description) {
+  description +=
+  "Ecran :" + ecran_1.description + "\n"
 }
-if (processeur_1?.description){
-  description += &quot;Processeur :&quot; + processeur_1.description + &quot;\n&quot;
+if (processeur_1?.description) {
+  description += "Processeur :" + processeur_1.description + "\n"
 }
-if (memoire_1?.description){
-  description += &quot;Mémoire :&quot; + memoire_1.description + &quot;\n&quot;
+if (memoire_1?.description) {
+  description += "Mémoire :" + memoire_1.description + "\n"
 }
 return description;</formula>
                     <showOnConfigurator>true</showOnConfigurator>
@@ -784,7 +786,7 @@ cp+=(ecran_1?.salePrice?:0)
 cp+=(memoire_1?.salePrice?:0)*(quantiteMemoire_1?:0)
 cp+=(processeur_1?.salePrice?:0)
 if (montageOrdinateur_1?:0){
-cp+=2*60
+  cp+=2*60
 }
 return cp*nbOrdi_1</formula>
                     <showOnConfigurator>true</showOnConfigurator>

@@ -30,7 +30,6 @@ import com.axelor.studio.db.repo.ActionBuilderLineRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterSqlService;
-import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -84,8 +83,8 @@ public class ActionScriptBuilderService {
         "<action-script name=\""
             + name
             + "\" "
-            + "id=\"studio-"
-            + name
+            + "id=\""
+            + builder.getXmlId()
             + "\" model=\""
             + MetaJsonRecord.class.getName()
             + "\">\n\t"
@@ -97,7 +96,8 @@ public class ActionScriptBuilderService {
             + code
             + "\n\t]]>\n\t</script>\n</action-script>";
 
-    return metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
+    return metaService.updateMetaAction(
+        builder.getName(), "action-script", xml, null, builder.getXmlId());
   }
 
   private String generateScriptCode(ActionBuilder builder) {
@@ -148,12 +148,6 @@ public class ActionScriptBuilderService {
       stb.append(format("var target = $json.create('" + targetModel + "');", level));
       stb.append(format("target = setVar0(null, ctx, {});", level));
       stb.append(format("target = $json.save(target);", level));
-      stb.append(
-          format(
-              "Beans.get("
-                  + WkfTrackingService.class.getName()
-                  + ".class).track(0, target, false);",
-              level));
     } else {
       stb.append(format("var target = new " + targetModel + "();", level));
       stb.append(format("target = setVar0(null, ctx, {});", level));

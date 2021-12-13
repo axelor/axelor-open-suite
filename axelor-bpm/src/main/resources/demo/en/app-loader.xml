@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app-loaders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <app-loader name="BPM-1: Purchase Request" importFilePath="demo/en/BPM-1/"/>
+  <app-loader name="BPM-2: Pizza Delivery" importFilePath="demo/en/BPM-2/"/>
+  <app-loader name="BPM-3: Manufacturing" importFilePath="demo/en/BPM-3/"/>
+  <app-loader name="BPM-4: Sales Parallel Processing" importFilePath="demo/en/BPM-4/"/>
+  <app-loader name="BPM-5: Query Builder(Inventory)" importFilePath="demo/en/BPM-5/"/>
+  <app-loader name="BPM-6: Message Event" importFilePath="demo/en/BPM-6/"/>
+  <app-loader name="BPM-7: Link event(Opportunity)" importFilePath="demo/en/BPM-7/"/>
+  <app-loader name="BPM-8: Default flow (Helpdesk ticket)"
+    importFilePath="demo/en/BPM-8/"/>
+  <app-loader name="BPM-9: Signal Event Multi Instance(Project)"
+    importFilePath="demo/en/BPM-9/"/>
+  <app-loader name="BPM-10: Termination Event Types" importFilePath="demo/en/BPM-10/"/>
+  <app-loader name="BPM-11: Event Sub Process (Campaign)"
+    importFilePath="demo/en/BPM-11/"/>
+  <app-loader name="BPM-12: Boundry Event(Expense)" importFilePath="demo/en/BPM-12/"/>
+  <app-loader name="BPM-13: Event Gateway(Event)" importFilePath="demo/en/BPM-13/"/>
+  <app-loader name="BPM-14: Message Task (Job position)" importFilePath="demo/en/BPM-14/"/>
+  <app-loader name="BPM-15: Multi instance signal (Billing Subscription)"
+    importFilePath="demo/en/BPM-15/"/>
+  <app-loader name="BPM-16: Parallel Sub Process" importFilePath="demo/en/BPM-16/"/>
+  <app-loader name="BPM-17: Cancel and Compensate(Sale Order)"
+    importFilePath="demo/en/BPM-17/"/>
+  <app-loader name="BPM-18: BAML" importFilePath="demo/en/BPM-18/"/>
+
+</app-loaders>
+

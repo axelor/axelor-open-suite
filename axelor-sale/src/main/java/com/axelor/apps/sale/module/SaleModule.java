@@ -51,6 +51,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -103,6 +105,7 @@ public class SaleModule extends AxelorModule {
     bind(ProductCategoryServiceImpl.class).to(ProductCategoryServiceSaleImpl.class);
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
+    bind(ConfiguratorMetaJsonFieldService.class).to(ConfiguratorMetaJsonFieldServiceImpl.class);
     bind(ConfiguratorJaxbIEService.class).to(ConfiguratorJaxbIEServiceImpl.class);
   }
 }

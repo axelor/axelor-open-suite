@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-models>
+
+
+  <json-model>
+
+    <name>ProductCategory</name>
+
+    <title>Product category</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductCategory' title='Product category'
+      xmlId='menu-json-model-ProductCategory'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>Product</name>
+
+    <title>Product</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-Product' title='Product'
+      xmlId='menu-json-model-Product'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>ProductOrderLine</name>
+
+    <title>Product order line</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductOrderLine' title='Product order line'
+      xmlId='menu-json-model-ProductOrderLine'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>ProductOrder</name>
+
+    <title>Product order</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductOrder' title='Product order'
+      xmlId='menu-json-model-ProductOrder'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+
+
+</json-models>

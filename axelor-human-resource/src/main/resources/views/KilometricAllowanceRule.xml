@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid editable="true" name="kilometric-allowance-rule-grid" title="Kilometric allowance rules" model="com.axelor.apps.hr.db.KilometricAllowanceRule" orderBy="minimumCondition">
-        <field name="minimumCondition" />
-        <field name="maximumCondition" />
-        <field name="rate"/>
-    </grid>
+  <grid editable="true" name="kilometric-allowance-rule-grid"
+    title="Kilometric allowance rules" model="com.axelor.apps.hr.db.KilometricAllowanceRule"
+    orderBy="minimumCondition">
+    <field name="minimumCondition"/>
+    <field name="maximumCondition"/>
+    <field name="rate"/>
+  </grid>
 
-    <form name="kilometric-allowance-rule-form" title="Kilometric allowance rule" model="com.axelor.apps.hr.db.KilometricAllowanceRule">
-    	<panel name="mainPanel">
-			<field name="minimumCondition" />
-			<field name="maximumCondition" />
-	        <field name="rate"/>
-        </panel>
-    </form>
+  <form name="kilometric-allowance-rule-form" title="Kilometric allowance rule"
+    model="com.axelor.apps.hr.db.KilometricAllowanceRule">
+    <panel name="mainPanel">
+      <field name="minimumCondition"/>
+      <field name="maximumCondition"/>
+      <field name="rate"/>
+    </panel>
+  </form>
 
 </object-views>

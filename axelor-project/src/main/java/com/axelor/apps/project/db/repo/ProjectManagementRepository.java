@@ -18,10 +18,14 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
 public class ProjectManagementRepository extends ProjectRepository {
+
+  @Inject ProjectTaskService projectTaskService;
 
   private void setAllProjectFullName(Project project) {
     String projectCode =
@@ -61,6 +65,7 @@ public class ProjectManagementRepository extends ProjectRepository {
       }
     }
     setAllProjectFullName(project);
+    project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
     return super.save(project);
   }
 }

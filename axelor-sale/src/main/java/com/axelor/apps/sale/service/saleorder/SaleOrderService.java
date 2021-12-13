@@ -81,8 +81,9 @@ public interface SaleOrderService {
    * Convert PackLines of pack into SaleOrderLines.
    *
    * @param saleOrder
+   * @throws AxelorException
    */
-  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty);
+  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) throws AxelorException;
 
   /**
    * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.

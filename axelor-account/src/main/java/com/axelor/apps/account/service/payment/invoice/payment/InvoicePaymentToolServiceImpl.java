@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -50,6 +51,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
+  protected AccountConfigRepository accountConfigRepository;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -99,12 +101,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
+        BigDecimal paymentAmount = invoicePayment.getAmount();
+        if (invoicePayment.getApplyFinancialDiscount()) {
+          paymentAmount =
+              paymentAmount.add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
+        }
         amountPaid =
             amountPaid.add(
                 currencyService.getAmountCurrencyConvertedAtDate(
                     invoicePayment.getCurrency(),
                     invoiceCurrency,
-                    invoicePayment.getAmount(),
+                    paymentAmount,
                     invoicePayment.getPaymentDate()));
       }
     }

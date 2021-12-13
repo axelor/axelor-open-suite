@@ -24,11 +24,16 @@ import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
+import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -52,6 +57,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,13 +300,21 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public App getApp(String code) {
-    return appRepo.findByCode(code);
+  public Model getApp(String code) {
+
+    App app = appRepo.findByCode(code);
+    if (app != null) {
+      return (Model) Mapper.toMap(app).get("app" + Inflector.getInstance().camelize(code));
+    }
+
+    return null;
   }
 
   @Override
   public boolean isApp(String code) {
-    App app = getApp(code);
+
+    App app = appRepo.findByCode(code);
+
     if (app == null) {
       return false;
     }
@@ -427,16 +442,24 @@ public class AppServiceImpl implements AppService {
                 App.class.getPackage().getName())
             .fetch();
 
+    final List<String> appFieldTargetList =
+        Stream.of(JPA.fields(App.class))
+            .filter(p -> p.getType() == PropertyType.ONE_TO_ONE)
+            .filter(p -> p.getName().startsWith("app"))
+            .map(Property::getTarget)
+            .map(Class::getName)
+            .collect(Collectors.toList());
+
     log.debug("Total app models: {}", metaModels.size());
     for (MetaModel metaModel : metaModels) {
+      if (!appFieldTargetList.contains(metaModel.getFullName())) {
+        log.debug("Not a App class : {}", metaModel.getName());
+        continue;
+      }
       Class<?> klass;
       try {
         klass = Class.forName(metaModel.getFullName());
       } catch (ClassNotFoundException e) {
-        continue;
-      }
-      if (!App.class.isAssignableFrom(klass)) {
-        log.debug("Not a App class : {}", metaModel.getName());
         continue;
       }
       Object obj = null;
@@ -451,13 +474,29 @@ public class AppServiceImpl implements AppService {
       log.debug("App without app record: {}", metaModel.getName());
       String csvName = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
       String pngName = inflector.dasherize(klass.getSimpleName()) + ".png";
+
       CSVInput input = new CSVInput();
       input.setFileName(csvName);
-      input.setTypeName(klass.getName());
+      input.setTypeName(App.class.getName());
       input.setCallable("com.axelor.csv.script.ImportApp:importApp");
       input.setSearch("self.code =:code");
       input.setSeparator(';');
       csvConfig.getInputs().add(input);
+
+      CSVInput appInput = new CSVInput();
+      appInput.setFileName(csvName);
+      appInput.setTypeName(klass.getName());
+      appInput.setSearch("self.app.code =:code");
+      appInput.setSeparator(';');
+
+      CSVBind appBind = new CSVBind();
+      appBind.setColumn("code");
+      appBind.setField("app");
+      appBind.setSearch("self.code = :code");
+      appInput.getBindings().add(appBind);
+
+      csvConfig.getInputs().add(appInput);
+
       InputStream stream = klass.getResourceAsStream("/data-init/input/" + csvName);
       copyStream(stream, new File(dataDir, csvName));
       stream = klass.getResourceAsStream("/data-init/input/img/" + pngName);

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<process-actions xmlns="http://www.example.org/baml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.example.org/baml xsd/baml.xsd">
+
+  <process-action id="newInventry" name="Create new inventory"
+    targetModel="Inventory" staticCompile="false">
+
+    <new-record target="inventory" expression="Inventory" id="new1"/>
+    <query returnType="SINGLE" model="com.axelor.apps.stock.db.StockLocation" isJson="false"
+      target="stockLocation" expression="self.name = 'Entrepôt principal'" id=""></query>
+    <assignation id="assign1">
+      <assign target="inventory.inventoryTitle" expression="'Inventory from BAML'"/>
+      <assign target="inventory.typeSelect" expression="1"/>
+      <assign target="inventory.stockLocation" expression="stockLocation.getTarget()"/>
+      <assign target="inventory.plannedStartDateT" expression="'2020-11-01T00:00:00'"
+        targetType="zdatetime"/>
+      <assign target="inventory.plannedEndDateT" expression="'2020-12-01T12:30:00'"
+        targetType="zdatetime"/>
+      <assign target="inventory.integer1" expression="1"/>
+    </assignation>
+    <query returnType="MULTIPLE" model="com.axelor.apps.base.db.Product" isJson="false"
+      target="products" expression="self.productFamily.name = :family" id="">
+      <parameter target="family" expression="'Composants'"/>
+    </query>
+    <loop target="product" expression="products" id="">
+      <new-record target="invl" expression="InventoryLine" id=""/>
+      <assignation id="">
+        <assign target="invl.product" expression="product.getTarget()"/>
+        <assign target="invl.currentQty" expression="5" targetType="decimal"/>
+        <assign target="inventory.inventoryLineList.getTarget()"
+          expression="invl.getTarget()" add="true"/>
+        <assign target="inventory.productSet" expression="product.getTarget()" add="true"/>
+        <assign target="inventory.invLineList" expression="invl" add="true" save="true"/>
+        <assign target="inventory.invLine" expression="invl" save="true"/>
+      </assignation>
+    </loop>
+    <query returnType="MULTIPLE" model="InterventionRequest" isJson="true"
+      target="interventions" expression="json_extract(self.attrs,'office') = :office" id="">
+      <parameter target="office" expression="'New York'"/>
+    </query>
+    <loop target="intervention" expression="interventions" id="">
+      <assignation id="">
+        <assign target="inventory.interventions" expression="intervention.getTarget()"
+          add="true"/>
+      </assignation>
+    </loop>
+  </process-action>
+
+</process-actions>

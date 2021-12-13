@@ -126,6 +126,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("ProformaInvoice", proforma)
+        .addParam(
+            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format)
         .generate()
         .getFileLink();
@@ -175,7 +177,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   @Transactional
-  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) {
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException {
 
     List<PackLine> packLineList = pack.getComponents();
     if (ObjectUtils.isEmpty(packLineList)) {

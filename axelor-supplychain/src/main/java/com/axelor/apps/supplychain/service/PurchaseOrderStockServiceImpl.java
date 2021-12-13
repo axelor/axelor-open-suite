@@ -417,6 +417,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
     }
+    if (purchaseOrderLine.getReceiptState() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
+    }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
@@ -596,7 +599,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)

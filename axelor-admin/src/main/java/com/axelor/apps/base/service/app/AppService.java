@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -31,7 +32,7 @@ public interface AppService {
 
   public App importDataDemo(App app) throws AxelorException;
 
-  public App getApp(String type);
+  public Model getApp(String type);
 
   public boolean isApp(String type);
 

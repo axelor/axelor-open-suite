@@ -25,8 +25,10 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -48,7 +50,6 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
-  protected TimesheetRepository timesheetRepo;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
@@ -57,8 +58,15 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
       ProjectTaskRepository projectTaskaRepo,
-      TimesheetLineRepository timesheetLineRepo) {
-    super(timesheetService, employeeRepository);
+      TimesheetLineRepository timesheetLineRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserHrService userHrService) {
+    super(
+        timesheetService,
+        employeeRepository,
+        timesheetRepo,
+        appHumanResourceService,
+        userHrService);
 
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskaRepo;

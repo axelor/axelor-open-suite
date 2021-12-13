@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <grid name="wkf-process-grid" title="Wkf process" model="com.axelor.apps.bpm.db.WkfProcess"
+    editable="true">
+    <field name="name"/>
+    <field name="processId" readonly="true"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="wkf-process-form" title="Wkf model" model="com.axelor.apps.bpm.db.WkfProcess"
+    width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name"/>
+      <field name="processId" readonly="true"/>
+      <field name="description"/>
+      <panel-related field="wkfProcessConfigList" colSpan="12" showTitle="false"/>
+    </panel>
+  </form>
+
+
+</object-views>

@@ -20,6 +20,7 @@ package com.axelor.studio.service;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
@@ -28,24 +29,31 @@ import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.db.AppLoader;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.SelectionBuilder;
-import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
+import com.axelor.studio.db.repo.AppLoaderRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
-import com.axelor.studio.service.wkf.WkfService;
 import com.google.inject.Inject;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.io.IOUtils;
 
 public class ImportService {
 
@@ -65,11 +73,11 @@ public class ImportService {
 
   @Inject private AppBuilderRepository appBuilderRepo;
 
-  @Inject private WkfService wkfService;
-
   @Inject private MetaFiles metaFiles;
 
   @Inject private MetaFileRepository metaFileRepo;
+
+  @Inject private AppLoaderRepository appLoaderRepository;
 
   public Object importMetaJsonModel(Object bean, Map<String, Object> values) {
 
@@ -122,17 +130,6 @@ public class ImportService {
     return actionBuilderRepo.save((ActionBuilder) bean);
   }
 
-  public Object importWkf(Object bean, Map<String, Object> values) throws Exception {
-
-    assert bean instanceof Wkf;
-
-    Wkf wkf = (Wkf) bean;
-
-    wkfService.process(wkf);
-
-    return wkf;
-  }
-
   public Object importAppBuilderImg(Object bean, Map<String, Object> values) {
 
     assert bean instanceof AppBuilder;
@@ -156,7 +153,15 @@ public class ImportService {
 
     AppBuilder appBuilder = (AppBuilder) bean;
 
-    return appBuilderRepo.save(appBuilder);
+    appBuilder = appBuilderRepo.save(appBuilder);
+
+    Long appLoaderId = (Long) values.get("appLoaderId");
+
+    if (appLoaderId != null) {
+      appLoaderRepository.find(appLoaderId).addImportedAppBuilderSetItem(appBuilder);
+    }
+
+    return appBuilder;
   }
 
   // Import methods specific for import from AppBuilder
@@ -195,7 +200,7 @@ public class ImportService {
       return null;
     }
 
-    return field;
+    return metaJsonFieldRepo.save(field);
   }
 
   public MetaJsonField importJsonField(Object bean, Map<String, Object> values) {
@@ -237,18 +242,49 @@ public class ImportService {
     return dashboardBuilderRepo.save(dashboard);
   }
 
-  public Object importAppWkf(Object bean, Map<String, Object> values) throws Exception {
+  public Object importAppLoader(Object bean, Map<String, Object> values) throws Exception {
 
-    assert bean instanceof Wkf;
+    assert bean instanceof AppLoader;
 
-    Wkf wkf = (Wkf) bean;
+    AppLoader appLoader = (AppLoader) bean;
 
-    JPA.flush();
+    String importPath = (String) values.get("importFilePath");
 
-    JPA.refresh(wkf);
+    if (importPath != null) {
+      File importZipFile = createAppLoaderImportZip(importPath);
+      if (importZipFile != null) {
+        appLoader.setImportMetaFile(metaFiles.upload(importZipFile));
+      }
+    }
 
-    wkfService.process(wkf);
+    return appLoader;
+  }
 
-    return wkf;
+  public File createAppLoaderImportZip(String importPath) {
+
+    importPath = importPath.replaceAll("/|\\\\", "(/|\\\\\\\\)");
+    List<URL> fileUrls = MetaScanner.findAll(importPath);
+
+    if (fileUrls.isEmpty()) {
+      return null;
+    }
+
+    try {
+      File zipFile = MetaFiles.createTempFile("app-", ".zip").toFile();
+      ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+      for (URL url : fileUrls) {
+        File file = new File(url.getFile());
+        ZipEntry zipEntry = new ZipEntry(file.getName());
+        zipOutputStream.putNextEntry(zipEntry);
+        IOUtils.copy(url.openStream(), zipOutputStream);
+      }
+      zipOutputStream.close();
+
+      return zipFile;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 }

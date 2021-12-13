@@ -25,6 +25,8 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -48,12 +50,22 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected TimesheetService timesheetService;
   protected EmployeeRepository employeeRepository;
+  protected TimesheetRepository timesheetRepo;
+  protected AppHumanResourceService appHumanResourceService;
+  protected UserHrService userHrService;
 
   @Inject
   public TimesheetLineServiceImpl(
-      TimesheetService timesheetService, EmployeeRepository employeeRepository) {
+      TimesheetService timesheetService,
+      EmployeeRepository employeeRepository,
+      TimesheetRepository timesheetRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserHrService userHrService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
+    this.timesheetRepo = timesheetRepo;
+    this.appHumanResourceService = appHumanResourceService;
+    this.userHrService = userHrService;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

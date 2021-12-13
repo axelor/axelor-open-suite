@@ -1,5 +1,0 @@
----
-title: "EMPLOYEE : Fix new and former employee filters and tag"
-type: fix
-description: |
-  Replace dateOfHire bad field usage by hireDate in new and former employee filters and tag on form view.

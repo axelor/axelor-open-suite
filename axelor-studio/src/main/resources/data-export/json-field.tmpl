@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonFieldRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1 OR (self.appBuilder is null and self.jsonModel.appBuilder.id in ?1)',__ids__)
+	}
+	
+	jsonFields = ""
+	query.fetch().each({
+		field -> 
+				widgetAttrs = ""
+				if (field.widgetAttrs != null) {
+                	widgetAttrs += field.widgetAttrs
+                }
+                valueExpr = ""
+				if (field.valueExpr != null) {
+                	valueExpr += groovy.xml.XmlUtil.escapeXml(field.valueExpr)
+                }
+				jsonFields += """\n\t\t<json-field>
+				\n\t\t\t<name>${field.name}</name>
+				\n\t\t\t<title>${field.title}</title>
+				\n\t\t\t<type>${field.type}</type>
+				\n\t\t\t<defaultValue>${field.defaultValue}</defaultValue>
+				\n\t\t\t<domain>${field.domain}</domain>
+				\n\t\t\t<enumType>${field.enumType}</enumType>
+				\n\t\t\t<help>${field.help}</help>
+				\n\t\t\t<formView>${field.formView}</formView>
+				\n\t\t\t<gridView>${field.gridView}</gridView>
+				\n\t\t\t<hidden>${field.hidden}</hidden>
+				\n\t\t\t<visibleInGrid>${field.visibleInGrid}</visibleInGrid>
+				\n\t\t\t<hideIf>${field.hideIf}</hideIf>
+				\n\t\t\t<maxSize>${field.maxSize}</maxSize>
+				\n\t\t\t<minSize>${field.minSize}</minSize>
+				\n\t\t\t<model>${field.model}</model>
+				\n\t\t\t<modelField>${field.modelField}</modelField>
+				\n\t\t\t<nameField>${field.nameField}</nameField>
+				\n\t\t\t<onChange>${field.onChange}</onChange>
+				\n\t\t\t<onClick>${field.onClick}</onClick>
+				\n\t\t\t<precision>${field.precision}</precision>
+				\n\t\t\t<regex>${field.regex}</regex>
+				\n\t\t\t<required>${field.required}</required>
+				\n\t\t\t<requiredIf>${field.requiredIf}</requiredIf>
+				\n\t\t\t<readonly>${field.readonly}</readonly>
+				\n\t\t\t<readonlyIf>${field.readonlyIf}</readonlyIf>
+				\n\t\t\t<includeIf>${field.includeIf}</includeIf>
+				\n\t\t\t<scale>${field.scale}</scale>
+				\n\t\t\t<selection>${field.selection}</selection>
+				\n\t\t\t<sequence>${field.sequence}</sequence>
+				\n\t\t\t<showIf>${field.showIf}</showIf>
+				\n\t\t\t<targetModel>${field.targetModel}</targetModel>
+				\n\t\t\t<widget>${field.widget}</widget>
+				\n\t\t\t<widgetAttrs>""" + widgetAttrs + """</widgetAttrs>
+				\n\t\t\t<valueExpr>""" + valueExpr + """</valueExpr>
+				\n\t\t\t<jsonModel>${field.jsonModel?.name}</jsonModel>
+				\n\t\t\t<targetJsonModel>${field.targetJsonModel?.name}</targetJsonModel>
+				\n\t\t\t<appBuilder>${field.appBuilder?.code}</appBuilder>
+				\n\t\t\t<modelAppBuilder>${field.jsonModel?.appBuilder?.code}</modelAppBuilder>
+				\n\t\t\t<isSelectionField>${field.isSelectionField}</isSelectionField>
+				\n\t\t\t<selectionText>${field.selectionText}</selectionText>
+				\n\t\t</json-field>"""
+	})
+	
+	if (!jsonFields.isEmpty()) {
+		jsonFields = """<jason-fields>\n""" +  jsonFields + """\n</jason-fields>"""
+	}
+	
+	out << """$jsonFields"""
+%>

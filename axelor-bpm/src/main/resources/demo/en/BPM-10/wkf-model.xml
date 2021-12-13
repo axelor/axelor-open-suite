@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-10.1</code>
+
+    <name>Process With Termination Normal (Extra hours)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-10.1" camunda:diagramName="Process With Termination Normal (Extra hours)" camunda:appBuilder="BPM-10" camunda:wkfStatusColor="blue">
+  <bpmn2:process id="Process_Termination_Normal" name="Normal Termination" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="ExtraHours" metaModelLabel="ExtraHours (Extra Hours)" isStartModel="true" model="com.axelor.apps.hr.db.ExtraHours" metaModelFullName="com.axelor.apps.hr.db.ExtraHours" title="Extra hours" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_03mjr33</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_03mjr33" sourceRef="StartEvent_1" targetRef="Activity_1qwzx6o" />
+    <bpmn2:sequenceFlow id="Flow_1absjpv" sourceRef="Activity_1qwzx6o" targetRef="Gateway_0f64ytn" />
+    <bpmn2:sequenceFlow id="Flow_0vqrrxq" sourceRef="Gateway_0f64ytn" targetRef="Activity_1k5n27r" />
+    <bpmn2:sequenceFlow id="Flow_1regeqk" sourceRef="Gateway_0f64ytn" targetRef="Activity_1ca97yn" />
+    <bpmn2:parallelGateway id="Gateway_0f64ytn">
+      <bpmn2:incoming>Flow_1absjpv</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0vqrrxq</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1regeqk</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:userTask id="Activity_1k5n27r" name="Validate by HR manager" camunda:buttonLabels="Validate by HR" camunda:buttons="btnVallidateByHr" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_0vqrrxq</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0cy3h8m</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1ca97yn" name="Validate By Team Leader" camunda:buttonLabels="Validate by Team Lead" camunda:buttons="btnValidateByTeamLead" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_1regeqk</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1ntmuza</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1qwzx6o" name="Draft" camunda:completedIf="extraHours?.statusSelect == 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;ExtraHours&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.leave.request.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.leave.request.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_03mjr33</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1absjpv</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="Event_0dxzdaf" name="Normal End">
+      <bpmn2:incoming>Flow_0cy3h8m</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1ntmuza</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0cy3h8m" sourceRef="Activity_1k5n27r" targetRef="Event_0dxzdaf" />
+    <bpmn2:sequenceFlow id="Flow_1ntmuza" sourceRef="Activity_1ca97yn" targetRef="Event_0dxzdaf" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Termination_Normal">
+      <bpmndi:BPMNEdge id="Flow_1ntmuza_di" bpmnElement="Flow_1ntmuza" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="520" y="310" />
+        <di:waypoint x="700" y="310" />
+        <di:waypoint x="700" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cy3h8m_di" bpmnElement="Flow_0cy3h8m" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="520" y="100" />
+        <di:waypoint x="700" y="100" />
+        <di:waypoint x="700" y="182" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1regeqk_di" bpmnElement="Flow_1regeqk" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="360" y="225" />
+        <di:waypoint x="360" y="310" />
+        <di:waypoint x="420" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vqrrxq_di" bpmnElement="Flow_0vqrrxq" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="360" y="175" />
+        <di:waypoint x="360" y="100" />
+        <di:waypoint x="420" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1absjpv_di" bpmnElement="Flow_1absjpv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="280" y="200" />
+        <di:waypoint x="335" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03mjr33_di" bpmnElement="Flow_03mjr33" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="128" y="200" />
+        <di:waypoint x="180" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="92" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="98" y="225" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qzkjwe_di" bpmnElement="Gateway_0f64ytn" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="335" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dltto5_di" bpmnElement="Activity_1k5n27r" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="420" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ngj8hk_di" bpmnElement="Activity_1ca97yn" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="420" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i3rupu_di" bpmnElement="Activity_1qwzx6o" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="180" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dxzdaf_di" bpmnElement="Event_0dxzdaf" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="682" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="598" y="190" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-10</appBuilder>
+
+  </wkf-model>
+  <wkf-model>
+
+    <code>BPM-10.2</code>
+
+    <name>Process With Termination End (Extra hours)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-10.2" camunda:diagramName="Process With Termination End (Extra hours)" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-10">
+  <bpmn2:process id="Process_Termination_End" name="Termination End" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="ExtraHours" metaModelLabel="ExtraHours (Extra Hours)" isStartModel="true" model="com.axelor.apps.hr.db.ExtraHours" metaModelFullName="com.axelor.apps.hr.db.ExtraHours" title="Extra hours" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_03mjr33</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_03mjr33" sourceRef="StartEvent_1" targetRef="Activity_1qwzx6o" />
+    <bpmn2:sequenceFlow id="Flow_1absjpv" sourceRef="Activity_1qwzx6o" targetRef="Gateway_0f64ytn" />
+    <bpmn2:sequenceFlow id="Flow_0vqrrxq" sourceRef="Gateway_0f64ytn" targetRef="Activity_1k5n27r" />
+    <bpmn2:sequenceFlow id="Flow_1regeqk" sourceRef="Gateway_0f64ytn" targetRef="Activity_1ca97yn" />
+    <bpmn2:parallelGateway id="Gateway_0f64ytn">
+      <bpmn2:incoming>Flow_1absjpv</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0vqrrxq</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1regeqk</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:userTask id="Activity_1k5n27r" name="Validate by HR manager" camunda:buttonLabels="Validate by HR" camunda:buttons="btnVallidateByHr" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_0vqrrxq</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_19fd1sb</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1ca97yn" name="Validate By Team Leader" camunda:buttonLabels="Validate by Team Lead" camunda:buttons="btnValidateByTeamLead" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_1regeqk</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1yz0sk8</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1qwzx6o" name="Draft" camunda:completedIf="extraHours?.statusSelect == 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;ExtraHours&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.leave.request.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.leave.request.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_03mjr33</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1absjpv</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_19fd1sb" sourceRef="Activity_1k5n27r" targetRef="Event_0dxzdaf" />
+    <bpmn2:sequenceFlow id="Flow_1yz0sk8" sourceRef="Activity_1ca97yn" targetRef="Event_0dxzdaf" />
+    <bpmn2:endEvent id="Event_0dxzdaf" name="End">
+      <bpmn2:incoming>Flow_19fd1sb</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1yz0sk8</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_03ulofv" />
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Termination_End">
+      <bpmndi:BPMNEdge id="Flow_1yz0sk8_di" bpmnElement="Flow_1yz0sk8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="520" y="310" />
+        <di:waypoint x="700" y="310" />
+        <di:waypoint x="700" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19fd1sb_di" bpmnElement="Flow_19fd1sb" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="520" y="100" />
+        <di:waypoint x="700" y="100" />
+        <di:waypoint x="700" y="182" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1regeqk_di" bpmnElement="Flow_1regeqk" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="360" y="225" />
+        <di:waypoint x="360" y="310" />
+        <di:waypoint x="420" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vqrrxq_di" bpmnElement="Flow_0vqrrxq" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="360" y="175" />
+        <di:waypoint x="360" y="100" />
+        <di:waypoint x="420" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1absjpv_di" bpmnElement="Flow_1absjpv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="280" y="200" />
+        <di:waypoint x="335" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03mjr33_di" bpmnElement="Flow_03mjr33" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="128" y="200" />
+        <di:waypoint x="180" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="92" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="98" y="225" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1qzkjwe_di" bpmnElement="Gateway_0f64ytn" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="335" y="175" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dltto5_di" bpmnElement="Activity_1k5n27r" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="420" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ngj8hk_di" bpmnElement="Activity_1ca97yn" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="420" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i3rupu_di" bpmnElement="Activity_1qwzx6o" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="180" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1u0hp3t_di" bpmnElement="Event_0dxzdaf" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="682" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="618" y="190" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-10</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

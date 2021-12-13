@@ -18,6 +18,7 @@
 package com.axelor.studio.service.mapper;
 
 import com.axelor.meta.CallMethod;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public interface MapperScriptGeneratorService {
 
@@ -25,4 +26,6 @@ public interface MapperScriptGeneratorService {
   public String generate(String mapperJson);
 
   public MapperRecord getMapperRecord(String mapperJson);
+
+  public void registerDeserializer(SimpleModule mapper);
 }

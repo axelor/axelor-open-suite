@@ -160,9 +160,6 @@ public class PurchaseOrderLineController {
                 ? (String) catalogInfo.get("productCode")
                 : (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       } else {
-        price =
-            (BigDecimal)
-                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
         productName =
             (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
         productCode =

@@ -46,6 +46,10 @@ public interface IExceptionMessage {
       "The client Partner is required and must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
+      "The fiscal position must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
+      "The tax number must be the same for all sale orders" /*)*/;
 
   static final String SALE_ORDER_PRINT = /*$$(*/ "Please select the sale order(s) to print." /*)*/;
   static final String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
@@ -76,6 +80,9 @@ public interface IExceptionMessage {
 
   String SALE_ORDER_DISCOUNT_TOO_HIGH = /*$$(*/
       "There are lines with a discount superior to the maximal authorized discount." /*)*/;
+
+  String CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED = /*$$(*/
+      "Missing mapped by: unidirectional one-to-many are not supported by the configurator." /*)*/;
 
   static final String COPY = /*$$(*/ "copy" /*)*/;
 }

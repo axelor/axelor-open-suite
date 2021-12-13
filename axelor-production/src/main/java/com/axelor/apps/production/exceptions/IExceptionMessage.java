@@ -93,6 +93,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles." /*)*/;
 
+  static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
+
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
@@ -187,6 +190,9 @@ public interface IExceptionMessage {
   static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
 
+  static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
+      "Multiple same product selected in the list." /*)*/;
+
   static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
@@ -227,6 +233,9 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
       "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER_GROUP = /*$$(*/
+      "Work center group cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
 
   // Configurator Prod Product Service
   String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA = /*$$(*/

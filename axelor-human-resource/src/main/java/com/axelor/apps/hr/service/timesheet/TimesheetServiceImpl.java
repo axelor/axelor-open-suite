@@ -63,6 +63,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -88,10 +89,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -117,6 +120,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetlineRepo;
   protected TimesheetRepository timeSheetRepository;
+  protected ProjectService projectService;
   private ExecutorService executor = Executors.newCachedThreadPool();
   private static final int ENTITY_FIND_TIMEOUT = 10000;
   private static final int ENTITY_FIND_INTERVAL = 50;
@@ -135,7 +139,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -149,6 +154,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.productCompanyService = productCompanyService;
     this.timesheetlineRepo = timesheetlineRepo;
     this.timeSheetRepository = timeSheetRepository;
+    this.projectService = projectService;
   }
 
   @Override
@@ -1233,5 +1239,26 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       }
     }
     timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
+  }
+
+  @Override
+  public Set<Long> getContextProjectIds() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+    Set<Long> projectIdsSet = new HashSet<>();
+    if (contextProject == null) {
+      List<Project> allTimeSpentProjectList =
+          projectRepo.all().filter("self.isShowTimeSpent = true").fetch();
+      for (Project timeSpentProject : allTimeSpentProjectList) {
+        projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+      }
+    } else {
+      if (!currentUser.getIsIncludeSubContextProjects()) {
+        projectIdsSet.add(contextProject.getId());
+        return projectIdsSet;
+      }
+      projectService.getChildProjectIds(projectIdsSet, contextProject);
+    }
+    return projectIdsSet;
   }
 }

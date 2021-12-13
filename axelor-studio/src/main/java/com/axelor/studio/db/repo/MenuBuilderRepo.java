@@ -36,9 +36,6 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Override
   public MenuBuilder save(MenuBuilder menuBuilder) {
-    if (menuBuilder.getName() == null) {
-      menuBuilder.setName("studio-menu-" + menuBuilder.getId());
-    }
     if (menuBuilder.getActionBuilder() != null) {
       menuBuilder.getActionBuilder().setMenuAction(true);
     }
@@ -66,7 +63,10 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
   public void remove(MenuBuilder menuBuilder) {
     MetaMenu metaMenu = menuBuilder.getMetaMenu();
     menuBuilder.setMetaMenu(null);
-    metaService.removeMetaMenu(metaMenu);
+
+    if (metaMenu != null) {
+      metaService.removeMetaMenu(metaMenu);
+    }
 
     ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
 

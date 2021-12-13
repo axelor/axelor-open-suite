@@ -29,8 +29,9 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
@@ -47,6 +48,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +64,9 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileSequenceService reconcileSequenceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
-  protected MoveLineService moveLineService;
+  protected MoveLineTaxService moveLineTaxService;
   protected AppBaseService appBaseService;
+  protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -75,8 +78,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      MoveLineService moveLineService,
-      AppBaseService appBaseService) {
+      MoveLineTaxService moveLineTaxService,
+      AppBaseService appBaseService,
+      PaymentMoveLineDistributionService paymentMoveLineDistributionService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -86,8 +90,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileSequenceService = reconcileSequenceService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
-    this.moveLineService = moveLineService;
+    this.moveLineTaxService = moveLineTaxService;
     this.appBaseService = appBaseService;
+    this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
   }
 
   /**
@@ -174,6 +179,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.udpatePaymentTax(reconcile);
+    this.updatePaymentMoveLineDistribution(reconcile);
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
@@ -358,11 +364,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = creditMove.getInvoice();
 
     if (debitInvoice != null && creditInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getCreditMoveLine(), debitInvoice, reconcile);
     }
     if (creditInvoice != null && debitInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getDebitMoveLine(), creditInvoice, reconcile);
     }
   }
@@ -408,6 +414,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
+    reconcile.setReconciliationCancelDate(appBaseService.getTodayDate(reconcile.getCompany()));
     // Add the reconciled amount to the reconciled amount in the move line
     creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
     debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
@@ -419,6 +426,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
+    this.reversePaymentMoveLineDistributionLines(reconcile);
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
   }
@@ -429,11 +437,34 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     if (debitInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
     }
     if (creditInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
     }
+  }
+
+  /** @param reconcile */
+  protected void updatePaymentMoveLineDistribution(Reconcile reconcile) {
+    // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
+    // type purchase)
+    Move purchaseMove = reconcile.getCreditMoveLine().getMove();
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
+      return;
+    }
+    paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(
+        purchaseMove, reconcile);
+  }
+
+  protected void reversePaymentMoveLineDistributionLines(Reconcile reconcile) {
+    // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
+    // type purchase)
+    Move purchaseMove = reconcile.getCreditMoveLine().getMove();
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
+        || CollectionUtils.isEmpty(reconcile.getPaymentMoveLineDistributionList())) {
+      return;
+    }
+    paymentMoveLineDistributionService.reversePaymentMoveLineDistributionList(reconcile);
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {

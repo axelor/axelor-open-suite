@@ -18,9 +18,11 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
@@ -82,7 +84,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       appMenus = new ArrayList<>();
       defaultApp = null;
 
-      App app = appService.getApp("base");
+      App app = Beans.get(AppRepository.class).findByCode("base");
       if (app == null) {
         return null;
       }
@@ -183,7 +185,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     if (condition != null) {
       String[] cond = condition.split("__config__\\.app\\.isApp\\('");
       if (cond.length > 1) {
-        App app = appService.getApp(cond[1].split("'")[0]);
+        App app = Beans.get(AppRepository.class).findByCode(cond[1].split("'")[0]);
         if (app != null) {
           if (condition.trim().equals("__config__.app.isApp('" + app.getCode() + "')")
               && menu.getAction() == null) {

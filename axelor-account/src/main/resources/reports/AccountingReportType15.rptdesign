@@ -1241,13 +1241,13 @@ order by Tax.code ASC]]></xml-property>
             <page-footer>
                 <grid id="3098">
                     <property name="width">11.033333333333333in</property>
-                    <property name="dataSet">TranslateDS</property>
+                    <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">report_date</property>
-                            <text-property name="displayName">report_date</text-property>
+                            <property name="name">ReportDateEdition</property>
+                            <text-property name="displayName">ReportDateEdition</text-property>
                             <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
                             <property name="allowExport">true</property>
                         </structure>
                     </list-property>
@@ -1319,11 +1319,11 @@ order by Tax.code ASC]]></xml-property>
                             </text>
                         </cell>
                         <cell id="4248">
-                            <data id="4742">
+                            <data id="4743">
                                 <structure name="dateTimeFormat">
                                     <property name="category">Unformatted</property>
                                 </structure>
-                                <property name="resultSetColumn">report_date</property>
+                                <property name="resultSetColumn">ReportDateEdition</property>
                             </data>
                         </cell>
                         <cell id="4250">

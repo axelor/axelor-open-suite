@@ -37,7 +37,7 @@ public class AppMobileController {
 
     AppMobile appMobile = (AppMobile) appService.getApp("mobile");
 
-    data.put("isAppMobileEnable", appMobile.getActive());
+    data.put("isAppMobileEnable", appMobile.getApp().getActive());
     data.put("isSaleAppEnable", appService.isApp("sale") ? appMobile.getIsSaleAppEnable() : false);
     data.put("isCrmAppEnable", appService.isApp("crm") ? appMobile.getIsCrmAppEnable() : false);
     data.put(
@@ -53,8 +53,11 @@ public class AppMobileController {
     data.put(
         "isQualityAppEnable",
         appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
-    data.put(
-        "isStockAppEnable", appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false);
+    boolean isStockAppEnable = appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false;
+    data.put("isStockAppEnable", isStockAppEnable);
+    if (isStockAppEnable) {
+      data.put("inventoryTypeSelect", appMobile.getInventoryStatusSelect());
+    }
     boolean isProductionAppEnable =
         appService.isApp("production") ? appMobile.getIsProductionAppEnable() : false;
     data.put("isProductionAppEnable", isProductionAppEnable);
@@ -71,7 +74,6 @@ public class AppMobileController {
     data.put("projectSet", convertToData(appMobile.getProjectSet()));
     data.put("leadSet", convertToData(appMobile.getLeadSet()));
     data.put("productSet", convertToData(appMobile.getProductSet()));
-
     response.setData(data);
   }
 

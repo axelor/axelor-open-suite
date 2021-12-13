@@ -81,6 +81,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected ProductCompanyService productCompanyService;
 
+  @Inject protected CurrencyService currencyService;
+
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
       throws AxelorException {
@@ -284,6 +286,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
         .toAttach(purchaseOrder)
         .generate()
         .getFileLink();
@@ -403,7 +407,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      CurrencyService currencyService = Beans.get(CurrencyService.class);
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {

@@ -3,48 +3,57 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="human-resource" package="com.axelor.apps.hr.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity name="EmploymentContract" lang="java">
-    
-    	<string name="ref" title="Ref."/>
-    	
-        <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
-        <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company" title="Pay Company" required="true"/>
-		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department" />
-        
-        <integer name="employmentContractVersion" title="Amendment" default="0"/>
-        <integer name="amendmentTypeSelect" selection="hr.employment.contract.amendment.type.select" title="Amendment type"/>
-        <date name="amendmentDate" title="Amendment Date"/>
-        <integer name="status" title="Status" selection="hr.employment.contract.status"/>
+  <entity name="EmploymentContract" lang="java">
 
-        <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType" title="Contract type" />
+    <string name="ref" title="Ref."/>
 
-        <date name="startDate" title="Start date"/>
-        <date name="endDate" title="End date"/>
-        <time name="startTime" title="Start time"/>
-        <string name="duration" title="Duration"/>
-        <string name="trialPeriodDuration" title="Trial period duration"/>
-        <string name="position" title="Position"/>
-        <string name="coefficient" title="Coefficient"/>
-        <decimal name="weeklyDuration" title="Weekly duration"/>
-        <decimal name="hourlyGrossSalary" title="Hourly gross salary"/>
-        <string name="endContractDetails" title="Details"/>
-        <many-to-one name="endOfContractReason" ref="com.axelor.apps.hr.db.EndOfContractReason" title="End of contract reason"/>
-        <date name="signatureDate" title="Signature date"/>
-        <string name="hoursDistribution" title="Hours distribution" large="true"/>
-        <integer name="executiveStatusSelect" selection="hr.employment.contract.executiveStatus.select" title="Executive Status"/>
-        <decimal name="minMonthlyRemuneration" title="Min monthly remuneration"/>
-        <many-to-one name="employmentContractTemplate" ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template" />
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company"
+      title="Pay Company" required="true"/>
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
 
-        <string name="employment" title="Employment"/>
-		
-		<decimal name="annualGrossSalary" title="Annual gross salary"/>
-		<decimal name="monthlyGlobalCost" title="Monthly global cost"/>
-		<many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
-		<many-to-one name="employmentContractSubType" ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
-		
-        <string name="fullName" namecolumn="true">
+    <integer name="employmentContractVersion" title="Amendment" default="0"/>
+    <integer name="amendmentTypeSelect"
+      selection="hr.employment.contract.amendment.type.select" title="Amendment type"/>
+    <date name="amendmentDate" title="Amendment Date"/>
+    <integer name="status" title="Status" selection="hr.employment.contract.status"/>
+
+    <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType"
+      title="Contract type"/>
+
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
+    <time name="startTime" title="Start time"/>
+    <string name="duration" title="Duration"/>
+    <string name="trialPeriodDuration" title="Trial period duration"/>
+    <string name="position" title="Position"/>
+    <string name="coefficient" title="Coefficient"/>
+    <decimal name="weeklyDuration" title="Weekly duration"/>
+    <decimal name="hourlyGrossSalary" title="Hourly gross salary"/>
+    <string name="endContractDetails" title="Details"/>
+    <many-to-one name="endOfContractReason"
+      ref="com.axelor.apps.hr.db.EndOfContractReason" title="End of contract reason"/>
+    <date name="signatureDate" title="Signature date"/>
+    <string name="hoursDistribution" title="Hours distribution" large="true"/>
+    <integer name="executiveStatusSelect"
+      selection="hr.employment.contract.executiveStatus.select" title="Executive Status"/>
+    <decimal name="minMonthlyRemuneration" title="Min monthly remuneration"/>
+    <many-to-one name="employmentContractTemplate"
+      ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template"/>
+
+    <string name="employment" title="Employment"/>
+
+    <decimal name="annualGrossSalary" title="Annual gross salary"/>
+    <decimal name="monthlyGlobalCost" title="Monthly global cost"/>
+    <many-to-many name="otherCostsEmployeeSet" title="Others"
+      ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
+    <many-to-one name="employmentContractSubType"
+      ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
+
+    <string name="fullName" namecolumn="true">
             <![CDATA[
             String fullName = "";
 	  		if (contractType != null) {
@@ -62,9 +71,9 @@
 	  		}
 	  		return fullName;
 	  	]]>
-        </string>
+    </string>
 
-        <extra-code><![CDATA[
+    <extra-code><![CDATA[
 
             // EXECUTIVE STATUS SELECT
             public static final int EXECUTIVE_STATUS_EXECUTIVE = 1;
@@ -75,7 +84,7 @@
             public static final int STATUS_ACTIVE = 2;
             public static final int STATUS_CLOSED = 3;
         ]]>
-        </extra-code>
-    </entity>
+    </extra-code>
+  </entity>
 
 </domain-models>

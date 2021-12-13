@@ -61,6 +61,7 @@ public class ExportService {
     String xml = "";
 
     String indent = "\n" + Strings.repeat("\t", count);
+    String indentPlus = "\n" + Strings.repeat("\t", count + 1);
     for (ActionBuilderLine line : lines) {
 
       String source = "";
@@ -94,65 +95,67 @@ public class ExportService {
       xml +=
           indent
               + "<line>"
-              + indent
+              + indentPlus
               + "<target>"
               + target
               + "</target>"
-              + indent
+              + indentPlus
               + "<source>"
               + source
               + "</source>"
-              + indent
+              + indentPlus
               + "<metaJsonField>"
               + (line.getMetaJsonField() != null ? line.getMetaJsonField().getName() : "")
               + "</metaJsonField>"
-              + indent
+              + indentPlus
               + "<metaField>"
               + (line.getMetaField() != null ? line.getMetaField().getName() : "")
               + "</metaField>"
-              + indent
+              + indentPlus
               + "<valueJson>"
               + (line.getValueJson() != null ? line.getValueJson().getName() : "")
               + "</valueJson>"
-              + indent
+              + indentPlus
               + "<valueField>"
               + (line.getValueField() != null ? line.getValueField().getName() : "")
               + "</valueField>"
-              + indent
+              + indentPlus
               + "<value>"
               + (line.getValue() != null ? line.getValue() : "")
               + "</value>"
-              + indent
+              + indentPlus
               + "<conditionText>"
               + (line.getConditionText() != null
                   ? StringEscapeUtils.escapeXml(
                       StringEscapeUtils.escapeXml(line.getConditionText()))
                   : "")
               + "</conditionText>"
-              + indent
+              + indentPlus
               + "<filter>"
               + (line.getFilter() != null ? line.getFilter() : "")
               + "</filter>"
-              + indent
+              + indentPlus
               + "<validationTypeSelect>"
               + (line.getValidationTypeSelect() != null ? line.getValidationTypeSelect() : "")
               + "</validationTypeSelect>"
-              + indent
+              + indentPlus
               + "<validationMsg>"
               + (line.getValidationMsg() != null ? line.getValidationMsg() : "")
               + "</validationMsg>"
-              + indent
+              + indentPlus
               + "<name>"
               + (line.getName() != null ? line.getName() : "")
               + "</name>"
-              + indent
+              + indentPlus
               + "<dummy>"
               + (line.getDummy() != null ? line.getDummy() : "")
               + "</dummy>"
-              + indent
+              + indentPlus
               + "<subLines>"
-              + exportActionBuilderLines(line.getSubLines(), count + 1)
+              + exportActionBuilderLines(line.getSubLines(), count + 2)
+              + indentPlus
               + "</subLines>"
+              + indent
               + "</line>";
     }
 

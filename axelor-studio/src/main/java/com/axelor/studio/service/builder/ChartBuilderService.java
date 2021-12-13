@@ -322,9 +322,15 @@ public class ChartBuilderService {
 
     String search = "<search-fields>";
 
+    int count = 0;
+
     for (String searchField : searchFields) {
       search += Tab2 + searchField;
+      if (++count == 2) {
+        break;
+      }
     }
+
     search += Tab1 + "</search-fields>";
 
     return search;

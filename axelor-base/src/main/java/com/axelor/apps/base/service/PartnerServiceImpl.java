@@ -366,14 +366,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";

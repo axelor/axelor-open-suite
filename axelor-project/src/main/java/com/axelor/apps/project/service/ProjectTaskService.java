@@ -52,4 +52,6 @@ public interface ProjectTaskService {
   public ProjectPriority getPriority(Project project);
 
   void deleteProjectTask(ProjectTask projectTask);
+
+  public String getTaskLink(String value);
 }

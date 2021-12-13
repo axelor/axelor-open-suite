@@ -6,10 +6,10 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Batch" lang="java" sequential="true">
-  	
-  	<!-- NOT DISPLAY -->
-  	<many-to-one name="saleBatch" ref="com.axelor.apps.sale.db.SaleBatch"/>
-  
+
+    <!-- NOT DISPLAY -->
+    <many-to-one name="saleBatch" ref="com.axelor.apps.sale.db.SaleBatch"/>
+
   </entity>
 
 </domain-models>

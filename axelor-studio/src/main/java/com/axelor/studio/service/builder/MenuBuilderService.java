@@ -58,7 +58,7 @@ public class MenuBuilderService {
     ActionBuilder actionBuilder = builder.getActionBuilder();
     if (actionBuilder != null) {
       if (actionBuilder.getName() == null) {
-        actionBuilder.setName(menu.getName().replace("-", "."));
+        actionBuilder.setName(menu.getName());
       }
       actionBuilder.setXmlId(builder.getXmlId());
       actionBuilder.setTitle(menu.getTitle());
@@ -139,12 +139,19 @@ public class MenuBuilderService {
     if (StringUtils.isBlank(menuBuilder.getName())) {
       menuBuilder.setName(this.generateMenuBuilderName(menuName));
     }
+
+    if (StringUtils.isBlank(menuBuilder.getXmlId())) {
+      menuBuilder.setXmlId(menuBuilder.getName());
+    }
+
     menuBuilder.setAppBuilder(appBuilder);
 
     menuBuilder.setShowAction(true);
     ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
     if (actionBuilder == null) {
       actionBuilder = new ActionBuilder();
+      actionBuilder.setXmlId(menuBuilder.getName());
+      actionBuilder.setName(menuBuilder.getName());
     }
     actionBuilder.setTypeSelect(ActionBuilderRepository.TYPE_SELECT_VIEW);
     actionBuilder.setIsJson(isJson);

@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -28,7 +29,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -40,7 +40,7 @@ import java.util.Map;
 
 public class PriceListService {
 
-  @Inject private PriceListLineRepository priceListLineRepo;
+  @Inject protected PriceListLineRepository priceListLineRepo;
 
   @Inject private PriceListRepository priceListRepo;
 
@@ -50,34 +50,10 @@ public class PriceListService {
       Product product, BigDecimal qty, PriceList priceList, BigDecimal price) {
 
     PriceListLine priceListLine = null;
-    List<PriceListLine> priceListLineList = null;
+    List<PriceListLine> priceListLineList = getPriceListLineList(product, qty, priceList);
 
     BigDecimal tempDiscountPrevious = null;
-    BigDecimal tempDiscountCurrent = null;
-
-    if (product != null && priceList != null) {
-      priceListLineList =
-          Beans.get(PriceListLineRepository.class)
-              .all()
-              .filter(
-                  "self.product = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
-                  product,
-                  qty,
-                  priceList.getId())
-              .fetch();
-      if ((priceListLineList == null || priceListLineList.isEmpty())
-          && product.getProductCategory() != null) {
-        priceListLineList =
-            priceListLineRepo
-                .all()
-                .filter(
-                    "self.productCategory = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
-                    product.getProductCategory(),
-                    qty,
-                    priceList.getId())
-                .fetch();
-      }
-    }
+    BigDecimal tempDiscountCurrent;
 
     if (priceListLineList != null && !priceListLineList.isEmpty()) {
       if (priceListLineList.size() > 1) {
@@ -85,7 +61,7 @@ public class PriceListService {
           tempDiscountCurrent = this.getUnitPriceDiscounted(tempPriceListLine, price);
 
           if (tempDiscountPrevious == null
-              || tempDiscountPrevious.compareTo(tempDiscountCurrent) == 1) {
+              || tempDiscountPrevious.compareTo(tempDiscountCurrent) > 0) {
             tempDiscountPrevious = tempDiscountCurrent;
             priceListLine = tempPriceListLine;
           }
@@ -95,6 +71,47 @@ public class PriceListService {
       }
     }
     return priceListLine;
+  }
+
+  protected List<PriceListLine> getPriceListLineList(
+      Product product, BigDecimal qty, PriceList priceList) {
+    List<PriceListLine> priceListLineList = null;
+
+    if (product != null && priceList != null) {
+      priceListLineList = getPriceListLineListFromProduct(product, qty, priceList);
+
+      if ((priceListLineList == null || priceListLineList.isEmpty())
+          && product.getProductCategory() != null) {
+        priceListLineList =
+            getPriceListLineListFromCategory(product.getProductCategory(), qty, priceList);
+      }
+    }
+
+    return priceListLineList;
+  }
+
+  protected List<PriceListLine> getPriceListLineListFromProduct(
+      Product product, BigDecimal qty, PriceList priceList) {
+    return priceListLineRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
+            product,
+            qty,
+            priceList.getId())
+        .fetch();
+  }
+
+  protected List<PriceListLine> getPriceListLineListFromCategory(
+      ProductCategory productCategory, BigDecimal qty, PriceList priceList) {
+    return priceListLineRepo
+        .all()
+        .filter(
+            "self.productCategory = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
+            productCategory,
+            qty,
+            priceList.getId())
+        .fetch();
   }
 
   @Transactional

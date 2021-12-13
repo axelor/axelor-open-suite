@@ -160,6 +160,8 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     BitMatrix bt;
     try {
       bt = writer.encode(serialno, barcodeFormat, width, height);
+      height = bt.getHeight();
+      width = bt.getWidth();
       BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
       int[] pixels = new int[width * height];
       int index = 0;

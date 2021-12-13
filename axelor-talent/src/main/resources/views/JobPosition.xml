@@ -1,60 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-	
-	<grid name="job-position-grid" title="Job positions" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="jobReference" width="120"/>
-		<field name="jobTitle" />
-		<field name="companyDepartment" />
-		<field name="employee" />
-		<field name="contractType" />
-		<field name="statusSelect" />
-	</grid>
-	
-	<form name="job-position-form" title="Job position" model="com.axelor.apps.talent.db.JobPosition" width="large">
-		<toolbar>
-			<button name="createJobApplicationBtn" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
-		</toolbar>
-		
-		<panel name="mainPanel" readonlyIf="statusSelect == 4">
-			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
-			<field name="jobReference" colSpan="4" showTitle="false"/>
-			<field name="jobTitle" colSpan="12" showTitle="false" css="label-bold bold large" placeholder="Job title"/>
-			<spacer name="jobTitleSpacer"/>
-			<field name="company" />
-			<field name="location" />
-			<field name="companyDepartment" title="jobposition.companyDepartment"/>
-			<field name="employee" />
-			<field name="nbOpenJob" />
-			<field name="nbPeopleHired" />
-			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
-			<field name="publicationDate" colSpan="6"/>
-			<field name="jobDescription" widget="html" colSpan="6" />
-			<field name="profileWanted" widget="html" colSpan="6" />
-			<spacer name="profileWantedSpacer" />
-			<panel-dashlet name="allApplicationsPanel" action="action-job-position-all-applications" colSpan="12" title="All applications"/>
-		</panel>
-		<panel name="buttonPanel" sidebar="true">
-			<button name="statusDraftBtn" title="Draft" onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4" colSpan="12"/>
-			<button name="statusOpenBtn" title="Open" onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0" colSpan="12"/>
-			<button name="statusOnHoldBtn" title="On hold" onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1" colSpan="12"/>
-			<button name="statusClosedBtn" title="Close" onClick="save,action-job-position-record-status-closed,save" showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
-			<button name="cancelBtn" title="Cancel" onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
-		</panel>
-		<panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
-			<field name="contractType" colSpan="6"/>
-			<field name="positionStatusSelect" colSpan="6"/>
-			<field name="experienceSelect" colSpan="6"/>
-			<field name="salary" colSpan="6"/>
-			<field name="startingDate" colSpan="6"/>
-		</panel>
-	</form>
-	
-	<cards name="job-position-cards" model="com.axelor.apps.talent.db.JobPosition" title="Job positions">
-		<field name="jobTitle" />
-		<field name="jobReference" />
-		<template><![CDATA[
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="job-position-grid" title="Job positions"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="jobReference" width="120"/>
+    <field name="jobTitle"/>
+    <field name="companyDepartment"/>
+    <field name="employee"/>
+    <field name="contractType"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="job-position-form" title="Job position"
+    model="com.axelor.apps.talent.db.JobPosition" width="large">
+    <toolbar>
+      <button name="createJobApplicationBtn" title="Create a job application" colSpan="3"
+        onClick="save,action-job-position-create-application"/>
+    </toolbar>
+
+    <panel name="mainPanel" readonlyIf="statusSelect == 4">
+      <field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12"
+        showTitle="false"/>
+      <field name="jobReference" colSpan="4" showTitle="false"/>
+      <field name="jobTitle" colSpan="12" showTitle="false" css="label-bold bold large"
+        placeholder="Job title"/>
+      <spacer name="jobTitleSpacer"/>
+      <field name="company"/>
+      <field name="location"/>
+      <field name="companyDepartment" title="jobposition.companyDepartment"/>
+      <field name="employee"/>
+      <field name="nbOpenJob"/>
+      <field name="nbPeopleHired"/>
+      <field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1"/>
+      <field name="publicationDate" colSpan="6"/>
+      <field name="jobDescription" widget="html" colSpan="6"/>
+      <field name="profileWanted" widget="html" colSpan="6"/>
+      <spacer name="profileWantedSpacer"/>
+      <panel-dashlet name="allApplicationsPanel"
+        action="action-job-position-all-applications" colSpan="12" title="All applications"/>
+    </panel>
+    <panel name="buttonPanel" sidebar="true">
+      <button name="statusDraftBtn" title="Draft"
+        onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4"
+        colSpan="12"/>
+      <button name="statusOpenBtn" title="Open"
+        onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0"
+        colSpan="12"/>
+      <button name="statusOnHoldBtn" title="On hold"
+        onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1"
+        colSpan="12"/>
+      <button name="statusClosedBtn" title="Close"
+        onClick="save,action-job-position-record-status-closed,save"
+        showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
+      <button name="cancelBtn" title="Cancel"
+        onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4"
+        colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+    </panel>
+    <panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
+      <field name="contractType" colSpan="6"/>
+      <field name="positionStatusSelect" colSpan="6"/>
+      <field name="experienceSelect" colSpan="6"/>
+      <field name="salary" colSpan="6"/>
+      <field name="startingDate" colSpan="6"/>
+    </panel>
+  </form>
+
+  <cards name="job-position-cards" model="com.axelor.apps.talent.db.JobPosition"
+    title="Job positions">
+    <field name="jobTitle"/>
+    <field name="jobReference"/>
+    <template><![CDATA[
 			<div>
 			  <div class="span12">
 				<span><strong>{{jobTitle}}</strong></span>
@@ -63,51 +80,59 @@
 		  	  </div>
 			</div>
 		]]>
-		</template>
-	</cards>
-	
-	<action-view name="action-job-position-all-applications" title="All applications" model="com.axelor.apps.talent.db.JobApplication">
-		<view type="grid" name="job-application-grid"/>
-		<view type="form" name="job-application-form"/>
-		<domain>self.jobPosition.id = :_jobPositionId</domain>
-		<context name="_jobPositionId" expr="eval:id"/>
-	</action-view>
-	
-	<action-view name="action-job-position-create-application" title="Job Application" model="com.axelor.apps.talent.db.JobApplication">
-		<view type="form" name="job-application-form"/>
-		<view type="grid" name="job-application-grid"/>
-		<domain>self.jobPosition.id = :_jobPositionId</domain>
-		<context name="_jobPositionId" expr="eval:id"/>
-		<context name="_responsibleId" expr="eval:employee.id"/>
-	</action-view>
-	
-	<action-record name="action-job-position-record-status-draft" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="statusSelect" expr="eval: 0"/>
-	</action-record>
-	
-	<action-record name="action-job-position-record-status-open" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="statusSelect" expr="eval: 1"/>
-	</action-record>
-	
-	<action-record name="action-job-position-record-status-onhold" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="statusSelect" expr="eval: 2"/>
-	</action-record>
+    </template>
+  </cards>
 
-	<action-record name="action-job-position-record-status-closed" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="statusSelect" expr="eval: 3"/>
-	</action-record>
-	
-	<action-record name="action-job-position-record-status-cancel" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="statusSelect" expr="eval: 4"/>
-	</action-record>
-	
-	<search-filters name="job-position-filters" model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
-		<filter title="Current job offers">
-			<domain>self.statusSelect &lt; 3</domain>
-		</filter>
-		<filter title="Closed job offers">
-			<domain>self.statusSelect &gt; 2</domain>
-		</filter>
-	</search-filters>
-	
+  <action-view name="action-job-position-all-applications" title="All applications"
+    model="com.axelor.apps.talent.db.JobApplication">
+    <view type="grid" name="job-application-grid"/>
+    <view type="form" name="job-application-form"/>
+    <domain>self.jobPosition.id = :_jobPositionId</domain>
+    <context name="_jobPositionId" expr="eval:id"/>
+  </action-view>
+
+  <action-view name="action-job-position-create-application" title="Job Application"
+    model="com.axelor.apps.talent.db.JobApplication">
+    <view type="form" name="job-application-form"/>
+    <view type="grid" name="job-application-grid"/>
+    <domain>self.jobPosition.id = :_jobPositionId</domain>
+    <context name="_jobPositionId" expr="eval:id"/>
+    <context name="_responsibleId" expr="eval:employee.id"/>
+  </action-view>
+
+  <action-record name="action-job-position-record-status-draft"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="statusSelect" expr="eval: 0"/>
+  </action-record>
+
+  <action-record name="action-job-position-record-status-open"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="statusSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-record name="action-job-position-record-status-onhold"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="statusSelect" expr="eval: 2"/>
+  </action-record>
+
+  <action-record name="action-job-position-record-status-closed"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="statusSelect" expr="eval: 3"/>
+  </action-record>
+
+  <action-record name="action-job-position-record-status-cancel"
+    model="com.axelor.apps.talent.db.JobPosition">
+    <field name="statusSelect" expr="eval: 4"/>
+  </action-record>
+
+  <search-filters name="job-position-filters"
+    model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
+    <filter title="Current job offers">
+      <domain>self.statusSelect &lt; 3</domain>
+    </filter>
+    <filter title="Closed job offers">
+      <domain>self.statusSelect &gt; 2</domain>
+    </filter>
+  </search-filters>
+
 </object-views>

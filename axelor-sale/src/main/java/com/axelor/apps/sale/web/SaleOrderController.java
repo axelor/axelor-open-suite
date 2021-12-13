@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -383,6 +385,12 @@ public class SaleOrderController {
     Company commonCompany = null;
     Partner commonContactPartner = null;
     Team commonTeam = null;
+    TaxNumber commonTaxNumber = null;
+    // Useful to determine if a difference exists between tax number of all sale orders
+    boolean existTaxNumberDiff = false;
+    FiscalPosition commonFiscalPosition = null;
+    // Useful to determine if a difference exists between fiscal positions of all sale orders
+    boolean existFiscalPositionDiff = false;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
     // Useful to determine if a difference exists between contact partners of all sale orders
@@ -403,6 +411,8 @@ public class SaleOrderController {
         commonContactPartner = saleOrderTemp.getContactPartner();
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
+        commonTaxNumber = saleOrderTemp.getTaxNumber();
+        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -427,6 +437,18 @@ public class SaleOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+          commonTaxNumber = null;
+          existTaxNumberDiff = true;
+        }
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
+          commonFiscalPosition = null;
+          existFiscalPositionDiff = true;
+        }
       }
       count++;
     }
@@ -446,6 +468,25 @@ public class SaleOrderController {
         fieldErrors.append("<br/>");
       }
       fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+
+    if (existTaxNumberDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
+
+    if (existFiscalPositionDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -516,7 +557,9 @@ public class SaleOrderController {
                   commonCompany,
                   commonContactPartner,
                   commonPriceList,
-                  commonTeam);
+                  commonTeam,
+                  commonTaxNumber,
+                  commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
@@ -701,33 +744,37 @@ public class SaleOrderController {
     response.setAttr("priceList", "domain", domain);
   }
 
-  public void updateSaleOrderLineTax(ActionRequest request, ActionResponse response)
+  public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
     Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
+    try {
 
-    String saleOrderId = context.get("_id").toString();
-    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
+      Context context = request.getContext();
 
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> packMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("pack");
-    String packId = packMap.get("id").toString();
-    Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
+      String saleOrderId = context.get("_id").toString();
+      SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
 
-    String qty = context.get("qty").toString();
-    BigDecimal packQty = new BigDecimal(qty);
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> packMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("pack");
+      String packId = packMap.get("id").toString();
+      Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
 
-    saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+      String qty = context.get("qty").toString();
+      BigDecimal packQty = new BigDecimal(qty);
 
-    response.setCanClose(true);
+      saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__)
+	}
+	
+	chartBuilders = ""
+	query.fetch().each({
+		chart -> 
+				filters = ""
+				chart.filterList.each{
+					filter->filters += """\n\t\t\t\t<filter>
+					\n\t\t\t\t\t<metaField>${filter.metaField?.name}</metaField>
+					\n\t\t\t\t\t<metaJsonField>${filter.metaJsonField?.name}</metaJsonField>
+					\n\t\t\t\t\t<operator>${filter.operator}</operator>
+					\n\t\t\t\t\t<targetField>${filter.targetField}</targetField>
+					\n\t\t\t\t\t<targetType>${filter.targetType}</targetType>
+					\n\t\t\t\t\t<value>${filter.value}</value>
+					\n\t\t\t\t\t<defaultValue>${filter.defaultValue}</defaultValue>
+					\n\t\t\t\t\t<isParameter>${filter.isParameter}</isParameter>
+					\n\t\t\t\t\t<isJson>${filter.isJson}</isJson>
+					\n\t\t\t\t\t<isTargetJson>${filter.isTargetJson}</isTargetJson>
+					\n\t\t\t\t\t<logicOp>${filter.logicOp}</logicOp>
+					\n\t\t\t\t</filter>"""
+				}
+				
+				chartBuilders += """\n\t\t<chart-builder>
+				\n\t\t\t<name>${chart.name}</name>
+				\n\t\t\t<title>${chart.title}</title>
+				\n\t\t\t<chartType>${chart.chartType}</chartType>
+				\n\t\t\t<isJson>${chart.isJson}</isJson>
+				\n\t\t\t<model>${chart.model}</model>
+				\n\t\t\t<groupOn>${chart.groupOn?.name}</groupOn>
+				\n\t\t\t<groupOnJson>${chart.groupOnJson?.name}</groupOnJson>
+				\n\t\t\t<groupDateType>${chart.groupDateType}</groupDateType>
+				\n\t\t\t<groupOnTarget>${chart.groupOnTarget}</groupOnTarget>
+				\n\t\t\t<groupOnTargetType>${chart.groupOnTargetType}</groupOnTargetType>
+				\n\t\t\t<isJsonGroupOn>${chart.isJsonGroupOn}</isJsonGroupOn>
+				\n\t\t\t<isJsonAggregateOn>${chart.isJsonAggregateOn}</isJsonAggregateOn>
+				\n\t\t\t<isJsonDisplayField>${chart.isJsonDisplayField}</isJsonDisplayField>
+				\n\t\t\t<aggregateOnJson>${chart.aggregateOnJson?.name}</aggregateOnJson>
+				\n\t\t\t<aggregateOn>${chart.aggregateOn?.name}</aggregateOn>
+				\n\t\t\t<aggregateOnTarget>${chart.aggregateOnTarget}</aggregateOnTarget>
+				\n\t\t\t<aggregateDateType>${chart.aggregateDateType}</aggregateDateType>
+				\n\t\t\t<aggregateOnTargetType>${chart.aggregateOnTargetType}</aggregateOnTargetType>
+				\n\t\t\t<displayField>${chart.displayField?.name}</displayField>
+				\n\t\t\t<displayFieldJson>${chart.displayFieldJson?.name}</displayFieldJson>
+				\n\t\t\t<displayType>${chart.displayType}</displayType>
+				\n\t\t\t<filters>$filters
+				\n\t\t\t</filters>
+				\n\t\t\t<appBuilder>${chart.appBuilder?.code}</appBuilder>
+				\n\t\t</chart-builder>""" 
+	})
+	if (!chartBuilders.isEmpty()) {
+		chartBuilders = """<chart-builders>\n""" +  chartBuilders + """\n</chart-builders>"""
+	}
+	
+	
+	out << """$chartBuilders"""
+%>
