@@ -30,6 +30,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,9 +89,10 @@ public class ImportCityController {
    * @param typeSelect
    * @return
    * @throws AxelorException if there is a problem when downloading the zip file
+   * @throws IOException
    */
   private List<ImportHistory> importFromGeonamesAutoConfig(
-      String downloadFileName, String typeSelect) throws AxelorException {
+      String downloadFileName, String typeSelect) throws AxelorException, IOException {
     ImportCityService importCityService = Beans.get(ImportCityService.class);
     MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
     MetaFile dumpImportDataFile =
@@ -110,9 +112,11 @@ public class ImportCityController {
    * @param map
    * @param typeSelect
    * @return
+   * @throws IOException
+   * @throws AxelorException
    */
   private List<ImportHistory> importFromGeonamesManualConfig(
-      Map<String, Object> map, String typeSelect) {
+      Map<String, Object> map, String typeSelect) throws AxelorException, IOException {
     List<ImportHistory> importHistoryList = new ArrayList<>();
 
     if (map != null) {

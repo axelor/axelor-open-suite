@@ -19,7 +19,7 @@
         onSelect="action-fec-import-attr-set-data-meta-file-domain"
         onChange="action-groupd-account-fec-import-set-company-on-change" canNew="true"
         form-view="meta-files-form" grid-view="meta-files-grid"/>
-      <field name="bindMetaFile" widget="binary-link"/>
+      <field name="importFECType"/>
       <field name="validGeneratedMove"/>
       <field name="moveDescription"/>
       <field name="company"/>

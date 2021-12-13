@@ -64,6 +64,10 @@ public interface IExceptionMessage {
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
+  /** Account management repostiroy */
+  static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
+      "A payment mode already exists with the same information." /*)*/;
+
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
@@ -730,7 +734,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -762,6 +766,10 @@ public interface IExceptionMessage {
   /** Payment voucher tool service */
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
+
+  /** Payment voucher controller */
+  static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
+      "You can't remove this payment voucher as it is already used in a move." /*)*/;
 
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/

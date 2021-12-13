@@ -168,7 +168,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     if (!invoiceLine.getFixedAssets()) {
       invoiceLineTax.setSubTotalExcludingFixedAssets(
-          invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
+          invoiceLine.getExTaxTotal().setScale(2, RoundingMode.HALF_UP));
       invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
           invoiceLineTax
               .getCompanySubTotalExcludingFixedAssets()
