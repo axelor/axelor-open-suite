@@ -425,7 +425,8 @@
           onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
         <field if="__config__.app.isApp('account')" name="taxNumber" colSpan="3"
           canNew="false" canEdit="false"
-          onSelect="action-sale-order-attrs-compute-tax-number-domain"/>
+          onSelect="action-sale-order-attrs-compute-tax-number-domain"
+          onChange="action-sale-order-record-check-fiscal-position"/>
         <field if="__config__.app.isApp('account')" name="fiscalPosition" colSpan="3"
           canNew="false" canEdit="false" domain=":taxNumber MEMBER OF self.taxNumberSet"/>
         <panel name="otherInfoPanel" colSpan="3">
@@ -1749,6 +1750,12 @@
   <action-record name="action-record-so-contact-partner-change"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
+  </action-record>
+
+  <action-record name="action-sale-order-record-check-fiscal-position"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="fiscalPosition" expr="eval: null"
+      if="fiscalPosition != null &amp;&amp; !taxNumber?.fiscalPositionSet?.contains(fiscalPosition)"/>
   </action-record>
 
   <action-method name="action-sale-order-record-compute-end-of-validity-date">

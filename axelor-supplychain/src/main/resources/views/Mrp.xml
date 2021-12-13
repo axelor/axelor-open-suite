@@ -66,6 +66,7 @@
         canEdit="false"/>
       <field name="stockLocation.company"/>
       <field name="displayProductWithoutProposal" widget="boolean-switch"/>
+      <field name="computeWithSubStockLocation" widget="boolean-switch"/>
       <field name="mrpTypeSelect" hidden="true"/>
       <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3"
         onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form"

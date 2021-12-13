@@ -171,20 +171,23 @@ public class BankReconciliationLineService {
   public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
     if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
-      if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
-        throw new AxelorException(
-            bankReconciliationLine,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(
-                com.axelor.apps.bankpayment.exception.IExceptionMessage
-                    .BANK_RECONCILIATION_INCOMPLETE_LINE));
-      } else if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
-        throw new AxelorException(
-            bankReconciliationLine,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(
-                com.axelor.apps.bankpayment.exception.IExceptionMessage
-                    .BANK_RECONCILIATION_MISSING_JOURNAL));
+      if (ObjectUtils.notEmpty(bankReconciliationLine.getAccount())) {
+        if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
+          throw new AxelorException(
+              bankReconciliationLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(
+                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                      .BANK_RECONCILIATION_MISSING_JOURNAL));
+        }
+        if (bankReconciliationLine.getBankReconciliation().getCashAccount() == null) {
+          throw new AxelorException(
+              bankReconciliationLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(
+                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                      .BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
+        }
       }
     }
   }

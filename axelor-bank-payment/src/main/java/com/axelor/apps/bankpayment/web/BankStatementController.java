@@ -45,10 +45,10 @@ public class BankStatementController {
       bankStatementService.runImport(bankStatement, true);
       bankStatementService.checkImport(bankStatement);
 
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+    response.setReload(true);
   }
 
   public void print(ActionRequest request, ActionResponse response) {
