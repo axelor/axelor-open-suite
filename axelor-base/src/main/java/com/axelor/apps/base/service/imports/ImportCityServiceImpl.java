@@ -98,12 +98,20 @@ public class ImportCityServiceImpl implements ImportCityService {
     this.appBaseService = appBaseService;
   }
 
-  /** {@inheritDoc}} */
+  /**
+   * {@inheritDoc}}
+   *
+   * @throws AxelorException
+   * @throws IOException
+   */
   @Override
-  public ImportHistory importCity(String typeSelect, MetaFile dataFile) {
+  public ImportHistory importCity(String typeSelect, MetaFile dataFile)
+      throws AxelorException, IOException {
 
     ImportHistory importHistory = null;
-    try {
+    if (dataFile.getFileType().equals("text/plain")
+        || dataFile.getFileType().equals("text/csv")
+        || dataFile.getFileType().equals("application/zip")) {
       if (dataFile.getFileType().equals("application/zip")) {
         dataFile = this.extractCityZip(dataFile);
       }
@@ -112,9 +120,10 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       importHistory = importCityData(configXmlFile, dataCsvFile);
       this.deleteTempFiles(configXmlFile, dataCsvFile);
-
-    } catch (Exception e) {
-      TraceBackService.trace(e);
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION));
     }
     return importHistory;
   }
@@ -295,7 +304,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     }
   }
 
-  protected MetaFile extractCityZip(MetaFile dataFile) throws IOException {
+  protected MetaFile extractCityZip(MetaFile dataFile) throws AxelorException, IOException {
 
     ZipEntry entry;
     MetaFile metaFile;
@@ -304,6 +313,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     byte[] buffer = new byte[1024];
     int len;
+    boolean txtFileFound = false;
 
     try (ZipInputStream zipFileInStream =
         new ZipInputStream(new FileInputStream(MetaFiles.getPath(dataFile).toFile())); ) {
@@ -318,8 +328,17 @@ public class ImportCityServiceImpl implements ImportCityService {
               fos.write(buffer, 0, len);
             }
           }
+          txtFileFound = true;
           break;
         }
+      }
+
+      if (!txtFileFound) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.NO_TEXT_FILE_FOUND),
+            requiredFileName,
+            dataFile.getFileName());
       }
     }
 

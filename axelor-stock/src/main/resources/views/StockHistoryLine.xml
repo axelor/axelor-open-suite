@@ -24,6 +24,8 @@
       <field name="$stockHistoryLineList" type="one-to-many"
         target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12" readonly="true"
         x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
+      <button name="exportStockHistoryLineListBtn"
+        onClick="action-stock-history-line-method-export-stock-history-line-list" title="Export"/>
     </panel>
   </form>
 
@@ -84,6 +86,12 @@
   <action-method name="action-stock-history-line-method-fill-stock-history-line-list">
     <call class="com.axelor.apps.stock.web.StockHistoryController"
       method="fillStockHistoryLineList"/>
+  </action-method>
+
+  <action-method
+    name="action-stock-history-line-method-export-stock-history-line-list">
+    <call class="com.axelor.apps.stock.web.StockHistoryController"
+      method="exportStockHistoryLineList"/>
   </action-method>
 
 </object-views>

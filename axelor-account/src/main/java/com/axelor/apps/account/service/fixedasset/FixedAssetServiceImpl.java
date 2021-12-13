@@ -396,7 +396,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 fixedAsset.getQty().setScale(RETURNED_SCALE)));
     String commentsToAdd =
         String.format(
-            I18n.get(FixedAssetRepository.SPLIT_MESSAGE_COMMENT),
+            I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
             disposalQty,
             splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     newFixedAsset.setComments(comments);
