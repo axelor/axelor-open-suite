@@ -1,0 +1,3 @@
+---
+title: "Move: fix wrong currency amount and rate computation in VAT move line."
+type: fix

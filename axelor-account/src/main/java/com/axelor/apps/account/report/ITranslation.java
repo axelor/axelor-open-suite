@@ -158,6 +158,14 @@ public interface ITranslation {
       "AccountingReportType1.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_CREDIT = /*$$(*/
       "AccountingReportType1.credit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_DEBIT = /*$$(*/
+      "AccountingReportType1.currencyDebit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CREDIT = /*$$(*/
+      "AccountingReportType1.currencyCredit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY = /*$$(*/
+      "AccountingReportType1.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CODE = /*$$(*/
+      "AccountingReportType1.currencyCode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
       "AccountingReportType1.total"; /*)*/
 

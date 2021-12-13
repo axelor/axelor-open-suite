@@ -84,6 +84,7 @@
       <field name="commonPosition"/>
       <field name="defaultTax"/>
       <field name="statusSelect"/>
+      <field name="serviceType"/>
     </track>
 
 

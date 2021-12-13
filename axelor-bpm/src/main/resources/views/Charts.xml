@@ -224,6 +224,110 @@
     <series key="total" type="bar"/>
   </chart>
 
+  <action-attrs name="action-chart-bpm-manager-default-wkf-model">
+    <attribute name="value" for="wkfModel" expr="eval:__repo__(WkfModel).all().fetchOne()"/>
+  </action-attrs>
+
+  <chart name="chart.wkf.bpm.manager.assigned.me.tasks" title="Assigned to me"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmDashboardController:getAssignedToMeTask
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="pie"/>
+    <config name="onClick" value="action-bpm-manager-view-assigned-me-task"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-assigned-me-task">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="showAssignedToMeTask"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.assigned.other.tasks" title="Assigned to others"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmDashboardController:getAssignedToOtherTask
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="pie"/>
+    <config name="onClick" value="action-bpm-manager-view-assigned-other-task"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-assigned-other-task">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController"
+      method="showAssignedToOtherTask"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.late.tasks" title="Late tasks"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmDashboardController:getLateTask
+  		]]>
+    </dataset>
+    <category key="model" type="text"/>
+    <series key="total" type="bar" groupBy="status"/>
+    <config name="onClick" value="action-bpm-manager-view-late-task"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-late-task">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="showLateTask"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.active.status" title="Active statuses"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmDashboardController:getActiveStatus
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="pie" groupBy="model"/>
+    <config name="onClick" value="action-bpm-manager-view-active-status"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-active-status">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="showActiveStatus"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.active.instances" title="Active instances">
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmDashboardController:getActiveInstances
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="pie"/>
+    <config name="onClick" value="action-bpm-manager-view-active-instances"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-active-instances">
+    <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="showActiveInstance"/>
+  </action-method>
+
   <form model="com.axelor.apps.base.db.Wizard" title="Select model"
     name="chart-wkf-select-model-form" onNew="action-chart-wkf-wizard-method-onnew">
     <panel>

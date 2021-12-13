@@ -163,9 +163,6 @@
 		public static final int ORIGINAL_SELECT_PARTIAL_SALE = 6;
 		public static final int ORIGINAL_SELECT_IMPORT = 99;
 
-		//Split message
-		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
-
 	]]></extra-code>
 
     <track>
