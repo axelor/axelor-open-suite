@@ -1,0 +1,4 @@
+title: "ACCOUNT / JOURNAL / ANALYTICACCOUNT / ANALYTICJOURNAL : Add massUpdate for statusSelect field from grid view"
+type: feature
+description: |
+  Added a button on the grid views of the objects ACCOUNT / ANALYTICACCOUNT / ANALYTICJOURNAL / JOURNAL to be able to mass update the statusSelect field.

@@ -1012,4 +1012,17 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String MASS_UPDATE_SUCCESSFUL =
+      /*$$(*/ "Operation sucessfull : %s record(s) updated." /*)*/;
+
+  static final String MASS_UPDATE_SELECTED_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly." /*)*/;
+
+  static final String MASS_UPDATE_ALL_NO_RECORD =
+      /*$$(*/ "No record has been updated. Please make sure the selection can be updated accordingly (e.g. Status different from selected one)." /*)*/;
+
+  static final String MASS_UPDATE_NO_RECORD_SELECTED = /*$$(*/ "No records selected." /*)*/;
+
+  static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
 }

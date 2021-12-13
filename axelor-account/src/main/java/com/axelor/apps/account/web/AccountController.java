@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.MassUpdateService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -144,6 +145,58 @@ public class AccountController {
 
       response.setReload(true);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void massUpdateSelected(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().containsKey("statusSelect")) {
+        if (request.getContext().get("_selectedIds") == null) {
+          response.setError(IExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED);
+        } else {
+          String metaModel = (String) request.getContext().get("_metaModel");
+          Integer statusSelect = (Integer) request.getContext().get("statusSelect");
+          List<Integer> selectedIds = (List<Integer>) request.getContext().get("_selectedIds");
+          Integer recordsUpdated =
+              Beans.get(MassUpdateService.class).massUpdate(metaModel, statusSelect, selectedIds);
+          if (recordsUpdated > 0) {
+            response.setFlash(
+                String.format(IExceptionMessage.MASS_UPDATE_SUCCESSFUL, recordsUpdated));
+            response.setCanClose(true);
+          } else {
+            response.setFlash(IExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
+            response.setCanClose(true);
+          }
+        }
+      } else {
+        response.setError(IExceptionMessage.MASS_UPDATE_NO_STATUS);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void massUpdateAll(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().containsKey("statusSelect")) {
+        String metaModel = (String) request.getContext().get("_metaModel");
+        Integer statusSelect = (Integer) request.getContext().get("statusSelect");
+        Integer recordsUpdated =
+            Beans.get(MassUpdateService.class).massUpdate(metaModel, statusSelect, null);
+        if (recordsUpdated > 0) {
+          response.setFlash(
+              String.format(IExceptionMessage.MASS_UPDATE_SUCCESSFUL, recordsUpdated));
+          response.setCanClose(true);
+        } else {
+          response.setFlash(IExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
+          response.setCanClose(true);
+        }
+      } else {
+        response.setError(IExceptionMessage.MASS_UPDATE_NO_STATUS);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

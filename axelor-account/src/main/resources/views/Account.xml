@@ -5,6 +5,10 @@
 
   <grid name="account-grid" title="Accounting.Accounts"
     model="com.axelor.apps.account.db.Account">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
@@ -149,6 +153,28 @@
     </panel>
   </form>
 
+  <form name="mass-update-status-wizard-form" title="Mass update status wizard"
+    model="com.axelor.apps.base.db.Wizard" width="large">
+    <panel name="mainPanel">
+      <field name="statusSelect" type="integer" title="Status"
+        selection="iaccount.status.select.selection"
+        showIf="_metaModel == 'com.axelor.apps.account.db.Account'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="ianalytic.account.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticAccount'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="account.journal.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.Journal'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="ianalytic.journal.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticJournal'" required="true"/>
+      <button name="massUpdateSelectedBtn" title="Mass update selected"
+        onClick="action-method-wizard-mass-update-selected"/>
+      <button name="massUpdateAllBtn" title="Mass update all"
+        onClick="action-method-wizard-mass-update-all"/>
+    </panel>
+  </form>
+
   <action-view name="action-account-view-account-onchange-view"
     title="Financial Accounts" model="com.axelor.apps.account.db.Account">
     <view type="form" name="account-info-form"/>
@@ -157,6 +183,18 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-mass-update-status-wizard" title="Mass update status wizard"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="mass-update-status-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="width" value="800"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_metaModel" expr="eval: _model"/>
+    <context name="_selectedIds" expr="eval: _ids"/>
   </action-view>
 
   <action-group name="action-group-account-account-onload">
@@ -286,6 +324,14 @@
 
   <action-method name="action-method-account-hide-analytic">
     <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
+
+  <action-method name="action-method-wizard-mass-update-selected">
+    <call class="com.axelor.apps.account.web.AccountController" method="massUpdateSelected"/>
+  </action-method>
+
+  <action-method name="action-method-wizard-mass-update-all">
+    <call class="com.axelor.apps.account.web.AccountController" method="massUpdateAll"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
