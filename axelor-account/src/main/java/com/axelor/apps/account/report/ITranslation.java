@@ -136,6 +136,14 @@ public interface ITranslation {
       "AccountingReportType1.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_CREDIT = /*$$(*/
       "AccountingReportType1.credit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_DEBIT = /*$$(*/
+      "AccountingReportType1.currencyDebit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CREDIT = /*$$(*/
+      "AccountingReportType1.currencyCredit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY = /*$$(*/
+      "AccountingReportType1.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CODE = /*$$(*/
+      "AccountingReportType1.currencyCode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
       "AccountingReportType1.total"; /*)*/
 
@@ -209,6 +217,10 @@ public interface ITranslation {
       "AccountingReportType4.60days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_60_90_DAYS = /*$$(*/
       "AccountingReportType4.6090days"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_30_DAYS = /*$$(*/
+      "AccountingReportType4.30days"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_30_60_DAYS = /*$$(*/
+      "AccountingReportType4.3060days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_90_120_DAYS = /*$$(*/
       "AccountingReportType4.90120days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_120_150_DAYS = /*$$(*/

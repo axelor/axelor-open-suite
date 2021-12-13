@@ -438,6 +438,20 @@ public interface IExceptionMessage {
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
 
+  static final String BATCH_PROCESSED_FIXED_ASSET = /*$$(*/ "Processed fixed assets" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC = /*$$(*/
+      "Realized fixed asset economic lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL = /*$$(*/
+      "Realized fixed asset fiscal lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS = /*$$(*/
+      "Realized fixed assets ifrs lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE = /*$$(*/
+      "Realized fixed assets derogatory lines" /*)*/;
+
   /** Batch close / open the year account */
   static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
       "Report for close/open annual accounts batch:" /*)*/;
@@ -592,6 +606,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
       "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
+      "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
   /** Cfonb config service */
   static final String CFONB_CONFIG_1 = /*$$(*/
@@ -724,7 +740,7 @@ public interface IExceptionMessage {
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
   static final String MOVE_CANCEL_4 = /*$$(*/
-      "The move is validated and so can not be canceled." /*)*/;
+      "The move is accounted and so can not be canceled." /*)*/;
 
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
@@ -766,7 +782,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -798,6 +814,10 @@ public interface IExceptionMessage {
   /** Payment voucher tool service */
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
+
+  /** Payment voucher controller */
+  static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
+      "You can't remove this payment voucher as it is already used in a move." /*)*/;
 
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
@@ -960,6 +980,10 @@ public interface IExceptionMessage {
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
+
   static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
       "Please fill analytic accounts in all analytic distribution lines." /*)*/;
 
@@ -977,4 +1001,28 @@ public interface IExceptionMessage {
   /*Period */
   static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
       "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
+
+  static final String INACTIVE_ACCOUNT_FOUND =
+      /*$$(*/ "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ACCOUNTS_FOUND =
+      /*$$(*/ "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted" /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNAL_FOUND = /*$$(*/
+      "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_JOURNALS_FOUND = /*$$(*/
+      "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNT_FOUND =
+      /*$$(*/ "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
+      /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_JOURNAL_FOUND =
+      /*$$(*/ "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  // Split message
+  static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 }

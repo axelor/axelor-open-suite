@@ -73,10 +73,11 @@
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
       <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
       <field name="journal" readonlyIf="statusSelect > 1" canEdit="false"
-        domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+        domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
+        grid-view="journal-grid"/>
       <field name="purchaseAccount"
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
         form-view="account-form" grid-view="account-grid"/>
       <panel name="analyticPanel">
         <field
@@ -206,7 +207,7 @@
     </panel-tabs>
     <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
       <button name="computeDepreciationBtn" title="Compute depreciation"
-        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || (statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0))"
+        hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || statusSelect > 1"
         onClick="action-group-account-fixed-asset-failover-control, action-fixed-asset-group-compute-depreciation-click"/>
       <button name="validteBtn" title="Validate"
         showIf="statusSelect &lt; 2 &amp;&amp; grossValue > 0"
@@ -258,6 +259,10 @@
       <field name="saleAccountMove" domain="self.company = :company"
         showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
     </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
 

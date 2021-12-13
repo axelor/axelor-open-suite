@@ -128,6 +128,12 @@
       self.stockMove.toStockLocation.address.addressL7Country.economicArea)
       AND
       self.product.usedInDEB = true
+      AND
+      (self.saleOrderLine is NULL OR
+      self.saleOrderLine.saleOrder.taxNumber is NULL
+      OR
+      self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true)
+
     </domain>
     <context name="fromDate" expr="eval: period?.fromDate"/>
     <context name="toDate" expr="eval: period?.toDate"/>

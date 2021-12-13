@@ -163,10 +163,29 @@
 		public static final int ORIGINAL_SELECT_PARTIAL_SALE = 6;
 		public static final int ORIGINAL_SELECT_IMPORT = 99;
 
-		//Split message
-		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
-
 	]]></extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="statusSelect"/>
+      <field name="qty"/>
+      <field name="fixedAssetCategory"/>
+      <field name="depreciationPlanSelect"/>
+      <field name="isEqualToFiscalDepreciation"/>
+      <field name="numberOfDepreciation"/>
+      <field name="periodicityTypeSelect"/>
+      <field name="durationInMonth"/>
+      <field name="acquisitionDate"/>
+      <field name="firstServiceDate"/>
+      <field name="firstDepreciationDate"/>
+      <field name="grossValue"/>
+      <field name="residualValue"/>
+      <field name="accountingValue"/>
+      <field name="correctedAccountingValue"/>
+      <field name="transferredReasonSelect"/>
+      <field name="comments"/>
+      <field name="serialNumber"/>
+    </track>
 
   </entity>
 

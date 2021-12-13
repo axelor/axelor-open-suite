@@ -29,4 +29,10 @@
     type="com.axelor.apps.account.db.FixedAssetType"/>
 
 
+  <input file="account_importFecType.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.account.db.ImportFECType"
+    call="com.axelor.csv.script.ImportImportFECType:importFECType"/>
+
+
+
 </csv-inputs>

@@ -21,19 +21,28 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StockHistoryServiceImpl implements StockHistoryService {
 
@@ -52,6 +61,18 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
     List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
+    List<Long> stockLocationIdList = new ArrayList<>();
+    if (stockLocationId == null) {
+      stockLocationIdList.addAll(
+          Beans.get(StockLocationRepository.class).all()
+              .filter("self.typeSelect != :typeSelect AND self.company.id = :company")
+              .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL).bind("company", companyId)
+              .fetch().stream()
+              .map(stockLocation -> stockLocation.getId())
+              .collect(Collectors.toList()));
+    } else {
+      stockLocationIdList.add(stockLocationId);
+    }
 
     // one line per month
     for (LocalDate periodBeginDate = beginDate.withDayOfMonth(1);
@@ -64,7 +85,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           stockHistoryLine,
           productId,
           companyId,
-          stockLocationId,
+          stockLocationIdList,
           periodBeginDate,
           periodEndDate,
           true);
@@ -72,7 +93,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           stockHistoryLine,
           productId,
           companyId,
-          stockLocationId,
+          stockLocationIdList,
           periodBeginDate,
           periodEndDate,
           false);
@@ -88,11 +109,61 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return stockHistoryLineList;
   }
 
+  public String getStockHistoryLineExportName(String productName) {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
+    return I18n.get("Stock History")
+        + " - "
+        + productName
+        + " - "
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().format(dtf);
+  }
+
+  private String[] getStockHistoryLineExportHeader() {
+
+    String[] headers = new String[7];
+    headers[0] = I18n.get("Label");
+    headers[1] = I18n.get("Nbr of incoming moves");
+    headers[2] = I18n.get("Incoming quantity");
+    headers[3] = I18n.get("Incoming amount");
+    headers[4] = I18n.get("Nbr of outgoing moves");
+    headers[5] = I18n.get("Outgoing quantity");
+    headers[6] = I18n.get("Outgoing amount");
+    return headers;
+  }
+
+  public MetaFile exportStockHistoryLineList(
+      List<StockHistoryLine> stockHistoryLineList, String fileName) throws IOException {
+    List<String[]> list = new ArrayList<>();
+
+    for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
+      String[] item = new String[7];
+      item[0] = stockHistoryLine.getLabel();
+      item[1] = stockHistoryLine.getCountIncMvtStockPeriod().toString();
+      item[2] = stockHistoryLine.getSumIncQtyPeriod().toString();
+      item[3] = stockHistoryLine.getPriceIncStockMovePeriod().toString();
+      item[4] = stockHistoryLine.getCountOutMvtStockPeriod().toString();
+      item[5] = stockHistoryLine.getSumOutQtyPeriod().toString();
+      item[6] = stockHistoryLine.getPriceOutStockMovePeriod().toString();
+      list.add(item);
+    }
+
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    fileName = fileName + ".csv";
+
+    CsvTool.csvWriter(
+        file.getParent(), file.getName(), ';', getStockHistoryLineExportHeader(), list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, fileName);
+
+    return metaFile;
+  }
+
   protected void fetchAndFillResultForStockHistoryQuery(
       StockHistoryLine stockHistoryLine,
       Long productId,
       Long companyId,
-      Long stockLocationId,
+      List<Long> stockLocationIdList,
       LocalDate periodBeginDate,
       LocalDate periodEndDate,
       boolean incoming)
@@ -105,9 +176,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.realDate < :endDate ";
 
     if (incoming) {
-      filter += "AND self.stockMove.toStockLocation.id = :stockLocationId ";
+      filter += "AND self.stockMove.toStockLocation.id IN :stockLocationIdList ";
     } else {
-      filter += "AND self.stockMove.fromStockLocation.id = :stockLocationId ";
+      filter += "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -116,7 +187,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .filter(filter)
             .bind("productId", productId)
             .bind("companyId", companyId)
-            .bind("stockLocationId", stockLocationId)
+            .bind("stockLocationIdList", stockLocationIdList)
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("beginDate", periodBeginDate)
             .bind("endDate", periodEndDate)
