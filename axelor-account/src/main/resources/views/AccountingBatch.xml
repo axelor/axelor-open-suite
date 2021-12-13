@@ -18,7 +18,7 @@
     onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
       <field name="actionSelect"
-        onChange="action-accounting-batch-record-default-currency,action-attrs-accounting-batch-domain-payment-mode,action-attrs-accounting-batch-hide-trading-name-set"/>
+        onChange="action-accounting-batch-record-default-currency,action-attrs-accounting-batch-hide-trading-name-set"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -51,7 +51,8 @@
         <field name="directDebitDataTypeSelect"/>
         <field name="billOfExchangeTypeSelect" hidden="true" showIf="actionSelect == 24"
           requiredIf="actionSelect == 24"/>
-        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
+          onSelect="action-attrs-accounting-batch-domain-payment-mode"/>
         <field name="dueDate"/>
         <field name="currency"/>
         <field name="includeOtherBankAccounts"
@@ -62,7 +63,8 @@
         <field name="creditTransferTypeSelect"/>
         <field name="customerReimbursementTypeSelect"
           showIf="$contains([3], creditTransferTypeSelect)"/>
-        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
+          onSelect="action-attrs-accounting-batch-domain-payment-mode"/>
         <field name="period" showIf="$contains([1], creditTransferTypeSelect)"
           domain="self.year.company = :company AND self.year.typeSelect = 1" form-view="period-form"
           grid-view="period-grid" canEdit="false" canView="false"/>
@@ -155,6 +157,8 @@
         showIf="actionSelect == 23"
         onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
         colSpan="12"/>
+      <button name="billOfExchangeBatchBtn" title="Bill of exchange batch"
+        showIf="actionSelect == 24" onClick="save" colSpan="12"/>
     </panel>
   </form>
 

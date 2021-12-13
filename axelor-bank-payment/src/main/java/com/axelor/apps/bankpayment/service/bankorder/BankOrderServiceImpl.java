@@ -716,6 +716,9 @@ public class BankOrderServiceImpl implements BankOrderService {
       case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER:
         return bankPaymentConfigService.getIntTreasuryTransSequence(bankPaymentConfig);
 
+      case BankOrderRepository.ORDER_TYPE_BILL_OF_EXCHANGE:
+        return bankPaymentConfigService.getBillOfExchangeSequence(bankPaymentConfig);
+
       default:
         return bankPaymentConfigService.getOtherBankOrderSequence(bankPaymentConfig);
     }

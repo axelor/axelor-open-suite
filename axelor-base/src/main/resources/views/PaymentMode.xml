@@ -44,6 +44,10 @@
           showIf="generateBankOrder &amp;&amp; typeSelect == 9"
           requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"
           onChange="action-payment-mode-attrs-on-order-type-change"/>
+        <field name="orderTypeSelect" selection-in="[1, 2, 3, 4, 5, 6, 8]" hidden="true"
+          showIf="generateBankOrder &amp;&amp; typeSelect == 10"
+          requiredIf="generateBankOrder &amp;&amp; typeSelect == 10"
+          onChange="action-payment-mode-attrs-on-order-type-change"/>
         <field name="bankOrderExportFolderPath" showIf="generateBankOrder"
           requiredIf="generateBankOrder"/>
         <field name="bankOrderFileFormat"

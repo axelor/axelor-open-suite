@@ -53,6 +53,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the National Treasury Transfers and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_11 = /*$$(*/
       "%s : Please, configure a sequence for the Other Bank Orders and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_12 = /*$$(*/
+      "%s : Please, configure a sequence for the Bill of exchange and the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/
       "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
@@ -116,12 +118,12 @@ public interface IExceptionMessage {
 
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
-  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_ADDRESS = /*$$(*/
-      "Please fill the address in the receiver company details." /*)*/;
-  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_ZIP = /*$$(*/
-      "Please fill the zip in the receiver company details." /*)*/;
-  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_RECEIVER_COMPANY_CITY = /*$$(*/
-      "Please fill the city in the receiver company details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS = /*$$(*/
+      "Please fill the address in the partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP = /*$$(*/
+      "Please fill the zip in the partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY = /*$$(*/
+      "Please fill the city in the partner details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
       "Please fill the bank in the receiver bank details." /*)*/;
 
