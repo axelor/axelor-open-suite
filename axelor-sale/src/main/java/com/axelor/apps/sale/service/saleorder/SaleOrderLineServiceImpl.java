@@ -1065,6 +1065,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         || pricing.getClass1PricingRule() == null
         || pricing.getResult1PricingRule() == null
         || count == 100) {
+      orderLine.setPricingScaleLogs("No pricing scale used for this product");
       return null;
     }
     Product product = orderLine.getProduct();
@@ -1104,6 +1105,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptHelper = new GroovyScriptHelper(scriptContext);
 
     computeResultFormulaAndApply(scriptHelper, pricing, orderLine);
+    PricingScaleLogs(orderLine, pricing, scriptHelper, count);
 
     Query<Pricing> childPricingQry =
         pricingService.getPricing(
@@ -1411,5 +1413,61 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                         scriptHelper.eval(resultPricingRule.getFormula()));
               }
             });
+  }
+
+  public void PricingScaleLogs(
+      SaleOrderLine orderLine, Pricing pricing, GroovyScriptHelper scriptHelper, int count) {
+
+    String pricingScaleLogs = count > 0 ? orderLine.getPricingScaleLogs() : "";
+    pricingScaleLogs += "Identified pricing scale: " + pricing.getName();
+
+    List<PricingRule> classPricingRuleList = new ArrayList<>();
+    classPricingRuleList.add(pricing.getClass1PricingRule());
+    classPricingRuleList.add(pricing.getClass2PricingRule());
+    classPricingRuleList.add(pricing.getClass3PricingRule());
+    classPricingRuleList.add(pricing.getClass4PricingRule());
+
+    List<String> logClassPricingRuleList = new ArrayList<>();
+    classPricingRuleList.stream()
+        .filter(Objects::nonNull)
+        .forEach(
+            classPricingRule -> {
+              logClassPricingRuleList.add(
+                  "\nClassification rule used : "
+                      + classPricingRule.getName()
+                      + "\nResult of the classification rule evaluation: "
+                      + scriptHelper.eval(classPricingRule.getFormula()).toString());
+            });
+
+    List<PricingRule> resultPricingRuleList = new ArrayList<>();
+    resultPricingRuleList.add(pricing.getResult1PricingRule());
+    resultPricingRuleList.add(pricing.getResult2PricingRule());
+    resultPricingRuleList.add(pricing.getResult3PricingRule());
+    resultPricingRuleList.add(pricing.getResult4PricingRule());
+
+    List<String> logResultPricingRuleList = new ArrayList<>();
+    resultPricingRuleList.stream()
+        .filter(Objects::nonNull)
+        .forEach(
+            resultPricingRule -> {
+              String fieldToPopulate =
+                  resultPricingRule.getFieldToPopulate().getName() != null
+                      ? "\nPopulated field : " + resultPricingRule.getFieldToPopulate().getName()
+                      : "";
+
+              logResultPricingRuleList.add(
+                  "\nEvaluation of result rule: "
+                      + resultPricingRule.getName()
+                      + "\nResult of the evaluation of the result rule: "
+                      + scriptHelper.eval(resultPricingRule.getFormula()).toString()
+                      + fieldToPopulate
+                      + "\n");
+            });
+
+    for (int i = 0; i < logClassPricingRuleList.size(); i++) {
+      pricingScaleLogs += logClassPricingRuleList.get(i) + logResultPricingRuleList.get(i);
+    }
+
+    orderLine.setPricingScaleLogs(pricingScaleLogs);
   }
 }
