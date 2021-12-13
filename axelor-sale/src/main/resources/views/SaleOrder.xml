@@ -1345,7 +1345,7 @@
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
       if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
     <action name="action-sale-order-method-empty-fiscal-position-if-not-compatible"
-      if="__config__.app.isApp('account')"/>
+      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-group-sale-order-merge-action">
@@ -1615,7 +1615,7 @@
 
   <action-method
     name="action-sale-order-method-empty-fiscal-position-if-not-compatible">
-    <call class="com.axelor.apps.account.web.SaleOrderController"
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="emptyFiscalPositionIfNotCompatible"/>
   </action-method>
 

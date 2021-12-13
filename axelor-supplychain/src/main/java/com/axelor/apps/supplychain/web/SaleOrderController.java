@@ -1052,6 +1052,31 @@ public class SaleOrderController {
   }
 
   /**
+   * Empty the fiscal position field if its value is no longer compatible with the new taxNumber
+   * after a change
+   *
+   * @param request
+   * @param response
+   */
+  public void emptyFiscalPositionIfNotCompatible(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      FiscalPosition soFiscalPosition = saleOrder.getFiscalPosition();
+      if (saleOrder.getTaxNumber() == null || soFiscalPosition == null) {
+        return;
+      }
+      for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+        if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+          return;
+        }
+      }
+      response.setValue("fiscalPosition", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
    * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
    * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
