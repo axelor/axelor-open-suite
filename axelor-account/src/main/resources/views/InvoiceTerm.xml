@@ -5,6 +5,12 @@
 
   <grid name="invoice-term-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="Valider BAP"
+        onClick="act1"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="Refuser BAP"
+        onClick="act2"/>
+    </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
@@ -50,7 +56,8 @@
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-method-invoice-init-invoice-term">
+    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-method-invoice-init-invoice-term"
+    onLoad="action-invoice-term-group-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
@@ -65,7 +72,8 @@
       <panel name="amountDatePanel" colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid"/>
-        <field name="isHoldBack" readonly="true"/>
+        <field name="isHoldBack"
+          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"/>
         <field name="estimatedPaymentDate" readonly="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
@@ -157,7 +165,7 @@
   </form>
 
   <form name="invoice-term-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm">
+    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true"/>
@@ -259,11 +267,10 @@
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
-        onChange="action-attrs-invoice-other-reason"/>
+        onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Confirm cancellation"
-        onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
-        colOffset="4" colSpan="4"/>
+        onClick="action-invoice-term-method-refusal-to-pay" colOffset="4" colSpan="4"/>
     </panel>
   </form>
 
@@ -279,6 +286,11 @@
       <mail-messages limit="4"/>
     </panel-mail>
   </form>
+
+  <action-group name="action-invoice-term-group-onload">
+    <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
+    <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
+  </action-group>
 
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -310,6 +322,16 @@
 
   <action-method name="action-invoice-term-method-refusal-to-pay">
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-domain-pfp-validator-user-on-select">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="setPfpValidatorUserDomain"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="hideSendEmailPfpBtn"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
