@@ -252,6 +252,7 @@
     </panel>
     <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true">
       <field name="transferredReasonSelect" readonlyIf="true" showIf="statusSelect == 4"/>
+      <field name="assetDisposalReason" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalDate" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
@@ -274,8 +275,11 @@
       <field name="disposalDate"
         onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line"
         type="date" title="Fixed asset Disposal date"/>
+      <spacer colSpan="6"/>
       <field name="disposalTypeSelect"
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
+      <field name="assetDisposalReason" domain="self.disposalTypeSelect = :disposalTypeSelect"
+        widget="SuggestBox" target="com.axelor.apps.account.db.AssetDisposalReason"/>
       <field name="disposalQtySelect"
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
       <field name="qty"

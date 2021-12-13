@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -519,6 +520,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       BigDecimal disposalQty,
       BigDecimal disposalAmount,
       int transferredReason,
+      AssetDisposalReason assetDisposalReason,
       String comments)
       throws AxelorException {
     FixedAsset createdFixedAsset = null;
@@ -538,8 +540,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     } else {
       disposal(disposalDate, disposalAmount, fixedAsset, transferredReason);
     }
+    fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {
+      createdFixedAsset.setAssetDisposalReason(assetDisposalReason);
       return fixedAssetRepo.save(createdFixedAsset);
     }
     return null;
