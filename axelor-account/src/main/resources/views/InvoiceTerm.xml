@@ -151,6 +151,9 @@
         </panel>
       </panel>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <form name="invoice-term-form" title="Invoice term"
@@ -272,6 +275,9 @@
       <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
         onClick=""/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-record name="action-invoice-term-record-update-customized-true"
