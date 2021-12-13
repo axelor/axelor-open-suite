@@ -17,21 +17,30 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,6 +66,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     this.unitConversionService = unitConversionService;
   }
 
+  @Transactional
   public List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
@@ -80,7 +90,29 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         periodBeginDate = periodBeginDate.plusMonths(1)) {
       LocalDate periodEndDate = periodBeginDate.plusMonths(1);
       StockHistoryLine stockHistoryLine = new StockHistoryLine();
+      Company company = Beans.get(CompanyRepository.class).find(companyId);
+      Product product = Beans.get(ProductRepository.class).find(productId);
+      stockHistoryLine.setProduct(product);
+      stockHistoryLine.setCompany(company);
       stockHistoryLine.setLabel(periodBeginDate.toString());
+      StockHistoryLineRepository stockHistoryLineRepository =
+          Beans.get(StockHistoryLineRepository.class);
+      Query<StockHistoryLine> query =
+          stockHistoryLineRepository
+              .all()
+              .filter("self.product = :product and self.label = :label and self.company = :company")
+              .bind("product", productId)
+              .bind("label", stockHistoryLine.getLabel())
+              .bind("company", companyId);
+      if (query.count() > 0) {
+        stockHistoryLine = query.fetchOne();
+      }
+      stockHistoryLine.setPeriod(
+          Beans.get(PeriodRepository.class)
+              .find(
+                  Beans.get(PeriodService.class)
+                      .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL)
+                      .getId()));
       fetchAndFillResultForStockHistoryQuery(
           stockHistoryLine,
           productId,
@@ -98,6 +130,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           periodEndDate,
           false);
       stockHistoryLineList.add(stockHistoryLine);
+      stockHistoryLineRepository.save(stockHistoryLine);
     }
     StockHistoryLine totalStockHistoryLine = createStockHistoryTotalLine(stockHistoryLineList);
     StockHistoryLine avgStockHistoryLine =
@@ -159,6 +192,49 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return metaFile;
   }
 
+  private void computeAvgOutQtyOn12PastMonth(
+      StockHistoryLine stockHistoryLine,
+      Long productId,
+      Long companyId,
+      List<Long> stockLocationIdList,
+      LocalDate periodBeginDate)
+      throws AxelorException {
+    String filter =
+        "self.product.id = :productId "
+            + "AND self.stockMove.statusSelect = :realized "
+            + "AND self.stockMove.company.id = :companyId "
+            + "AND self.stockMove.realDate >= :beginDate "
+            + "AND self.stockMove.realDate < :endDate "
+            + "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .filter(filter)
+            .bind("productId", productId)
+            .bind("companyId", companyId)
+            .bind("stockLocationIdList", stockLocationIdList)
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .bind("beginDate", periodBeginDate.minusMonths(13))
+            .bind("endDate", periodBeginDate)
+            .fetch();
+
+    BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      // quantity in product unit
+      BigDecimal qtyConverted =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              stockMoveLine.getProduct().getUnit(),
+              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().scale(),
+              stockMoveLine.getProduct());
+      avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+    }
+    avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.divide(new BigDecimal(12));
+    stockHistoryLine.setAvgOutQtyOn12PastMonth(avgOutQtyOn12PastMonth);
+  }
+
   protected void fetchAndFillResultForStockHistoryQuery(
       StockHistoryLine stockHistoryLine,
       Long productId,
@@ -196,8 +272,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       fillIncomingStockHistoryLineFields(stockHistoryLine, stockMoveLineList);
     } else {
       fillOutgoingStockHistoryLineFields(stockHistoryLine, stockMoveLineList);
+      computeAvgOutQtyOn12PastMonth(
+          stockHistoryLine, productId, companyId, stockLocationIdList, periodBeginDate);
     }
-    JPA.clear();
   }
 
   protected void fillIncomingStockHistoryLineFields(

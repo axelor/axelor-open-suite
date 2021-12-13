@@ -42,13 +42,14 @@
   </form>
 
   <grid title="Stock history line" name="stock-history-line-grid" width="large"
-    model="com.axelor.apps.stock.db.StockHistoryLine">
+    orderBy="-period.fromDate" model="com.axelor.apps.stock.db.StockHistoryLine">
     <field name="label" colSpan="3" showTitle="false"/>
     <field name="countIncMvtStockPeriod"/>
     <field name="sumIncQtyPeriod"/>
     <field name="priceIncStockMovePeriod"/>
     <field name="countOutMvtStockPeriod"/>
     <field name="sumOutQtyPeriod"/>
+    <field name="sumOneoffSaleOutQtyPeriod" if-module="axelor-supplychain"/>
     <field name="priceOutStockMovePeriod"/>
   </grid>
 
