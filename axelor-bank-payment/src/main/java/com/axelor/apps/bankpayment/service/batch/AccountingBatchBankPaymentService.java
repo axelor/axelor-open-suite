@@ -68,4 +68,9 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
 
     return Beans.get(batchClass).run(accountingBatch);
   }
+
+  public Batch billOfExchange(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchBillOfExchange.class).run(accountingBatch);
+  }
 }

@@ -48,7 +48,7 @@
       </panel>
       <panel name="directDebitPagePanel" title="Direct debit configuration"
         hideIf="actionSelect != 12 &amp;&amp; actionSelect != 24">
-        <field name="directDebitDataTypeSelect"/>
+        <field name="directDebitDataTypeSelect" if="actionSelect != 24"/>
         <field name="billOfExchangeTypeSelect" hidden="true" showIf="actionSelect == 24"
           requiredIf="actionSelect == 24"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -158,7 +158,8 @@
         onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
         colSpan="12"/>
       <button name="billOfExchangeBatchBtn" title="Bill of exchange batch"
-        showIf="actionSelect == 24" onClick="save" colSpan="12"/>
+        showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-bill-of-exchange"
+        colSpan="12"/>
     </panel>
   </form>
 
@@ -252,6 +253,11 @@
   <action-method name="action-accounting-batch-method-action-close-annual-accounts">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionCloseAnnualAccounts"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-bill-of-exchange">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionBillOfExchange"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->
