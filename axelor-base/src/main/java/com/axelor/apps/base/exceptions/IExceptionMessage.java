@@ -438,4 +438,6 @@ public interface IExceptionMessage {
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
       "Please upload csv or txt or zip files only." /*)*/;
   public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
+  public static final String CITIES_IMPORT_FAILED = /*$$(*/
+      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }
