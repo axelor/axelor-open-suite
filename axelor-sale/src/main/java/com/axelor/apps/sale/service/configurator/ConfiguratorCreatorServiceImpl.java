@@ -24,8 +24,10 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -67,6 +69,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   private MetaFieldRepository metaFieldRepository;
   private MetaJsonFieldRepository metaJsonFieldRepository;
   private MetaModelRepository metaModelRepository;
+  private SaleOrderRepository saleOrderRepository;
 
   @Inject
   public ConfiguratorCreatorServiceImpl(
@@ -74,12 +77,14 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       AppBaseService appBaseService,
       MetaFieldRepository metaFieldRepository,
       MetaJsonFieldRepository metaJsonFieldRepository,
-      MetaModelRepository metaModelRepository) {
+      MetaModelRepository metaModelRepository,
+      SaleOrderRepository saleOrderRepository) {
     this.configuratorCreatorRepo = configuratorCreatorRepo;
     this.appBaseService = appBaseService;
     this.metaFieldRepository = metaFieldRepository;
     this.metaJsonFieldRepository = metaJsonFieldRepository;
     this.metaModelRepository = metaModelRepository;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -148,6 +153,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         }
       }
     }
+    attributesValues.put(
+        ConfiguratorFormulaService.PARENT_SALE_ORDER_ID_FIELD_NAME,
+        saleOrderRepository.all().fetchStream(1).map(SaleOrder::getId).findAny().orElse(1L));
     return new ScriptBindings(attributesValues);
   }
 
