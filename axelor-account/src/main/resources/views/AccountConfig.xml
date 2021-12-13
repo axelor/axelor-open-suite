@@ -115,6 +115,14 @@
             <field name="deferredIncomesAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
+            <field name="forecastedInvCustAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
+              if="__config__.app.isApp('supplychain')"/>
+            <field name="forecastedInvSuppAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form" if-module="axelor-supplychain"
+              if="__config__.app.isApp('supplychain')"/>
           </panel>
           <panel name="accountFactorPanel"
             if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
@@ -132,14 +140,6 @@
             <field name="yearClosureAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
-            <field name="forecastedInvCustAccount"
-              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-              form-view="account-form" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')"/>
-            <field name="forecastedInvSuppAccount"
-              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-              form-view="account-form" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')"/>
           </panel>
 
 
