@@ -847,8 +847,8 @@
 
   <action-record name="action-move-line-record-empty-cut-off-dates"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="cutOffStartDate" expr=""/>
-    <field name="cutOffEndDate" expr=""/>
+    <field name="cutOffStartDate" expr="eval: null"/>
+    <field name="cutOffEndDate" expr="eval: null"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
