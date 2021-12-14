@@ -6,9 +6,9 @@
   <grid name="invoice-term-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="Valider BAP"
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="toolbar.validatePFP"
         onClick="act1"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="Refuser BAP"
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
         onClick="act2"/>
     </toolbar>
     <hilite color="danger"
