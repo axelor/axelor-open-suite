@@ -304,9 +304,7 @@ public class InvoiceLineController {
 
         if (product != null) {
           FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-          if (fiscalPosition == null) {
-            fiscalPosition = invoice.getPartner().getFiscalPosition();
-          }
+
           Account account =
               Beans.get(AccountManagementServiceAccountImpl.class)
                   .getProductAccount(

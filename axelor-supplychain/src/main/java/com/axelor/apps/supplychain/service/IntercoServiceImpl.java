@@ -457,9 +457,7 @@ public class IntercoServiceImpl implements IntercoService {
               invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
 
       FiscalPosition intercoFiscalPosition = intercoInvoice.getFiscalPosition();
-      if (intercoFiscalPosition == null && intercoInvoice.getPartner() != null) {
-        intercoFiscalPosition = intercoInvoice.getPartner().getFiscalPosition();
-      }
+
       TaxEquiv taxEquiv =
           Beans.get(FiscalPositionService.class).getTaxEquiv(intercoFiscalPosition, tax);
 

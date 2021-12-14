@@ -433,11 +433,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public FiscalPosition getFiscalPosition(SaleOrder saleOrder) {
-    FiscalPosition resFiscalPosition = saleOrder.getFiscalPosition();
-    if (resFiscalPosition == null && saleOrder.getClientPartner() != null) {
-      return saleOrder.getClientPartner().getFiscalPosition();
-    } else {
-      return resFiscalPosition;
-    }
+    return saleOrder.getFiscalPosition();
   }
 }

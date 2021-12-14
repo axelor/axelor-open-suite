@@ -302,10 +302,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = null;
       if (saleOrder != null) {
-        fiscalPosition = saleOrder.getFiscalPosition();
-      }
-      if (fiscalPosition == null && partner != null) {
-        fiscalPosition = partner.getFiscalPosition();
+        fiscalPosition = Beans.get(SaleOrderService.class).getFiscalPosition(saleOrder);
       }
       if (fiscalPosition != null) {
         partnerAccount =

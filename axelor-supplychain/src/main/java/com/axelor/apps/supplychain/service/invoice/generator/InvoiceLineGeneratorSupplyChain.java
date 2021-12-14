@@ -271,11 +271,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
-    // Determine fiscal position from the invoice or from the partner of the invoice
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-    if (fiscalPosition == null) {
-      fiscalPosition = invoice.getPartner().getFiscalPosition();
-    }
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     // Determine and set the account for the line

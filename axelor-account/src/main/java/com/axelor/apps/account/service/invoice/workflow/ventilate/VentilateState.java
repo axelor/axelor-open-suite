@@ -135,9 +135,6 @@ public class VentilateState extends WorkflowInvoice {
 
       if (invoice.getPartner() != null) {
         FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-        if (fiscalPosition == null) {
-          fiscalPosition = invoice.getPartner().getFiscalPosition();
-        }
         account = Beans.get(FiscalPositionAccountService.class).getAccount(fiscalPosition, account);
       }
       invoice.setPartnerAccount(account);

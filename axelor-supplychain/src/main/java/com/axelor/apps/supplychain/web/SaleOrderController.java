@@ -1062,12 +1062,19 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       FiscalPosition soFiscalPosition = saleOrder.getFiscalPosition();
-      if (saleOrder.getTaxNumber() == null || soFiscalPosition == null) {
+      if (soFiscalPosition == null) {
         return;
       }
-      for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
-        if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+      if (saleOrder.getTaxNumber() == null) {
+        if (saleOrder.getClientPartner() != null
+            && saleOrder.getFiscalPosition() == saleOrder.getClientPartner().getFiscalPosition()) {
           return;
+        }
+      } else {
+        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+          if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+            return;
+          }
         }
       }
       response.setValue("fiscalPosition", null);
@@ -1091,7 +1098,8 @@ public class SaleOrderController {
           Beans.get(SaleOrderLineServiceSupplyChain.class);
       if (saleOrder.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineServiceSupplyChain.fillPrice(saleOrderLine, saleOrder);
+          saleOrderLineServiceSupplyChain.computeProductInformation(saleOrderLine, saleOrder);
+          saleOrderLineServiceSupplyChain.computeValues(saleOrder, saleOrderLine);
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
       }

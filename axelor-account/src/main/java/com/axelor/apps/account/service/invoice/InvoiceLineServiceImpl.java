@@ -168,9 +168,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-    if (fiscalPosition == null) {
-      fiscalPosition = invoice.getPartner().getFiscalPosition();
-    }
 
     return accountManagementAccountService.getTaxLine(
         appAccountService.getTodayDate(invoice.getCompany()),
@@ -490,9 +487,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     TaxLine taxLine = null;
     Company company = invoice.getCompany();
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-    if (fiscalPosition == null) {
-      fiscalPosition = invoice.getPartner().getFiscalPosition();
-    }
+
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);

@@ -245,9 +245,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-      if (fiscalPosition == null) {
-        fiscalPosition = partner.getFiscalPosition();
-      }
 
       taxLine =
           accountManagementService.getTaxLine(

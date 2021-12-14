@@ -236,10 +236,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
       Tax tax =
           accountManagementService.getProductTax(
-              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+              saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
 
       TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
-
       saleOrderLine.setTaxEquiv(taxEquiv);
     } else {
       saleOrderLine.setTaxLine(null);
