@@ -652,4 +652,9 @@
     <option value="1">&gt;</option>
   </selection>
 
+  <selection name="printing.setting.address.position">
+    <option value="0">Right</option>
+    <option value="1">Left</option>
+  </selection>
+
 </object-views>

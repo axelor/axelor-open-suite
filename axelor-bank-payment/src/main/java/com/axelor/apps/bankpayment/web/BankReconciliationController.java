@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -265,7 +266,8 @@ public class BankReconciliationController {
               .generate()
               .getFileLink();
 
-      response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+      response.setView(
+          ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -277,7 +279,8 @@ public class BankReconciliationController {
       String fileLink =
           Beans.get(BankReconciliationService.class).printNewBankReconciliation(bankReconciliation);
       if (StringUtils.notEmpty(fileLink)) {
-        response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+        response.setView(
+            ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -297,7 +300,13 @@ public class BankReconciliationController {
       if (Strings.isNullOrEmpty(journalIds)) {
         response.setAttr("journal", "domain", "self.id IN (0)");
       } else {
-        response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+        response.setAttr(
+            "journal",
+            "domain",
+            "self.id IN("
+                + journalIds
+                + ") AND self.statusSelect = "
+                + JournalRepository.STATUS_ACTIVE);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

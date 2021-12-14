@@ -35,9 +35,11 @@ public interface ConfiguratorService {
    *
    * @param configurator
    * @param attributes
+   * @param saleOrderId id of parent sale order, can be null.
    * @param indicators @return the new values of indicators
    */
-  void updateIndicators(Configurator configurator, JsonContext attributes, JsonContext indicators)
+  void updateIndicators(
+      Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
       throws AxelorException;
 
   /**
@@ -51,25 +53,18 @@ public interface ConfiguratorService {
   Object computeFormula(String groovyFormula, JsonContext values) throws AxelorException;
 
   /**
-   * Generate the product, and the bill of materials if we are in the right module
-   *
-   * @param configurator
-   * @param jsonAttributes
-   * @param jsonIndicators
-   */
-  void generate(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
-      throws AxelorException, NoSuchMethodException, ClassNotFoundException,
-          InvocationTargetException, IllegalAccessException;
-
-  /**
    * Generate a product from the configurator
    *
    * @param configurator
    * @param jsonAttributes
    * @param jsonIndicators
+   * @param saleOrderId
    */
   void generateProduct(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
           JSONException, ClassNotFoundException, AxelorException;
 

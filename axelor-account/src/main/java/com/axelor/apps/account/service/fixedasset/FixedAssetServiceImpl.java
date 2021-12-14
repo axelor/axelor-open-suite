@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -238,6 +239,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void validate(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+
+      if (StringUtils.isEmpty(fixedAsset.getFixedAssetSeq())) {
+        fixedAsset.setFixedAssetSeq(fixedAssetGenerationService.generateSequence(fixedAsset));
+      }
+
       if (fixedAsset.getFixedAssetLineList() != null
           && !fixedAsset.getFixedAssetLineList().isEmpty()) {
         fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
@@ -273,7 +279,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.setAccountingValue(
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
       }
-      fixedAsset.setFixedAssetSeq(fixedAssetGenerationService.generateSequence(fixedAsset));
 
     } else {
       fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
@@ -391,7 +396,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 fixedAsset.getQty().setScale(RETURNED_SCALE)));
     String commentsToAdd =
         String.format(
-            I18n.get(FixedAssetRepository.SPLIT_MESSAGE_COMMENT),
+            I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
             disposalQty,
             splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     newFixedAsset.setComments(comments);
@@ -515,6 +520,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       BigDecimal disposalQty,
       BigDecimal disposalAmount,
       int transferredReason,
+      AssetDisposalReason assetDisposalReason,
       String comments)
       throws AxelorException {
     FixedAsset createdFixedAsset = null;
@@ -534,8 +540,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     } else {
       disposal(disposalDate, disposalAmount, fixedAsset, transferredReason);
     }
+    fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {
+      createdFixedAsset.setAssetDisposalReason(assetDisposalReason);
       return fixedAssetRepo.save(createdFixedAsset);
     }
     return null;

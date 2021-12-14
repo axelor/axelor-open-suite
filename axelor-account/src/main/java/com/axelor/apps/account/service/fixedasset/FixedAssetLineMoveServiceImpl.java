@@ -29,14 +29,17 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -66,6 +69,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveRepository moveRepo;
 
+  protected MoveLineRepository moveLineRepo;
+
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
@@ -74,27 +79,35 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveValidateService moveValidateService;
 
+  protected BatchRepository batchRepository;
+
+  private Batch batch;
+
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
+      MoveLineRepository moveLineRepo,
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetRepository fixedAssetRepo,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetLineService fixedAssetLineService,
       MoveValidateService moveValidateService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BatchRepository batchRepository) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
+    this.moveLineRepo = moveLineRepo;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.fixedAssetRepo = fixedAssetRepo;
+    this.batchRepository = batchRepository;
   }
 
   @Override
@@ -219,6 +232,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .findAny()
                 .orElse(null);
         if (fixedAssetDerogatoryLine != null) {
+          if (batch != null) {
+            fixedAssetDerogatoryLineMoveService.setBatch(batch);
+          }
           fixedAssetDerogatoryLineMoveService.realize(
               fixedAssetDerogatoryLine, isBatch, generateMove);
         }
@@ -339,6 +355,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
         move.getMoveLineList().addAll(moveLines);
+        if (batch != null) {
+          move.addBatchSetItem(batchRepository.find(batch.getId()));
+        }
         return moveRepo.save(move);
       }
     }
@@ -432,6 +451,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
       move.getMoveLineList().addAll(moveLines);
+      if (batch != null) {
+        move.addBatchSetItem(batchRepository.find(batch.getId()));
+      }
     }
 
     return moveRepo.save(move);
@@ -556,7 +578,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
+      moveLine = moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine);
+      moveLineRepo.save(moveLine);
     }
   }
 
@@ -760,5 +783,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       return fixedAsset.getJournal().getAuthorizeSimulatedMove();
     }
     return false;
+  }
+
+  @Override
+  public void setBatch(Batch batch) {
+    this.batch = batch;
   }
 }

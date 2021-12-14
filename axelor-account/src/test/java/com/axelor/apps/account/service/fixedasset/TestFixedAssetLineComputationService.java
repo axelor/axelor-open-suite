@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class TestFixedAssetLineComputationService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    FixedAssetLine fixedAssetLine =
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
@@ -73,7 +74,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("100.00"),
             new BigDecimal("100.00"),
             new BigDecimal("400.00")),
-        fixedAssetLine);
+        fixedAssetLine.get());
   }
 
   @Test
@@ -90,7 +91,7 @@ public class TestFixedAssetLineComputationService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    FixedAssetLine fixedAssetLine =
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
@@ -100,7 +101,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("23.89"),
             new BigDecimal("23.89"),
             new BigDecimal("476.11")),
-        fixedAssetLine);
+        fixedAssetLine.get());
   }
 
   @Test
@@ -279,7 +280,7 @@ public class TestFixedAssetLineComputationService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    FixedAssetLine fixedAssetLine =
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
@@ -289,7 +290,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("5250.00"),
             new BigDecimal("5250.00"),
             new BigDecimal("14750.00")),
-        fixedAssetLine);
+        fixedAssetLine.get());
   }
 
   @Test

@@ -14,9 +14,9 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -510,6 +510,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
@@ -527,7 +530,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                         invoiceTerm.getAmount(),
                         invoice.getInvoiceDate())
                     .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                null,
+                currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
@@ -552,7 +555,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                           invoiceTerm.getAmount(),
                           invoice.getInvoiceDate())
                       .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                  null,
+                  currencyRate,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,
@@ -566,14 +569,25 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             moveLine.setDebit(
                 moveLine
                     .getDebit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+                    .add(
+                        currencyService.getAmountCurrencyConvertedAtDate(
+                            invoice.getCurrency(),
+                            companyCurrency,
+                            invoiceTerm.getAmount(),
+                            invoice.getInvoiceDate())));
           } else {
             // Credit
             moveLine.setCredit(
                 moveLine
                     .getCredit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+                    .add(
+                        currencyService.getAmountCurrencyConvertedAtDate(
+                            invoice.getCurrency(),
+                            companyCurrency,
+                            invoiceTerm.getAmount(),
+                            invoice.getInvoiceDate())));
           }
+          moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
       }
     }

@@ -17,12 +17,16 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -87,6 +91,8 @@ public class FixedAssetController {
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    AssetDisposalReason assetDisposalReason =
+        (AssetDisposalReason) context.get("assetDisposalReason");
     String comments = null;
     if (context.get("comments") != null) {
       comments = context.get("comments").toString();
@@ -130,6 +136,7 @@ public class FixedAssetController {
                   disposalQty,
                   disposalAmount,
                   transferredReason,
+                  assetDisposalReason,
                   comments);
       if (createdFixedAsset != null) {
         response.setView(
@@ -215,6 +222,36 @@ public class FixedAssetController {
     }
   }
 
+  public void personalizeAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          fixedAsset.getAnalyticDistributionTemplate();
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .personalizeAnalyticDistributionTemplate(
+                  analyticDistributionTemplate, fixedAsset.getCompany());
+      if (analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific()) {
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+        response.setView(
+            ActionView.define("Specific Analytic Distribution Template")
+                .model(AnalyticDistributionTemplate.class.getName())
+                .add("form", "analytic-distribution-template-fixed-asset-form")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", specificAnalyticDistributionTemplate.getId())
+                .context("fixedAsset", fixedAsset.getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void computeFirstDepreciationDate(ActionRequest request, ActionResponse response) {
 
     try {
@@ -275,6 +312,21 @@ public class FixedAssetController {
     }
   }
 
+  public void setTitleForButton(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      if (fixedAsset.getAnalyticDistributionTemplate() != null) {
+        response.setAttr(
+            "personalizeBtn", "title", I18n.get("Personalize selected analytic template"));
+      } else {
+        response.setAttr(
+            "personalizeBtn", "title", I18n.get("Create personalized analytic template"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void failOverControl(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
@@ -324,6 +376,18 @@ public class FixedAssetController {
       FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
       fixedAssetService.onChangeDepreciationPlan(fixedAsset);
       response.setValues(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void hideAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      response.setAttr(
+          "analyticPanel",
+          "hidden",
+          !Beans.get(AnalyticToolService.class).isManageAnalytic(fixedAsset.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

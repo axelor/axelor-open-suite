@@ -26,6 +26,8 @@ public class JournalManagementRepository extends JournalRepository {
 
     Journal copy = super.copy(entity, deep);
 
+    copy.setCode(String.format("%s (copy)", entity.getCode()));
+    copy.setName(String.format("%s (copy)", entity.getName()));
     copy.setStatusSelect(JournalRepository.STATUS_INACTIVE);
     copy.setSequence(null);
 
