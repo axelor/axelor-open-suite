@@ -232,7 +232,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
       saleOrderLine.setTaxLine(taxLine);
 
-      FiscalPosition fiscalPosition = saleOrderService.getFiscalPosition(saleOrder);
+      FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
 
       Tax tax =
           accountManagementService.getProductTax(
@@ -427,7 +427,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCreationDate(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
-            saleOrderService.getFiscalPosition(saleOrder),
+            saleOrder.getFiscalPosition(),
             false);
   }
 

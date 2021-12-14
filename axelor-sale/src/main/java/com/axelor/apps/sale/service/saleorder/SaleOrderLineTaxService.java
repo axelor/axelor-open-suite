@@ -61,7 +61,7 @@ public class SaleOrderLineTaxService {
     Set<String> specificNotes = new HashSet<String>();
 
     boolean customerSpecificNote = false;
-    FiscalPosition fiscalPosition = saleOrderService.getFiscalPosition(saleOrder);
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
     if (fiscalPosition != null) {
       customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }

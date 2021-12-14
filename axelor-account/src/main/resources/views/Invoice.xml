@@ -431,7 +431,7 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="fiscalPosition" grid-view="fiscal-position-grid"
         form-view="fiscal-position-form" canNew="false" canEdit="false"
-        readonlyIf="statusSelect != 1"
+        readonlyIf="statusSelect > 2"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>

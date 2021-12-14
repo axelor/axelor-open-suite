@@ -40,7 +40,6 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -302,7 +301,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = null;
       if (saleOrder != null) {
-        fiscalPosition = Beans.get(SaleOrderService.class).getFiscalPosition(saleOrder);
+        fiscalPosition = saleOrder.getFiscalPosition();
       }
       if (fiscalPosition != null) {
         partnerAccount =
@@ -504,7 +503,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
-    FiscalPosition fiscalPosition = Beans.get(SaleOrderService.class).getFiscalPosition(saleOrder);
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
     invoice.setFiscalPosition(fiscalPosition);
 
     invoiceRepo.save(invoice);

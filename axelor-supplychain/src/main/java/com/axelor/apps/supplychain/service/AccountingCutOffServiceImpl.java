@@ -451,8 +451,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     Product product = stockMoveLine.getProduct();
 
-    FiscalPosition fiscalPosition =
-        saleOrderService.getFiscalPosition(saleOrderLine.getSaleOrder());
+    FiscalPosition fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
 
     Account account =
         accountManagementAccountService.getProductAccount(

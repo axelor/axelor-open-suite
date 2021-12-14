@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -124,13 +123,4 @@ public interface SaleOrderService {
   SaleOrder seperateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
-
-  /**
-   * Get the appropriate fiscal position from a sale order, by default the fiscal position of the
-   * clientPartner
-   *
-   * @param saleOrder
-   * @return
-   */
-  public FiscalPosition getFiscalPosition(SaleOrder saleOrder);
 }

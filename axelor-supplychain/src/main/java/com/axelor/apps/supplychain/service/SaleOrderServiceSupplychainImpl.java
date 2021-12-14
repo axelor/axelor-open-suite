@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -429,10 +428,5 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       saleOrder.setInvoicedPartner(clientPartner);
       saleOrder.setDeliveredPartner(clientPartner);
     }
-  }
-
-  @Override
-  public FiscalPosition getFiscalPosition(SaleOrder saleOrder) {
-    return saleOrder.getFiscalPosition();
   }
 }
