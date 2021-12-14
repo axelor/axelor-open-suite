@@ -106,9 +106,6 @@
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
           </panel>
           <panel name="cutOffPanel" colSpan="12" title="Cut off">
-            <field name="vatRegularisationAccount"
-              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-              form-view="account-form"/>
             <field name="prepaidExpensesAccount"
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
