@@ -166,6 +166,11 @@
       method="accountingCutOff"/>
   </action-method>
 
+  <action-method name="action-supplychain-batch-method-update-stock-history">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
+      method="updateStockHistory"/>
+  </action-method>
+
 
   <!-- BATCH -->
 
