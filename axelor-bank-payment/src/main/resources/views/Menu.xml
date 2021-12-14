@@ -330,6 +330,7 @@
     <view type="grid" name="account-management-editable-grid"/>
     <view type="form" name="account-management-form"/>
     <domain>self.typeSelect = 3</domain>
+    <context name="_type" expr="eval: 3"/>
   </action-view>
 
 </object-views>

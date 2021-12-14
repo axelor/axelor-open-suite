@@ -192,6 +192,7 @@
       if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax'"/>
     <attribute name="value" for="typeSelect" expr="eval: 3"
       if="eval: __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"/>
+    <attribute name="value" for="typeSelect" expr="eval: _type" if="eval: _type!=null"/>
   </action-attrs>
 
   <action-attrs name="action-account-management-attrs-hide-type">
