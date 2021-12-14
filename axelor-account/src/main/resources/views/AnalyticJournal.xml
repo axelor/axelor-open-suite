@@ -5,6 +5,10 @@
 
   <grid name="analytic-journal-grid" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="name"/>
     <field name="type" form-view="analytic-journal-type-form"
       grid-view="analytic-journal-type-grid"/>
