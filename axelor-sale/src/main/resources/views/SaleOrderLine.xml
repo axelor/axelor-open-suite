@@ -379,7 +379,7 @@
         <field name="standardDelay" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
-        <field name="pricingScaleLogs" title="Price calculation details" colSpan="12"
+        <field name="pricingScaleLogs" colSpan="12"
           showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
@@ -502,7 +502,7 @@
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <field name="standardDelay" if-module="axelor-supplychain" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
-        <field name="pricingScaleLogs" title="Price calculation details" colSpan="12"
+        <field name="pricingScaleLogs" colSpan="12"
           showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"

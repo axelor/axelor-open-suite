@@ -1065,10 +1065,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         || pricing.getClass1PricingRule() == null
         || pricing.getResult1PricingRule() == null
         || count == 100) {
-      orderLine.setPricingScaleLogs("No pricing scale used for this product");
+      orderLine.setPricingScaleLogs(I18n.get("No pricing scale used for this product"));
       return null;
     }
     Product product = orderLine.getProduct();
+
+    String pricingScaleLogs = count > 0 ? orderLine.getPricingScaleLogs() + "\n" : "";
+    pricingScaleLogs += I18n.get("Identified pricing scale: ") + pricing.getName();
 
     // (2) Compute the classification formulas
     // (3) Search the Pricing Line
@@ -1085,15 +1088,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptContext.put("previousPricingLine", EntityHelper.getEntity(previousPricingLine));
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    PricingLine pricingLine =
-        searchPricingLine(
-            pricing,
-            new Object[] {
-              computeClassificationFormula(scriptHelper, pricing.getClass1PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass2PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass3PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass4PricingRule())
-            });
+    List<String> logClassPricingRuleList = new ArrayList<>();
+    Object[] classifications =
+        computeClassificationFormula(scriptHelper, pricing, orderLine, logClassPricingRuleList);
+
+    PricingLine pricingLine = searchPricingLine(pricing, classifications);
 
     if (pricingLine == null) {
       return null;
@@ -1104,8 +1103,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
     scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    computeResultFormulaAndApply(scriptHelper, pricing, orderLine);
-    PricingScaleLogs(orderLine, pricing, scriptHelper, count);
+    List<String> logResultPricingRuleList = new ArrayList<>();
+
+    computeResultFormulaAndApply(scriptHelper, pricing, orderLine, logResultPricingRuleList);
+
+    for (int i = 0; i < logClassPricingRuleList.size(); i++) {
+      pricingScaleLogs += logClassPricingRuleList.get(i) + logResultPricingRuleList.get(i);
+    }
 
     Query<Pricing> childPricingQry =
         pricingService.getPricing(
@@ -1118,8 +1122,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     long totalChildPricing = childPricingQry.count();
 
     if (totalChildPricing == 0) {
+      orderLine.setPricingScaleLogs(pricingScaleLogs);
       return pricingLine;
-
     } else if (totalChildPricing > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1130,15 +1134,46 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               SaleOrderLine.class.getSimpleName()));
 
     } else {
+      orderLine.setPricingScaleLogs(pricingScaleLogs + "\n");
       Pricing childPricing = childPricingQry.fetchOne();
       return computePricing(childPricing, saleOrder, orderLine, pricingLine, ++count);
     }
   }
 
-  public Object computeClassificationFormula(
-      GroovyScriptHelper scriptHelper, PricingRule classPricingRule) {
+  public Object[] computeClassificationFormula(
+      GroovyScriptHelper scriptHelper,
+      Pricing pricing,
+      SaleOrderLine orderLine,
+      List<String> logs) {
 
-    return classPricingRule != null ? scriptHelper.eval(classPricingRule.getFormula()) : null;
+    List<Object> classificationsList = new ArrayList<>();
+
+    List<PricingRule> classPricingRuleList = new ArrayList<>();
+    classPricingRuleList.add(pricing.getClass1PricingRule());
+    classPricingRuleList.add(pricing.getClass2PricingRule());
+    classPricingRuleList.add(pricing.getClass3PricingRule());
+    classPricingRuleList.add(pricing.getClass4PricingRule());
+
+    classPricingRuleList.stream()
+        .forEach(
+            classPricingRule -> {
+              if (classPricingRule != null) {
+                Object computedFormula = scriptHelper.eval(classPricingRule.getFormula());
+                classificationsList.add(computedFormula);
+                if (computedFormula != null)
+                  logs.add(
+                      "\n"
+                          + I18n.get("Classification rule used: ")
+                          + classPricingRule.getName()
+                          + "\n"
+                          + I18n.get("Evaluation of the classification rule: ")
+                          + computedFormula.toString());
+              } else {
+                classificationsList.add(null);
+              }
+            });
+
+    return classificationsList.toArray();
   }
 
   private List<Integer[]> getFieldTypeAndOperator(Pricing pricing) {
@@ -1393,7 +1428,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   public void computeResultFormulaAndApply(
-      GroovyScriptHelper scriptHelper, Pricing pricing, SaleOrderLine orderLine) {
+      GroovyScriptHelper scriptHelper,
+      Pricing pricing,
+      SaleOrderLine orderLine,
+      List<String> logs) {
 
     List<PricingRule> resultPricingRuleList = new ArrayList<>();
     resultPricingRuleList.add(pricing.getResult1PricingRule());
@@ -1405,69 +1443,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         .filter(Objects::nonNull)
         .forEach(
             resultPricingRule -> {
+              Object result = scriptHelper.eval(resultPricingRule.getFormula());
+              String fieldToPopulate = "";
               if (resultPricingRule.getFieldToPopulate() != null) {
-                Mapper.of(SaleOrderLine.class)
-                    .set(
-                        orderLine,
-                        resultPricingRule.getFieldToPopulate().getName(),
-                        scriptHelper.eval(resultPricingRule.getFormula()));
+                fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
+                Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
               }
-            });
-  }
-
-  public void PricingScaleLogs(
-      SaleOrderLine orderLine, Pricing pricing, GroovyScriptHelper scriptHelper, int count) {
-
-    String pricingScaleLogs = count > 0 ? orderLine.getPricingScaleLogs() : "";
-    pricingScaleLogs += "Identified pricing scale: " + pricing.getName();
-
-    List<PricingRule> classPricingRuleList = new ArrayList<>();
-    classPricingRuleList.add(pricing.getClass1PricingRule());
-    classPricingRuleList.add(pricing.getClass2PricingRule());
-    classPricingRuleList.add(pricing.getClass3PricingRule());
-    classPricingRuleList.add(pricing.getClass4PricingRule());
-
-    List<String> logClassPricingRuleList = new ArrayList<>();
-    classPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            classPricingRule -> {
-              logClassPricingRuleList.add(
-                  "\nClassification rule used : "
-                      + classPricingRule.getName()
-                      + "\nResult of the classification rule evaluation: "
-                      + scriptHelper.eval(classPricingRule.getFormula()).toString());
-            });
-
-    List<PricingRule> resultPricingRuleList = new ArrayList<>();
-    resultPricingRuleList.add(pricing.getResult1PricingRule());
-    resultPricingRuleList.add(pricing.getResult2PricingRule());
-    resultPricingRuleList.add(pricing.getResult3PricingRule());
-    resultPricingRuleList.add(pricing.getResult4PricingRule());
-
-    List<String> logResultPricingRuleList = new ArrayList<>();
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              String fieldToPopulate =
-                  resultPricingRule.getFieldToPopulate().getName() != null
-                      ? "\nPopulated field : " + resultPricingRule.getFieldToPopulate().getName()
-                      : "";
-
-              logResultPricingRuleList.add(
-                  "\nEvaluation of result rule: "
+              logs.add(
+                  "\n"
+                      + I18n.get("Result rule used: ")
                       + resultPricingRule.getName()
-                      + "\nResult of the evaluation of the result rule: "
-                      + scriptHelper.eval(resultPricingRule.getFormula()).toString()
-                      + fieldToPopulate
-                      + "\n");
+                      + "\n"
+                      + I18n.get("Evaluation of the result rule: ")
+                      + result.toString()
+                      + "\n"
+                      + I18n.get("Populated field: ")
+                      + fieldToPopulate);
             });
-
-    for (int i = 0; i < logClassPricingRuleList.size(); i++) {
-      pricingScaleLogs += logClassPricingRuleList.get(i) + logResultPricingRuleList.get(i);
-    }
-
-    orderLine.setPricingScaleLogs(pricingScaleLogs);
   }
 }
