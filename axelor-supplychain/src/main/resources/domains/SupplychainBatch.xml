@@ -48,7 +48,7 @@
       ref="com.axelor.apps.account.db.Journal"/>
     <integer name="cutOffMoveStatusSelect" title="Cut off moves status"
       selection="iaccount.move.status.select" default="1"/>
-    <boolean name="previewMoveLinesToProcess" title="Preview move lines to process"/>
+    <boolean name="previewRecordsToProcess" title="Preview records to process"/>
 
     <extra-code><![CDATA[
 
