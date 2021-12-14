@@ -20,7 +20,6 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -108,11 +107,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         stockHistoryLine = query.fetchOne();
       }
       stockHistoryLine.setPeriod(
-          Beans.get(PeriodRepository.class)
-              .find(
-                  Beans.get(PeriodService.class)
-                      .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL)
-                      .getId()));
+          Beans.get(PeriodService.class)
+              .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL));
       fetchAndFillResultForStockHistoryQuery(
           stockHistoryLine,
           productId,
