@@ -116,6 +116,8 @@ public interface InvoiceLineService {
 
   boolean checkCutOffDates(InvoiceLine invoiceLine);
 
-  boolean applyCutOffDates(
+  boolean checkManageCutOffDates(InvoiceLine invoiceLine);
+
+  void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

@@ -43,6 +43,8 @@ public interface MoveLineService {
 
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
-  boolean applyCutOffDates(
+  boolean checkManageCutOffDates(MoveLine moveLine);
+
+  void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

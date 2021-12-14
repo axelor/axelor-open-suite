@@ -52,12 +52,19 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   }
 
   @Override
-  public boolean applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public boolean checkManageCutOffDates(Move move) {
     return CollectionUtils.isEmpty(move.getMoveLineList())
         || move.getMoveLineList().stream()
-            .allMatch(
-                moveLine ->
-                    moveLineService.applyCutOffDates(
-                        moveLine, move, cutOffStartDate, cutOffEndDate));
+            .allMatch(invoiceLine -> moveLineService.checkManageCutOffDates(invoiceLine));
+  }
+
+  @Override
+  public void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      move.getMoveLineList()
+          .forEach(
+              moveLine ->
+                  moveLineService.applyCutOffDates(moveLine, move, cutOffStartDate, cutOffEndDate));
+    }
   }
 }

@@ -1184,13 +1184,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public boolean applyCutOffDates(
-      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public boolean checkManageCutOffDates(Invoice invoice) {
     return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
         || invoice.getInvoiceLineList().stream()
-            .allMatch(
-                invoiceLine ->
-                    invoiceLineService.applyCutOffDates(
-                        invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+            .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+  }
+
+  @Override
+  public void applyCutOffDates(
+      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      invoice
+          .getInvoiceLineList()
+          .forEach(
+              invoiceLine ->
+                  invoiceLineService.applyCutOffDates(
+                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+    }
   }
 }

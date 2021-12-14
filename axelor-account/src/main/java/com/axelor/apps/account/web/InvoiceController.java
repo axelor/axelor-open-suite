@@ -1032,13 +1032,15 @@ public class InvoiceController {
   public void applyCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
       LocalDate cutOffStartDate =
           LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
       LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
-      if (Beans.get(InvoiceService.class)
-          .applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate)) {
+      if (invoiceService.checkManageCutOffDates(invoice)) {
+        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+
         response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
       } else {
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());

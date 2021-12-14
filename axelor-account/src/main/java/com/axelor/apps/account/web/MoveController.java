@@ -579,13 +579,15 @@ public class MoveController {
   public void applyCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
 
       LocalDate cutOffStartDate =
           LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
       LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
-      if (Beans.get(MoveComputeService.class)
-          .applyCutOffDates(move, cutOffStartDate, cutOffEndDate)) {
+      if (moveComputeService.checkManageCutOffDates(move)) {
+        moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+
         response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
       } else {
         response.setValue("moveLineList", move.getMoveLineList());

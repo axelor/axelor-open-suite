@@ -290,18 +290,16 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public boolean applyCutOffDates(
+  public boolean checkManageCutOffDates(MoveLine moveLine) {
+    return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
+  }
+
+  @Override
+  public void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
-    if (cutOffStartDate != null
-        && cutOffEndDate != null
-        && moveLine.getAccount() != null
-        && moveLine.getAccount().getManageCutOffPeriod()) {
+    if (cutOffStartDate != null && cutOffEndDate != null) {
       moveLine.setCutOffStartDate(cutOffStartDate);
       moveLine.setCutOffEndDate(cutOffEndDate);
-
-      return false;
     }
-
-    return true;
   }
 }
