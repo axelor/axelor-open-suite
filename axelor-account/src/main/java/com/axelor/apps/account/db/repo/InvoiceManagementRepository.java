@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.exception.AxelorException;
@@ -65,7 +66,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
       invoiceService.setDraftSequence(invoice);
 
-      if (!invoiceService.checkInvoiceLinesCutOffDates(invoice)) {
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
+          && !invoiceService.checkInvoiceLinesCutOffDates(invoice)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));

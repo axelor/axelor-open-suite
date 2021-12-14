@@ -144,7 +144,8 @@
         </panel>
         <field name="account.manageCutOffPeriod" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" colSpan="12"
-          showIf="account.manageCutOffPeriod">
+          showIf="account.manageCutOffPeriod"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
             readonlyIf="invoice.statusSelect == 3"/>
           <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
@@ -423,7 +424,7 @@
   <action-group name="action-invoice-line-group-account-onchange">
     <action name="action-attrs-account-invoice-line-account-onchange"/>
     <action name="action-invoice-line-record-account-onchange"
-      if="account == null || !account.manageCutOffPeriod"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod &amp;&amp; (account == null || !account.manageCutOffPeriod)"/>
     <action name="action-method-account-invoice-line-account-onchange"/>
   </action-group>
   <!-- ACTION RECORDS -->

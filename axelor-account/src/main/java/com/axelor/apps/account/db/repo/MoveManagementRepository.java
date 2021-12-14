@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
@@ -130,7 +131,8 @@ public class MoveManagementRepository extends MoveRepository {
         }
       }
 
-      if (move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
+          && move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
           && !Beans.get(MoveToolService.class).checkMoveLinesCutOffDates(move)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,

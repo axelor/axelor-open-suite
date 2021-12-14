@@ -102,7 +102,8 @@
           </field>
         </panel>
       </panel>
-      <panel name="cutOffPanel" title="Cut off configuration" colSpan="12">
+      <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
+        if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="manageCutOffPeriod" widget="boolean-switch"/>
       </panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">

@@ -336,7 +336,8 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate"
           requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"
@@ -548,7 +549,8 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod">
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate"
           requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
         <field name="cutOffEndDate"
@@ -638,7 +640,7 @@
 
   <action-group name="action-account-move-line-account-group-on-change">
     <action name="action-move-line-record-empty-cut-off-dates"
-      if="move?.technicalOriginSelect == 2"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
@@ -670,7 +672,7 @@
 
   <action-group name="action-move-line-group-account-onchange">
     <action name="action-move-line-record-empty-cut-off-dates"
-      if="move?.technicalOriginSelect == 2"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
   </action-group>

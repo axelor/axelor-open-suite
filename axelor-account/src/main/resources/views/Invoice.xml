@@ -508,7 +508,7 @@
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
-          readonlyIf="statusSelect == 3">
+          readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="$cutOffStartDate" type="date" title="From date"/>
           <field name="$cutOffEndDate" type="date" title="To date"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
