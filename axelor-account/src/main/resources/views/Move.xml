@@ -226,17 +226,23 @@
     </panel>
 
     <panel-tabs name="mainPanelTab">
-      <panel name="relatedToPanel" title="Related to" readonly="true">
+      <panel name="relatedToPanel" title="Related to" readonly="true" itemSpan="4">
         <field name="invoice" domain="self.company = :company AND self.statusSelect = 3"
           form-view="invoice-form" readonlyIf="$validatePeriod" grid-view="invoice-grid"
           canNew="false"/>
+        <field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form"
+          canNew="false" canEdit="false" if-module="axelor-supplychain"/>
+        <field name="cutOffOriginMove" grid-view="move-grid" form-view="move-form"
+          canNew="false" canEdit="false"/>
         <field name="paymentVoucher" readonlyIf="$validatePeriod"
           domain="self.company = :company" canNew="false" form-view="payment-voucher-form"
           grid-view="payment-voucher-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
           onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
-        <field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form"
-          canNew="false" canEdit="false" if-module="axelor-supplychain"/>
+        <panel-dashlet name="relatedCutOffMovesPanel" title="Related cut off moves"
+          colSpan="12" action="action-move-view-related-cut-off-moves"
+          showIf="$isThereRelatedCutOffMoves"/>
+        <field name="$isThereRelatedCutOffMoves" type="boolean" hidden="true"/>
       </panel>
 
       <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1"
@@ -332,6 +338,7 @@
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-record-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-attrs-check-related-cut-off-moves"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -475,6 +482,11 @@
     <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
   </action-attrs>
 
+  <action-attrs name="action-move-attrs-check-related-cut-off-moves">
+    <attribute name="value" for="$isThereRelatedCutOffMoves"
+      expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
+  </action-attrs>
+
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -584,6 +596,13 @@
     <view-param name="showArchived" value="true"/>
     <domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR (self.statusSelect = 1 AND
       (self.archived = false OR self.archived is null) ))</domain>
+  </action-view>
+
+  <action-view name="action-move-view-related-cut-off-moves"
+    title="Related cut off moves" model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>self.cutOffOriginMove = :id</domain>
   </action-view>
 
   <action-attrs name="action-move-set-trading-name-domain">

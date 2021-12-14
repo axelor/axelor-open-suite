@@ -53,4 +53,21 @@ public class BankReconciliationLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliationLine bankReconciliationLineContext =
+          request.getContext().asType(BankReconciliationLine.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+
+      String domain =
+          bankReconciliationService.createDomainForMoveLine(
+              bankReconciliationLineContext.getBankReconciliation());
+
+      response.setAttr("moveLine", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
