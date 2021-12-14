@@ -66,38 +66,37 @@
         <field name="accountingCutOffTypeSelect"
           onChange="action-group-supplychain-batch-onchange-accounting-type"/>
         <field name="moveDescription"
-          requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+          requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
         <panel colSpan="6" itemSpan="12">
+          <field name="moveDate" requiredIf="actionSelect == 1"
+            onChange="action-method-supplychain-batch-validate-movedate,action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
           <label name="adviceDates"
             title="Please, enter only dates with the last day of month" css="label-danger"/>
-          <field name="moveDate"
-            requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"
-            onChange="action-method-supplychain-batch-validate-movedate,action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
           <label name="adviseUser"
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
-
-        <field name="recoveredTax" hideIf="accountingCutOffTypeSelect &gt;= 3"/>
-        <field name="ati" showIf="!recoveredTax &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
-        <field name="includeNotStockManagedProduct"
-          hideIf="accountingCutOffTypeSelect &gt;= 3"/>
-        <panel name="expensesIncomesPanel" colSpan="12"
-          showIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1">
+        <panel name="expensesIncomesPanel" colSpan="12" showIf="actionSelect == 1">
           <field name="automaticReverse" colSpan="3"/>
           <field name="automaticReconcile" colSpan="3" hideIf="!automaticReverse"/>
           <panel colSpan="6" itemSpan="12">
             <field name="reverseMoveDate"
-              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse &amp;&amp; accountingCutOffTypeSelect &gt;= 3"
-              hideIf="automaticReverse &amp;&amp; actionSelect != 1 &amp;&amp; accountingCutOffTypeSelect &gt;= 3"/>
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"
+              showIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
           </panel>
           <field name="miscOpeJournal" colSpan="6"
             onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
-            requiredIf="accountingCutOffTypeSelect &gt;= 3 &amp;&amp; actionSelect == 1"/>
+            requiredIf="actionSelect == 1"/>
           <field name="researchJournal" colSpan="6"
-            onSelect="action-attrs-supplychain-batch-set-journal-domain"/>
+            onSelect="action-attrs-supplychain-batch-set-journal-domain"
+            hideIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="cutOffMoveStatusSelect" colSpan="6"/>
-          <field name="previewMoveLinesToProcess" colSpan="6"/>
+          <field name="previewRecordsToProcess" colSpan="6"/>
+          <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
+          <field name="ati"
+            showIf="!recoveredTax &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
+          <field name="includeNotStockManagedProduct"
+            showIf="accountingCutOffTypeSelect &lt;= 2"/>
         </panel>
       </panel>
       <panel name="informationPanel" title="Information">
@@ -208,6 +207,7 @@
       if="__user__.activeCompany != null"/>
     <field name="cutOffMoveStatusSelect"
       expr="eval: __repo__(SupplychainBatch).STATUS_ACCOUNTED"/>
+    <field name="researchJournal" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-record-supplychain-batch-movedate-onchange"
@@ -224,11 +224,6 @@
     <field name="cutOffMoveStatusSelect"
       expr="eval: __repo__(SupplychainBatch).STATUS_DAYBOOK"
       if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
-  </action-record>
-
-  <action-record name="action-supplychain-batch-record-empty-research-journal"
-    model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    <field name="researchJournal" expr=""/>
   </action-record>
 
   <!-- ACTION METHOD -->
