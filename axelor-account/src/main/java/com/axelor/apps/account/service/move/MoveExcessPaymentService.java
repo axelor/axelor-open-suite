@@ -76,8 +76,8 @@ public class MoveExcessPaymentService {
                       + " AND self.account.useForPartnerBalance = ?4 AND self.credit > 0 and self.amountRemaining > 0"
                       + " AND self.partner = ?5 ORDER BY self.date ASC",
                   company,
-                  MoveRepository.STATUS_VALIDATED,
                   MoveRepository.STATUS_ACCOUNTED,
+                  MoveRepository.STATUS_DAYBOOK,
                   true,
                   invoice.getPartner())
               .fetch();

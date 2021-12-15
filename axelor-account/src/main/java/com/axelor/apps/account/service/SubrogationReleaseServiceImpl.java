@@ -316,7 +316,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       move.addMoveLineListItem(creditMoveLine);
 
       move = moveRepository.save(move);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
 
       invoice.setSubrogationRelease(subrogationRelease);
       invoice.setSubrogationReleaseMove(move);

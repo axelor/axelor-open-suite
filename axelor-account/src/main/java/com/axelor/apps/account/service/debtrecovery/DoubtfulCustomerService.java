@@ -201,7 +201,7 @@ public class DoubtfulCustomerService {
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveValidateService.validate(newMove);
+    moveValidateService.accounting(newMove);
     moveRepo.save(newMove);
 
     if (creditMoveLine != null) {
@@ -297,7 +297,7 @@ public class DoubtfulCustomerService {
     debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveValidateService.validate(newMove);
+    moveValidateService.accounting(newMove);
     moveRepo.save(newMove);
 
     this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);

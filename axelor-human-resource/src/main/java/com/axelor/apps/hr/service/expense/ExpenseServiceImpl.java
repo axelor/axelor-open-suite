@@ -506,7 +506,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     expense.setMove(move);
     return move;
@@ -666,7 +666,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.addMoveLineListItem(employeeMoveLine);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
     expense.setPaymentMove(move);
 
     Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);

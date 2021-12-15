@@ -430,8 +430,6 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
-  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
-      "Refresh page to reflect changes in selection" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
@@ -455,4 +453,10 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
+      "The previous period is not closed or temporarily closed." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
+      "The previous period is not closed." /*)*/;
 }

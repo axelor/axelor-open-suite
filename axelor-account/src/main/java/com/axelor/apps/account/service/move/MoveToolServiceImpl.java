@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -10,10 +11,17 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -37,18 +45,21 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PeriodServiceAccount periodServiceAccount) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   @Override
@@ -396,8 +407,8 @@ public class MoveToolServiceImpl implements MoveToolService {
   public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
@@ -428,8 +439,43 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void setOriginAndDescriptionOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setDescription(move.getDescription());
-      moveLine.setOrigin(move.getOrigin());
+      if (ObjectUtils.notEmpty(moveLine)) {
+        moveLine.setDescription(move.getDescription());
+        moveLine.setOrigin(move.getOrigin());
+      }
     }
+  }
+
+  @Override
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user.getGroup() != null
+        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(period.getYear().getCompany());
+      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean getEditAuthorization(Move move) throws AxelorException {
+    boolean result = false;
+    Company company = move.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Period period = move.getPeriod();
+    User currentUser = AuthUtils.getUser();
+    if (ObjectUtils.isEmpty(period)) {
+      return true;
+    }
+    if (ObjectUtils.isEmpty(accountConfig)) {}
+
+    return result;
   }
 }

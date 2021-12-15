@@ -210,7 +210,7 @@ public class MoveTemplateService {
         }
 
         if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.validate(move);
+          moveValidateService.accounting(move);
         }
 
         moveRepo.save(move);
@@ -284,7 +284,7 @@ public class MoveTemplateService {
         }
 
         if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.validate(move);
+          moveValidateService.accounting(move);
         }
 
         moveRepo.save(move);

@@ -219,7 +219,7 @@ public class BankReconciliationService {
               continue;
             }
             move = generateMove(bankReconciliationLine, bankStatementRule);
-            moveValidateService.validate(move);
+            moveValidateService.accounting(move);
             break;
           }
         }

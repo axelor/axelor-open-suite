@@ -46,9 +46,25 @@
     <many-to-one name="analyticGroupingValue10"
       ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 10"/>
 
+    <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select"
+      default="0"/>
+
     <unique-constraint columns="code,name,analyticAxis"/>
 
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+
+    <extra-code>
+      	<![CDATA[
+      		// STATUS SELECT
+      		public static final int STATUS_INACTIVE = 0;
+      		public static final int STATUS_ACTIVE = 1;
+      	]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+    </track>
+
   </entity>
 
 </domain-models>

@@ -7,6 +7,7 @@
     model="com.axelor.apps.account.db.FixedAssetType" orderBy="code,name">
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="technicalTypeSelect"/>
   </grid>
 
   <form name="fixed-asset-type-form" title="Fixed asset type"
@@ -14,9 +15,9 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="technicalTypeSelect"/>
     </panel>
 
   </form>
-
 
 </object-views>

@@ -333,7 +333,7 @@ public class PaymentVoucherConfirmService {
           reconcileService.balanceCredit(moveLine);
         }
       }
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
       paymentVoucher.setGeneratedMove(move);
     }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
