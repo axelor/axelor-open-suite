@@ -288,6 +288,12 @@
     <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
       title="Holdback Supplier account"/>
 
+    <!-- Cut off accounts -->
+    <many-to-one name="prepaidExpensesAccount" title="Prepaid expenses account"
+      ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
+      ref="com.axelor.apps.account.db.Account"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
