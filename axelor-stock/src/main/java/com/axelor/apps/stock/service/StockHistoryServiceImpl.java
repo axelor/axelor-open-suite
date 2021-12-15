@@ -228,7 +228,11 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
     }
     avgOutQtyOn12PastMonth =
-        avgOutQtyOn12PastMonth.divide(new BigDecimal(12).setScale(2, RoundingMode.HALF_EVEN));
+        avgOutQtyOn12PastMonth.divide(
+            new BigDecimal(12)
+                .setScale(
+                    Beans.get(AppBaseService.class).getNbDecimalDigitForQty(),
+                    RoundingMode.HALF_EVEN));
     stockHistoryLine.setAvgOutQtyOn12PastMonth(avgOutQtyOn12PastMonth);
   }
 
