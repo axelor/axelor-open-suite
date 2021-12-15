@@ -108,7 +108,7 @@
 
       <panel name="otherDetailsPanel" colSpan="3"
         readonlyIf="statusSelect == 3 &amp;&amp; !validatePeriod">
-        <field name="$viewerTags" showTitle="false">
+        <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -127,7 +127,7 @@
             <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
           </editor>
         </field>
-        <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
+        <field name="$technicalOriginTags" showTitle="false" readonly="true">
           <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
