@@ -664,4 +664,10 @@
     <option value="1">Active</option>
   </selection>
 
+  <selection name="iaccount.payment.session.select">
+    <option value="1">Ongoing</option>
+    <option value="2">PaymentSession.Closed</option>
+    <option value="3">Cancelled</option>
+  </selection>
+
 </object-views>
