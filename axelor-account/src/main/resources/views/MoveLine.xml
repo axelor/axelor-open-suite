@@ -187,6 +187,19 @@
     <field name="analyticMoveLineList" hidden="true"/>
   </grid>
 
+  <grid name="move-line-cut-off-grid" title="Move lines concerned by cut off"
+    model="com.axelor.apps.account.db.MoveLine" groupBy="move">
+    <hilite color="danger" if="move.cutOffMoveGenerated"/>
+    <field name="move.reference"/>
+    <field name="move.date"/>
+    <field name="move.journal"/>
+    <field name="description"/>
+    <field name="move.statusSelect"/>
+    <field name="$prorataAmount" type="decimal" x-scale="2"/>
+    <field name="move.cutOffMoveGenerated" hidden="true"/>
+    <field name="move" hidden="true"/>
+  </grid>
+
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
     onLoad="action-record-initialize-permission-validation-move-line">

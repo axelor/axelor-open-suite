@@ -17,12 +17,21 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -98,7 +107,71 @@ public class SupplychainBatchService extends AbstractBatchService {
     }
   }
 
+
   public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
     return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
+  }
+
+  public String getMoveLinesToProcessIdList(
+      Company company, Journal researchJournal, LocalDate moveDate, Integer limit, Integer offset) {
+    Query<MoveLine> moveLineQuery = Beans.get(MoveLineRepository.class).all();
+
+    String moveLineQueryStr =
+        "self.account.manageCutOffPeriod IS TRUE "
+            + "AND self.cutOffStartDate IS NOT NULL "
+            + "AND self.cutOffEndDate IS NOT NULL "
+            + "AND self.move.journal = :researchJournal "
+            + "AND YEAR(self.move.date) = YEAR(:moveDate) "
+            + "AND self.move.company = :company";
+
+    moveLineQuery
+        .filter(moveLineQueryStr)
+        .bind("researchJournal", researchJournal)
+        .bind("moveDate", moveDate)
+        .bind("company", company)
+        .order("id");
+
+    if (limit != null && offset != null) {
+      return StringTool.getIdListString(moveLineQuery.fetch(limit, offset));
+    } else {
+      return StringTool.getIdListString(moveLineQuery.fetch());
+    }
+  }
+
+  public String getStockMoveLinesToProcessIdList(
+      Company company,
+      LocalDate moveDate,
+      int accountingCutOffTypeSelect,
+      Integer limit,
+      Integer offset) {
+    Query<StockMoveLine> stockMoveLineQuery = Beans.get(StockMoveLineRepository.class).all();
+
+    String stockMoveLineQueryStr =
+        "(self.qtyInvoiced = 0 OR self.qtyInvoiced <> self.realQty) "
+            + "AND self.stockMove.invoicingStatusSelect = :statusInvoiced "
+            + "AND self.stockMove.statusSelect = :statusRealized "
+            + "AND self.stockMove.typeSelect = :typeSelect "
+            + "AND self.stockMove.realDate <= :moveDate "
+            + "AND self.company = :company";
+
+    stockMoveLineQuery
+        .filter(stockMoveLineQueryStr)
+        .bind("statusInvoiced", StockMoveRepository.STATUS_INVOICED)
+        .bind("statusRealized", StockMoveRepository.STATUS_REALIZED)
+        .bind(
+            "typeSelect",
+            accountingCutOffTypeSelect
+                    == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES
+                ? StockMoveRepository.TYPE_INCOMING
+                : StockMoveRepository.TYPE_OUTGOING)
+        .bind("moveDate", moveDate)
+        .bind("company", company)
+        .order("id");
+
+    if (limit != null && offset != null) {
+      return StringTool.getIdListString(stockMoveLineQuery.fetch(limit, offset));
+    } else {
+      return StringTool.getIdListString(stockMoveLineQuery.fetch());
+    }
   }
 }
