@@ -188,7 +188,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return metaFile;
   }
 
-  private void computeAvgOutQtyOn12PastMonth(
+  protected void computeAvgOutQtyOn12PastMonth(
       StockHistoryLine stockHistoryLine,
       Long productId,
       Long companyId,
