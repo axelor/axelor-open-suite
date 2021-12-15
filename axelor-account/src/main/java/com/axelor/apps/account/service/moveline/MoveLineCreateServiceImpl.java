@@ -1,15 +1,6 @@
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -184,7 +175,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         });
 
     if (partner != null) {
-      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
+      FiscalPosition fiscalPosition = null;
+      if (move.getInvoice() != null) {
+        fiscalPosition = move.getInvoice().getFiscalPosition();
+        if (fiscalPosition == null) {
+          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        }
+      } else {
+        fiscalPosition = partner.getFiscalPosition();
+      }
+
+      account = fiscalPositionAccountService.getAccount(fiscalPosition, account);
     }
 
     BigDecimal debit = BigDecimal.ZERO;
@@ -538,8 +539,21 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (ObjectUtils.notEmpty(move.getPartner())
-        && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+
+    FiscalPosition fiscalPosition = null;
+    if (move.getInvoice() != null) {
+      fiscalPosition = move.getInvoice().getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    } else {
+      if (ObjectUtils.notEmpty(move.getPartner())
+          && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    }
+
+    if (fiscalPosition != null) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
