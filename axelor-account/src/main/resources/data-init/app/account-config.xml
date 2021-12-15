@@ -33,6 +33,7 @@
     type="com.axelor.apps.account.db.ImportFECType"
     call="com.axelor.csv.script.ImportImportFECType:importFECType"/>
 
-
+  <input file="account_assetDisposalReason.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.AssetDisposalReason"/>
 
 </csv-inputs>

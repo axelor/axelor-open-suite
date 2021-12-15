@@ -570,7 +570,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void addSpecialAttributeParentSaleOrderId(
       JsonContext jsonAttributes, Long saleOrderId) {
     if (saleOrderId != null) {
-      jsonAttributes.put("parentSaleOrderId", saleOrderId);
+      jsonAttributes.put(ConfiguratorFormulaService.PARENT_SALE_ORDER_ID_FIELD_NAME, saleOrderId);
     }
   }
 }

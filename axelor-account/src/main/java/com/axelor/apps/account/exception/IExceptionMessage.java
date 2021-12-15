@@ -97,6 +97,10 @@ public interface IExceptionMessage {
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
+  /** Account management repostiroy */
+  static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
+      "A payment mode already exists with the same information." /*)*/;
+
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
@@ -292,6 +296,7 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
