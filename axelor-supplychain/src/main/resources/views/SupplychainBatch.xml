@@ -113,8 +113,7 @@
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
-        showIf="actionSelect == 1"
-        onClick="action-method-supplychain-batch-validate-movedate,save,action-supplychain-batch-group-accounting-cut-off"
+        showIf="actionSelect == 1" onClick="action-supplychain-batch-group-accounting-cut-off"
         colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
         showIf="actionSelect == 2"
@@ -130,8 +129,13 @@
 
   <!-- ACTION GROUP -->
   <action-group name="action-supplychain-batch-group-accounting-cut-off">
+    <action name="action-method-supplychain-batch-validate-movedate"/>
+    <action name="save"/>
     <action name="action-supplychain-batch-validate-twice-in-a-month"/>
-    <action name="action-supplychain-batch-method-accounting-cut-off"/>
+    <action name="action-supplychain-batch-method-preview-records-to-process"
+      if="previewRecordsToProcess"/>
+    <action name="action-supplychain-batch-method-accounting-cut-off"
+      if="!previewRecordsToProcess"/>
   </action-group>
 
   <action-group name="action-group-supplychain-batch-group-onload">
@@ -258,6 +262,11 @@
   <action-method name="action-method-supplychain-batch-validate-movedate">
     <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
       method="validateDates"/>
+  </action-method>
+
+  <action-method name="action-supplychain-batch-method-preview-records-to-process">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
+      method="previewRecordsToProcess"/>
   </action-method>
 
   <!-- BATCH -->
