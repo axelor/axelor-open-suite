@@ -6,8 +6,8 @@
   <grid name="invoice-term-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="toolbar.validatePFP"
-        onClick="act1"/>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="act1"/>
       <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
         onClick="act2"/>
     </toolbar>
@@ -53,6 +53,17 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+  </grid>
+
+  <grid name="invoice-term-payment-session-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveline.partner">
+    <field name="moveLine.partner"/>
+    <field name="moveLine.move.reference"/>
+    <field name="invoice"/>
+    <field name="moveLine.move.statusSelect"/>
+    <field name="financialDiscountAmount"/>
+    <button name="selectBtn" onClick=""/>
+    <button name="unselectBtn" onClick=""/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
@@ -355,6 +366,12 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-invoice-term-view-payment-session-dashlet"
+    title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-payment-session-grid"/>
+    <view type="form" name="invoice-term-form"/>
   </action-view>
 
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">
