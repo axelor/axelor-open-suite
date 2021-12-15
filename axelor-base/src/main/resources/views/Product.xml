@@ -351,7 +351,7 @@
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
           <panel-dashlet action="action-stock-view-stock-history-line"
-            name="stockHistoryLinePanel" colSpan="12" if="productTypeSelect == 'storable'"/>
+            name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>
       <panel name="productionInformationsPanel" title="Production information"

@@ -212,7 +212,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .bind("stockLocationIdList", stockLocationIdList)
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("beginDate", periodBeginDate.minusMonths(13))
-            .bind("endDate", periodBeginDate)
+            .bind("endDate", periodBeginDate.minusMonths(1))
             .fetch();
 
     BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
@@ -227,7 +227,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
               stockMoveLine.getProduct());
       avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
     }
-    avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.divide(new BigDecimal(12));
+    avgOutQtyOn12PastMonth =
+        avgOutQtyOn12PastMonth.divide(new BigDecimal(12).setScale(2, RoundingMode.HALF_EVEN));
     stockHistoryLine.setAvgOutQtyOn12PastMonth(avgOutQtyOn12PastMonth);
   }
 

@@ -82,7 +82,7 @@
       </panel>
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
-        <field name="period"/>
+        <field name="period" domain="self.year.typeSelect = 0"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -194,6 +194,13 @@
       expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
   </action-view>
 
+  <action-view name="action-batch-show-stock-history-lines" title="Stock history line"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-form"/>
+    <domain>self.period = :period</domain>
+    <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
 
   <search-filters name="supplychain-batch-filters"
     model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">
