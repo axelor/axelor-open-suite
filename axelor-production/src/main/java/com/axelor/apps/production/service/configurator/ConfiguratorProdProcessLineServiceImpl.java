@@ -143,22 +143,10 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                 confProdProcessLine.getId()));
       }
 
-      // Case of Work Center Group management
-      // In order to prevent synchronization issue when switching multiple time management
-      // explicit call is made to make sure that the work center group is taken into account
-      // Values impacted are : workCenter, minCapacityPerCycle, maxCapacityPerCycle,
-      // durationPerCycle, timingOfImplementation
-      this.fillMainWorkCenterFromGroup(confProdProcessLine);
-      workCenter = confProdProcessLine.getWorkCenter();
-      minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
-      maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
-      durationPerCycle = confProdProcessLine.getDurationPerCycle();
-      timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
-
+      workCenter =
+          workCenterService.getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup());
     } else {
 
-      // Regular cases for : workCenter, minCapacityPerCycle, maxCapacityPerCycle, durationPerCycle,
-      // timingOfImplementation
       if (confProdProcessLine.getDefWorkCenterAsFormula()) {
         Object computedWorkCenter =
             configuratorService.computeFormula(
@@ -188,43 +176,43 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                   confProdProcessLine.getId()));
         }
       }
-      if (confProdProcessLine.getDefMinCapacityFormula()) {
-        minCapacityPerCycle =
-            new BigDecimal(
-                configuratorService
-                    .computeFormula(confProdProcessLine.getMinCapacityPerCycleFormula(), attributes)
-                    .toString());
-      } else {
-        minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
-      }
-      if (confProdProcessLine.getDefMaxCapacityFormula()) {
-        maxCapacityPerCycle =
-            new BigDecimal(
-                configuratorService
-                    .computeFormula(confProdProcessLine.getMaxCapacityPerCycleFormula(), attributes)
-                    .toString());
-      } else {
-        maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
-      }
-      if (confProdProcessLine.getDefDurationFormula()) {
-        durationPerCycle =
-            Long.decode(
-                configuratorService
-                    .computeFormula(confProdProcessLine.getDurationPerCycleFormula(), attributes)
-                    .toString());
-      } else {
-        durationPerCycle = confProdProcessLine.getDurationPerCycle();
-      }
-      if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
-        timingOfImplementation =
-            Long.decode(
-                configuratorService
-                    .computeFormula(
-                        confProdProcessLine.getTimingOfImplementationFormula(), attributes)
-                    .toString());
-      } else {
-        timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
-      }
+    }
+    if (confProdProcessLine.getDefMinCapacityFormula()) {
+      minCapacityPerCycle =
+          new BigDecimal(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getMinCapacityPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
+    }
+    if (confProdProcessLine.getDefMaxCapacityFormula()) {
+      maxCapacityPerCycle =
+          new BigDecimal(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getMaxCapacityPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
+    }
+    if (confProdProcessLine.getDefDurationFormula()) {
+      durationPerCycle =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getDurationPerCycleFormula(), attributes)
+                  .toString());
+    } else {
+      durationPerCycle = confProdProcessLine.getDurationPerCycle();
+    }
+    if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
+      timingOfImplementation =
+          Long.decode(
+              configuratorService
+                  .computeFormula(
+                      confProdProcessLine.getTimingOfImplementationFormula(), attributes)
+                  .toString());
+    } else {
+      timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
     }
 
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
