@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="payment-session-grid" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+    <field name="assignedToUser" hidden="true"/>
+  </grid>
+
+  <form name="payment-session-form" title="Payment session"
+    model="com.axelor.apps.account.db.PaymentSession" width="large">
+    <toolbar>
+      <button name="printPaymentSessionBtn" title="Print/Export session"
+        onClick="save,action-view-account-payment-session-print-wizard"/>
+    </toolbar>
+    <panel name="mainPanel" itemSpan="4">
+      <field name="createdOn"/>
+      <field name="sequence"/>
+      <field name="name"/>
+      <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onSelect="action-attrs-payment-session-set-company-domain"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="paymentDate"/>
+      <field name="nextSessionDate"/>
+      <spacer/>
+    </panel>
+    <panel name="searchPanel">
+      <button name="searchEligibleTermsBtn" title="Search due Terms" onClick=""/>
+      <button name="refreshEligibleTermsBtn" title="Refresh terms list" onClick=""/>
+      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
+        colSpan="12" canSearch="true"/>
+      <button name="selectAllBtn" title="Select all" onClick=""/>
+      <button name="unselectAllBtn" title="Unselect all" onClick=""/>
+      <field name="sessionTotalAmount"/>
+    </panel>
+    <panel name="statusPanel" sidebar="true">
+      <field name="statusSelect" widget="NavSelect"/>
+      <button name="validateBtn" title="Validate" onClick="" showIf="statusSelect = 1"/>
+      <button name="cancelBtn" title="Cancel" onClick="" showIf="statusSelect = 1"/>
+    </panel>
+    <panel name="emailPanel" sidebar="true">
+      <button name="sendEmailsBtn" title="Send emails payment notice"
+        showIf="statusSelect = 1" onClick=""/>
+      <field name="hasEmailsSent" readonly="true"/>
+    </panel>
+  </form>
+
+  <form name="payment-session-print-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Payment session print wizard">
+    <panel name="mainPanel">
+      <field name="_exportTypeSelect" type="string" title="Export format"
+        selection="iadministration.export.type.select"/>
+      <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-attrs-payment-session-set-company-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__user__?.companySet?.collect{it.id}.join(',')}) &quot;"
+      for="company"/>
+  </action-attrs>
+
+  <action-view name="action-view-account-payment-session-print-wizard"
+    title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="payment-session-print-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+  </action-view>
+
+</object-views>
