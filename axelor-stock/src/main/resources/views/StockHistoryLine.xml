@@ -55,7 +55,7 @@
   </grid>
 
   <grid title="Stock history line" name="stock-history-line-all-grid" width="large"
-    model="com.axelor.apps.stock.db.StockHistoryLine" groupBy="company,product">
+    model="com.axelor.apps.stock.db.StockHistoryLine" groupBy="company,product" orderBy="-period.fromDate">
     <field name="company" hidden="true"/>
     <field name="product" hidden="true"/>
     <field name="label" colSpan="3" showTitle="false"/>
