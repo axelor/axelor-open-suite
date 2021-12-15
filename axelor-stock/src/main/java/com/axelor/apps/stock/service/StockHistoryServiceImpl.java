@@ -211,8 +211,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .bind("companyId", companyId)
             .bind("stockLocationIdList", stockLocationIdList)
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
-            .bind("beginDate", periodBeginDate.minusMonths(13))
-            .bind("endDate", periodBeginDate.minusMonths(1))
+            .bind("beginDate", periodBeginDate.minusMonths(12))
+            .bind("endDate", periodBeginDate)
             .fetch();
 
     BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
