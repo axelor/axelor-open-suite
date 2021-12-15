@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
@@ -80,6 +81,17 @@ public class SupplychainBatchService extends AbstractBatchService {
         throw new IllegalArgumentException(
             String.format(
                 "Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
+    }
+  }
+
+  public void checkDates(SupplychainBatch supplychainBatch) throws AxelorException {
+    LocalDate date = supplychainBatch.getMoveDate();
+    if (date != null
+        && date.getDayOfMonth()
+            != date.plusMonths(1).withDayOfMonth(1).minusDays(1).getDayOfMonth()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.BATCH_MOVE_DATE_ERROR));
     }
   }
 }

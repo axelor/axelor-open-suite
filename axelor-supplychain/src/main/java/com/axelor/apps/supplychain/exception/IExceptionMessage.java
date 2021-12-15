@@ -280,4 +280,7 @@ public interface IExceptionMessage {
 
   static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
       "The customer account is blocked because he has late payments." /*)*/;
+
+  static final String BATCH_MOVE_DATE_ERROR = /*$$(*/
+      "Please, enter only dates with the last day of month" /*)*/;
 }
