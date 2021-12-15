@@ -439,23 +439,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return newFixedAsset;
   }
 
-  protected void updateLinesGrossValue(FixedAsset fixedAsset, BigDecimal prorata) {
-    if (CollectionUtils.isNotEmpty(fixedAsset.getFixedAssetLineList())) {
-      fixedAsset
-          .getFixedAssetLineList()
-          .forEach(
-              it ->
-                  it.setGrossValue(
-                      it.getGrossValue()
-                          .multiply(prorata)
-                          .setScale(RETURNED_SCALE, RoundingMode.HALF_UP)));
-    }
-
-    /*if (CollectionUtils.isNotEmpty(fixedAsset.getFixedAssetDerogatoryLineList())) {
-      fixedAsset.getFixedAssetDerogatoryLineList().forEach(it -> it.setGrossValue(it.getGrossValue().multiply(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP)));
-    }*/
-  }
-
   private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
 
     if (fixedAsset.getGrossValue() != null) {
