@@ -49,6 +49,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -281,22 +282,37 @@ public class FixedAssetController {
     Context context = request.getContext();
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
-    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+
+    int splitType = Integer.parseInt(context.get("splitTypeSelect").toString());
+    BigDecimal amount =
+        new BigDecimal(
+            context
+                .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
+                .toString());
 
     try {
-      if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+      if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY
+          && amount.compareTo(BigDecimal.ONE) != 0
+          && amount.compareTo(fixedAsset.getQty()) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
-            fixedAsset.getQty().toString());
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL));
+      } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
+          && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) > 0)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
       }
+
       FixedAsset createdFixedAsset =
           Beans.get(FixedAssetService.class)
               .splitAndSaveFixedAsset(
                   fixedAsset,
-                  disposalQty,
+                  splitType,
+                  amount,
                   Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
                   fixedAsset.getComments());
+
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
@@ -304,6 +320,7 @@ public class FixedAssetController {
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
                 .map());
+
         response.setCanClose(true);
         response.setReload(true);
       }
@@ -388,6 +405,25 @@ public class FixedAssetController {
           "analyticPanel",
           "hidden",
           !Beans.get(AnalyticToolService.class).isManageAnalytic(fixedAsset.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void initSplitWizardValues(ActionRequest request, ActionResponse response) {
+    try {
+      BigDecimal qty =
+          new BigDecimal(
+              (String)
+                  ((LinkedHashMap<String, Object>) request.getContext().get("_fixedAsset"))
+                      .get("qty"));
+
+      response.setAttr(
+          "splitTypeSelect",
+          "value",
+          qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0);
+      response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

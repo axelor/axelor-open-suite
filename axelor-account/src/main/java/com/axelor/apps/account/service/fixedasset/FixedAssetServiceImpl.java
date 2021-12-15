@@ -31,12 +31,14 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -48,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +80,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
-  public static final String SUFFIX_SPLITTED_FIXED_ASSET = "-%s %.2f";
 
   @Inject
   public FixedAssetServiceImpl(
@@ -363,49 +365,95 @@ public class FixedAssetServiceImpl implements FixedAssetService {
    */
   @Override
   public FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate splittingDate,
+      String comments)
       throws AxelorException {
+    // Checks
     Objects.requireNonNull(fixedAsset, "fixAsset can not be null when calling this function");
-    Objects.requireNonNull(disposalQty, "disposalQty can not be null when calling this function");
+    Objects.requireNonNull(
+        amount, "disposalQty or grossValue can not be null when calling this function");
     Objects.requireNonNull(
         splittingDate, "disposalDate can not be null when calling this function");
-    FixedAsset newFixedAsset = fixedAssetGenerationService.copyFixedAsset(fixedAsset, disposalQty);
 
-    BigDecimal prorata =
-        disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
+    FixedAsset newFixedAsset = fixedAssetGenerationService.copyFixedAsset(fixedAsset);
+    newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
+
+    // Amount
+    BigDecimal originalAmount =
+        splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY
+            ? fixedAsset.getQty()
+            : fixedAsset.getGrossValue();
+    BigDecimal newAmount = originalAmount.subtract(amount);
+
+    // Prorata
+    BigDecimal prorata = amount.divide(originalAmount, CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal remainingProrata =
-        BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+        BigDecimal.ONE.subtract(prorata).setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
 
+    // Lines
     multiplyLinesBy(newFixedAsset, prorata);
     multiplyLinesBy(fixedAsset, remainingProrata);
     multiplyFieldsToSplit(newFixedAsset, prorata);
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
-    fixedAsset.setQty(fixedAsset.getQty().subtract(disposalQty));
-    newFixedAsset.setQty(disposalQty);
-    newFixedAsset.setName(
-        fixedAsset.getName()
-            + String.format(
-                SUFFIX_SPLITTED_FIXED_ASSET,
-                I18n.get("Quantity"),
-                disposalQty.setScale(RETURNED_SCALE)));
+
+    String nameType = "";
+    String commentsToAdd = "";
+
+    // Qty or grossValue
+    if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY) {
+      newFixedAsset.setQty(amount);
+      fixedAsset.setQty(newAmount);
+
+      nameType = I18n.get("Quantity");
+      commentsToAdd =
+          String.format(
+              I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
+              amount,
+              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT) {
+      newFixedAsset.setGrossValue(amount);
+      fixedAsset.setGrossValue(newAmount);
+
+      nameType = I18n.get(ITranslation.FIXED_ASSET_SPLIT_AMOUNT);
+      commentsToAdd =
+          String.format(
+              I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
+              amount,
+              fixedAsset.getCompany().getCurrency().getCode(),
+              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    }
+
+    // Names
+    newFixedAsset.setName(String.format("%s - %s %.2f", fixedAsset.getName(), nameType, amount));
     fixedAsset.setName(
-        fixedAsset.getName()
-            + String.format(
-                SUFFIX_SPLITTED_FIXED_ASSET,
-                I18n.get("Quantity"),
-                fixedAsset.getQty().setScale(RETURNED_SCALE)));
-    String commentsToAdd =
-        String.format(
-            I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
-            disposalQty,
-            splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-    newFixedAsset.setComments(comments);
+        String.format("%s - %s %.2f", fixedAsset.getName(), nameType, originalAmount));
+
+    // Comments
     newFixedAsset.setComments(
         String.format(
-            "%s %s",
-            newFixedAsset.getComments() == null ? "" : newFixedAsset.getComments(), commentsToAdd));
-    newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
+            "%s%s%s", comments, Strings.isNullOrEmpty(commentsToAdd) ? "" : " - ", commentsToAdd));
+
     return newFixedAsset;
+  }
+
+  protected void updateLinesGrossValue(FixedAsset fixedAsset, BigDecimal prorata) {
+    if (CollectionUtils.isNotEmpty(fixedAsset.getFixedAssetLineList())) {
+      fixedAsset
+          .getFixedAssetLineList()
+          .forEach(
+              it ->
+                  it.setGrossValue(
+                      it.getGrossValue()
+                          .multiply(prorata)
+                          .setScale(RETURNED_SCALE, RoundingMode.HALF_UP)));
+    }
+
+    /*if (CollectionUtils.isNotEmpty(fixedAsset.getFixedAssetDerogatoryLineList())) {
+      fixedAsset.getFixedAssetDerogatoryLineList().forEach(it -> it.setGrossValue(it.getGrossValue().multiply(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP)));
+    }*/
   }
 
   private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
@@ -525,7 +573,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
     FixedAsset createdFixedAsset = null;
     if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
-      createdFixedAsset = splitFixedAsset(fixedAsset, disposalQty, disposalDate, comments);
+      createdFixedAsset =
+          splitFixedAsset(
+              fixedAsset,
+              FixedAssetRepository.SPLIT_TYPE_QUANTITY,
+              disposalQty,
+              disposalDate,
+              comments);
       createdFixedAsset =
           cession(
               createdFixedAsset,
@@ -552,11 +606,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public FixedAsset splitAndSaveFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate splittingDate,
+      String comments)
       throws AxelorException {
     FixedAsset splittedFixedAsset =
-        this.splitFixedAsset(fixedAsset, disposalQty, splittingDate, comments);
+        this.splitFixedAsset(fixedAsset, splitType, amount, splittingDate, comments);
+
     fixedAssetRepo.save(fixedAsset);
+
     return fixedAssetRepo.save(splittedFixedAsset);
   }
 

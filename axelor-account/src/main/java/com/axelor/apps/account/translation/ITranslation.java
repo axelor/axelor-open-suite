@@ -30,4 +30,5 @@ public interface ITranslation {
       "Invoiced Amount" /*)*/;
   public static final String INVOICE_PURCHASE_SITUTATION_UNPAID_INVOICE_AMOUNT = /*$$(*/
       "Unpaid Inv. due" /*)*/;
+  public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
 }
