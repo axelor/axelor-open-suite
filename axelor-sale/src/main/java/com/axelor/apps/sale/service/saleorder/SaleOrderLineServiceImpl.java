@@ -1108,7 +1108,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     computeResultFormulaAndApply(scriptHelper, pricing, orderLine, logResultPricingRuleList);
 
     for (int i = 0; i < logClassPricingRuleList.size(); i++) {
-      pricingScaleLogs += logClassPricingRuleList.get(i) + logResultPricingRuleList.get(i);
+      pricingScaleLogs += logClassPricingRuleList.get(i);
+    }
+    for (int i = 0; i < logResultPricingRuleList.size(); i++) {
+      pricingScaleLogs += logResultPricingRuleList.get(i);
     }
 
     Query<Pricing> childPricingQry =
