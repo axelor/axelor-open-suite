@@ -141,6 +141,13 @@
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
+    <decimal name="cutOffProrataAmount" title="Test" formula="true">
+      SELECT DAYS(batch.moveDate,
+      self.cutOffEndDate) / DAYS(self.cutOffStartDate, self.cutOffEndDate)
+      FROM account_move self
+      WHERE self.id = id
+    </decimal>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>

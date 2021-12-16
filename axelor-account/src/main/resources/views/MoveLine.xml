@@ -195,7 +195,8 @@
     <field name="move.journal"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
-    <field name="$prorataAmount" type="decimal" x-scale="2"/>
+    <field name="cutOffProrataAmount" type="decimal" x-scale="2"/>
+    <field name="cutOffProrataAmount"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
   </grid>
