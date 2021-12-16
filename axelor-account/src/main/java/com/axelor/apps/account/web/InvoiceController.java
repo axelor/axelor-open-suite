@@ -1041,9 +1041,9 @@ public class InvoiceController {
       if (invoiceService.checkManageCutOffDates(invoice)) {
         invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
 
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
-      } else {
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

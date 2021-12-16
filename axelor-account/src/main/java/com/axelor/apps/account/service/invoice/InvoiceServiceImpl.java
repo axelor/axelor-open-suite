@@ -1185,8 +1185,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public boolean checkManageCutOffDates(Invoice invoice) {
-    return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
-        || invoice.getInvoiceLineList().stream()
+    return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
+        && invoice.getInvoiceLineList().stream()
             .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
   }
 
