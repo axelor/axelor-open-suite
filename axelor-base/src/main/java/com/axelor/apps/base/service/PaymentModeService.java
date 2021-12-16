@@ -1,4 +1,4 @@
-/**
+/*
  * Axelor Business Solutions
  *
  * Copyright (C) 2021 Axelor (<http://axelor.com>).
@@ -15,4 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-.bpmn-icon-intermediate-event-catch-non-interrupting-timer,.bpmn-icon-intermediate-event-catch-timer,.bpmn-icon-start-event-non-interrupting-timer,.bpmn-icon-start-event-timer,.group>.bpmn-icon-intermediate-event-catch-timer,.group>.bpmn-icon-start-event-non-interrupting-timer{display:none}
+package com.axelor.apps.base.service;
+
+import com.axelor.apps.account.db.AccountManagement;
+import java.util.List;
+
+public interface PaymentModeService {
+
+  public List<AccountManagement> getAccountManagementDefaults();
+}
