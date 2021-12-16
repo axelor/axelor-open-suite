@@ -26,7 +26,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class MoveLineManagementRepository extends MoveLineRepository {
@@ -64,5 +69,29 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       throw new PersistenceException(e);
     }
     return super.save(entity);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
+        long id = (long) json.get("id");
+        MoveLine moveLine = this.find(id);
+        LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
+
+        BigDecimal daysProrata =
+            BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
+        BigDecimal daysTotal =
+            BigDecimal.valueOf(
+                ChronoUnit.DAYS.between(
+                    moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+
+        json.put("$cutOffProrataAmount", daysProrata.divide(daysTotal, 2, RoundingMode.HALF_UP));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return super.populate(json, context);
   }
 }
