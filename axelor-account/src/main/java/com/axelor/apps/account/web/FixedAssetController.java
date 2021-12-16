@@ -279,40 +279,33 @@ public class FixedAssetController {
   }
 
   public void splitFixedAsset(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    Long fixedAssetId = Long.valueOf(context.get("_id").toString());
-    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
-
-    int splitType = Integer.parseInt(context.get("splitTypeSelect").toString());
-    BigDecimal amount =
-        new BigDecimal(
-            context
-                .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
-                .toString());
-
     try {
-      if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY
-          && amount.compareTo(BigDecimal.ONE) != 0
-          && amount.compareTo(fixedAsset.getQty()) > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL));
-      } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
-          && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) > 0)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
-      }
+      Context context = request.getContext();
+      Long fixedAssetId = Long.valueOf(context.get("_id").toString());
+      FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+      FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
 
+      // Get wizard values from context
+      int splitType = Integer.parseInt(context.get("splitTypeSelect").toString());
+      BigDecimal amount =
+          new BigDecimal(
+              context
+                  .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
+                  .toString());
+
+      // Check values
+      fixedAssetService.checkFixedAssetBeforeSplit(fixedAsset, splitType, amount);
+
+      // Do the split
       FixedAsset createdFixedAsset =
-          Beans.get(FixedAssetService.class)
-              .splitAndSaveFixedAsset(
-                  fixedAsset,
-                  splitType,
-                  amount,
-                  Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
-                  fixedAsset.getComments());
+          fixedAssetService.splitAndSaveFixedAsset(
+              fixedAsset,
+              splitType,
+              amount,
+              Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
+              fixedAsset.getComments());
 
+      // Open in view
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")

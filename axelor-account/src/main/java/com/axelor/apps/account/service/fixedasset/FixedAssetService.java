@@ -107,6 +107,9 @@ public interface FixedAssetService {
       String comments)
       throws AxelorException;
 
+  void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
+      throws AxelorException;
+
   int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
 
   /**

@@ -603,6 +603,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
+  public void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
+      throws AxelorException {
+    if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY
+        && amount.compareTo(BigDecimal.ONE) != 0
+        && amount.compareTo(fixedAsset.getQty()) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL));
+    } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
+        && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) > 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
+    }
+  }
+
+  @Override
   public void multiplyLinesBy(FixedAsset fixedAsset, BigDecimal prorata) throws AxelorException {
 
     List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
