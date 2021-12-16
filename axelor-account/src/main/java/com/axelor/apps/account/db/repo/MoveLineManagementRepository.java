@@ -85,8 +85,9 @@ public class MoveLineManagementRepository extends MoveLineRepository {
             BigDecimal.valueOf(
                 ChronoUnit.DAYS.between(
                     moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+        BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
-        json.put("$cutOffProrataAmount", daysProrata.divide(daysTotal, 2, RoundingMode.HALF_UP));
+        json.put("$cutOffProrataAmount", prorata.multiply(moveLine.getCurrencyAmount()));
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
