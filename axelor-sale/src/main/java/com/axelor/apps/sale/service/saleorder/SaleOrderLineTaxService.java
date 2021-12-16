@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,6 +40,7 @@ public class SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Inject private SaleOrderService saleOrderService;
   @Inject private SaleOrderToolService saleOrderToolService;
 
   /**
@@ -59,9 +61,9 @@ public class SaleOrderLineTaxService {
     Set<String> specificNotes = new HashSet<String>();
 
     boolean customerSpecificNote = false;
-    if (saleOrder.getClientPartner().getFiscalPosition() != null) {
-      customerSpecificNote =
-          saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+    if (fiscalPosition != null) {
+      customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {

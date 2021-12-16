@@ -17,20 +17,9 @@
  */
 package com.axelor.apps.bpm.service;
 
-import com.axelor.apps.bpm.db.WkfModel;
-import java.util.List;
 import java.util.Map;
 
 public interface BpmDashboardService {
 
-  public Map<String, Object> getData(int offset);
-
-  public List<Map<String, Object>> getChartData(WkfModel wkfModel, String type);
-
-  public List<Map<String, Object>> getInstances();
-
-  public Map<String, Object> getStatusRecords(
-      WkfModel wkfModel, String status, String assignedType);
-
-  public List<Long> getInstanceRecords(String status);
+  Map<String, Object> getData(int offset);
 }

@@ -17,10 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -142,9 +139,8 @@ public class VentilateState extends WorkflowInvoice {
       }
 
       if (invoice.getPartner() != null) {
-        account =
-            Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), account);
+        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+        account = Beans.get(FiscalPositionAccountService.class).getAccount(fiscalPosition, account);
       }
       invoice.setPartnerAccount(account);
     }

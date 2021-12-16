@@ -21,6 +21,8 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -64,6 +66,27 @@ public class SupplychainBatchController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateStockHistory(ActionRequest request, ActionResponse response) {
+    try {
+      SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+      supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
+      Batch batch = Beans.get(SupplychainBatchService.class).updateStockHistory(supplychainBatch);
+      response.setFlash(batch.getComments());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateDates(ActionRequest request, ActionResponse response) {
+    try {
+      SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+      Beans.get(SupplychainBatchService.class).checkDates(supplychainBatch);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
