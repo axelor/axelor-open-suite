@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
@@ -27,10 +25,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 
 @Singleton
