@@ -23,9 +23,11 @@ import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class ProductVariantServiceSupplyChainImpl extends ProductVariantServiceStockImpl {
 
+  @Inject
   public ProductVariantServiceSupplyChainImpl(
       ProductRepository productRepo, ProductVariantRepository productVariantRepo) {
     super(productRepo, productVariantRepo);
