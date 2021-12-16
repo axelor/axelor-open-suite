@@ -64,6 +64,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -1025,6 +1026,27 @@ public class InvoiceController {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceService invoiceService = Beans.get(InvoiceService.class);
+
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+      if (invoiceService.checkManageCutOffDates(invoice)) {
+        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
