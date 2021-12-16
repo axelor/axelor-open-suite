@@ -14,6 +14,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,9 +64,9 @@ public class BatchBillOfExchange extends AbstractBatch {
         || !accountingBatch.getPaymentMode().getGenerateBankOrder()) {
       return;
     }
-
-    Query<Invoice> query = buildOrderedQueryFetchInvoices(accountingBatch);
-    List<Long> invoicePaymentIdList = createInvoicePayments(query);
+    List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
+    Query<Invoice> query = buildOrderedQueryFetchInvoices(accountingBatch, anomalyList);
+    List<Long> invoicePaymentIdList = createInvoicePayments(query, anomalyList);
     if (invoicePaymentIdList != null && !invoicePaymentIdList.isEmpty()) {
 
       try {
@@ -86,13 +87,12 @@ public class BatchBillOfExchange extends AbstractBatch {
         : accountingBatch.getCompany().getDefaultBankDetails();
   }
 
-  protected List<Long> createInvoicePayments(Query<Invoice> query) {
-    int offSet = 0;
+  protected List<Long> createInvoicePayments(Query<Invoice> query, List<Long> anomalyList) {
     List<Invoice> invoicesList = null;
     List<Long> invoicePaymentIdList = new ArrayList<>();
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     BankDetails companyBankDetails = getAccountingBankDetails(accountingBatch);
-    while (!(invoicesList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
       if (!JPA.em().contains(companyBankDetails)) {
         companyBankDetails = bankDetailsRepository.find(companyBankDetails.getId());
       }
@@ -101,11 +101,12 @@ public class BatchBillOfExchange extends AbstractBatch {
           createInvoicePayment(invoicePaymentIdList, companyBankDetails, invoice);
         } catch (Exception e) {
           incrementAnomaly();
+          anomalyList.add(invoice.getId());
+          query.bind("anomalyList", anomalyList);
           TraceBackService.trace(e, "billOfExchangeBatch: create invoice payment", batch.getId());
+          break;
         }
       }
-
-      offSet += FETCH_LIMIT;
       JPA.clear();
     }
     return invoicePaymentIdList;
@@ -121,7 +122,8 @@ public class BatchBillOfExchange extends AbstractBatch {
     incrementDone();
   }
 
-  protected Query<Invoice> buildOrderedQueryFetchInvoices(AccountingBatch accountingBatch) {
+  protected Query<Invoice> buildOrderedQueryFetchInvoices(
+      AccountingBatch accountingBatch, List<Long> anomalyList) {
     StringBuilder filter = new StringBuilder();
     boolean manageMultiBanks = appAccountService.getAppBase().getManageMultiBanks();
     filter.append(
@@ -130,6 +132,7 @@ public class BatchBillOfExchange extends AbstractBatch {
             + "AND self.amountRemaining > 0 "
             + "AND self.company = :company "
             + "AND self.hasPendingPayments = FALSE "
+            + "AND self.id NOT IN (:anomalyList) "
             + "AND self.paymentMode = :paymentMode ");
 
     Map<String, Object> bindings = new HashMap<>();
@@ -137,6 +140,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
+    bindings.put("anomalyList", anomalyList);
 
     if (accountingBatch.getDueDate() != null) {
       filter.append("AND self.dueDate <= :dueDate ");
