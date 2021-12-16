@@ -17,21 +17,12 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;

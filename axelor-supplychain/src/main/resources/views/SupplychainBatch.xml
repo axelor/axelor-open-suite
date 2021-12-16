@@ -69,9 +69,9 @@
           requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 1"
-            onChange="action-method-supplychain-batch-validate-movedate,action-supplychain-batch-attrs-show-label,action-record-supplychain-batch-movedate-onchange"/>
-          <label name="adviceDates"
-            title="Please, enter only dates with the last day of month" css="label-danger"/>
+            validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
+            help="Please, enter only dates with the last day of month"
+            onChange="action-supplychain-batch-group-move-date-onchange"/>
           <label name="adviseUser"
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
@@ -129,11 +129,12 @@
 
   <!-- ACTION GROUP -->
   <action-group name="action-supplychain-batch-group-accounting-cut-off">
-    <action name="action-method-supplychain-batch-validate-movedate"/>
     <action name="save"/>
     <action name="action-supplychain-batch-validate-twice-in-a-month"/>
-    <action name="action-supplychain-batch-method-preview-records-to-process"
-      if="previewRecordsToProcess"/>
+    <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-supplychain-batch-view-preview-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
     <action name="action-supplychain-batch-method-accounting-cut-off"
       if="!previewRecordsToProcess"/>
   </action-group>
@@ -150,6 +151,10 @@
     <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
   </action-group>
 
+  <action-group name="action-supplychain-batch-group-move-date-onchange">
+    <action name="action-supplychain-batch-attrs-show-label"/>
+    <action name="action-record-supplychain-batch-movedate-onchange"/>
+  </action-group>
 
   <!-- ACTION ATTRS -->
   <action-attrs name="action-supplychain-batch-attrs-show-label">
@@ -297,6 +302,50 @@
     <view type="form" name="stock-history-line-form"/>
     <domain>self.period = :period</domain>
     <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
+
+  <action-view name="action-supplychain-batch-view-preview-move-lines-to-process"
+    title="Move lines concerned by cut off" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-cut-off-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>
+      self.account.manageCutOffPeriod IS TRUE
+      AND self.cutOffStartDate IS NOT NULL
+      AND
+      self.cutOffEndDate IS NOT NULL
+      AND self.move.journal = :researchJournal
+      AND YEAR(self.move.date)
+      = YEAR(:moveDate)
+      AND self.move.company = :company
+    </domain>
+  </action-view>
+
+  <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+    title="Move lines concerned by cut off" model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-cut-off-grid"/>
+    <view type="form" name="stock-move-line-form"/>
+    <domain>
+      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty)
+      AND
+      self.stockMove.invoicingStatusSelect = :_statusInvoiced
+      AND (self.stockMove.statusSelect =
+      :_statusRealized
+      AND ((:accountingCutOffTypeSelect = :_fae AND self.stockMove.typeSelect =
+      :_incomingType)
+      OR (:accountingCutOffTypeSelect = :_fnp AND self.stockMove.typeSelect =
+      :_outgoingType))
+      AND
+      self.stockMove.realDate &lt;= :moveDate
+      AND self.move.company = :company
+    </domain>
+    <context name="_statusInvoiced" expr="eval: __repo__(StockMove).STATUS_INVOICED"/>
+    <context name="_statusRealized" expr="eval: __repo__(StockMove).STATUS_REALIZED"/>
+    <context name="_incomingType" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_outgoingType" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_fae"
+      expr="eval: __repo__(SupplychainBatch).ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES"/>
+    <context name="_fnp"
+      expr="eval: __repo__(SupplychainBatch).ACCOUNTING_CUT_OFF_TYPE_CUSTOMER_INVOICES"/>
   </action-view>
 
   <search-filters name="supplychain-batch-filters"
