@@ -275,7 +275,7 @@
     <option value="1">Discount</option>
     <option value="2">Discount in value</option>
     <option value="3">Collection and credit lump sum after maturity</option>
-    <option value="4">Cash out after expiration of unpaid bills return period </option>
+    <option value="4">Cash out after expiration of unpaid bill's return period</option>
   </selection>
 
   <selection name="bankpayment.bank.order.daily.code.select">
