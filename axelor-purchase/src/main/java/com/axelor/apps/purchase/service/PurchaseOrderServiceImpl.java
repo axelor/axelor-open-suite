@@ -438,10 +438,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
           }
           if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
-            product.setCostPrice(
-                purchaseOrder.getInAti()
-                    ? purchaseOrderLine.getInTaxPrice()
-                    : purchaseOrderLine.getPrice());
+            product.setCostPrice(convertedPrice);
             if (product.getAutoUpdateSalePrice()) {
               Beans.get(ProductService.class).updateSalePrice(product);
             }
