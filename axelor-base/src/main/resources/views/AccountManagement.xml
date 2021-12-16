@@ -119,6 +119,19 @@
           if="__config__.app.isApp('account')" canEdit="false"/>
       </panel>
 
+      <!-- CUT OFF -->
+      <panel name="cutOffPanel" title="VAT Regularization" colSpan="12"
+        showIf="typeSelect == 2">
+        <field name="purchVatRegulationAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false"/>
+        <field name="saleVatRegulationAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false"/>
+      </panel>
+
       <!-- PAYMENT -->
       <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
         <field name="cashAccount"
