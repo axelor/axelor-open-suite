@@ -52,6 +52,9 @@ public class SupplychainBatchService extends AbstractBatchService {
       case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
         batch = invoiceOrders(supplychainBatch);
         break;
+      case SupplychainBatchRepository.ACTION_UPDATE_STOCK_HISTORY:
+        batch = updateStockHistory(supplychainBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -93,5 +96,9 @@ public class SupplychainBatchService extends AbstractBatchService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.BATCH_MOVE_DATE_ERROR));
     }
+  }
+
+  public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
   }
 }

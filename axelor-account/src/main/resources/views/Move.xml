@@ -252,6 +252,8 @@
           showIf="$isThereRelatedCutOffMoves"
           if="__config__.app.getApp('account').manageCutOffPeriod"/>
         <field name="$isThereRelatedCutOffMoves" type="boolean" hidden="true"/>
+        <field name="fiscalPosition" grid-view="fiscal-position-grid"
+          form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       </panel>
 
       <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1"

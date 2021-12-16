@@ -114,6 +114,11 @@ public interface IExceptionMessage {
   String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully," /*)*/;
   String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully," /*)*/;
 
+  /** Batch update stock history */
+  static final String BATCH_UPDATE_STOCK_HISTORY_1 = /*$$(*/ "Batch update stock history :" /*)*/;
+
+  static final String BATCH_UPDATE_STOCK_HISTORY_2 = /*$$(*/ "Stock history updated" /*)*/;
+
   /** Mrp Line Service */
   static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;

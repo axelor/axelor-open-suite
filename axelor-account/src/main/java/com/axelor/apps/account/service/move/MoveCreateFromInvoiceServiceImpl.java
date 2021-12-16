@@ -73,10 +73,9 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   }
 
   /**
-   * Créer une écriture comptable propre à la facture.
+   * Create a Move from an Invoice
    *
    * @param invoice
-   * @param consolidate
    * @return
    * @throws AxelorException
    */
@@ -124,6 +123,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               invoice.getInvoiceDate(),
               isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
+              invoice.getFiscalPosition(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
@@ -288,6 +288,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                 invoice.getInvoiceDate(),
                 invoice.getInvoiceDate(),
                 null,
+                invoice.getFiscalPosition(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                 MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                 origin,
@@ -369,6 +370,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             invoice.getInvoiceDate(),
             invoice.getInvoiceDate(),
             null,
+            invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,

@@ -132,9 +132,7 @@ public class SaleOrderLineController {
     response.setValue(
         "taxEquiv",
         Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(
-                saleOrder.getClientPartner().getFiscalPosition(),
-                saleOrderLine.getTaxLine().getTax()));
+            .getTaxEquiv(saleOrder.getFiscalPosition(), saleOrderLine.getTaxLine().getTax()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {
