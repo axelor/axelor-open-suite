@@ -315,7 +315,7 @@
       self.cutOffEndDate IS NOT NULL
       AND ((:_researchJournal > 0 AND self.move.journal.id =
       :_researchJournal)
-      OR (_researchJournal = 0 AND
+      OR (:_researchJournal = 0 AND
       self.move.journal.journalType.technicalTypeSelect = :_journalType))
       AND
       YEAR(self.move.date) =
