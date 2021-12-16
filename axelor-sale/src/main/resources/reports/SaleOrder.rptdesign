@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -4682,14 +4682,45 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                         </data>
                                         <text id="4562">
                                             <property name="fontSize">8pt</property>
+                                            <property name="dataSet">TranslateDS</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
                                                 </structure>
                                             </list-property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'value:'+row["description"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">
+if(row._outer["description"] != null ){ 
+	if(row["translation"] != null){
+		row["translation"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+	}else{
+		row._outer["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+	}
+}
+</VALUE-OF></I>]]></text-property>
                                         </text>
                                         <text id="5375">
                                             <property name="fontSize">8pt</property>
@@ -4750,7 +4781,15 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">
+if(row["description"] != null ){ 
+	if(row["translation"] != null){
+		row["translation"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+	}else{
+		row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+	}
+}
+</VALUE-OF></I>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4563">
@@ -6880,6 +6919,7 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
+                        <expression name="altText">""</expression>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -6888,7 +6928,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                         </list-property>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
-                        <expression name="altText">""</expression>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>
