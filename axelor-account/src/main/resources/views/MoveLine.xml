@@ -195,10 +195,10 @@
     <field name="move.journal"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
-    <field name="cutOffProrataAmount" type="decimal" x-scale="2"/>
-    <field name="cutOffProrataAmount"/>
+    <field name="$cutOffProrataAmount" title="Prorata amount" type="decimal" x-scale="2"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
+    <field name="id" hidden="true"/>
   </grid>
 
   <form name="incl-analytic-distribution-move-line-form"
