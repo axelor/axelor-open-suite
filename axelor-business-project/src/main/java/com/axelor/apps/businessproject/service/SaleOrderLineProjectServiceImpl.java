@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -51,7 +52,8 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      SaleOrderService saleOrderService) {
     super(
         currencyService,
         priceListService,
@@ -60,6 +62,7 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
+        saleOrderService,
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,

@@ -64,6 +64,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getPartner(),
             dateOfReversion,
             move.getPaymentMode(),
+            move.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),

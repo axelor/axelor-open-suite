@@ -204,6 +204,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             date,
             date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,

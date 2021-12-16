@@ -108,7 +108,7 @@
 
       <panel name="otherDetailsPanel" colSpan="3"
         readonlyIf="statusSelect == 3 &amp;&amp; !validatePeriod">
-        <field name="$viewerTags" showTitle="false">
+        <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -127,7 +127,7 @@
             <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
           </editor>
         </field>
-        <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
+        <field name="$technicalOriginTags" showTitle="false" readonly="true">
           <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
@@ -237,6 +237,8 @@
           onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
         <field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form"
           canNew="false" canEdit="false" if-module="axelor-supplychain"/>
+        <field name="fiscalPosition" grid-view="fiscal-position-grid"
+          form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       </panel>
 
       <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1"

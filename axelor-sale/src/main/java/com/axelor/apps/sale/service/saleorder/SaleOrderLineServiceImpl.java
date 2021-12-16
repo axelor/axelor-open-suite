@@ -97,6 +97,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected AppSaleService appSaleService;
   protected AccountManagementService accountManagementService;
   protected SaleOrderLineRepository saleOrderLineRepo;
+  protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -106,7 +107,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo) {
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -114,6 +116,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.appSaleService = appSaleService;
     this.accountManagementService = accountManagementService;
     this.saleOrderLineRepo = saleOrderLineRepo;
+    this.saleOrderService = saleOrderService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -229,14 +232,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
       saleOrderLine.setTaxLine(taxLine);
 
-      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
 
       Tax tax =
           accountManagementService.getProductTax(
-              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+              saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
 
       TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
-
       saleOrderLine.setTaxEquiv(taxEquiv);
     } else {
       saleOrderLine.setTaxLine(null);
@@ -339,8 +341,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
-   * @param quantity The quantity.
-   * @param price The unit price.
    * @return The excluded tax total amount.
    */
   @Override
@@ -427,7 +427,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCreationDate(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
-            saleOrder.getClientPartner().getFiscalPosition(),
+            saleOrder.getFiscalPosition(),
             false);
   }
 
@@ -1065,9 +1065,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         || pricing.getClass1PricingRule() == null
         || pricing.getResult1PricingRule() == null
         || count == 100) {
+      orderLine.setPricingScaleLogs(I18n.get("No pricing scale used for this product"));
       return null;
     }
     Product product = orderLine.getProduct();
+
+    String pricingScaleLogs = count > 0 ? orderLine.getPricingScaleLogs() + "\n" : "";
+    pricingScaleLogs += I18n.get("Identified pricing scale: ") + pricing.getName();
 
     // (2) Compute the classification formulas
     // (3) Search the Pricing Line
@@ -1084,15 +1088,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptContext.put("previousPricingLine", EntityHelper.getEntity(previousPricingLine));
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    PricingLine pricingLine =
-        searchPricingLine(
-            pricing,
-            new Object[] {
-              computeClassificationFormula(scriptHelper, pricing.getClass1PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass2PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass3PricingRule()),
-              computeClassificationFormula(scriptHelper, pricing.getClass4PricingRule())
-            });
+    List<String> logClassPricingRuleList = new ArrayList<>();
+    Object[] classifications =
+        computeClassificationFormula(scriptHelper, pricing, orderLine, logClassPricingRuleList);
+
+    PricingLine pricingLine = searchPricingLine(pricing, classifications);
 
     if (pricingLine == null) {
       return null;
@@ -1103,7 +1103,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
     scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    computeResultFormulaAndApply(scriptHelper, pricing, orderLine);
+    List<String> logResultPricingRuleList = new ArrayList<>();
+
+    computeResultFormulaAndApply(scriptHelper, pricing, orderLine, logResultPricingRuleList);
+
+    for (int i = 0; i < logClassPricingRuleList.size(); i++) {
+      pricingScaleLogs += logClassPricingRuleList.get(i) + logResultPricingRuleList.get(i);
+    }
 
     Query<Pricing> childPricingQry =
         pricingService.getPricing(
@@ -1116,8 +1122,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     long totalChildPricing = childPricingQry.count();
 
     if (totalChildPricing == 0) {
+      orderLine.setPricingScaleLogs(pricingScaleLogs);
       return pricingLine;
-
     } else if (totalChildPricing > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1128,15 +1134,46 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               SaleOrderLine.class.getSimpleName()));
 
     } else {
+      orderLine.setPricingScaleLogs(pricingScaleLogs + "\n");
       Pricing childPricing = childPricingQry.fetchOne();
       return computePricing(childPricing, saleOrder, orderLine, pricingLine, ++count);
     }
   }
 
-  public Object computeClassificationFormula(
-      GroovyScriptHelper scriptHelper, PricingRule classPricingRule) {
+  public Object[] computeClassificationFormula(
+      GroovyScriptHelper scriptHelper,
+      Pricing pricing,
+      SaleOrderLine orderLine,
+      List<String> logs) {
 
-    return classPricingRule != null ? scriptHelper.eval(classPricingRule.getFormula()) : null;
+    List<Object> classificationsList = new ArrayList<>();
+
+    List<PricingRule> classPricingRuleList = new ArrayList<>();
+    classPricingRuleList.add(pricing.getClass1PricingRule());
+    classPricingRuleList.add(pricing.getClass2PricingRule());
+    classPricingRuleList.add(pricing.getClass3PricingRule());
+    classPricingRuleList.add(pricing.getClass4PricingRule());
+
+    classPricingRuleList.stream()
+        .forEach(
+            classPricingRule -> {
+              if (classPricingRule != null) {
+                Object computedFormula = scriptHelper.eval(classPricingRule.getFormula());
+                classificationsList.add(computedFormula);
+                if (computedFormula != null)
+                  logs.add(
+                      "\n"
+                          + I18n.get("Classification rule used: ")
+                          + classPricingRule.getName()
+                          + "\n"
+                          + I18n.get("Evaluation of the classification rule: ")
+                          + computedFormula.toString());
+              } else {
+                classificationsList.add(null);
+              }
+            });
+
+    return classificationsList.toArray();
   }
 
   private List<Integer[]> getFieldTypeAndOperator(Pricing pricing) {
@@ -1391,7 +1428,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   public void computeResultFormulaAndApply(
-      GroovyScriptHelper scriptHelper, Pricing pricing, SaleOrderLine orderLine) {
+      GroovyScriptHelper scriptHelper,
+      Pricing pricing,
+      SaleOrderLine orderLine,
+      List<String> logs) {
 
     List<PricingRule> resultPricingRuleList = new ArrayList<>();
     resultPricingRuleList.add(pricing.getResult1PricingRule());
@@ -1403,13 +1443,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         .filter(Objects::nonNull)
         .forEach(
             resultPricingRule -> {
+              Object result = scriptHelper.eval(resultPricingRule.getFormula());
+              String fieldToPopulate = "";
               if (resultPricingRule.getFieldToPopulate() != null) {
-                Mapper.of(SaleOrderLine.class)
-                    .set(
-                        orderLine,
-                        resultPricingRule.getFieldToPopulate().getName(),
-                        scriptHelper.eval(resultPricingRule.getFormula()));
+                fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
+                Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
               }
+              logs.add(
+                  "\n"
+                      + I18n.get("Result rule used: ")
+                      + resultPricingRule.getName()
+                      + "\n"
+                      + I18n.get("Evaluation of the result rule: ")
+                      + result.toString()
+                      + "\n"
+                      + I18n.get("Populated field: ")
+                      + fieldToPopulate);
             });
   }
 }
