@@ -1051,4 +1051,7 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
+      "There is no sequence set for the payment session for the company %s" /*)*/;
 }
