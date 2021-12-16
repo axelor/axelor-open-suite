@@ -1,3 +1,16 @@
+## [6.0.17] (2021-12-16)
+
+#### Fixed
+
+* STOCKMOVE/INVOICING: Correctly apply unit conversion when updating invoiced quantity in stock move lines.
+* Move: fix wrong currency amount and rate computation in VAT move line.
+* SALE ORDER: Blocking invoice generation when the full amount of the order has already been invoiced.
+* SaleOrderLine: Fix invoiced quantities computation when having refunds.
+* PERIODS: Removed overlapping periods in demo data.
+* STOCK DETAILS: Fixed issue where stock locations were sometimes not properly filtered.
+* Expense Line: Prevent negative and inconsistent amounts in Expense lines.
+* Budget: Fix budget lines update on cancelling an invoice.
+
 ## [6.0.16] (2021-11-17)
 
 #### Changes
@@ -632,6 +645,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.17]: https://github.com/axelor/axelor-open-suite/compare/v6.0.16...v6.0.17
 [6.0.16]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.0.16
 [6.0.15]: https://github.com/axelor/axelor-open-suite/compare/v6.0.14...v6.0.15
 [6.0.14]: https://github.com/axelor/axelor-open-suite/compare/v6.0.13...v6.0.14
