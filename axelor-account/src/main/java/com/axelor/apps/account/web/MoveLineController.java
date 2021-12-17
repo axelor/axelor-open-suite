@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -38,9 +39,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.auth.db.Role;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -530,20 +529,12 @@ public class MoveLineController {
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      if (BigDecimal.ZERO.equals(moveLine.getAmountRemaining())
-          || moveLine.getMove().getPeriod().getStatusSelect() > PeriodRepository.STATUS_OPENED) {
-        for (Role role : request.getUser().getRoles()) {
-          if (request
-              .getUser()
-              .getActiveCompany()
-              .getAccountConfig()
-              .getClosureAuthorizedRoleList()
-              .contains(role)) {
-            return;
-          }
-        }
-        response.setAttr("invoiceTermPanel", "readonly", true);
-      }
+
+      response.setAttr(
+          "invoiceTermPanel",
+          "readonly",
+          Beans.get(MoveLineControlService.class)
+              .isInvoiceTermReadonly(moveLine, request.getUser()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
