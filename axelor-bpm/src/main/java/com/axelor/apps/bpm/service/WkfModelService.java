@@ -64,9 +64,6 @@ public interface WkfModelService {
 
   public List<Map<String, Object>> getProcessPerUser(WkfModel wkfModel);
 
-  public Map<String, Object> computeStatus(
-      boolean isMetaModel, String modelName, WkfProcess process, User user, String assignedType);
-
   public List<WkfProcess> getProcesses(WkfModel wkfModel);
 
   public void sortProcessConfig(List<WkfProcessConfig> processConfigs);
@@ -79,24 +76,5 @@ public interface WkfModelService {
       String modelName,
       boolean isMetaModel,
       User user,
-      boolean withTask,
-      String assignedType);
-
-  public List<Long> getStatusRecordIds(
-      WkfTaskConfig config,
-      List<String> processInstanceIds,
-      String modelName,
-      boolean isMetaModel,
-      User user,
-      String assignedType);
-
-  void getTasks(
-      WkfTaskConfig config,
-      List<String> processInstanceIds,
-      String modelName,
-      boolean isMetaModel,
-      User user,
-      Map<String, Object> taskMap,
-      List<Map<String, Object>> lateTaskMapList,
-      String assignedType);
+      boolean withTask);
 }

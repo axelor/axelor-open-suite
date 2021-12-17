@@ -11,6 +11,7 @@
     <field name="taxRate" readonly="true"/>
     <field name="taxAmount" readonly="true"/>
     <field name="date" readonly="true"/>
+    <field name="fiscalPosition" readonly="true"/>
   </grid>
 
   <form name="tax-payment-move-line-form" model="com.axelor.apps.account.db.TaxPaymentMoveLine"
@@ -22,6 +23,7 @@
       <field name="detailPaymentAmount" readonly="true" title="Base"/>
       <field name="taxRate" readonly="true"/>
       <field name="taxAmount" readonly="true"/>
+      <field name="fiscalPosition" readonly="true"/>
       <field name="date" readonly="true"/>
     </panel>
   </form>

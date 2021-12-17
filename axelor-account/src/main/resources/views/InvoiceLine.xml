@@ -123,8 +123,7 @@
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
-          canEdit="false"
-          onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange"/>
+          canEdit="false" onChange="action-invoice-line-group-account-onchange"/>
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
@@ -142,6 +141,16 @@
           <field name="fixedAssetCategory" canEdit="false" domain="self.company = :_company"
             form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
             showIf="fixedAssets &amp;&amp; $contains([1,2], $_operationTypeSelect)"/>
+        </panel>
+        <field name="account.manageCutOffPeriod" hidden="true"/>
+        <panel name="cutOffPanel" title="Cut off period" colSpan="12"
+          showIf="account.manageCutOffPeriod"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
+          <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
+            readonlyIf="invoice.statusSelect == 3"/>
+          <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
+            readonlyIf="invoice.statusSelect == 3"/>
+          <field name="invoice.statusSelect" hidden="true"/>
         </panel>
       </panel>
 
@@ -411,6 +420,13 @@
     <action name="action-invoice-line-attrs-readonly-menu-form"/>
     <action name="action-invoice-line-attrs-hidden-menu-form"/>
   </action-group>
+
+  <action-group name="action-invoice-line-group-account-onchange">
+    <action name="action-attrs-account-invoice-line-account-onchange"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="__config__.app.getApp('account').manageCutOffPeriod &amp;&amp; (account == null || !account.manageCutOffPeriod)"/>
+    <action name="action-method-account-invoice-line-account-onchange"/>
+  </action-group>
   <!-- ACTION RECORDS -->
 
   <action-record name="action-invoice-line-record-new"
@@ -429,6 +445,12 @@
   <action-record name="action-invoice-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.account.db.InvoiceLine">
     <field name="isHideUnitAmounts" expr="eval: false"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-account-onchange"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="cutOffStartDate" expr=""/>
+    <field name="cutOffEndDate" expr=""/>
   </action-record>
 
   <!-- ACTION METHOD -->

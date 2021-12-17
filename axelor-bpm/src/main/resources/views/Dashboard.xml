@@ -19,30 +19,9 @@
       title="Node activation time" height="350" colSpan="12"/>
   </dashboard>
 
-  <form name="bpm-manager-dashboard-form" model="com.axelor.apps.base.db.Wizard"
-    title="BPM Manager" width="large" onNew="action-bpm-manage-attrs-set-process" canNew="false"
-    canEdit="false" canDelete="false">
-    <panel name="actionPanel" colSpan="12">
-      <button name="$showProcessBtn" colSpan="3" widget="info-button" title="Show Processes"
-        onClick="action.bpm.manager.show.processes"/>
-    </panel>
-    <panel name="dashboardPanel">
-      <panel-dashlet title="Assigned to me"
-        action="chart:chart.wkf.bpm.manager.assigned.me.tasks" height="400"/>
-      <panel-dashlet title="Assigned to others"
-        action="chart:chart.wkf.bpm.manager.assigned.other.tasks" height="400"/>
-      <panel-dashlet title="Late tasks"
-        action="chart:chart.wkf.bpm.manager.late.tasks" height="400" colSpan="12"/>
-      <panel-dashlet title="Active statuses"
-        action="chart:chart.wkf.bpm.manager.active.status" height="400"/>
-      <panel-dashlet title="Active instances"
-        action="chart:chart.wkf.bpm.manager.active.instances" height="400"/>
-    </panel>
-  </form>
-
-  <form name="bpm-manager-processes-form" title="Processes"
+  <form name="bpm-manager-dashboard-form" title="BPM Manager"
     model="com.axelor.apps.base.db.Wizard" onNew="action-wkf-bpm-manager-dashboard-method-on-new"
-    width="large">
+    width="large" canNew="false" canEdit="false" canDelete="false">
     <panel name="wkfModelPanel">
       <label name="$noData" title="No data to display" showIf="$totalRecord == 0"/>
       <field name="$models" colSpan="12" showTitle="false" readonly="true">
@@ -114,16 +93,5 @@
   <action-method name="action-wkf-bpm-manager-dashboard-method-nxt-manager-data">
     <call class="com.axelor.apps.bpm.web.BpmDashboardController" method="getNxtManagerData"/>
   </action-method>
-
-  <action-view name="action.bpm.manager.show.processes" title="Processes"
-    model="com.axelor.apps.base.db.Wizard">
-    <view type="form" name="bpm-manager-processes-form"/>
-  </action-view>
-
-  <action-record name="action-bpm-manage-attrs-set-process"
-    model="com.axelor.apps.base.db.Wizard">
-    <field name="$showProcessBtn"
-      expr="eval: __repo__(WkfModel).all().filter('size(self.wkfProcessList) > 0').count()"/>
-  </action-record>
 
 </object-views>
