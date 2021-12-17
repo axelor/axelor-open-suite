@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +73,8 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
+  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
@@ -112,4 +115,11 @@ public interface InvoiceLineService {
 
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException;
+
+  boolean checkCutOffDates(InvoiceLine invoiceLine);
+
+  boolean checkManageCutOffDates(InvoiceLine invoiceLine);
+
+  void applyCutOffDates(
+      InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

@@ -60,6 +60,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -572,6 +573,27 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+      if (moveComputeService.checkManageCutOffDates(move)) {
+        moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+
+        response.setValue("moveLineList", move.getMoveLineList());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -129,6 +129,7 @@ public class ChequeRejectionService {
             rejectionDate,
             rejectionDate,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             chequeRejection.getName(),

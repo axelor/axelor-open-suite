@@ -246,7 +246,7 @@
         grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+        onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange"
@@ -264,10 +264,11 @@
       <field name="account.reconcileOk" hidden="true"/>
       <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
+      <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
@@ -348,6 +349,15 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        if="__config__.app.getApp('account').manageCutOffPeriod">
+        <field name="cutOffStartDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="cutOffEndDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="move.statusSelect" hidden="true"/>
+        <field name="move.technicalOriginSelect" hidden="true"/>
+      </panel>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
@@ -432,6 +442,7 @@
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
       <field name="account.hasInvoiceTerm" hidden="true"/>
+      <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
@@ -480,7 +491,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
@@ -565,6 +576,15 @@
         <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
       </panel>
       <panel-include view="incl-analytic-distribution-move-line-form"/>
+      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+        if="__config__.app.getApp('account').manageCutOffPeriod">
+        <field name="cutOffStartDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="cutOffEndDate"
+          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="move.statusSelect" hidden="true"/>
+        <field name="move.technicalOriginSelect" hidden="true"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -649,6 +669,8 @@
   </action-group>
 
   <action-group name="action-account-move-line-account-group-on-change">
+    <action name="action-move-line-record-empty-cut-off-dates"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
@@ -676,6 +698,13 @@
     <action name="account-move-line-record-date-onchange"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
+  </action-group>
+
+  <action-group name="action-move-line-group-account-onchange">
+    <action name="action-move-line-record-empty-cut-off-dates"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-attrs-show-tax-amount"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -844,6 +873,12 @@
       if="account?.commonPosition == 2"/>
     <field name="credit" expr="eval: currencyAmount * currencyRate"
       if="account?.commonPosition == 1"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-empty-cut-off-dates"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="cutOffStartDate" expr="eval: null"/>
+    <field name="cutOffEndDate" expr="eval: null"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"

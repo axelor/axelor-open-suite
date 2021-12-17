@@ -1028,9 +1028,10 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+          Beans.get(SaleOrderLineServiceSupplyChain.class);
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderLineServiceSupplyChain.class)
-            .updateStockMoveReservationDateTime(saleOrderLine);
+        saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

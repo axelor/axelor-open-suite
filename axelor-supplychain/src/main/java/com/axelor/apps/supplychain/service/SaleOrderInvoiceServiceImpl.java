@@ -19,12 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.tool.StringTool.getIdListString;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -310,10 +305,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (partnerAccount != null) {
       Partner partner = invoice.getPartner();
-      if (partner != null) {
+      FiscalPosition fiscalPosition = null;
+      if (saleOrder != null) {
+        fiscalPosition = saleOrder.getFiscalPosition();
+      }
+      if (fiscalPosition != null) {
         partnerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(partner.getFiscalPosition(), partnerAccount);
+                .getAccount(fiscalPosition, partnerAccount);
       }
       invoice.setPartnerAccount(partnerAccount);
     }
@@ -509,6 +508,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+    invoice.setFiscalPosition(fiscalPosition);
 
     invoiceRepo.save(invoice);
 

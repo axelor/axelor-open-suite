@@ -27,8 +27,10 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -105,7 +107,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getPaymentCondition() == null
         || CollectionUtils.isEmpty(invoice.getPaymentCondition().getPaymentConditionLineList())) {
-      return null;
+      return invoice;
     }
 
     invoice.clearInvoiceTermList();
@@ -154,6 +156,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
     }
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     return invoiceTerm;
   }
 
@@ -413,5 +416,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return false;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void refusalToPay(
+      InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
+    invoiceTerm.setDecisionPfpTakenDate(
+        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+    invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
+    invoiceTerm.setReasonOfRefusalToPayStr(
+        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    invoiceTermRepo.save(invoiceTerm);
   }
 }

@@ -19,6 +19,8 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
@@ -95,6 +97,57 @@ public class InvoiceTermController {
         response.setValues(invoiceTerm);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (invoiceTerm.getInvoice() != null
+          && invoiceTerm.getInvoice().getCompany() != null
+          && invoiceTerm.getReasonOfRefusalToPay() != null) {
+        Beans.get(InvoiceTermService.class)
+            .refusalToPay(
+                Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
+                invoiceTerm.getReasonOfRefusalToPay(),
+                invoiceTerm.getReasonOfRefusalToPayStr());
+
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (invoiceTerm.getPfpValidatorUser() != null) {
+        response.setAttr(
+            "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+            "value",
+            invoiceTerm
+                .getPfpValidatorUser()
+                .equals(
+                    Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

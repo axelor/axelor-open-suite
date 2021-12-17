@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -190,7 +191,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         });
 
     if (partner != null) {
-      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
+      FiscalPosition fiscalPosition = null;
+      if (move.getInvoice() != null) {
+        fiscalPosition = move.getInvoice().getFiscalPosition();
+        if (fiscalPosition == null) {
+          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        }
+      } else {
+        fiscalPosition = partner.getFiscalPosition();
+      }
+
+      account = fiscalPositionAccountService.getAccount(fiscalPosition, account);
     }
 
     BigDecimal debit = BigDecimal.ZERO;
@@ -404,6 +415,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxCode(taxLine.getTax().getCode());
         }
 
+        // Cut off
+        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
+        }
+
         moveLines.add(moveLine);
       }
     }
@@ -510,6 +527,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            invoice.getCurrency(), companyCurrency, invoice.getInvoiceDate());
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
@@ -527,7 +547,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                         invoiceTerm.getAmount(),
                         invoice.getInvoiceDate())
                     .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                null,
+                currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
@@ -552,7 +572,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                           invoiceTerm.getAmount(),
                           invoice.getInvoiceDate())
                       .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                  null,
+                  currencyRate,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,
@@ -566,14 +586,25 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             moveLine.setDebit(
                 moveLine
                     .getDebit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+                    .add(
+                        currencyService.getAmountCurrencyConvertedAtDate(
+                            invoice.getCurrency(),
+                            companyCurrency,
+                            invoiceTerm.getAmount(),
+                            invoice.getInvoiceDate())));
           } else {
             // Credit
             moveLine.setCredit(
                 moveLine
                     .getCredit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+                    .add(
+                        currencyService.getAmountCurrencyConvertedAtDate(
+                            invoice.getCurrency(),
+                            companyCurrency,
+                            invoiceTerm.getAmount(),
+                            invoice.getInvoiceDate())));
           }
+          moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
       }
     }
@@ -619,8 +650,21 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (ObjectUtils.notEmpty(move.getPartner())
-        && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+
+    FiscalPosition fiscalPosition = null;
+    if (move.getInvoice() != null) {
+      fiscalPosition = move.getInvoice().getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    } else {
+      if (ObjectUtils.notEmpty(move.getPartner())
+          && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    }
+
+    if (fiscalPosition != null) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);

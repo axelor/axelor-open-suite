@@ -112,7 +112,12 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBack"; /*)*/
   public static final String INVOICE_INVOICE_TERM_PAID = /*$$(*/ "Invoice.invoiceTermPaid"; /*)*/
   public static final String INVOICE_INVOICE_TERMS = /*$$(*/ "Invoice.invoiceTerms"; /*)*/
-
+  public static final String INVOICE_INVOICE_TERM_PAYMENT_MODE = /*$$(*/
+      "Invoice.invoiceTermPaymentMode"; /*)*/
+  public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_TRUE = /*$$(*/
+      "Invoice.invoiceTermHoldBackTrue"; /*)*/
+  public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_FALSE = /*$$(*/
+      "Invoice.invoiceTermHoldBackFalse"; /*)*/
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
@@ -153,6 +158,14 @@ public interface ITranslation {
       "AccountingReportType1.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_CREDIT = /*$$(*/
       "AccountingReportType1.credit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_DEBIT = /*$$(*/
+      "AccountingReportType1.currencyDebit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CREDIT = /*$$(*/
+      "AccountingReportType1.currencyCredit"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY = /*$$(*/
+      "AccountingReportType1.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_CURRENCY_CODE = /*$$(*/
+      "AccountingReportType1.currencyCode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
       "AccountingReportType1.total"; /*)*/
 
@@ -358,6 +371,8 @@ public interface ITranslation {
       "AccountingReportType15.amount"; /*)*/
   public static final String ACCOUNTING_REPORT_15_TAX_RATE = /*$$(*/
       "AccountingReportType15.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
+      "AccountingReportType15.fiscalPositionCode"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/

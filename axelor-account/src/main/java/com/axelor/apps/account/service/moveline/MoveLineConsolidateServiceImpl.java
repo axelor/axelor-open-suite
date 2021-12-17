@@ -25,6 +25,15 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         if (map.containsKey(keys)) {
 
           MoveLine moveLineIt = map.get(keys);
+
+          // Check cut off dates
+          if (moveLine.getCutOffStartDate() != null
+              && !moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+              && moveLine.getCutOffEndDate() != null
+              && !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate())) {
+            break;
+          }
+
           int count = 0;
           if (moveLineIt.getAnalyticMoveLineList() == null
               && moveLine.getAnalyticMoveLineList() == null) {
