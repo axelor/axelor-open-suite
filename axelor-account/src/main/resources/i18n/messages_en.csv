@@ -2451,7 +2451,7 @@
 "The input failover date is not conforme compare with the dates and configured depreciation duration.",,,
 "The input gross value neither can't be greater or equal to the asset gross value nor equal to 0.",,,
 "The input past depreciation amount cannot be greater than the gross value of the fixed asset.",,,
-"The input quantity can't ge greater or equal to the quantity available in the fixed asset.",,,
+"The input quantity can't be greater or equal to the quantity available in the fixed asset.",,,
 "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.",,,
 "The line can not be simulated because there is no journal or it does not authorize simulated move",,,
 "The move %s cannot be empty",,,

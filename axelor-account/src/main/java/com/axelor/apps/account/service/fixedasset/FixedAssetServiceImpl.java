@@ -426,9 +426,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
 
     // Names
-    newFixedAsset.setName(String.format("%s - %s %.2f", fixedAsset.getName(), nameType, amount));
-    fixedAsset.setName(
-        String.format("%s - %s %.2f", fixedAsset.getName(), nameType, originalAmount));
+    newFixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, amount));
+    fixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, newAmount));
 
     // Comments
     newFixedAsset.setComments(
