@@ -24,7 +24,7 @@
     <decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing"
       readonly="true"/>
 
-    <many-to-one name="invoiceTerm" title="Invoice Term" ref="com.axelor.apps.account.db.InvoiceTerm"/>
+    <many-to-one name="invoiceTerm" title="Invoice term" ref="com.axelor.apps.account.db.InvoiceTerm"/>
 
   </entity>
 
