@@ -1215,4 +1215,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
     }
   }
+
+  @Override
+  public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
+    return invoice.getPfpValidatorUser() != null
+        && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
+  }
 }
