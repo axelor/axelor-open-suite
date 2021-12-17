@@ -784,10 +784,9 @@ InvoiceSet.length > 0))"
       <button name="registerPaymentBtn" title="Register payment" colSpan="12"
         onClick="save,action-invoice-view-register-payment-voucher"
         if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-      <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
-        canView="false"/>
+      <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
       <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
-      <field name="pfpValidatorUser" hidden="true"
+      <field name="pfpValidatorUser"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
         onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
@@ -795,9 +794,9 @@ InvoiceSet.length > 0))"
         canEdit="false"/>
       <panel name="pfpEmailPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
-        <field name="decisionPfpTakenDate" hidden="true" colSpan="12"/>
-        <button name="sendPfpNotifyEmailBtn" hidden="true"
-          colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
+        <field name="decisionPfpTakenDate" colSpan="12"/>
+        <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
+          onClick="save,action-send-by-email-with-template"/>
       </panel>
       <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
         canView="false"/>
