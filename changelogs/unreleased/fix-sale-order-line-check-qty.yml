@@ -1,4 +1,0 @@
----
-title: "SaleOrderLine: Modified checking of delivered or invoiced quantities"
-type: fix
-description: changed the method of checking invoiced or delivered quantities whenever quantity on a sale order line is changed 
