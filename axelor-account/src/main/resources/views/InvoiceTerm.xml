@@ -7,9 +7,10 @@
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
       <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
-        title="toolbar.validatePFP" onClick="act1"/>
+        title="toolbar.validatePFP" onClick="act1"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
       <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
-        onClick="act2"/>
+        onClick="act2" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
