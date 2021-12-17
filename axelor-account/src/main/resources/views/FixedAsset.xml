@@ -287,7 +287,7 @@
         showIf="disposalQtySelect == 2" min="0.01" type="decimal"/>
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01"/>
-      <button name="disposalBtn" title="Disposal" colSpan="4"
+      <button name="disposalBtn" title="confirm.disposal" colSpan="4"
         onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2"/>
