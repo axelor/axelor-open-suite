@@ -6,8 +6,8 @@
   <grid name="invoice-term-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle" title="toolbar.validatePFP"
-        onClick="act1"/>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="act1"/>
       <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
         onClick="act2"/>
     </toolbar>
@@ -56,8 +56,8 @@
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-method-invoice-init-invoice-term"
-    onLoad="action-invoice-term-group-onload">
+    model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
+    onLoad="action-invoice-term-group-onload,action-invoice-term-attrs-set-readonly">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
@@ -72,18 +72,14 @@
       <panel name="amountDatePanel" colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid"/>
-        <field name="isHoldBack"
-          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"/>
+        <field name="isHoldBack" onChange="action-invoice-term-attrs-set-readonly"/>
         <field name="estimatedPaymentDate" readonly="true"
-          onChange="action-invoice-term-record-update-customized-true"
-          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-record-update-customized-true,action-invoice-term-attrs-set-readonly"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
-          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-method-compute-customized-percentage"/>
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-attrs-set-readonly"/>
         <field name="percentage" validIf="percentage > 0"
-          readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount,action-invoice-term-attrs-set-readonly"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid"/>
         <field name="bankDetails" readonly="true"/>
@@ -154,6 +150,8 @@
           <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
           <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
           <field name="moveLine.move.company.accountConfig.isManagePFPInRefund" hidden="true"/>
+          <field name="invoice.paymentCondition" hidden="true"/>
+          <field name="invoice.paymentCondition.isFree" hidden="true"/>
           <field name="invoice.statusSelect" hidden="true"/>
           <field name="$isValidPfpValidatorUser" hidden="true"/>
         </panel>
@@ -287,6 +285,11 @@
     </panel-mail>
   </form>
 
+  <action-group name="action-invoice-term-group-onnew">
+    <action name="action-method-invoice-init-invoice-term"/>
+    <action name="action-invoice-term-attrs-set-readonly"/>
+  </action-group>
+
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
@@ -296,6 +299,11 @@
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="isCustomized" expr="true"/>
   </action-record>
+
+  <action-attrs name="action-invoice-term-attrs-set-readonly">
+    <attribute for="amount,percentage,estimatedPaymentDate,isHoldBack" name="readonly"
+      expr="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree"/>
+  </action-attrs>
 
   <action-record name="action-invoice-term-record-update-customized"
     model="com.axelor.apps.account.db.InvoiceTerm">
