@@ -103,6 +103,7 @@
   </form>
 
   <action-group name="action-group-message-message-onnew">
+    <action name="action-message-method-display-generate-message" if="_message != null"/>
     <action name="action-message-record-default"/>
     <action name="action-message-record-mail-account"/>
     <action name="action-message-record-get-signature"/>
@@ -189,5 +190,9 @@
     <context name="relatedToSelectId" expr="eval: id"/>
     <context name="relatedToSelect" expr="eval: _model"/>
   </action-view>
+
+  <action-method name="action-message-method-display-generate-message">
+    <call class="com.axelor.apps.message.web.MessageController" method="setContextValues"/>
+  </action-method>
 
 </object-views>
