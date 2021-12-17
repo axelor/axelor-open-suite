@@ -1,0 +1,3 @@
+---
+title: "Move : Fix null check on onChange of description"
+type: fix
