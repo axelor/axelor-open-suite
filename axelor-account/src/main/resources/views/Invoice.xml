@@ -797,14 +797,6 @@ InvoiceSet.length > 0))"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
         <field name="decisionPfpTakenDate" hidden="true" colSpan="12"/>
         <button name="sendPfpNotifyEmailBtn" hidden="true"
-          showIf="company.accountConfig.isManagePassedForPayment
-                  &amp;&amp; (operationTypeSelect == 1
-                    || company.accountConfig.isManagePFPInRefund
-                    &amp;&amp; operationTypeSelect == 2)
-                  &amp;&amp; pfpValidatorUser
-                  &amp;&amp; pfpValidateStatusSelect == 1
-                  &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator
-                  &amp;&amp; statusSelect &gt; 1"
           colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
       </panel>
       <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
