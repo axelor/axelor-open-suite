@@ -13,7 +13,7 @@ public class AnalyticAxisFetchServiceImpl implements AnalyticAxisFetchService {
       AnalyticAxis analyticAxis, Company company) {
     return Query.of(AnalyticMoveLine.class)
         .filter(
-            "self.analyticAxis = :analyticAxis AND self.analyticJournal.company IS NOT NULL AND self.analyticJournal.company != :company")
+            "self.analyticAxis = :analyticAxis AND self.analyticJournal IS NOT NULL AND self.analyticJournal.company IS NOT NULL AND self.analyticJournal.company != :company")
         .bind("analyticAxis", analyticAxis)
         .bind("company", company)
         .fetch();

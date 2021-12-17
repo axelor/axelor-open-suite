@@ -24,9 +24,9 @@ public class AnalyticAxisController {
 
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
 
-      if (analyticAxis.getCompany() != null) {
+      if (analyticAxis != null && analyticAxis.getCompany() != null) {
         if (Beans.get(AnalyticAxisService.class).checkCompanyOnMoveLine(analyticAxis)) {
-          response.setError(
+          response.setAlert(
               I18n.get(
                   "This axis already contains Analytic Move Lines attached to several companies. Please make sure to correctly reassign the analytic move lines currently attached to this axis to another axis before being able to assign other."));
           response.setValue("company", null);
