@@ -350,6 +350,8 @@
             action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel"
             colSpan="12"/>
+          <panel-dashlet action="action-stock-view-stock-history-line"
+            name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
       </panel>
       <panel name="productionInformationsPanel" title="Production information"

@@ -234,6 +234,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
       "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
 
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER_GROUP = /*$$(*/
+      "Work center group cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
   // Configurator Prod Product Service
   String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA = /*$$(*/
       "The formula script to fill the product returns null value. Please correct on prod product configurator id : %s." /*)*/;

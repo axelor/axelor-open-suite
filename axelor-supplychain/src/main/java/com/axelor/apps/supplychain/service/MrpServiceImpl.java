@@ -22,8 +22,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -75,8 +77,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
@@ -86,6 +90,7 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceImpl implements MrpService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Integer ITERATIONS = 100;
 
   protected MrpRepository mrpRepository;
   protected StockLocationRepository stockLocationRepository;
@@ -99,6 +104,7 @@ public class MrpServiceImpl implements MrpService {
   protected MrpLineService mrpLineService;
   protected MrpForecastRepository mrpForecastRepository;
   protected StockLocationService stockLocationService;
+  protected ProductCategoryRepository productCategoryRepository;
 
   protected AppBaseService appBaseService;
   protected AppPurchaseService appPurchaseService;
@@ -123,7 +129,8 @@ public class MrpServiceImpl implements MrpService {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      ProductCategoryRepository productCategoryRepository) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -136,6 +143,7 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
+    this.productCategoryRepository = productCategoryRepository;
 
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
@@ -954,16 +962,42 @@ public class MrpServiceImpl implements MrpService {
     }
 
     for (Long productId : this.productMap.keySet()) {
-
-      for (StockLocation stockLocation : this.stockLocationList) {
+      Mrp mrp = mrpRepository.find(this.mrp.getId());
+      if (mrp.getComputeWithSubStockLocation()) {
+        for (StockLocation stockLocation : this.stockLocationList) {
+          this.createAvailableStockMrpLine(
+              mrp,
+              productRepository.find(productId),
+              stockLocationRepository.find(stockLocation.getId()),
+              mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
+        }
+      } else {
+        Product product = productRepository.find(productId);
+        StockLocation stockLocation = mrp.getStockLocation();
+        BigDecimal qty = computeTotalQuantityFromSubStockLocations(product);
         this.createAvailableStockMrpLine(
-            mrpRepository.find(mrp.getId()),
-            productRepository.find(productId),
+            mrp,
+            product,
+            qty,
             stockLocationRepository.find(stockLocation.getId()),
             mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
       }
       JPA.clear();
     }
+  }
+
+  protected BigDecimal computeTotalQuantityFromSubStockLocations(Product product) {
+    return Optional.ofNullable(
+            JPA.em()
+                .createQuery(
+                    "SELECT SUM(self.currentQty) "
+                        + "FROM StockLocationLine self "
+                        + "WHERE self.stockLocation in (:stockLocationLineList) AND self.product = :product",
+                    BigDecimal.class)
+                .setParameter("stockLocationLineList", this.stockLocationList)
+                .setParameter("product", product)
+                .getSingleResult())
+        .orElse(BigDecimal.ZERO);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -979,6 +1013,18 @@ public class MrpServiceImpl implements MrpService {
 
       qty = stockLocationLine.getCurrentQty();
     }
+
+    return createAvailableStockMrpLine(mrp, product, qty, stockLocation, availableStockMrpLineType);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected MrpLine createAvailableStockMrpLine(
+      Mrp mrp,
+      Product product,
+      BigDecimal qty,
+      StockLocation stockLocation,
+      MrpLineType availableStockMrpLineType)
+      throws AxelorException {
 
     return mrpLineRepository.save(
         this.createMrpLine(
@@ -1031,6 +1077,17 @@ public class MrpServiceImpl implements MrpService {
 
     if (mrp.getProductCategorySet() != null && !mrp.getProductCategorySet().isEmpty()) {
 
+      Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
+
+      if (mrp.getTakeInAccountSubCategories()) {
+        Set<ProductCategory> childProductCategorySet = new HashSet<>();
+        for (ProductCategory productCategory : productCategorySet) {
+          childProductCategorySet.addAll(
+              this.getProductCategories(productCategory, new HashSet<>(), 0));
+        }
+        productCategorySet.addAll(childProductCategorySet);
+      }
+
       productSet.addAll(
           productRepository
               .all()
@@ -1041,7 +1098,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
                       + "AND self.dtype = 'Product'",
-                  mrp.getProductCategorySet(),
+                  productCategorySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
                   ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)
@@ -1142,7 +1199,7 @@ public class MrpServiceImpl implements MrpService {
           qty,
           maturityDate,
           cumulativeQty,
-          stockLocation,
+          mrp.getComputeWithSubStockLocation() ? stockLocation : mrp.getStockLocation(),
           model);
     }
     return null;
@@ -1289,5 +1346,32 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
+  }
+
+  protected Set<ProductCategory> getProductCategories(
+      ProductCategory productCategory, Set<ProductCategory> productCategorySet, int count) {
+
+    if (count > ITERATIONS) {
+      return productCategorySet;
+    }
+
+    List<ProductCategory> childProductCategoryList =
+        productCategoryRepository
+            .all()
+            .filter("self.parentProductCategory = ?1", productCategory)
+            .fetch();
+
+    productCategorySet.add(productCategory);
+    count++;
+
+    if (childProductCategoryList.isEmpty()) {
+      return productCategorySet;
+    }
+
+    for (ProductCategory category : childProductCategoryList) {
+      this.getProductCategories(category, productCategorySet, count);
+    }
+
+    return productCategorySet;
   }
 }

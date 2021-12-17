@@ -1,3 +1,43 @@
+## [6.1.3] (2021-12-16)
+
+#### Fixed
+
+* STOCKMOVE/INVOICING: Correctly apply unit conversion when updating invoiced quantity in stock move lines.
+* Move: fix wrong currency amount and rate computation in VAT move line.
+* SALE ORDER: Blocking invoice generation when the full amount of the order has already been invoiced.
+* Sale Order: Display discounts on reports even if the discount is positive.
+* Translation: Remove wrong fr translation for 'Supplier arrivals' axelor-business-project module.
+* Move: display status tag when editing move.
+* PaymentVoucher: Fix concurrent update error message after modifying an element to pay in payment voucher.
+* SaleOrderLine: Fix invoiced quantities computation when having refunds.
+
+changed the method of checking invoiced or delivered quantities whenever quantity on a sale order line is changed
+
+* Automatic creation of account configuration on payment modes.
+* PERIODS: Removed overlapping periods in demo data.
+* Payment Voucher: improve error message displayed when deleting a payment voucher linked to a move.
+* Bank Statement: bank statement can now be deleted without having to delete linked bank statement lines.
+* Geonames: Check the type of the uploaded file before manual import.
+* Sequence: Take the most recent sequence version when there are multiple ones to be picked.
+* STOCK DETAILS: Fixed issue where stock locations were sometimes not properly filtered.
+* Disable new button on bank-details-cards.
+* Budget: Fix budget lines update on cancelling an invoice.
+
+## [6.1.2] (2021-11-19)
+
+#### Fixed
+
+* Payment Voucher: Removed new button on payment voucher element lists in payment voucher form.
+* Payment Voucher: Changing partner will now empty list of invoice to pay and reset list of due element.
+* Payment Voucher: Close button in paymentVoucher opened from invoice no longer creates a draft payment voucher.
+* LeaveLine: Fixed demo data where leave lines did not have a name.
+* Human resources: restored chart view for leave per employee.
+* PRINTING SETTINGS: Fix display error when pdfHeader is not filled.
+* Expense Line: Prevent negative and inconsistent amounts in expense lines.
+* PRODUCTION/STOCK: Add missing / fix wrong translations.
+* INTERCO: Fix analytical distribution model of generated interco invoice.
+* Partner relations types: correctly manage translation for partner relation types labels.
+
 ## [6.1.1] (2021-11-05)
 
 #### Changes
@@ -286,5 +326,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
+[6.1.2]: https://github.com/axelor/axelor-open-suite/compare/v6.1.1...v6.1.2
 [6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.1.0
