@@ -14,6 +14,10 @@
   <form title="Report type" name="accounting-report-type-form"
     model="com.axelor.apps.account.db.AccountingReportType"
     onNew="action-accounting-report-type-record-default-on-new">
+    <toolbar>
+      <button name="printReportAndRulesBtn" title="Print Config. lines"
+        showIf="typeSelect == 3000" readonlyIf="!accountingReportConfigLineList.length" onClick=""/>
+    </toolbar>
     <panel name="accountingReportTypeMainPanel">
       <field name="name"/>
       <field name="company" required="true"/>
