@@ -607,6 +607,7 @@
 "Amount exported for direct debit",,,
 "Amount for each line",,,
 "Amount in Acc. currency",,,
+"Amount not invoiced",,,
 "Amount paid",,,
 "Amount paid A.T.I.",,,
 "Amount paid in currency",,,

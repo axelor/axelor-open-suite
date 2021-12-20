@@ -54,6 +54,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RequestScoped
@@ -481,5 +482,72 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
     return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
         || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  @Override
+  public BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine, boolean isPurchase, boolean ati, boolean recoveredTax)
+      throws AxelorException {
+    return this.getAmountNotInvoiced(
+        stockMoveLine,
+        stockMoveLine.getPurchaseOrderLine(),
+        stockMoveLine.getSaleOrderLine(),
+        isPurchase,
+        ati,
+        recoveredTax);
+  }
+
+  @Override
+  public BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine,
+      PurchaseOrderLine purchaseOrderLine,
+      SaleOrderLine saleOrderLine,
+      boolean isPurchase,
+      boolean ati,
+      boolean recoveredTax)
+      throws AxelorException {
+    BigDecimal amountInCurrency = null;
+    BigDecimal totalQty = null;
+    BigDecimal notInvoicedQty = null;
+
+    if (isPurchase && purchaseOrderLine != null) {
+      totalQty = purchaseOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              purchaseOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              purchaseOrderLine.getProduct());
+
+      if (ati && !recoveredTax) {
+        amountInCurrency = purchaseOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = purchaseOrderLine.getExTaxTotal();
+      }
+    } else if (!isPurchase && saleOrderLine != null) {
+      totalQty = saleOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              saleOrderLine.getProduct());
+      if (ati) {
+        amountInCurrency = saleOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = saleOrderLine.getExTaxTotal();
+      }
+    }
+
+    if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
+      return null;
+    }
+
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
+    return amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
   }
 }

@@ -84,4 +84,17 @@ public interface StockMoveLineServiceSupplychain {
   void setInvoiceStatus(StockMoveLine stockMoveLine);
 
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine);
+
+  BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine, boolean isPurchase, boolean ati, boolean recoveredTax)
+      throws AxelorException;
+
+  BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine,
+      PurchaseOrderLine purchaseOrderLine,
+      SaleOrderLine saleOrderLine,
+      boolean isPurchase,
+      boolean ati,
+      boolean recoveredTax)
+      throws AxelorException;
 }
