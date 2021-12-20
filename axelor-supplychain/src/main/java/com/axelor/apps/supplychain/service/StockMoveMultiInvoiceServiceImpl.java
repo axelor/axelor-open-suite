@@ -209,6 +209,13 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
       }
+
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
+      }
     }
   }
 
@@ -299,6 +306,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
+      }
+      if (firstDummyInvoice.getIncoterm() != null
+          && !firstDummyInvoice.getIncoterm().equals(dummyInvoice.getIncoterm())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
     }
   }
@@ -600,6 +613,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(saleOrder.getIncoterm());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -634,6 +648,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
     } else {
+      if (stockMove.getOriginId() != null
+          && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+        dummyInvoice.setIncoterm(saleOrderRepository.find(stockMove.getOriginId()).getIncoterm());
+      }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
       dummyInvoice.setCompany(stockMove.getCompany());

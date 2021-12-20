@@ -489,6 +489,8 @@
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
         readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
+      <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
+        grid-view="incoterm-grid"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
@@ -573,8 +575,6 @@
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
-        <field name="incoterm" readonly="true" form-view="incoterm-form"
-          grid-view="incoterm-grid"/>
         <panel name="deliveryAddressPanel" colSpan="12" hidden="true"
           showIf="operationTypeSelect == 3">
           <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1"
