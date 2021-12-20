@@ -2136,6 +2136,7 @@
 "Year or period or date is null, you must set a period.",,,
 "You can't archive this move %s",,,
 "You can't remove this move %s",,,
+"You can't remove this payment voucher as it is already used in a move.",,,
 "You cannot delete this deposit slip.",,,
 "You have to choose at least one invoice",,,
 "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s",,,
