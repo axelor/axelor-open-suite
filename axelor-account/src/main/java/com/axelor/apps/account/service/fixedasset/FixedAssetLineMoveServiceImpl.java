@@ -36,8 +36,10 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -77,6 +79,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveValidateService moveValidateService;
 
+  protected BatchRepository batchRepository;
+
+  private Batch batch;
+
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
@@ -88,7 +94,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetLineService fixedAssetLineService,
       MoveValidateService moveValidateService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BatchRepository batchRepository) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
@@ -100,6 +107,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.fixedAssetRepo = fixedAssetRepo;
+    this.batchRepository = batchRepository;
   }
 
   @Override
@@ -224,6 +232,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .findAny()
                 .orElse(null);
         if (fixedAssetDerogatoryLine != null) {
+          if (batch != null) {
+            fixedAssetDerogatoryLineMoveService.setBatch(batch);
+          }
           fixedAssetDerogatoryLineMoveService.realize(
               fixedAssetDerogatoryLine, isBatch, generateMove);
         }
@@ -280,6 +291,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               date,
               date,
               null,
+              partner != null ? partner.getFiscalPosition() : null,
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
               origin,
@@ -344,6 +356,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
         move.getMoveLineList().addAll(moveLines);
+        if (batch != null) {
+          move.addBatchSetItem(batchRepository.find(batch.getId()));
+        }
         return moveRepo.save(move);
       }
     }
@@ -380,6 +395,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -437,6 +453,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
       move.getMoveLineList().addAll(moveLines);
+      if (batch != null) {
+        move.addBatchSetItem(batchRepository.find(batch.getId()));
+      }
     }
 
     return moveRepo.save(move);
@@ -469,6 +488,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             disposalDate,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -590,6 +610,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             disposalDate,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -766,5 +787,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       return fixedAsset.getJournal().getAuthorizeSimulatedMove();
     }
     return false;
+  }
+
+  @Override
+  public void setBatch(Batch batch) {
+    this.batch = batch;
   }
 }

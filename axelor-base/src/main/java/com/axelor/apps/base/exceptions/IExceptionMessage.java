@@ -430,8 +430,6 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
-  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
-      "Refresh page to reflect changes in selection" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
@@ -443,6 +441,9 @@ public interface IExceptionMessage {
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
+  public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
+      "Please upload csv or txt or zip files only." /*)*/;
+  public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
 
   public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
 

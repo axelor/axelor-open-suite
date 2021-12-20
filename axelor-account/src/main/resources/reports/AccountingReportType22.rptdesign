@@ -1650,6 +1650,7 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                 <property name="dataType">float</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4507"/>
                         <column id="4508"/>
                         <column id="4509"/>
@@ -2312,6 +2313,7 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                 <property name="dataType">float</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4473"/>
                         <column id="4474"/>
                         <column id="4475"/>

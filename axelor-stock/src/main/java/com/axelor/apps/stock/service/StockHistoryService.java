@@ -19,6 +19,8 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,4 +40,9 @@ public interface StockHistoryService {
   List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException;
+
+  MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList, String fileName)
+      throws IOException;
+
+  public String getStockHistoryLineExportName(String productName);
 }

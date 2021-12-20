@@ -73,10 +73,11 @@
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
       <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
       <field name="journal" readonlyIf="statusSelect > 1" canEdit="false"
-        domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+        domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
+        grid-view="journal-grid"/>
       <field name="purchaseAccount"
         requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false"
-        domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
         form-view="account-form" grid-view="account-grid"/>
       <panel name="analyticPanel">
         <field
@@ -251,6 +252,7 @@
     </panel>
     <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true">
       <field name="transferredReasonSelect" readonlyIf="true" showIf="statusSelect == 4"/>
+      <field name="assetDisposalReason" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalDate" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
@@ -258,6 +260,10 @@
       <field name="saleAccountMove" domain="self.company = :company"
         showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
     </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
 
@@ -269,8 +275,11 @@
       <field name="disposalDate"
         onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line"
         type="date" title="Fixed asset Disposal date"/>
+      <spacer colSpan="6"/>
       <field name="disposalTypeSelect"
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
+      <field name="assetDisposalReason" domain="self.disposalTypeSelect = :disposalTypeSelect"
+        widget="SuggestBox" target="com.axelor.apps.account.db.AssetDisposalReason"/>
       <field name="disposalQtySelect"
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
       <field name="qty"
@@ -278,7 +287,7 @@
         showIf="disposalQtySelect == 2" min="0.01" type="decimal"/>
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01"/>
-      <button name="disposalBtn" title="Disposal" colSpan="4"
+      <button name="disposalBtn" title="confirm.disposal" colSpan="4"
         onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2"/>

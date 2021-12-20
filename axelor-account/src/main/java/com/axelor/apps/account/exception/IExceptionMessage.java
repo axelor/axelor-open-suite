@@ -97,6 +97,10 @@ public interface IExceptionMessage {
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
+  /** Account management repostiroy */
+  static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
+      "A payment mode already exists with the same information." /*)*/;
+
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
@@ -292,6 +296,7 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
@@ -437,6 +442,20 @@ public interface IExceptionMessage {
 
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET = /*$$(*/ "Processed fixed assets" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_ECONOMIC = /*$$(*/
+      "Realized fixed asset economic lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_FISCAL = /*$$(*/
+      "Realized fixed asset fiscal lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_LINE_IFRS = /*$$(*/
+      "Realized fixed assets ifrs lines" /*)*/;
+
+  static final String BATCH_PROCESSED_FIXED_ASSET_DEROGATORY_LINE = /*$$(*/
+      "Realized fixed assets derogatory lines" /*)*/;
 
   /** Batch close / open the year account */
   static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
@@ -801,6 +820,10 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
 
+  /** Payment voucher controller */
+  static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
+      "You can't remove this payment voucher as it is already used in a move." /*)*/;
+
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
@@ -830,6 +853,13 @@ public interface IExceptionMessage {
   static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+
+  static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
+
+  static final String INVOICE_NO_CUT_OFF_TO_APPLY = /*$$(*/
+      "The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off application" /*)*/;
+
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 
@@ -839,6 +869,12 @@ public interface IExceptionMessage {
   static final String MOVE_TEMPLATE_2 = /*$$(*/ "Error in move generation" /*)*/;
   static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
+
+  static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
+
+  static final String MOVE_NO_CUT_OFF_TO_APPLY = /*$$(*/
+      "The Cut off configuration on move line(s) associated account(s) doesn't support Cut off application" /*)*/;
 
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
@@ -929,7 +965,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -988,4 +1024,10 @@ public interface IExceptionMessage {
 
   static final String INACTIVE_ANALYTIC_ACCOUNTS_FOUND =
       /*$$(*/ "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  static final String INACTIVE_JOURNAL_FOUND =
+      /*$$(*/ "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted." /*)*/;
+
+  // Split message
+  static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 }

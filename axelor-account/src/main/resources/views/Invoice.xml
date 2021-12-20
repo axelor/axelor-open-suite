@@ -430,6 +430,10 @@
       <field name="companyBankDetails" canEdit="false"
         onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
+      <field name="fiscalPosition" grid-view="fiscal-position-grid"
+        form-view="fiscal-position-form" canNew="false" canEdit="false"
+        readonlyIf="statusSelect > 2"
+        onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
@@ -506,13 +510,20 @@
     </panel>
 
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
-      <panel name="invoiceContentPanel" title="Content" showTitle="false">
+      <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
+        <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
+          readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
+          <field name="$cutOffStartDate" type="date" title="From date"/>
+          <field name="$cutOffEndDate" type="date" title="To date"/>
+          <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
+            onClick="action-invoice-method-apply-cut-off-dates"
+            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null"/>
+        </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
-          readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
-          form-view="invoice-line-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-group-invoice-line-list-on-change" canMove="true"
-          orderBy="sequence" height="30"/>
+          readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"
+          grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
+          canMove="true" orderBy="sequence" height="30"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
@@ -554,8 +565,9 @@
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
           <field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3"
-            onSelect="action-invoice-partner-account-domain" domain="self.company = :company"
-            form-view="account-form" grid-view="account-grid"/>
+            onSelect="action-invoice-partner-account-domain"
+            domain="self.statusSelect = 1 AND self.company = :company" form-view="account-form"
+            grid-view="account-grid"/>
           <panel name="movePanel" showIf="move != null">
             <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
             <field name="move.accountingOk" readonly="true"/>
@@ -1005,6 +1017,9 @@ InvoiceSet.length > 0))"
       <field name="companyBankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
+      <field name="fiscalPosition" grid-view="fiscal-position-grid"
+        form-view="fiscal-position-form" canNew="false" canEdit="false"
+        onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="currency" canEdit="false"
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
@@ -1499,6 +1514,8 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
+    <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"
+      if="partner?.fiscalPosition != null"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"/>
@@ -1703,7 +1720,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-partner-account-domain">
     <attribute name="domain" for="partnerAccount"
-      expr="eval: &quot;self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${company.id} AND (self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable') AND self.useForPartnerBalance = true &quot;"
       if="company"/>
   </action-attrs>
 
@@ -1909,6 +1926,15 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceController" method="hideSendEmailPfpBtn"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-apply-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="applyCutOffDates"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-fiscal-position-on-change">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

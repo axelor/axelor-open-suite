@@ -26,6 +26,8 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
 
     <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
     <integer name="discountTypeSelect" title="Discount type"

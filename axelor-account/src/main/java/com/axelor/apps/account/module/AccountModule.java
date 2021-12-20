@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountManagementAccountRepository;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
@@ -117,6 +119,8 @@ import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearControlServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticAccountServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisFetchService;
@@ -436,6 +440,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
+    bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
+
     bind(FECImportService.class).to(FECImportServiceImpl.class);
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
@@ -457,5 +463,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentModeControlService.class).to(PaymentModeControlServiceImpl.class);
 
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
+
+    bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
   }
 }
