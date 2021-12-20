@@ -428,9 +428,32 @@
       <field name="$components" title="Products" type="one-to-many" canView="false"
         readonly="true" target="com.axelor.apps.production.db.ProdProduct"
         grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-      <button name="generateMO" title="Generate MO"
+      <button name="generateMO" title="Generate MO."
         onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
         colSpan="4" colOffset="8"/>
+    </panel>
+  </form>
+
+  <grid name="draft-generated-manuf-order-grid" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
+    canEdit="false" canDelete="false">
+    <field name="manufOrderSeq" width="120"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Draft orders"
+    name="multi-level-generated-draft-manuf-order-wizard-form"
+    onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <panel name="mainPanel">
+      <field name="$draftManufOrderList" type="one-to-many"
+        target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
+        canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
+
+      <button title="Plan selected orders and discard others" name="planSelectedOrders"
+        onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
     </panel>
   </form>
 
@@ -444,6 +467,15 @@
     <button name="openManufOrderBtn" title="Manufacturing Order" icon="fa-file-text-o"
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
+
+  <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
+  </action-attrs>
+
+  <action-validate name="action-manuf-order-validate-order-selection">
+    <error message="Please select at least one MO"
+      if="draftManufOrderList &amp;&amp; !draftManufOrderList.any{it.get('selected')}"/>
+  </action-validate>
 
   <action-view name="action-manuf-order-view-open-form-view-onclick"
     title="Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
