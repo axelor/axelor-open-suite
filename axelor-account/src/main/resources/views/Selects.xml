@@ -670,4 +670,19 @@
     <option value="3">Cancelled</option>
   </selection>
 
+  <selection name="paymentMode.accounting.method.select">
+    <option value="0"></option>
+    <option value="1">By invoice term</option>
+    <option value="2">By partner</option>
+    <option value="3">PaymentModeAccountingMethod.Global</option>
+  </selection>
+
+  <selection name="paymentMode.accounting.trigger.select">
+    <option value="0"></option>
+    <option value="1">Immediate</option>
+    <option value="2">Bank order confirmation</option>
+    <option value="3">Bank order validation</option>
+    <option value="4">Bank order realization</option>
+  </selection>
+
 </object-views>

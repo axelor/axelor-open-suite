@@ -208,6 +208,16 @@
         <field name="invoice.financialDiscountDeadlineDate"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
+      <panel name="paymentSessionPanel" colSpan="12" showIf="paymentSession">
+        <static name="pastEventText" colSpan="12">
+		  <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+        <field name="paymentSession"/>
+        <button name="accessPaymentSessionBtn" title="Access payment session"
+          showIf="paymentSession" onClick="save,action-invoice-term-view-show-payment-session"/>
+        <field name="isSelectedOnPaymentSession" showIf="paymentSession"/>
+        <field name="paymentAmount"
+          showIf="paymentSession &amp;&amp; isSelectedOnPaymentSession"/>
+      </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" readOnlyIf="!isPaid"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3,4].includes(invoice.statusSelect) "
@@ -348,6 +358,12 @@
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="setPfpValidatorUserDomain"/>
   </action-method>
+
+  <action-view name="action-invoice-term-view-show-payment-session"
+    title="Payment session" model="com.axelor.apps.account.db.PaymentSession">
+    <view type="form" name="payment-session-form"/>
+    <context name="_showRecord" expr="eval: __this__.paymentSession.id"/>
+  </action-view>
 
   <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
