@@ -163,6 +163,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
       throws AxelorException {
     BigDecimal sum = BigDecimal.ZERO;
+    SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
     List<SaleOrder> saleOrderList =
         Beans.get(SaleOrderRepository.class)
             .all()
@@ -178,8 +179,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
           sum.add(
               saleOrder
                   .getInTaxTotal()
-                  .subtract(
-                      Beans.get(SaleOrderInvoiceService.class).getInTaxInvoicedAmount(saleOrder)));
+                  .subtract(saleOrderInvoiceService.getInTaxInvoicedAmount(saleOrder)));
     }
     // subtract the amount of payments if there is no move created for
     // invoice payments
