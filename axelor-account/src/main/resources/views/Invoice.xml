@@ -490,7 +490,7 @@
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
         readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
       <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-        grid-view="incoterm-grid"/>
+        grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
