@@ -1328,7 +1328,7 @@
 "Interbank codes lists",,,
 "Internal Ref.",,,
 "Inv. on",,,
-"Invalid Analytic moveLines, some axes percentage values are higher than 100%.",,,
+"Invalid Analytic moveLines, some axes percentage values are different than 100%.",,,
 "Invalid automatic partner account creation mode, this is a bug that should be reported.",,,
 "Invoice","Invoice",,
 "Invoice & Rejects",,,

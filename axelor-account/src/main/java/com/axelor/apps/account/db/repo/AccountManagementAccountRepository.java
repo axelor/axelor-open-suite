@@ -26,8 +26,7 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS),
-            null);
+            I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
         throw new PersistenceException(e);
