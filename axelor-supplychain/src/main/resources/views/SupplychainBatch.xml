@@ -269,11 +269,6 @@
       method="validateDates"/>
   </action-method>
 
-  <action-method name="action-supplychain-batch-method-preview-records-to-process">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="previewRecordsToProcess"/>
-  </action-method>
-
   <!-- BATCH -->
 
   <action-view name="action-batch-show-stock-move" title="Stock moves"
