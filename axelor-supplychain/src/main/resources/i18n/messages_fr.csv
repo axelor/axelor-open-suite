@@ -570,6 +570,7 @@
 "The company is required and must be the same for all purchase orders","La société est obligatoire et doit être la même pour toutes les cmdes d'achat",,
 "The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les cmdes client",,
 "The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les cmdes client",,
+"The incoterm must be the same for all sale orders.","L'incoterm doit être la même pour toutes les cmdes client",,
 "The invoice for the stock move %s can't be generated because of this following error : %s","La facture pour le BL%s ne peut pas être générée à cause de l'erreur suivante :%s",,
 "The invoice has already been generated.","La facture a déjà été générée.",,
 "The invoice's unit is different and inconvertible into the stock move's unit.","L'unité de la facture et celle du mouvement de stock sont différentes et inconvertibles.",,
