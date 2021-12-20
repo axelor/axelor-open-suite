@@ -891,7 +891,8 @@ public class SaleOrderController {
   /**
    * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
    * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
-   * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
+   * SaleOrderLineService#computeProductInformation(SaleOrderLine, SaleOrder)} and {@link
+   * SaleOrderLineService#computeValues(SaleOrder, SaleOrderLine)}.
    *
    * @param request
    * @param response
@@ -899,11 +900,11 @@ public class SaleOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      SaleOrderLineService saleOrderLineServiceSupplyChain = Beans.get(SaleOrderLineService.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineServiceSupplyChain.computeProductInformation(saleOrderLine, saleOrder);
-          saleOrderLineServiceSupplyChain.computeValues(saleOrder, saleOrderLine);
+          saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+          saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
       }

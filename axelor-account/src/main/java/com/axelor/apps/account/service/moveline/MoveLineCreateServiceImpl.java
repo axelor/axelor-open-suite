@@ -178,9 +178,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPosition fiscalPosition = null;
       if (move.getInvoice() != null) {
         fiscalPosition = move.getInvoice().getFiscalPosition();
-        if (fiscalPosition == null) {
-          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
-        }
       } else {
         fiscalPosition = partner.getFiscalPosition();
       }
@@ -543,20 +540,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     FiscalPosition fiscalPosition = null;
     if (move.getInvoice() != null) {
       fiscalPosition = move.getInvoice().getFiscalPosition();
-      if (fiscalPosition == null) {
-        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
-      }
     } else {
       if (ObjectUtils.notEmpty(move.getPartner())
           && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
-        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        fiscalPosition = move.getPartner().getFiscalPosition();
       }
     }
 
     if (fiscalPosition != null) {
-      newAccount =
-          fiscalPositionAccountService.getAccount(
-              move.getPartner().getFiscalPosition(), newAccount);
+      newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
     }
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
     MoveLine newOrUpdatedMoveLine = new MoveLine();

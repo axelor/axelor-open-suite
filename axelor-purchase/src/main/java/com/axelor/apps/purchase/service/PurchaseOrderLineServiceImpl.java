@@ -289,11 +289,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Tax tax =
         accountManagementService.getProductTax(
-            product, purchaseOrder.getCompany(), supplierPartner.getFiscalPosition(), true);
+            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
 
     TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(supplierPartner.getFiscalPosition(), tax);
+        Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
@@ -376,7 +375,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrder.getOrderDate(),
               purchaseOrderLine.getProduct(),
               purchaseOrder.getCompany(),
-              purchaseOrder.getSupplierPartner().getFiscalPosition(),
+              purchaseOrder.getFiscalPosition(),
               false);
 
       BigDecimal price;
@@ -427,7 +426,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         purchaseOrder.getOrderDate(),
         purchaseOrderLine.getProduct(),
         purchaseOrder.getCompany(),
-        purchaseOrder.getSupplierPartner().getFiscalPosition(),
+        purchaseOrder.getFiscalPosition(),
         true);
   }
 

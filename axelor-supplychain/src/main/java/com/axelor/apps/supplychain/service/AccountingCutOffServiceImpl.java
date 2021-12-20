@@ -268,6 +268,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     AccountConfig accountConfig = accountConfigSupplychainService.getAccountConfig(company);
 
     Partner partner = stockMove.getPartner();
+    FiscalPosition fiscalPosition = partner != null ? partner.getFiscalPosition() : null;
     Account partnerAccount = null;
 
     Currency currency = null;
@@ -278,6 +279,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = saleOrder.getClientPartner();
       }
+      fiscalPosition = saleOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
@@ -287,6 +289,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
       }
+      fiscalPosition = purchaseOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
     }
 
@@ -301,7 +304,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             moveDate,
             originDate,
             null,
-            partner != null ? partner.getFiscalPosition() : null,
+            fiscalPosition,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,

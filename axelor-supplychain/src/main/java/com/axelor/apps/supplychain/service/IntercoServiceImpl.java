@@ -435,9 +435,6 @@ public class IntercoServiceImpl implements IntercoService {
     Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = invoiceLine.getInvoice().getFiscalPosition();
-      if (fiscalPosition == null && partner != null) {
-        fiscalPosition = partner.getFiscalPosition();
-      }
 
       Account account =
           accountManagementAccountService.getProductAccount(

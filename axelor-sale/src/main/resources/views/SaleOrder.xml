@@ -1730,8 +1730,7 @@
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
-    <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
-      if="__config__.app.isApp('account')"/>
+    <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"/>
     <field name="currency" expr="eval: clientPartner?.currency" if="!template"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
