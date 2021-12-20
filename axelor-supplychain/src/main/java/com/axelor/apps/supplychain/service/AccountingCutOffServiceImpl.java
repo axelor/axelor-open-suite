@@ -60,7 +60,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,6 +90,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
   protected SaleOrderService saleOrderService;
+  protected StockMoveLineServiceSupplychain stockMoveLineService;
   protected int counter = 0;
 
   @Inject
@@ -114,7 +114,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      StockMoveLineServiceSupplychain stockMoveLineService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -136,6 +137,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.saleOrderService = saleOrderService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   public List<StockMove> getStockMoves(
@@ -375,10 +377,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected boolean checkStockMoveLine(
       StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
-    return (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
-            || product == null
-            || (!includeNotStockManagedProduct && !product.getStockManaged()))
-        || (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0);
+    return stockMoveLine.getRealQty().signum() == 0
+        || product == null
+        || (!includeNotStockManagedProduct && !product.getStockManaged())
+        || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0;
   }
 
   protected MoveLine generateProductMoveLine(
@@ -399,51 +401,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     LocalDate moveDate = move.getDate();
     Partner partner = move.getPartner();
 
-    boolean isFixedAssets = false;
-    BigDecimal amountInCurrency = null;
-    BigDecimal totalQty = null;
-    BigDecimal notInvoicedQty = null;
-
-    if (isPurchase && purchaseOrderLine != null) {
-      totalQty = purchaseOrderLine.getQty();
-
-      notInvoicedQty =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              purchaseOrderLine.getUnit(),
-              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
-              stockMoveLine.getRealQty().scale(),
-              purchaseOrderLine.getProduct());
-
-      isFixedAssets = purchaseOrderLine.getFixedAssets();
-      if (ati && !recoveredTax) {
-        amountInCurrency = purchaseOrderLine.getInTaxTotal();
-      } else {
-        amountInCurrency = purchaseOrderLine.getExTaxTotal();
-      }
-    }
-    if (!isPurchase && saleOrderLine != null) {
-      totalQty = saleOrderLine.getQty();
-
-      notInvoicedQty =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              saleOrderLine.getUnit(),
-              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
-              stockMoveLine.getRealQty().scale(),
-              saleOrderLine.getProduct());
-      if (ati) {
-        amountInCurrency = saleOrderLine.getInTaxTotal();
-      } else {
-        amountInCurrency = saleOrderLine.getExTaxTotal();
-      }
-    }
-    if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
-      return null;
-    }
-
-    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
-    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
+    boolean isFixedAssets =
+        isPurchase && purchaseOrderLine != null && purchaseOrderLine.getFixedAssets();
+    BigDecimal amountInCurrency =
+        stockMoveLineService.getAmountNotInvoiced(
+            stockMoveLine, purchaseOrderLine, saleOrderLine, isPurchase, ati, recoveredTax);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {
       return null;

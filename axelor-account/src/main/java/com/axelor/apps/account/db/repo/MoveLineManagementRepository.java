@@ -21,15 +21,13 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
@@ -79,15 +77,9 @@ public class MoveLineManagementRepository extends MoveLineRepository {
         MoveLine moveLine = this.find(id);
         LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
 
-        BigDecimal daysProrata =
-            BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
-        BigDecimal daysTotal =
-            BigDecimal.valueOf(
-                ChronoUnit.DAYS.between(
-                    moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
-        BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
-
-        json.put("$cutOffProrataAmount", prorata.multiply(moveLine.getCurrencyAmount()));
+        json.put(
+            "$cutOffProrataAmount",
+            Beans.get(MoveLineService.class).getCutOffProrataAmount(moveLine, moveDate));
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
