@@ -175,7 +175,7 @@
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
         <field name="name" readonly="true"/>
         <field name="invoice" readonly="true" form-view="invoice-form"
-          grid-view="invoice-grid" required="false"/>
+          grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
         <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
