@@ -534,7 +534,8 @@
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
         showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
-          colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid"/>
+          colSpan="12" form-view="invoice-term-move-line-invoice-form"
+          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">

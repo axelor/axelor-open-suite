@@ -24,8 +24,8 @@
     <panel name="invoiceTermToPay" hidden="true"
       showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; id == null &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2">
       <field name="$invoiceTerms" title="Unpaid invoice terms" type="one-to-many"
-        target="com.axelor.apps.account.db.InvoiceTerm" grid-view="invoice-term-grid"
-        form-view="invoice-term-form" readonly="true" colSpan="12"/>
+        target="com.axelor.apps.account.db.InvoiceTerm" grid-view="invoice-term-move-line-grid"
+        form-view="invoice-term-move-line-form" readonly="true" colSpan="12"/>
       <button onClick="action-invoice-payement-method-add-invoice-terms-to-pay"
         name="selectInvoiceTermTopayBtn" title="Add selected invoice terms to pay"/>
     </panel>
