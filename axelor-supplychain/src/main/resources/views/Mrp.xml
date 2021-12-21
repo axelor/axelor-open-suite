@@ -175,6 +175,7 @@
   <action-record name="action-mrp-record-onnew"
     model="com.axelor.apps.supplychain.db.Mrp">
     <field name="mrpTypeSelect" expr="eval:1"/>
+    <field name="takeInAccountSubCategories" expr="true"/>
   </action-record>
 
   <action-method name="action-method-mrp-undo-manual-changes">
