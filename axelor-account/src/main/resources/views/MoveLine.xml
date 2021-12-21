@@ -320,8 +320,9 @@
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-form"
-          grid-view="invoice-term-grid"/>
+        <field name="invoiceTermList" colSpan="12"
+          form-view="invoice-term-move-line-invoice-form"
+          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
@@ -543,8 +544,9 @@
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-form"
-          grid-view="invoice-term-grid"/>
+        <field name="invoiceTermList" colSpan="12"
+          form-view="invoice-term-move-line-invoice-form"
+          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
@@ -664,7 +666,6 @@
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
     <action name="action-move-line-method-description-required"/>
-    <action name="action-method-move-line-readonly-invoice-terms"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -677,7 +678,6 @@
 
   <action-group name="action-account-moveline-onload-group">
     <action name="action-move-line-attrs-readonly"/>
-    <action name="action-method-move-line-readonly-invoice-terms"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
@@ -685,7 +685,6 @@
 
   <action-group name="action-account-moveline-move-onload-group">
     <action name="action-move-line-attrs-readonly"/>
-    <action name="action-method-move-line-readonly-invoice-terms"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"/>
     <action name="action-method-move-line-hide-axis-analytic-account"/>
@@ -1018,11 +1017,6 @@
 
   <action-method name="action-method-move-line-hide-axis-analytic-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="manageAxis"/>
-  </action-method>
-
-  <action-method name="action-method-move-line-readonly-invoice-terms">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="setInvoiceTermReadonly"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
