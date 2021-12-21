@@ -1051,4 +1051,8 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  /*Service Type */
+  static final String SERVICE_TYPE_DUPLICATE_CODE = /*$$(*/
+      "a service type already exists with code same code (%s)" /*)*/;
 }

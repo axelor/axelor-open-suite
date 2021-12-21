@@ -2753,6 +2753,7 @@
 "Zone %s is empty","La zone %s est vide.",,
 "[] to match any character in the brackets",,"[] pour filtrer les caractères entre crochets",
 "[^] to match any character not listed in the brackets","[^] pour filtrer les caractères qui ne sont pas entre crochets",,
+"a service type already exists with code same code (%s)","Un type de service avec un code identique (""%s"") existe déjà",,
 "already exists for this supplier","existe déjà pour le fournisseur",,
 "and the year","et l'année",,
 "awaitingPfpMenuTitle","Les BAP en attente",,

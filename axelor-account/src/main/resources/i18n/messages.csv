@@ -2751,6 +2751,7 @@
 "Zone %s is empty",,,
 "[] to match any character in the brackets",,,
 "[^] to match any character not listed in the brackets",,,
+"a service type already exists with code same code (%s)",,,
 "already exists for this supplier",,,
 "and the year",,,
 "awaitingPfpMenuTitle",,,
