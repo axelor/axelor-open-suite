@@ -185,6 +185,8 @@ public interface InvoiceTermService {
    */
   public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
 
+  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm);
+
   /**
    * return existing moveLine related to invoiceTerm with isHoldBack = false
    *

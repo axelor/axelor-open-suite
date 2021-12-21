@@ -52,13 +52,29 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   @Override
   public void validateMoveLine(MoveLine moveLine) throws AxelorException {
-    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+    if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
         && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
-        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
+        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0)) {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_LINE_7),
+          moveLine.getAccount().getCode());
+    }
+    if (moveLine.getInvoiceTermList().stream()
+                .map(invoiceTerm -> invoiceTerm.getPercentage())
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .compareTo(new BigDecimal(100))
+            != 0
+        || moveLine.getInvoiceTermList().stream()
+                .map(invoiceTerm -> invoiceTerm.getAmount())
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
+            != 0) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_LINE_8),
           moveLine.getAccount().getCode());
     }
     controlAccountingAccount(moveLine);

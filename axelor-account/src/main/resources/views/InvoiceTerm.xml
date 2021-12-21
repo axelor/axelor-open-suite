@@ -80,9 +80,11 @@
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
         <field name="amount" validIf="amount > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"/>
+          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-method-compute-customized-percentage"/>
         <field name="percentage" validIf="percentage > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"/>
+          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-method-compute-customized-amount"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"
@@ -169,7 +171,7 @@
 
   <form name="invoice-term-move-line-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload"
-    onNew="action-invoice-term-record-update-customized-true">
+    onNew="action-invoice-term-group-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
@@ -190,10 +192,10 @@
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount"
           readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-          validIf="amount > 0"/>
+          onChange="action-invoice-term-method-compute-customized-percentage" validIf="amount > 0"/>
         <field name="percentage"
           readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-          validIf="percentage > 0"/>
+          onChange="action-invoice-term-method-compute-customized-amount" validIf="percentage > 0"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"
