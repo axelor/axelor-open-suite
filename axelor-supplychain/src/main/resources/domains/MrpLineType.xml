@@ -28,6 +28,11 @@
     <integer name="includeOneOffSalesSelect"
       selection="supplychain.mrp.line.off.of.sales.select" title="One-off sales"/>
 
+    <many-to-one ref="com.axelor.meta.db.MetaField" name="fieldSelect"
+      title="Field to select"/>
+    <decimal name="growthCoef" title="Growth coefficient" default="1"/>
+    <integer name="offSetInMonths" title="Offset in months"/>
+
     <extra-code><![CDATA[
 
 
@@ -44,6 +49,7 @@
 
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL = 8;  // Manufacturing proposal
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL_NEED = 9;  // Need manufacturing proposal
+		public static final int ELEMENT_STOCK_HISTORY = 10; //Stock history
 
 
 		// TYPE SELECT

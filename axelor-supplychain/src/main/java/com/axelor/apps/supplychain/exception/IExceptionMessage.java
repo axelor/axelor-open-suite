@@ -285,4 +285,7 @@ public interface IExceptionMessage {
 
   static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
       "The customer account is blocked because he has late payments." /*)*/;
+
+  static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
+      "Field fieldSelect is null for %s" /*)*/;
 }
