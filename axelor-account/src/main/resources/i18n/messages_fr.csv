@@ -2130,6 +2130,8 @@
 "Register a mass payment","Enregistrer un paiement en masse",,
 "Register a payment","Enregistrer un paiement",,
 "Register payment","Enregistrer un paiement",,
+"Regulatory account","Compte comptable réglementaire",,
+"Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator.","Les comptes typés réglementaires ne peuvent pas être supprimés. Si pour une quelconque raison cette opération devait être réalisée, veuillez contacter votre administrateur ou intégrateur.",,
 "Reimbursed","Remboursé",,
 "Reimbursed amount","Montant remboursé",,
 "Reimbursement","Remboursement",,

@@ -46,18 +46,22 @@
     model="com.axelor.apps.account.db.Account" width="large"
     onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
     onLoad="action-group-account-account-onload"
-    onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
+    onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account"
+    canDelete="!isRegulatoryAccount">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
         onClick="save,account-account-method-toggle-status-active,action-attrs-account-account-status-show-title"
-        colSpan="3"/>
+        colSpan="3"
+        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
     </panel>
     <panel name="mainPanel">
-      <panel name="accountDetailsPanel" colSpan="8">
+      <panel name="accountDetailsPanel" colSpan="8"
+        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
         <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
         <field name="name" colSpan="9" css="bold"/>
+        <field name="accountType.technicalTypeSelect" hidden="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -65,7 +69,8 @@
       </panel>
     </panel>
     <panel-tabs name="mainPaneltab">
-      <panel name="generalPanel" title="General" hideIf="$popup()">
+      <panel name="generalPanel" title="General"
+        hideIf="$popup() || accountType.technicalTypeSelect == 'view'">
         <button name="exportMoveLinesBtn" title="Export Move lines" onClick="" colSpan="12"/>
         <panel-dashlet name="viewMoveLinePanel" colSpan="12" title="General"
           hideIf="$popup() || reconcileOk" height="450" action="action-account-view-show-move-lines"
@@ -74,26 +79,36 @@
           title="General" hideIf="$popup() || !reconcileOk" height="450"
           action="action-account-view-show-move-lines" canSearch="true"/>
       </panel>
-      <panel name="settingsPanel" title="Account.settings">
+      <panel name="settingsPanel" title="Account.settings" colSpan="12">
         <field name="accountType" required="true" form-view="account-type-form"
-          grid-view="account-type-grid"/>
-        <field name="commonPosition"/>
+          grid-view="account-type-grid" colSpan="3"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+        <field name="isRegulatoryAccount" colSpan="3"/>
+        <field name="commonPosition"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate" readonlyIf="parentAccount != null"
+          onChange="action-account-validate"
+          readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-        <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
-        <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
-        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-        <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
+          domain="self.company = :company" form-view="account-form" grid-view="account-grid"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+        <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
+        <field name="reconcileOk" widget="boolean-switch" colSpan="3"
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
+        <field name="compatibleAccountSet" widget="TagSelect"
+          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
+        <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
+          hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-account-record-uncheck-tax-required"/>
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
         </panel>
-        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
+        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
+          hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
             onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
@@ -118,7 +133,8 @@
           <field name="manageCutOffPeriod" widget="boolean-switch"/>
         </panel>
       </panel>
-      <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
+      <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings"
+        hideIf="accountType.technicalTypeSelect == 'view'">
         <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
         <button name="showMoveLineBtn" title="Show move lines" colSpan="3"
           onClick="action-account-view-show-move-lines" showIf="id"/>

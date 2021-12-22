@@ -2130,6 +2130,8 @@
 "Register a mass payment",,,
 "Register a payment",,,
 "Register payment",,,
+"Regulatory account",,,
+"Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator.",,,
 "Reimbursed",,,
 "Reimbursed amount",,,
 "Reimbursement",,,
