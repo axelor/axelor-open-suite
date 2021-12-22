@@ -17,11 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface ProductCategoryService {
 
@@ -41,10 +40,11 @@ public interface ProductCategoryService {
    * @return an optional with the maximum applicable discount if found.
    */
   Optional<BigDecimal> computeMaxDiscount(ProductCategory productCategory) throws AxelorException;
-  
+
   /**
-   * Get the growth coefficient of product category.
-   * If the coeff is equal to the default value (1), the method will get growth coeff of parentProductCategory.
+   * Get the growth coefficient of product category. If the coeff is equal to the default value (1),
+   * the method will get growth coeff of parentProductCategory.
+   *
    * @param productCategory
    * @return growth coefficient
    */

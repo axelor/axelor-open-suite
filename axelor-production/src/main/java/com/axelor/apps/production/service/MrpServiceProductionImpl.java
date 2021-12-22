@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.production.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
@@ -71,6 +62,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MrpServiceProductionImpl extends MrpServiceImpl {
 
@@ -118,8 +116,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockLocationService,
         productCategoryRepository,
         stockHistoryLineRepository,
-        productCategoryService
-        );
+        productCategoryService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }
