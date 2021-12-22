@@ -17,10 +17,20 @@
  */
 package com.axelor.apps.production.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -61,13 +71,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MrpServiceProductionImpl extends MrpServiceImpl {
 
@@ -96,7 +99,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       ProductCategoryRepository productCategoryRepository,
-      StockHistoryLineRepository stockHistoryLineRepository) {
+      StockHistoryLineRepository stockHistoryLineRepository,
+      ProductCategoryService productCategoryService) {
     super(
         appBaseService,
         appPurchaseService,
@@ -113,7 +117,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpForecastRepository,
         stockLocationService,
         productCategoryRepository,
-        stockHistoryLineRepository);
+        stockHistoryLineRepository,
+        productCategoryService
+        );
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }

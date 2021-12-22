@@ -32,6 +32,9 @@
       title="Field to select"/>
     <decimal name="growthCoef" title="Growth coefficient" default="1"/>
     <integer name="offSetInMonths" title="Offset in months"/>
+    <boolean name="isProjectedForNextMonths"
+      title="Project identically over the next few months"/>
+    <integer name="nbrOfMonthProjection" title="Projection' s number of month" default="1"/>
 
     <extra-code><![CDATA[
 

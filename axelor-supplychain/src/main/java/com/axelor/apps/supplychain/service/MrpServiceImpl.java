@@ -19,6 +19,27 @@ package com.axelor.apps.supplychain.service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -27,6 +48,7 @@ import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -74,24 +96,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MrpServiceImpl implements MrpService {
 
@@ -113,6 +117,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockLocationService stockLocationService;
   protected ProductCategoryRepository productCategoryRepository;
   protected StockHistoryLineRepository stockHistoryLineRepository;
+  protected ProductCategoryService productCategoryService;
 
   protected AppBaseService appBaseService;
   protected AppPurchaseService appPurchaseService;
@@ -139,7 +144,8 @@ public class MrpServiceImpl implements MrpService {
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
       ProductCategoryRepository productCategoryRepository,
-      StockHistoryLineRepository stockHistoryLineRepository) {
+      StockHistoryLineRepository stockHistoryLineRepository,
+      ProductCategoryService productCategoryService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -158,6 +164,7 @@ public class MrpServiceImpl implements MrpService {
     this.appPurchaseService = appPurchaseService;
     this.stockLocationService = stockLocationService;
     this.stockHistoryLineRepository = stockHistoryLineRepository;
+    this.productCategoryService = productCategoryService;
   }
 
   @Override
@@ -271,21 +278,44 @@ public class MrpServiceImpl implements MrpService {
 
     Mapper mapper = Mapper.of(StockHistoryLine.class);
     Method getter = mapper.getGetter(mrpLineType.getFieldSelect().getName());
+    
+    //Projected value is the value that projects months will share.
+    BigDecimal projectedValue = null;
+    int nbrOfMonthsProjected = -1;
 
     for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
       log.debug("Creating mrp line for stock history line {}", stockHistoryLine);
       try {
-        BigDecimal fieldValue = (BigDecimal) getter.invoke(stockHistoryLine);
-        fieldValue = fieldValue.multiply(mrpLineType.getGrowthCoef());
-
+        
+        BigDecimal productCategoryCoeff = productCategoryService.getGrowthCoeff(product.getProductCategory());
         LocalDate date =
             LocalDate.parse(stockHistoryLine.getLabel())
                 .plusMonths(mrpLineType.getOffSetInMonths());
-        if (date.isBefore(today)) {
-          fieldValue = computeProrata(fieldValue, today);
-        } else {
-          // In others case, it is always the first day of the month
-          date = date.withDayOfMonth(1);
+        BigDecimal fieldValue = null;
+        if (mrpLineType.getIsProjectedForNextMonths() && projectedValue != null && nbrOfMonthsProjected < mrpLineType.getNbrOfMonthProjection()) {
+        	fieldValue = projectedValue;
+        	nbrOfMonthsProjected++; 
+        }
+        else {
+        	fieldValue = computeFieldValue(mrpLineType, getter, stockHistoryLine, productCategoryCoeff, date);
+            if (mrpLineType.getIsProjectedForNextMonths()) {
+            	if (nbrOfMonthsProjected == -1) {
+            		//ProjectedValue must not be computed with prorata.
+            		projectedValue = fieldValue;
+            		
+            	}
+            	nbrOfMonthsProjected++;     	
+            }
+        	if (date.isBefore(today)) {
+        		  fieldValue = computeProrata(fieldValue, today);
+        	}
+        }
+        
+        if (!date.isBefore(today)) {
+        	date = date.withDayOfMonth(1);
+        }
+        else {
+        	date = today;
         }
         fieldValue = fieldValue.setScale(ROUNDING_SCALE, RoundingMode.HALF_UP);
         MrpLine mrpLine =
@@ -294,11 +324,19 @@ public class MrpServiceImpl implements MrpService {
         if (mrpLine != null) {
           mrpLineRepository.save(mrpLine);
         }
+        
       } catch (Exception e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }
   }
+
+protected BigDecimal computeFieldValue(MrpLineType mrpLineType, Method getter, StockHistoryLine stockHistoryLine,
+		BigDecimal productCategoryCoeff, LocalDate date) throws IllegalAccessException, InvocationTargetException {
+	BigDecimal fieldValue = (BigDecimal) getter.invoke(stockHistoryLine);
+	fieldValue = fieldValue.multiply(mrpLineType.getGrowthCoef()).multiply(productCategoryCoeff);
+	return fieldValue;
+}
 
   protected BigDecimal computeProrata(BigDecimal amount, LocalDate dateOfTheDay) {
     // Prorata = (amount * dayOfTheMonth) / number of days in the month
