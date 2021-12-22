@@ -76,7 +76,7 @@
         <field name="dueDate" requiredIf="isCustomized"
           readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"/>
         <field name="isHoldBack"
-          readonlyIf="financialDiscount != null &amp;&amp; !invoice.paymentCondition.isFree"/>
+          readonlyIf="(financialDiscount != null &amp;&amp; !invoice.paymentCondition.isFree) || (invoice != null &amp;&amp; moveLine != null)"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
         <field name="amount" validIf="amount > 0"
