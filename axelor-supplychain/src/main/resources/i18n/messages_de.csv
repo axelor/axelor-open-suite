@@ -530,7 +530,7 @@
 "There is no analytic distribution on %s purchase order line",,,
 "There is no analytic distribution on %s sale order line",,,
 "This batch has already been running for this move date",,,
-"This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Dieser Vorgang kann nicht ausgeführt werden. Verfügbarer Bestand für das Produkt %s: %s: %s, benötigter Bestand: %s. Bitte nicht zuweisen.",,
+"This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Dieser Vorgang kann nicht ausgeführt werden. Verfügbarer Bestand für das Produkt %s: %s, benötigter Bestand: %s. Bitte nicht zuweisen.",,
 "This product is not stock managed.",,,
 "This quantity is not available in stock.","Diese Menge ist nicht auf Lager verfügbar.",,
 "Time limit",,,
