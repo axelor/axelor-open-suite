@@ -24,7 +24,7 @@ public class AnalyticAxisController {
 
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
 
-      if (analyticAxis.getCompany() != null) {
+      if (analyticAxis != null && analyticAxis.getCompany() != null) {
         if (Beans.get(AnalyticAxisService.class).checkCompanyOnMoveLine(analyticAxis)) {
           response.setError(
               I18n.get(
