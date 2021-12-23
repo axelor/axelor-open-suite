@@ -97,7 +97,6 @@ import org.slf4j.LoggerFactory;
 
 public class MrpServiceImpl implements MrpService {
 
-  private static final int ROUNDING_SCALE = 2;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final Integer ITERATIONS = 100;
 
@@ -316,7 +315,8 @@ public class MrpServiceImpl implements MrpService {
         } else {
           date = today;
         }
-        fieldValue = fieldValue.setScale(ROUNDING_SCALE, RoundingMode.HALF_UP);
+        fieldValue =
+            fieldValue.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp, product, mrpLineType, fieldValue, date, fieldValue, stockLocation, null);
@@ -343,18 +343,18 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected BigDecimal computeProrata(BigDecimal amount, LocalDate dateOfTheDay) {
-    // Prorata = (amount * dayOfTheMonth) / number of days in the month
+    // Prorata = (amount * remainingDay) / number of days in the month
 
     BigDecimal result = null;
     log.debug("Computing prorata of value {} at {}", amount, dateOfTheDay);
     if (amount != null && dateOfTheDay != null) {
-      result = amount.multiply(BigDecimal.valueOf(dateOfTheDay.getDayOfMonth()));
+      int lengthOfMonth =
+          YearMonth.of(dateOfTheDay.getYear(), dateOfTheDay.getMonthValue()).lengthOfMonth();
+      result = amount.multiply(BigDecimal.valueOf(lengthOfMonth - dateOfTheDay.getDayOfMonth()));
       result =
           result.divide(
-              BigDecimal.valueOf(
-                  YearMonth.of(dateOfTheDay.getYear(), dateOfTheDay.getMonthValue())
-                      .lengthOfMonth()),
-              ROUNDING_SCALE,
+              BigDecimal.valueOf(lengthOfMonth),
+              appBaseService.getNbDecimalDigitForQty(),
               RoundingMode.HALF_UP);
     }
 
@@ -383,8 +383,8 @@ public class MrpServiceImpl implements MrpService {
     bindings.put("minValue", BigDecimal.ZERO);
 
     if (mrp.getEndDate() != null) {
-      querySb.append("AND DATE(self.label) <= :endDate");
-      bindings.put("endDate", mrp.getEndDate());
+      querySb.append(" AND DATE(self.label) <= :endDate");
+      bindings.put("endDate", mrp.getEndDate().minusMonths(mrpLineType.getOffSetInMonths()));
     }
 
     Query<StockHistoryLine> query =
