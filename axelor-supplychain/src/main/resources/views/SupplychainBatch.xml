@@ -130,11 +130,12 @@
   <!-- ACTION GROUP -->
   <action-group name="action-supplychain-batch-group-accounting-cut-off">
     <action name="save"/>
-    <action name="action-supplychain-batch-validate-twice-in-a-month"/>
     <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
       if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
     <action name="action-supplychain-batch-view-preview-move-lines-to-process"
       if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-supplychain-batch-validate-twice-in-a-month"
+      if="!previewRecordsToProcess"/>
     <action name="action-supplychain-batch-method-accounting-cut-off"
       if="!previewRecordsToProcess"/>
   </action-group>
@@ -315,7 +316,10 @@
       AND
       YEAR(self.move.date) =
       :_year
-      AND self.move.company.id = :_company
+      AND self.move.statusSelect IN (2, 3, 5)
+      AND YEAR(self.cutOffEndDate) > :_year
+      AND
+      self.move.company.id = :_company
     </domain>
     <context name="_researchJournal"
       expr="eval: researchJournal != null ? researchJournal.id : 0"/>
@@ -324,6 +328,7 @@
     <context name="_moveDate" expr="eval: moveDate"/>
     <context name="_company" expr="eval: company.id"/>
     <context name="_cutOffPreview" expr="eval: true"/>
+    <context name="_batchId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
@@ -357,6 +362,7 @@
     <context name="_cutOffPreview" expr="eval: true"/>
     <context name="_ati" expr="eval: ati"/>
     <context name="_recoveredTax" expr="eval: recoveredTax"/>
+    <context name="_batchId" expr="eval: id"/>
   </action-view>
 
   <search-filters name="supplychain-batch-filters"

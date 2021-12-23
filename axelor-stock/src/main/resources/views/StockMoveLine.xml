@@ -82,22 +82,6 @@
       readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))"/>
   </grid>
 
-  <grid name="stock-move-line-cut-off-grid" title="Stock move lines concerned by cut off"
-    model="com.axelor.apps.stock.db.StockMoveLine" groupBy="stockMove">
-    <hilite color="danger" if="stockMove.cutOffMoveGenerated"/>
-    <field name="stockMove.stockMoveSeq"/>
-    <field name="stockMove.typeSelect"/>
-    <field name="stockMove.realDate"/>
-    <field name="stockMove.statusSelect"/>
-    <field name="productName"/>
-    <field name="realQty"/>
-    <field name="qtyInvoiced"/>
-    <field name="unitPriceUntaxed"/>
-    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
-    <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
-    <field name="stockMove" hidden="true"/>
-  </grid>
-
   <form name="stock-move-line-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine" readonlyIf="$isReadOnly"
     onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload"
