@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -43,7 +44,9 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOff;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -63,6 +66,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected AccountManagementService accountManagementService;
   protected PriceListService priceListService;
+  protected SupplychainBatchRepository supplychainBatchRepo;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -78,7 +82,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      SupplychainBatchRepository supplychainBatchRepo) {
     super(
         trackingNumberService,
         appBaseService,
@@ -93,6 +98,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
+    this.supplychainBatchRepo = supplychainBatchRepo;
   }
 
   @Override
@@ -549,5 +555,15 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
     return amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
+    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+
+    batchAccountingCutOff.recordIdList = recordIdList;
+    batchAccountingCutOff.run(supplychainBatchRepo.find(batchId));
+
+    return batchAccountingCutOff.getBatch();
   }
 }
