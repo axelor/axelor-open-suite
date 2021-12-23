@@ -272,74 +272,106 @@ public class MrpServiceImpl implements MrpService {
 
     Query<StockHistoryLine> query = buildStockHistoryLineQuery(product, mrp, mrpLineType);
     List<StockHistoryLine> stockHistoryLineList = query.fetch();
+    BigDecimal growthCoef =
+        productCategoryService
+            .getGrowthCoeff(product.getProductCategory())
+            .multiply(mrpLineType.getGrowthCoef());
 
-    Mapper mapper = Mapper.of(StockHistoryLine.class);
-    Method getter = mapper.getGetter(mrpLineType.getFieldSelect().getName());
-
-    // Projected value is the value that projects months will share.
-    BigDecimal projectedValue = null;
-    int nbrOfMonthsProjected = -1;
-
-    for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
-      log.debug("Creating mrp line for stock history line {}", stockHistoryLine);
-      try {
-
-        BigDecimal productCategoryCoeff =
-            productCategoryService.getGrowthCoeff(product.getProductCategory());
+    if (mrpLineType.getIsProjectedForNextMonths()) {
+      if (stockHistoryLineList != null && !stockHistoryLineList.isEmpty()) {
+        // List should be ordered by date
+        StockHistoryLine stockHistoryLineToProject = stockHistoryLineList.get(0);
+        LocalDate firstDate =
+            LocalDate.parse(stockHistoryLineToProject.getLabel())
+                .plusMonths(mrpLineType.getOffSetInMonths());
+        MrpLine mrpLine =
+            createAverageMrpLine(
+                product,
+                mrp,
+                mrpLineType,
+                stockLocation,
+                stockHistoryLineToProject,
+                firstDate,
+                growthCoef);
+        if (mrpLine != null) {
+          mrpLineRepository.save(mrpLine);
+          for (int i = 0; i < mrpLineType.getNbrOfMonthProjection(); i++) {
+            LocalDate datePlusMonths = firstDate.plusMonths(i + 1);
+            if (mrp.getEndDate() != null && datePlusMonths.isAfter(mrp.getEndDate())) {
+              break;
+            }
+            MrpLine projectedMrpLine =
+                createAverageMrpLine(
+                    product,
+                    mrp,
+                    mrpLineType,
+                    stockLocation,
+                    stockHistoryLineToProject,
+                    datePlusMonths,
+                    growthCoef);
+            mrpLineRepository.save(projectedMrpLine);
+          }
+        }
+      }
+    } else {
+      for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
         LocalDate date =
             LocalDate.parse(stockHistoryLine.getLabel())
                 .plusMonths(mrpLineType.getOffSetInMonths());
-        BigDecimal fieldValue = null;
-        if (mrpLineType.getIsProjectedForNextMonths()
-            && projectedValue != null
-            && nbrOfMonthsProjected < mrpLineType.getNbrOfMonthProjection()) {
-          fieldValue = projectedValue;
-          nbrOfMonthsProjected++;
-        } else {
-          fieldValue =
-              computeFieldValue(mrpLineType, getter, stockHistoryLine, productCategoryCoeff, date);
-          if (mrpLineType.getIsProjectedForNextMonths()) {
-            if (nbrOfMonthsProjected == -1) {
-              // ProjectedValue must not be computed with prorata.
-              projectedValue = fieldValue;
-            }
-            nbrOfMonthsProjected++;
-          }
-          if (date.isBefore(today)) {
-            fieldValue = computeProrata(fieldValue, today);
-          }
-        }
-
-        if (!date.isBefore(today)) {
-          date = date.withDayOfMonth(1);
-        } else {
-          date = today;
-        }
-        fieldValue =
-            fieldValue.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
         MrpLine mrpLine =
-            this.createMrpLine(
-                mrp, product, mrpLineType, fieldValue, date, fieldValue, stockLocation, null);
-        if (mrpLine != null) {
-          mrpLineRepository.save(mrpLine);
-        }
-
-      } catch (Exception e) {
-        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+            createAverageMrpLine(
+                product, mrp, mrpLineType, stockLocation, stockHistoryLine, date, growthCoef);
+        mrpLineRepository.save(mrpLine);
       }
     }
   }
 
+  protected MrpLine createAverageMrpLine(
+      Product product,
+      Mrp mrp,
+      MrpLineType mrpLineType,
+      StockLocation stockLocation,
+      StockHistoryLine stockHistoryLine,
+      LocalDate date,
+      BigDecimal growthCoef)
+      throws AxelorException {
+    log.debug("Creating mrp line for stock history line {}", stockHistoryLine);
+
+    try {
+      BigDecimal fieldValue = computeFieldValue(mrpLineType, stockHistoryLine, growthCoef, date);
+      date = computeStockHistoryMrpLineDate(date);
+      MrpLine mrpLine =
+          this.createMrpLine(
+              mrp, product, mrpLineType, fieldValue, date, fieldValue, stockLocation, null);
+      return mrpLine;
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  protected LocalDate computeStockHistoryMrpLineDate(LocalDate date) {
+    if (!date.isBefore(today)) {
+      date = date.withDayOfMonth(1);
+    } else {
+      date = today;
+    }
+    return date;
+  }
+
   protected BigDecimal computeFieldValue(
       MrpLineType mrpLineType,
-      Method getter,
       StockHistoryLine stockHistoryLine,
-      BigDecimal productCategoryCoeff,
+      BigDecimal growthCoef,
       LocalDate date)
       throws IllegalAccessException, InvocationTargetException {
+    Mapper mapper = Mapper.of(StockHistoryLine.class);
+    Method getter = mapper.getGetter(mrpLineType.getFieldSelect().getName());
     BigDecimal fieldValue = (BigDecimal) getter.invoke(stockHistoryLine);
-    fieldValue = fieldValue.multiply(mrpLineType.getGrowthCoef()).multiply(productCategoryCoeff);
-    return fieldValue;
+    if (date.isBefore(today)) {
+      fieldValue = computeProrata(fieldValue, today);
+    }
+    fieldValue = fieldValue.multiply(growthCoef);
+    return fieldValue.setScale(getStockHistoryMrpLineNbDecimal(), RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeProrata(BigDecimal amount, LocalDate dateOfTheDay) {
@@ -354,11 +386,15 @@ public class MrpServiceImpl implements MrpService {
       result =
           result.divide(
               BigDecimal.valueOf(lengthOfMonth),
-              appBaseService.getNbDecimalDigitForQty(),
+              getStockHistoryMrpLineNbDecimal(),
               RoundingMode.HALF_UP);
     }
 
     return result;
+  }
+
+  protected int getStockHistoryMrpLineNbDecimal() {
+    return appBaseService.getNbDecimalDigitForQty();
   }
 
   protected Query<StockHistoryLine> buildStockHistoryLineQuery(
@@ -388,7 +424,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     Query<StockHistoryLine> query =
-        stockHistoryLineRepository.all().filter(querySb.toString()).bind(bindings);
+        stockHistoryLineRepository.all().filter(querySb.toString()).bind(bindings).order("label");
     return query;
   }
 
