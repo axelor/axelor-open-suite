@@ -342,6 +342,9 @@
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
     <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
+      if="disposalTypeSelect == 3"/>
+    <attribute name="value" for="assetDisposalReason" expr="eval: null"/>
   </action-attrs>
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
     model="com.axelor.apps.base.db.Wizard">

@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -70,7 +71,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
-      IntercoService intercoService) {
+      IntercoService intercoService,
+      TaxService taxService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -85,7 +87,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceLineRepo,
         invoiceTermService,
         appBaseService,
-        intercoService);
+        intercoService,
+        taxService);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

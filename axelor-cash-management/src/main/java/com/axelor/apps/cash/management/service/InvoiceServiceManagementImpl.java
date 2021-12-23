@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
@@ -57,7 +58,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
       IntercoService intercoService,
-      InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
+      InvoiceEstimatedPaymentService invoiceEstimatedPaymentService,
+      TaxService taxService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -72,7 +74,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineRepo,
         invoiceTermService,
         appBaseService,
-        intercoService);
+        intercoService,
+        taxService);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }
 
