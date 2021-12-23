@@ -1,0 +1,5 @@
+---
+title: "Studio: Fix widget attrs width default on custom field"
+type: fix
+description: |
+     Removed default value of width from widget attrs of custom field, when created from studio. 
