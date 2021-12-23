@@ -55,4 +55,16 @@ public class TaxAccountService {
 
     return null;
   }
+
+  public Account getVatRegulationAccount(Tax tax, Company company, boolean isPurchase) {
+    AccountManagement accountManagement = this.getTaxAccount(tax, company);
+
+    if (accountManagement == null) {
+      return null;
+    } else if (isPurchase) {
+      return accountManagement.getPurchVatRegulationAccount();
+    } else {
+      return accountManagement.getSaleVatRegulationAccount();
+    }
+  }
 }

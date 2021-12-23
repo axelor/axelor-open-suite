@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -97,4 +98,6 @@ public interface StockMoveLineServiceSupplychain {
       boolean ati,
       boolean recoveredTax)
       throws AxelorException;
+
+  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
 }
