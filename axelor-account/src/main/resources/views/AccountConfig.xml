@@ -23,10 +23,11 @@
         grid-view="company-grid"/>
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
-        grid-view="account-chart-grid" canNew="true"/>
+        grid-view="account-chart-grid" canNew="true" colSpan="3"/>
+      <field name="accountCodeNbrCharSelect" colSpan="3" readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null" icon="fa-import"
-        onClick="action-group-account-config-installchart-click"/>
+        readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
+        icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
       <field name="allowRemovalValidatedMove"/>

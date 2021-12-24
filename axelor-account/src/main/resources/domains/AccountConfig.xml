@@ -65,6 +65,8 @@
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
+      selection="account.account.chart.code.nbr.char.select" required="true"/>
 
 
     <!-- Automatic account creation for partners -->

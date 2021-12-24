@@ -205,6 +205,8 @@
 "Account clearance journal",,,
 "Account clearance operations",,,
 "Account code",,,
+"Account code min. nbr. char",,,
+"Account code nbr. char",,,
 "Account config (${ name })",,,
 "Account configuration",,,
 "Account configurations",,,
