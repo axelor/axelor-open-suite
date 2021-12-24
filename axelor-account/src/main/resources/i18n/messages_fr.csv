@@ -209,6 +209,8 @@
 "Account clearance journal","Journal Apurages",,
 "Account clearance operations","Opérations d'apurement des comptes",,
 "Account code","Code compte comptable",,
+"Account code min. nbr. char","Nbre de caractères min. des codes comptables",,
+"Account code nbr. char","Nbre de caractères des codes comptables",,
 "Account config (${ name })","Configuration du compte (${nom })",,
 "Account configuration","Configuration comptable",,
 "Account configurations","Configurations comptables",,
