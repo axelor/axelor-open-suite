@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,5 +53,42 @@ public class PartnerController {
     response.setValue(
         "specificTaxNote",
         Beans.get(PartnerAccountService.class).getDefaultSpecificTaxNote(partner));
+  }
+
+  public void setRegistrationCodeRequired(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner;
+      if (request.getModel().contains("Address")
+          && request
+              .getContext()
+              .getParent()
+              .get("_model")
+              .toString()
+              .equals(Partner.class.getName())) {
+        partner = request.getContext().getParent().asType(Partner.class);
+      } else if (request.getModel().equals(Partner.class.getName())) {
+        partner = request.getContext().asType(Partner.class);
+      } else {
+        return;
+      }
+
+      boolean isRegistrationRequired =
+          partner.getPartnerAddressList().stream()
+                  .filter(
+                      partnerAddress ->
+                          partnerAddress.getIsInvoicingAddr()
+                              && partnerAddress.getAddress() != null
+                              && partnerAddress.getAddress().getAddressL7Country() != null
+                              && partnerAddress
+                                  .getAddress()
+                                  .getAddressL7Country()
+                                  .getAlpha2Code()
+                                  .equals("FR"))
+                  .count()
+              > 0;
+      response.setAttr("$isRegistrationCodeRequired", "value", isRegistrationRequired);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 }

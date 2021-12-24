@@ -328,6 +328,7 @@
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
+          requiredIf="das2Activity != null &amp;&amp; partnerTypeSelect == 1 &amp;&amp; isSupplier &amp;&amp; $isRegistrationCodeRequired"
           onChange="action-method-partner-registration-code-onChange"/>
         <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
         <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
@@ -344,6 +345,8 @@
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="sellerCode" showIf="isFactor"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()"/>
+        <field name="$isRegistrationCodeRequired" hidden="true"
+          if="__config__.app.isApp('account')"/>
       </panel>
     </panel>
     <panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel"
@@ -399,8 +402,10 @@
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
                   <field name="address" canEdit="!$canSelect" canNew="true"
+                    onChange="action-partner-method-set-registration-code-required"
                     form-view="address-form" grid-view="address-grid" canSelect="$canSelect"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
+                    onChange="action-partner-method-set-registration-code-required"
                     x-icon="fa-list-alt"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-shopping-cart"/>
@@ -1068,6 +1073,7 @@
     <action name="action-partner-attrs-set-canselect"/>
     <action name="action-partner-attrs-set-subcontactor"
       if="__config__.app.isApp('production')"/>
+    <action name="action-partner-method-set-registration-code-required"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1110,6 +1116,12 @@
 
   <action-method name="action-partner-method-set-user-partner">
     <call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
+  </action-method>
+
+  <action-method name="action-partner-method-set-registration-code-required"
+    if-module="axelor-account">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="setRegistrationCodeRequired"/>
   </action-method>
 
   <action-attrs name="action-partner-attrs-partner-seq-editable">
