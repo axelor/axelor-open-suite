@@ -35,7 +35,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class InvoiceLineController {
 
+  @HandleExceptionResponse
   public void getAndComputeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -71,6 +72,7 @@ public class InvoiceLineController {
         "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
   }
 
+  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
@@ -80,6 +82,7 @@ public class InvoiceLineController {
         Beans.get(InvoiceLineService.class).createAnalyticDistributionWithTemplate(invoiceLine));
   }
 
+  @HandleExceptionResponse
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
@@ -92,6 +95,7 @@ public class InvoiceLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -147,6 +151,7 @@ public class InvoiceLineController {
     response.setValue("companyExTaxTotal", companyExTaxTotal);
   }
 
+  @HandleExceptionResponse
   public void getProductInformation(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
@@ -155,17 +160,13 @@ public class InvoiceLineController {
     Product product = invoiceLine.getProduct();
     Map<String, Object> productInformation = new HashMap<>();
     if (invoice != null && product != null) {
-      try {
-        productInformation =
-            Beans.get(InvoiceLineService.class).fillProductInformation(invoice, invoiceLine);
+      productInformation =
+          Beans.get(InvoiceLineService.class).fillProductInformation(invoice, invoiceLine);
 
-        String errorMsg = (String) productInformation.get("error");
+      String errorMsg = (String) productInformation.get("error");
 
-        if (!Strings.isNullOrEmpty(errorMsg)) {
-          response.setFlash(errorMsg);
-        }
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
+      if (!Strings.isNullOrEmpty(errorMsg)) {
+        response.setFlash(errorMsg);
       }
     } else {
       productInformation = Beans.get(InvoiceLineService.class).resetProductInformation(invoice);
@@ -226,15 +227,11 @@ public class InvoiceLineController {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    try {
-      BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+    BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
+    TaxLine taxLine = invoiceLine.getTaxLine();
 
-      response.setValue(
-          "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue(
+        "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
   }
 
   /**
@@ -248,16 +245,12 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    try {
-      BigDecimal exTaxPrice = invoiceLine.getPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+    BigDecimal exTaxPrice = invoiceLine.getPrice();
+    TaxLine taxLine = invoiceLine.getTaxLine();
 
-      response.setValue(
-          "inTaxPrice",
-          Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue(
+        "inTaxPrice",
+        Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
   }
 
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
@@ -321,34 +314,30 @@ public class InvoiceLineController {
     return invoice;
   }
 
-  public void getAccount(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void getAccount(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    if (invoiceLine != null) {
+      Product product = invoiceLine.getProduct();
+      Invoice invoice = this.getInvoice(request.getContext());
 
-      if (invoiceLine != null) {
-        Product product = invoiceLine.getProduct();
-        Invoice invoice = this.getInvoice(request.getContext());
-
-        if (product != null) {
-          Account account =
-              Beans.get(AccountManagementServiceAccountImpl.class)
-                  .getProductAccount(
-                      product,
-                      invoice.getCompany(),
-                      invoice.getPartner().getFiscalPosition(),
-                      InvoiceToolService.isPurchase(invoice),
-                      invoiceLine.getFixedAssets());
-          response.setValue("account", account);
-        }
+      if (product != null) {
+        Account account =
+            Beans.get(AccountManagementServiceAccountImpl.class)
+                .getProductAccount(
+                    product,
+                    invoice.getCompany(),
+                    invoice.getPartner().getFiscalPosition(),
+                    InvoiceToolService.isPurchase(invoice),
+                    invoiceLine.getFixedAssets());
+        response.setValue("account", account);
       }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
+  @HandleExceptionResponse
   public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     Invoice invoice = this.getInvoice(context);
@@ -403,21 +392,17 @@ public class InvoiceLineController {
     response.setValue("fixedAssetCategory", fixedAssetCategory);
   }
 
+  @HandleExceptionResponse
   public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-      invoiceLine = invoiceLineService.selectDefaultDistributionTemplate(invoiceLine);
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    invoiceLine = invoiceLineService.selectDefaultDistributionTemplate(invoiceLine);
 
-      response.setValue(
-          "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
-      response.setValue(
-          "analyticMoveLineList",
-          invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue(
+        "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
+    response.setValue(
+        "analyticMoveLineList",
+        invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
   }
 }

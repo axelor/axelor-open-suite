@@ -38,7 +38,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -61,6 +61,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 @Singleton
 public class AddressController {
@@ -194,6 +195,7 @@ public class AddressController {
     } else response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
   }
 
+  @HandleExceptionResponse
   public void export(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 
@@ -210,98 +212,91 @@ public class AddressController {
     response.setValue("log", size + " adresses exportées");
   }
 
-  public void viewMap(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void viewMap(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
 
-    try {
-      Address address = request.getContext().asType(Address.class);
-      address = Beans.get(AddressRepository.class).find(address.getId());
-      Optional<Pair<BigDecimal, BigDecimal>> latLong =
-          Beans.get(AddressService.class).getOrUpdateLatLong(address);
+    Address address = request.getContext().asType(Address.class);
+    address = Beans.get(AddressRepository.class).find(address.getId());
+    Optional<Pair<BigDecimal, BigDecimal>> latLong =
+        Beans.get(AddressService.class).getOrUpdateLatLong(address);
 
-      if (latLong.isPresent()) {
-        MapService mapService = Beans.get(MapService.class);
-        Map<String, Object> mapView = new HashMap<>();
-        mapView.put("title", "Map");
-        mapView.put("resource", mapService.getMapUrl(latLong.get(), address.getFullName()));
-        mapView.put("viewType", "html");
-        response.setView(mapView);
-      } else {
-        response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
-      }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void viewDirection(ActionRequest request, ActionResponse response) {
-    AddressRepository addressRepository = Beans.get(AddressRepository.class);
-    try {
+    if (latLong.isPresent()) {
       MapService mapService = Beans.get(MapService.class);
-      String key = null;
-      if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
-          == AppBaseRepository.MAP_API_GOOGLE) {
-        key = mapService.getGoogleMapsApiKey();
-      }
-
-      Company company =
-          Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
-      if (company == null) {
-        response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
-        return;
-      }
-      Address departureAddress = company.getAddress();
-      if (departureAddress == null) {
-        response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-        return;
-      }
-
-      departureAddress = addressRepository.find(departureAddress.getId());
-      Optional<Pair<BigDecimal, BigDecimal>> departureLatLong =
-          Beans.get(AddressService.class).getOrUpdateLatLong(departureAddress);
-
-      if (!departureLatLong.isPresent()) {
-        response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
-        return;
-      }
-
-      Address arrivalAddress = request.getContext().asType(Address.class);
-      arrivalAddress = addressRepository.find(arrivalAddress.getId());
-      Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
-          Beans.get(AddressService.class).getOrUpdateLatLong(arrivalAddress);
-
-      if (!arrivalLatLong.isPresent()) {
-        response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
-        return;
-      }
-
       Map<String, Object> mapView = new HashMap<>();
       mapView.put("title", "Map");
-      mapView.put(
-          "resource",
-          mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
+      mapView.put("resource", mapService.getMapUrl(latLong.get(), address.getFullName()));
       mapView.put("viewType", "html");
       response.setView(mapView);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    } else {
+      response.setFlash(
+          String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
     }
+    response.setReload(true);
   }
 
-  public void updateLatLong(ActionRequest request, ActionResponse response) {
-    AddressService addressService = Beans.get(AddressService.class);
-    try {
-      Address address = request.getContext().asType(Address.class);
-      address = Beans.get(AddressRepository.class).find(address.getId());
-      addressService.resetLatLong(address);
-      addressService.updateLatLong(address);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void viewDirection(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
+    AddressRepository addressRepository = Beans.get(AddressRepository.class);
+    MapService mapService = Beans.get(MapService.class);
+    String key = null;
+    if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
+        == AppBaseRepository.MAP_API_GOOGLE) {
+      key = mapService.getGoogleMapsApiKey();
     }
+
+    Company company =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    if (company == null) {
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+      return;
+    }
+    Address departureAddress = company.getAddress();
+    if (departureAddress == null) {
+      response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+      return;
+    }
+
+    departureAddress = addressRepository.find(departureAddress.getId());
+    Optional<Pair<BigDecimal, BigDecimal>> departureLatLong =
+        Beans.get(AddressService.class).getOrUpdateLatLong(departureAddress);
+
+    if (!departureLatLong.isPresent()) {
+      response.setFlash(
+          String.format(I18n.get(IExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
+      return;
+    }
+
+    Address arrivalAddress = request.getContext().asType(Address.class);
+    arrivalAddress = addressRepository.find(arrivalAddress.getId());
+    Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
+        Beans.get(AddressService.class).getOrUpdateLatLong(arrivalAddress);
+
+    if (!arrivalLatLong.isPresent()) {
+      response.setFlash(
+          String.format(I18n.get(IExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
+      return;
+    }
+
+    Map<String, Object> mapView = new HashMap<>();
+    mapView.put("title", "Map");
+    mapView.put(
+        "resource", mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
+    mapView.put("viewType", "html");
+    response.setView(mapView);
+    response.setReload(true);
+  }
+
+  @HandleExceptionResponse
+  public void updateLatLong(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
+    AddressService addressService = Beans.get(AddressService.class);
+    Address address = request.getContext().asType(Address.class);
+    address = Beans.get(AddressRepository.class).find(address.getId());
+    addressService.resetLatLong(address);
+    addressService.updateLatLong(address);
+    response.setReload(true);
   }
 
   public void createPartnerAddress(ActionRequest request, ActionResponse response) {

@@ -22,6 +22,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -54,8 +55,7 @@ public class MailAccountController {
     }
   }
 
-  public void checkDefaultMailAccount(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void checkDefaultMailAccount(ActionRequest request, ActionResponse response) {
 
     EmailAccount account = request.getContext().asType(EmailAccount.class);
     try {
@@ -66,6 +66,7 @@ public class MailAccountController {
     }
   }
 
+  @HandleExceptionResponse
   public void fetchEmails(ActionRequest request, ActionResponse response)
       throws MessagingException, IOException {
 

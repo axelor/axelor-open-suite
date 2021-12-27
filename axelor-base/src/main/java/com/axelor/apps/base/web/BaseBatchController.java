@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.service.batch.BaseBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -42,6 +43,7 @@ public class BaseBatchController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Batch batch = Beans.get(BaseBatchService.class).run((String) request.getContext().get("code"));

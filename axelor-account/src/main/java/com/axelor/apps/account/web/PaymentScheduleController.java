@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,17 +46,14 @@ import com.google.inject.Singleton;
 public class PaymentScheduleController {
 
   // Validation button
-  public void validate(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
     paymentSchedule = Beans.get(PaymentScheduleRepository.class).find(paymentSchedule.getId());
 
-    try {
-      Beans.get(PaymentScheduleService.class).validatePaymentSchedule(paymentSchedule);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(PaymentScheduleService.class).validatePaymentSchedule(paymentSchedule);
+    response.setReload(true);
   }
 
   // Cancel button
@@ -64,12 +62,8 @@ public class PaymentScheduleController {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
     paymentSchedule = Beans.get(PaymentScheduleRepository.class).find(paymentSchedule.getId());
 
-    try {
-      Beans.get(PaymentScheduleService.class).toCancelPaymentSchedule(paymentSchedule);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(PaymentScheduleService.class).toCancelPaymentSchedule(paymentSchedule);
+    response.setReload(true);
   }
 
   // Called on onSave event
@@ -106,6 +100,7 @@ public class PaymentScheduleController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
@@ -152,29 +147,25 @@ public class PaymentScheduleController {
     response.setReload(true);
   }
 
-  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
     paymentSchedule = Beans.get(PaymentScheduleRepository.class).find(paymentSchedule.getId());
 
-    try {
-      Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(IrrecoverableService.class).passInIrrecoverable(paymentSchedule);
+    response.setReload(true);
   }
 
-  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void notPassInIrrecoverable(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
     paymentSchedule = Beans.get(PaymentScheduleRepository.class).find(paymentSchedule.getId());
 
-    try {
-      Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(IrrecoverableService.class).notPassInIrrecoverable(paymentSchedule);
+    response.setReload(true);
   }
 }

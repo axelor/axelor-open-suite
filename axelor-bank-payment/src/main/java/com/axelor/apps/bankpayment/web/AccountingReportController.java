@@ -19,7 +19,6 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,20 +28,16 @@ import com.google.inject.Singleton;
 public class AccountingReportController {
 
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
-    try {
-      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-      String domain =
-          Beans.get(BankDetailsService.class)
-              .getActiveCompanyBankDetails(
-                  accountingReport.getCompany(), accountingReport.getCurrency());
-      // if nothing was found for the domain, we set it at a default value.
-      if (domain.equals("")) {
-        response.setAttr("bankDetailsSet", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr("bankDetailsSet", "domain", domain);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    String domain =
+        Beans.get(BankDetailsService.class)
+            .getActiveCompanyBankDetails(
+                accountingReport.getCompany(), accountingReport.getCurrency());
+    // if nothing was found for the domain, we set it at a default value.
+    if (domain.equals("")) {
+      response.setAttr("bankDetailsSet", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetailsSet", "domain", domain);
     }
   }
 }

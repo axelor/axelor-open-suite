@@ -30,7 +30,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -183,6 +183,7 @@ public class WkfModelController {
 
   @SuppressWarnings("unchecked")
   @Transactional
+  @HandleExceptionResponse
   public void importWkfModels(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -217,123 +218,108 @@ public class WkfModelController {
 
   public void showDashboard(ActionRequest request, ActionResponse response) {
 
-    try {
-      WkfModel wkfModel = request.getContext().asType(WkfModel.class);
-      wkfModel = wkfModelRepository.find(wkfModel.getId());
-      if (CollectionUtils.isEmpty(wkfModel.getWkfProcessList())) {
-        return;
-      }
+    WkfModel wkfModel = request.getContext().asType(WkfModel.class);
+    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    if (CollectionUtils.isEmpty(wkfModel.getWkfProcessList())) {
+      return;
+    }
 
-      if (wkfModel.getWkfProcessList().size() == 1) {
-        response.setView(
-            ActionView.define(I18n.get("Workflow dashboard"))
-                .add("dashboard", "dasbhoard-wkf-model")
-                .context("_wkfId", wkfModel.getId())
-                .context("_process", wkfModel.getWkfProcessList().get(0).getName())
-                .map());
-      } else {
-        response.setView(
-            ActionView.define(I18n.get("Select process"))
-                .model(Wizard.class.getName())
-                .add("form", "wfk-model-select-process-wizard-form")
-                .param("popup", "true")
-                .param("popup-save", "false")
-                .param("show-confirm", "false")
-                .param("show-toolbar", "false")
-                .context("_wkf", wkfModel)
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (wkfModel.getWkfProcessList().size() == 1) {
+      response.setView(
+          ActionView.define(I18n.get("Workflow dashboard"))
+              .add("dashboard", "dasbhoard-wkf-model")
+              .context("_wkfId", wkfModel.getId())
+              .context("_process", wkfModel.getWkfProcessList().get(0).getName())
+              .map());
+    } else {
+      response.setView(
+          ActionView.define(I18n.get("Select process"))
+              .model(Wizard.class.getName())
+              .add("form", "wfk-model-select-process-wizard-form")
+              .param("popup", "true")
+              .param("popup-save", "false")
+              .param("show-confirm", "false")
+              .param("show-toolbar", "false")
+              .context("_wkf", wkfModel)
+              .map());
     }
   }
 
   public void setModelsDomain(ActionRequest request, ActionResponse response) {
 
-    try {
-      WkfModel wkfModel = null;
-      List<Long> jsonModelIds = new ArrayList<>();
-      List<Long> metaModelIds = new ArrayList<>();
+    WkfModel wkfModel = null;
+    List<Long> jsonModelIds = new ArrayList<>();
+    List<Long> metaModelIds = new ArrayList<>();
 
-      if (request.getContext().get("wkfId") != null) {
-        wkfModel =
-            wkfModelRepository.find(Long.parseLong(request.getContext().get("wkfId").toString()));
-      }
+    if (request.getContext().get("wkfId") != null) {
+      wkfModel =
+          wkfModelRepository.find(Long.parseLong(request.getContext().get("wkfId").toString()));
+    }
 
-      String process = (String) request.getContext().get("_process");
+    String process = (String) request.getContext().get("_process");
 
-      if (wkfModel != null) {
-        for (WkfProcess wkfProcess : wkfModel.getWkfProcessList()) {
-          if (CollectionUtils.isEmpty(wkfProcess.getWkfProcessConfigList())
-              || !wkfProcess.getName().equals(process)) {
-            continue;
+    if (wkfModel != null) {
+      for (WkfProcess wkfProcess : wkfModel.getWkfProcessList()) {
+        if (CollectionUtils.isEmpty(wkfProcess.getWkfProcessConfigList())
+            || !wkfProcess.getName().equals(process)) {
+          continue;
+        }
+        for (WkfProcessConfig processConfig : wkfProcess.getWkfProcessConfigList()) {
+          if (processConfig.getMetaModel() != null) {
+            metaModelIds.add(processConfig.getMetaModel().getId());
           }
-          for (WkfProcessConfig processConfig : wkfProcess.getWkfProcessConfigList()) {
-            if (processConfig.getMetaModel() != null) {
-              metaModelIds.add(processConfig.getMetaModel().getId());
-            }
 
-            if (processConfig.getMetaJsonModel() != null) {
-              jsonModelIds.add(processConfig.getMetaJsonModel().getId());
-            }
+          if (processConfig.getMetaJsonModel() != null) {
+            jsonModelIds.add(processConfig.getMetaJsonModel().getId());
           }
         }
       }
-
-      response.setAttr(
-          "metaJsonModel",
-          "domain",
-          !jsonModelIds.isEmpty()
-              ? "self.id IN (" + StringUtils.join(jsonModelIds, ',') + ")"
-              : "self.id IN (0)");
-
-      response.setAttr(
-          "metaModel",
-          "domain",
-          !metaModelIds.isEmpty()
-              ? "self.id IN (" + StringUtils.join(metaModelIds, ',') + ")"
-              : "self.id IN (0)");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
+
+    response.setAttr(
+        "metaJsonModel",
+        "domain",
+        !jsonModelIds.isEmpty()
+            ? "self.id IN (" + StringUtils.join(jsonModelIds, ',') + ")"
+            : "self.id IN (0)");
+
+    response.setAttr(
+        "metaModel",
+        "domain",
+        !metaModelIds.isEmpty()
+            ? "self.id IN (" + StringUtils.join(metaModelIds, ',') + ")"
+            : "self.id IN (0)");
   }
 
   @SuppressWarnings("unchecked")
   public void showRecord(ActionRequest request, ActionResponse response) {
 
-    try {
-      Context context = request.getContext();
-      String status = context.get("status").toString();
-      String tableName = null;
-      String jsonModel = null;
+    Context context = request.getContext();
+    String status = context.get("status").toString();
+    String tableName = null;
+    String jsonModel = null;
 
-      ActionViewBuilder actionViewBuilder = null;
-      if (context.get("metaModel") != null) {
-        Long id =
-            Long.parseLong(((Map<String, Object>) context.get("metaModel")).get("id").toString());
-        MetaModel metaModel = Beans.get(MetaModelRepository.class).find(id);
-        tableName = metaModel.getTableName();
-        actionViewBuilder = createActionBuilder(status, metaModel);
-      } else if (context.get("metaJsonModel") != null) {
-        Long id =
-            Long.parseLong(
-                ((Map<String, Object>) context.get("metaJsonModel")).get("id").toString());
-        MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).find(id);
-        jsonModel = metaJsonModel.getName();
-        tableName = MetaJsonRecord.class.getAnnotation(Table.class).name();
-        actionViewBuilder = createActionBuilder(status, metaJsonModel);
-      }
-
-      List<Long> idList = getRecordIds(context, tableName, jsonModel);
-
-      response.setView(actionViewBuilder.context("ids", !idList.isEmpty() ? idList : 0).map());
-
-      response.setCanClose(true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    ActionViewBuilder actionViewBuilder = null;
+    if (context.get("metaModel") != null) {
+      Long id =
+          Long.parseLong(((Map<String, Object>) context.get("metaModel")).get("id").toString());
+      MetaModel metaModel = Beans.get(MetaModelRepository.class).find(id);
+      tableName = metaModel.getTableName();
+      actionViewBuilder = createActionBuilder(status, metaModel);
+    } else if (context.get("metaJsonModel") != null) {
+      Long id =
+          Long.parseLong(((Map<String, Object>) context.get("metaJsonModel")).get("id").toString());
+      MetaJsonModel metaJsonModel = Beans.get(MetaJsonModelRepository.class).find(id);
+      jsonModel = metaJsonModel.getName();
+      tableName = MetaJsonRecord.class.getAnnotation(Table.class).name();
+      actionViewBuilder = createActionBuilder(status, metaJsonModel);
     }
+
+    List<Long> idList = getRecordIds(context, tableName, jsonModel);
+
+    response.setView(actionViewBuilder.context("ids", !idList.isEmpty() ? idList : 0).map());
+
+    response.setCanClose(true);
   }
 
   private ActionViewBuilder createActionBuilder(String status, MetaJsonModel metaJsonModel) {
@@ -450,23 +436,13 @@ public class WkfModelController {
   }
 
   public void getProcessPerStatus(ActionRequest request, ActionResponse response) {
-    try {
-      List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_STATUS);
-      response.setData(dataList);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_STATUS);
+    response.setData(dataList);
   }
 
   public void getProcessPerUser(ActionRequest request, ActionResponse response) {
-    try {
-      List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_USER);
-      response.setData(dataList);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_USER);
+    response.setData(dataList);
   }
 
   @SuppressWarnings("unchecked")
@@ -502,59 +478,41 @@ public class WkfModelController {
   }
 
   public void getStatusPerView(ActionRequest request, ActionResponse response) {
-    try {
-      this.openRecordView(request, response, "title", "modelName", "statusRecordIds");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.openRecordView(request, response, "title", "modelName", "statusRecordIds");
   }
 
   public void getModelPerView(ActionRequest request, ActionResponse response) {
-    try {
-      this.openRecordView(request, response, null, "modelName", "recordIdsPerModel");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.openRecordView(request, response, null, "modelName", "recordIdsPerModel");
   }
 
   @SuppressWarnings("unchecked")
   public void newRecord(ActionRequest request, ActionResponse response) {
-    try {
-      LinkedHashMap<String, Object> _map =
-          (LinkedHashMap<String, Object>) request.getData().get("context");
-      String modelName = _map.get("modelName").toString();
-      boolean isMetaModel = (boolean) _map.get("isMetaModel");
 
-      ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
-      response.setView(actionViewBuilder.map());
+    LinkedHashMap<String, Object> _map =
+        (LinkedHashMap<String, Object>) request.getData().get("context");
+    String modelName = _map.get("modelName").toString();
+    boolean isMetaModel = (boolean) _map.get("isMetaModel");
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
+    response.setView(actionViewBuilder.map());
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void newInstance(ActionRequest request, ActionResponse response) {
-    try {
-      LinkedHashMap<String, Object> _map =
-          (LinkedHashMap<String, Object>) request.getData().get("context");
 
-      WkfProcessConfig config =
-          Beans.get(WkfProcessConfigRepository.class)
-              .find(Long.valueOf(((Map) _map.get("processConfig")).get("id").toString()));
+    LinkedHashMap<String, Object> _map =
+        (LinkedHashMap<String, Object>) request.getData().get("context");
 
-      boolean isMetaModel = config.getMetaModel() != null;
-      String modelName =
-          isMetaModel ? config.getMetaModel().getName() : config.getMetaJsonModel().getName();
+    WkfProcessConfig config =
+        Beans.get(WkfProcessConfigRepository.class)
+            .find(Long.valueOf(((Map) _map.get("processConfig")).get("id").toString()));
 
-      ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
-      response.setView(actionViewBuilder.map());
+    boolean isMetaModel = config.getMetaModel() != null;
+    String modelName =
+        isMetaModel ? config.getMetaModel().getName() : config.getMetaJsonModel().getName();
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
+    response.setView(actionViewBuilder.map());
   }
 
   private ActionViewBuilder viewNewRecord(String modelName, boolean isMetaModel) {
@@ -582,39 +540,35 @@ public class WkfModelController {
   }
 
   public void changeAttrs(ActionRequest request, ActionResponse response) {
-    try {
-      WkfModel wkfModel = request.getContext().asType(WkfModel.class);
-      wkfModel = wkfModelRepository.find(wkfModel.getId());
-      User user = AuthUtils.getUser();
-      boolean superUser = user.getCode().equals("admin");
-      if (superUser) {
-        return;
-      }
 
-      if (isAdmin(wkfModel, user)) {
-        return;
-      }
-
-      response.setAttr("actionPanelBtn", "hidden", true);
-      response.setAttr("adminPanel", "hidden", true);
-      response.setAttr("managerPanel", "hidden", true);
-
-      if (isManager(wkfModel, user)) {
-        return;
-      }
-
-      response.setAttr("allProcessPanel", "hidden", true);
-
-      if (isUser(wkfModel, user)) {
-        return;
-      }
-
-      response.setAttr("userPanel", "hidden", true);
-      response.setAttr("myProcessPanel", "hidden", true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    WkfModel wkfModel = request.getContext().asType(WkfModel.class);
+    wkfModel = wkfModelRepository.find(wkfModel.getId());
+    User user = AuthUtils.getUser();
+    boolean superUser = user.getCode().equals("admin");
+    if (superUser) {
+      return;
     }
+
+    if (isAdmin(wkfModel, user)) {
+      return;
+    }
+
+    response.setAttr("actionPanelBtn", "hidden", true);
+    response.setAttr("adminPanel", "hidden", true);
+    response.setAttr("managerPanel", "hidden", true);
+
+    if (isManager(wkfModel, user)) {
+      return;
+    }
+
+    response.setAttr("allProcessPanel", "hidden", true);
+
+    if (isUser(wkfModel, user)) {
+      return;
+    }
+
+    response.setAttr("userPanel", "hidden", true);
+    response.setAttr("myProcessPanel", "hidden", true);
   }
 
   public boolean isAdmin(WkfModel wkfModel, User user) {
@@ -669,29 +623,14 @@ public class WkfModelController {
   }
 
   public void openTaskToday(ActionRequest request, ActionResponse response) {
-    try {
-      this.openRecordView(request, response, null, "modelName", "taskTodayIds");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.openRecordView(request, response, null, "modelName", "taskTodayIds");
   }
 
   public void openTaskNext(ActionRequest request, ActionResponse response) {
-    try {
-      this.openRecordView(request, response, null, "modelName", "taskNextIds");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.openRecordView(request, response, null, "modelName", "taskNextIds");
   }
 
   public void openLateTask(ActionRequest request, ActionResponse response) {
-    try {
-      this.openRecordView(request, response, null, "modelName", "lateTaskIds");
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.openRecordView(request, response, null, "modelName", "lateTaskIds");
   }
 }

@@ -19,7 +19,8 @@ package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,17 +35,17 @@ public class PurchaseProductController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void fillShippingCoeff(ActionRequest request, ActionResponse response) {
-    try {
-      Product product = request.getContext().asType(Product.class);
-      if (!product.getDefShipCoefByPartner()) {
-        return;
-      }
-      response.setValue(
-          "shippingCoef", Beans.get(PurchaseProductService.class).getLastShippingCoef(product));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void fillShippingCoeff(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Product product = request.getContext().asType(Product.class);
+    if (!product.getDefShipCoefByPartner()) {
+      return;
     }
+    response.setValue(
+        "shippingCoef", Beans.get(PurchaseProductService.class).getLastShippingCoef(product));
   }
 }

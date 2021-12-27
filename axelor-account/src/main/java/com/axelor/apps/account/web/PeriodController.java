@@ -21,6 +21,8 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -29,31 +31,29 @@ import com.axelor.rpc.ActionResponse;
 
 public class PeriodController {
 
-  public void searchPeriodMoves(ActionRequest request, ActionResponse response) {
-    try {
-      Period period = request.getContext().asType(Period.class);
-      period = Beans.get(PeriodRepository.class).find(period.getId());
-      Long moveCount =
-          Beans.get(PeriodServiceAccount.class).getMoveListToValidateQuery(period).count();
-      if (moveCount > 0) {
+  @HandleExceptionResponse
+  public void searchPeriodMoves(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Period period = request.getContext().asType(Period.class);
+    period = Beans.get(PeriodRepository.class).find(period.getId());
+    Long moveCount =
+        Beans.get(PeriodServiceAccount.class).getMoveListToValidateQuery(period).count();
+    if (moveCount > 0) {
 
-        response.setView(
-            ActionView.define("Moves to validate")
-                .model(Period.class.getName())
-                .add("form", "period-moves-to-validate-form")
-                .param("popup", "reload")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("popup-save", "false")
-                .context("_showRecord", period.getId())
-                .map());
-      } else {
+      response.setView(
+          ActionView.define("Moves to validate")
+              .model(Period.class.getName())
+              .add("form", "period-moves-to-validate-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .context("_showRecord", period.getId())
+              .map());
+    } else {
 
-        Beans.get(PeriodService.class).close(period);
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      Beans.get(PeriodService.class).close(period);
+      response.setReload(true);
     }
   }
 

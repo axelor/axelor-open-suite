@@ -22,7 +22,8 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -30,70 +31,62 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.List;
 
 @Singleton
 public class BankStatementController {
 
-  public void runImport(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+  @HandleExceptionResponse
+  public void runImport(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
 
-      BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
-      BankStatementService bankStatementService = Beans.get(BankStatementService.class);
-      bankStatement = bankStatementRepo.find(bankStatement.getId());
-      bankStatementService.runImport(bankStatement, true);
-      bankStatementService.checkImport(bankStatement);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-    response.setReload(true);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      String name = bankStatement.getName();
-      String fileLink = Beans.get(BankStatementService.class).print(bankStatement);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
+    BankStatementService bankStatementService = Beans.get(BankStatementService.class);
+    bankStatement = bankStatementRepo.find(bankStatement.getId());
+    bankStatementService.runImport(bankStatement, true);
+    bankStatementService.checkImport(bankStatement);
 
     response.setReload(true);
   }
 
-  public void runBankReconciliation(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+    bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
+    String name = bankStatement.getName();
+    String fileLink = Beans.get(BankStatementService.class).print(bankStatement);
+    response.setView(ActionView.define(name).add("html", fileLink).map());
 
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      List<BankReconciliation> bankReconciliationList =
-          Beans.get(BankReconciliationCreateService.class)
-              .createAllFromBankStatement(bankStatement);
+    response.setReload(true);
+  }
 
-      if (bankReconciliationList != null) {
-        response.setView(
-            ActionView.define(I18n.get("Bank reconciliations"))
-                .model(BankReconciliation.class.getName())
-                .add("grid", "bank-reconciliation-grid")
-                .add("form", "bank-reconciliation-form")
-                .param("search-filters", "bank-reconciliation-filters")
-                .domain(
-                    "self.id in ("
-                        + Joiner.on(",")
-                            .join(
-                                bankReconciliationList.stream()
-                                    .map(BankReconciliation::getId)
-                                    .toArray())
-                        + ")")
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void runBankReconciliation(ActionRequest request, ActionResponse response)
+      throws IOException {
+
+    BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+    bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
+    List<BankReconciliation> bankReconciliationList =
+        Beans.get(BankReconciliationCreateService.class).createAllFromBankStatement(bankStatement);
+
+    if (bankReconciliationList != null) {
+      response.setView(
+          ActionView.define(I18n.get("Bank reconciliations"))
+              .model(BankReconciliation.class.getName())
+              .add("grid", "bank-reconciliation-grid")
+              .add("form", "bank-reconciliation-form")
+              .param("search-filters", "bank-reconciliation-filters")
+              .domain(
+                  "self.id in ("
+                      + Joiner.on(",")
+                          .join(
+                              bankReconciliationList.stream()
+                                  .map(BankReconciliation::getId)
+                                  .toArray())
+                      + ")")
+              .map());
     }
     response.setReload(true);
   }

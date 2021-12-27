@@ -20,6 +20,7 @@ package com.axelor.studio.web;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,6 +29,7 @@ import com.axelor.studio.db.repo.AppBuilderRepository;
 
 public class AppBuilderController {
 
+  @HandleExceptionResponse
   public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
@@ -39,6 +41,7 @@ public class AppBuilderController {
     response.setSignal("refresh-app", true);
   }
 
+  @HandleExceptionResponse
   public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);

@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -39,6 +40,7 @@ import java.util.Map;
 @Singleton
 public class ImportDemoDataController {
 
+  @HandleExceptionResponse
   public void importDemoDataExcel(ActionRequest request, ActionResponse response)
       throws FileNotFoundException, IOException, AxelorException, ParseException,
           ClassNotFoundException {

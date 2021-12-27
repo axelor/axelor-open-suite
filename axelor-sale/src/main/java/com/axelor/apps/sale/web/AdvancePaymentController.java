@@ -21,6 +21,7 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,6 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class AdvancePaymentController {
 
+  @HandleExceptionResponse
   public void cancelAdvancePayment(ActionRequest request, ActionResponse response)
       throws AxelorException {
     AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
