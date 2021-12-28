@@ -313,4 +313,6 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  public Invoice generateInterestInvoice(Invoice invoice) throws AxelorException;
 }

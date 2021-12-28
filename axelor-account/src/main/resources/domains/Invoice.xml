@@ -211,6 +211,8 @@
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+    <boolean name="hidePenaltyText" title="Hide penalty legal text"/>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <extra-code><![CDATA[
@@ -238,6 +240,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_INTEREST = 8;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;

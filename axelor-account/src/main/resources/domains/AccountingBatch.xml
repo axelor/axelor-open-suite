@@ -72,6 +72,12 @@
     <!-- REALIZED FIXED ASSET LINES -->
     <boolean name="updateAllRealizedFixedAssetLines"
       title="Update all realized fixed asset lines"/>
+
+    <many-to-one name="paymentCondition" title="Payment condition"
+      ref="com.axelor.apps.account.db.PaymentCondition"/>
+    <many-to-one name="interestInvoiceCompany" title="Interest invoice company"
+      ref="com.axelor.apps.base.db.Company"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE

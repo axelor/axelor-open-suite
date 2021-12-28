@@ -116,6 +116,11 @@
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
       </panel>
+      <panel name="interestInvoicePanel" title="Interest invoice configuration"
+        hideIf="actionSelect != 24">
+        <field name="paymentCondition"/>
+        <field name="interestInvoiceCompany" requiredIf="actionSelect == 24"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -152,6 +157,9 @@
       <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
         showIf="actionSelect == 23"
         onClick="save,action-accounting-batch-method-block-customers-with-late-payments"
+        colSpan="12"/>
+      <button name="interestInvoiceBatchBtn" title="Interest invoice batch"
+        showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-interest-invoice"
         colSpan="12"/>
     </panel>
   </form>
@@ -246,6 +254,11 @@
   <action-method name="action-accounting-batch-method-action-close-annual-accounts">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionCloseAnnualAccounts"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-interest-invoice">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="getInterestInvoiceBatch"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

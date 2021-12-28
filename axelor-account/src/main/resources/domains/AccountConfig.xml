@@ -275,7 +275,8 @@
       title="Purchase financial discount tax"/>
     <many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax"
       title="Sale financial discount tax"/>
-
+    <many-to-one name="interestProduct" ref="com.axelor.apps.base.db.Product"
+      title="Product for interest invoices"/>
 
     <finder-method name="findByCompany" using="company"/>
 

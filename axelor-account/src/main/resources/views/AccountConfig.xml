@@ -207,6 +207,7 @@
             form-view="product-form" grid-view="product-grid"/>
           <field name="advancePaymentProduct" domain="self.dtype = 'Product'"
             form-view="product-form" grid-view="product-grid"/>
+          <field name="interestProduct" form-view="product-form" grid-view="product-grid"/>
         </panel>
 
 

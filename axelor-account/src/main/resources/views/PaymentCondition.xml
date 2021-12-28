@@ -24,7 +24,12 @@
       <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
       <field name="advancePaymentNeeded"
         if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
+      <field name="dailyPenaltyRate"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
   <search-filters name="payment-condition-filters"

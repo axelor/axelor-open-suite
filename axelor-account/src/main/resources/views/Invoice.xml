@@ -367,6 +367,7 @@
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract closing invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Subscription</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 7 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Periodic contract</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 8 && (record.operationTypeSelect == 3)">Interest invoice</span>
 
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
 
@@ -408,7 +409,8 @@
       </panel>
       <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
       <field name="operationSubTypeSelect"
-        hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
+        hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"
+        onChange="action-invoice-attrs-show-invoice-interests-button"/>
       <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
@@ -635,6 +637,7 @@ InvoiceSet.length > 0))"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$language" title="Language" type="many-to-one"
           target="com.axelor.apps.base.db.Language" hidden="true"/>
+        <field name="hidePenaltyText" colSpan="6"/>
         <panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice"
           colSpan="12">
           <field name="note" widget="html" colSpan="12" showTitle="false"/>
@@ -779,6 +782,8 @@ InvoiceSet.length > 0))"
         showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
         colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
         if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+      <button name="invoiceInterestsBtn" title="Invoice interests"
+        onClick="save,action-invoice-attrs-show-invoice-interests-button,action-account-method-interests-invoice"/>
       <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
         canView="false"/>
       <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
@@ -917,8 +922,8 @@ InvoiceSet.length > 0))"
         <field name="invoiceDate"
           onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
-        <field name="dueDate" onChange="action-invoice-method-estimated-payment-date"
-          readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-attrs-show-invoice-interests-button"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')" colSpan="12"/>
@@ -1327,6 +1332,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
       if="__config__.app.isApp('supplychain')"/>
+    <action name="action-invoice-attrs-show-invoice-interests-button"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1346,6 +1352,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-hide-send-email-pfp-btn"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-attrs-show-invoice-interests-button"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -1608,6 +1615,12 @@ InvoiceSet.length > 0))"
       if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()"/>
   </action-attrs>
 
+  <action-attrs name="action-invoice-attrs-show-invoice-interests-button">
+    <attribute name="hidden"
+      expr="eval: !(dueDate != null &amp;&amp; amountRemaining &gt; 0 &amp;&amp; __date__ &gt; dueDate &amp;&amp; operationSubTypeSelect != InvoiceRepository.OPERATION_SUB_TYPE_INTEREST &amp;&amp; operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)"
+      for="invoiceInterestsBtn"/>
+  </action-attrs>
+
   <action-method name="action-invoice-method-set-partner-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="getInvoicePartnerDomain"/>
@@ -1852,6 +1865,10 @@ InvoiceSet.length > 0))"
 
   <action-method name="action-invoice-method-set-default-mail">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setDefaultMail"/>
+  </action-method>
+
+  <action-method name="action-account-method-interests-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="getInterestInvoice"/>
   </action-method>
 
   <action-record name="action-invoice-record-update-info-company"

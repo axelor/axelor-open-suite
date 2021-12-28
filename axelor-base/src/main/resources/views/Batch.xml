@@ -111,6 +111,8 @@
 
     <attribute name="hidden" for="showStockHistoryLinesBtn"
       expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
+    <attribute name="hidden" for="showInterestInvoiceBtn"
+      expr="eval: _parent?.actionSelect != 24"/>
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
