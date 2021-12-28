@@ -203,7 +203,7 @@ public class SequenceService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected String getSequenceNumberInExecutor(Sequence sequence, LocalDate refDate) {
+  public String getSequenceNumberInExecutor(Sequence sequence, LocalDate refDate) {
     Sequence seq = sequenceRepo.find(sequence.getId());
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
     String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
