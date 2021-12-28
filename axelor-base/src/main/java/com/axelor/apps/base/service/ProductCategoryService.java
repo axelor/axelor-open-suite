@@ -40,4 +40,13 @@ public interface ProductCategoryService {
    * @return an optional with the maximum applicable discount if found.
    */
   Optional<BigDecimal> computeMaxDiscount(ProductCategory productCategory) throws AxelorException;
+
+  /**
+   * Get the growth coefficient of product category. If the coeff is equal to the default value (1),
+   * the method will get growth coeff of parentProductCategory.
+   *
+   * @param productCategory
+   * @return growth coefficient
+   */
+  BigDecimal getGrowthCoeff(ProductCategory productCategory);
 }
