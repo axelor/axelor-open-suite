@@ -549,7 +549,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else {
       if (ObjectUtils.notEmpty(move.getPartner())
           && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
-        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        fiscalPosition = move.getPartner().getFiscalPosition();
       }
     }
 
