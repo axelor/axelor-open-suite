@@ -49,15 +49,18 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
+  protected InvoiceToolService invoiceToolService;
 
   @Inject
   public InvoiceTermServiceImpl(
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoiceToolService invoiceToolService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
+    this.invoiceToolService = invoiceToolService;
   }
 
   @Override
@@ -312,6 +315,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
+        invoiceToolService.updateDueDate(invoicePayment.getInvoice());
       }
       invoiceTerm.setAmountRemaining(amountRemaining);
     }
@@ -328,6 +332,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
       if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
         invoiceTerm.setIsPaid(false);
+        invoiceToolService.updateDueDate(invoiceTerm.getInvoice());
         invoiceTermRepo.save(invoiceTerm);
       }
     }
