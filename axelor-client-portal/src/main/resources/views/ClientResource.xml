@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="client-resource-grid" title="client.Resources"
+    model="com.axelor.apps.client.portal.db.ClientResource">
+    <hilite if="$unread" strong="true" color="black"/>
+    <field name="name"/>
+    <field name="resourceFile" widget="binary-link"/>
+    <field name="$unread" type="boolean" hidden="true"/>
+  </grid>
+
+  <form name="client-resource-form" title="client.Resource"
+    onLoad="action-client-portal-method-client-resource-onload"
+    model="com.axelor.apps.client.portal.db.ClientResource" width="large" canAttach="false">
+    <panel name="mainPanel">
+      <field name="name" showTitle="false" placeholder="Name"/>
+      <field name="resourceFile" widget="binary-link" showTitle="false"/>
+      <field name="createdOn" title="Added on"/>
+      <field name="updatedOn" title="Updated on"/>
+      <field name="partnerCategorySet" colSpan="12" widget="TagSelect"/>
+      <field name="description" colSpan="12" widget="html" showTitle="false"/>
+    </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+    </panel-mail>
+  </form>
+
+  <action-method name="action-client-portal-method-client-resource-onload">
+    <call class="com.axelor.apps.portal.web.ClientResourceController" method="markRead"/>
+  </action-method>
+
+</object-views>

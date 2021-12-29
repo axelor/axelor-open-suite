@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Dashboard" name="client-dashboard-form"
+    id="partner-portal-client-dashboard-form" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-partner-portal-group-dashboard-total"/>
+    </extend>
+    <extend target="//panel[@name='totalPanel']/*[last()]">
+      <insert position="after">
+        <panel if="__config__.app.isApp('partner-portal')" name="partnerPortalPanel"
+          title="Leads" css="group-bg-boro group-title-blue">
+          <button name="$newLeadBtn" title="New leads" css="group-bg-boro" icon="fa-user"
+            onClick="partner.portal.crm.root.new.lead" widget="info-button"/>
+          <button name="$leadBtn" title="Current leads" css="group-bg-boro" icon="fa-user"
+            onClick="partner.portal.crm.root.lead" widget="info-button"/>
+          <spacer colSpan="12" css="group-bg-boro" widget="info-button"/>
+          <spacer colSpan="12" css="group-bg-boro" widget="info-button"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-partner-portal-group-dashboard-total">
+    <action name="action-client-portal-record-dashboard-total"/>
+    <action name="action-partner-portal-record-dashboard-total"/>
+  </action-group>
+
+  <action-record name="action-partner-portal-record-dashboard-total"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="$newLeadBtn"
+      expr="call:com.axelor.apps.partner.portal.service.ClientViewPartnerPortalService:getNewLead()"/>
+    <field name="$leadBtn"
+      expr="call:com.axelor.apps.partner.portal.service.ClientViewPartnerPortalService:getLead()"/>
+  </action-record>
+
+  <action-method name="partner.portal.crm.root.lead">
+    <call class="com.axelor.apps.partner.portal.web.LeadPartnerPortalController"
+      method="showCurrentLead"/>
+  </action-method>
+
+  <action-method name="partner.portal.crm.root.new.lead">
+    <call class="com.axelor.apps.partner.portal.web.LeadPartnerPortalController"
+      method="showNewLead"/>
+  </action-method>
+
+</object-views>
+

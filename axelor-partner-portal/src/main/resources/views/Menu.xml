@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <menuitem title="Leads" name="partner-portal-lead" action="partner.portal.lead"
+    if="__config__.app.isApp('partner-portal')" top="true" left="false" icon="fa-user"/>
+
+  <action-view name="partner.portal.lead" title="Leads"
+    model="com.axelor.apps.crm.db.Lead">
+    <view type="grid" name="partner-portal-lead-grid"/>
+    <view type="form" name="lead-form"/>
+    <view-param name="search-filters" value="lead-filters"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+  </action-view>
+
+</object-views>

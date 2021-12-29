@@ -1,0 +1,7 @@
+"importId";"birtTemplate.importId";"name";"value";"type"
+1001;1001;"SaleOrderId";"$PortalQuotation.saleOrder.id$";"decimal"
+1002;1001;"HeaderHeight";"$PortalQuotation.saleOrder.printingSettings.pdfHeaderHeight$";"decimal"
+1003;1001;"FooterHeight";"$PortalQuotation.saleOrder.printingSettings.pdfFooterHeight$";"decimal"
+1004;1001;"AddressPositionSelect";0;"integer"
+1005;1001;"__locale";"en_EN";"string"
+1006;1001;"Locale";"en";"string"

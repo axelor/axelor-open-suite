@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="partner-form" id="partner-portal-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//field[@name='isFactor']">
+      <insert position="after">
+        <field name="isCompanyPartner" colSpan="2" widget="InlineCheckbox"
+          hideIf="$readonly()"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='$viewerPartnerType']">
+      <insert position="before">
+        <field name="$partnerTag" showTitle="false" hideIf="!$readonly()">
+          <viewer depends="isCompanyPartner">
+			<![CDATA[
+			  <h4 style="text-align: right;">
+				<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCompanyPartner" x-translate>Partner</span>
+			  </h4>
+            ]]>
+          </viewer>
+        </field>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

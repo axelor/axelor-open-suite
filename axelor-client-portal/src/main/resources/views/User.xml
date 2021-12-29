@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="client-user-preferences-form" name="user-preferences-form" title="Preferences"
+    model="com.axelor.auth.db.User" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-client-portal-group-user-preference-onload"/>
+    </extend>
+    <extend target="//field[@name='activeCompany']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//field[@name='theme']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//field[@name='iCalendar']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//field[@name='followersCalUserSet']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+  </form>
+
+  <action-attrs name="action-client-portal-attrs-user-preference-onload">
+    <attribute name="hidden" for="activeCompany"
+      expr="eval:__user__.group?.code != 'admins'"/>
+    <attribute name="hidden" for="theme" expr="eval:__user__.group?.code != 'admins'"/>
+    <attribute name="hidden" for="iCalendar" expr="eval:__user__.group?.code != 'admins'"/>
+    <attribute name="hidden" for="followersCalUserSet"
+      expr="eval:__user__.group?.code != 'admins'"/>
+  </action-attrs>
+
+  <action-group name="action-client-portal-group-user-preference-onload">
+    <action name="action-user-attrs"/>
+    <action name="action-client-portal-attrs-user-preference-onload"/>
+  </action-group>
+
+</object-views>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="client-portal" package="com.axelor.apps.client.portal.db"/>
+
+  <entity name="DiscussionPost" lang="java" cacheable="true">
+
+    <string name="title"/>
+    <string name="description" large="true"/>
+    <many-to-one name="discussionGroup"
+      ref="com.axelor.apps.client.portal.db.DiscussionGroup"/>
+
+    <track on="UPDATE">
+      <field name="title"/>
+      <field name="description"/>
+    </track>
+
+  </entity>
+
+</domain-models>

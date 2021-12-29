@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="client-portal" package="com.axelor.apps.client.portal.db"/>
+
+  <entity name="PortalQuotation" lang="java" cacheable="true">
+
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20"/>
+    <integer name="statusSelect" title="Status" selection="sale.order.status.select"
+      readonly="true"/>
+    <date name="endOfValidity" title="Order end of validity"/>
+    <many-to-one name="signature" ref="com.axelor.meta.db.MetaFile" title="Signature"/>
+    <many-to-one name="report" ref="com.axelor.meta.db.MetaFile" title="Report"/>
+
+  </entity>
+
+</domain-models>

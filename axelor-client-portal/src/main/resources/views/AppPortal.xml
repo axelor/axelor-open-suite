@@ -12,7 +12,60 @@
         <field name="manageDelivery" widget="boolean-switch"/>
         <field name="manageTickets" widget="boolean-switch"/>
         <field name="manageProjects" widget="boolean-switch"/>
+        <field name="manageEShop" widget="boolean-switch"/>
+        <field name="isPurchasesActivated" widget="boolean-switch" readonlyIf="manageEShop"/>
+        <field name="manageQuotations" widget="boolean-switch"/>
+        <field name="manageAnnouncement" widget="boolean-switch"/>
+        <field name="manageDiscussion" widget="boolean-switch"/>
+        <field name="manageIdea" widget="boolean-switch"/>
+        <field name="manageAnnouncementNotification" widget="boolean-switch"/>
+        <field name="manageDiscussionNotification" widget="boolean-switch"/>
         <field name="showCatalog" widget="boolean-switch"/>
+        <field name="isDMSActivated" widget="boolean-switch"/>
+        <field name="isDMSPanelSideActiveDefault" widget="boolean-switch"
+          showIf="isDMSActivated"/>
+        <field name="isTaskEditorActivated" widget="boolean-switch"/>
+        <field name="isStripeActivated" widget="boolean-switch"/>
+        <field name="isPaypalActivated" widget="boolean-switch"/>
+        <field name="isPayboxActivated" widget="boolean-switch"/>
+        <panel name="stripePanel" title="Stripe configuration" showIf="isStripeActivated"
+          colSpan="12">
+          <field name="stripeSecretKey" colSpan="12" widget="password"
+            requiredIf="isStripeActivated"/>
+        </panel>
+        <panel name="paypalPanel" title="Paypal configuration" showIf="isPaypalActivated"
+          colSpan="12">
+          <field name="paypalMerchantId" colSpan="12"/>
+          <field name="paypalAppClientId" colSpan="12"/>
+          <field name="paypalAppClientSecret" colSpan="12"/>
+        </panel>
+        <panel name="quotationOrdersPanel" title="Quotation orders" showIf="manageQuotations"
+          colSpan="12">
+          <field name="isNotifySeller" widget="boolean-switch" colSpan="6"/>
+          <field name="sellerNotificationTemplate" colSpan="6" showIf="isNotifySeller"
+            requiredIf="isNotifySeller" domain="self.metaModel.name = 'SaleOrder'"/>
+          <field name="isNotifyCustomer" widget="boolean-switch" colSpan="6"/>
+          <field name="customerNotificationTemplate" colSpan="6" showIf="isNotifyCustomer"
+            requiredIf="isNotifyCustomer" domain="self.metaModel.name = 'SaleOrder'"/>
+        </panel>
+        <panel name="payboxPanel" title="Paybox configuration" showIf="isPayboxActivated"
+          colSpan="12">
+          <field name="payboxUrl" colSpan="12"/>
+          <field name="payboxSite"/>
+          <field name="payboxRank"/>
+          <field name="payboxUserName"/>
+          <field name="payboxCurrency"/>
+          <field name="payboxKey" colSpan="12"/>
+          <field name="payboxPaybox" colSpan="12"/>
+          <field name="payboxBackup1" colSpan="12"/>
+          <field name="payboxBackup2" colSpan="12"/>
+          <field name="payboxPublicKey" colSpan="12"/>
+        </panel>
+      </panel>
+      <panel name="templatePanel" colSpan="12">
+        <field name="quotationGenerationTemplate"/>
+        <field name="quotationConfimationCodeTemplate"/>
+        <field name="quotationConfimationTemplate"/>
       </panel>
       <panel name="portalSelectConfigPanel" colSpan="12">
         <field name="portalSelect"/>
@@ -31,6 +84,5 @@
     </panel-mail>
 
   </form>
-
 
 </object-views>

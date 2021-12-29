@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="client-portal-partner-form" name="partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//panel[@name='customerPanel']/field[@name='payerQuality']">
+      <insert position="after">
+        <field name="isDMSPanelSideActive"
+          if="__config__.app.getApp('portal')?.isDMSActivated" widget="boolean-switch" colSpan="3"/>
+      </insert>
+      <attribute name="colSpan" value="3"/>
+    </extend>
+  </form>
+
+  <action-group name="action-group-base-partner-onnew"
+    id="action-group-client-portal-partner-onnew">
+    <action name="action-partner-record-partner-type-select"/>
+    <action name="action-partner-record-set-default"/>
+    <action name="action-partner-attrs-set-default"/>
+    <action name="action-partner-record-set-default-cash-management"/>
+    <action name="action-partner-record-set-payment-modes"/>
+    <action name="action-partner-record-payment-condition"/>
+    <action name="action-partner-attrs-partner-seq-editable"/>
+    <action name="action-partner-attrs-set-canselect"/>
+    <!-- PORTAL CHANGES -->
+    <action name="action-record-client-portal-partner-set-default"/>
+  </action-group>
+
+  <action-record name="action-record-client-portal-partner-set-default"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isDMSPanelSideActive"
+      expr="eval:__config__.app.getApp('portal')?.isDMSPanelSideActiveDefault"
+      if="__config__.app.getApp('portal')?.isDMSActivated"/>
+  </action-record>
+
+</object-views>

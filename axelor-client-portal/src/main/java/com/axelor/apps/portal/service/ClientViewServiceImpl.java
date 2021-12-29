@@ -19,8 +19,16 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.client.portal.db.repo.ClientResourceRepository;
+import com.axelor.apps.client.portal.db.repo.DiscussionGroupRepository;
+import com.axelor.apps.client.portal.db.repo.GeneralAnnouncementRepository;
+import com.axelor.apps.client.portal.db.repo.IdeaRepository;
+import com.axelor.apps.client.portal.db.repo.PortalIdeaTagRepository;
+import com.axelor.apps.client.portal.db.repo.PortalQuotationRepository;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.project.db.Project;
@@ -55,6 +63,12 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected ProjectTaskRepository projectTaskRepo;
   protected JpaSecurity security;
   protected AppService appService;
+  protected PortalQuotationRepository portalQuotationRepo;
+  protected DiscussionGroupRepository discussionGroupRepo;
+  protected GeneralAnnouncementRepository announcementRepo;
+  protected ClientResourceRepository clientResourceRepo;
+  protected IdeaRepository ideaRepo;
+  protected PortalIdeaTagRepository ideaTagRepo;
 
   protected static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -70,7 +84,13 @@ public class ClientViewServiceImpl implements ClientViewService {
       InvoiceRepository invoiceRepo,
       ProjectTaskRepository projectTaskRepo,
       JpaSecurity jpaSecurity,
-      AppService appService) {
+      AppService appService,
+      PortalQuotationRepository portalQuotationRepo,
+      DiscussionGroupRepository discussionGroupRepo,
+      GeneralAnnouncementRepository announcementRepo,
+      ClientResourceRepository clientResourceRepo,
+      IdeaRepository ideaRepo,
+      PortalIdeaTagRepository ideaTagRepo) {
     this.saleOrderRepo = saleOrderRepo;
     this.stockMoveRepo = stockMoveRepo;
     this.projectRepo = projectRepo;
@@ -79,6 +99,12 @@ public class ClientViewServiceImpl implements ClientViewService {
     this.projectTaskRepo = projectTaskRepo;
     this.security = jpaSecurity;
     this.appService = appService;
+    this.portalQuotationRepo = portalQuotationRepo;
+    this.discussionGroupRepo = discussionGroupRepo;
+    this.announcementRepo = announcementRepo;
+    this.clientResourceRepo = clientResourceRepo;
+    this.ideaRepo = ideaRepo;
+    this.ideaTagRepo = ideaTagRepo;
   }
 
   @Override
@@ -638,5 +664,201 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter dateFilter = new JPQLFilter("self.taskEndDate  < current_date()");
     filters.add(Filter.and(getTasksInCompletedOfUser(user).get(0), dateFilter));
     return filters;
+  }
+
+  @Override
+  public Long getOpenQuotation() {
+    return portalQuotationRepo
+        .all()
+        .filter(
+            "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
+                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder.statusSelect < :status GROUP BY portalQuotation.saleOrder)")
+        .bind("status", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getQuotationSaleOrder() {
+    return portalQuotationRepo
+        .all()
+        .filter(
+            "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
+                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)")
+        .bind("status", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getQuotationHistory() {
+    return portalQuotationRepo
+        .all()
+        .filter(
+            "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
+                + "((self.endOfValidity < :today AND self.saleOrder.electronicSignature IS NULL) OR (self.saleOrder.statusSelect >= :status))")
+        .bind("today", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
+        .bind("status", SaleOrderRepository.STATUS_ORDER_COMPLETED)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getAllQuotation() {
+    return portalQuotationRepo
+        .all()
+        .filter(
+            "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner)")
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getToPayInvoice() {
+    return invoiceRepo
+        .all()
+        .filter(
+            "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "(self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining > 0)")
+        .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getOldInvoice() {
+    return invoiceRepo
+        .all()
+        .filter(
+            "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "(self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining = 0)")
+        .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getRefundInvoice() {
+    return invoiceRepo
+        .all()
+        .filter(
+            "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "(self.operationTypeSelect = :operationTypeSelect)")
+        .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        .bind("clientPartner", getClientUser().getPartner())
+        .count();
+  }
+
+  @Override
+  public Long getMyTicket() {
+
+    User user = getClientUser();
+    Partner partner = user.getPartner();
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.assignment = 1 AND self.project.clientPartner = :partner AND self.status.isCompleted != true AND self.typeSelect = :typeSelect")
+        .bind(
+            "partner",
+            partner != null ? partner.getIsContact() ? partner.getMainPartner() : partner : null)
+        .bind("typeSelect", ProjectTaskRepository.TYPE_TICKET)
+        .count();
+  }
+
+  @Override
+  public Long getProviderTicket() {
+
+    User user = getClientUser();
+    Partner partner = user.getPartner();
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.assignment = 2 AND self.project.clientPartner = :partner AND self.status.isCompleted != true AND self.typeSelect = :typeSelect")
+        .bind(
+            "partner",
+            partner != null ? partner.getIsContact() ? partner.getMainPartner() : partner : null)
+        .bind("typeSelect", ProjectTaskRepository.TYPE_TICKET)
+        .count();
+  }
+
+  @Override
+  public Long getOpenTicket() {
+
+    User user = getClientUser();
+    Partner partner = user.getPartner();
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.project.clientPartner = :partner AND self.status.isCompleted != true AND self.typeSelect = :typeSelect")
+        .bind(
+            "partner",
+            partner != null ? partner.getIsContact() ? partner.getMainPartner() : partner : null)
+        .bind("typeSelect", ProjectTaskRepository.TYPE_TICKET)
+        .count();
+  }
+
+  @Override
+  public Long getCloseTicket() {
+
+    User user = getClientUser();
+    Partner partner = user.getPartner();
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.project.clientPartner = :partner AND self.status.isCompleted = true AND self.typeSelect = :typeSelect")
+        .bind(
+            "partner",
+            partner != null ? partner.getIsContact() ? partner.getMainPartner() : partner : null)
+        .bind("typeSelect", ProjectTaskRepository.TYPE_TICKET)
+        .count();
+  }
+
+  @Override
+  public Long getDiscussionGroup() {
+
+    Partner partner = getClientUser().getPartner();
+    return discussionGroupRepo
+        .all()
+        .filter(":partnerCategory MEMBER OF self.partnerCategorySet")
+        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .count();
+  }
+
+  @Override
+  public Long getAnnouncement() {
+
+    Partner partner = getClientUser().getPartner();
+    return announcementRepo
+        .all()
+        .filter(":partnerCategory MEMBER OF self.partnerCategorySet")
+        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .count();
+  }
+
+  @Override
+  public Long getResouces() {
+
+    Partner partner = getClientUser().getPartner();
+    return clientResourceRepo
+        .all()
+        .filter(
+            ":partnerCategory MEMBER OF self.partnerCategorySet OR size(self.partnerCategorySet) = 0")
+        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .count();
+  }
+
+  @Override
+  public Long getIdea() {
+    return ideaRepo.all().filter("self.close = false").count();
+  }
+
+  @Override
+  public Long getIdeaHistory() {
+    return ideaRepo.all().filter("self.close = true").count();
+  }
+
+  @Override
+  public Long getIdeaTag() {
+    return ideaTagRepo.all().count();
   }
 }

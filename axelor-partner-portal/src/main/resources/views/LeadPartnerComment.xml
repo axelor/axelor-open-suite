@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="lead-partner-comment-grid" title="Comments"
+    model="com.axelor.apps.partner.portal.db.LeadPartnerComment">
+    <field name="lead"/>
+  </grid>
+
+  <form name="lead-partner-comment-form" title="Comments"
+    model="com.axelor.apps.partner.portal.db.LeadPartnerComment">
+    <panel-mail>
+      <mail-messages limit="4"/>
+    </panel-mail>
+  </form>
+
+</object-views>

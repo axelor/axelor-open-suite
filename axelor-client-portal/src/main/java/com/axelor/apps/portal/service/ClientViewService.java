@@ -18,6 +18,7 @@
 package com.axelor.apps.portal.service;
 
 import com.axelor.auth.db.User;
+import com.axelor.meta.CallMethod;
 import com.axelor.rpc.filter.Filter;
 import java.util.List;
 import java.util.Map;
@@ -68,4 +69,59 @@ public interface ClientViewService {
   public List<Filter> getResolvedTicketsOfUser(User user);
 
   public List<Filter> getLateTicketsOfUser(User user);
+
+  /* Quotation */
+  @CallMethod
+  public Long getOpenQuotation();
+
+  @CallMethod
+  public Long getQuotationSaleOrder();
+
+  @CallMethod
+  public Long getQuotationHistory();
+
+  @CallMethod
+  public Long getAllQuotation();
+
+  /* Invoice */
+  @CallMethod
+  public Long getToPayInvoice();
+
+  @CallMethod
+  public Long getOldInvoice();
+
+  @CallMethod
+  public Long getRefundInvoice();
+
+  /* Ticket */
+  @CallMethod
+  public Long getMyTicket();
+
+  @CallMethod
+  public Long getProviderTicket();
+
+  @CallMethod
+  public Long getOpenTicket();
+
+  @CallMethod
+  public Long getCloseTicket();
+
+  /* Client Portal*/
+  @CallMethod
+  public Long getDiscussionGroup();
+
+  @CallMethod
+  public Long getAnnouncement();
+
+  @CallMethod
+  public Long getResouces();
+
+  @CallMethod
+  public Long getIdea();
+
+  @CallMethod
+  public Long getIdeaHistory();
+
+  @CallMethod
+  public Long getIdeaTag();
 }

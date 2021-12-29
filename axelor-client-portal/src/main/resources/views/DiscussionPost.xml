@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="discussion-post-grid" title="Discussion posts"
+    model="com.axelor.apps.client.portal.db.DiscussionPost" orderBy="-createdOn">
+    <hilite if="$unread" strong="true" color="black"/>
+    <field name="title"/>
+    <field name="createdOn" title="Post on"/>
+    <field name="$totalComments" title="Comments" type="integer"/>
+    <field name="$unread" type="boolean" hidden="true"/>
+  </grid>
+
+  <form name="discussion-post-form" title="Discussion post" canSave="false"
+    model="com.axelor.apps.client.portal.db.DiscussionPost" width="large"
+    onLoad="action-client-portal-group-discussion-post-onload"
+    onNew="action-client-portal-record-discussion-post-onnew"
+    onSave="save,action-client-portal-method-discussion-post-onsave">
+    <panel name="mainPanel">
+      <field name="title" required="true" colSpan="8"/>
+      <button onClick="save" name="postBtn" title="Post" colSpan="4"/>
+      <field name="discussionGroup" readonly="true" colSpan="3"/>
+      <field name="createdOn" title="Post on" colSpan="3"/>
+      <field name="$postBy" readonly="true" colSpan="3" title="Post by" type="string"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-client-portal-attrs-discussion-post-onload">
+    <attribute name="readonly" for="mainPanel" expr="eval: createdBy != __user__"/>
+    <attribute name="value" for="$postBy" expr="eval: createdBy?.partner?.fullName"/>
+    <attribute name="value" for="$postBy"
+      expr="eval: createdBy?.partner?.mainPartner?.fullName"
+      if="eval: createdBy?.partner?.isContact &amp;&amp; createdBy?.partner?.mainPartner != null"/>
+  </action-attrs>
+
+  <action-record name="action-client-portal-record-discussion-post-onnew"
+    model="com.axelor.apps.client.portal.db.DiscussionPost">
+    <field name="discussionGroup"
+      expr="eval: __repo__(DiscussionGroup).find(discussionGroupId)" if="discussionGroupId"/>
+  </action-record>
+
+  <action-method name="action-client-portal-method-discussion-post-onsave">
+    <call class="com.axelor.apps.portal.web.DiscussionPostController" method="addFollower"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-discussion-post-onload">
+    <call class="com.axelor.apps.portal.web.DiscussionPostController" method="markRead"/>
+  </action-method>
+
+  <action-group name="action-client-portal-group-discussion-post-onload">
+    <action name="action-client-portal-attrs-discussion-post-onload"/>
+    <action name="action-client-portal-method-discussion-post-onload"
+      if="createdBy != __user__"/>
+  </action-group>
+
+</object-views>

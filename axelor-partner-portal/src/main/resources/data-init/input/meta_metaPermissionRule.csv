@@ -1,0 +1,13 @@
+"field";"can_read";"can_write";"can_export";"metaPermission";"readonlyIf";"hideIf"
+"activitiesPanel";;;;"metaperm.partner.portal.Lead";;
+"actionsPanel";;;;"metaperm.partner.portal.Lead";;
+"followUpPanel";;;;"metaperm.partner.portal.Lead";;
+"marketingPanel";;;;"metaperm.partner.portal.Lead";;
+"assignPartnerBtn";;;;"metaperm.partner.portal.Lead";;
+"partnerComment";;;;"metaperm.partner.portal.Lead";;
+"discussionPanel";;;;"metaperm.partner.portal.Lead";;
+"leadReportsMenu";;;;"metaperm.partner.portal.Lead";;
+"leadToolsMenu";;;;"metaperm.partner.portal.Lead";;
+"grabLeadBtn";;;;"metaperm.partner.portal.Lead";;
+"scheduleEventBtn";;;;"metaperm.partner.portal.Lead";;
+"sendByEmailBtn";;;;"metaperm.partner.portal.Lead";;

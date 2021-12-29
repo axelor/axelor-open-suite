@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Partner Portal";"partner-portal";28;"Partner Portal configuration";"app-partner-portal.png";"axelor-partner-portal";"portal";32

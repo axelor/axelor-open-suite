@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <menuitem title="Quotations" name="client-portal-portal-quotations-root"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"
+    top="true" left="false"/>
+
+  <menuitem title="Quotations" name="client-portal-portal-quotations" icon="fa-building-o"
+    action="client.portal.portal.quatation" parent="client-portal-portal-quotations-root" top="true"/>
+
+  <action-view name="client.portal.portal.quatation" title="Quotations"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
+      self.saleOrder.statusSelect &lt; :status GROUP BY portalQuotation.saleOrder)</domain>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+  </action-view>
+
+  <menuitem title="Sale orders" name="client-portal-sale-orders" icon="fa-line-chart"
+    action="client.portal.sale.order" parent="client-portal-portal-quotations-root" top="true"/>
+
+  <action-view name="client.portal.sale.order" title="Sale orders"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
+      self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)</domain>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+  </action-view>
+
+  <menuitem title="Quotations history" name="client-portal-quotations-history"
+    action="client.portal.quotations.history" parent="client-portal-portal-quotations-root"
+    top="true" icon="fa-history"/>
+
+  <action-view name="client.portal.quotations.history" title="Quotations history"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>(self.endOfValidity &lt; :today AND self.saleOrder.electronicSignature IS NULL) OR
+      (self.saleOrder.statusSelect >= :status)</domain>
+    <context name="today" expr="eval: __date__"/>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_COMPLETED"/>
+    <context name="isHistory" expr="eval: true"/>
+  </action-view>
+
+  <menuitem title="All quotations" name="client-portal-all-portal-quotations"
+    icon="fa-file-o" action="client.portal.all.portal.quatation"
+    parent="client-portal-portal-quotations-root" top="true"/>
+
+  <action-view name="client.portal.all.portal.quatation" title="Quotations"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
+  <menuitem title="Invoices" name="client-portal-invoice-root"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices()"
+    top="true" left="false"/>
+
+  <menuitem title="Invoices to be paid" name="client-portal-invoices-to-be-paid"
+    icon="fa-file-text-o" action="client.portal.invoices.to.be.paid"
+    parent="client-portal-invoice-root" top="true"/>
+
+  <action-view name="client.portal.invoices.to.be.paid" title="Invoices to be paid"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining > 0</domain>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_SALE"/>
+  </action-view>
+
+  <menuitem title="Old invoices" name="client-portal-old-invoices" icon="fa-file-archive-o"
+    action="client.portal.old.invoices" parent="client-portal-invoice-root" top="true"/>
+
+  <action-view name="client.portal.old.invoices" title="Old invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining = 0</domain>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_SALE"/>
+  </action-view>
+
+  <menuitem title="Refunds" name="client-portal-refunds" action="client.portal.refunds"
+    parent="client-portal-invoice-root" top="true" icon="fa-file-excel-o"/>
+
+  <action-view name="client.portal.refunds" title="Refunds"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect</domain>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND"/>
+  </action-view>
+
+  <menuitem title="Discussions" name="client-portal-discussions-root"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDiscussion()"
+    top="true" left="false"/>
+
+  <menuitem title="Discussion groups" name="client-portal-discussion-group"
+    icon="fa-list-alt" action="client.portal.discussion.group"
+    parent="client-portal-discussions-root" top="true"/>
+
+  <action-view name="client.portal.discussion.group" title="Discussion groups"
+    model="com.axelor.apps.client.portal.db.DiscussionGroup">
+    <view type="cards" name="discussion-group-card"/>
+    <view type="grid" name="discussion-group-grid"/>
+    <view type="form" name="discussion-group-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
+  <menuitem title="Announces" name="client-portal-general-announcement" icon="fa-bullhorn"
+    action="client.portal.general.announcement" parent="client-portal-discussions-root"
+    if="__config__.app.getApp('portal').getManageAnnouncement()" top="true"/>
+
+  <action-view name="client.portal.general.announcement" title="Announces"
+    model="com.axelor.apps.client.portal.db.GeneralAnnouncement">
+    <view type="grid" name="general-announcement-grid"/>
+    <view type="form" name="general-announcement-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
+  <menuitem title="client.Resources" name="client-portal-resource" icon="fa-file"
+    action="client.portal.resource" parent="client-portal-discussions-root" top="true"/>
+
+  <action-view name="client.portal.resource" title="client.Resources"
+    model="com.axelor.apps.client.portal.db.ClientResource">
+    <view type="grid" name="client-resource-grid"/>
+    <view type="form" name="client-resource-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
+  <menuitem title="Tickets" name="client-portal-ticket-root"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"
+    top="true" left="false"/>
+
+  <menuitem title="Tickets assigned to my company" name="client-portal-company-ticket"
+    action="client.portal.company.ticket" parent="client-portal-ticket-root" top="true"
+    icon="fa-tasks"/>
+
+  <action-view name="client.portal.company.ticket"
+    title="Tickets assigned to my company" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.assignment = 1 AND self.project.clientPartner = :partner AND
+      self.status.isCompleted != true AND self.typeSelect = :_typeSelect</domain>
+    <context name="user" expr="eval: __user__"/>
+    <context name="project" expr="eval: __user__.contextProject"/>
+    <context name="isContact" expr="eval: __user__.partner?.isContact"/>
+    <context name="partner"
+      expr="eval: __user__.partner != null ? __user__.partner.isContact ? __user__.partner.mainPartner : __user__.partner : null"/>
+    <context name="_typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <menuitem title="Tickets assigned to service provider" icon="fa-tasks"
+    name="client-portal-service-provider-ticket" action="client.portal.service.provider.ticket"
+    parent="client-portal-ticket-root" top="true"/>
+
+  <action-view name="client.portal.service.provider.ticket"
+    title="Tickets assigned to service provider" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.assignment = 2 AND self.project.clientPartner = :partner AND
+      self.status.isCompleted != true AND self.typeSelect = :_typeSelect</domain>
+    <context name="user" expr="eval: __user__"/>
+    <context name="project" expr="eval: __user__.contextProject"/>
+    <context name="isContact" expr="eval: __user__.partner?.isContact"/>
+    <context name="partner"
+      expr="eval: __user__.partner != null ? __user__.partner.isContact ? __user__.partner.mainPartner : __user__.partner : null"/>
+    <context name="assignment" expr="eval: ProjectTaskRepository.ASSIGNMENT_PROVIDER"/>
+    <context name="_typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <menuitem title="All open tickets" name="client-portal-open-ticket"
+    icon="fa-pencil-square-o" action="client.portal.open.ticket" parent="client-portal-ticket-root"
+    top="true"/>
+
+  <action-view name="client.portal.open.ticket" title="All open tickets"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.project.clientPartner = :partner AND self.status.isCompleted != true AND
+      self.typeSelect = :_typeSelect</domain>
+    <context name="user" expr="eval: __user__"/>
+    <context name="project" expr="eval: __user__.contextProject"/>
+    <context name="isContact" expr="eval: __user__.partner?.isContact"/>
+    <context name="partner"
+      expr="eval: __user__.partner != null ? __user__.partner.isContact ? __user__.partner.mainPartner : __user__.partner : null"/>
+    <context name="_typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <menuitem title="All closed tickets" name="client-portal-close-ticket"
+    icon="fa-window-close-o" action="client.portal.close.ticket" parent="client-portal-ticket-root"
+    top="true"/>
+
+  <action-view name="client.portal.close.ticket" title="All closed tickets"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.project.clientPartner = :partner AND self.status.isCompleted = true AND
+      self.typeSelect = :_typeSelect</domain>
+    <context name="user" expr="eval: __user__"/>
+    <context name="project" expr="eval: __user__.contextProject"/>
+    <context name="isContact" expr="eval: __user__.partner?.isContact"/>
+    <context name="partner"
+      expr="eval: __user__.partner != null ? __user__.partner.isContact ? __user__.partner.mainPartner : __user__.partner : null"/>
+    <context name="typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <menuitem title="New ticket" name="client-portal-new-ticket" icon="fa-plus-square"
+    action="client.portal.new.ticket" parent="client-portal-ticket-root" top="true"/>
+
+  <action-view name="client.portal.new.ticket" title="New ticket"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="project-task-form"/>
+    <view type="grid" name="project-task-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.project.clientPartner = :partner AND self.status.isCompleted != true AND
+      self.typeSelect = :_typeSelect</domain>
+    <context name="project" expr="eval: __user__.contextProject"/>
+    <context name="partner"
+      expr="eval: __user__.partner != null ? __user__.partner.isContact ? __user__.partner.mainPartner : __user__.partner : null"/>
+    <context name="_typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
+  </action-view>
+
+  <menuitem title="Dashboard" name="client-portal-dashboard"
+    action="client.portal.dashboard" top="true" left="false" if="__config__.app.isApp('portal')"/>
+
+  <action-view name="client.portal.dashboard" title="Dashboard" home="true"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="client-dashboard-form"/>
+  </action-view>
+
+  <menuitem name="eshop-portal-root" title="Eshop" top="true"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageEShop()"
+    left="false"/>
+
+  <menuitem name="eshop-portal" title="Eshop" parent="eshop-portal-root"
+    action="eshop.portal.root" top="true" icon="fa-shopping-cart"/>
+
+  <action-view name="eshop.portal.root" title="Eshop">
+    <view type="html" name="eshop"/>
+  </action-view>
+
+  <menuitem name="card-portal" title="Cards" parent="eshop-portal-root"
+    action="card.portal" top="true" icon="fa-credit-card"
+    if="__config__.app.getApp('portal').getIsStripeActivated()"/>
+
+  <action-view name="card.portal" title="Cards"
+    model="com.axelor.apps.client.portal.db.Card">
+    <view type="grid" name="card-grid"/>
+    <view type="form" name="card-form"/>
+  </action-view>
+
+  <menuitem name="client-portal-root" title="Axelor portal" order="-108"
+    if="__config__.app.isApp('portal')" icon="fa-user-circle-o" icon-background="#0275d8"/>
+
+  <menuitem name="purchases-portal-root" title="Purchases" parent="client-portal-root"
+    action="purchases.portal.root"/>
+  <action-view name="purchases.portal.root" title="Purchases">
+    <view type="html" name="purchase"/>
+  </action-view>
+
+  <!-- SALES MENU -->
+  <menuitem name="sc-root-sale-quotations-to-validate" parent="sc-root-sale" order="21"
+    title="Quotation request to be validated" action="sc.root.sale.quotations.to.validate"/>
+
+  <action-view name="sc.root.sale.quotations.to.validate"
+    title="Quotation request to be validated" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="cards" name="sale-order-quotation-cards"/>
+    <view type="grid" name="sale-order-quotation-grid"/>
+    <view type="calendar" name="sale-order-calendar"/>
+    <view type="form" name="sale-order-form"/>
+    <view-param name="search-filters" value="sale-order-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.template = :_template and self.statusSelect = 1</domain>
+    <context name="_internalUser" expr="eval: __user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_template" expr="eval:false"/>
+    <context name="todayDate"
+      expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <menuitem title="Ideas" name="idea-portal-root" top="true" left="false"
+    if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageIdea()"/>
+
+  <menuitem title="Ideas" name="idea-portal" parent="idea-portal-root" action="idea.portal"
+    top="true" icon="fa-lightbulb-o"/>
+
+  <action-view name="idea.portal" title="Ideas"
+    model="com.axelor.apps.client.portal.db.Idea">
+    <view type="grid" name="idea-grid"/>
+    <view type="form" name="idea-form"/>
+    <domain>self.close = false</domain>
+  </action-view>
+
+  <menuitem title="History" name="idea-history-portal" parent="idea-portal-root"
+    action="idea.history.portal" top="true" icon="fa-history"/>
+
+  <action-view name="idea.history.portal" title="History"
+    model="com.axelor.apps.client.portal.db.Idea">
+    <view type="grid" name="idea-grid"/>
+    <view type="form" name="idea-form"/>
+    <domain>self.close = true</domain>
+    <context name="history" expr="eval:true"/>
+  </action-view>
+
+  <menuitem title="Idea tags" name="idea-tag-portal" parent="idea-portal-root"
+    action="idea.tag.portal" top="true" icon="fa-tags"/>
+
+  <action-view name="idea.tag.portal" title="Idea tags"
+    model="com.axelor.apps.client.portal.db.PortalIdeaTag">
+    <view type="grid" name="portal-idea-tag-grid"/>
+    <view type="form" name="portal-idea-tag-form"/>
+  </action-view>
+
+</object-views>

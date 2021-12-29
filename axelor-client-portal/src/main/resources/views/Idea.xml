@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="idea-grid" title="Ideas" model="com.axelor.apps.client.portal.db.Idea">
+    <hilite if="$unread" strong="true" color="black"/>
+    <field name="name"/>
+    <field name="totalVote"/>
+    <field name="accepted"/>
+    <field name="close"/>
+    <field name="createdOn" title="Date"/>
+    <field name="$unread" type="boolean" hidden="true"/>
+  </grid>
+
+  <form name="idea-form" title="Idea" model="com.axelor.apps.client.portal.db.Idea"
+    width="large" onLoad="action-client-portal-group-idea-onload"
+    onNew="action-client-portal-attrs-idea-onload">
+    <panel name="mainPanel" readonlyIf="history">
+      <field name="name" required="true" css="label-bold bold large" colSpan="8"
+        showTitle="false">
+        <viewer depends="name">
+        	<![CDATA[
+        		<h4><span>{{record.name}}</span></h4>
+        	]]>
+        </viewer>
+        <editor>
+          <field name="name" required="true" colSpan="12" showTitle="false"/>
+        </editor>
+      </field>
+      <field name="$ideaStatus" showTitle="false" colSpan="4" readonly="true">
+        <viewer depends="accepted,close,$voted">
+        	<![CDATA[
+        		<h4 style="text-align: right;">
+        			<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.accepted" x-translate>Accepted</span>
+					<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.close" x-translate>Close</span>
+					<span class="label label-default" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$voted" x-translate><i class="fa fa-thumbs-up"></i>Voted</span>
+				</h4>
+			]]>
+        </viewer>
+      </field>
+      <field name="portalIdeaTagSet" widget="TagSelect" x-color-field="tagColorSelect"/>
+      <field name="totalVote" readonly="true" colSpan="3"/>
+      <field name="createdOn" title="Date" colSpan="3"/>
+      <field name="voterSet" widget="TagSelect" colSpan="12" hidden="true"/>
+      <field name="description" colSpan="12" widget="html"/>
+      <field name="$voted" showTitle="false" type="boolean" hidden="true"/>
+      <field name="createdBy" hidden="true"/>
+      <field name="accepted" hidden="true"/>
+      <field name="close" hidden="true"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true" readonlyIf="history">
+      <button name="voteBtn" title="Vote" icon="fa-thumbs-up" hidden="true"
+        onClick="action-client-portal-group-idea-vote"/>
+      <button name="unvoteBtn" title="Unvote" icon="fa-thumbs-down" hidden="true"
+        onClick="action-client-portal-group-idea-unvote"/>
+      <button name="acceptBtn" title="Accept" showIf="!accepted"
+        onClick="save,action-client-portal-method-idea-accept"/>
+      <button name="rejectBtn" title="Reject" showIf="accepted"
+        onClick="save,action-client-portal-method-idea-accept"/>
+      <button name="closeBtn" title="Close" showIf="!close"
+        onClick="save,action-client-portal-method-idea-close"/>
+      <button name="openBtn" title="Reopen" showIf="close"
+        onClick="save,action-client-portal-method-idea-close"/>
+    </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-client-portal-attrs-idea-onload">
+    <attribute name="value" for="$voted"
+      expr="eval:(__user__.partner?.isContact &amp;&amp; voterSet?.contains(__user__.partner.mainPartner))
+      || (!__user__.partner?.isContact &amp;&amp; voterSet?.contains(__user__.partner))
+      || (__user__.partner?.isContact &amp;&amp; __user__.partner.mainPartner == null &amp;&amp; voterSet?.contains(__user__.partner))"/>
+    <attribute name="hidden" for="voteBtn"
+      expr="eval:!id || __user__.partner == null
+      || (__user__.partner?.isContact &amp;&amp; ((__user__.partner.mainPartner == null &amp;&amp; voterSet?.contains(__user__.partner)) || (__user__.partner.mainPartner != null &amp;&amp; voterSet?.contains(__user__.partner.mainPartner))))
+      || (!__user__.partner?.isContact &amp;&amp; voterSet?.contains(__user__.partner))"/>
+    <attribute name="hidden" for="unvoteBtn"
+      expr="eval:!id || __user__.partner == null
+      || (__user__.partner?.isContact &amp;&amp; ((__user__.partner.mainPartner == null &amp;&amp; !voterSet?.contains(__user__.partner)) || (__user__.partner.mainPartner != null &amp;&amp; !voterSet?.contains(__user__.partner.mainPartner))))
+      || (!__user__.partner?.isContact &amp;&amp; !voterSet?.contains(__user__.partner))"/>
+    <attribute name="hidden" for="voterSet" expr="eval:__user__.group?.code != 'admins'"/>
+    <attribute name="readonly" for="name"
+      expr="eval:__user__.group?.code != 'admins' &amp;&amp; createdBy != null &amp;&amp; createdBy?.code != __user__.code"/>
+    <attribute name="readonly" for="description"
+      expr="eval:__user__.group?.code != 'admins' &amp;&amp; createdBy != null &amp;&amp; createdBy?.code != __user__.code"/>
+    <attribute name="readonly" for="portalIdeaTagSet"
+      expr="eval:__user__.group?.code != 'admins' &amp;&amp; createdBy != null &amp;&amp; createdBy?.code != __user__.code"/>
+  </action-attrs>
+
+  <action-attrs name="action-client-portal-attrs-idea-vote">
+    <attribute name="value" for="totalVote" expr="eval:totalVote+1"/>
+    <attribute name="value:add" for="voterSet" expr="eval:__user__.partner"
+      if="eval:!__user__.partner?.isContact || (__user__.partner?.isContact &amp;&amp; __user__.partner?.mainPartner == null)"/>
+    <attribute name="value:add" for="voterSet" expr="eval:__user__.partner?.mainPartner"
+      if="eval:__user__.partner?.isContact &amp;&amp; __user__.partner?.mainPartner != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-client-portal-attrs-idea-unvote">
+    <attribute name="value" for="totalVote" expr="eval:totalVote-1"/>
+    <attribute name="value:del" for="voterSet" expr="eval:__user__.partner"
+      if="eval:!__user__.partner?.isContact || (__user__.partner?.isContact &amp;&amp; __user__.partner?.mainPartner == null)"/>
+    <attribute name="value:del" for="voterSet" expr="eval:__user__.partner?.mainPartner"
+      if="eval:__user__.partner?.isContact &amp;&amp; __user__.partner?.mainPartner != null"/>
+  </action-attrs>
+
+  <action-group name="action-client-portal-group-idea-vote">
+    <action name="action-client-portal-attrs-idea-vote"/>
+    <action name="save"/>
+    <action name="action-client-portal-attrs-idea-onload"/>
+  </action-group>
+
+  <action-group name="action-client-portal-group-idea-unvote">
+    <action name="action-client-portal-attrs-idea-unvote"/>
+    <action name="save"/>
+    <action name="action-client-portal-attrs-idea-onload"/>
+  </action-group>
+
+  <action-group name="action-client-portal-group-idea-onload">
+    <action name="action-client-portal-attrs-idea-onload"/>
+    <action name="action-client-portal-method-idea-onload" if="createdBy != __user__"/>
+  </action-group>
+
+  <action-method name="action-client-portal-method-idea-accept">
+    <call class="com.axelor.apps.portal.web.IdeaController" method="acceptIdea"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-idea-close">
+    <call class="com.axelor.apps.portal.web.IdeaController" method="closeIdea"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-idea-onload">
+    <call class="com.axelor.apps.portal.web.IdeaController" method="markRead"/>
+  </action-method>
+
+</object-views>

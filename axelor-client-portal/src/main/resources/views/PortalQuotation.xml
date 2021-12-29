@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="portal-quotation-grid" title="Quotations"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <field name="saleOrder.saleOrderSeq"/>
+    <field name="statusSelect"/>
+    <field name="createdOn" title="Order date"/>
+    <field name="exTaxTotal"/>
+    <field name="endOfValidity"/>
+    <field name="report" widget="binary-link"/>
+  </grid>
+
+  <form name="portal-quotation-form" title="Quotation"
+    model="com.axelor.apps.client.portal.db.PortalQuotation" width="large" readonlyIf="isHistory">
+    <panel name="mainPanel">
+      <field name="statusSelect" colSpan="12" selection-in="[1,3,5]" widget="NavSelect"/>
+      <field name="saleOrder.saleOrderSeq"/>
+      <field name="exTaxTotal"/>
+      <field name="endOfValidity"/>
+      <field name="createdOn" title="Order date"/>
+      <field name="report" widget="binary-link" showIf="report"/>
+      <panel-dashlet name="historyPanel" colSpan="12" title="Quotation history"
+        action="action-client-portal-view-portal-quotation-history"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true" showIf="statusSelect &lt; 3">
+      <button name="confirmBtn" title="Confirm"
+        onClick="save,action-client-portal-method-portal-quotation-send-confirmation"
+        prompt="Are you sure you want to confirm ?" showIf="statusSelect &lt; 3"/>
+      <button name="cancelBtn" title="Decline"
+        onClick="save,action-client-portal-method-portal-quotation-cancel"
+        showIf="statusSelect &lt; 3"/>
+    </panel>
+  </form>
+
+  <form name="portal-quotation-confirm-form" title="Quotation"
+    model="com.axelor.apps.client.portal.db.PortalQuotation"
+    onLoad="action-client-portal-attrs-portal-quotation-confirmation-onnew">
+    <panel name="mainPanel">
+      <field name="$firstName" title="First name" required="true"/>
+      <field name="$lastName" title="Last name" required="true"/>
+      <field name="$confirmCode" type="integer" title="Confirmation code"
+        validIf="$confirmCode == $sentCode"/>
+      <button name="signBtn" title="Sign" onClick="save,portal.quotation.signature"/>
+      <field name="$sentCode" type="integer" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-client-portal-attrs-portal-quotation-confirmation-onnew">
+    <attribute name="value" for="$sentCode" expr="eval: sentCode" if="sentCode"/>
+  </action-attrs>
+
+  <action-group name="action-client-portal-group-open-sent-portal-quotation">
+    <action name="action-client-portal-view-open-sent-portal-quotation"
+      if="eval: __repo__(PortalQuotation).all().filter('self.id = (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder = ?)', id).fetchOne() != null"/>
+    <action name="action-client-portal-validate-open-sent-portal-quotation"
+      if="eval: __repo__(PortalQuotation).all().filter('self.id = (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder = ?)', id).fetchOne() == null"/>
+  </action-group>
+
+  <action-method name="action-client-portal-method-portal-quotation-send-confirmation">
+    <call class="com.axelor.apps.portal.web.PortalQuotationController" method="sendConfirmCode"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-portal-quotation-confirm"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <call class="com.axelor.apps.portal.web.PortalQuotationController"
+      method="confirmPortalQuotation"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-portal-quotation-cancel">
+    <call class="com.axelor.apps.portal.web.PortalQuotationController"
+      method="cancelPortalQuotation"/>
+  </action-method>
+
+  <action-view name="action-client-portal-view-portal-quotation-history"
+    title="Quotation history" model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <domain>self.saleOrder = :saleOrder AND self.id != :id</domain>
+    <context name="saleOrder" expr="eval: saleOrder"/>
+    <context name="id" expr="eval: id"/>
+    <context name="isHistory" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-open-sent-portal-quotation"
+    title="Sent quotation" model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="form" name="portal-quotation-form"/>
+    <view type="grid" name="portal-quotation-grid"/>
+    <domain>self.id = (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder =
+      :saleOrder)</domain>
+    <context name="_showRecord"
+      expr="eval: __repo__(PortalQuotation).all().filter('self.id = (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder = ?)', id).fetchOne()?.getId()"/>
+    <context name="saleOrder" expr="eval: id"/>
+  </action-view>
+
+  <action-validate name="action-client-portal-validate-open-sent-portal-quotation">
+    <alert message="No quotation is generated yet."/>
+  </action-validate>
+
+  <action-view name="portal.quotation.signature" title="Signature">
+    <view type="html"
+      name="signature?model={{model}}&amp;field={{field}}&amp;id={{id}}&amp;signatureName={{signatureName}}"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="field" expr="eval:'signature'"/>
+    <context name="model" expr="eval:_model"/>
+    <context name="id" expr="eval: id"/>
+    <context name="signatureName" expr="eval: firstName.concat(' ').concat(lastName)"/>
+  </action-view>
+
+</object-views>

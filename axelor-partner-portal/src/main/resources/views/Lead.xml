@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="partner-portal-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead">
+    <menubar>
+      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
+        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
+      </menu>
+      <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
+        <item name="assignToMeItem" title="Assign to me"
+          action="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+        <item name="checkDuplicateItem" title="Check duplicate"
+          action="action-general-check-duplicate-records"/>
+        <item name="importLeadsItem" title="Import leads"
+          action="action-crm-method-lead-import-leads"/>
+      </menu>
+    </menubar>
+    <hilite if="$unread" strong="true" color="black"/>
+    <field name="createdOn" hidden="true"/>
+    <field name="updatedOn" hidden="true"/>
+    <field name="name"/>
+    <field name="firstName"/>
+    <field name="enterpriseName"/>
+    <field name="fixedPhone" widget="phone"/>
+    <field name="emailAddress.address"/>
+    <field name="contactDate"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="statusSelect"/>
+    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
+      help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+      onClick="action-lead-view-schedule-event"/>
+    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      onClick="action-send-by-email-with-template"/>
+    <field name="$unread" type="boolean" hidden="true"/>
+  </grid>
+
+  <form name="lead-form" title="Lead" id="partner-portal-lead-form"
+    model="com.axelor.apps.crm.db.Lead" extension="true">
+    <extend target="//field[@name='contactDate']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
+      <insert position="after">
+        <panel name="discussionPanel" title="Discussion">
+          <panel-dashlet action="action-partner-portal-view-lead-comment" colSpan="12"
+            showTitle="false"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='followUpPanel']">
+      <insert position="after">
+        <panel name="sidePanel" sidebar="true">
+          <field name="contactDate" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+          <field name="assignedPartner" colSpan="12" readonly="true" hidden="true"/>
+          <button name="assignPartnerBtn" colSpan="12" title="Assign to partner"
+            onClick="save,action-partner-portal-view-assign-to-partner" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="partner-portal-assign-partner-form" title="Assign to partner"
+    model="com.axelor.apps.crm.db.Lead">
+    <panel name="mainPanel">
+      <field name="$partner" title="Assigned partner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" required="true"/>
+      <button name="assignPartnerBtn" title="Assign to partner"
+        onClick="save,action-partner-portal-method-lead-assign-partner,close"/>
+    </panel>
+  </form>
+
+  <action-method name="action-partner-portal-method-lead-assign-partner">
+    <call class="com.axelor.apps.partner.portal.web.LeadPartnerPortalController"
+      method="assignToPartner"/>
+  </action-method>
+
+  <action-method name="action-partner-portal-method-lead-onload">
+    <call class="com.axelor.apps.partner.portal.web.LeadPartnerPortalController"
+      method="markRead"/>
+  </action-method>
+
+  <action-view name="action-partner-portal-view-assign-to-partner"
+    title="Assign to partner" model="com.axelor.apps.crm.db.Lead">
+    <view type="form" name="partner-portal-assign-partner-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-partner-portal-view-lead-comment" title="Comments"
+    model="com.axelor.apps.partner.portal.db.LeadPartnerComment">
+    <view type="form" name="lead-partner-comment-form"/>
+    <domain>self.id = :_id</domain>
+    <context name="_id" expr="eval: partnerComment.id"/>
+    <context name="_showSingle" expr="eval:true"/>
+  </action-view>
+
+  <action-group id="partner-portal-action-group-crm-lead-onload"
+    name="action-group-crm-lead-onload">
+    <action name="action-lead-method-set-social-network-url"/>
+    <action name="action-crm-lead-method-check-name"/>
+    <action name="action-partner-portal-lead-attrs"/>
+    <action name="action-partner-portal-method-lead-onload" if="createdBy != __user__"/>
+  </action-group>
+
+  <action-attrs name="action-partner-portal-lead-attrs">
+    <attribute name="hidden" for="assignedPartner"
+      expr="eval:__user__.group?.code != 'admins'"/>
+    <attribute name="hidden" for="assignPartnerBtn"
+      expr="eval:__user__.group?.code != 'admins'"/>
+  </action-attrs>
+
+</object-views>

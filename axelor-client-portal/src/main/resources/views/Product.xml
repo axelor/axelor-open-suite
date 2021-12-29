@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="product-form" id="portal-product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend
+      target="//panel[@name='salePanel']/panel[@name='subSalePanel']/panel[@name='unitsPanel']">
+      <insert position="before">
+        <panel name="customerPortalPanel" title="Portal" if="__config__.app.isApp('portal')"
+          colSpan="12">
+          <field name="displayOnPortal"/>
+          <field name="partnerCategorySet" widget="TagSelect"/>
+          <field name="otherPictures" showIf="displayOnPortal" colSpan="12">
+            <editor>
+              <field name="picture" showTitle="false" colSpan="12" widget="Image"/>
+            </editor>
+          </field>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

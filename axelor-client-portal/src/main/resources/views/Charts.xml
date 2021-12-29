@@ -3,35 +3,142 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
+  <custom name="chart.client.portal.total.portal.quotation" title="Quotations"
+    css="report-box">
+    <dataset type="jpql"><![CDATA[
+    		SELECT count(self.id) as total FROM PortalQuotation self WHERE self.id IN (SELECT MAX(portalQuotation.id) FROM PortalQuotation portalQuotation GROUP BY portalQuotation.saleOrder)
+    		AND (self.saleOrder.clientPartner = (SELECT partner FROM User self WHERE self = :__user__) OR self.saleOrder.contactPartner = (SELECT partner FROM User self WHERE self = :__user__))
+    		AND self.saleOrder.statusSelect < 3
+		]]></dataset>
+    <template><![CDATA[
+		    <a href="" ng-click="$root.openTabByName('client.portal.total.portal.quatation')">
+			    <div class="report-data"><h1>{{first.total}}</h1></div>
+		    </a>
+	   ]]></template>
+  </custom>
+
+  <custom name="chart.client.portal.total.invoice" title="Invoices" css="report-box">
+    <dataset type="jpql"><![CDATA[
+    		SELECT count(self.id) as total FROM Invoice self WHERE self.saleOrder IN (SELECT portalQuotation.saleOrder FROM PortalQuotation portalQuotation)
+    		AND (self.partner = (SELECT partner FROM User self WHERE self = :__user__) OR self.contactPartner = (SELECT partner FROM User self WHERE self = :__user__))
+		]]></dataset>
+    <template><![CDATA[
+		    <a href="" ng-click="$root.openTabByName('client.portal.total.invoices')">
+		    	<div class="report-data"><h1>{{first.total}}</h1></div>
+		    </a>
+	   ]]></template>
+  </custom>
+
+  <custom name="chart.client.portal.total.announce" title="Announces" css="report-box">
+    <dataset type="jpql"><![CDATA[
+    		SELECT count(self.id) as total FROM GeneralAnnouncement self INNER JOIN self.partnerCategorySet category WHERE category = (SELECT partner.partnerCategory FROM User self WHERE self = :__user__)
+		]]></dataset>
+    <template><![CDATA[
+		    <a href="" ng-click="$root.openTabByName('client.portal.general.announcement')">
+		    	<div class="report-data"><h1>{{first.total}}</h1></div>
+		    </a>
+	   ]]></template>
+  </custom>
+
+  <custom name="chart.client.portal.total.open.ticket" title="Open tickets" css="report-box">
+    <dataset type="jpql"><![CDATA[
+    		SELECT count(self.id) as total FROM ProjectTask self WHERE COALESCE(self.status.isCompleted, false) = false
+    		AND self.typeSelect = 'ticket'
+    		AND (self.createdBy = :__user__ OR self.updatedBy = :__user__ OR self.assignedTo = :__user__)
+    		AND self.project = (SELECT contextProject FROM User self WHERE self = :__user__)
+		]]></dataset>
+    <template><![CDATA[
+		    <a href="" ng-click="$root.openTabByName('client.portal.total.open.ticket')">
+		    	<div class="report-data"><h1>{{first.total}}</h1></div>
+		    </a>
+	   ]]></template>
+  </custom>
 
   <chart name="chart.client.portal.sum.invoices.four.months"
     title="Sum of last 4 months invoices">
     <dataset type="jpql">
-    <![CDATA[
-  SELECT
-    SUM(self.inTaxTotal) AS amount,
-    MONTH(self.invoiceDate) AS month
-  FROM
-        Invoice self
-  WHERE
-        self.invoiceDate >= :fromDate
-      	and self.partner = :userPartner
-  GROUP BY
-        MONTH(self.invoiceDate)
-  ORDER BY
-        month
-     ]]>
+		    <![CDATA[
+			  SELECT
+			    SUM(self.inTaxTotal) AS amount,
+			    MONTH(self.invoiceDate) AS month
+			  FROM
+			        Invoice self
+			  WHERE
+			        self.invoiceDate >= :fromDate
+			      	and self.partner = :userPartner
+			  GROUP BY
+			        MONTH(self.invoiceDate)
+			  ORDER BY
+			        month
+		   ]]>
     </dataset>
     <category key="month" type="month" title="Months"/>
     <series key="amount" type="bar" title="Sum"/>
   </chart>
 
+  <chart name="chart.client.portal.project.open.tickets" title="Open tickets">
+    <dataset type="jpql">
+		    <![CDATA[
+			  SELECT
+			    COUNT(*) AS total,
+			    self.project.name AS project
+			  FROM
+			    ProjectTask self
+			  WHERE
+			  	COALESCE(self.status.isCompleted, false) = false and self.typeSelect = 'ticket'
+			  	AND (self.createdBy = :__user__ OR self.updatedBy = :__user__ OR self.assignedTo = :__user__)
+			  	AND self.project = (SELECT contextProject FROM User self WHERE self = :__user__)
+			  GROUP BY
+			    self.project.name
+		     ]]>
+    </dataset>
+    <category key="project" type="text" title="Projects"/>
+    <series key="total" type="bar" title="Total tickets"/>
+  </chart>
 
   <action-view name="dashlet.client.portal.sum.invoices.four.months" title="chart">
     <view type="chart" name="chart.client.portal.sum.invoices.four.months"/>
     <context name="fromDate"
       expr="eval: __config__.app.getTodayDate(__user__.activeCompany).minusMonths(3)"/>
     <context name="userPartner" expr="eval: __user__.partner"/>
+  </action-view>
+
+  <action-view name="client.portal.total.portal.quatation" title="Quotations"
+    model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation GROUP BY
+      portalQuotation.saleOrder)
+      AND (self.saleOrder.clientPartner = :partner OR
+      self.saleOrder.contactPartner = :partner)
+      AND self.saleOrder.statusSelect &lt; :status</domain>
+    <context name="partner" expr="eval:__user__.partner"/>
+    <context name="currentCode" expr="eval:__user__.code"/>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+  </action-view>
+
+  <action-view name="client.portal.total.invoices" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect AND self.saleOrder IN (SELECT
+      portalQuotation.saleOrder FROM PortalQuotation portalQuotation) AND (self.partner = :partner
+      OR self.contactPartner = :partner)</domain>
+    <context name="partner" expr="eval:__user__.partner"/>
+    <context name="currentCode" expr="eval:__user__.code"/>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_SALE"/>
+  </action-view>
+
+  <action-view name="client.portal.total.open.ticket" title="All open tickets"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain>COALESCE(self.status.isCompleted, false) = false AND self.typeSelect = :typeSelect AND
+      (self.createdBy = :__user__ OR self.updatedBy = :__user__ OR self.assignedTo = :__user__)
+      AND
+      self.project = :project</domain>
+    <context name="typeSelect" expr="eval: ProjectTaskRepository.TYPE_TICKET"/>
   </action-view>
 
 </object-views>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="portal-idea-tag-grid" title="Idea tags"
+    model="com.axelor.apps.client.portal.db.PortalIdeaTag">
+    <field name="name"/>
+    <field name="tagColorSelect"/>
+  </grid>
+
+  <form name="portal-idea-tag-form" title="Idea tag"
+    model="com.axelor.apps.client.portal.db.PortalIdeaTag">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="tagColorSelect"/>
+    </panel>
+  </form>
+
+</object-views>

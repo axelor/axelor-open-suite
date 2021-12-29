@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="client-portal-invoice-grid" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <hilite color="primary" if="statusSelect == 1"/>
+    <hilite color="danger"
+      if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <hilite color="warning"
+      if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <field name="invoiceId" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="200"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="operationSubTypeSelect" width="160"/>
+    <field name="invoiceDate" width="120"/>
+    <field name="dueDate" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120"/>
+    <field name="inTaxTotal" aggregate="sum" width="120"/>
+    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="currency" width="60"/>
+    <field name="statusSelect" width="100"/>
+    <field name="amountRemaining" hidden="true"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+      onClick="action-invoice-method-show-invoice"/>
+    <button name="payBtn" title="Pay invoice" icon="fa-cc-stripe"
+      onClick="action-cient-portal-view-invoice-payment"
+      readonlyIf="!(operationTypeSelect == 3 &amp;&amp; statusSelect == 3 &amp;&amp; amountRemaining > 0)"/>
+  </grid>
+
+  <form name="client-portal-invoice-form" model="com.axelor.apps.account.db.Invoice"
+    title="Invoice" canNew="false">
+    <panel name="mainPanel" readonly="true">
+      <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
+      <field name="invoiceId"/>
+      <field name="saleOrder.saleOrderSeq"/>
+      <field name="partner" form-view="partner-contact-form" grid-view="partner-contact-grid"
+        readonly="true"/>
+      <field name="contactPartner" form-view="partner-contact-form"
+        grid-view="partner-contact-grid" readonly="true"/>
+      <field name="operationTypeSelect" hidden="true"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="payBtn" title="Pay invoice"
+        onClick="action-cient-portal-view-invoice-payment"
+        readonlyIf="!(operationTypeSelect == 3 &amp;&amp; statusSelect == 3 &amp;&amp; amountRemaining > 0)"/>
+      <button name="showInvoiceBtn" title="Print"
+        onClick="action-invoice-method-show-invoice"/>
+    </panel>
+    <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6">
+      <field name="currency.code" hidden="true"/>
+      <field name="currency.symbol" hidden="true"/>
+      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+        <viewer depends="exTaxTotal,currency.symbol,taxTotal"><![CDATA[
+		         <dl class="dl-horizontal">
+		           <dt x-translate>Total W.T.</dt>
+		           <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
+		           <dt x-translate>Total tax</dt>
+		           <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
+		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
+		           <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
+		         </dl>]]>
+        </viewer>
+      </field>
+      <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
+      <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12"
+        css="order-subtotal">
+        <viewer
+          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+                <![CDATA[
+                  <div class="form-item-container" style="flex-direction: column">
+					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+						<dt>
+							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i></a>
+							<span>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
+								<font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
+								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
+								<font x-translate ng-if="record.typeSelect == 5">On</font>
+								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
+								<font>
+									 {{$fmt('paymentDate')}}
+								</font>
+							</span>
+						</dt>
+						<dd>
+							-{{$fmt('amount') | currency: record.currency.symbol}}
+						</dd>
+					</dl>
+					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+						<dt>
+							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i></a>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">Discounted on</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">Canceled discount on</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">Pending discount</font>
+							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">Ref. on</font>
+							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
+							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">On</font>
+							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
+							<font x-translate ng-if="record.applyFinancialDiscount == true">
+								{{$fmt('paymentDate')}}
+							</font>
+						</dt>
+						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">
+							-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}
+						</dd>
+						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">
+							-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}
+						</dd>
+					</dl>
+				</div>
+                ]]>
+        </viewer>
+        <editor></editor>
+      </field>
+      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3">
+        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
+		         <dl class="dl-horizontal">
+		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
+		           <dd class="order-subtotal-total">{{$fmt('amountRemaining') | currency: record.currency.symbol}}</dd>
+		         </dl>]]>
+        </viewer>
+      </field>
+      <field name="amountRemaining"></field>
+    </panel>
+  </form>
+
+  <form name="client-portal-pay-invoice-form" title="Payment"
+    model="com.axelor.apps.account.db.Invoice"
+    onLoad="action-client-portal-attrs-invoice-payment-onload">
+    <panel name="manPanel">
+      <field name="$card" title="Card" type="many-to-one" target-name="cardNumber"
+        target="com.axelor.apps.client.portal.db.Card" required="true" canNew="true"/>
+      <spacer/>
+      <field name="inTaxTotal" title="Payment amount" colSpan="8"/>
+      <button title="OK" onClick="action-client-portal-method-invoice-payment" name="payBtn"
+        colSpan="4"/>
+    </panel>
+  </form>
+
+  <action-view name="action-cient-portal-view-invoice-payment" title="Payment"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="form" name="client-portal-pay-invoice-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-client-portal-method-invoice-payment">
+    <call class="com.axelor.apps.portal.web.InvoiceController" method="payInvoiceUsingStripe"/>
+  </action-method>
+
+</object-views>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="discussion-group-grid" title="Discussion groups"
+    model="com.axelor.apps.client.portal.db.DiscussionGroup">
+    <toolbar>
+      <button name="openPostBtn" title="Open post"
+        onClick="com.axelor.apps.portal.web.DiscussionGroupController:openGroup"/>
+    </toolbar>
+    <field name="name"/>
+  </grid>
+
+  <form name="discussion-group-form" title="Discussion group"
+    model="com.axelor.apps.client.portal.db.DiscussionGroup">
+    <toolbar>
+      <button name="openPostBtn" title="Open post"
+        onClick="com.axelor.apps.portal.web.DiscussionGroupController:openGroup"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="partnerCategorySet" widget="TagSelect"/>
+    </panel>
+    <panel-mail hidden="true">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <cards name="discussion-group-card" title="Discussion groups"
+    model="com.axelor.apps.client.portal.db.DiscussionGroup">
+    <field name="name"/>
+    <template><![CDATA[
+		  <div class="span6">
+		  	<strong>{{name}}</strong>
+		  </div>
+		  <div class="span6 buttons">
+		  	<a class="btn btn-small btn-info pull-right" href="" ui-action-click="com.axelor.apps.portal.web.DiscussionGroupController:openGroup" x-translate>Open post</a>
+		  	<a class="btn btn-small btn-success pull-right" href="" ng-show="!_following" ui-action-click="com.axelor.mail.web.MailController:follow" x-translate>Subscribe</a>
+		  	<a class="btn btn-small btn-danger pull-right" href="" ng-show="_following" ui-action-click="com.axelor.mail.web.MailController:unfollow" x-translate>Unsubscribe</a>
+		  </div>
+		]]></template>
+  </cards>
+
+</object-views>

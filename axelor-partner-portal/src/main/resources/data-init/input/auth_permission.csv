@@ -1,0 +1,3 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.partner.portal.all";"com.axelor.apps.partner.portal.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.partner.portal.lead";"com.axelor.apps.crm.db.Lead";"x";"x";;;;"self.assignedPartner = ?";"__user__.partner";"role.client"

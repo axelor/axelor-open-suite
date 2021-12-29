@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="client-portal-project-task-form" name="project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
+    onLoad="action-project-task-group-timer-process" extension="true" width="large">
+    <extend target="//field[@name='assignedTo']">
+      <replace>
+        <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
+          canView="false" canEdit="false" showIf="$group == 'admins'"
+          onSelect="action-project-task-attrs-project-assigned-to-configurations"
+          form-view="user-form" grid-view="user-grid"/>
+      </replace>
+    </extend>
+  </form>
+
+</object-views>

@@ -1,0 +1,26 @@
+"code";"customAppStyle"
+"base";".group-bg-lavendar i.fa{
+	color: #008000 !important;
+}
+.group-bg-linen i.fa{
+	color: #D2691E !important;
+} 
+
+.group-bg-rose i.fa{
+	color: #EE82EE !important;
+}
+
+.group-bg-pink i.fa{
+	color: #800080 !important;
+}
+.group-bg-blue i.fa{
+	color: #20B2AA !important;
+}
+
+.group-bg-boro i.fa{
+	color: #FF0000 !important;
+}
+
+.group-title-blue span.ng-binding{
+	color: #2185D0 !important;
+}"

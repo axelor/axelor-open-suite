@@ -8,6 +8,11 @@
   <entity name="Partner" lang="java">
 
     <string name="password" title="Password"/>
+    <string name="stripeCustomerId" title="Strike id"/>
+    <boolean name="isDMSPanelSideActive" title="Allow panel side for customers DMS"
+      default="false"/>
+    <one-to-many name="cardList" ref="com.axelor.apps.client.portal.db.Card"
+      mappedBy="partner" title="Cards"/>
 
   </entity>
 

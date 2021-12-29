@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Product" lang="java">
+
+    <many-to-many name="partnerCategorySet"
+      ref="com.axelor.apps.base.db.PartnerCategory" title="Client categories"/>
+    <one-to-many name="otherPictures" title="Other pictures"
+      ref="com.axelor.apps.base.db.ProductPicture" mappedBy="product"/>
+    <boolean name="displayOnPortal" default="false" title="Display the product on the eShop"
+      massUpdate="true"/>
+
+  </entity>
+
+</domain-models>

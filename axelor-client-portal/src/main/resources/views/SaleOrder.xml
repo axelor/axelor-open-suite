@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="sale-order-form" id="portal-sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+    <extend target="//panel[@name='actionsPanel']/*[last()]">
+      <insert position="after">
+        <button name="sendPortalQuatationBtn" title="Send quotation to customer"
+          onClick="action-client-portal-group-sale-order-send-quatation"
+          showIf="statusSelect &lt; 3"
+          if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"/>
+        <button name="portalQuotationHistoryBtn" title="Open sent quotation"
+          onClick="save,action-client-portal-group-open-sent-portal-quotation"
+          if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-client-portal-group-sale-order-send-quatation">
+    <action name="save"/>
+    <action name="action-client-portal-method-sale-order-check-quatation"/>
+    <action name="action-client-portal-method-sale-order-send-quatation"/>
+  </action-group>
+
+  <action-method name="action-client-portal-method-sale-order-send-quatation">
+    <call class="com.axelor.apps.portal.web.SaleOrderController" method="sendPortalQuatation"/>
+  </action-method>
+
+  <action-method name="action-client-portal-method-sale-order-check-quatation">
+    <call class="com.axelor.apps.portal.web.SaleOrderController" method="checkPortalQuatation"/>
+  </action-method>
+
+</object-views>

@@ -22,4 +22,17 @@ public interface ITranslation {
   public static final String PORTAL_APP_NAME = /*$$(*/ "value:Portal"; /*)*/
   public static final String CLIENT_PORTAL_NO_PARTNER = /*$$(*/
       "User is not linked with any partner. Please disconnect."; /*)*/
+  public static final String PORTAL_QUATATION = /*$$(*/ "Portal quotation"; /*)*/
+  public static final String PORTAL_QUATATION_CONFIRM_CODE = /*$$(*/
+      "Quotation confirmation code"; /*)*/
+  public static final String PORTAL_QUATATION_SENT = /*$$(*/ "Quotation is sent successfully"; /*)*/
+  public static final String PORTAL_QUATATION_GENERATION = /*$$(*/ "Quotation"; /*)*/
+  public static final String PORTAL_QUATATION_CONFIRMATION = /*$$(*/ "Quotation is confirmed"; /*)*/
+  public static final String PORTAL_QUATATION_CANCEL = /*$$(*/ "Quotation is canceled"; /*)*/
+  public static final String PORTAL_STRIPE_PAYMENT_SUCCESS = /*$$(*/ "Paid successfully"; /*)*/
+  public static final String PORTAL_STRIPE_PAYMENT_FAIL = /*$$(*/ "Payment fail"; /*)*/
+  public static final String PORTAL_QUATATION_CODE = /*$$(*/
+      "Confirmation code is sent to your mail"; /*)*/
+  public static final String PORTAL_QUATATION_EXIST = /*$$(*/
+      "No reply from customer for previous Quotation, do you wants to replace it with new one?"; /*)*/
 }

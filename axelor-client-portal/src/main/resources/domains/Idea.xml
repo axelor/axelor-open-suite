@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="client-portal" package="com.axelor.apps.client.portal.db"/>
+
+  <entity name="Idea" lang="java" cacheable="true">
+
+    <string name="name"/>
+    <string name="description" large="true"/>
+    <integer name="totalVote"/>
+    <boolean name="accepted"/>
+    <boolean name="close"/>
+    <many-to-many name="portalIdeaTagSet"
+      ref="com.axelor.apps.client.portal.db.PortalIdeaTag" title="Tags"/>
+    <many-to-many name="voterSet" ref="com.axelor.apps.base.db.Partner" title="Voters"/>
+
+  </entity>
+
+</domain-models>

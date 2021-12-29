@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <dashboard title="Client portal dashboard" name="client-portal-dashboard" width="large">
+    <dashlet action="custom:chart.client.portal.total.portal.quotation" colSpan="3"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"/>
+    <dashlet action="custom:chart.client.portal.total.invoice" colSpan="3"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices()"/>
+    <dashlet action="custom:chart.client.portal.total.announce" colSpan="3"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageAnnouncement()"/>
+    <dashlet action="custom:chart.client.portal.total.open.ticket" colSpan="3"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
+    <dashlet action="action-client-portal-view-quotations-to-confirm" height="350"
+      canSearch="true"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"/>
+    <dashlet action="action-client-portal-view-quotations-in-progress" height="350"
+      canSearch="true"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageQuotations()"/>
+    <dashlet action="action-client-portal-view-invoices-to-pay" height="350"
+      canSearch="true"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices()"/>
+    <dashlet action="action-client-portal-view-late-invoices" height="350" canSearch="true"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices()"/>
+    <dashlet action="action-client-portal-view-announces" height="350"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageAnnouncement()"/>
+    <dashlet action="action-client-portal-view-project-open-ticket" height="350"
+      if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
+  </dashboard>
+
+  <action-view name="action-client-portal-view-quotations-to-confirm"
+    title="Quotations to confirm" model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
+      self.saleOrder.statusSelect &lt; :status GROUP BY portalQuotation.saleOrder)
+      AND
+      (self.saleOrder.clientPartner = :partner OR self.saleOrder.contactPartner = :partner)</domain>
+    <context name="partner" expr="eval: __user__.partner"/>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-quotations-in-progress"
+    title="Quotaions in progress" model="com.axelor.apps.client.portal.db.PortalQuotation">
+    <view type="grid" name="portal-quotation-grid"/>
+    <view type="form" name="portal-quotation-form"/>
+    <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
+      self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)
+      AND
+      (self.saleOrder.clientPartner = :partner OR self.saleOrder.contactPartner = :partner)</domain>
+    <context name="partner" expr="eval: __user__.partner"/>
+    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-invoices-to-pay"
+    title="Invoices (to pay)" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining > 0 AND
+      (self.partner = :partner OR self.contactPartner = :partner)</domain>
+    <context name="partner" expr="eval: __user__.partner"/>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_SALE"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-late-invoices" title="Late invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="client-portal-invoice-grid"/>
+    <view type="form" name="client-portal-invoice-form"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining > 0 AND
+      self.dueDate &lt; :today AND (self.partner = :partner OR self.contactPartner = :partner)</domain>
+    <context name="partner" expr="eval: __user__.partner"/>
+    <context name="operationTypeSelect"
+      expr="eval: InvoiceRepository.OPERATION_TYPE_CLIENT_SALE"/>
+    <context name="today" expr="eval: __date__"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-announces" title="Announces"
+    model="com.axelor.apps.client.portal.db.GeneralAnnouncement">
+    <view type="grid" name="general-announcement-grid"/>
+    <view type="form" name="general-announcement-form"/>
+    <domain>self.id IN :list</domain>
+    <context name="list" expr="eval: 0"/>
+    <context name="list"
+      expr="eval: __repo__(GeneralAnnouncement).all().filter('? MEMBER OF self.partnerCategorySet',__user__.partner.partnerCategory).order('-announcementDate').fetch(5).collect{it.id}"
+      if="__user__.partner?.partnerCategory != null &amp;&amp; __repo__(GeneralAnnouncement).all().filter('? MEMBER OF self.partnerCategorySet',__user__.partner.partnerCategory).order('-announcementDate').count() > 0"/>
+  </action-view>
+
+  <action-view name="action-client-portal-view-project-open-ticket" title="Open tickets"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="chart" name="chart.client.portal.project.open.tickets"/>
+  </action-view>
+
+</object-views>

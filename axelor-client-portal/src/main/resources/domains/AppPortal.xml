@@ -14,6 +14,26 @@
     <boolean name="manageTickets" title="Manage tickets" default="true"/>
     <boolean name="manageProjects" title="Manage projects" default="true"/>
     <boolean name="manageDelivery" title="Manage delivery" default="true"/>
+    <boolean name="manageEShop" title="Manage eShop" default="true"/>
+    <boolean name="manageQuotations" title="Manage quotation" default="true"/>
+    <boolean name="manageAnnouncement" title="Manage announcement" default="true"/>
+    <boolean name="manageDiscussion" title="Manage discussion" default="true"/>
+    <boolean name="manageIdea" title="Manage idea" default="true"/>
+    <boolean name="manageAnnouncementNotification"
+      title="Receive notifications for announcement"/>
+    <boolean name="manageDiscussionNotification"
+      title="Receive notifications for discussion"/>
+    <boolean name="isPurchasesActivated" title="Activate purchases" default="false"/>
+    <boolean name="isNotifySeller" title="Enable notifications for the seller"/>
+    <boolean name="isNotifyCustomer" title="Enable notifications for the customer"/>
+    <boolean name="isDMSActivated" title="Activate DMS" default="false"/>
+    <boolean name="isDMSPanelSideActiveDefault"
+      title="Default value for 'Allow panel side for customers DMS'" default="false"
+      help="If this option is not activated, you will have to activate the 'Document management' option directly on the user file of the partner(s) concerned."/>
+    <boolean name="isTaskEditorActivated" title="Activate task editor" default="false"/>
+    <boolean name="isStripeActivated" title="Activate Stripe" default="false"/>
+    <boolean name="isPaypalActivated" title="Activate Paypal" default="false"/>
+    <boolean name="isPayboxActivated" title="Active Paybox" default="false"/>
     <boolean name="canConfirmOnline" title="Can confirm online" default="true"/>
     <boolean name="showCatalog" title="Display product catalog" default="true"/>
 
@@ -22,6 +42,34 @@
       ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
     <integer name="portalSelect" title="Portal" selection="clientportal.extern.or.intern"
       default="1"/>
+
+    <string name="stripeSecretKey" title="Stripe secret key"/>
+    <string name="paypalMerchantId" title="Paypal merchant ID"/>
+    <string name="paypalAppClientId" title="Paypal Application Client ID"/>
+    <string name="paypalAppClientSecret" title="Paypal Application Client Secret"/>
+    <!-- PAYBOX config -->
+    <string name="payboxUrl" title="Paybox url"/>
+    <string name="payboxSite" title="Paybox site"/>
+    <string name="payboxRank" title="Paybox rank"/>
+    <string name="payboxUserName" title="Paybox identifiant"/>
+    <string name="payboxKey" title="Paybox key"/>
+    <integer name="payboxCurrency" title="Paybox currency (ISO 4217 codes)"/>
+    <string name="payboxPaybox" title="Paybox paybox"/>
+    <string name="payboxBackup1" title="Paybox backup1"/>
+    <string name="payboxBackup2" title="Paybox backup2"/>
+    <string name="payboxPublicKey" large="true" title="Public key"
+      help="Used to verify the request coming from paybox"/>
+
+    <many-to-one name="quotationGenerationTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Quotation generation template"/>
+    <many-to-one name="quotationConfimationCodeTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Quotation confirmation code template"/>
+    <many-to-one name="quotationConfimationTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Quotation confirmation template"/>
+    <many-to-one name="sellerNotificationTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Seller notification template"/>
+    <many-to-one name="customerNotificationTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Customer notification template"/>
 
     <extra-code><![CDATA[
 

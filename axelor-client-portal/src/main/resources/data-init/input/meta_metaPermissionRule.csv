@@ -1,0 +1,23 @@
+"field";"can_read";"can_write";"can_export";"metaPermission";"readonlyIf";"hideIf"
+"createdBy";;;;"metaperm.client.DiscussionPost";;
+"saleOrder";"x";;;"metaperm.client.PortalQuotation";;
+"exTaxTotal";"x";;;"metaperm.client.PortalQuotation";;
+"statusSelect";"x";;;"metaperm.client.PortalQuotation";;
+"endOfValidity";"x";;;"metaperm.client.PortalQuotation";;
+"signature";"x";"x";;"metaperm.client.PortalQuotation";;
+"report";"x";;;"metaperm.client.PortalQuotation";;
+"partnerCategorySet";;;;"metaperm.client.GeneralAnnouncement";;
+"accepted";"x";;;"metaperm.client.Idea";;
+"close";"x";;;"metaperm.client.Idea";;
+"acceptBtn";;;;"metaperm.client.Idea";;
+"rejectBtn";;;;"metaperm.client.Idea";;
+"closeBtn";;;;"metaperm.client.Idea";;
+"openBtn";;;;"metaperm.client.Idea";;
+"name";"x";"x";;"metaperm.client.Idea";"createdBy.code != __user__.code";
+"description";"x";"x";;"metaperm.client.Idea";"createdBy.code != __user__.code";
+"portalIdeaTagSet";"x";"x";;"metaperm.client.Idea";"createdBy.code != __user__.code";
+"partnerCategorySet";;;;"metaperm.client.ClientResource";;
+"resourceFile";"x";;;"metaperm.client.ClientResource";;"resourceFile == null"
+"assigningCustomerBtn";;;;"metaperm.client.ProjectTask";;
+"partner";;;;"metaperm.client.Card";;
+"partnerCategorySet";;;;"metaperm.client.DiscussionGroup";;

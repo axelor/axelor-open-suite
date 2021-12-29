@@ -12,7 +12,12 @@ axelor {
 }
 
 dependencies {
-	api project(":modules:axelor-supplychain")
+	api project(":modules:axelor-business-production")
 	api project(":modules:axelor-helpdesk")
-	api project(":modules:axelor-project")
+	api project(":modules:axelor-business-support")
+
+  implementation "com.stripe:stripe-java:20.72.0"
+  implementation "com.paypal.sdk:checkout-sdk:1.0.2"
+  implementation "com.google.code.gson:gson:2.8.6"
+  implementation "org.bouncycastle:bcprov-jdk15on:1.68"
 }

@@ -1,0 +1,6 @@
+"name";"value";"template.name"
+"quotationLink";;"Quotation generation"
+"confirmationCode";;"Quotation confirmation code"
+"signatureImageByte";"com.axelor.inject.Beans.get(com.axelor.apps.client.portal.db.repo.PortalQuotationRepository.class).find(id).getSignature() != null ? com.axelor.meta.MetaFiles.getPath(com.axelor.inject.Beans.get(com.axelor.apps.client.portal.db.repo.PortalQuotationRepository.class).find(id).getSignature()).toFile().getBytes().encodeBase64() : null";"Quotation confirmation"
+"signatureName";;"Quotation confirmation"
+"quotationLink";;"Quotation confirmation"
