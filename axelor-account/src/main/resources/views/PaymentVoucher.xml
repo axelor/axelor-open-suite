@@ -80,9 +80,9 @@
       <field name="depositSlip" showIf="depositSlip" colSpan="12"/>
     </panel>
 
-    <panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
-      <button name="loadMoveLinesBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines" colSpan="6"/>
+    <panel name="loadInvoiceTermsInfoPanel" colSpan="12" showIf="statusSelect == 1">
+      <button name="loadInvoiceTermsBtn" title="Search elements to pay"
+        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadInvoiceTerms" colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">

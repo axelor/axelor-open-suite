@@ -66,7 +66,7 @@ public class PaymentVoucherController {
   }
 
   // Loading move lines of the selected partner (1st O2M)
-  public void loadMoveLines(ActionRequest request, ActionResponse response) {
+  public void loadInvoiceTerms(ActionRequest request, ActionResponse response) {
 
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 

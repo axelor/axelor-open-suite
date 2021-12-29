@@ -19,13 +19,14 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
@@ -67,34 +68,33 @@ public class PaymentVoucherLoadService {
   }
 
   /**
-   * Searching move lines to pay
+   * Searching invoice terms to pay
    *
-   * @param pv paymentVoucher
-   * @param mlToIgnore moveLine list to ignore
-   * @return moveLines a list of moveLines
+   * @param paymentVoucher paymentVoucher
+   * @return invoiceTerms a list of invoiceTerms
    * @throws AxelorException
    */
-  public List<MoveLine> getMoveLines(PaymentVoucher paymentVoucher) throws AxelorException {
+  public List<InvoiceTerm> getInvoiceTerms(PaymentVoucher paymentVoucher) throws AxelorException {
 
-    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
+    InvoiceTermRepository invoiceTermRepo = Beans.get(InvoiceTermRepository.class);
 
     String query =
-        "self.partner = ?1 "
-            + "and self.account.useForPartnerBalance = 't' "
-            + "and self.amountRemaining > 0 "
-            + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
-            + "and self.move.ignoreInDebtRecoveryOk = 'f' "
-            + "and self.move.company = ?2 "
-            + "and self.move.invoice.pfpValidateStatusSelect != ?5 "
-            + "and (?6 IS NULL OR self.move.tradingName = ?6)";
+        "self.moveLine.partner = ?1 "
+            + "and self.moveLine.account.useForPartnerBalance = 't' "
+            + "and self.moveLine.amountRemaining > 0 "
+            + "and (self.moveLine.move.statusSelect = ?3 OR self.moveLine.move.statusSelect = ?4)"
+            + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
+            + "and self.moveLine.move.company = ?2 "
+            + "and self.moveLine.move.invoice.pfpValidateStatusSelect != ?5 "
+            + "and (?6 IS NULL OR self.moveLine.move.tradingName = ?6)";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
-      query += " and self.debit > 0 ";
+      query += " and self.moveLine.debit > 0 ";
     } else {
-      query += " and self.credit > 0 ";
+      query += " and self.moveLine.credit > 0 ";
     }
 
-    return moveLineRepo
+    return invoiceTermRepo
         .all()
         .filter(
             query,
@@ -118,39 +118,44 @@ public class PaymentVoucherLoadService {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
 
-    for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
+    for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(invoiceTerm));
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
   }
 
-  public PayVoucherDueElement createPayVoucherDueElement(MoveLine moveLine) throws AxelorException {
+  public PayVoucherDueElement createPayVoucherDueElement(InvoiceTerm invoiceTerm)
+      throws AxelorException {
 
-    Move move = moveLine.getMove();
+    Move move = invoiceTerm.getMoveLine().getMove();
 
     PayVoucherDueElement payVoucherDueElement = new PayVoucherDueElement();
 
-    payVoucherDueElement.setMoveLine(moveLine);
+    payVoucherDueElement.setInvoiceTerm(invoiceTerm);
 
-    payVoucherDueElement.setDueAmount(moveLine.getCurrencyAmount());
+    payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
+
+    payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
     BigDecimal paidAmountInElementCurrency =
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 move.getCompanyCurrency(),
                 move.getCurrency(),
-                moveLine.getAmountPaid(),
-                moveLine.getDate())
+                invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()),
+                invoiceTerm.getMoveLine().getDate())
             .setScale(2, RoundingMode.HALF_UP);
 
     payVoucherDueElement.setPaidAmount(paidAmountInElementCurrency);
 
-    payVoucherDueElement.setAmountRemaining(
-        payVoucherDueElement.getDueAmount().subtract(payVoucherDueElement.getPaidAmount()));
+    payVoucherDueElement.setAmountRemaining(invoiceTerm.getAmountRemaining());
 
-    payVoucherDueElement.setCurrency(move.getCurrency());
+    payVoucherDueElement.setCurrency(
+        invoiceTerm.getMoveLine().getMove().getCurrency() != null
+            ? invoiceTerm.getMoveLine().getMove().getCurrency()
+            : invoiceTerm.getInvoice().getCurrency());
 
     return payVoucherDueElement;
   }
@@ -176,7 +181,6 @@ public class PaymentVoucherLoadService {
    * to amountRemainnig for the loaded move and the paid amount remaining of the paymentVoucher
    *
    * @param paymentVoucher
-   * @param paymentVoucherContext
    * @return
    * @return
    * @return values Map of data
@@ -214,6 +218,7 @@ public class PaymentVoucherLoadService {
     PayVoucherElementToPay payVoucherElementToPay = new PayVoucherElementToPay();
 
     payVoucherElementToPay.setSequence(sequence);
+    payVoucherElementToPay.setInvoiceTerm(payVoucherDueElement.getInvoiceTerm());
     payVoucherElementToPay.setMoveLine(payVoucherDueElement.getMoveLine());
     payVoucherElementToPay.setTotalAmount(payVoucherDueElement.getDueAmount());
     payVoucherElementToPay.setRemainingAmount(payVoucherDueElement.getAmountRemaining());
@@ -353,10 +358,10 @@ public class PaymentVoucherLoadService {
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);
     BigDecimal amount = BigDecimal.ZERO;
-    List<MoveLine> moveLineList = getMoveLines(paymentVoucher);
+    List<InvoiceTerm> invoiceTermList = getInvoiceTerms(paymentVoucher);
 
-    for (MoveLine moveLine : moveLineList) {
-      PayVoucherDueElement payVoucherDueElement = createPayVoucherDueElement(moveLine);
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      PayVoucherDueElement payVoucherDueElement = createPayVoucherDueElement(invoiceTerm);
       paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
 
       if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
@@ -367,8 +372,8 @@ public class PaymentVoucherLoadService {
     paymentVoucher.setPaidAmount(amount);
     paymentVoucher.clearPayVoucherDueElementList();
 
-    for (MoveLine moveLine : moveLineList) {
-      paymentVoucher.addPayVoucherDueElementListItem(createPayVoucherDueElement(moveLine));
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      paymentVoucher.addPayVoucherDueElementListItem(createPayVoucherDueElement(invoiceTerm));
     }
 
     if (paymentVoucher.getPayVoucherDueElementList() == null) {
