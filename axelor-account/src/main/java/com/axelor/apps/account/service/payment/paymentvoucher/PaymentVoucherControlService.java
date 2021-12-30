@@ -30,6 +30,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherControlService {
 
@@ -116,5 +117,18 @@ public class PaymentVoucherControlService {
       return true;
     }
     return false;
+  }
+
+  public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
+    if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
+      for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
+        if (!elementToPay
+            .getRemainingAmount()
+            .equals(elementToPay.getMoveLine().getAmountRemaining())) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

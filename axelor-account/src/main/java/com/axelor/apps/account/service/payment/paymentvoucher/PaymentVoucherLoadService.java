@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherLoadService {
 
@@ -52,18 +53,21 @@ public class PaymentVoucherLoadService {
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected PayVoucherDueElementService payVoucherDueElementService;
 
   @Inject
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
       PayVoucherDueElementRepository payVoucherDueElementRepo,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      PayVoucherDueElementService payVoucherDueElementService) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.payVoucherDueElementService = payVoucherDueElementService;
   }
 
   /**
@@ -218,6 +222,19 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setTotalAmount(payVoucherDueElement.getDueAmount());
     payVoucherElementToPay.setRemainingAmount(payVoucherDueElement.getAmountRemaining());
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
+    payVoucherElementToPay.setApplyFinancialDiscount(
+        payVoucherDueElement.getApplyFinancialDiscount());
+    payVoucherElementToPay.setFinancialDiscount(payVoucherDueElement.getFinancialDiscount());
+    payVoucherElementToPay.setFinancialDiscountAmount(
+        payVoucherDueElement.getFinancialDiscountAmount());
+    payVoucherElementToPay.setFinancialDiscountDeadlineDate(
+        payVoucherDueElement.getFinancialDiscountDeadlineDate());
+    payVoucherElementToPay.setFinancialDiscountTaxAmount(
+        payVoucherDueElement.getFinancialDiscountTaxAmount());
+    payVoucherElementToPay.setFinancialDiscountTotalAmount(
+        payVoucherDueElement.getFinancialDiscountTotalAmount());
+    payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
+        payVoucherDueElement.getAmountRemainingFinDiscountDeducted());
 
     BigDecimal amountRemainingInElementCurrency =
         currencyService
@@ -252,7 +269,9 @@ public class PaymentVoucherLoadService {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();
 
-    this.searchDueElements(paymentVoucher);
+    paymentVoucher.setPayVoucherDueElementList(searchDueElements(paymentVoucher));
+
+    this.computeFinancialDiscount(paymentVoucher);
   }
 
   /**
@@ -387,6 +406,20 @@ public class PaymentVoucherLoadService {
         paymentVoucher.addPayVoucherElementToPayListItem(
             createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
         it.remove();
+      }
+    }
+  }
+
+  public void computeFinancialDiscount(PaymentVoucher paymentVoucher) throws AxelorException {
+    if (paymentVoucher != null
+        && !CollectionUtils.isEmpty(paymentVoucher.getPayVoucherDueElementList())
+        && paymentVoucher.getPartner() != null
+        && paymentVoucher.getPartner().getFinancialDiscount() != null) {
+      for (PayVoucherDueElement payVoucherDueElement :
+          paymentVoucher.getPayVoucherDueElementList()) {
+        payVoucherDueElement =
+            payVoucherDueElementService.updateDueElementWithFinancialDiscount(
+                payVoucherDueElement, paymentVoucher);
       }
     }
   }
