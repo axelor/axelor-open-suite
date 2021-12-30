@@ -35,7 +35,8 @@
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount">
-      <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"/>
+      <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
+        onChange="action-method-pay-voucher-due-update-amounts"/>
       <panel readonly="true" showIf="applyFinancialDiscount" colSpan="12">
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
@@ -45,4 +46,10 @@
       </panel>
     </panel>
   </form>
+
+  <action-method name="action-method-pay-voucher-due-update-amounts">
+    <call class="com.axelor.apps.account.web.PayVoucherDueElementController"
+      method="updateAmounts"/>
+  </action-method>
+
 </object-views>
