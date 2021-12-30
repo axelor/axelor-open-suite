@@ -437,8 +437,9 @@ public class DataImportServiceImpl implements DataImportService {
     boolean update = false;
     String searchCall = fileTab.getSearchCall();
 
-    if (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
-        || StringUtils.notBlank(searchCall)) {
+    if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_FIND_NEW
+        && (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
+            || StringUtils.notBlank(searchCall))) {
       update = true;
     }
 
