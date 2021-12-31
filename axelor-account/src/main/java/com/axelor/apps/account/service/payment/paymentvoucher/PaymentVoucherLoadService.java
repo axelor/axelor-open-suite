@@ -25,10 +25,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -72,7 +75,7 @@ public class PaymentVoucherLoadService {
    * @return invoiceTerms a list of invoiceTerms
    * @throws AxelorException
    */
-  public List<InvoiceTerm> getInvoiceTerms(PaymentVoucher paymentVoucher) {
+  public List<InvoiceTerm> getInvoiceTerms(PaymentVoucher paymentVoucher) throws AxelorException {
 
     InvoiceTermRepository invoiceTermRepo = Beans.get(InvoiceTermRepository.class);
 
@@ -80,7 +83,26 @@ public class PaymentVoucherLoadService {
         "(self.moveLine.partner = ?1 OR self.invoice.partner = ?1) "
             + "and self.isPaid = FALSE OR self.amountRemaining > 0 "
             + "and (self.moveLine.move.company = ?2 OR self.invoice.company = ?2) "
-            + "and self.dueDate >= ?3";
+            + "and self.moveLine.account.useForPartnerBalance = 't' "
+            + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
+            + "and (self.moveLine.move.statusSelect = ?3 OR self.moveLine.move.statusSelect = ?4) "
+            + "and (?5 IS NULL OR self.moveLine.move.tradingName = ?5 OR self.invoice.tradingName = ?5) ";
+
+    if (Beans.get(AccountConfigService.class)
+                .getAccountConfig(paymentVoucher.getCompany())
+                .getIsManagePassedForPayment()
+            && paymentVoucher.getOperationTypeSelect()
+                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || paymentVoucher.getOperationTypeSelect()
+            == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      query += "and (self.pfpValidateStatusSelect != ?6 OR self.pfpValidateStatusSelect != ?7) ";
+    }
+
+    if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
+      query += " and self.moveLine.debit > 0 ";
+    } else {
+      query += " and self.moveLine.credit > 0 ";
+    }
 
     return invoiceTermRepo
         .all()
@@ -88,7 +110,11 @@ public class PaymentVoucherLoadService {
             query,
             paymentVoucher.getPartner(),
             paymentVoucher.getCompany(),
-            paymentVoucher.getPaymentDate())
+            MoveRepository.STATUS_DAYBOOK,
+            MoveRepository.STATUS_ACCOUNTED,
+            paymentVoucher.getTradingName(),
+            InvoiceRepository.PFP_STATUS_AWAITING,
+            InvoiceRepository.PFP_STATUS_LITIGATION)
         .fetch();
   }
 
