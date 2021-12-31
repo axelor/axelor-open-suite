@@ -25,9 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -74,25 +72,15 @@ public class PaymentVoucherLoadService {
    * @return invoiceTerms a list of invoiceTerms
    * @throws AxelorException
    */
-  public List<InvoiceTerm> getInvoiceTerms(PaymentVoucher paymentVoucher) throws AxelorException {
+  public List<InvoiceTerm> getInvoiceTerms(PaymentVoucher paymentVoucher) {
 
     InvoiceTermRepository invoiceTermRepo = Beans.get(InvoiceTermRepository.class);
 
     String query =
-        "self.moveLine.partner = ?1 "
-            + "and self.moveLine.account.useForPartnerBalance = 't' "
-            + "and self.moveLine.amountRemaining > 0 "
-            + "and (self.moveLine.move.statusSelect = ?3 OR self.moveLine.move.statusSelect = ?4)"
-            + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
-            + "and self.moveLine.move.company = ?2 "
-            + "and self.moveLine.move.invoice.pfpValidateStatusSelect != ?5 "
-            + "and (?6 IS NULL OR self.moveLine.move.tradingName = ?6)";
-
-    if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
-      query += " and self.moveLine.debit > 0 ";
-    } else {
-      query += " and self.moveLine.credit > 0 ";
-    }
+        "(self.moveLine.partner = ?1 OR self.invoice.partner = ?1) "
+            + "and self.isPaid = FALSE OR self.amountRemaining > 0 "
+            + "and (self.moveLine.move.company = ?2 OR self.invoice.company = ?2) "
+            + "and self.dueDate >= ?3";
 
     return invoiceTermRepo
         .all()
@@ -100,10 +88,7 @@ public class PaymentVoucherLoadService {
             query,
             paymentVoucher.getPartner(),
             paymentVoucher.getCompany(),
-            MoveRepository.STATUS_ACCOUNTED,
-            MoveRepository.STATUS_DAYBOOK,
-            InvoiceRepository.PFP_STATUS_LITIGATION,
-            paymentVoucher.getTradingName())
+            paymentVoucher.getPaymentDate())
         .fetch();
   }
 
@@ -119,8 +104,10 @@ public class PaymentVoucherLoadService {
     }
 
     for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
-
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(invoiceTerm));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(invoiceTerm);
+      if (payVoucherDueElement != null) {
+        paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
+      }
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
@@ -128,6 +115,10 @@ public class PaymentVoucherLoadService {
 
   public PayVoucherDueElement createPayVoucherDueElement(InvoiceTerm invoiceTerm)
       throws AxelorException {
+
+    if (invoiceTerm.getMoveLine() == null || invoiceTerm.getMoveLine().getMove() == null) {
+      return null;
+    }
 
     Move move = invoiceTerm.getMoveLine().getMove();
 
@@ -312,7 +303,7 @@ public class PaymentVoucherLoadService {
    */
   public List<MoveLine> assignMaxAmountToReconcile(
       List<MoveLine> moveLineInvoiceToPay, BigDecimal amountToPay) {
-    List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
+    List<MoveLine> debitMoveLines = new ArrayList<>();
     if (moveLineInvoiceToPay != null && moveLineInvoiceToPay.size() != 0) {
       // Récupération du montant imputé sur l'échéance, et assignation de la valeur
       // dans la moveLine (champ temporaire)

@@ -82,7 +82,8 @@
 
     <panel name="loadInvoiceTermsInfoPanel" colSpan="12" showIf="statusSelect == 1">
       <button name="loadInvoiceTermsBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadInvoiceTerms" colSpan="6"/>
+        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadInvoiceTerms,save"
+        colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
