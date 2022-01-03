@@ -177,6 +177,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected boolean _processStockMove(StockMove stockMove, SupplychainBatch supplychainBatch) {
     try {
       Journal miscOpeJournal = supplychainBatch.getMiscOpeJournal();

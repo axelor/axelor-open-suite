@@ -55,6 +55,7 @@ public interface AccountingCutOffService {
       Move move,
       Journal journal,
       LocalDate moveDate,
+      LocalDate originMoveDate,
       String moveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
