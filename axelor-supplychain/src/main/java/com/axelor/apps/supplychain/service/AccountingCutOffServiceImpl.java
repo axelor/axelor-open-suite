@@ -353,17 +353,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     // Status
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       move.setStockMove(stockMove);
-
-      if (cutOffMoveStatusSelect == MoveRepository.STATUS_SIMULATED) {
-        moveSimulateService.simulate(move);
-      } else {
-        moveValidateService.updateValidateStatus(
-            move, cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK);
-
-        if (cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
-          moveValidateService.accounting(move);
-        }
-      }
+      this.updateStatus(move, cutOffMoveStatusSelect);
     } else {
       moveRepository.remove(move);
       return null;
@@ -409,6 +399,19 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     return move.getMoveLineList();
+  }
+
+  protected void updateStatus(Move move, int cutOffMoveStatusSelect) throws AxelorException {
+    if (cutOffMoveStatusSelect == MoveRepository.STATUS_SIMULATED) {
+      moveSimulateService.simulate(move);
+    } else {
+      moveValidateService.updateValidateStatus(
+          move, cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK);
+
+      if (cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
+        moveValidateService.accounting(move);
+      }
+    }
   }
 
   protected boolean checkStockMoveLine(
@@ -651,17 +654,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     // Status
     if (CollectionUtils.isNotEmpty(cutOffMove.getMoveLineList())) {
       cutOffMove.setCutOffOriginMove(move);
-
-      if (cutOffMoveStatusSelect == MoveRepository.STATUS_SIMULATED) {
-        moveSimulateService.simulate(cutOffMove);
-      } else {
-        moveValidateService.updateValidateStatus(
-            cutOffMove, cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK);
-
-        if (cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
-          moveValidateService.accounting(cutOffMove);
-        }
-      }
+      this.updateStatus(cutOffMove, cutOffMoveStatusSelect);
     } else {
       moveRepository.remove(cutOffMove);
       return null;
