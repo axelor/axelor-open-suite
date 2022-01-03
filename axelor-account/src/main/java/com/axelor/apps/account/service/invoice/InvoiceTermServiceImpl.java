@@ -315,7 +315,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
-        invoiceToolService.updateDueDate(invoicePayment.getInvoice());
+        Invoice invoice = invoiceTerm.getInvoice();
+        if (invoice != null) {
+          invoice.setDueDate(invoiceToolService.getDueDate(invoice));
+        }
       }
       invoiceTerm.setAmountRemaining(amountRemaining);
     }
@@ -332,7 +335,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
       if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
         invoiceTerm.setIsPaid(false);
-        invoiceToolService.updateDueDate(invoiceTerm.getInvoice());
+        Invoice invoice = invoiceTerm.getInvoice();
+        if (invoice != null) {
+          invoice.setDueDate(invoiceToolService.getDueDate(invoice));
+        }
         invoiceTermRepo.save(invoiceTerm);
       }
     }
