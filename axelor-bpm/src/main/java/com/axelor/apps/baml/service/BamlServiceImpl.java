@@ -22,6 +22,7 @@ import com.axelor.apps.baml.xml.ProcessActionRootNode;
 import com.axelor.apps.bpm.context.WkfContextHelper;
 import com.axelor.apps.bpm.db.BamlModel;
 import com.axelor.apps.bpm.service.WkfCommonService;
+import com.axelor.apps.bpm.translation.ITranslation;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.db.EntityHelper;
@@ -29,6 +30,9 @@ import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
@@ -49,6 +53,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -60,13 +65,13 @@ public class BamlServiceImpl implements BamlService {
   public String generateGroovyCode(String xml) throws AxelorException {
 
     ProcessActionRootNode rootNode = null;
-    /*try {
+    try {
       rootNode = BamlParser.parse(IOUtils.toInputStream(xml, "utf-8"));
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(ITranslation.INVALID_BAML_XML));
-    }*/
+    }
 
     if (rootNode == null) {
       return null;
