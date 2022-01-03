@@ -410,6 +410,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       if (cutOffMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
         moveValidateService.accounting(move);
+      } else if (cutOffMoveStatusSelect == MoveRepository.STATUS_DAYBOOK
+          && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK) {
+        move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
       }
     }
   }
@@ -567,6 +570,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             move,
             journal,
             moveDate,
+            moveDate,
             moveDescription,
             accountingCutOffTypeSelect,
             cutOffMoveStatusSelect,
@@ -584,6 +588,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               move,
               journal,
               reverseMoveDate,
+              moveDate,
               moveDescription,
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
@@ -612,6 +617,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       Move move,
       Journal journal,
       LocalDate moveDate,
+      LocalDate originMoveDate,
       String moveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
@@ -644,6 +650,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           company,
           partner,
           moveDate,
+          originMoveDate,
           originDate,
           origin,
           moveDescription,
@@ -669,6 +676,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       Company company,
       Partner partner,
       LocalDate moveDate,
+      LocalDate originMoveDate,
       LocalDate originDate,
       String origin,
       String moveDescription,
@@ -686,13 +694,15 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           && moveLine.getCutOffEndDate() != null
           && moveLine.getCutOffEndDate().getYear() > moveDate.getYear()) {
         moveLineAccount = moveLine.getAccount();
-        amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, moveDate);
+        amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
 
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
           cutOffMoveLine = cutOffMoveLineMap.get(moveLineAccount);
           cutOffMoveLine.setCurrencyAmount(
               cutOffMoveLine.getCurrencyAmount().add(amountInCurrency));
+          cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(moveLine.getDebit()));
+          cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(moveLine.getCredit()));
         } else {
           cutOffMoveLine =
               moveLineCreateService.createMoveLine(

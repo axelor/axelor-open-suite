@@ -7,6 +7,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -23,7 +24,8 @@ public class MoveLineController {
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, IExceptionMessage.CUT_OFF_BATCH_NO_LINE);
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       }
 
       List<Long> ids =
@@ -37,7 +39,8 @@ public class MoveLineController {
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, IExceptionMessage.CUT_OFF_BATCH_NO_LINE);
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(MoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
         response.setFlash(batch.getComments());
