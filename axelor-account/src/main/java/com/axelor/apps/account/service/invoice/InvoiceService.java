@@ -320,4 +320,6 @@ public interface InvoiceService {
   boolean checkManageCutOffDates(Invoice invoice);
 
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  public void validatePfp(Long invoiceId) throws AxelorException;
 }
