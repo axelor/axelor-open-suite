@@ -19,7 +19,16 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -43,6 +52,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -99,6 +109,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected StockMoveLineServiceSupplychain stockMoveLineService;
   protected MoveSimulateService moveSimulateService;
   protected MoveLineService moveLineService;
+  protected CurrencyService currencyService;
   protected int counter = 0;
 
   @Inject
@@ -125,7 +136,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       SaleOrderService saleOrderService,
       StockMoveLineServiceSupplychain stockMoveLineService,
       MoveSimulateService moveSimulateService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      CurrencyService currencyService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -150,6 +162,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.stockMoveLineService = stockMoveLineService;
     this.moveSimulateService = moveSimulateService;
     this.moveLineService = moveLineService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -600,7 +613,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       cutOffMoveList.add(reverseCutOffMove);
 
-      if (automaticReconcile) {
+      if (automaticReconcile && cutOffMoveStatusSelect != MoveRepository.STATUS_SIMULATED) {
         reconcile(cutOffMove, reverseCutOffMove);
       }
     }
@@ -688,21 +701,34 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     MoveLine cutOffMoveLine;
     Map<Account, MoveLine> cutOffMoveLineMap = new HashMap<>();
 
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            move.getCurrency(), move.getCompanyCurrency(), moveDate);
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getManageCutOffPeriod()
           && moveLine.getCutOffStartDate() != null
           && moveLine.getCutOffEndDate() != null
-          && moveLine.getCutOffEndDate().getYear() > moveDate.getYear()) {
+          && (moveLine.getCutOffEndDate().getYear() > moveDate.getYear() || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
+        BigDecimal convertedAmount =
+            currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+                amountInCurrency, currencyRate);
 
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
           cutOffMoveLine = cutOffMoveLineMap.get(moveLineAccount);
           cutOffMoveLine.setCurrencyAmount(
               cutOffMoveLine.getCurrencyAmount().add(amountInCurrency));
-          cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(moveLine.getDebit()));
-          cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(moveLine.getCredit()));
+          if (isReverse
+              != (accountingCutOffTypeSelect
+                  == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
+            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+          } else {
+            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+          }
+
         } else {
           cutOffMoveLine =
               moveLineCreateService.createMoveLine(
@@ -717,6 +743,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   ++counter,
                   origin,
                   moveDescription);
+          cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
 
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
         }
