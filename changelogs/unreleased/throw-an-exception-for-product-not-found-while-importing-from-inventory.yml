@@ -1,0 +1,3 @@
+---
+title : "INVENTORY : thow an exception for product not found while importing"
+type : fix

@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -249,13 +250,18 @@ public class InventoryService {
                 .filter("self.code = :code AND self.dtype = 'Product'")
                 .bind("code", code)
                 .fetch();
-        if (productList != null && !productList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(productList)) {
           if (productList.size() > 1) {
             throw new AxelorException(
                 inventory,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(IExceptionMessage.INVENTORY_12) + " " + code);
           }
+        } else {
+          throw new AxelorException(
+              inventory,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
         }
         Product product = productList.get(0);
         if (product == null
