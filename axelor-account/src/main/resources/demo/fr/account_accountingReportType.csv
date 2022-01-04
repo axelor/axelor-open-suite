@@ -1,3 +1,4 @@
-"importId";"name";"company"
-25;"Bilan";1
-26;"Compte de résultat";1
+"importId";"name";"company";"typeSelect"
+25;"Bilan";1;3000
+26;"Compte de résultat";1;3000
+27;"Factures client/fournisseurs dont le terme est échu";1;23
