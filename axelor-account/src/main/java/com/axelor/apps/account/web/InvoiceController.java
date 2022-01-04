@@ -238,7 +238,7 @@ public class InvoiceController {
   public void fillPaymentModeAndCondition(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getOperationTypeSelect() == null) {
+      if (invoice.getOperationTypeSelect() == null || invoice.getOperationTypeSelect() == 0) {
         return;
       }
       PaymentMode paymentMode = InvoiceToolService.getPaymentMode(invoice);
@@ -368,7 +368,8 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
+      } else if (context.get("id") != null
+          && Invoice.class.toString().equals(context.getContextClass().toString())) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
         Integer reportType =
             context.get("reportType") != null
@@ -461,7 +462,8 @@ public class InvoiceController {
       List<Number> ids = (List<Number>) request.getContext().get("_ids");
 
       if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        response.setError(
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 
