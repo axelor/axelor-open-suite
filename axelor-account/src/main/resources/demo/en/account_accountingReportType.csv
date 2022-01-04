@@ -1,2 +1,3 @@
-"importId";"name";"rules";"company"
-1;"P&L";;1
+"importId";"name";"rules";"company";"typeSelect"
+1;"P&L";;1;3000
+2;"Customer / Supplier generated invoices which are due";;1;23
