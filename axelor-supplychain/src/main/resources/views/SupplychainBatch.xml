@@ -78,7 +78,8 @@
         </panel>
         <panel name="expensesIncomesPanel" colSpan="12" showIf="actionSelect == 1">
           <field name="automaticReverse" colSpan="3"/>
-          <field name="automaticReconcile" colSpan="3" hideIf="!automaticReverse"/>
+          <field name="automaticReconcile" colSpan="3"
+            showIf="automaticReverse &amp;&amp; cutOffMoveStatusSelect != 5"/>
           <panel colSpan="6" itemSpan="12">
             <field name="reverseMoveDate"
               requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"
