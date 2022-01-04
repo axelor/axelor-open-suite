@@ -407,6 +407,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal totalQty = null;
     BigDecimal notInvoicedQty = null;
 
+    FiscalPosition fiscalPosition = null;
+
     if (isPurchase && purchaseOrderLine != null) {
       totalQty = purchaseOrderLine.getQty();
 
@@ -424,6 +426,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       } else {
         amountInCurrency = purchaseOrderLine.getExTaxTotal();
       }
+
+      fiscalPosition = purchaseOrderLine.getPurchaseOrder().getFiscalPosition();
     }
     if (!isPurchase && saleOrderLine != null) {
       totalQty = saleOrderLine.getQty();
@@ -440,6 +444,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       } else {
         amountInCurrency = saleOrderLine.getExTaxTotal();
       }
+
+      fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
     }
     if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
       return null;
@@ -453,8 +459,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     Product product = stockMoveLine.getProduct();
-
-    FiscalPosition fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
 
     Account account =
         accountManagementAccountService.getProductAccount(
