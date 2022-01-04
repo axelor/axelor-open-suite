@@ -22,6 +22,8 @@
       <field name="metaView" requiredIf="action == null" domain="self.type = :viewType"/>
       <field name="action" requiredIf="metaView == null" domain="self.type = 'action-view'"/>
       <field name="colspan"/>
+      <field name="canSearch" showIf="viewType == 'grid'"/>
+      <field name="height"/>
       <field name="paginationLimit" showIf="viewType == 'grid'"/>
     </panel>
   </form>
