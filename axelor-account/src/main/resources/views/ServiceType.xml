@@ -16,9 +16,25 @@
     model="com.axelor.apps.account.db.ServiceType">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="code"/>
+      <field name="code" onChange="action-service-type-method-check-if-duplicate-code"
+        validIf="!$duplicateCode"/>
+      <field name="$duplicateCode" readonly="true" showTitle="false" showIf="$duplicateCode"
+        colSpan="12">
+        <viewer>
+	      	<![CDATA[
+	      		<h4 class="text-right">
+	               	 <span class="label label-important">{{record.$duplicateCode}}</span>
+	            </h4>
+	      	]]>
+        </viewer>
+      </field>
       <field name="n4dsCode"/>
       <field name="isDas2Declarable"/>
     </panel>
   </form>
+
+  <action-method name="action-service-type-method-check-if-duplicate-code">
+    <call class="com.axelor.apps.account.web.ServiceTypeController" method="checkDuplicateCode"/>
+  </action-method>
+
 </object-views>
