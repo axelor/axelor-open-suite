@@ -937,9 +937,10 @@ InvoiceSet.length > 0))"
         <field name="invoiceDate"
           onChange="action-invoice-group-payment-condition-onchange,action-invoice-method-estimated-payment-dates"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
-        <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
+        <spacer/>
         <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
           readonlyIf="!paymentCondition.isFree"/>
+        <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1065,7 +1066,7 @@ InvoiceSet.length > 0))"
         onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list"/>
       <field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3"
         widget="SuggestBox"
-        onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-date"
+        onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
@@ -1096,7 +1097,7 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate"
-          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-date,action-invoice-method-estimated-payment-dates"/>
+          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-method-estimated-payment-dates"/>
         <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
@@ -1387,7 +1388,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
     <action name="action-invoice-method-estimated-payment-dates"/>
     <action name="action-invoice-method-fill-company-bank-details"/>
     <action name="action-invoice-record-specific-note-on-invoice"/>
@@ -1460,7 +1460,6 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-payment-condition-onchange">
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
     <action name="action-invoice-method-estimated-payment-dates"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
@@ -1470,7 +1469,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-record-due-date"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
@@ -1572,13 +1570,6 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-reset-suboperationtype"
     model="com.axelor.apps.account.db.Invoice">
     <field name="operationSubTypeSelect" expr="eval: 1"/>
-  </action-record>
-
-  <action-record name="action-invoice-record-due-date"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="dueDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(__this__)"
-      if="(originDate != null &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (invoiceDate != null &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4))"/>
   </action-record>
 
   <action-record name="action-invoice-record-draft"
