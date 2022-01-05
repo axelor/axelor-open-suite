@@ -52,6 +52,8 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -386,7 +388,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineOriginList,
         relatedToSelectName);
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!Beans.get(AppProductionService.class).isApp("production")
+        || product.getProcurementMethodSelect() == null
+        || product.getProcurementMethodSelect().equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
       return;
     }
     BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
@@ -490,7 +494,28 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
 
-    if (product.getDefaultBillOfMaterial() != null) {
+    String procurementMethodSelect =
+        (String)
+            productCompanyService.get(
+                product, "procurementMethodSelect", mrp.getStockLocation().getCompany());
+
+    // If procurementMethodSelect is null of productCompany
+    if (StringUtils.isEmpty(procurementMethodSelect)) {
+      procurementMethodSelect = product.getProcurementMethodSelect();
+    }
+
+    long count =
+        product.getProductCompanyList().stream()
+            .filter(
+                pcl ->
+                    ObjectUtils.notEmpty(pcl.getCompany())
+                        && pcl.getCompany().equals(mrp.getStockLocation().getCompany())
+                        && pcl.getPurchasable())
+            .count();
+
+    if (product.getDefaultBillOfMaterial() != null
+        && !procurementMethodSelect.equals(ProductRepository.PROCUREMENT_METHOD_BUY)
+        && count == 0) {
       this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
     }
   }
