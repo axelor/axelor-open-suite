@@ -26,7 +26,7 @@
     <panel name="mainPanel" readonlyIf="statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
-        onChange="action-payment-voucher-hidden-fields-if-purchase"/>
+        onChange="action-payment-voucher-hidden-fields-if-purchase,com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines"/>
       <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"
         canNew="false" canEdit="false" canView="false"/>
       <field name="paymentDate" colSpan="4" required="true"/>
