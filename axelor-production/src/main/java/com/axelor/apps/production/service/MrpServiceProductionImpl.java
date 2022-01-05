@@ -552,17 +552,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()) {
-
+    if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
       Product subProduct = billOfMaterial.getProduct();
 
-      if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
-        log.debug(
-            "Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-        this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
-      }
-    } else {
+      log.debug("Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
+      this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
+    }
+
+    if (billOfMaterial.getBillOfMaterialSet() != null
+        || !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
 
       level = level + 1;
 
