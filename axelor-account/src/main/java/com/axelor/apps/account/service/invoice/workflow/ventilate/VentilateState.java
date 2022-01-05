@@ -185,11 +185,6 @@ public class VentilateState extends WorkflowInvoice {
           I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
     this.setInvoiceTermDueDates();
-
-    if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
-        || invoice.getDueDate() == null) {
-      invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
-    }
   }
 
   /**
