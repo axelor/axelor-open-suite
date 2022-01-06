@@ -152,6 +152,9 @@
       to="journal" update="true" if="journal_importId"/>
     <bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true"
       if="bankDetails_importId"/>
+    <bind
+      search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
+      to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"

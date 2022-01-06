@@ -57,14 +57,21 @@
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveline.partner">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner">
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.move.statusSelect"/>
     <field name="financialDiscountAmount"/>
-    <button name="selectBtn" onClick=""/>
-    <button name="unselectBtn" onClick=""/>
+    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"/>
+    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
+  </grid>
+
+  <grid name="invoice-term-payment-session-group-by-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner">
+    <field name="moveLine.partner"/>
+    <field name="isSelectedOnPaymentSession"/>
+    <field name="paymentAmount" aggregate="sum"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
@@ -208,16 +215,6 @@
         <field name="invoice.financialDiscountDeadlineDate"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
-      <panel name="paymentSessionPanel" colSpan="12" showIf="paymentSession">
-        <static name="pastEventText" colSpan="12">
-		  <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
-        <field name="paymentSession"/>
-        <button name="accessPaymentSessionBtn" title="Access payment session"
-          showIf="paymentSession" onClick="save,action-invoice-term-view-show-payment-session"/>
-        <field name="isSelectedOnPaymentSession" showIf="paymentSession"/>
-        <field name="paymentAmount"
-          showIf="paymentSession &amp;&amp; isSelectedOnPaymentSession"/>
-      </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" readOnlyIf="!isPaid"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3,4].includes(invoice.statusSelect) "
@@ -278,6 +275,15 @@
           <field name="invoice.statusSelect" hidden="true"/>
           <field name="$isValidPfpValidatorUser" hidden="true"/>
         </panel>
+      </panel>
+      <panel name="paymentSessionPanel" colSpan="12" showIf="paymentSession">
+        <static name="pastEventText" colSpan="12">
+      <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+        <field name="paymentSession"/>
+        <button name="accessPaymentSessionBtn" title="Access payment session"
+          onClick="save,action-invoice-term-view-show-payment-session"/>
+        <field name="isSelectedOnPaymentSession"/>
+        <field name="paymentAmount" showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
   </form>
@@ -396,6 +402,12 @@
   <action-view name="action-invoice-term-view-payment-session-dashlet"
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
+    <view type="form" name="invoice-term-form"/>
+  </action-view>
+
+  <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
+    title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-payment-session-group-by-grid"/>
     <view type="form" name="invoice-term-form"/>
   </action-view>
 

@@ -173,7 +173,7 @@
 
   <menuitem name="account-root-payments-payment-session" parent="account-root-payments"
     title="Payment sessions" action="account.root.payments.payment.session"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()" order="0"/>
+    if="__config__.app.isApp('account')" order="0"/>
 
   <action-view name="account.root.payments.payment.session" title="Payment sessions"
     model="com.axelor.apps.account.db.PaymentSession">
