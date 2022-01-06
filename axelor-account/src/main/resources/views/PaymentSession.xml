@@ -60,14 +60,15 @@
     </panel>
     <panel name="statusPanel" sidebar="true">
       <field name="statusSelect" widget="NavSelect"/>
-      <button name="validateBtn" title="Validate" onClick=""
-        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+      <button name="validateBtn" title="Validate"
+        onClick="action-payment-session-group-validate"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
       <button name="cancelBtn" title="Cancel" onClick=""
-        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect = 1" readonlyIf="hasEmailsSent == true" onClick=""/>
+        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true" onClick=""/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
   </form>
@@ -80,6 +81,12 @@
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>
+
+  <action-group name="action-payment-session-group-validate">
+    <action name="save"/>
+    <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="refresh"/>
+  </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"
@@ -103,6 +110,11 @@
     <attribute name="value" expr="eval: null" for="bankDetails"/>
     <attribute name="value" expr="eval: null" for="paymentMode"/>
   </action-attrs>
+
+  <action-method name="action-payment-session-method-validate-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validateInvoiceTerms"/>
+  </action-method>
 
   <action-view name="action-view-account-payment-session-print-wizard"
     title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">

@@ -1051,4 +1051,7 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
+      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
 }
