@@ -28,10 +28,10 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
           // Check cut off dates
           if (moveLine.getCutOffStartDate() != null
-              && !moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
               && moveLine.getCutOffEndDate() != null
-              && !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate())) {
-            break;
+              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+            return null;
           }
 
           int count = 0;
@@ -102,6 +102,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
+      keys.add(moveLine.getCutOffStartDate());
+      keys.add(moveLine.getCutOffEndDate());
 
       consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
       if (consolidateMoveLine != null) {
