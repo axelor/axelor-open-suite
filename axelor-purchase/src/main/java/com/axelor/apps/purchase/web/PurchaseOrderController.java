@@ -578,8 +578,7 @@ public class PurchaseOrderController {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
         for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineService.fill(purchaseOrderLine, purchaseOrder);
-          purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+          purchaseOrderLineService.updateLinesAfterFiscalPositionChange(purchaseOrder);
         }
         response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
       }

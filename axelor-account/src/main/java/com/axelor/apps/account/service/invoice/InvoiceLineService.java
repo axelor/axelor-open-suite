@@ -114,4 +114,7 @@ public interface InvoiceLineService {
 
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException;
+
+  public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
+      throws AxelorException;
 }

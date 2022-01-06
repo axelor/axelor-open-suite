@@ -1412,4 +1412,37 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               }
             });
   }
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return null;
+    } else {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+        saleOrderLine.setTaxLine(taxLine);
+
+        Tax tax =
+            accountManagementService.getProductTax(
+                saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
+
+        TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setInTaxTotal(
+            saleOrderLine
+                .getExTaxTotal()
+                .multiply(saleOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        saleOrderLine.setCompanyInTaxTotal(
+            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      }
+    }
+    return saleOrderLineList;
+  }
 }

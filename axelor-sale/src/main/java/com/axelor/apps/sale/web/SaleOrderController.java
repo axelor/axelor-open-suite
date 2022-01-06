@@ -903,8 +903,7 @@ public class SaleOrderController {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, saleOrderLine);
+          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
       }
