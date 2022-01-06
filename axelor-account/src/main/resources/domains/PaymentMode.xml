@@ -13,7 +13,7 @@
     <boolean name="validatePaymentByDepositSlipPublication"/>
     <boolean name="canSelectInPaymentSession" title="Select on sessions ?"/>
     <integer name="daysMarginOnPaySession"
-      title="Default days Margin to retrieve terms on Payment Session ?"/>
+      title="Default days Margin to retrieve terms on Payment Session ?" default="5"/>
     <integer name="accountingMethodSelect" title="Accounting method for payment move"
       selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"

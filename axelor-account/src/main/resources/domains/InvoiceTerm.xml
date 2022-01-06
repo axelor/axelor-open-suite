@@ -91,7 +91,7 @@
       <field name="invoice"/>
       <field name="moveLine"/>
       <field name="decisionPfpTakenDate"/>
-      <field name="paymentSessionId"/>
+      <field name="paymentSession"/>
     </track>
 
   </entity>

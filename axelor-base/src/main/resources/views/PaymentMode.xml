@@ -31,7 +31,7 @@
         if="__config__.app.isApp('account')">
         <field name="canSelectInPaymentSession"/>
         <field name="daysMarginOnPaySession" showIf="canSelectInPaymentSession"
-          requiredIf="canSelectInPaymentSession" default="5" min="0"/>
+          requiredIf="canSelectInPaymentSession" min="0"/>
         <field name="accountingMethodSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"/>
         <field name="accountingTriggerSelect" showIf="canSelectInPaymentSession"
