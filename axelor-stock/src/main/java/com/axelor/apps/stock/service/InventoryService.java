@@ -717,7 +717,7 @@ public class InventoryService {
           }
         });
 
-    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq();
+    String fileName = computeExportFileName(inventory);
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
@@ -736,8 +736,18 @@ public class InventoryService {
     CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, file.getName());
+      return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
     }
+  }
+
+  public String computeExportFileName(Inventory inventory) {
+    return I18n.get("Inventory")
+        + "_"
+        + inventory.getInventorySeq()
+        + "_"
+        + appBaseService
+            .getTodayDate(inventory.getCompany())
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {
