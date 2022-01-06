@@ -566,6 +566,12 @@ public class MoveController {
         response.setError(
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
+      } else if (move.getPeriod() != null
+          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+        response.setError(
+            I18n.get(
+                "This period is closed and you do not have the necessary permissions to create entries"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

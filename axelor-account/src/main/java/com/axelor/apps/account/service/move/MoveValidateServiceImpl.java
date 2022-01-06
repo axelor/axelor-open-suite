@@ -286,16 +286,24 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.checkPreconditions(move);
 
-    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        && !move.getAutoYearClosureMove()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
-    }
-
-    Boolean dayBookMode =
+    boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
+
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        && !move.getAutoYearClosureMove()) {
+      if (dayBookMode
+          && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+              || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
+      }
+    }
 
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
