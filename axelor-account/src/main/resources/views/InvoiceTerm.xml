@@ -80,7 +80,7 @@
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
         <field name="amount" validIf="amount > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || !$isPaymentConditionFree"/>
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
         <field name="amountRemaining" readonly="true"/>
@@ -89,7 +89,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
-        <field name="$isPaymentConditionFree"/>
+        <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
