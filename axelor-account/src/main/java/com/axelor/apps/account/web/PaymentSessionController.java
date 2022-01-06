@@ -18,4 +18,11 @@ public class PaymentSessionController {
       response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
     }
   }
+
+  public void validatePaymentSession(ActionRequest request, ActionResponse response) {
+    PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+    paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+    Beans.get(PaymentSessionService.class).processPaymentSession(paymentSession);
+  }
 }

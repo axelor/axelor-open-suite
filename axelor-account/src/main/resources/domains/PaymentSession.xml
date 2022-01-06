@@ -37,8 +37,20 @@
 
         // STATUS SELECT
         public static final int STATUS_ONGOING = 1;
-        public static final int STATUS_CLOSED = 2;
-        public static final int STATUS_CANCELLED = 3;
+        public static final int STATUS_AWAITING_PAYMENT = 2;
+        public static final int STATUS_CLOSED = 3;
+        public static final int STATUS_CANCELLED = 4;
+
+        // ACCOUNTING METHOD SELECT
+        public static final int ACCOUNTING_METHOD_BY_INVOICE_TERM = 1;
+        public static final int ACCOUNTING_METHOD_BY_PARTNER = 2;
+        public static final int ACCOUNTING_METHOD_GLOBAL = 3;
+
+        // ACCOUNTING TRIGGER SELECT
+        public static final int ACCOUNTING_TRIGGER_IMMEDIATE = 1;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_REALIZATION = 4;
 
     ]]></extra-code>
   </entity>

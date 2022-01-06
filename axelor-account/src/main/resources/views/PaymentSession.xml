@@ -85,7 +85,7 @@
   <action-group name="action-payment-session-group-validate">
     <action name="save"/>
     <action name="action-payment-session-method-validate-invoice-terms"/>
-    <action name="refresh"/>
+    <action name="action-payment-session-method-validate-payment-session"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
@@ -114,6 +114,11 @@
   <action-method name="action-payment-session-method-validate-invoice-terms">
     <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="validateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-validate-payment-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validatePaymentSession"/>
   </action-method>
 
   <action-view name="action-view-account-payment-session-print-wizard"

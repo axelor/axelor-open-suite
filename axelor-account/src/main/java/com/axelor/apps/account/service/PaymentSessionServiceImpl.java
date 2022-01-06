@@ -20,23 +20,28 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
-
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
 
+  protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
 
   @Inject
-  public PaymentSessionServiceImpl(InvoiceTermRepository invoiceTermRepo) {
+  public PaymentSessionServiceImpl(
+      PaymentSessionRepository paymentSessionRepo, InvoiceTermRepository invoiceTermRepo) {
+    this.paymentSessionRepo = paymentSessionRepo;
     this.invoiceTermRepo = invoiceTermRepo;
   }
 
@@ -66,6 +71,11 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public boolean validateInvoiceTerms(PaymentSession paymentSession) {
+    if (paymentSession.getNextSessionDate() == null) {
+      return true;
+    }
+
+    LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
@@ -78,14 +88,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("paymentSession", paymentSession)
             .order("id");
 
-    LocalDate nextSessionDate = paymentSession.getNextSessionDate();
-
-    if (nextSessionDate == null) {
-      return true;
-    }
-
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
         .isEmpty()) {
+      nextSessionDate = this.fetchNextSessionDate(paymentSession);
+
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 
@@ -114,5 +120,57 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     return true;
+  }
+
+  protected LocalDate fetchNextSessionDate(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    return paymentSession.getNextSessionDate();
+  }
+
+  @Override
+  public void processPaymentSession(PaymentSession paymentSession) {
+    int offset = 0;
+    List<InvoiceTerm> invoiceTermList;
+    Query<InvoiceTerm> invoiceTermQuery =
+        invoiceTermRepo
+            .all()
+            .filter("self.paymentSession = :paymentSession")
+            .bind("paymentSession", paymentSession)
+            .order("id");
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        offset++;
+
+        if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+          this.processInvoiceTerm(paymentSession, invoiceTerm);
+        } else {
+          this.releaseInvoiceTerm(invoiceTerm);
+        }
+      }
+
+      JPA.clear();
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processInvoiceTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    if (paymentSession.getAccountingTriggerSelect()
+        == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
+      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
+      this.generateMoveFromInvoiceTerm(paymentSession, invoiceTerm);
+    } else {
+      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    }
+  }
+
+  protected void generateMoveFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {}
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentSession(null);
+    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
   }
 }

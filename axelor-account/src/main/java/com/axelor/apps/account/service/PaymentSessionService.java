@@ -24,4 +24,6 @@ public interface PaymentSessionService {
   public String computeName(PaymentSession paymentSession);
 
   boolean validateInvoiceTerms(PaymentSession paymentSession);
+
+  void processPaymentSession(PaymentSession paymentSession);
 }
