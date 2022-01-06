@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -195,4 +196,6 @@ public interface InvoiceTermService {
 
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public void retrieveEligibleTerms(PaymentSession paymentSession);
 }

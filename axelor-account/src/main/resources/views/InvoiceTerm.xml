@@ -62,7 +62,9 @@
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.move.statusSelect"/>
+    <field name="isSelectedOnPaymentSession"/>
     <field name="financialDiscountAmount"/>
+    <field name="paymentAmount" aggregate="sum"/>
     <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"/>
     <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
   </grid>
@@ -70,7 +72,6 @@
   <grid name="invoice-term-payment-session-group-by-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner">
     <field name="moveLine.partner"/>
-    <field name="isSelectedOnPaymentSession"/>
     <field name="paymentAmount" aggregate="sum"/>
   </grid>
 
@@ -403,12 +404,16 @@
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
     <view type="form" name="invoice-term-form"/>
+    <domain>self.paymentSession.id = :paymentSessionId</domain>
+    <context name="paymentSessionId" expr="eval: __this__.id"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-group-by-grid"/>
     <view type="form" name="invoice-term-form"/>
+    <domain>self.paymentSession.id = :paymentSessionId</domain>
+    <context name="paymentSessionId" expr="eval: __this__.id"/>
   </action-view>
 
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">

@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -148,6 +149,15 @@ public class InvoiceTermController {
                 .equals(
                     Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
