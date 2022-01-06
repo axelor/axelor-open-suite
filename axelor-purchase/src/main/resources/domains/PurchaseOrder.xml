@@ -68,6 +68,7 @@
     <!-- Notes -->
     <string name="notes" large="true" multiline="true" title="Description To Display"/>
     <string name="internalNote" large="true" multiline="true" title="Internal Note"/>
+    <string name="specificNotes" title="Specific notes" large="true"/>
 
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 

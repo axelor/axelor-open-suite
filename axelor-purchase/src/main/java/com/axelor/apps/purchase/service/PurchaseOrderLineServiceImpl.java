@@ -291,8 +291,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     Tax tax =
-        accountManagementService.getProductTax(
-            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
+        accountManagementService.getProductTax(product, purchaseOrder.getCompany(), null, true);
 
     TaxEquiv taxEquiv =
         Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
@@ -720,10 +719,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
         Tax tax =
             accountManagementService.getProductTax(
-                purchaseOrderLine.getProduct(),
-                purchaseOrder.getCompany(),
-                purchaseOrder.getFiscalPosition(),
-                true);
+                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), null, true);
 
         TaxEquiv taxEquiv =
             Beans.get(FiscalPositionService.class)
