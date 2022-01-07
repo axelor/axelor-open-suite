@@ -17,7 +17,7 @@
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
-      <field name="nbrOfAnalyticGrouping"
+      <field name="nbrOfAnalyticGrouping" readonlyIf="!id"
         onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
       <field name="manageParentAccount"/>
       <field name="company" colSpan="12" onChange="action-method-axis-change-company"/>

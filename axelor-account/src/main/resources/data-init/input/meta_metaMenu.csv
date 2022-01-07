@@ -13,6 +13,7 @@
 "account-root-move-move";"Admin"
 "account-root-payments";"Admin"
 "account-root-payments-payment-voucher";"Admin"
+"account-root-payments-payment-session";"Admin"
 "account-root-periodic-processing";"Admin"
 "account-root-periodic-processing-reconcile";"Admin"
 "account-root-periodic-processing-overpayment-clearances";"Admin"
