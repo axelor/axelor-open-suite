@@ -62,6 +62,8 @@ public class ChartBuilderService {
   private static final List<String> dateTypes =
       Arrays.asList(
           new String[] {"DATE", "DATETIME", "LOCALDATE", "LOCALDATETIME", "ZONNEDDATETIME"});
+  protected static final List<String> CLICK_HANDLER_SUPPORTED_CHARTS =
+      Arrays.asList("bar", "hbar", "scatter", "pie", "donut");
 
   private List<String> searchFields;
 
@@ -161,6 +163,11 @@ public class ChartBuilderService {
       xml += "groupBy=\"agg_field\" ";
     }
     xml += "/>\n";
+
+    if (CLICK_HANDLER_SUPPORTED_CHARTS.contains(chartBuilder.getChartType())) {
+      xml += "<config name=\"onClick\" value=\"action-chart-builder-view-related-record\" />";
+    }
+
     xml += "</chart>";
 
     return xml;
