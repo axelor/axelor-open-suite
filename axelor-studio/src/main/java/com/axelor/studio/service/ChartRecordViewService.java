@@ -15,33 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.imports;
+package com.axelor.studio.service;
 
-import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
 import java.util.Map;
 
-public interface ImportCityService {
+public interface ChartRecordViewService {
 
-  /**
-   * Import city
-   *
-   * @param typeSelect
-   * @param dataFile
-   * @return
-   */
-  public ImportHistory importCity(String typeSelect, MetaFile dataFile)
-      throws AxelorException, IOException;
-
-  public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
+  Map<String, Object> getActionView(String chartName, Map<String, Object> context)
       throws AxelorException;
-
-  public Map<String, Object> importFromGeonamesAutoConfig(
-      String downloadFileName, String typeSelect);
-
-  public Map<String, Object> importFromGeonamesManualConfig(
-      Map<String, Object> map, String typeSelect);
 }

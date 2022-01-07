@@ -298,6 +298,9 @@ public interface IExceptionMessage {
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/

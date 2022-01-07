@@ -218,6 +218,10 @@
       if="isJsonGroupOn"/>
   </action-record>
 
+  <action-method name="action-chart-builder-view-related-record">
+    <call class="com.axelor.studio.web.ChartBuilderController" method="viewRelatedRecord"/>
+  </action-method>
+
 </object-views>
 
 
