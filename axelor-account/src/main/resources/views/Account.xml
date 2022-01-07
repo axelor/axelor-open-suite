@@ -59,7 +59,8 @@
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8"
         readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
+          onChange="action-method-account-fill-account-code"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
       </panel>
@@ -82,7 +83,8 @@
       <panel name="settingsPanel" title="Account.settings" colSpan="12">
         <field name="accountType" required="true" form-view="account-type-form"
           grid-view="account-type-grid" colSpan="3"
-          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
+          onChange="action-method-account-fill-account-code"/>
         <field name="isRegulatoryAccount" colSpan="3"/>
         <field name="commonPosition"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
@@ -322,6 +324,10 @@
 
   <action-method name="action-method-account-hide-analytic">
     <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
+
+  <action-method name="action-method-account-fill-account-code">
+    <call class="com.axelor.apps.account.web.AccountController" method="fillAccountCode"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
