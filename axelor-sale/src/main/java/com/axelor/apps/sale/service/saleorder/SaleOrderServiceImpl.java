@@ -252,6 +252,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrderLineList == null) {
       saleOrderLineList = new ArrayList<>();
     }
+    Integer sequence = -1;
+
+    if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
+      sequence = saleOrderLineList.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
+    }
 
     SaleOrderLine originSoLine = null;
     for (SaleOrderLine soLine : saleOrderLineList) {
@@ -305,6 +310,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             newSoLine.setParentId(originSoLine.getManualId());
 
             saleOrderLineList.add(newSoLine);
+            newSoLine.setSequence(++sequence);
           }
         } else {
           newSoLine.setQty(

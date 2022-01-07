@@ -288,4 +288,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_MOVE_DATE_ERROR = /*$$(*/
       "Please, enter only dates with the last day of month" /*)*/;
+
+  static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
+      "Field fieldSelect is null for %s" /*)*/;
 }
