@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
 
 public interface PaymentSessionService {
 
@@ -26,5 +29,5 @@ public interface PaymentSessionService {
 
   boolean validateInvoiceTerms(PaymentSession paymentSession);
 
-  void processPaymentSession(PaymentSession paymentSession) throws AxelorException;
+  Map<Partner, Move> processPaymentSession(PaymentSession paymentSession) throws AxelorException;
 }
