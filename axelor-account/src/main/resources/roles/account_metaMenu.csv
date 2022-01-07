@@ -7,6 +7,7 @@
 "account-root-move-move";"Account Manager|Account User|Account Read"
 "account-root-payments";"Account Manager|Account User|Account Read"
 "account-root-payments-payment-voucher";"Account Manager|Account User|Account Read"
+"account-root-payments-payment-session";"Account Manager|Account User|Account Read"
 "account-root-periodic-processing";"Account Manager|Account User|Account Read"
 "account-root-periodic-processing-reconcile";"Account Manager|Account User|Account Read"
 "account-root-periodic-processing-overpayment-clearances";"Account Manager|Account User|Account Read"

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="payment-session-grid" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+    <field name="assignedToUser" hidden="true"/>
+  </grid>
+
+  <form name="payment-session-form" title="Payment session"
+    model="com.axelor.apps.account.db.PaymentSession" width="large">
+    <toolbar>
+      <button name="printPaymentSessionBtn" title="Print/Export session"
+        onClick="save,action-view-account-payment-session-print-wizard"/>
+    </toolbar>
+    <panel name="mainPanel" itemSpan="4">
+      <field name="createdOn"/>
+      <field name="sequence"/>
+      <field name="name"/>
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onSelect="action-attrs-payment-session-set-company-domain"
+        onChange="action-attrs-payment-session-reset-on-company-change"/>
+      <field name="paymentMode" readonlyIf="!company"
+        domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)"
+        form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
+        grid-view="bank-details-grid"
+        onSelect="action-attrs-payment-session-set-bank-details-domain"/>
+      <field name="paymentDate"/>
+      <field name="nextSessionDate" readonlyIf="paymentDate"/>
+      <field name="assignedToUser"/>
+      <field name="journal" readonlyIf="!company"
+        onSelect="action-attrs-payment-session-set-journal-domain"/>
+    </panel>
+    <panel name="accountingSettingsPanel" itemSpan="4">
+      <field name="accountingMethodSelect"/>
+      <field name="accountingTriggerSelect"/>
+    </panel>
+    <panel name="searchPanel"
+      showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
+      <button name="searchEligibleTermsBtn" title="Search due Terms" onClick=""/>
+      <button name="refreshEligibleTermsBtn" title="Refresh terms list"
+        showIf="id &amp;&amp; sessionTotalAmount > 0" onClick=""/>
+      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
+        showIf="id" colSpan="12" canSearch="true"/>
+      <panel-dashlet
+        action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
+        colSpan="12" canSearch="true"/>
+      <button name="selectAllBtn" title="Select all" onClick=""/>
+      <button name="unselectAllBtn" title="Unselect all" showIf="sessionTotalAmount > 0"
+        onClick=""/>
+      <field name="sessionTotalAmount" readonly="true"/>
+    </panel>
+    <panel name="statusPanel" sidebar="true">
+      <field name="statusSelect" widget="NavSelect"/>
+      <button name="validateBtn" title="Validate" onClick=""
+        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+      <button name="cancelBtn" title="Cancel" onClick=""
+        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+    </panel>
+    <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
+      <button name="sendEmailsBtn" title="Send emails payment notice"
+        showIf="statusSelect = 1" readonlyIf="hasEmailsSent == true" onClick=""/>
+      <field name="hasEmailsSent" readonly="true"/>
+    </panel>
+  </form>
+
+  <form name="payment-session-print-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Payment session print wizard">
+    <panel name="mainPanel">
+      <field name="_exportTypeSelect" type="string" title="Export format"
+        selection="iadministration.export.type.select"/>
+      <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-attrs-payment-session-set-company-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__user__?.companySet?.collect{it.id}.join(',')}) &quot;"
+      for="company"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-payment-session-set-bank-details-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id = (${company?.defaultBankDetails?.id})&quot;" for="bankDetails"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-payment-session-set-journal-domain">
+    <attribute name="domain"
+      expr="eval: &quot; self.company.id = (${company?.id?:__user__?.activeCompany?.id}) and self.journalType.technicalTypeSelect = 4 and self.id IN (${__this__?.paymentMode?.accountManagementList?.collect{it.journal.id}?.join(',')}) &quot;"
+      for="journal"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-payment-session-reset-on-company-change">
+    <attribute name="value" expr="eval: null" for="journal"/>
+    <attribute name="value" expr="eval: null" for="bankDetails"/>
+    <attribute name="value" expr="eval: null" for="paymentMode"/>
+  </action-attrs>
+
+  <action-view name="action-view-account-payment-session-print-wizard"
+    title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="payment-session-print-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+  </action-view>
+
+</object-views>
