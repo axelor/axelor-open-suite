@@ -14,6 +14,7 @@
   </grid>
 
   <form name="payment-session-form" title="Payment session"
+    onNew="action-record-payment-session-set-default-values"
     model="com.axelor.apps.account.db.PaymentSession" width="large">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
@@ -25,14 +26,15 @@
       <field name="name"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
         onSelect="action-attrs-payment-session-set-company-domain"
-        onChange="action-attrs-payment-session-reset-on-company-change"/>
+        onChange="action-group-payment-session-on-company-change"/>
       <field name="paymentMode" readonlyIf="!company"
         domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)"
         form-view="payment-mode-form" grid-view="payment-mode-grid"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
       <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
         grid-view="bank-details-grid"
-        onSelect="action-attrs-payment-session-set-bank-details-domain"/>
+        onSelect="action-attrs-payment-session-set-bank-details-domain"
+        onChange="action-record-payment-session-on-change-bankDetails"/>
       <field name="paymentDate"/>
       <field name="nextSessionDate" readonlyIf="paymentDate"/>
       <field name="assignedToUser"/>
@@ -111,5 +113,26 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
   </action-view>
+
+  <action-record name="action-record-payment-session-set-default-values"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-record>
+
+  <action-record name="action-record-payment-session-on-change-bankDetails"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="company" expr="eval: bankDetails?.company"/>
+    <field name="currency" expr="eval: bankDetails?.currency"/>
+  </action-record>
+
+  <action-method name="action-method-payment-session-on-company-change">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="onChangeCompany"/>
+  </action-method>
+
+  <action-group name="action-group-payment-session-on-company-change">
+    <action name="action-attrs-payment-session-reset-on-company-change"/>
+    <action name="action-method-payment-session-on-company-change"/>
+  </action-group>
 
 </object-views>
