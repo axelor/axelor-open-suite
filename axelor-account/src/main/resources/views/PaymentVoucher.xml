@@ -42,7 +42,7 @@
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true"
         onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"
-        readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == NULL) || payVoucherElementToPayList.length == 0"/>
+        readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print"
         onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"
@@ -106,11 +106,11 @@
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines"
-          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == NULL) || payVoucherDueElementList.length == 0"
+          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
           colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
           onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
-          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == NULL) || payVoucherElementToPayList.length > 0"
+          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
           colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
