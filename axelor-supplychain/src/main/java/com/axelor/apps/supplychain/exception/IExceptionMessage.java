@@ -296,4 +296,7 @@ public interface IExceptionMessage {
 
   static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
+
+  static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
+      "Field fieldSelect is null for %s" /*)*/;
 }

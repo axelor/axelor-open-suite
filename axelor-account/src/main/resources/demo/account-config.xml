@@ -137,6 +137,12 @@
       to="saleAccount" update="true" if="saleAccount_code"/>
     <bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id"
       to="purchaseAccount" update="true" if="purchaseAccount_code"/>
+    <bind
+      search="self.code = :purchVatRegulationAccount_code and self.company.importId = :company_id"
+      to="purchVatRegulationAccount" update="true" if="purchVatRegulationAccount_code"/>
+    <bind
+      search="self.code = :saleVatRegulationAccount_code and self.company.importId = :company_id"
+      to="saleVatRegulationAccount" update="true" if="saleVatRegulationAccount_code"/>
     <bind search="self.importId = :sequence_importId" to="sequence" update="true"
       if="sequence_importId"/>
     <bind search="self.importId = :journal_importId and self.company.importId = :company_id"
