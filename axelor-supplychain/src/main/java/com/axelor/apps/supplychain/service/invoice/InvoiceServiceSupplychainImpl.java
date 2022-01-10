@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -79,7 +80,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
-      IntercoService intercoService) {
+      IntercoService intercoService,
+      TaxService taxService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -92,7 +94,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         accountConfigService,
         moveToolService,
         invoiceTermService,
-        appBaseService);
+        appBaseService,
+        taxService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
   }

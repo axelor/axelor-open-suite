@@ -280,7 +280,11 @@ public class InvoiceController {
         return;
       }
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
-      response.setValues(invoice);
+      if (invoice != null) {
+        response.setValues(invoice);
+      } else if (invoice == null) {
+        response.setValue("invoiceTermList", null);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

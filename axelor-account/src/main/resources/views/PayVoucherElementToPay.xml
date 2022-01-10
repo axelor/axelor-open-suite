@@ -19,6 +19,7 @@
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+      <field name="invoiceTerm"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
