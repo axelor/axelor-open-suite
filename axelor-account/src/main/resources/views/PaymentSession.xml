@@ -62,7 +62,7 @@
       <field name="statusSelect" widget="NavSelect"/>
       <button name="validateBtn" title="Validate" onClick=""
         showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
-      <button name="cancelBtn" title="Cancel" onClick=""
+      <button name="cancelBtn" title="Cancel" onClick="action-payment-session-group-cancel"
         showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
@@ -80,6 +80,17 @@
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>
+
+  <action-group name="action-payment-session-group-cancel">
+    <action name="action-payment-session-validate-cancel"/>
+    <action name="save"/>
+    <action name="action-payment-session-method-cancel"/>
+  </action-group>
+
+  <action-method name="action-payment-session-method-cancel">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="cancelPaymentSession"/>
+  </action-method>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"
@@ -103,6 +114,11 @@
     <attribute name="value" expr="eval: null" for="bankDetails"/>
     <attribute name="value" expr="eval: null" for="paymentMode"/>
   </action-attrs>
+
+  <action-validate name="action-payment-session-validate-cancel">
+    <alert
+      message="You are about to loose your work in progress. Are you confirming the cancellation of the session ?"/>
+  </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
     title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">

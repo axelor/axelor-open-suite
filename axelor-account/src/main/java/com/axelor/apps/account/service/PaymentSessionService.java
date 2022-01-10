@@ -22,4 +22,6 @@ import com.axelor.apps.account.db.PaymentSession;
 public interface PaymentSessionService {
 
   public String computeName(PaymentSession paymentSession);
+
+  void cancelPaymentSession(PaymentSession paymentSession);
 }

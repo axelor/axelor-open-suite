@@ -17,12 +17,31 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.util.List;
 import java.util.Locale;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
+
+  protected PaymentSessionRepository paymentSessionRepo;
+  protected InvoiceTermRepository invoiceTermRepo;
+
+  @Inject
+  public PaymentSessionServiceImpl(
+      PaymentSessionRepository paymentSessionRepo, InvoiceTermRepository invoiceTermRepo) {
+    this.paymentSessionRepo = paymentSessionRepo;
+    this.invoiceTermRepo = invoiceTermRepo;
+  }
 
   @Override
   public String computeName(PaymentSession paymentSession) {
@@ -46,5 +65,36 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       name.append((isFr ? " par " : " by ") + createdBy.getName());
     }
     return name.toString();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelPaymentSession(PaymentSession paymentSession) {
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
+    paymentSessionRepo.save(paymentSession);
+
+    this.cancelInvoiceTerms(paymentSession);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void cancelInvoiceTerms(PaymentSession paymentSession) {
+    int offset = 0;
+    List<InvoiceTerm> invoiceTermList;
+    Query<InvoiceTerm> invoiceTermQuery =
+        invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        offset++;
+
+        invoiceTerm.setPaymentSession(null);
+        invoiceTerm.setIsSelectedOnPaymentSession(false);
+
+        invoiceTermRepo.save(invoiceTerm);
+      }
+
+      JPA.clear();
+    }
   }
 }
