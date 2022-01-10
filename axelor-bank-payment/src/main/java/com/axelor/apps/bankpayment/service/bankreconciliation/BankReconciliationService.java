@@ -250,8 +250,10 @@ public class BankReconciliationService {
         domain =
             domain.concat(
                 " AND (self.accountType.id IN "
-                    + bankReconciliation.getJournal().getValidAccountTypeSet().stream().map(AccountType::getId).map(id->id.toString())
-                    	.collect(Collectors.joining("','", "('", "')"))
+                    + bankReconciliation.getJournal().getValidAccountTypeSet().stream()
+                        .map(AccountType::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
                         .toString());
       } else {
         domain = domain.concat(" AND (self.accountType.id = 0");
@@ -261,8 +263,10 @@ public class BankReconciliationService {
         domain =
             domain.concat(
                 " OR self.id IN "
-                    + bankReconciliation.getJournal().getValidAccountSet().stream().map(Account::getId).map(id->id.toString())
-                    	.collect(Collectors.joining("','", "('", "')"))
+                    + bankReconciliation.getJournal().getValidAccountSet().stream()
+                        .map(Account::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
                         .toString()
                     + ")");
       } else {
