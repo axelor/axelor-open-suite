@@ -161,7 +161,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   protected boolean _getPfpValidateStatusCondition(Invoice invoice, boolean litigation) {
     return invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_AWAITING
-        && (!litigation
+        || (!litigation
             || invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_LITIGATION);
   }
 
