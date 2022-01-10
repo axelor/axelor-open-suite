@@ -1200,31 +1200,35 @@ public class InvoiceController {
       response.setAttr(
           "passedForPaymentValidationBtn",
           "hidden",
-          invoiceVisibilityService.isPfpButtonVisible(invoice, user, true));
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, true));
 
       response.setAttr(
           "refusalToPayBtn",
           "hidden",
-          invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
 
       response.setAttr(
           "addPaymentBtn",
           "hidden",
-          invoiceVisibilityService.isPaymentButtonVisible(invoice, false));
+          !invoiceVisibilityService.isPaymentButtonVisible(invoice, false));
 
       response.setAttr(
           "registerPaymentBtn",
           "hidden",
-          invoiceVisibilityService.isPaymentButtonVisible(invoice, true));
+          !invoiceVisibilityService.isPaymentButtonVisible(invoice, true));
 
       response.setAttr(
-          "pfpValidatorUser", "hidden", invoiceVisibilityService.isValidatorUserVisible(invoice));
+          "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
 
       response.setAttr(
-          "decisionPfpTakenDate", "hidden", invoiceVisibilityService.isDecisionPfpVisible(invoice));
+          "decisionPfpTakenDate",
+          "hidden",
+          !invoiceVisibilityService.isDecisionPfpVisible(invoice));
 
       response.setAttr(
-          "sendPfpNotifyEmailBtn", "hidden", invoiceVisibilityService.isSendNotifyVisible(invoice));
+          "sendPfpNotifyEmailBtn",
+          "hidden",
+          !invoiceVisibilityService.isSendNotifyVisible(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
