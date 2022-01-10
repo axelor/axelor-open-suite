@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,9 +40,11 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
@@ -62,6 +65,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -72,8 +76,12 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -105,6 +113,8 @@ public class MrpServiceImpl implements MrpService {
   protected MrpForecastRepository mrpForecastRepository;
   protected StockLocationService stockLocationService;
   protected ProductCategoryRepository productCategoryRepository;
+  protected StockHistoryLineRepository stockHistoryLineRepository;
+  protected ProductCategoryService productCategoryService;
 
   protected AppBaseService appBaseService;
   protected AppPurchaseService appPurchaseService;
@@ -130,7 +140,9 @@ public class MrpServiceImpl implements MrpService {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
-      ProductCategoryRepository productCategoryRepository) {
+      ProductCategoryRepository productCategoryRepository,
+      StockHistoryLineRepository stockHistoryLineRepository,
+      ProductCategoryService productCategoryService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -148,6 +160,8 @@ public class MrpServiceImpl implements MrpService {
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.stockLocationService = stockLocationService;
+    this.stockHistoryLineRepository = stockHistoryLineRepository;
+    this.productCategoryService = productCategoryService;
   }
 
   @Override
@@ -225,6 +239,8 @@ public class MrpServiceImpl implements MrpService {
     this.createSaleOrderMrpLines();
 
     this.createSaleForecastMrpLines();
+
+    this.createStockHistoryMrpLines();
   }
 
   protected void doCalulation(Mrp mrp) throws AxelorException {
@@ -898,6 +914,191 @@ public class MrpServiceImpl implements MrpService {
           mrpLineTypeRepository.find(saleForecastMrpLineType.getId()));
       JPA.clear();
     }
+  }
+
+  protected void createStockHistoryMrpLines() throws AxelorException {
+    MrpLineType stockHistoryMrpLineType =
+        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_STOCK_HISTORY);
+
+    if (stockHistoryMrpLineType == null) {
+      return;
+    }
+
+    this.mrp = mrpRepository.find(mrp.getId());
+
+    for (Long productId : this.productMap.keySet()) {
+      Product product = productRepository.find(productId);
+      Mrp mrp = mrpRepository.find(this.mrp.getId());
+      this.createStockHistoryWeigthedLine(
+          product,
+          mrp,
+          mrpLineTypeRepository.find(stockHistoryMrpLineType.getId()),
+          stockLocationRepository.find(mrp.getStockLocation().getId()));
+      JPA.clear();
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createStockHistoryWeigthedLine(
+      Product product, Mrp mrp, MrpLineType mrpLineType, StockLocation stockLocation)
+      throws AxelorException {
+
+    Query<StockHistoryLine> query = buildStockHistoryLineQuery(product, mrp, mrpLineType);
+    List<StockHistoryLine> stockHistoryLineList = query.fetch();
+    BigDecimal growthCoef =
+        productCategoryService
+            .getGrowthCoeff(product.getProductCategory())
+            .multiply(mrpLineType.getGrowthCoef());
+
+    if (mrpLineType.getIsProjectedForNextMonths()) {
+      if (stockHistoryLineList != null && !stockHistoryLineList.isEmpty()) {
+        // List should be ordered by date
+        StockHistoryLine stockHistoryLineToProject = stockHistoryLineList.get(0);
+        LocalDate firstDate =
+            LocalDate.parse(stockHistoryLineToProject.getLabel())
+                .plusMonths(mrpLineType.getOffsetInMonths());
+        MrpLine mrpLine =
+            createMrpLine(
+                product,
+                mrp,
+                mrpLineType,
+                stockLocation,
+                stockHistoryLineToProject,
+                firstDate,
+                growthCoef);
+        if (mrpLine != null) {
+          mrpLineRepository.save(mrpLine);
+          for (int i = 0; i < mrpLineType.getNbrOfMonthProjection(); i++) {
+            LocalDate datePlusMonths = firstDate.plusMonths(i + 1);
+            if (mrp.getEndDate() != null && datePlusMonths.isAfter(mrp.getEndDate())) {
+              break;
+            }
+            MrpLine projectedMrpLine =
+                createMrpLine(
+                    product,
+                    mrp,
+                    mrpLineType,
+                    stockLocation,
+                    stockHistoryLineToProject,
+                    datePlusMonths,
+                    growthCoef);
+            mrpLineRepository.save(projectedMrpLine);
+          }
+        }
+      }
+    } else {
+      for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
+        LocalDate date =
+            LocalDate.parse(stockHistoryLine.getLabel())
+                .plusMonths(mrpLineType.getOffsetInMonths());
+        MrpLine mrpLine =
+            createMrpLine(
+                product, mrp, mrpLineType, stockLocation, stockHistoryLine, date, growthCoef);
+        mrpLineRepository.save(mrpLine);
+      }
+    }
+  }
+
+  protected MrpLine createMrpLine(
+      Product product,
+      Mrp mrp,
+      MrpLineType mrpLineType,
+      StockLocation stockLocation,
+      StockHistoryLine stockHistoryLine,
+      LocalDate date,
+      BigDecimal growthCoef)
+      throws AxelorException {
+    log.debug("Creating mrp line for stock history line {}", stockHistoryLine);
+
+    try {
+      BigDecimal fieldValue = computeFieldValue(mrpLineType, stockHistoryLine, growthCoef, date);
+      date = computeStockHistoryMrpLineDate(date);
+      MrpLine mrpLine =
+          this.createMrpLine(
+              mrp, product, mrpLineType, fieldValue, date, fieldValue, stockLocation, null);
+      return mrpLine;
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  protected LocalDate computeStockHistoryMrpLineDate(LocalDate date) {
+    if (!date.isBefore(today)) {
+      date = date.withDayOfMonth(1);
+    } else {
+      date = today;
+    }
+    return date;
+  }
+
+  protected BigDecimal computeFieldValue(
+      MrpLineType mrpLineType,
+      StockHistoryLine stockHistoryLine,
+      BigDecimal growthCoef,
+      LocalDate date)
+      throws IllegalAccessException, InvocationTargetException {
+    Mapper mapper = Mapper.of(StockHistoryLine.class);
+    Method getter = mapper.getGetter(mrpLineType.getMetaField().getName());
+    BigDecimal fieldValue = (BigDecimal) getter.invoke(stockHistoryLine);
+    if (date.isBefore(today)) {
+      fieldValue = computeProrata(fieldValue, today);
+    }
+    fieldValue = fieldValue.multiply(growthCoef);
+    return fieldValue.setScale(getStockHistoryMrpLineNbDecimal(), RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computeProrata(BigDecimal amount, LocalDate dateOfTheDay) {
+    // Prorata = (amount * remainingDay) / number of days in the month
+
+    BigDecimal result = null;
+    log.debug("Computing prorata of value {} at {}", amount, dateOfTheDay);
+    if (amount != null && dateOfTheDay != null) {
+      int lengthOfMonth =
+          YearMonth.of(dateOfTheDay.getYear(), dateOfTheDay.getMonthValue()).lengthOfMonth();
+      result = amount.multiply(BigDecimal.valueOf(lengthOfMonth - dateOfTheDay.getDayOfMonth()));
+      result =
+          result.divide(
+              BigDecimal.valueOf(lengthOfMonth),
+              getStockHistoryMrpLineNbDecimal(),
+              RoundingMode.HALF_UP);
+    }
+
+    return result;
+  }
+
+  protected int getStockHistoryMrpLineNbDecimal() {
+    return appBaseService.getNbDecimalDigitForQty();
+  }
+
+  protected Query<StockHistoryLine> buildStockHistoryLineQuery(
+      Product product, Mrp mrp, MrpLineType mrpLineType) throws AxelorException {
+    Map<String, Object> bindings = new HashMap<>();
+    StringBuilder querySb =
+        new StringBuilder("self.product.id = :productId AND DATE(self.label) >= :startDate ");
+    bindings.put("productId", product.getId());
+    bindings.put("startDate", today.minusMonths(mrpLineType.getOffsetInMonths()).withDayOfMonth(1));
+    String fieldName = mrpLineType.getMetaField().getName();
+
+    // Field name can not be null
+    if (fieldName == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          IExceptionMessage.MRP_STOCK_HISTORY_FIELD_SELECT_MISSING,
+          mrpLineType.getName());
+    }
+
+    // We will filter lines that don't have minimun value
+    querySb.append("AND self.").append(fieldName).append(" > :minValue");
+    bindings.put("minValue", BigDecimal.ZERO);
+
+    if (mrp.getEndDate() != null) {
+      querySb.append(" AND DATE(self.label) <= :endDate");
+      bindings.put("endDate", mrp.getEndDate().minusMonths(mrpLineType.getOffsetInMonths()));
+    }
+
+    Query<StockHistoryLine> query =
+        stockHistoryLineRepository.all().filter(querySb.toString()).bind(bindings).order("label");
+    return query;
   }
 
   @Transactional(rollbackOn = {Exception.class})

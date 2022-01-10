@@ -28,7 +28,8 @@
       ref="com.axelor.apps.account.db.PayVoucherDueElement"
       title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher"/>
     <one-to-many name="payVoucherElementToPayList"
-      ref="com.axelor.apps.account.db.PayVoucherElementToPay" title="List of invoices to pay"
+      ref="com.axelor.apps.account.db.PayVoucherElementToPay"
+      title="List of allocations by invoices/installments for the amount paid"
       mappedBy="paymentVoucher"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.payment.voucher.status.select"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -283,7 +283,11 @@ public class InvoiceController {
         return;
       }
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
-      response.setValues(invoice);
+      if (invoice != null) {
+        response.setValues(invoice);
+      } else if (invoice == null) {
+        response.setValue("invoiceTermList", null);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

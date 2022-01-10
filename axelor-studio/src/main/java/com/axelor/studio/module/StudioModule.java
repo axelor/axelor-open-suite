@@ -34,6 +34,8 @@ import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepo;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
+import com.axelor.studio.service.ChartRecordViewService;
+import com.axelor.studio.service.ChartRecordViewServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderExportService;
 import com.axelor.studio.service.loader.AppLoaderExportServiceImpl;
 import com.axelor.studio.service.loader.AppLoaderImportService;
@@ -56,5 +58,6 @@ public class StudioModule extends AxelorModule {
     bind(MapperScriptGeneratorService.class).to(MapperScriptGeneratorServiceImpl.class);
     bind(AppLoaderImportService.class).to(AppLoaderImportServiceImpl.class);
     bind(AppLoaderExportService.class).to(AppLoaderExportServiceImpl.class);
+    bind(ChartRecordViewService.class).to(ChartRecordViewServiceImpl.class);
   }
 }

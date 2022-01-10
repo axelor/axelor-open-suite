@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -296,9 +296,11 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -989,7 +991,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1054,4 +1056,7 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
+      "There is no sequence set for the payment session for the company %s" /*)*/;
 }
