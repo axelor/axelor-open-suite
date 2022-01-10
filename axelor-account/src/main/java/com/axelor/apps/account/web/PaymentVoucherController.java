@@ -17,8 +17,19 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
@@ -41,11 +52,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PaymentVoucherController {
@@ -74,6 +80,7 @@ public class PaymentVoucherController {
       List<PayVoucherDueElement> pvDueElementList =
           Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
       response.setValue("payVoucherDueElementList", pvDueElementList);
+      response.setValue("payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
