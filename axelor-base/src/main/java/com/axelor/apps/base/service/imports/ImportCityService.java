@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
+import java.util.Map;
 
 public interface ImportCityService {
 
@@ -37,4 +38,10 @@ public interface ImportCityService {
 
   public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
       throws AxelorException;
+
+  public Map<String, Object> importFromGeonamesAutoConfig(
+      String downloadFileName, String typeSelect);
+
+  public Map<String, Object> importFromGeonamesManualConfig(
+      Map<String, Object> map, String typeSelect);
 }

@@ -29,6 +29,15 @@
       <field name="statusSelect" widget="MultiSelect"
         selection="production.manuf.order.status.select" showIf="elementSelect == 6"
         if-module="axelor-production" if="__config__.app.isApp('production')"/>
+      <field name="metaField" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"
+        domain="self.metaModel.fullName = 'com.axelor.apps.stock.db.StockHistoryLine' AND self.typeName = 'BigDecimal'"/>
+      <field name="growthCoef" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"/>
+      <field name="isProjectedForNextMonths" hidden="true" showIf="elementSelect == 10"/>
+      <field name="nbrOfMonthProjection" hidden="true" showIf="isProjectedForNextMonths"/>
+      <field name="offsetInMonths" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"/>
       <field name="applicationFieldSelect" widget="MultiSelect"/>
       <field name="includeElementWithoutDate" showIf="$contains([2,3,6,7], elementSelect)"/>
       <field name="ignoreEndDate" showIf="$contains([2, 6], elementSelect)"/>
