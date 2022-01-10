@@ -18,13 +18,28 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.google.inject.Inject;
 
 public class BankStatementManagementRepository extends BankStatementRepository {
+
+  protected BankStatementLineService bankStatementLineService;
+
+  @Inject
+  public BankStatementManagementRepository(BankStatementLineService bankStatementLineService) {
+    this.bankStatementLineService = bankStatementLineService;
+  }
 
   @Override
   public BankStatement copy(BankStatement entity, boolean deep) {
     BankStatement bankStatement = super.copy(entity, deep);
     bankStatement.setStatusSelect(this.STATUS_RECEIVED);
     return bankStatement;
+  }
+
+  @Override
+  public void remove(BankStatement entity) {
+    bankStatementLineService.removeBankReconciliationLines(entity);
+    super.remove(entity);
   }
 }

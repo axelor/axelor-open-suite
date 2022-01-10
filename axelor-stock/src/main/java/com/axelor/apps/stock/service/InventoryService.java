@@ -208,9 +208,10 @@ public class InventoryService {
       String rack = line[headers.indexOf(RACK)].replace("\"", "");
       String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
 
-      BigDecimal realQty;
+      BigDecimal realQty = null;
       try {
-        realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)].replace("\"", ""));
+        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
+          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
       } catch (NumberFormatException e) {
         throw new AxelorException(
             new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
@@ -226,7 +227,8 @@ public class InventoryService {
 
       if (inventoryLineMap.containsKey(key)) {
         InventoryLine inventoryLine = inventoryLineMap.get(key);
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
 
         if (inventoryLine.getTrackingNumber() != null) {
@@ -270,7 +272,8 @@ public class InventoryService {
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
         inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(
             this.getTrackingNumber(trackingNumberSeq, product, realQty));
