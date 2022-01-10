@@ -110,7 +110,7 @@
           colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
           onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
-          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == NULL) || payVoucherDueElementList.length == 0"
+          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == NULL) || payVoucherElementToPayList.length > 0"
           colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
