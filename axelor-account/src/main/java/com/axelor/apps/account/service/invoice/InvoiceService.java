@@ -322,4 +322,6 @@ public interface InvoiceService {
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
+
+  public void validatePfp(Long invoiceId) throws AxelorException;
 }

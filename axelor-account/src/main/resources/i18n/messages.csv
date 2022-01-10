@@ -1492,6 +1492,7 @@
 "Import a chart",,,
 "Import fec type",,,
 "Important",,,
+"Impossible at this stage to update the PFP on invoiceTerm(s) record(s) from the invoice as conditions are not fulfilled. Please validate/refuse the PFP decision on each invoiceTerm record.",,,
 "Imput amount",,,
 "Imput. amount in currency",,,
 "Imputed by",,,
