@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -1188,6 +1193,16 @@ public class InvoiceController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Beans.get(InvoiceService.class).validatePfp(invoice.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
