@@ -49,7 +49,7 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date"/>
     <date name="dueDate" title="Due date"/>
-    <date name="nextDueDate" title="Next Due Date" readonly="true"/>
+    <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
 
