@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,6 +50,8 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.db.repo.PeriodManagementRepository;
@@ -101,6 +103,8 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PaymentSessionService;
+import com.axelor.apps.account.service.PaymentSessionServiceImpl;
 import com.axelor.apps.account.service.PeriodControlService;
 import com.axelor.apps.account.service.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -450,6 +454,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
 
+    bind(PaymentSessionRepository.class).to(PaymentSessionAccountRepository.class);
+
     bind(FECImportService.class).to(FECImportServiceImpl.class);
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
@@ -473,5 +479,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
 
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
+
+    bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
   }
 }

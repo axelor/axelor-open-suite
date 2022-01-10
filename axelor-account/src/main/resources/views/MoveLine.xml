@@ -42,6 +42,43 @@
     <field name="analyticMoveLineList" hidden="true"/>
   </grid>
 
+  <grid name="move-line-account-grid" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="name"/>
+    <field name="date"/>
+    <field name="move.period"/>
+    <field name="move.journal"/>
+    <field name="partner"/>
+    <field name="debit"/>
+    <field name="credit"/>
+    <field name="amountRemaining"/>
+    <field name="taxLine"/>
+    <field name="move.statusSelect"/>
+    <field name="description"/>
+    <field name="dueDate"/>
+    <button name="editMoveBtn" title="Edit Move" icon="fa-external-link"
+      onClick="action-move-line-view-open-move"/>
+  </grid>
+
+  <grid name="move-line-account-reconcile-group-grid" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="name"/>
+    <field name="date"/>
+    <field name="move.period"/>
+    <field name="move.journal"/>
+    <field name="partner"/>
+    <field name="debit"/>
+    <field name="credit"/>
+    <field name="amountRemaining"/>
+    <field name="taxLine"/>
+    <field name="move.statusSelect"/>
+    <field name="reconcileGroup"/>
+    <field name="description"/>
+    <field name="dueDate"/>
+    <button name="editMoveBtn" title="Edit Move" icon="fa-external-link"
+      onClick="action-move-line-view-open-move"/>
+  </grid>
+
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group">
     <field name="counter" hidden="true" width="80"/>
@@ -866,7 +903,8 @@
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">
-    <view type="grid" name="move-line-grid"/>
+    <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
+    <view type="grid" name="move-line-account-reconcile-group-grid" if="reconcileOk"/>
     <view type="form" name="move-line-form"/>
     <domain>self.account.id = :_id</domain>
   </action-view>
@@ -964,5 +1002,12 @@
   <action-method name="action-method-move-line-hide-axis-analytic-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="manageAxis"/>
   </action-method>
+
+  <action-view name="action-move-line-view-open-move" title="Account move"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id).move.id"/>
+  </action-view>
 
 </object-views>

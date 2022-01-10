@@ -35,6 +35,9 @@
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code"/>
 
+    <many-to-one name="globalAccountingCashAccount"
+      ref="com.axelor.apps.account.db.Account" title="Global Accounting account"/>
+
     <!-- Cut off -->
     <many-to-one name="purchVatRegulationAccount"
       title="VAT Regularization account on purchase" ref="com.axelor.apps.account.db.Account"/>
