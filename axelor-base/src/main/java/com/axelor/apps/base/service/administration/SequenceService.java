@@ -27,12 +27,10 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.event.Observes;
-import com.axelor.events.ShutdownEvent;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -40,16 +38,14 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +71,6 @@ public class SequenceService {
   private final AppBaseService appBaseService;
 
   private final SequenceRepository sequenceRepo;
-
-  protected ExecutorService executor = Executors.newSingleThreadExecutor();
 
   @Inject
   public SequenceService(
@@ -192,19 +186,13 @@ public class SequenceService {
    * @return
    */
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
-
-    try {
-      Future<String> newSeq = executor.submit(() -> getSequenceNumberInExecutor(sequence, refDate));
-      return newSeq.get();
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected String getSequenceNumberInExecutor(Sequence sequence, LocalDate refDate) {
-    Sequence seq = sequenceRepo.find(sequence.getId());
+    Sequence seq =
+        JPA.em()
+            .createQuery("SELECT self FROM Sequence self WHERE id = :id", Sequence.class)
+            .setParameter("id", sequence.getId())
+            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+            .setFlushMode(FlushModeType.COMMIT)
+            .getSingleResult();
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
     String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
     sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
@@ -399,16 +387,5 @@ public class SequenceService {
     fn.append(sequence.getName());
 
     return fn.toString();
-  }
-
-  /**
-   * This method calls shutdown on the executor when the application stops.
-   *
-   * @param event shutdown event
-   */
-  protected void onApplicationShutdown(@Observes ShutdownEvent event) {
-    log.debug("Shutting down sequence executor..");
-    executor.shutdown();
-    log.debug("Sequence executor stopped.");
   }
 }
