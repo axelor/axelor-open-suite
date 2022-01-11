@@ -215,15 +215,4 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     return accountingSituation.getUsedCredit().compareTo(accountingSituation.getAcceptedCredit())
         > 0;
   }
-
-  //	@Override
-  //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  //	public boolean checkBlockedPartner(Partner partner, Company company) throws AxelorException {
-  //		AccountingSituation accountingSituation = accountingSituationRepo.all().filter("self.company =
-  // ?1 AND self.partner = ?2", company, partner).fetchOne();
-  //		accountingSituation = this.computeUsedCredit(accountingSituation);
-  //		accountingSituationRepo.save(accountingSituation);
-  //
-  //		return this.isUsedCreditExceeded(accountingSituation);
-  //	}
 }
