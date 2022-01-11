@@ -872,6 +872,7 @@
 "Unknown format for file generation","Неизвестный формат для генерации файлов",,
 "Unknown format for file import process","Неизвестный формат для импорта файлов",,
 "Unreconcile selected",,,
+"Unreconciled and On-going Reconciliation MoveLines",,,
 "Unreconciled bank statement line",,,
 "Use X509 extension AuthorityKeyIdentifier",,,
 "Use X509 extension BasicConstraints",,,

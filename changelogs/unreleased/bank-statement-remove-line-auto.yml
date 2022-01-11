@@ -1,5 +1,0 @@
----
-title: "Fix remove bank statement"
-type: fix
-description: |
-  Fixed delete of bank statement. Bank statement can now be deleted without having to delete linked bank statement lines
