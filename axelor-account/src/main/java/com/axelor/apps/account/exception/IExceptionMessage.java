@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -885,6 +885,9 @@ public interface IExceptionMessage {
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
+
+  static final String INVOICE_VALIDATE_PFP_CONDITION_NOT_FULFILLED = /*$$(*/
+      "Impossible at this stage to update the PFP on invoiceTerm(s) record(s) from the invoice as conditions are not fulfilled. Please validate/refuse the PFP decision on each invoiceTerm record." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;

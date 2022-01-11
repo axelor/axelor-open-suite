@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -301,5 +302,17 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLine.setCutOffStartDate(cutOffStartDate);
       moveLine.setCutOffEndDate(cutOffEndDate);
     }
+  }
+
+  @Override
+  public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    BigDecimal daysProrata =
+        BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
+    BigDecimal daysTotal =
+        BigDecimal.valueOf(
+            ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+    BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+
+    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
 }
