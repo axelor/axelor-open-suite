@@ -67,13 +67,6 @@
     <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
   </grid>
 
-  <grid name="invoice-term-payment-session-group-by-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner">
-    <field name="moveLine.partner"/>
-    <field name="isSelectedOnPaymentSession"/>
-    <field name="paymentAmount" aggregate="sum"/>
-  </grid>
-
   <form name="invoice-term-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
     onLoad="action-invoice-term-group-onload,action-invoice-term-attrs-set-readonly">
@@ -407,7 +400,8 @@
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
-    <view type="grid" name="invoice-term-payment-session-group-by-grid"/>
+    <view type="custom"
+      name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"/>
     <view type="form" name="invoice-term-form"/>
   </action-view>
 
