@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -157,7 +158,9 @@ public class InvoiceTermController {
   public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

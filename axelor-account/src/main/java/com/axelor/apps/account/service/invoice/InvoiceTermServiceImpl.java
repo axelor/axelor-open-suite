@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -445,15 +446,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepo
             .all()
             .filter(
-                "self.moveLine.move.company = :company AND self.paymentMode = :paymentMode AND self.dueDate <= :paymentDatePlusMargin AND self.dueDate >= :paymentDateMinusMargin AND (self.invoice.currency = :currency OR self.moveLine.move.currency = :currency)"
+                "self.moveLine.move.company = :company AND self.paymentMode = :paymentMode AND self.dueDate <= :paymentDatePlusMargin AND self.dueDate >= :paymentDateMinusMargin AND (self.invoice.currency = :currency OR self.moveLine.move.currency = :currency) AND self.bankDetails != NULL"
                     + " AND (self.moveLine != NULL AND (self.moveLine.move.partner.isCustomer = TRUE OR self.moveLine.move.partner.isSupplier = TRUE OR self.moveLine.move.partner.isEmployee = TRUE) OR self.moveLine = NULL AND (self.invoice.partner.isCustomer = TRUE OR self.invoice.partner.isSupplier = TRUE OR self.invoice.partner.isEmployee = TRUE))"
                     + " AND ((self.moveLine != NULL AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE) OR (self.moveLine = NULL AND self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE))"
-                    + " AND ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE) AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4))"
+                    + " AND (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE) AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))"
                     + " AND self.isPaid = FALSE AND self.amountRemaining > 0 AND self.paymentSession = NULL")
             .bind("company", paymentSession.getCompany())
             .bind("paymentMode", paymentSession.getPaymentMode())
@@ -473,6 +475,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm -> {
           fillEligibleTerm(paymentSession, invoiceTerm);
           invoiceTermRepo.save(invoiceTerm);
+          Beans.get(PaymentSessionRepository.class).save(paymentSession);
         });
   }
 
@@ -511,24 +514,33 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       } else {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
-    } else if (invoiceTerm
-            .getInvoice()
-            .getFinancialDiscountDeadlineDate()
-            .isAfter(paymentSession.getPaymentDate())
-        || invoiceTerm
-            .getInvoice()
-            .getFinancialDiscountDeadlineDate()
-            .isEqual(paymentSession.getPaymentDate())
-        || invoiceTerm
-            .getDueDate()
-            .minusDays(
-                invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay())
-            .isAfter(paymentSession.getPaymentDate())
-        || invoiceTerm
-            .getDueDate()
-            .minusDays(
-                invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay())
-            .isEqual(paymentSession.getPaymentDate())) {
+    } else if (invoiceTerm.getInvoice().getFinancialDiscountDeadlineDate() != null
+        && (invoiceTerm
+                .getInvoice()
+                .getFinancialDiscountDeadlineDate()
+                .isAfter(paymentSession.getPaymentDate())
+            || invoiceTerm
+                .getInvoice()
+                .getFinancialDiscountDeadlineDate()
+                .isEqual(paymentSession.getPaymentDate())
+            || invoiceTerm
+                .getDueDate()
+                .minusDays(
+                    invoiceTerm
+                        .getMoveLine()
+                        .getPartner()
+                        .getFinancialDiscount()
+                        .getDiscountDelay())
+                .isAfter(paymentSession.getPaymentDate())
+            || invoiceTerm
+                .getDueDate()
+                .minusDays(
+                    invoiceTerm
+                        .getMoveLine()
+                        .getPartner()
+                        .getFinancialDiscount()
+                        .getDiscountDelay())
+                .isEqual(paymentSession.getPaymentDate()))) {
       invoiceTerm.setIsSelectedOnPaymentSession(true);
       if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
         invoiceTerm.setPaymentAmount(
