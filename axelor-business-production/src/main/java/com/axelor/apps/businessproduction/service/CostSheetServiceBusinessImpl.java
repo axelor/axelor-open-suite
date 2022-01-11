@@ -74,13 +74,13 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()
         && employee != null
-        && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       BigDecimal durationHours =
           new BigDecimal(prodHumanResource.getDuration())
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN);
+                  BigDecimal.ROUND_HALF_UP);
 
       costSheet.addCostSheetLineListItem(
           costSheetLineService.createWorkCenterHRCostSheetLine(

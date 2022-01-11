@@ -267,6 +267,21 @@ public class AdvancedExportController {
     if (Strings.isNullOrEmpty(criteria))
       response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_2));
     else {
+
+      String metaModelName = request.getModel();
+      boolean isExist =
+          Beans.get(AdvancedExportService.class).checkAdvancedExportExist(metaModelName);
+
+      if (!isExist) {
+        response.setView(
+            ActionView.define(I18n.get("Advanced export"))
+                .model(AdvancedExport.class.getName())
+                .add("form", "advanced-export-form")
+                .context("_metaModel", metaModel)
+                .map());
+        return;
+      }
+
       response.setView(
           ActionView.define(I18n.get("Advanced export"))
               .model(AdvancedExport.class.getName())

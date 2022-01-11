@@ -6,12 +6,13 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="FiscalPosition" lang="java">
-  
+
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
 
-	<one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax equivalences" mappedBy="fiscalPosition"/>
-    
+    <one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax equivalences" mappedBy="fiscalPosition"/>
+
   </entity>
 
 </domain-models>

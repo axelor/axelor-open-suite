@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="hr-department-grid" title="hr.department"
+    model="com.axelor.apps.base.db.Department">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="region" grid-view="region-grid" form-view="region-form"/>
+    <field name="name"/>
+  </grid>
+
+</object-views>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="baml-model-grid" title="BAML Model" model="com.axelor.apps.bpm.db.BamlModel"
+    orderBy="name">
+    <button name="openEditorBtn" title="Open editor"
+      onClick="action-baml-view-open-baml-editor" icon="fa-edit"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="baml-model-form" title="BAML Model" model="com.axelor.apps.bpm.db.BamlModel"
+    width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
+        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      <button name="generateCode" title="Generate code"
+        onClick="save,action-baml-model-method-generate-code,save" colSpan="3"/>
+      <button name="openEditor" title="Open editor"
+        onClick="save,action-baml-view-open-baml-editor" colSpan="3"/>
+    </panel>
+    <panel-tabs>
+      <panel title="XML">
+        <field name="bamlXml" colSpan="12" height="500" widget="CodeEditor"
+          x-code-syntax="xml" showTitle="false"/>
+      </panel>
+      <panel title="SCRIPT">
+        <field name="resultScript" colSpan="12" height="500" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <form name="baml-model-wizard-form" title="BAML" model="com.axelor.apps.bpm.db.BamlModel"
+    width="large" onNew="action-baml-model-wizard-on-new">
+    <panel name="mainPanel" colSpan="12">
+      <field name="bamlModel" type="many-to-one" target="com.axelor.apps.bpm.db.BamlModel"
+        title="BAML Model"/>
+      <button name="btnExecute" title="Execute" onClick="action-baml-model-method-execute"/>
+      <field name="modelName" hidden="true"/>
+      <field name="recordId" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-baml-model-wizard-on-new">
+    <attribute name="value" for="modelName" expr="eval:_modelName"/>
+    <attribute name="value" for="recordId" expr="eval:_recordId"/>
+  </action-attrs>
+
+  <action-method name="action-baml-model-method-generate-code">
+    <call class="com.axelor.apps.bpm.web.BamlModelController" method="generateCode"/>
+  </action-method>
+
+  <action-method name="action-baml-model-method-execute">
+    <call class="com.axelor.apps.bpm.web.BamlModelController" method="execute"/>
+  </action-method>
+
+  <action-view name="action-wkf-baml-model-view-wizard" title="Select BAML"
+    model="com.axelor.apps.bpm.db.BamlModel">
+    <view type="form" name="baml-model-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_modelName" expr="eval:_model"/>
+    <context name="_recordId" expr="eval:id"/>
+  </action-view>
+
+  <action-view name="action-baml-view-open-baml-editor" title="BAML Editor">
+    <view type="html" name="baml-editor?id={{_id}}"/>
+  </action-view>
+
+
+  <action-view name="action-open-record-builder" title="Record builders">
+    <view type="html"
+      name="record-builder?id={{_id}}&amp;model={{recordModel}}&amp;resultField=partnerQuery&amp;resultMetaField=leadQuery"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="recordModel" expr="eval:_model"/>
+  </action-view>
+
+</object-views>

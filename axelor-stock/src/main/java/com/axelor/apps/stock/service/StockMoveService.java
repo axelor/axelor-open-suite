@@ -138,11 +138,8 @@ public interface StockMoveService {
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
   @Transactional
-  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
-
-  @Transactional
-  public void splitStockMoveLinesSpecial(
-      StockMove stockMove, List<StockMoveLine> list, BigDecimal splitQty);
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove);
@@ -201,8 +198,6 @@ public interface StockMoveService {
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
   void setAvailableStatus(StockMove stockMove);
-
-  void checkExpirationDates(StockMove stockMove) throws AxelorException;
 
   /**
    * Update editDate of one Outgoing Stock Move

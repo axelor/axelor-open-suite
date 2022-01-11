@@ -18,24 +18,23 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportCityService;
+import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class ImportCityController {
-
-  @Inject private ImportCityService importCityService;
 
   /**
    * Import cities
@@ -46,39 +45,52 @@ public class ImportCityController {
    */
   @SuppressWarnings("unchecked")
   public void importCity(ActionRequest request, ActionResponse response) {
+    try {
+      List<ImportHistory> importHistoryList = null;
+      Map<String, Object> importCityMap = null;
+      MetaFile errorFile = null;
 
-    MetaFile dataFile = new MetaFile();
+      String typeSelect = (String) request.getContext().get("typeSelect");
+      if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
 
-    String typeSelect = (String) request.getContext().get("typeSelect");
+        String importTypeSelect = (String) request.getContext().get("importTypeSelect");
+        switch (importTypeSelect) {
+          case CityRepository.IMPORT_TYPE_SELECT_AUTO:
+            String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
+            importCityMap =
+                Beans.get(ImportCityService.class)
+                    .importFromGeonamesAutoConfig(downloadFileName, typeSelect);
+            break;
 
-    if (typeSelect.equals("geonames")) {
-      LinkedHashMap<String, Object> map =
-          (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+          case CityRepository.IMPORT_TYPE_SELECT_MANUAL:
+            Map<String, Object> map =
+                (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+            importCityMap =
+                Beans.get(ImportCityService.class).importFromGeonamesManualConfig(map, typeSelect);
+            break;
 
-      List<ImportHistory> importHistoryList = new ArrayList<ImportHistory>();
-
-      String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-
-      try {
-        if (map != null) {
-          dataFile =
-              Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
+          default:
+            break;
         }
-
-        if (downloadFileName != null) {
-          dataFile = importCityService.downloadZip(downloadFileName);
-          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
-        }
-
-        response.setAttr("$importHistoryList", "hidden", false);
-        response.setAttr("$importHistoryList", "value", importHistoryList);
-
-        response.setFlash(I18n.get("City import completed"));
-
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
       }
+
+      if (importCityMap.containsKey("importHistoryList")
+          && importCityMap.containsKey("errorFile")) {
+        importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
+        errorFile = (MetaFile) importCityMap.get("errorFile");
+        if (errorFile != null) {
+          response.setFlash(I18n.get(IExceptionMessage.CITIES_IMPORT_FAILED));
+          response.setAttr("errorFile", "hidden", false);
+          response.setValue("errorFile", errorFile);
+        } else {
+          response.setAttr("$importHistoryList", "hidden", false);
+          response.setAttr("errorFile", "hidden", true);
+          response.setAttr("$importHistoryList", "value", importHistoryList);
+          response.setFlash(I18n.get(ITranslation.BASE_GEONAMES_CITY_IMPORT_COMPLETED));
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -70,7 +70,7 @@ public class DuplicateObjectsController {
   }
 
   public void defaultObjects(ActionRequest request, ActionResponse response)
-      throws NoSuchFieldException, SecurityException {
+      throws SecurityException {
     List<Long> selectedIds = new ArrayList<>();
     List<Object[]> duplicateObjects = new ArrayList<>();
     List<Wizard> wizardDataList = new ArrayList<>();

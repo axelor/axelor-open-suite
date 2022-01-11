@@ -1,4 +1,0 @@
-title: MO Multi level planning
-type: feature
-description: |
-  There is now a button on manuf orders to recursively generate all sub manuf orders in case there is sub bill of materials.

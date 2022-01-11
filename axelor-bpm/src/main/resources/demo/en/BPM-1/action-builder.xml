@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<action-builders>
+
+  <action-builder>
+
+    <name>action-create-budget-from-purchase-request</name>
+
+    <xmlId>action-create-budget-from-purchase-request</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>com.axelor.apps.account.db.Budget</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+      <line>
+        <target>null</target>
+        <source>com.axelor.apps.account.db.Budget</source>
+        <metaJsonField></metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>budget?.id</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>_prBudgetId</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>null</target>
+        <source>com.axelor.apps.account.db.Budget</source>
+        <metaJsonField></metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>true</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>_showSingle</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title>Créer budget</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>budget-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>budget-form</viewName>
+
+        <sequence>1</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>false</isJson>
+
+    <domainCondition>self.id = :_prBudgetId</domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-open-purchase-order-from-purchase-request</name>
+
+    <xmlId>action-open-purchase-order-from-purchase-request</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+      <line>
+        <target>null</target>
+        <source>com.axelor.apps.purchase.db.PurchaseOrder</source>
+        <metaJsonField></metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>true</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>_showSingle</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>null</target>
+        <source>com.axelor.apps.purchase.db.PurchaseOrder</source>
+        <metaJsonField></metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>id</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>_purchaseRequestId</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title>Créer devis</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>purchase-order-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>purchase-order-form</viewName>
+
+        <sequence>1</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>false</isJson>
+
+    <domainCondition>self.attrs.purchaseRequest.id = :_purchaseRequestId
+    </domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-purchase-request-defaults</name>
+
+    <xmlId>action-purchase-request-defaults</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>PurchaseReq</model>
+
+    <targetModel>ProductOrderLine</targetModel>
+
+    <lines>
+      <line>
+        <target>PurchaseReq</target>
+        <source>PurchaseReq</source>
+        <metaJsonField>urgent</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>false</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>urgent</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>PurchaseReq</target>
+        <source>PurchaseReq</source>
+        <metaJsonField>requestNumber</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>com.axelor.inject.Beans.get(com.axelor.apps.base.service.administration.SequenceService.class).getSequenceNumber('pr')
+        </value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>requestNumber</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>PurchaseReq</target>
+        <source>PurchaseReq</source>
+        <metaJsonField>beneficiary</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>$request.getUser()</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>beneficiary</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>PurchaseReq</target>
+        <source>PurchaseReq</source>
+        <metaJsonField>requester</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>$request.getUser()</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>requester</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-purchase-request-update-purchase-price</name>
+
+    <xmlId>action-purchase-request-update-purchase-price</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>PurchaseReq</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+      <line>
+        <target>PurchaseReq</target>
+        <source>PurchaseReq</source>
+        <metaJsonField>unitPrice</metaJsonField>
+        <metaField></metaField>
+        <valueJson>product</valueJson>
+        <valueField></valueField>
+        <value>$.product != null ? $.product.purchasePrice : 0</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>unitPrice</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-menu-purchase-req-file</name>
+
+    <xmlId>studio-menu-purchase-req-file</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>File</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Dossier</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-File-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-File-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-menu-purchasereq</name>
+
+    <xmlId>studio-menu-purchasereq</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>PurchaseReq</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Demande d&apos;achat</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-PurchaseReq-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-PurchaseReq-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </action-builder>
+</action-builders>

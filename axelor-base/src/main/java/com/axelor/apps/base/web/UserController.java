@@ -57,10 +57,10 @@ public class UserController {
       Partner partner =
           Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
 
-      if (context.get("user_id") != null && partner != null) {
+      if (context.get("created_from_user_id") != null && partner != null) {
 
         UserRepository userRepo = Beans.get(UserRepository.class);
-        User user = userRepo.find(((Integer) context.get("user_id")).longValue());
+        User user = userRepo.find(((Integer) context.get("created_from_user_id")).longValue());
         Beans.get(UserService.class).setUserPartner(partner, user);
       }
     } catch (Exception e) {

@@ -44,4 +44,6 @@ public interface AdvancedExportService {
   public boolean getIsReachMaxExportLimit();
 
   public String getExportFileName();
+
+  public boolean checkAdvancedExportExist(String metaModelName);
 }

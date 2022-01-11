@@ -108,7 +108,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     logger.debug("Duration in seconds : {}", durationInSeconds);
 
     BigDecimal durationHours =
-        new BigDecimal(durationInSeconds).divide(new BigDecimal(3600), 4, RoundingMode.HALF_EVEN);
+        new BigDecimal(durationInSeconds).divide(new BigDecimal(3600), 4, RoundingMode.HALF_UP);
     logger.debug("Duration in hours : {}", durationHours);
 
     return durationHours;

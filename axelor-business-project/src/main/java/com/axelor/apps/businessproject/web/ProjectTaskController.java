@@ -89,7 +89,7 @@ public class ProjectTaskController {
     try {
       task = businessProjectService.resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = businessProjectService.computeDefaultInformation(task);
+        task = businessProjectService.updateTaskFinancialInfo(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

@@ -20,7 +20,10 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -108,5 +111,14 @@ public class ProjectController {
     context.put("_project", project);
     context.put("typeSelect", ProjectTaskRepository.TYPE_TASK);
     return context;
+  }
+
+  public void checkIfResourceBooked(ActionRequest request, ActionResponse response) {
+    if (Beans.get(AppProjectService.class).getAppProject().getCheckResourceAvailibility()) {
+      Project project = request.getContext().asType(Project.class);
+      if (Beans.get(ProjectService.class).checkIfResourceBooked(project)) {
+        response.setError(I18n.get(IExceptionMessage.RESOURCE_ALREADY_BOOKED_ERROR_MSG));
+      }
+    }
   }
 }

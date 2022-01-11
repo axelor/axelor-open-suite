@@ -57,6 +57,8 @@ import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
+import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
+import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
@@ -69,6 +71,8 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
+import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -84,6 +88,8 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -123,5 +129,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetReportService.class).to(TimesheetReportServiceImpl.class);
     bind(EmploymentContractRepository.class).to(EmploymentContractHRRepository.class);
     bind(AppTimesheetService.class).to(AppTimesheetServiceImpl.class);
+    bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
+    bind(ProjectDashboardServiceImpl.class).to(ProjectDashboardHRServiceImpl.class);
+    bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
   }
 }

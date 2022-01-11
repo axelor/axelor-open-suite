@@ -42,6 +42,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +69,11 @@ public class PaymentVoucherController {
   public void loadMoveLines(ActionRequest request, ActionResponse response) {
 
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-    paymentVoucher = Beans.get(PaymentVoucherRepository.class).find(paymentVoucher.getId());
 
     try {
-      Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
-      response.setReload(true);
+      List<PayVoucherDueElement> pvDueElementList =
+          Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
+      response.setValue("payVoucherDueElementList", pvDueElementList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -81,14 +82,13 @@ public class PaymentVoucherController {
   // Filling lines to pay (2nd O2M)
   public void loadSelectedLines(ActionRequest request, ActionResponse response) {
 
-    PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
-    PaymentVoucher paymentVoucher =
-        Beans.get(PaymentVoucherRepository.class).find(paymentVoucherContext.getId());
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     try {
-      Beans.get(PaymentVoucherLoadService.class)
-          .loadSelectedLines(paymentVoucher, paymentVoucherContext);
-      response.setReload(true);
+      Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
+      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      response.setValue(
+          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -97,13 +97,13 @@ public class PaymentVoucherController {
   // Reset imputation
   public void resetImputation(ActionRequest request, ActionResponse response) {
 
-    PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
-    PaymentVoucher paymentVoucher =
-        Beans.get(PaymentVoucherRepository.class).find(paymentVoucherContext.getId());
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
-      response.setReload(true);
+      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      response.setValue(
+          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -205,6 +205,14 @@ public class PaymentVoucherController {
     try {
       Beans.get(PaymentVoucherLoadService.class).initFromInvoice(paymentVoucher, invoice);
       response.setValues(paymentVoucher);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void reloadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    try {
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

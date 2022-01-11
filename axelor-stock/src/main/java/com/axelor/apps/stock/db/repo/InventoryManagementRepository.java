@@ -21,6 +21,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;
@@ -46,6 +47,7 @@ public class InventoryManagementRepository extends InventoryRepository {
         inventory.setInventorySeq(sequenceService.getDraftSequenceNumber(inventory));
       }
     } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
 

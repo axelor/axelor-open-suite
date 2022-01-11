@@ -190,8 +190,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
 
     if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS));
     }
     return bankOrderLine.getReceiverBankDetails().getBankAddress().getAddress();
   }
@@ -627,8 +627,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
       // Zone D1 : Domiciliation
       if (bankOrderLine.getReceiverBankDetails().getBankAddress() == null) {
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS),
-            TraceBackRepository.CATEGORY_MISSING_FIELD);
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS));
       }
       totalRecord +=
           cfonbToolService.createZone(

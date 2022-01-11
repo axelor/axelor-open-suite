@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -79,7 +79,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected AccountingReportRepository accountingReportRepo;
   protected JournalRepository journalRepo;
   protected AccountRepository accountRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineConsolidateService moveLineConsolidateService;
   protected PartnerService partnerService;
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
@@ -96,7 +96,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       AccountingReportRepository accountingReportRepo,
       JournalRepository journalRepo,
       AccountRepository accountRepo,
-      MoveLineService moveLineService,
+      MoveLineConsolidateService moveLineConsolidateService,
       PartnerService partnerService) {
     this.accountingReportService = accountingReportService;
     this.sequenceService = sequenceService;
@@ -106,7 +106,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     this.accountingReportRepo = accountingReportRepo;
     this.journalRepo = journalRepo;
     this.accountRepo = accountRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineConsolidateService = moveLineConsolidateService;
     this.partnerService = partnerService;
     this.appAccountService = appAccountService;
   }
@@ -351,7 +351,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -400,7 +400,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -418,7 +418,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           BigDecimal sumDebit =
               this.getSumDebit(
@@ -426,7 +426,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + moveLineQueryStr,
                   moveList);
 
-          if (sumDebit.compareTo(BigDecimal.ZERO) == 1) {
+          if (sumDebit.compareTo(BigDecimal.ZERO) > 0) {
 
             String exportNumber = this.getSaleExportNumber(company);
 
@@ -537,12 +537,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -592,7 +591,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -610,7 +609,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           BigDecimal sumCredit =
               this.getSumCredit(
@@ -618,7 +617,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + moveLineQueryStr,
                   moveList);
 
-          if (sumCredit.compareTo(BigDecimal.ZERO) == 1) {
+          if (sumCredit.compareTo(BigDecimal.ZERO) > 0) {
 
             String exportNumber = this.getRefundExportNumber(company);
 
@@ -728,12 +727,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -782,7 +780,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -800,7 +798,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           long moveLineListSize =
               moveLineRepo
@@ -918,12 +916,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -972,7 +969,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -1007,7 +1004,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                         moveList)
                     .fetch();
 
-            if (moveLineList.size() > 0) {
+            if (!moveLineList.isEmpty()) {
 
               String exportNumber = this.getPurchaseExportNumber(company);
 
@@ -1203,8 +1200,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         items[7] = "";
         Partner partner = moveLine.getPartner();
         if (partner != null) {
-          items[6] = partner.getPartnerSeq();
-          items[7] = partner.getName();
+          items[6] =
+              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+                  ? partner.getPartnerSeq()
+                  : "";
+          items[7] =
+              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+                  ? partner.getName()
+                  : "";
         }
         items[8] = moveLine.getOrigin();
         if (moveLine.getOriginDate() != null) {
@@ -1313,7 +1316,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
     }
     if (typeSelect != 8) {
-      moveLineQueryStr += String.format(" AND self.account.useForPartnerBalance = false ");
+      moveLineQueryStr += " AND self.account.useForPartnerBalance = false ";
     }
     moveLineQueryStr +=
         String.format(
@@ -1331,12 +1334,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + moveLineQueryStr
                     + " group by self.date ORDER BY self.date");
 
-    List<LocalDate> dates = new ArrayList<LocalDate>();
-    dates = queryDate.getResultList();
+    List<LocalDate> dates = queryDate.getResultList();
 
     log.debug("dates : {}", dates);
 
-    List<String[]> allMoveLineData = new ArrayList<String[]>();
+    List<String[]> allMoveLineData = new ArrayList<>();
 
     for (LocalDate localDate : dates) {
 
@@ -1348,8 +1350,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + localDate.toString()
                       + "'"
                       + moveLineQueryStr);
-      List<String> exportRefs = new ArrayList<String>();
-      exportRefs = queryExportRef.getResultList();
+      List<String> exportRefs = queryExportRef.getResultList();
       for (String exportRef : exportRefs) {
 
         if (exportRef != null && !exportRef.isEmpty()) {
@@ -1368,8 +1369,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           + moveLineQueryStr
                           + " group by self.account.id");
 
-          List<Long> accountIds = new ArrayList<Long>();
-          accountIds = query.getResultList();
+          List<Long> accountIds = query.getResultList();
 
           log.debug("accountIds : {}", accountIds);
 
@@ -1391,9 +1391,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
               log.debug("movelines  : {} ", moveLines);
 
-              if (moveLines.size() > 0) {
+              if (!moveLines.isEmpty()) {
 
-                List<MoveLine> moveLineList = moveLineService.consolidateMoveLines(moveLines);
+                List<MoveLine> moveLineList =
+                    moveLineConsolidateService.consolidateMoveLines(moveLines);
 
                 List<MoveLine> sortMoveLineList = this.sortMoveLineByDebitCredit(moveLineList);
 
@@ -1418,7 +1419,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
                   BigDecimal totAmt = moveLine3.getCredit().subtract(moveLine3.getDebit());
                   String moveLineSign = "C";
-                  if (totAmt.compareTo(BigDecimal.ZERO) == -1) {
+                  if (totAmt.compareTo(BigDecimal.ZERO) < 0) {
                     moveLineSign = "D";
                     totAmt = totAmt.negate();
                   }
@@ -1468,7 +1469,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         accountingReport);
   }
 
-  private MetaFile writeMoveLineToCsvFile(
+  protected MetaFile writeMoveLineToCsvFile(
       Company company,
       String fileName,
       String[] columnHeader,
@@ -1479,10 +1480,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
     String dataExportDir = appAccountService.getDataExportDir();
 
-    for (String[] iteams : allMoveData) {
-      for (String iteam : iteams) {
-        if (iteam != null) {
-          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+    for (String[] items : allMoveData) {
+      for (int i = 0; i < items.length; i++) {
+        if (items[i] != null) {
+          items[i] = items[i].replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
         }
       }
     }
@@ -1506,11 +1507,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @return
    */
   public List<MoveLine> sortMoveLineByDebitCredit(List<MoveLine> moveLineList) {
-    List<MoveLine> sortMoveLineList = new ArrayList<MoveLine>();
-    List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
-    List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
+    List<MoveLine> sortMoveLineList = new ArrayList<>();
+    List<MoveLine> debitMoveLineList = new ArrayList<>();
+    List<MoveLine> creditMoveLineList = new ArrayList<>();
     for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
+      if (moveLine.getDebit().compareTo(moveLine.getCredit()) > 0) {
         debitMoveLineList.add(moveLine);
       } else {
         creditMoveLineList.add(moveLine);
@@ -1596,7 +1597,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 + "Période de l'écriture;";
         return header.split(";");
       default:
-        return null;
+        return new String[0];
     }
   }
 
@@ -1753,8 +1754,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
     } else {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL),
-          TraceBackRepository.CATEGORY_NO_VALUE);
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
     }
     fileName += ".csv";
 

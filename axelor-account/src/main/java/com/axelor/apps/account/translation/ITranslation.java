@@ -26,4 +26,8 @@ public interface ITranslation {
   public static final String ACCOUNT_CREDIT_BALANCE = /*$$(*/ "Credit balance" /*)*/;
   public static final String INVOICE_LINE_END_OF_PACK = /*$$(*/ "InvoiceLine.endOfPack" /*)*/;
   public static final String INVOICE_LINE_TOTAL = /*$$(*/ "InvoiceLine.total" /*)*/;
+  public static final String INVOICE_PURCHASE_SITUTATION_INVOICED_AMOUNT = /*$$(*/
+      "Invoiced Amount" /*)*/;
+  public static final String INVOICE_PURCHASE_SITUTATION_UNPAID_INVOICE_AMOUNT = /*$$(*/
+      "Unpaid Inv. due" /*)*/;
 }

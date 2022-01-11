@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -66,7 +66,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected AppBaseService appBaseService;
-  protected MoveService moveService;
   protected InvoicePaymentValidateService invoicePaymentValidateService;
   protected PaymentScheduleService paymentScheduleService;
 
@@ -80,10 +79,11 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected BankOrderRepository bankOrderRepo;
   protected BatchRepository batchRepo;
 
+  protected MoveLineToolService moveLineToolService;
+
   @Inject
   public BatchBankPaymentServiceImpl(
       AppBaseService appBaseService,
-      MoveService moveService,
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentScheduleService paymentScheduleService,
       BankOrderCreateService bankOrderCreateService,
@@ -93,10 +93,10 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       ReconcileRepository reconcileRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderRepository bankOrderRepo,
-      BatchRepository batchRepo) {
+      BatchRepository batchRepo,
+      MoveLineToolService moveLineToolService) {
 
     this.appBaseService = appBaseService;
-    this.moveService = moveService;
     this.invoicePaymentValidateService = invoicePaymentValidateService;
     this.paymentScheduleService = paymentScheduleService;
 
@@ -109,6 +109,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderRepo = bankOrderRepo;
     this.batchRepo = batchRepo;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -190,7 +191,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
       for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-        MoveLine debitMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
+        MoveLine debitMoveLine = moveLineToolService.getDebitCustomerMoveLine(invoice);
         Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
         if (reconcile == null) {

@@ -62,4 +62,6 @@ public interface MrpService extends Callable<Mrp> {
    * @param e the exception thrown during the computation
    */
   void saveErrorInMrp(Mrp mrp, Exception e);
+
+  void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess);
 }

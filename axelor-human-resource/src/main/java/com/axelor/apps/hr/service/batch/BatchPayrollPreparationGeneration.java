@@ -141,6 +141,9 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       try {
         employee = employeeRepository.find(employee.getId());
         hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
@@ -169,7 +172,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
-    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
     String filter = "self.period = ?1 AND self.employee = ?2";

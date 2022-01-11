@@ -35,7 +35,10 @@ public class SelectionBuilderRepo extends SelectionBuilderRepository {
   public void remove(SelectionBuilder selectionBuilder) {
 
     Beans.get(SelectionBuilderService.class)
-        .removeSelection(null, SelectionBuilderService.SELECTION_PREFIX + selectionBuilder.getId());
+        .removeSelection(
+            null,
+            SelectionBuilderService.SELECTION_PREFIX
+                + selectionBuilder.getName().replace(" ", "-"));
 
     super.remove(selectionBuilder);
   }

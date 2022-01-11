@@ -109,7 +109,10 @@ public class BatchTimesheetReminder extends BatchStrategy {
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
 
-    employees.removeIf(employee -> hasRecentTimesheet(now, daysBeforeReminder, employee));
+    employees.removeIf(
+        employee ->
+            hasRecentTimesheet(now, daysBeforeReminder, employee)
+                || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
     return employees;
   }
 
@@ -157,7 +160,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
             .stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList())) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       Timesheet timeSheet = getRecentEmployeeTimesheet(employee);

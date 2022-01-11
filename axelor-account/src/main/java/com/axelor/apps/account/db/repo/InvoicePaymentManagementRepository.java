@@ -31,7 +31,7 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
       Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
       return super.save(invoicePayment);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }

@@ -3,5 +3,5 @@ title: Project and task major changes
 type: change
 description: |
   Project: Task Date rename to Start date and Task end date rename to Due date
-  Timsheet: date can be before Start date
+  Timesheet: date can be before Start date
   Move company to job costing

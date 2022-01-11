@@ -118,7 +118,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     CostSheetLine costSheetLine = new CostSheetLine(code, name);
     costSheetLine.setBomLevel(bomLevel);
     costSheetLine.setConsumptionQty(
-        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
     costSheetLine.setCostSheetGroup(costSheetGroup);
     costSheetLine.setProduct(product);
     costSheetLine.setTypeSelect(typeSelect);
@@ -134,7 +134,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     costSheetLine.setCostPrice(
         costPrice.setScale(
-            appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
+            appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
     if (parentCostSheetLine != null) {
       parentCostSheetLine.addCostSheetLineListItem(costSheetLine);
@@ -246,7 +246,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     }
 
     consumptionQty =
-        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
     costPrice = costPrice.multiply(consumptionQty);
     costPrice =
@@ -270,7 +270,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 .add(costSheetLine.getCostPrice())
                 .setScale(
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_EVEN));
+                    BigDecimal.ROUND_HALF_UP));
         return costSheetLine;
       }
     }
@@ -402,7 +402,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .divide(
                 new BigDecimal("100"),
                 appBaseService.getNbDecimalDigitForQty(),
-                BigDecimal.ROUND_HALF_EVEN);
+                BigDecimal.ROUND_HALF_UP);
 
     BigDecimal costPrice = null;
     switch (origin) {
@@ -449,7 +449,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         bomLevel,
         qty,
         costPrice.setScale(
-            appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN),
+            appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
         product.getCostSheetGroup(),
         product,
         CostSheetLineRepository.TYPE_CONSUMED_PRODUCT_WASTE,
@@ -595,7 +595,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     indirectCostPrice =
         costPrice
             .multiply(costSheetGroup.getRate())
-            .divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN);
+            .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
     if (costSheetGroup.getRateTypeSelect() == CostSheetGroupRepository.COST_TYPE_SURCHARGE) {
       indirectCostPrice = indirectCostPrice.add(costPrice);

@@ -43,7 +43,7 @@ public class EmployeeAdvanceService {
     Employee employee =
         Beans.get(EmployeeRepository.class).find(expense.getUser().getEmployee().getId());
 
-    if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+    if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
 

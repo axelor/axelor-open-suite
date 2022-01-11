@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpm>
+
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>PROJECT_PROJECT</code>
+
+      <name>Project_Project</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="ProjectProcess" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Project" isStartModel="true" model="com.axelor.apps.project.db.Project" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="PStart">
+      <bpmn2:outgoing>PStartNew</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="PStartNew" sourceRef="PStart" targetRef="PNew" />
+    <bpmn2:exclusiveGateway id="PNewCondition">
+      <bpmn2:incoming>PAfterNew</bpmn2:incoming>
+      <bpmn2:outgoing>PStartInProgress</bpmn2:outgoing>
+      <bpmn2:outgoing>PNewCancel</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="PAfterNew" sourceRef="PNew" targetRef="PNewCondition" />
+    <bpmn2:sequenceFlow id="PStartInProgress" name="Start" sourceRef="PNewCondition" targetRef="PInProgress" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">project?.statusSelect == 2</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="PNewCancel" sourceRef="PNewCondition" targetRef="PCanceled" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">project?.statusSelect == 4</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="PCancelNew" sourceRef="PCanceled" targetRef="PNew" />
+    <bpmn2:exclusiveGateway id="PInProgressCondition">
+      <bpmn2:incoming>PAfterInProgress</bpmn2:incoming>
+      <bpmn2:outgoing>PInProgressFinish</bpmn2:outgoing>
+      <bpmn2:outgoing>PInProgressCancel</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="PAfterInProgress" sourceRef="PInProgress" targetRef="PInProgressCondition" />
+    <bpmn2:sequenceFlow id="PInProgressFinish" sourceRef="PInProgressCondition" targetRef="PFinished" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">project?.statusSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="PInProgressCancel" sourceRef="PInProgressCondition" targetRef="PCanceled" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;project.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In Progress&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">project?.statusSelect == 4</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="PFinishCancel" sourceRef="PFinished" targetRef="PCanceled" />
+    <bpmn2:userTask id="PNew" name="New" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="project?.projectStatus?.name == &#39;In progress&#39; || project?.projectStatus?.name == &#39;Canceled&#39;" camunda:key="New" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:false,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.591Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;sequence&#34;:2,&#34;importId&#34;:&#34;2&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;In progress&#34;,&#34;id&#34;:2,&#34;relatedToSelect&#34;:1,&#34;selected&#34;:false,&#34;isCompleted&#34;:false},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null},{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:false,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.593Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;$wkfStatus&#34;:null,&#34;sequence&#34;:4,&#34;importId&#34;:&#34;4&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;Canceled&#34;,&#34;id&#34;:4,&#34;relatedToSelect&#34;:1,&#34;selected&#34;:false,&#34;isCompleted&#34;:true},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="project.statusSelect == 2 || project.statusSelect == 4" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>PStartNew</bpmn2:incoming>
+      <bpmn2:incoming>PCancelNew</bpmn2:incoming>
+      <bpmn2:outgoing>PAfterNew</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="PInProgress" name="In progress" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="project?.projectStatus?.name == &#39;Done&#39; || project?.projectStatus?.name == &#39;Canceled&#39;" camunda:key="In progress" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:true,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.592Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;sequence&#34;:3,&#34;importId&#34;:&#34;3&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;Done&#34;,&#34;id&#34;:3,&#34;relatedToSelect&#34;:1,&#34;selected&#34;:false,&#34;isCompleted&#34;:true},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null},{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:false,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.599Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;sequence&#34;:4,&#34;importId&#34;:&#34;8&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;Canceled&#34;,&#34;id&#34;:8,&#34;relatedToSelect&#34;:2,&#34;selected&#34;:false,&#34;isCompleted&#34;:true},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="project.statusSelect == 3 || project.statusSelect == 4" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>PStartInProgress</bpmn2:incoming>
+      <bpmn2:outgoing>PAfterInProgress</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="PCanceled" name="Cancel" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="project?.projectStatus?.name == &#39;New&#39;" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:false,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.589Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;sequence&#34;:1,&#34;importId&#34;:&#34;1&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;New&#34;,&#34;id&#34;:1,&#34;relatedToSelect&#34;:1,&#34;selected&#34;:false,&#34;isCompleted&#34;:false},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="project.statusSelect == 1" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>PNewCancel</bpmn2:incoming>
+      <bpmn2:incoming>PInProgressCancel</bpmn2:incoming>
+      <bpmn2:incoming>PFinishCancel</bpmn2:incoming>
+      <bpmn2:outgoing>PCancelNew</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="PFinished" name="Finish" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="project?.projectStatus?.name == &#39;Canceled&#39;" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Project&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;projectStatus&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;isDefaultCompleted&#34;:false,&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-02-09T11:33:54.599Z&#34;,&#34;version&#34;:0,&#34;attrs&#34;:null,&#34;sequence&#34;:4,&#34;importId&#34;:&#34;8&#34;,&#34;createdBy&#34;:{&#34;code&#34;:&#34;admin&#34;,&#34;fullName&#34;:&#34;Admin&#34;,&#34;id&#34;:1,&#34;$version&#34;:2},&#34;name&#34;:&#34;Canceled&#34;,&#34;id&#34;:8,&#34;relatedToSelect&#34;:2,&#34;selected&#34;:false,&#34;isCompleted&#34;:true},&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;projectStatus&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Status&#34;,&#34;target&#34;:&#34;com.axelor.apps.project.db.ProjectStatus&#34;}],&#34;nameField&#34;:null}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="project.statusSelect == 4" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>PInProgressFinish</bpmn2:incoming>
+      <bpmn2:outgoing>PFinishCancel</bpmn2:outgoing>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ProjectProcess">
+      <bpmndi:BPMNEdge id="Flow_0vkifii_di" bpmnElement="PFinishCancel">
+        <di:waypoint x="686" y="298" />
+        <di:waypoint x="686" y="370" />
+        <di:waypoint x="610" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="643" y="353" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02xihuz_di" bpmnElement="PInProgressCancel">
+        <di:waypoint x="560" y="283" />
+        <di:waypoint x="560" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="523" y="295" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j50ba6_di" bpmnElement="PInProgressFinish">
+        <di:waypoint x="585" y="258" />
+        <di:waypoint x="636" y="258" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="585" y="240" width="30" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0es6er3_di" bpmnElement="PAfterInProgress">
+        <di:waypoint x="516" y="258" />
+        <di:waypoint x="535" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1no6gnk_di" bpmnElement="PCancelNew">
+        <di:waypoint x="560" y="410" />
+        <di:waypoint x="560" y="430" />
+        <di:waypoint x="235" y="430" />
+        <di:waypoint x="235" y="298" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="247" y="412" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02xrc02_di" bpmnElement="PNewCancel">
+        <di:waypoint x="330" y="283" />
+        <di:waypoint x="330" y="370" />
+        <di:waypoint x="510" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="363" y="353" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vr0uym_di" bpmnElement="PStartInProgress">
+        <di:waypoint x="355" y="258" />
+        <di:waypoint x="416" y="258" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="368" y="240" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f9qpx0_di" bpmnElement="PAfterNew">
+        <di:waypoint x="285" y="258" />
+        <di:waypoint x="305" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xy47pb_di" bpmnElement="PStartNew">
+        <di:waypoint x="159" y="258" />
+        <di:waypoint x="185" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="PStart">
+        <dc:Bounds x="123" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_13449qw_di" bpmnElement="PNewCondition" isMarkerVisible="true">
+        <dc:Bounds x="305" y="233" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0c9pesd_di" bpmnElement="PInProgressCondition" isMarkerVisible="true">
+        <dc:Bounds x="535" y="233" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nt4yvt_di" bpmnElement="PNew">
+        <dc:Bounds x="185" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rvu2qb_di" bpmnElement="PInProgress">
+        <dc:Bounds x="416" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p4vkvs_di" bpmnElement="PCanceled">
+        <dc:Bounds x="510" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1iru205_di" bpmnElement="PFinished">
+        <dc:Bounds x="636" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
+</bpm>

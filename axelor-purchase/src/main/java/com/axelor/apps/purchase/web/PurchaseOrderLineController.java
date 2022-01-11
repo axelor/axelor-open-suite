@@ -160,9 +160,6 @@ public class PurchaseOrderLineController {
                 ? (String) catalogInfo.get("productCode")
                 : (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       } else {
-        price =
-            (BigDecimal)
-                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
         productName =
             (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
         productCode =
@@ -358,9 +355,9 @@ public class PurchaseOrderLineController {
   public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null) {
-      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    if (purchaseOrder.getId() != null) {
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     }
     Company company = purchaseOrder.getCompany();
 
@@ -393,5 +390,18 @@ public class PurchaseOrderLineController {
     domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
 
     response.setAttr("supplierPartner", "domain", domain);
+  }
+
+  public void checkDifferentSupplier(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
+
+      service.checkDifferentSupplier(purchaseOrder, purchaseOrderLine, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

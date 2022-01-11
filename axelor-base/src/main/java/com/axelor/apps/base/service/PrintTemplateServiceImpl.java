@@ -248,6 +248,8 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           printLine.setTitle(title);
           printLine.setContent(content);
           printLine.setIsEditable(printTemplateLine.getIsEditable());
+          printLine.setIsSignature(printTemplateLine.getIsSignature());
+          printLine.setNbColumns(printTemplateLine.getNbColumns());
           printLine.setParent(parent);
           printLine.setIsWithPageBreakAfter(printTemplateLine.getIsWithPageBreakAfter());
 

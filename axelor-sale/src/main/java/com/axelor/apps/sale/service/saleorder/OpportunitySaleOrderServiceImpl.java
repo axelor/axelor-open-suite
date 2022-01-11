@@ -77,11 +77,12 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
         null,
         opportunity.getName(),
         null,
-        appBaseService.getTodayDate(opportunity.getCompany()),
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE),
         opportunity.getPartner(),
         opportunity.getTeam(),
+        null,
+        opportunity.getPartner().getFiscalPosition(),
         opportunity.getTradingName());
   }
 }

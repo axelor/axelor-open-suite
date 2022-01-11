@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -34,7 +35,7 @@ import java.math.BigDecimal;
 
 public class MoveAdjustementService {
 
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
@@ -44,13 +45,13 @@ public class MoveAdjustementService {
   @Inject
   public MoveAdjustementService(
       AppAccountService appAccountService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       AccountConfigService accountConfigService,
       MoveRepository moveRepository) {
 
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
@@ -85,11 +86,14 @@ public class MoveAdjustementService {
             null,
             partner,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            debitMove.getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
             account,
@@ -102,7 +106,7 @@ public class MoveAdjustementService {
 
     // Création de la ligne au debit
     MoveLine debitAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
             accountConfigService.getCashPositionVariationAccount(accountConfig),
@@ -145,11 +149,14 @@ public class MoveAdjustementService {
             null,
             partner,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            debitMove.getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
             account,
@@ -162,7 +169,7 @@ public class MoveAdjustementService {
 
     // Création de la ligne au débit
     MoveLine debitAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
             accountConfigService.getCashPositionVariationAccount(accountConfig),
@@ -207,10 +214,18 @@ public class MoveAdjustementService {
     // Move
     Move move =
         moveCreateService.createMove(
-            journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            journal,
+            company,
+            null,
+            partnerDebit,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect(),
+            null,
+            null);
 
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partnerCredit,
             creditMoveLineToReconcile.getAccount(),
@@ -222,7 +237,7 @@ public class MoveAdjustementService {
             null);
 
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partnerDebit,
             debitMoveLineToReconcile.getAccount(),

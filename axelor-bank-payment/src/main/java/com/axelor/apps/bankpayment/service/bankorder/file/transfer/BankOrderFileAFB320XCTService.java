@@ -523,8 +523,8 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       // national, "0" : Autre )
       if (receiverBankDetails.getBank() == null) {
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK),
-            TraceBackRepository.CATEGORY_MISSING_FIELD);
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK));
       }
       detailRecord +=
           cfonbToolService.createZone(

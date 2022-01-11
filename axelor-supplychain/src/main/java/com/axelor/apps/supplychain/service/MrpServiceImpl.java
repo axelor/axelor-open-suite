@@ -17,12 +17,18 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -58,6 +64,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -75,9 +82,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
@@ -87,6 +97,7 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceImpl implements MrpService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Integer ITERATIONS = 100;
 
   protected MrpRepository mrpRepository;
   protected StockLocationRepository stockLocationRepository;
@@ -102,9 +113,11 @@ public class MrpServiceImpl implements MrpService {
   protected StockLocationService stockLocationService;
   protected MailMessageService mailMessageService;
   protected UnitConversionService unitConversionService;
+  protected ProductCategoryRepository productCategoryRepository;
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
+  protected AppPurchaseService appPurchaseService;
 
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
@@ -128,7 +141,9 @@ public class MrpServiceImpl implements MrpService {
       MailMessageService mailMessageService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      AppPurchaseService appPurchaseService,
+      ProductCategoryRepository productCategoryRepository) {
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
     this.productRepository = productRepository;
@@ -140,11 +155,13 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
+    this.productCategoryRepository = productCategoryRepository;
     this.stockLocationService = stockLocationService;
     this.mailMessageService = mailMessageService;
     this.unitConversionService = unitConversionService;
     this.appBaseService = appBaseService;
     this.appSaleService = appSaleService;
+    this.appPurchaseService = appPurchaseService;
   }
 
   @Override
@@ -257,7 +274,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (Product product : this.getProductList(level)) {
 
-        this.checkInsufficientCumulativeQty(product, true);
+        this.checkInsufficientCumulativeQty(product);
       }
     }
   }
@@ -296,8 +313,20 @@ public class MrpServiceImpl implements MrpService {
     return maxLevel;
   }
 
-  protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
+  protected void checkInsufficientCumulativeQty(Product product) throws AxelorException {
+    checkInsufficientCumulativeQty(product, 0);
+  }
+
+  protected void checkInsufficientCumulativeQty(Product product, int counter)
       throws AxelorException {
+
+    final int MAX_ITERATION = 1000;
+
+    if (counter > MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+    }
 
     boolean doASecondPass = false;
 
@@ -321,7 +350,7 @@ public class MrpServiceImpl implements MrpService {
           this.checkInsufficientCumulativeQty(
               mrpLineRepository.find(mrpLine.getId()),
               productRepository.find(product.getId()),
-              firstPass);
+              counter == 0);
       JPA.clear();
       if (doASecondPass) {
         break;
@@ -330,7 +359,7 @@ public class MrpServiceImpl implements MrpService {
 
     if (doASecondPass) {
 
-      this.checkInsufficientCumulativeQty(product, false);
+      this.checkInsufficientCumulativeQty(product, counter + 1);
     }
   }
 
@@ -355,6 +384,9 @@ public class MrpServiceImpl implements MrpService {
                 && firstPass))
         && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
 
+      Company company = null;
+      StockLocation stockLocation = mrpLine.getStockLocation();
+
       log.debug(
           "Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})",
           cumulativeQty,
@@ -367,7 +399,7 @@ public class MrpServiceImpl implements MrpService {
       StockRules stockRules =
           stockRulesService.getStockRules(
               product,
-              mrpLine.getStockLocation(),
+              stockLocation,
               StockRulesRepository.TYPE_FUTURE,
               StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
@@ -375,8 +407,12 @@ public class MrpServiceImpl implements MrpService {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());
       }
 
+      if (stockLocation.getCompany() != null) {
+        company = stockLocation.getCompany();
+      }
+
       MrpLineType mrpLineTypeProposal =
-          this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
+          this.getMrpLineTypeForProposal(stockRules, product, company);
 
       if (mrpLineTypeProposal == null) {
         return false;
@@ -402,7 +438,7 @@ public class MrpServiceImpl implements MrpService {
           product,
           mrpLineTypeProposal,
           reorderQty,
-          mrpLine.getStockLocation(),
+          stockLocation,
           mrpLine.getMaturityDate(),
           mrpLine.getMrpLineOriginList(),
           mrpLine.getRelatedToSelectName());
@@ -457,9 +493,15 @@ public class MrpServiceImpl implements MrpService {
       String relatedToSelectName)
       throws AxelorException {
 
+    LocalDate initialMaturityDate = maturityDate;
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
+      if (appPurchaseService.getAppPurchase() != null
+          && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
+        reorderQty = computeMultipleProductsPurchaseReorderQty(product, reorderQty);
+      }
     }
 
     if (maturityDate.isBefore(today)) {
@@ -488,12 +530,21 @@ public class MrpServiceImpl implements MrpService {
               stockLocation,
               null);
       if (createdmrpLine != null) {
+        createdmrpLine.setWarnDelayFromSupplier(
+            getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
         mrpLine = mrpLineRepository.save(createdmrpLine);
       }
       mrpLine.setRelatedToSelectName(relatedToSelectName);
     }
 
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
+  }
+
+  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
+    return mrpLine.getMrpLineType().getElementSelect()
+            == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+        && DAYS.between(initialMaturityDate, mrpLine.getMaturityDate())
+            < mrpLine.getProduct().getSupplierDeliveryTime();
   }
 
   protected BigDecimal getSupplierCatalogMinQty(Product product) {
@@ -511,6 +562,27 @@ public class MrpServiceImpl implements MrpService {
       }
     }
     return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal computeMultipleProductsPurchaseReorderQty(
+      Product product, BigDecimal reorderQty) {
+    List<ProductMultipleQty> productMultipleQtyList = product.getPurchaseProductMultipleQtyList();
+    if (productMultipleQtyList == null || reorderQty == null || reorderQty.signum() == 0) {
+      return reorderQty;
+    }
+    BigDecimal diff =
+        productMultipleQtyList.stream()
+            .map(ProductMultipleQty::getMultipleQty)
+            .filter(bigDecimal -> bigDecimal.signum() != 0)
+            // compute what needs to be added to reorder quantity to have a multiple
+            .map(
+                bigDecimal -> {
+                  BigDecimal remainder = reorderQty.remainder(bigDecimal);
+                  return remainder.signum() == 0 ? BigDecimal.ZERO : bigDecimal.subtract(remainder);
+                })
+            .min(Comparator.naturalOrder())
+            .orElse(BigDecimal.ZERO);
+    return reorderQty.add(diff);
   }
 
   protected MrpLineType getMrpLineTypeForProposal(
@@ -686,6 +758,7 @@ public class MrpServiceImpl implements MrpService {
               purchaseOrder.getStockLocation(),
               purchaseOrderLine);
       if (mrpLine != null) {
+        mrpLine.setSupplierPartner(purchaseOrder.getSupplierPartner());
         mrpLineRepository.save(mrpLine);
       }
     }
@@ -708,12 +781,23 @@ public class MrpServiceImpl implements MrpService {
 
     if (mrp.getSaleOrderLineSet().isEmpty()) {
 
+      String filter =
+          "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
+              + "AND self.saleOrder.statusSelect IN (?4) ";
+
+      if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+          == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
+        filter += "AND (self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE)";
+      } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+          == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
+        filter += "AND self.saleOrder.oneoffSale IS TRUE";
+      }
+
       saleOrderLineList.addAll(
           saleOrderLineRepository
               .all()
               .filter(
-                  "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
-                      + "AND self.saleOrder.statusSelect IN (?4)",
+                  filter,
                   this.productMap.keySet(),
                   this.stockLocationList,
                   SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
@@ -895,16 +979,42 @@ public class MrpServiceImpl implements MrpService {
     }
 
     for (Long productId : this.productMap.keySet()) {
-
-      for (StockLocation stockLocation : this.stockLocationList) {
+      Mrp mrp = mrpRepository.find(this.mrp.getId());
+      if (mrp.getComputeWithSubStockLocation()) {
+        for (StockLocation stockLocation : this.stockLocationList) {
+          this.createAvailableStockMrpLine(
+              mrp,
+              productRepository.find(productId),
+              stockLocationRepository.find(stockLocation.getId()),
+              mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
+        }
+      } else {
+        Product product = productRepository.find(productId);
+        StockLocation stockLocation = mrp.getStockLocation();
+        BigDecimal qty = computeTotalQuantityFromSubStockLocations(product);
         this.createAvailableStockMrpLine(
-            mrpRepository.find(mrp.getId()),
-            productRepository.find(productId),
+            mrp,
+            product,
+            qty,
             stockLocationRepository.find(stockLocation.getId()),
             mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
       }
       JPA.clear();
     }
+  }
+
+  protected BigDecimal computeTotalQuantityFromSubStockLocations(Product product) {
+    return Optional.ofNullable(
+            JPA.em()
+                .createQuery(
+                    "SELECT SUM(self.currentQty) "
+                        + "FROM StockLocationLine self "
+                        + "WHERE self.stockLocation in (:stockLocationLineList) AND self.product = :product",
+                    BigDecimal.class)
+                .setParameter("stockLocationLineList", this.stockLocationList)
+                .setParameter("product", product)
+                .getSingleResult())
+        .orElse(BigDecimal.ZERO);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -920,6 +1030,18 @@ public class MrpServiceImpl implements MrpService {
 
       qty = stockLocationLine.getCurrentQty();
     }
+
+    return createAvailableStockMrpLine(mrp, product, qty, stockLocation, availableStockMrpLineType);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected MrpLine createAvailableStockMrpLine(
+      Mrp mrp,
+      Product product,
+      BigDecimal qty,
+      StockLocation stockLocation,
+      MrpLineType availableStockMrpLineType)
+      throws AxelorException {
 
     return mrpLineRepository.save(
         this.createMrpLine(
@@ -972,6 +1094,17 @@ public class MrpServiceImpl implements MrpService {
 
     if (mrp.getProductCategorySet() != null && !mrp.getProductCategorySet().isEmpty()) {
 
+      Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
+
+      if (mrp.getTakeInAccountSubCategories()) {
+        Set<ProductCategory> childProductCategorySet = new HashSet<>();
+        for (ProductCategory productCategory : productCategorySet) {
+          childProductCategorySet.addAll(
+              this.getProductCategories(productCategory, new HashSet<>(), 0));
+        }
+        productCategorySet.addAll(childProductCategorySet);
+      }
+
       productSet.addAll(
           productRepository
               .all()
@@ -981,8 +1114,8 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
-                  mrp.getProductCategorySet(),
+                      + "AND self.dtype = 'Product'",
+                  productCategorySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
                   ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)
@@ -1000,7 +1133,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -1083,7 +1216,7 @@ public class MrpServiceImpl implements MrpService {
           qty,
           maturityDate,
           cumulativeQty,
-          stockLocation,
+          mrp.getComputeWithSubStockLocation() ? stockLocation : mrp.getStockLocation(),
           model);
     }
     return null;
@@ -1109,7 +1242,7 @@ public class MrpServiceImpl implements MrpService {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1", mrp.getId())
+            .filter("self.mrp.id = ?1 AND self.proposalToProcess = true", mrp.getId())
             .order("maturityDate")
             .fetch();
 
@@ -1118,6 +1251,9 @@ public class MrpServiceImpl implements MrpService {
       if (!mrpLine.getProposalGenerated()) {
         mrpLineService.generateProposal(
             mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
+
+        mrpLine.setProposalToProcess(false);
+        mrpLineRepository.save(mrpLine);
       }
     }
   }
@@ -1175,6 +1311,7 @@ public class MrpServiceImpl implements MrpService {
               .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
               .fetch();
     }
+    reset(mrpRepository.find(mrp.getId()));
     this.startMrp(mrpRepository.find(mrp.getId()));
     this.assignProductAndLevel(this.getProductList());
 
@@ -1229,5 +1366,59 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void saveErrorInMrp(Mrp mrp, Exception e) {
     mrp.setErrorLog(e.getMessage());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess) {
+    Query<MrpLine> mrpLineQuery =
+        mrpLineRepository
+            .all()
+            .filter(
+                "self.mrp.id = :mrpId AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
+            .bind("mrpId", mrp.getId())
+            .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+            .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
+            .order("id");
+
+    int offset = 0;
+    List<MrpLine> mrpLineList;
+
+    while (!(mrpLineList = mrpLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+      for (MrpLine mrpLine : mrpLineList) {
+        offset++;
+
+        mrpLineService.updateProposalToProcess(mrpLine, true);
+      }
+
+      JPA.clear();
+    }
+  }
+
+  protected Set<ProductCategory> getProductCategories(
+      ProductCategory productCategory, Set<ProductCategory> productCategorySet, int count) {
+
+    if (count > ITERATIONS) {
+      return productCategorySet;
+    }
+
+    List<ProductCategory> childProductCategoryList =
+        productCategoryRepository
+            .all()
+            .filter("self.parentProductCategory = ?1", productCategory)
+            .fetch();
+
+    productCategorySet.add(productCategory);
+    count++;
+
+    if (childProductCategoryList.isEmpty()) {
+      return productCategorySet;
+    }
+
+    for (ProductCategory category : childProductCategoryList) {
+      this.getProductCategories(category, productCategorySet, count);
+    }
+
+    return productCategorySet;
   }
 }

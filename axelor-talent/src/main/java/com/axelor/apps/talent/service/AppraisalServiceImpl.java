@@ -129,7 +129,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 
     for (Employee employee :
         employees.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       Appraisal appraisal = appraisalRepo.copy(appraisalTemplate, false);

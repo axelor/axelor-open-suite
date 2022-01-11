@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -93,10 +95,11 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
@@ -113,7 +116,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setDeliveryDate(deliveryDate);
-    saleOrder.setOrderDate(orderDate);
+    saleOrder.setTaxNumber(taxNumber);
+    saleOrder.setFiscalPosition(fiscalPosition);
 
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
@@ -163,7 +167,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
 
     String numSeq = "";
@@ -191,10 +197,11 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             null,
             numSeq,
             externalRef,
-            appSaleService.getTodayDate(company),
             priceList,
             clientPartner,
-            team);
+            team,
+            taxNumber,
+            fiscalPosition);
 
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
@@ -251,9 +258,12 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        Beans.get(SaleOrderLineService.class).fillPrice(saleOrderLine, saleOrder);
-        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
+        if (saleOrderLine.getProduct() != null) {
+          saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
+          saleOrderLineService.computeValues(saleOrder, saleOrderLine);
+        }
       }
     }
   }

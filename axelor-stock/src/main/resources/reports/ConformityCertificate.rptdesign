@@ -1167,7 +1167,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ? and EnTransla
                     </structure>
                 </list-property>
             </structure>
-            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockMoveId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>

@@ -30,7 +30,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -49,25 +51,29 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       UserService userService,
+      SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      PartnerSupplychainService partnerSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
         userService,
+        saleOrderLineService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
         productionOrderSaleOrderService,
-        appProductionService);
+        appProductionService,
+        partnerSupplychainService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

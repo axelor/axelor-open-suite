@@ -20,12 +20,12 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -55,6 +55,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
   @Inject protected AppAccountService appAccountService;
 
+  @Inject protected AccountConfigService accountConfigService;
+
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public PurchaseOrderLine fill(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
@@ -72,7 +74,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     LOG.debug(
         "Création d'une ligne de commande fournisseur pour le produit : {}",
-        new Object[] {saleOrderLine.getProductName()});
+        saleOrderLine.getProductName());
 
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
@@ -94,12 +96,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder,
-            saleOrderLine.getProduct(),
-            saleOrderLine.getProductName(),
-            saleOrderLine.getDescription(),
-            qty,
-            unit);
+            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
 
     purchaseOrderLine.setIsTitleLine(
         saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
@@ -107,31 +104,13 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     return purchaseOrderLine;
   }
 
-  @Override
-  public PurchaseOrderLine createPurchaseOrderLine(
-      PurchaseOrder purchaseOrder,
-      Product product,
-      String productName,
-      String description,
-      BigDecimal qty,
-      Unit unit)
-      throws AxelorException {
-
-    PurchaseOrderLine purchaseOrderLine =
-        super.createPurchaseOrderLine(purchaseOrder, product, productName, description, qty, unit);
-
-    //		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
-    //
-    //		purchaseOrderLine.setIsInvoiced(false);
-
-    return purchaseOrderLine;
-  }
-
   public PurchaseOrderLine getAndComputeAnalyticDistribution(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService
+            .getAccountConfig(purchaseOrder.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return purchaseOrderLine;
     }
 

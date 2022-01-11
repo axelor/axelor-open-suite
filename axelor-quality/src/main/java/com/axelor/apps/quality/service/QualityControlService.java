@@ -25,6 +25,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface QualityControlService {
 
@@ -38,5 +39,5 @@ public interface QualityControlService {
 
   void sendEmail(QualityControl qualityControl)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException;
+          MessagingException, IOException, AxelorException, JSONException;
 }

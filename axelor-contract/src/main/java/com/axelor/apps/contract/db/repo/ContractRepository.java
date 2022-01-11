@@ -23,6 +23,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -40,7 +41,8 @@ public class ContractRepository extends AbstractContractRepository {
 
       return super.save(contract);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 
@@ -52,14 +54,14 @@ public class ContractRepository extends AbstractContractRepository {
                   type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
       if (seq == null) {
         throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
                 I18n.get("The company %s doesn't have any configured sequence for contracts"),
-                company.getName()),
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+                company.getName()));
       }
       return seq;
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 

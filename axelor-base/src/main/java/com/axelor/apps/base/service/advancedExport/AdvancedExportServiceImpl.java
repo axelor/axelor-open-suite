@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -138,8 +139,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
     return createQuery(
-        createQueryBuilder(
-            advancedExport.getMetaModel(), selectFieldBuilder, recordIds, orderByFieldBuilder));
+        createQueryBuilder(advancedExport, selectFieldBuilder, recordIds, orderByFieldBuilder));
   }
 
   /**
@@ -302,7 +302,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @return
    */
   private StringBuilder createQueryBuilder(
-      MetaModel metaModel,
+      AdvancedExport advancedExport,
       StringBuilder selectFieldBuilder,
       List<Long> recordIds,
       StringBuilder orderByFieldBuilder) {
@@ -313,6 +313,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     selectionJoinField = String.join(" ", selectionJoinFieldSet);
 
     params = null;
+    MetaModel metaModel = advancedExport.getMetaModel();
     String criteria = getCriteria(metaModel, recordIds);
 
     if (!orderByFieldBuilder.toString().equals(""))
@@ -327,6 +328,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     queryBuilder.append(
         (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
     queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
+    if (!advancedExport.getIncludeArchivedRecords()) {
+      queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
+    }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 
     return queryBuilder;
@@ -410,12 +414,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
           @Override
           public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
-            if (line1.getSequence() == line2.getSequence()) {
-              if (line1.getId() > line2.getId()) {
-                return 1;
-              } else {
-                return -1;
-              }
+            if (line1.getSequence().equals(line2.getSequence())) {
+              return line1.getId().compareTo(line2.getId());
             }
             return line1.getSequence() - line2.getSequence();
           }
@@ -612,5 +612,22 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       }
       return " " + Joiner.on(" ").join(joinItems);
     }
+  }
+
+  @Override
+  public boolean checkAdvancedExportExist(String metaModelName) {
+
+    long total =
+        Beans.get(AdvancedExportRepository.class)
+            .all()
+            .filter("self.metaModel.fullName = :metaModelName")
+            .bind("metaModelName", metaModelName)
+            .count();
+
+    if (total == 0) {
+      return false;
+    }
+
+    return true;
   }
 }

@@ -129,8 +129,8 @@ public class MapService {
      * BigDecimal(firstPlaceFound.geometry.location.lat); BigDecimal lng = new
      * BigDecimal(firstPlaceFound.geometry.location.lng);
      *
-     * response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
-     * response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN)); }
+     * response.put("lat", lat.setScale(10, RoundingMode.HALF_UP));
+     * response.put("lng", lng.setScale(10, RoundingMode.HALF_UP)); }
      */
     // }
   }

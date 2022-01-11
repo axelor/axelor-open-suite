@@ -23,7 +23,6 @@ import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.service.builder.ChartBuilderService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
@@ -40,15 +39,14 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
     try {
       chartBuilderService.build(chartBuilder);
     } catch (AxelorException | JAXBException e) {
-      refresh(chartBuilder);
-      throw new ValidationException(e.getMessage());
+      // refresh(chartBuilder);
+      throw new ValidationException(e);
     }
 
     return super.save(chartBuilder);
   }
 
   @Override
-  @Transactional
   public void remove(ChartBuilder chartBuilder) {
 
     MetaView metaView = chartBuilder.getMetaViewGenerated();

@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -35,9 +37,12 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -186,7 +191,7 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
               }
@@ -411,6 +416,12 @@ public class SaleOrderController {
     Partner commonClientPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
+    TaxNumber commonTaxNumber = null;
+    // Useful to determine if a difference exists between tax number of all sale orders
+    boolean existTaxNumberDiff = false;
+    FiscalPosition commonFiscalPosition = null;
+    // Useful to determine if a difference exists between fiscal positions of all sale orders
+    boolean existFiscalPositionDiff = false;
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
@@ -439,6 +450,8 @@ public class SaleOrderController {
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
         commonLocation = saleOrderTemp.getStockLocation();
+        commonTaxNumber = saleOrderTemp.getTaxNumber();
+        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -467,6 +480,18 @@ public class SaleOrderController {
           commonLocation = null;
           existLocationDiff = true;
         }
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+          commonTaxNumber = null;
+          existTaxNumberDiff = true;
+        }
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
+          commonFiscalPosition = null;
+          existFiscalPositionDiff = true;
+        }
       }
       count++;
     }
@@ -493,6 +518,25 @@ public class SaleOrderController {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+
+    if (existTaxNumberDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
+
+    if (existFiscalPositionDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -574,7 +618,9 @@ public class SaleOrderController {
                   commonLocation,
                   commonContactPartner,
                   commonPriceList,
-                  commonTeam);
+                  commonTeam,
+                  commonTaxNumber,
+                  commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
@@ -634,9 +680,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
-    }
+    response.setAttr(
+        "operationSelect",
+        "value",
+        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+
     response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
@@ -906,6 +954,96 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String message =
+          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+  /**
+   * Called from sale order form view, on invoiced partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on delivered partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setDeliveredPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+
+      response.setAttr("deliveredPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order view, on delivery date change. <br>
+   * Update stock reservation date for each sale order line by calling {@link
+   * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateStockReservationDate(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .updateStockMoveReservationDateTime(saleOrderLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(
+      ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderSupplychainService.class)
+          .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
+      response.setValues(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

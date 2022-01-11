@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chart-builders>
+
+
+  <chart-builder>
+
+    <name>product-order-chart</name>
+
+    <title>Product orders per month</title>
+
+    <chartType>bar</chartType>
+
+    <isJson>true</isJson>
+
+    <model>ProductOrder</model>
+
+    <groupOn></groupOn>
+
+    <groupOnJson>orderDate</groupOnJson>
+
+    <groupDateType>month</groupDateType>
+
+    <groupOnTarget>orderDate</groupOnTarget>
+
+    <groupOnTargetType>Date</groupOnTargetType>
+
+    <isJsonGroupOn>true</isJsonGroupOn>
+
+    <isJsonAggregateOn>true</isJsonAggregateOn>
+
+    <isJsonDisplayField>true</isJsonDisplayField>
+
+    <aggregateOnJson>customer</aggregateOnJson>
+
+    <aggregateOn></aggregateOn>
+
+    <aggregateOnTarget>customer.fullName</aggregateOnTarget>
+
+    <aggregateDateType></aggregateDateType>
+
+    <aggregateOnTargetType>String</aggregateOnTargetType>
+
+    <displayField></displayField>
+
+    <displayFieldJson>total</displayFieldJson>
+
+    <displayType>0</displayType>
+
+    <filters>
+      <filter>
+
+        <metaField></metaField>
+
+        <metaJsonField>customer</metaJsonField>
+
+        <operator>notNull</operator>
+
+        <targetField>customer</targetField>
+
+        <targetType>many-to-one</targetType>
+
+        <value></value>
+
+        <defaultValue></defaultValue>
+
+        <isParameter>false</isParameter>
+
+        <isJson>true</isJson>
+
+        <isTargetJson>false</isTargetJson>
+
+        <logicOp>0</logicOp>
+
+      </filter>
+      <filter>
+
+        <metaField></metaField>
+
+        <metaJsonField>orderDate</metaJsonField>
+
+        <operator>&lt;=</operator>
+
+        <targetField>orderDate</targetField>
+
+        <targetType>date</targetType>
+
+        <value>$date</value>
+
+        <defaultValue></defaultValue>
+
+        <isParameter>false</isParameter>
+
+        <isJson>true</isJson>
+
+        <isTargetJson>false</isTargetJson>
+
+        <logicOp>0</logicOp>
+
+      </filter>
+
+    </filters>
+
+    <appBuilder>PRD</appBuilder>
+
+  </chart-builder>
+  <chart-builder>
+
+    <name>product-order-per-author-per-category</name>
+
+    <title>Product orders per supplier per category</title>
+
+    <chartType>pie</chartType>
+
+    <isJson>true</isJson>
+
+    <model>ProductOrderLine</model>
+
+    <groupOn></groupOn>
+
+    <groupOnJson>product</groupOnJson>
+
+    <groupDateType></groupDateType>
+
+    <groupOnTarget>product.supplier.name</groupOnTarget>
+
+    <groupOnTargetType>String</groupOnTargetType>
+
+    <isJsonGroupOn>true</isJsonGroupOn>
+
+    <isJsonAggregateOn>true</isJsonAggregateOn>
+
+    <isJsonDisplayField>true</isJsonDisplayField>
+
+    <aggregateOnJson></aggregateOnJson>
+
+    <aggregateOn></aggregateOn>
+
+    <aggregateOnTarget></aggregateOnTarget>
+
+    <aggregateDateType></aggregateDateType>
+
+    <aggregateOnTargetType></aggregateOnTargetType>
+
+    <displayField></displayField>
+
+    <displayFieldJson>total</displayFieldJson>
+
+    <displayType>0</displayType>
+
+    <filters>
+      <filter>
+
+        <metaField></metaField>
+
+        <metaJsonField>product</metaJsonField>
+
+        <operator>=</operator>
+
+        <targetField>product.category</targetField>
+
+        <targetType>json-many-to-one</targetType>
+
+        <value></value>
+
+        <defaultValue></defaultValue>
+
+        <isParameter>true</isParameter>
+
+        <isJson>true</isJson>
+
+        <isTargetJson>false</isTargetJson>
+
+        <logicOp>0</logicOp>
+
+      </filter>
+
+    </filters>
+
+    <appBuilder>PRD</appBuilder>
+
+  </chart-builder>
+
+
+</chart-builders>

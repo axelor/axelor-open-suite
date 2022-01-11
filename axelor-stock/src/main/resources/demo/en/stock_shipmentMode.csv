@@ -1,5 +1,5 @@
-"importId";"name"
-1;"Home delivery"
-2;"Express home delivery"
-3;"International home delivery"
-4;"Point delivery"
+"importId";"name";"hasCarriagePaidPossibility";"carriagePaidThreshold";"product_importId"
+1;"Home delivery";"true";1000;700
+2;"Express home delivery";"true";2000;701
+3;"International home delivery";"false";;
+4;"Point delivery";"false";;

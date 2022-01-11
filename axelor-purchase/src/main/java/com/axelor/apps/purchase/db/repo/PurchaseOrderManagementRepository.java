@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.db.repo;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -53,7 +54,8 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
       Beans.get(PurchaseOrderService.class).setDraftSequence(purchaseOrder);
       return purchaseOrder;
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

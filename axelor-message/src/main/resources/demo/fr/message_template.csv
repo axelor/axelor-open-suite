@@ -1,0 +1,8 @@
+"name";"subject";"mediaTypeSelect";"metaModel.name";"content"
+"SMS Deuxième Rappel";"SMS - Rappel de paiement 2 - N/Réf. $DebtRecoveryHistory.debtRecovery.name$";5;"DebtRecoveryHistory";"Bonjour.
+
+Sauf erreur de notre part, la société $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$ constate qu'un montant de $DebtRecoveryHistory.balanceDue$ € TVAC reste à payer sur le compte $DebtRecoveryHistory.debtRecovery.accountingSituation.company.defaultBankDetails.iban$.
+
+Merci d'effectuer le paiement très rapidement afin d'éviter des frais supplémentaires.
+
+Belle journée et au plaisir."

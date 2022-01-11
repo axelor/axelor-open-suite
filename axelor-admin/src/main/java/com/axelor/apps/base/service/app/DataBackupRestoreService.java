@@ -86,9 +86,7 @@ public class DataBackupRestoreService {
                 strError = "Errors : \n" + sb1.toString();
               }
               str = "Total Records :  {" + total + "} - Success Records :  {" + count + "}  \n";
-              if (total != 0 && count != 0) {
-                sb.append(modelName + " : \n");
-              }
+              sb.append(modelName + " : \n");
               sb.append(strError).append(str + "-----------------------------------------\n");
               sb1.setLength(0);
             }

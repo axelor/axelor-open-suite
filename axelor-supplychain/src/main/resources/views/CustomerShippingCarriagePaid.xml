@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="customer-shipping-carriage-paid-grid" title="Carriage paid threshold"
+    model="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid">
+    <field name="shipmentMode"/>
+    <field name="shippingCostsProduct"/>
+    <field name="carriagePaidThreshold"/>
+  </grid>
+
+  <form name="customer-shipping-carriage-paid-form"
+    model="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
+    title="Carriage paid threshold">
+    <panel name="mainPanel">
+      <field name="shippingCostsProduct" domain="self.isShippingCostsProduct = true"/>
+      <field name="carriagePaidThreshold"/>
+      <field name="shipmentMode"/>
+    </panel>
+  </form>
+
+</object-views>

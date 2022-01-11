@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="WkfProcess" cacheable="true">
+
+    <string name="name" title="Name"/>
+    <string name="processId" title="Process id"/>
+    <!-- <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Start model" /> -->
+    <!-- <many-to-many name="relatedModelSet" ref="com.axelor.meta.db.MetaModel" title="Related models"
+      /> -->
+    <one-to-many name="wkfProcessConfigList" ref="WkfProcessConfig"
+      title="Process configs" mappedBy="wkfProcess"/>
+    <many-to-one name="wkfModel" ref="WkfModel"/>
+    <boolean name="displayStatus"/>
+    <string name="displayOnModels" title="Display for models" large="true"/>
+    <string name="description" title="Description" large="true"/>
+
+  </entity>
+
+</domain-models>

@@ -31,9 +31,11 @@ public interface ProductService {
   @Transactional
   public void updateProductPrice(Product product) throws AxelorException;
 
-  public String getSequence() throws AxelorException;
+  public String getSequence(Product product) throws AxelorException;
 
   public void updateSalePrice(Product product, Company company) throws AxelorException;
+
+  public boolean hasActivePriceList(Product product);
 
   @Transactional
   public void generateProductVariants(Product productModel) throws AxelorException;
@@ -43,7 +45,7 @@ public interface ProductService {
 
   /**
    * @param productVariant
-   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price
+   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price - 3 : Purchase Price
    * @return
    */
   public BigDecimal getProductExtraPrice(ProductVariant productVariant, int applicationPriceSelect);
@@ -53,7 +55,8 @@ public interface ProductService {
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
       ProductVariantValue productVariantValue3,
-      ProductVariantValue productVariantValue4);
+      ProductVariantValue productVariantValue4,
+      ProductVariantValue productVariantValue5);
 
   public void copyProduct(Product product, Product copy);
 }

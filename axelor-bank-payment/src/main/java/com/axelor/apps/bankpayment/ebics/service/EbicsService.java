@@ -314,8 +314,8 @@ public class EbicsService {
     }
 
     throw new AxelorException(
-        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         ebicsPartner.getPartnerId(),
         format.getName());
   }
@@ -469,7 +469,7 @@ public class EbicsService {
     return file;
   }
 
-  private boolean isTest(EbicsUser user) throws AxelorException {
+  private boolean isTest(EbicsUser user) {
 
     EbicsPartner partner = user.getEbicsPartner();
 

@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.common.StringUtils;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
@@ -140,14 +141,8 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     configuratorCreatorService.updateIndicators(creator);
   }
 
-  /**
-   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
-   * importing, we need to fix these values.
-   *
-   * @param creator
-   * @throws AxelorException
-   */
-  protected void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
+  @Override
+  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes == null) {
       return;
@@ -221,8 +216,11 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       String newAttributeName) {
 
     formulas.forEach(
-        configuratorFormula ->
+        configuratorFormula -> {
+          if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
             configuratorFormula.setFormula(
-                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName)));
+                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
+          }
+        });
   }
 }

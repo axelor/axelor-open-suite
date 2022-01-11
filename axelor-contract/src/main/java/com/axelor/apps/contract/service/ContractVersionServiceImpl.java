@@ -100,7 +100,8 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
     version.setActivatedByUser(AuthUtils.getUser());
     version.setStatusSelect(ONGOING_VERSION);
 
-    if (version.getVersion() >= 0
+    if (version.getVersion() != null
+        && version.getVersion() >= 0
         && version.getIsWithEngagement()
         && version.getEngagementStartFromVersion()) {
       Preconditions.checkNotNull(

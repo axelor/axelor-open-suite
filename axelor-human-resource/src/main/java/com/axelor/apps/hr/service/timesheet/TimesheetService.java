@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -35,7 +36,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface TimesheetService {
 
@@ -44,11 +47,11 @@ public interface TimesheetService {
 
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   /**
    * Checks that there is a line for each working day of the timesheet.
@@ -63,22 +66,22 @@ public interface TimesheetService {
 
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public void cancel(Timesheet timesheet) throws AxelorException;
 
@@ -91,11 +94,11 @@ public interface TimesheetService {
 
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Timesheet generateLines(
       Timesheet timesheet,
@@ -166,4 +169,7 @@ public interface TimesheetService {
   public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
+
+  @CallMethod
+  public Set<Long> getContextProjectIds();
 }

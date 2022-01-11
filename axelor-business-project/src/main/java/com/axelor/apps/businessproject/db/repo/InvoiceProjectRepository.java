@@ -18,9 +18,14 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
+import java.util.List;
 
 public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
 
@@ -28,10 +33,25 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
   public void remove(Invoice entity) {
 
     if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
-      Beans.get(InvoicingProjectRepository.class)
-          .all()
-          .filter("self.invoice.id = ?", entity.getId())
-          .remove();
+      List<InvoicingProject> invoiceProjectList =
+          Beans.get(InvoicingProjectRepository.class)
+              .all()
+              .filter("self.invoice.id = ?", entity.getId())
+              .fetch();
+      List<ProjectTask> projectTaskList =
+          Beans.get(ProjectTaskRepository.class)
+              .all()
+              .filter("self.invoiceLine.invoice = ?1", entity)
+              .fetch();
+      if (ObjectUtils.notEmpty(projectTaskList)) {
+        for (ProjectTask projectTask : projectTaskList) {
+          projectTask.setInvoiceLine(null);
+        }
+      }
+      for (InvoicingProject invoiceProject : invoiceProjectList) {
+        invoiceProject.setInvoice(null);
+        invoiceProject.setStatusSelect(InvoicingProjectRepository.STATUS_DRAFT);
+      }
     }
 
     super.remove(entity);

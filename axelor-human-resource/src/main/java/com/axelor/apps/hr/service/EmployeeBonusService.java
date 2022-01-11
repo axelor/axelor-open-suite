@@ -85,7 +85,7 @@ public class EmployeeBonusService {
 
     Integer employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_CALCULATED;
     for (Employee employee : allEmployee) {
-      if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
 

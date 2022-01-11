@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.AccessConfig;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AccessConfigRepository;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
@@ -27,6 +28,7 @@ import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
@@ -90,7 +92,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
 
   private void importObjectAccess(XSSFSheet sheet) {
 
-    App app = appService.getApp(sheet.getSheetName());
+    App app = Beans.get(AppRepository.class).findByCode(sheet.getSheetName());
     if (app == null) {
       return;
     }
@@ -222,7 +224,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
 
   private void importMenuAccess(XSSFSheet sheet) {
 
-    App app = appService.getApp(sheet.getSheetName().split("-")[0]);
+    App app = Beans.get(AppRepository.class).findByCode(sheet.getSheetName().split("-")[0]);
     if (app == null) {
       return;
     }

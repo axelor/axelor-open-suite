@@ -33,8 +33,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -43,6 +46,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -76,6 +80,8 @@ public class ImportSupplyChain {
   @Inject protected ImportPurchaseOrder importPurchaseOrder;
 
   @Inject protected ImportSaleOrder importSaleOrder;
+
+  @Inject protected InventoryLineService inventoryLineService;
 
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
@@ -201,5 +207,18 @@ public class ImportSupplyChain {
       TraceBackService.trace(e);
     }
     return null;
+  }
+
+  public Object importInventory(Object bean, Map<String, Object> values) throws AxelorException {
+
+    assert bean instanceof Inventory;
+
+    Inventory inventory = (Inventory) bean;
+
+    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+      inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
+    }
+
+    return inventory;
   }
 }

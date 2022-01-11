@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selection-builders>
+
+  <selection-builder>
+
+    <metaSelect>sequence.generic.code.select</metaSelect>
+
+    <name>sequence.generic.code.select</name>
+
+    <selectionText>partner:Partner (Cust/Suppl)
+      move:Move
+      bankOrder:Bank order
+      project:Project
+      expense:Expense
+      opportunity:Opportunity
+      saleOrder:Sales order
+      purchaseOrder:Purchase order
+      intStockMove:Internal stock move
+      mrp:MRP
+      customerContract:Customer contracts
+      productionOrder:Production order
+      forecastRecap:Forecast Recap
+      ticket:Ticket
+      maintenance:Maintenance
+      qualityAlert:Quality alert
+      product:Product
+      invoice:Invoice
+      employmentContract:Employment contract
+      PurchaseRequest:Purchase request
+      outStockMove:Delivery
+      stock move
+      supplierContract:Supplier contracts
+      manufOrder:Manufacturing order
+      forecast:Forecast
+      qualityControl:Quality control
+      abcAnalysis:ABC Analysis
+      paymentSchedule:Payment schedule
+      inStockMove:Receipt stock move
+      rawMaterialRequirement:Raw material requirement
+      paymentVoucher:Payment voucher
+      inventory:Inventory
+      debit:Direct debit
+      productTrackingNumber:Product tracking number
+      accountingReport:Accounting reports
+      logisticalForm:Logistical form
+      customAccountingReport:Custom accounting reports
+      reimbursement:Reimbursements
+      paymentVoucherReceiptNo:Receipt N°(Payment voucher)
+      accountClearance:Overpayment clearance
+      irrecoverable:Shift to irrecoverable
+      chequeReject:Cheque
+      reject
+      saleInterface:Sale interface
+      refundInterface:Refund interface
+      treasuryInterface:Treasury
+      interface
+      purchaseInterface:Purchase interface
+      moveLineExport:Accounting export
+      analyticReport:Analytic report
+      reconcile:Reconcile
+      reconcileGroupDraft:Reconcile Group (Draft)
+      reconcileGroupFinal:Reconcile Group (Final)
+      depositSlip:Deposit slip
+      subrogationRelease:Subrogation release
+      partnerAccount:Partner account
+      pr:Demande d&apos;achat</selectionText>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </selection-builder>
+</selection-builders>

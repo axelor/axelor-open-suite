@@ -19,13 +19,14 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -42,9 +44,14 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -52,9 +59,11 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -63,7 +72,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -71,6 +80,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -83,7 +93,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       SaleOrderLineRepository saleOrderLineRepo,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AccountConfigService accountConfigService) {
     super(
         currencyService,
         priceListService,
@@ -95,6 +106,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -111,10 +123,12 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService
+            .getAccountConfig(saleOrder.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
@@ -292,7 +306,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.saleOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)
@@ -307,26 +321,45 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine) {
     BigDecimal qty = saleOrderLine.getQty();
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
-    BigDecimal invoicedQty = BigDecimal.ZERO;
+    BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT SUM(self.qty) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId");
-    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
-    query.setParameter("saleOrderLineId", saleOrderLine.getId());
-
-    invoicedQty = (BigDecimal) query.getSingleResult();
-
-    if (invoicedQty != null
-        && qty.compareTo(invoicedQty) == -1
-        && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
     } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
       return deliveredQty;
     }
 
     return qty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      return;
+    }
+    if (SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE
+        != Beans.get(SupplyChainConfigService.class)
+            .getSupplyChainConfig(saleOrder.getCompany())
+            .getSaleOrderReservationDateSelect()) {
+      return;
+    }
+
+    Beans.get(StockMoveLineRepository.class)
+        .all()
+        .filter("self.saleOrderLine = :saleOrderLineId")
+        .bind("saleOrderLineId", saleOrderLine.getId())
+        .fetchStream()
+        .filter(
+            stockMoveLine ->
+                stockMoveLine.getStockMove() != null
+                    && stockMoveLine.getStockMove().getStatusSelect()
+                        == StockMoveRepository.STATUS_PLANNED)
+        .forEach(
+            stockMoveLine ->
+                stockMoveLine.setReservationDateTime(
+                    saleOrderLine.getEstimatedDelivDate().atStartOfDay()));
   }
 
   @Override
@@ -360,5 +393,50 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setRequestedReservedQty(BigDecimal.ZERO.max(qty));
     }
     return saleOrderLine;
+  }
+
+  @Override
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal conversionRate,
+      Integer sequence)
+      throws AxelorException {
+
+    SaleOrderLine soLine =
+        super.createSaleOrderLine(packLine, saleOrder, packQty, conversionRate, sequence);
+
+    if (soLine != null && soLine.getProduct() != null) {
+      soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
+      getAndComputeAnalyticDistribution(soLine, saleOrder);
+      if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
+        soLine.getAnalyticMoveLineList().stream()
+            .forEach(analyticMoveLine -> analyticMoveLine.setSaleOrderLine(soLine));
+      }
+      try {
+        SupplyChainConfig supplyChainConfig =
+            Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+        if (supplyChainConfig.getAutoRequestReservedQty()) {
+          Beans.get(ReservedQtyService.class).requestQty(soLine);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
+    return soLine;
+  }
+
+  protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {
+
+    TypedQuery<BigDecimal> query =
+        JPA.em()
+            .createQuery(
+                "SELECT COALESCE(SUM(CASE WHEN self.invoice.operationTypeSelect = 3 THEN self.qty WHEN self.invoice.operationTypeSelect = 4 THEN -self.qty END),0) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId",
+                BigDecimal.class);
+    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    query.setParameter("saleOrderLineId", saleOrderLine.getId());
+
+    return query.getSingleResult();
   }
 }

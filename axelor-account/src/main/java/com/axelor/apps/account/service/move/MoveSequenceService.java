@@ -42,7 +42,8 @@ public class MoveSequenceService {
 
     if (move.getId() != null
         && Strings.isNullOrEmpty(move.getReference())
-        && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+        && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
       move.setReference(sequenceService.getDraftSequenceNumber(move));
     }
   }

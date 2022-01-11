@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.production.db.WorkCenter;
-import java.math.BigDecimal;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.WorkCenterGroup;
+import com.axelor.exception.AxelorException;
 
 public interface ProdProcessLineService {
 
-  public Long getProdProcessLineDurationFromWorkCenter(WorkCenter workCenter);
-
-  public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
-
-  public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
+  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
+      throws AxelorException;
 }

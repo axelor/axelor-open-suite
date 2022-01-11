@@ -18,9 +18,11 @@
 package com.axelor.apps.bankpayment.ebics.client;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +37,6 @@ import java.util.zip.Inflater;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -195,8 +196,7 @@ public class EbicsUtils {
     Node node;
 
     try {
-      factory = DocumentBuilderFactory.newInstance();
-      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+      factory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
       factory.setNamespaceAware(true);
       factory.setValidating(true);
       builder = factory.newDocumentBuilder();

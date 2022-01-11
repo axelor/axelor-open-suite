@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="BamlModel" cacheable="true">
+
+    <string name="name" title="Name" required="true"/>
+    <string name="bamlXml" title="Input xml" large="true"/>
+    <string name="resultScript" title="Result script" large="true"/>
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
+      title="App builder"/>
+
+  </entity>
+
+</domain-models>

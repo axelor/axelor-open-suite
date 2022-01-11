@@ -70,6 +70,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES:
         batch = realizeFixedAssetLines(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING:
+        batch = blockCustomersWithLatePayments(accountingBatch);
+        break;
       case AccountingBatchRepository.ACTION_CLOSE_ANNUAL_ACCOUNTS_OF_PAST_YEAR:
         batch = closeAnnualAccounts(accountingBatch);
         break;
@@ -158,5 +161,10 @@ public class AccountingBatchService extends AbstractBatchService {
   public Batch closeAnnualAccounts(AccountingBatch accountingBatch) {
 
     return Beans.get(BatchCloseAnnualAccounts.class).run(accountingBatch);
+  }
+
+  public Batch blockCustomersWithLatePayments(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchBlockCustomersWithLatePayments.class).run(accountingBatch);
   }
 }

@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface LeaveService {
 
@@ -73,34 +74,30 @@ public interface LeaveService {
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
-
-  @Transactional
-  public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReasonHrConfig)
-      throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)

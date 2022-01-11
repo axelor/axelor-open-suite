@@ -96,8 +96,8 @@ public abstract class Importer {
 
   public ImportHistory run(Map<String, Object> importContext) throws AxelorException, IOException {
 
-    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile(),
-        data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
+    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
+    File data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
 
     if (!bind.exists()) {
       throw new AxelorException(
@@ -130,7 +130,7 @@ public abstract class Importer {
     if (workspace.isDirectory()) {
       FileUtils.deleteDirectory(workspace);
     } else {
-      workspace.delete();
+      java.nio.file.Files.delete(workspace.toPath());
     }
   }
 
@@ -194,14 +194,13 @@ public abstract class Importer {
           }
         } catch (IOException ioException) {
           log.error(ioException.getMessage());
-          continue;
         }
       }
     }
   }
 
   /**
-   * Ajout d'un nouveau log dans la table des historiques pour la configuration données.
+   * Adds a new log in the history table for data configuration.
    *
    * @param listener
    * @return

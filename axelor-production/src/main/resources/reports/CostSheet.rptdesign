@@ -3088,6 +3088,7 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
         </table>
         <table id="461">
             <property name="fontSize">8pt</property>
+            <property name="width">7.948in</property>
             <property name="dataSet">CostSheetLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>

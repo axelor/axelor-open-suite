@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class ImportCity {
 
-  private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public Object importCity(Object bean, Map<String, Object> values) {
 
@@ -43,7 +43,7 @@ public class ImportCity {
           city.getCanton().setDepartment(city.getDepartment());
         }
       } catch (Exception e) {
-        LOG.error("Error when importing city : {}", e);
+        LOG.error("Error when importing city : {}", city.getName(), e);
       }
     }
 

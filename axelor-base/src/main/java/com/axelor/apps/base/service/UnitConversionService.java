@@ -100,7 +100,7 @@ public class UnitConversionService {
         BigDecimal coefficient =
             this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit, product);
 
-        return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
+        return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_UP);
       } catch (IOException | ClassNotFoundException e) {
         TraceBackService.trace(e);
       }
@@ -172,7 +172,7 @@ public class UnitConversionService {
         if (unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF
             && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) {
           return BigDecimal.ONE.divide(
-              unitConversion.getCoef(), DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_EVEN);
+              unitConversion.getCoef(), DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_UP);
         } else if (product != null) {
           maker.setTemplate(unitConversion.getFormula());
           eval = maker.make();
@@ -184,7 +184,7 @@ public class UnitConversionService {
           GroovyShell shell = new GroovyShell(binding, conf);
           BigDecimal result = new BigDecimal(shell.evaluate(eval).toString());
           if (result.compareTo(BigDecimal.ZERO) != 0) {
-            return BigDecimal.ONE.divide(result, DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_EVEN);
+            return BigDecimal.ONE.divide(result, DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_UP);
           }
         }
       }

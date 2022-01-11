@@ -18,7 +18,6 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -45,12 +44,13 @@ import java.util.Optional;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject protected SaleOrderService saleOrderService;
-
+  protected SaleOrderService saleOrderService;
   protected AppSaleService appSaleService;
 
   @Inject
-  public SaleOrderPrintServiceImpl(AppSaleService appSaleService) {
+  public SaleOrderPrintServiceImpl(
+      SaleOrderService saleOrderService, AppSaleService appSaleService) {
+    this.saleOrderService = saleOrderService;
     this.appSaleService = appSaleService;
   }
 
@@ -116,6 +116,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("ProformaInvoice", proforma)
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format);
   }
 
@@ -129,7 +131,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appSaleService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -44,7 +46,6 @@ public interface SaleOrderCreateService {
    * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
-   * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
@@ -61,10 +62,11 @@ public interface SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
     return createSaleOrder(
         salespersonUser,
@@ -74,10 +76,11 @@ public interface SaleOrderCreateService {
         deliveryDate,
         internalReference,
         externalReference,
-        orderDate,
         priceList,
         clientPartner,
         team,
+        taxNumber,
+        fiscalPosition,
         null);
   }
 
@@ -93,7 +96,6 @@ public interface SaleOrderCreateService {
    * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
-   * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
@@ -111,10 +113,11 @@ public interface SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException;
 
@@ -127,7 +130,9 @@ public interface SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
       throws AxelorException;
 
   @Transactional

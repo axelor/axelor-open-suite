@@ -1,3 +1,0 @@
----
-title: "Invoice : set dueDate readOnly when paymentCondition is not free."
-type: fix

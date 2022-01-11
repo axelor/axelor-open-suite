@@ -33,4 +33,6 @@ public interface StockMoveServiceSupplychain {
   void verifyProductStock(StockMove stockMove) throws AxelorException;
 
   public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove);
+
+  public void setDefaultInvoicedPartner(StockMove stockMove);
 }

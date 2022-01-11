@@ -110,7 +110,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     for (Timesheet timesheet : timesheetList) {
       try {
         Employee employee = timesheet.getUser().getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }
         Message message =
@@ -141,7 +141,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     for (Timesheet timesheet : timesheetList) {
       try {
         Employee employee = timesheet.getUser().getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }
         generateAndSendMessage(employee);
@@ -163,7 +163,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
@@ -183,7 +183,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {

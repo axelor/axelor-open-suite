@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.SelectionBuilderRepository' as Class).all()
+
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1 OR self.appBuilder is null',__ids__)
+	} 
+	
+	selectionBuilders = ""
+	query.fetch().each({
+		selectionBuilder -> 
+				selectionBuilders += """\n\t\t<selection-builder>
+				\n\t\t\t<metaSelect>${selectionBuilder.metaSelect?.name}</metaSelect>
+				\n\t\t\t<name>${selectionBuilder.name}</name>
+				\n\t\t\t<selectionText>${selectionBuilder.selectionText}</selectionText>
+				\n\t\t\t<appBuilder>${selectionBuilder.appBuilder?.code}</appBuilder>
+				\n\t\t</selection-builder>"""
+	})
+	
+	if (!selectionBuilders.isEmpty()) {
+		selectionBuilders = """<selection-builders>\n""" +  selectionBuilders + """\n</selection-builders>"""
+	}
+	
+	out << """$selectionBuilders"""
+%>

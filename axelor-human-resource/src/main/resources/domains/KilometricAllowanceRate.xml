@@ -3,17 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-     <module name="human-resource" package="com.axelor.apps.hr.db"/>
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity sequential="true" name="KilometricAllowanceRate" lang="java" >
-    
-        <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
-        
-        <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" required="true"/>
-        <one-to-many name="kilometricAllowanceRuleList" ref="com.axelor.apps.hr.db.KilometricAllowanceRule" mappedBy="kilometricAllowanceRate"/>
+  <entity sequential="true" name="KilometricAllowanceRate" lang="java">
 
-        <finder-method name="findByVehicleKillometricAllowanceParam" using="kilometricAllowParam"/>
-        
-    </entity>
+    <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HrConfig"/>
+
+    <many-to-one name="kilometricAllowParam"
+      ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param"
+      required="true"/>
+    <one-to-many name="kilometricAllowanceRuleList"
+      ref="com.axelor.apps.hr.db.KilometricAllowanceRule" mappedBy="kilometricAllowanceRate"/>
+
+    <finder-method name="findByVehicleKillometricAllowanceParam"
+      using="kilometricAllowParam"/>
+
+  </entity>
 
 </domain-models>

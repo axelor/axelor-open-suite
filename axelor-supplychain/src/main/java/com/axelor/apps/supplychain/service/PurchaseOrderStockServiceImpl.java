@@ -201,7 +201,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            company.getStockConfig().getQualityControlDefaultStockLocation(),
+            appBaseService.getAppBase().getEnableTradingNamesManagement()
+                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
+                : company.getStockConfig().getQualityControlDefaultStockLocation(),
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),
@@ -216,11 +218,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
+    stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     qualityStockMove.setOriginId(purchaseOrder.getId());
     qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
+    qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(purchaseOrder.getCompany());
@@ -376,7 +380,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .divide(
                   purchaseOrderLine.getQty(),
                   appBaseService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_EVEN);
+                  RoundingMode.HALF_UP);
     }
 
     if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
@@ -412,6 +416,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     TaxLine taxLine = purchaseOrderLine.getTaxLine();
     if (taxLine != null) {
       taxRate = taxLine.getValue();
+    }
+    if (purchaseOrderLine.getReceiptState() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
     }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
@@ -592,7 +599,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)

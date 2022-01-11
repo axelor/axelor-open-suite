@@ -344,10 +344,33 @@ public class SaleOrderLineController {
   public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-    BigDecimal qty =
-        Beans.get(SaleOrderLineServiceSupplyChain.class)
-            .checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+    SaleOrderLineServiceSupplyChain saleOrderLineService =
+        Beans.get(SaleOrderLineServiceSupplyChain.class);
+
+    BigDecimal qty = saleOrderLineService.checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+
+    saleOrderLineService.updateDeliveryState(saleOrderLine);
 
     response.setValue("qty", qty);
+    response.setValue("deliveryState", saleOrderLine.getDeliveryState());
+  }
+
+  /**
+   * Called from sale order line, on desired delivery date change. Call {@link
+   * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateReservationDate(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(SaleOrderLineServiceSupplyChain.class)
+          .updateStockMoveReservationDateTime(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

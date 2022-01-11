@@ -43,7 +43,7 @@ public class MessageController {
           .sendMessage(Beans.get(MessageRepository.class).find(message.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
@@ -90,5 +90,9 @@ public class MessageController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setContextValues(ActionRequest request, ActionResponse response) {
+    response.setValues(request.getContext().get("_message"));
   }
 }

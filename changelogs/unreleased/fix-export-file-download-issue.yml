@@ -1,3 +1,0 @@
----
-title: "Fix NoSuchFileException when exported file gets download"
-type: fix

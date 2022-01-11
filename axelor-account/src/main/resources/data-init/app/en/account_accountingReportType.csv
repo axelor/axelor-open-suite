@@ -23,3 +23,6 @@
 22;"Export treasury -> Acc. Soft.";1008;2;1
 23;"Export purchase -> Acc. Soft.";1009;2;1
 24;"Export general balance -> Acc. Soft.";1010;2;1
+25;"DADS report declaration preparatory process";19;1;1
+26;"DADS report declaration support";20;1;1
+27;"Export N4DS";1011;2;1

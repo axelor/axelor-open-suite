@@ -38,7 +38,7 @@ public interface ConfiguratorCreatorService {
    *
    * @param creator
    */
-  void updateIndicators(ConfiguratorCreator creator);
+  void updateIndicators(ConfiguratorCreator creator) throws AxelorException;
 
   /**
    * Get the testing values in {@link ConfiguratorCreator#attributes}

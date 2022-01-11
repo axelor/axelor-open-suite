@@ -6,9 +6,13 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
-  		
-      <many-to-many name="projectSet" title="Projects" ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
-		    	
+
+    <many-to-many name="projectSet" title="Projects"
+      ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
+    <many-to-one name="contextProject" title="Context project"
+      ref="com.axelor.apps.project.db.Project"/>
+    <boolean name="isIncludeSubContextProjects" title="Include sub context projects"/>
+
   </entity>
 
 </domain-models>

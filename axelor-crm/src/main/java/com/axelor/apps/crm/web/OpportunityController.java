@@ -34,7 +34,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class OpportunityController {
 
-  @SuppressWarnings("rawtypes")
   public void assignToMe(ActionRequest request, ActionResponse response) {
 
     OpportunityService opportunityService = Beans.get(OpportunityService.class);

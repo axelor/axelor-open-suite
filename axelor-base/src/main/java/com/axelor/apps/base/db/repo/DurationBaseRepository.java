@@ -18,6 +18,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Duration;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import javax.persistence.PersistenceException;
 
@@ -31,7 +32,8 @@ public class DurationBaseRepository extends DurationRepository {
 
       return super.save(duration);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 

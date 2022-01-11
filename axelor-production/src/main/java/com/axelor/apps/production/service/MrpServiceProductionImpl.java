@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -32,6 +33,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -96,6 +98,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       AppSaleService appSaleService,
+      AppPurchaseService appPurchaseService,
+      ProductCategoryRepository productCategoryRepository,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       AppProductionService appProductionService) {
@@ -115,7 +119,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mailMessageService,
         unitConversionService,
         appBaseService,
-        appSaleService);
+        appSaleService,
+        appPurchaseService,
+        productCategoryRepository);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
     this.appProductionService = appProductionService;
@@ -422,7 +428,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               manufProposalNeedMrpLineType,
               reorderQty
                   .multiply(billOfMaterial.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
               stockLocation,
               maturityDate,
               mrpLineOriginList,

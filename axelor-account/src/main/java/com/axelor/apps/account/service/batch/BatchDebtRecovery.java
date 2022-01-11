@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -39,6 +40,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Table;
 
 public class BatchDebtRecovery extends BatchStrategy {
@@ -97,6 +99,16 @@ public class BatchDebtRecovery extends BatchStrategy {
 
   public void debtRecoveryPartner() {
     Company company = batch.getAccountingBatch().getCompany();
+    Set<TradingName> tradingNameSet =
+        null; // Get the trading names for which to operate the debt recovery process
+
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && batch.getAccountingBatch().getIsDebtRecoveryByTradingName()) {
+      tradingNameSet = batch.getAccountingBatch().getTradingNameSet();
+      if (tradingNameSet == null || tradingNameSet.isEmpty()) {
+        tradingNameSet = company.getTradingNameSet();
+      }
+    }
 
     Query<Partner> query =
         partnerRepository
@@ -122,28 +134,76 @@ public class BatchDebtRecovery extends BatchStrategy {
       for (Partner partner : partnerList) {
         ++offset;
 
-        try {
-          boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
-          if (remindedOk) {
-            DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
-            addBatchToModel(debtRecovery);
+        boolean remindedOk;
+        // if recovery handled by trading name
+        if (tradingNameSet != null && !tradingNameSet.isEmpty()) {
+          boolean incrementPartner = false;
+          for (TradingName tradingName : tradingNameSet) {
+            try {
+              remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company, tradingName);
+              if (remindedOk) {
+                DebtRecovery debtRecovery =
+                    debtRecoveryService.getDebtRecovery(partner, company, tradingName);
+                addBatchToModel(debtRecovery);
+                incrementPartner = true;
+              }
+              // Catching exceptions
+            } catch (AxelorException e) {
+              TraceBackService.trace(
+                  new AxelorException(
+                      e,
+                      e.getCategory(),
+                      I18n.get("Partner") + " %s, " + I18n.get("Trading name") + " %s",
+                      partner.getName(),
+                      tradingName.getName()),
+                  ExceptionOriginRepository.DEBT_RECOVERY,
+                  batch.getId());
+              incrementAnomaly(partner);
+              break;
+            } catch (Exception e) {
+              TraceBackService.trace(
+                  new Exception(
+                      String.format(
+                          I18n.get("Partner") + " %s, " + I18n.get("Trading name") + " %s",
+                          partner.getName(),
+                          tradingName.getName()),
+                      e),
+                  ExceptionOriginRepository.DEBT_RECOVERY,
+                  batch.getId());
+              incrementAnomaly(partner);
+              break;
+            }
+            // \Catching exceptions
+          }
+          if (incrementPartner) {
             incrementDone(partner);
           }
-        } catch (AxelorException e) {
-          TraceBackService.trace(
-              new AxelorException(
-                  e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()),
-              ExceptionOriginRepository.DEBT_RECOVERY,
-              batch.getId());
-          incrementAnomaly(partner);
-          break;
-        } catch (Exception e) {
-          TraceBackService.trace(
-              new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e),
-              ExceptionOriginRepository.DEBT_RECOVERY,
-              batch.getId());
-          incrementAnomaly(partner);
-          break;
+        } else { // if recovery handled by company
+          try {
+            remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company, null);
+            if (remindedOk) {
+              DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
+              addBatchToModel(debtRecovery);
+              incrementDone(partner);
+            }
+            // Catching exceptions
+          } catch (AxelorException e) {
+            TraceBackService.trace(
+                new AxelorException(
+                    e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()),
+                ExceptionOriginRepository.DEBT_RECOVERY,
+                batch.getId());
+            incrementAnomaly(partner);
+            break;
+          } catch (Exception e) {
+            TraceBackService.trace(
+                new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e),
+                ExceptionOriginRepository.DEBT_RECOVERY,
+                batch.getId());
+            incrementAnomaly(partner);
+            break;
+          }
+          // \Catching exceptions
         }
       }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="TradingName">
+
+    <one-to-many name="stockLocationList" ref="com.axelor.apps.stock.db.StockLocation"
+      mappedBy="tradingName" title="Stock locations"/>
+    <many-to-one name="workshopDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Workshop default stock location"/>
+    <many-to-one name="receiptDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
+    <many-to-one name="wasteDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Waste default stock location"/>
+    <many-to-one name="shippingDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Shipping default stock location"/>
+    <many-to-one name="qualityControlDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
+
+  </entity>
+
+</domain-models>

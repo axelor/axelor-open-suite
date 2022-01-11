@@ -68,9 +68,6 @@
 	    printTemplateSetService += "  <code>${pt?.language?.code}</code>"
 	    printTemplateSetService += "  <name>${pt?.language?.name}</name>"
 	    printTemplateSetService += "  </language>"
-	    printTemplateSetService += "  <printSettings>"
-	    printTemplateSetService += "  <name>${u?.printSettings?.name}</name>"
-	    printTemplateSetService += "  </printSettings>"
 	    printTemplateSetService += "  <formatSelect>${u.formatSelect}</formatSelect>"
 	    printTemplateSetService += "  <displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>"
 	    printTemplateSetService += "  <documentName>${u.documentName}</documentName>"
@@ -98,9 +95,6 @@
 			<code>${u?.language?.code}</code>
 			<name>${u?.language?.name}</name>
 		</language>
-		<printSettings>
-			<name>${u?.printSettings?.name}</name>
-		</printSettings>
 		<formatSelect>${u.formatSelect}</formatSelect>
 		<displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>
 		<documentName>${u.documentName}</documentName>

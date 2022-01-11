@@ -20,6 +20,7 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -34,6 +35,7 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
       }
       return super.save(entity);
     } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }

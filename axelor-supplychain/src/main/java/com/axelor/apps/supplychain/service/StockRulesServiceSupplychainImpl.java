@@ -52,6 +52,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
@@ -192,7 +193,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
           | InstantiationException
           | IllegalAccessException
           | MessagingException
-          | IOException e) {
+          | IOException
+          | JSONException e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }
