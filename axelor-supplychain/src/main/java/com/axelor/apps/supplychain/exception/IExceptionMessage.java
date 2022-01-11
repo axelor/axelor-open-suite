@@ -233,6 +233,8 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
 
+  static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
+
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;
 
@@ -291,4 +293,10 @@ public interface IExceptionMessage {
 
   static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+
+  static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+      "You must select at least one line to validate" /*)*/;
+
+  static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+      "No partner account was found for company %s." /*)*/;
 }
