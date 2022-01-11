@@ -65,6 +65,10 @@
     <field name="financialDiscountAmount"/>
     <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"/>
     <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
+    <button name="selectPartnerBtn" title="Select all terms of this Partner"
+      icon="fa-user-plus" onClick="act-1"/>
+    <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
+      icon="fa-user-times" onClick="act-2"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
@@ -393,13 +397,13 @@
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-dashlet"
-    title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    title="Term(s) to pay/be paid by partner" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
     <view type="form" name="invoice-term-form"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
-    title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    title="Totals by partner by bank details" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="custom"
       name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"/>
     <view type="form" name="invoice-term-form"/>

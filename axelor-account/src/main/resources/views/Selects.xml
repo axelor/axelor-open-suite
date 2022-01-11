@@ -702,4 +702,12 @@
     <option value="10">10</option>
   </selection>
 
+  <selection name="iaccount.payment.session.partner.type.select">
+    <option value="1">Supplier</option>
+    <option value="2">Employee</option>
+    <option value="3">Customer</option>
+    <option value="4">Company</option>
+    <option value="5">Other</option>
+  </selection>
+
 </object-views>

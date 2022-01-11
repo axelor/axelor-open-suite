@@ -32,6 +32,10 @@
       selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
       selection="paymentMode.accounting.trigger.select" default="1"/>
+    <integer name="daysMarginOnPaySession" title="Days margin on pay session"
+      required="true"/>
+    <integer name="partnerTypeSelect" title="Recipient type"
+      selection="iaccount.payment.session.partner.type.select" default="1"/>
 
     <extra-code><![CDATA[
 
@@ -39,6 +43,13 @@
         public static final int STATUS_ONGOING = 1;
         public static final int STATUS_CLOSED = 2;
         public static final int STATUS_CANCELLED = 3;
+
+		// PARTNER TYPE SELECT
+		public static final int PARTNER_TYPE_SUPPLIER = 1;
+		public static final int PARTNER_TYPE_EMPLOYEE = 2;
+		public static final int PARTNER_TYPE_CUSTOMER = 3;
+		public static final int PARTNER_TYPE_COMPANY = 4;
+		public static final int PARTNER_TYPE_OTHER = 5;
 
     ]]></extra-code>
   </entity>
