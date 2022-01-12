@@ -6,7 +6,7 @@ import com.axelor.auth.db.User;
 public interface InvoiceVisibilityService {
   boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation);
 
-  boolean isPaymentButtonVisible(Invoice invoice, boolean mainPurchase);
+  boolean isPaymentButtonVisible(Invoice invoice);
 
   boolean isValidatorUserVisible(Invoice invoice);
 

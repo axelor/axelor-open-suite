@@ -39,10 +39,10 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
-  public boolean isPaymentButtonVisible(Invoice invoice, boolean mainPurchase) {
+  public boolean isPaymentButtonVisible(Invoice invoice) {
     boolean statusOperationSubTypeCondition = this._getStatusOperationSubTypeCondition(invoice);
 
-    boolean operationTypeCondition = this._getOperationTypeCondition(invoice, mainPurchase);
+    boolean operationTypeCondition = this._getOperationTypeCondition(invoice);
 
     boolean otherCondition =
         invoice.getAmountRemaining().signum() > 0 && !invoice.getHasPendingPayments();
@@ -111,31 +111,16 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
     return user.getIsPfpValidator() || user.getIsSuperPfpUser();
   }
 
-  protected boolean _getOperationTypeCondition(Invoice invoice, boolean mainPurchase) {
-    int status =
-        mainPurchase
-            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
-    int refundStatus =
-        mainPurchase
-            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-    int conditionalStatus =
-        !mainPurchase
-            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
-    int conditionalRefundStatus =
-        !mainPurchase
-            ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            : InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-
-    return invoice.getOperationTypeSelect() == status
-        || invoice.getOperationTypeSelect() == refundStatus
+  protected boolean _getOperationTypeCondition(Invoice invoice) {
+    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
         || !this._getManagePfpCondition(invoice)
-        || (invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_VALIDATED
-            && (invoice.getOperationTypeSelect() == conditionalStatus
+        || (this._getInvoiceTermsCondition2(invoice)
+            && (invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || !invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
-                || invoice.getOperationTypeSelect() == conditionalRefundStatus));
+                || invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
   }
 
   protected boolean _getOperationTypePurchaseCondition(Invoice invoice) {
@@ -170,6 +155,16 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         || invoice.getInvoiceTermList().stream()
             .allMatch(
                 it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING);
+  }
+
+  protected boolean _getInvoiceTermsCondition2(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || invoice.getInvoiceTermList().stream()
+            .anyMatch(
+                it ->
+                    it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_VALIDATED
+                        || it.getPfpValidateStatusSelect()
+                            == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
   }
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {

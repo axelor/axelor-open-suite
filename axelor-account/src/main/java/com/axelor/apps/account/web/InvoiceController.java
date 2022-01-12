@@ -1213,14 +1213,12 @@ public class InvoiceController {
           !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
 
       response.setAttr(
-          "addPaymentBtn",
-          "hidden",
-          !invoiceVisibilityService.isPaymentButtonVisible(invoice, false));
+          "addPaymentBtn", "hidden", !invoiceVisibilityService.isPaymentButtonVisible(invoice));
 
       response.setAttr(
           "registerPaymentBtn",
           "hidden",
-          !invoiceVisibilityService.isPaymentButtonVisible(invoice, true));
+          !invoiceVisibilityService.isPaymentButtonVisible(invoice));
 
       response.setAttr(
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
