@@ -89,10 +89,6 @@
           showIf="useForPartnerBalance"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-        <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
-          if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
-          <field name="isRetrievedOnPaymentSession"/>
-        </panel>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-account-record-uncheck-tax-required"/>
@@ -123,6 +119,10 @@
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
           if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="manageCutOffPeriod" widget="boolean-switch"/>
+        </panel>
+        <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
+          if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
+          <field name="isRetrievedOnPaymentSession" widget="boolean-switch"/>
         </panel>
       </panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">

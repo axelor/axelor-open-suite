@@ -51,6 +51,9 @@
     <boolean name="isSelectedOnPaymentSession" title="Selected on Session"/>
     <decimal name="paymentAmount" title="Signed payment amount"/>
 
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
+    <decimal name="amountPaid" title="Amount paid" readonly="true"/>
+
     <string name="name" namecolumn="true" search="invoice,dueDate,amount" title="Name">
             <![CDATA[
             if( invoice != null ){
