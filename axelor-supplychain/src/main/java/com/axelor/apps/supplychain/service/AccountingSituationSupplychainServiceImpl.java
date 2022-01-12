@@ -45,7 +45,6 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     implements AccountingSituationSupplychainService {
 
   protected AppAccountService appAccountService;
-  protected SaleOrderInvoiceService saleOrderInvoiceService;
   protected SaleOrderRepository saleOrderRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
 
@@ -55,12 +54,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       PaymentModeService paymentModeService,
       AccountingSituationRepository accountingSituationRepo,
       AppAccountService appAccountService,
-      SaleOrderInvoiceService saleOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       InvoicePaymentRepository invoicePaymentRepository) {
     super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
-    this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
   }
@@ -114,8 +111,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
         // Update UsedCredit
         accountingSituation = this.computeUsedCredit(accountingSituation);
         if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
-          BigDecimal inTaxInvoicedAmount =
-              saleOrderInvoiceService.getInTaxInvoicedAmount(saleOrder);
+          BigDecimal inTaxInvoicedAmount = getInTaxInvoicedAmount(saleOrder);
 
           BigDecimal usedCredit =
               accountingSituation
@@ -159,11 +155,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
                 SaleOrderRepository.STATUS_CANCELED)
             .fetch();
     for (SaleOrder saleOrder : saleOrderList) {
-      sum =
-          sum.add(
-              saleOrder
-                  .getInTaxTotal()
-                  .subtract(saleOrderInvoiceService.getInTaxInvoicedAmount(saleOrder)));
+      sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
     }
     // subtract the amount of payments if there is no move created for
     // invoice payments
@@ -198,5 +190,23 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   private boolean isUsedCreditExceeded(AccountingSituation accountingSituation) {
     return accountingSituation.getUsedCredit().compareTo(accountingSituation.getAcceptedCredit())
         > 0;
+  }
+
+  /**
+   * Compute the invoiced amount of the taxed amount of the invoice.
+   *
+   * @param saleOrder
+   * @return the tax invoiced amount
+   */
+  protected BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder) {
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    BigDecimal inTaxTotal = saleOrder.getInTaxTotal();
+
+    BigDecimal exTaxAmountInvoiced = saleOrder.getAmountInvoiced();
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    } else {
+      return inTaxTotal.multiply(exTaxAmountInvoiced).divide(exTaxTotal, 2, RoundingMode.HALF_UP);
+    }
   }
 }

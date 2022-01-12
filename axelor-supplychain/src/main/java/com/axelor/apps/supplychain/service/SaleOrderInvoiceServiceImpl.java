@@ -895,21 +895,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder) {
-    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    BigDecimal inTaxTotal = saleOrder.getInTaxTotal();
-
-    BigDecimal exTaxAmountInvoiced = saleOrder.getAmountInvoiced();
-    if (exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
-      return BigDecimal.ZERO;
-    } else {
-      return inTaxTotal
-          .multiply(exTaxAmountInvoiced)
-          .divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_UP);
-    }
-  }
-
-  @Override
   public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
