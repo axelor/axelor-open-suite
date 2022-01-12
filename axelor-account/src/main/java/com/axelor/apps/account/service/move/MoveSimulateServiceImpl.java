@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -20,5 +21,6 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
   public void simulate(Move move) throws AxelorException {
     moveValidateService.checkPreconditions(move);
     move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+    Beans.get(MoveRepository.class).save(move);
   }
 }
