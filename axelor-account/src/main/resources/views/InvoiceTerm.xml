@@ -279,20 +279,23 @@
           <field name="$isValidPfpValidatorUser" hidden="true"/>
         </panel>
       </panel>
-      <panel name="paymentSessionPanel" colSpan="12" showIf="paymentSession">
+      <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
+        showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
       <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
+          readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session"/>
-        <field name="isSelectedOnPaymentSession"
+        <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amountPaid"/>
-        <field name="paymentAmount" showIf="isSelectedOnPaymentSession"
+        <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amountPaid"/>
-        <field name="financialDiscountAmount" showIf="applyFinancialDiscount"
+        <field name="financialDiscountAmount"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amountPaid"/>
       </panel>
-      <field name="amountPaid"/>
+      <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
     </panel>
   </form>
 
