@@ -36,6 +36,9 @@
       required="true"/>
     <integer name="partnerTypeSelect" title="Recipient type"
       selection="iaccount.payment.session.partner.type.select" default="1"/>
+    <many-to-one ref="com.axelor.auth.db.User" name="validatedByUser"
+      title="Validated by"/>
+    <datetime name="validatedDate" title="Validated Date"/>
 
     <extra-code><![CDATA[
 

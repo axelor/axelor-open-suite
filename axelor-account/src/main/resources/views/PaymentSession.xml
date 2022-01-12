@@ -19,6 +19,10 @@
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
+    <panel name="statusSelectPanel" colSpan="12">
+      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
+        colSpan="12"/>
+    </panel>
     <panel name="mainPanel" itemSpan="4">
       <field name="createdOn"/>
       <field name="sequence"/>
@@ -58,12 +62,15 @@
         colSpan="8" canSearch="true"/>
       <field name="sessionTotalAmount" colSpan="4" readonly="true"/>
     </panel>
-    <panel name="statusPanel" sidebar="true">
-      <field name="statusSelect" widget="NavSelect"/>
-      <button name="validateBtn" title="Validate" onClick=""
+    <panel name="btnPanel" sidebar="true">
+      <button name="validateBtn" title="Validate" onClick="" css="btn-success"
         showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
-      <button name="cancelBtn" title="Cancel" onClick=""
+      <button name="cancelBtn" title="Cancel" onClick="" css="btn-danger"
         showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+    </panel>
+    <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
+      <field name="validatedByUser" readonly="true"/>
+      <field name="validatedDate" readonly="true"/>
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
