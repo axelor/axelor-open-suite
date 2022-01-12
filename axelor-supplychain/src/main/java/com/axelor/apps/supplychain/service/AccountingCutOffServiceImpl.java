@@ -73,6 +73,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -749,13 +750,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         }
 
         // Copy analytic move lines
-        if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
-          cutOffMoveLine.setAnalyticMoveLineList(
-              new ArrayList<>(moveLine.getAnalyticMoveLineList())
-                  .stream()
-                      .map(it -> analyticMoveLineRepository.copy(it, true))
-                      .collect(Collectors.toList()));
-        }
+        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
       }
     }
 
@@ -767,6 +762,92 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             company.getAccountConfig(), accountingCutOffTypeSelect);
 
     this.generatePartnerMoveLine(cutOffMove, origin, account, moveDescription, originDate);
+  }
+
+  protected void copyAnalyticMoveLines(
+      MoveLine moveLine, MoveLine cutOffMoveLine, BigDecimal newAmount) {
+    if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+      if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+        AnalyticMoveLine existingAnalyticMoveLine;
+        List<AnalyticMoveLine> toComputeAnalyticMoveLineList =
+            new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
+
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          existingAnalyticMoveLine =
+              this.getExistingAnalyticMoveLine(cutOffMoveLine, analyticMoveLine);
+
+          if (existingAnalyticMoveLine == null) {
+            this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
+          } else {
+            this.computeAnalyticMoveLine(
+                cutOffMoveLine,
+                existingAnalyticMoveLine,
+                analyticMoveLine.getPercentage(),
+                newAmount,
+                false);
+
+            toComputeAnalyticMoveLineList.remove(existingAnalyticMoveLine);
+          }
+        }
+
+        for (AnalyticMoveLine toComputeAnalyticMoveLine : toComputeAnalyticMoveLineList) {
+          this.computeAnalyticMoveLine(
+              cutOffMoveLine, toComputeAnalyticMoveLine, BigDecimal.ZERO, newAmount, false);
+        }
+      } else {
+        if (cutOffMoveLine.getAnalyticMoveLineList() == null) {
+          cutOffMoveLine.setAnalyticMoveLineList(new ArrayList<>());
+        }
+
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
+        }
+      }
+    }
+  }
+
+  protected AnalyticMoveLine getExistingAnalyticMoveLine(
+      MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+    return moveLine.getAnalyticMoveLineList().stream()
+        .filter(
+            it ->
+                it.getAnalyticAxis().equals(analyticMoveLine.getAnalyticAxis())
+                    && it.getAnalyticAccount().equals(analyticMoveLine.getAnalyticAccount()))
+        .findFirst()
+        .orElse(null);
+  }
+
+  protected void copyAnalyticMoveLine(
+      MoveLine moveLine, AnalyticMoveLine analyticMoveLine, BigDecimal newAmount) {
+    AnalyticMoveLine analyticMoveLineCopy =
+        analyticMoveLineRepository.copy(analyticMoveLine, false);
+
+    this.computeAnalyticMoveLine(
+        moveLine, analyticMoveLine, analyticMoveLineCopy.getPercentage(), newAmount, true);
+
+    moveLine.addAnalyticMoveLineListItem(analyticMoveLineCopy);
+  }
+
+  protected void computeAnalyticMoveLine(
+      MoveLine moveLine,
+      AnalyticMoveLine existingAnalyticMoveLine,
+      BigDecimal newPercentage,
+      BigDecimal newAmount,
+      boolean newLine) {
+    BigDecimal amount =
+        newAmount.multiply(newPercentage.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
+
+    if (!newLine) {
+      amount = existingAnalyticMoveLine.getAmount().add(amount);
+    }
+
+    BigDecimal percentage =
+        amount
+            .multiply(BigDecimal.valueOf(100))
+            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+
+    existingAnalyticMoveLine.setPercentage(percentage);
+    existingAnalyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(
