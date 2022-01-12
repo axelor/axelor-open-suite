@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -30,6 +31,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -63,20 +65,31 @@ public class AnalyticDistributionLineController {
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (moveLine != null)
+      Context parent = request.getContext().getParent();
+      if (MoveLine.class.toString().equals(parent.getContextClass().toString())) {
+        MoveLine line = request.getContext().getParent().asType(MoveLine.class);
         response.setValue(
             "analyticJournal",
             Beans.get(AccountConfigService.class)
-                .getAccountConfig(moveLine.getAccount().getCompany())
+                .getAccountConfig(line.getAccount().getCompany())
                 .getAnalyticJournal());
-      if (moveLine.getDate() != null) {
-        response.setValue("date", moveLine.getDate());
-      } else {
+        if (line.getDate() != null) {
+          response.setValue("date", line.getDate());
+        } else {
+          response.setValue(
+              "date", Beans.get(AppBaseService.class).getTodayDate(line.getAccount().getCompany()));
+        }
+      } else if (InvoiceLine.class.toString().equals(parent.getContextClass().toString())) {
+        InvoiceLine line = request.getContext().getParent().asType(InvoiceLine.class);
         response.setValue(
-            "date",
-            Beans.get(AppBaseService.class).getTodayDate(moveLine.getAccount().getCompany()));
+            "analyticJournal",
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(line.getAccount().getCompany())
+                .getAnalyticJournal());
+        response.setValue(
+            "date", Beans.get(AppBaseService.class).getTodayDate(line.getAccount().getCompany()));
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
