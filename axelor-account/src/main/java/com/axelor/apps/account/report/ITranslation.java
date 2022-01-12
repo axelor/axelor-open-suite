@@ -337,6 +337,8 @@ public interface ITranslation {
       "AccountingReportType15.amount"; /*)*/
   public static final String ACCOUNTING_REPORT_15_TAX_RATE = /*$$(*/
       "AccountingReportType15.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
+      "AccountingReportType15.fiscalPositionCode"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/

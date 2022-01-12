@@ -198,6 +198,7 @@ public class ReimbursementExportService {
                     null,
                     partner,
                     null,
+                    partner != null ? partner.getFiscalPosition() : null,
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),

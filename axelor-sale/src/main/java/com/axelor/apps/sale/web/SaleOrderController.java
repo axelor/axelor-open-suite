@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -853,5 +854,61 @@ public class SaleOrderController {
             .param("forceEdit", "true")
             .context("_showRecord", copiedSO.getId())
             .map());
+  }
+
+  /**
+   * Empty the fiscal position field if its value is no longer compatible with the new taxNumber
+   * after a change
+   *
+   * @param request
+   * @param response
+   */
+  public void emptyFiscalPositionIfNotCompatible(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      FiscalPosition soFiscalPosition = saleOrder.getFiscalPosition();
+      if (soFiscalPosition == null) {
+        return;
+      }
+      if (saleOrder.getTaxNumber() == null) {
+        if (saleOrder.getClientPartner() != null
+            && saleOrder.getFiscalPosition() == saleOrder.getClientPartner().getFiscalPosition()) {
+          return;
+        }
+      } else {
+        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+          if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+            return;
+          }
+        }
+      }
+      response.setValue("fiscalPosition", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
+   * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
+   * SaleOrderLineService#computeProductInformation(SaleOrderLine, SaleOrder)} and {@link
+   * SaleOrderLineService#computeValues(SaleOrder, SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      if (saleOrder.getSaleOrderLineList() != null) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
+        }
+        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

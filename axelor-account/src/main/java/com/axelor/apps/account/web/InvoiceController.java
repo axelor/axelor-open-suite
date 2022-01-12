@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -1010,5 +1007,28 @@ public class InvoiceController {
       response.setError(e.getMessage());
     }
     response.setAttr("partner", "domain", domain);
+  }
+
+  /**
+   * Called from invoice form view upon changing the fiscalPosition Updates taxLine, taxEquiv and
+   * prices by calling {@link InvoiceLineService#fillProductInformation(Invoice, InvoiceLine)} and
+   * {@link InvoiceLineService#compute(Invoice, InvoiceLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getInvoiceLineList() != null) {
+        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
+          response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
