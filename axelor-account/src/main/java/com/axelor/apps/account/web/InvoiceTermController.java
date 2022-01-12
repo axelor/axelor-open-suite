@@ -20,10 +20,13 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,6 +34,7 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,19 +106,42 @@ public class InvoiceTermController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void refusalToPay(ActionRequest request, ActionResponse response) {
     try {
+      List<Long> invoiceTermIds = (List<Long>) request.getContext().get("_ids");
+      Integer invoiceTermId = (Integer) request.getContext().get("_id");
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (ObjectUtils.notEmpty(invoiceTermId) && ObjectUtils.isEmpty(invoiceTermIds)) {
 
-      if (invoiceTerm.getInvoice() != null
-          && invoiceTerm.getInvoice().getCompany() != null
-          && invoiceTerm.getReasonOfRefusalToPay() != null) {
-        Beans.get(InvoiceTermService.class)
-            .refusalToPay(
-                Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
-                invoiceTerm.getReasonOfRefusalToPay(),
-                invoiceTerm.getReasonOfRefusalToPayStr());
+        if (invoiceTerm.getInvoice() != null
+            && invoiceTerm.getInvoice().getCompany() != null
+            && invoiceTerm.getReasonOfRefusalToPay() != null) {
+          Beans.get(InvoiceTermService.class)
+              .refusalToPay(
+                  Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
+                  invoiceTerm.getReasonOfRefusalToPay(),
+                  invoiceTerm.getReasonOfRefusalToPayStr());
 
+          response.setCanClose(true);
+        }
+      } else if (ObjectUtils.isEmpty(invoiceTermId)) {
+        if (ObjectUtils.isEmpty(invoiceTermIds)) {
+          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+          return;
+        }
+        Integer recordsSelected = invoiceTermIds.size();
+        Integer recordsRefused =
+            Beans.get(InvoiceTermService.class)
+                .massRefusePfp(
+                    invoiceTermIds,
+                    invoiceTerm.getReasonOfRefusalToPay(),
+                    invoiceTerm.getReasonOfRefusalToPayStr());
+        response.setFlash(
+            String.format(
+                I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
+                recordsRefused,
+                recordsSelected));
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -148,6 +175,27 @@ public class InvoiceTermController {
                 .equals(
                     Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void massValidatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> invoiceTermIds = (List<Long>) request.getContext().get("_ids");
+      if (ObjectUtils.isEmpty(invoiceTermIds)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+        return;
+      }
+      Integer recordsSelected = invoiceTermIds.size();
+      Integer recordsUpdated = Beans.get(InvoiceTermService.class).massValidatePfp(invoiceTermIds);
+      response.setFlash(
+          String.format(
+              I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
+              recordsUpdated,
+              recordsSelected));
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

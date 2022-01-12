@@ -7,10 +7,11 @@
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
       <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
-        title="toolbar.validatePFP" onClick="act1"
+        title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
       <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
-        onClick="act2" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+        onClick="action-invoiceterm-view-refusal-to-pay"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
@@ -296,7 +297,8 @@
         onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Confirm cancellation"
-        onClick="action-invoice-term-method-refusal-to-pay" colOffset="4" colSpan="4"/>
+        onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
+        colOffset="4" colSpan="4"/>
     </panel>
   </form>
 
@@ -376,6 +378,10 @@
       method="hideSendEmailPfpBtn"/>
   </action-method>
 
+  <action-method name="action-invoice-term-method-mass-validate-pfp">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="massValidatePfp"/>
+  </action-method>
+
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="form" name="invoice-term-refusal-to-pay-wizard-form"/>
@@ -385,7 +391,8 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
-    <context name="_xApplicationType" expr="eval: _model"/>
+    <context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.Invoice"/>
+    <context name="_ids" expr="eval: _ids"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-pfp-partial-reason-wizard"
@@ -412,7 +419,7 @@
   </action-view>
 
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">
-    <check error="A cancel reason must be selected" field="cancelReason"
+    <check error="A cancel reason must be selected" field="reasonOfRefusalToPay"
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
 

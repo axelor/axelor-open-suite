@@ -195,4 +195,9 @@ public interface InvoiceTermService {
 
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public Integer massValidatePfp(List<Long> invoiceTermIds);
+
+  public Integer massRefusePfp(
+      List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 }
