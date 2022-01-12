@@ -849,4 +849,35 @@ public interface ITranslation {
       /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
   public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
       /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_TITLE =
+      /*$$(*/ "AccountingReportType.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONENT_TITLE =
+      /*$$(*/ "AccountingReportType.contentTitle"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_REPORT_TITLE =
+      /*$$(*/ "AccountingReportType.reportTitle"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_NAME =
+      /*$$(*/ "AccountingReportType.name"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_TYPE_SELECT =
+      /*$$(*/ "AccountingReportType.typeSelect"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_COMPARISION =
+      /*$$(*/ "AccountingReportType.comparison"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_NO_OF_PERIODS =
+      /*$$(*/ "AccountingReportType.noOfPeriods"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_LIST =
+      /*$$(*/ "AccountingReportType.accountingReportConfigLineList"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_HIDDEN =
+      /*$$(*/ "AccountingReportTypeConfigLine.hidden"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RESULT_SELECT =
+      /*$$(*/ "AccountingReportTypeConfigLine.resultSelect"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT =
+      /*$$(*/ "AccountingReportTypeConfigLine.account"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT_TYPE =
+      /*$$(*/ "AccountingReportTypeConfigLine.accountType"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE =
+      /*$$(*/ "AccountingReportTypeConfigLine.rule"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_DATE =
+      /*$$(*/ "AccountingReportType.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_USER =
+      /*$$(*/ "AccountingReportType.user"; /*)*/
 }

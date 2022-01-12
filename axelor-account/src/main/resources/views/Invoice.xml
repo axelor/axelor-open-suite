@@ -765,7 +765,7 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-onclick"
+        onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
@@ -919,6 +919,7 @@ InvoiceSet.length > 0))"
         <field name="invoiceDate"
           onChange="action-invoice-group-payment-condition-onchange,action-invoice-method-estimated-payment-dates"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
+        <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
@@ -1088,7 +1089,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
-        onClick="save,action-invoice-method-ventilate,save"
+        onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-invoice-method-cancel,save"
@@ -1409,6 +1410,15 @@ InvoiceSet.length > 0))"
       if="reportType != null &amp;&amp; reportType == 4"/>
     <action name="action-invoice-method-regenerate-and-show-invoice"
       if="reportType != null &amp;&amp; reportType == 4"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-ventilate-button">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
+    <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="save"/>
+    <action name="action-invoice-method-ventilate"/>
+    <action name="save"/>
   </action-group>
 
 
