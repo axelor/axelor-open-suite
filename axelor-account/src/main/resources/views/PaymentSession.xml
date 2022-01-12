@@ -45,11 +45,6 @@
         onSelect="action-attrs-payment-session-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
-    <panel name="accountingSettingsPanel" itemSpan="4">
-      <field name="accountingMethodSelect"/>
-      <field name="accountingTriggerSelect"/>
-      <field name="daysMarginOnPaySession"/>
-    </panel>
     <panel name="searchPanel"
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
       <button name="searchEligibleTermsBtn" title="Search due Terms" onClick=""/>
@@ -76,6 +71,12 @@
       <button name="sendEmailsBtn" title="Send emails payment notice"
         showIf="statusSelect = 1" readonlyIf="hasEmailsSent == true" onClick=""/>
       <field name="hasEmailsSent" readonly="true"/>
+    </panel>
+    <panel name="accountingSettingsPanel" title="Accounting Settings" itemSpan="6"
+      sidebar="true">
+      <field name="accountingMethodSelect"/>
+      <field name="accountingTriggerSelect"/>
+      <field name="daysMarginOnPaySession"/>
     </panel>
   </form>
 
