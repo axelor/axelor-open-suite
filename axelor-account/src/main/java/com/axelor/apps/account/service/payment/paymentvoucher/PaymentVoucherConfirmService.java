@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -176,6 +177,16 @@ public class PaymentVoucherConfirmService {
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
     Company company = paymentVoucher.getCompany();
     BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+    if (companyBankDetails == null) {
+      companyBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(
+                  paymentVoucher.getCompany(),
+                  paymentVoucher.getPaymentMode(),
+                  paymentVoucher.getPartner(),
+                  paymentVoucher.getOperationTypeSelect());
+      paymentVoucher.setCompanyBankDetails(companyBankDetails);
+    }
     Journal journal =
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
     LocalDate paymentDate = paymentVoucher.getPaymentDate();
@@ -219,7 +230,7 @@ public class PaymentVoucherConfirmService {
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               paymentVoucher.getRef(),
-              null);
+              journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null);
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());

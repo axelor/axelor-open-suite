@@ -214,7 +214,7 @@ public class PaymentVoucherLoadService {
       if (payVoucherDueElement.isSelected()) {
 
         paymentVoucher.addPayVoucherElementToPayListItem(
-            this.createPayVoucherElementToPay(payVoucherDueElement, sequence++));
+            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++));
 
         // Remove the line from the due elements lists
         toRemove.add(payVoucherDueElement);
@@ -226,9 +226,9 @@ public class PaymentVoucherLoadService {
   }
 
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PayVoucherDueElement payVoucherDueElement, int sequence) throws AxelorException {
+      PaymentVoucher paymentVoucher, PayVoucherDueElement payVoucherDueElement, int sequence)
+      throws AxelorException {
 
-    PaymentVoucher paymentVoucher = payVoucherDueElement.getPaymentVoucher();
     BigDecimal amountRemaining = paymentVoucher.getRemainingAmount();
     LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
@@ -273,8 +273,7 @@ public class PaymentVoucherLoadService {
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();
-
-    this.searchDueElements(paymentVoucher);
+    paymentVoucher.getPayVoucherDueElementList().clear();
   }
 
   /**
@@ -407,7 +406,7 @@ public class PaymentVoucherLoadService {
       if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
           && paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
         paymentVoucher.addPayVoucherElementToPayListItem(
-            createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
+            createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
         it.remove();
       }
     }
