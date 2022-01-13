@@ -25,11 +25,15 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -460,6 +464,109 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
 
     invoiceTermRepo.save(invoiceTerm);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Integer massValidatePfp(List<Long> invoiceTermIds) {
+    List<InvoiceTerm> invoiceTermList =
+        invoiceTermRepo
+            .all()
+            .filter(
+                "self.id in ? AND self.pfpValidateStatusSelect != ?",
+                invoiceTermIds,
+                InvoiceTermRepository.PFP_STATUS_VALIDATED)
+            .fetch();
+    User currenctUser = AuthUtils.getUser();
+    int updatedRecords = 0;
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (canUpdateInvoiceTerm(invoiceTerm, currenctUser)) {
+        invoiceTerm.setDecisionPfpTakenDate(
+            Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+        invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
+        invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+        invoiceTerm.setPfpValidatorUser(currenctUser);
+        updatedRecords++;
+      }
+    }
+    return updatedRecords;
+  }
+
+  @Override
+  public Integer massRefusePfp(
+      List<Long> invoiceTermIds,
+      CancelReason reasonOfRefusalToPay,
+      String reasonOfRefusalToPayStr) {
+    List<InvoiceTerm> invoiceTermList =
+        invoiceTermRepo
+            .all()
+            .filter(
+                "self.id in ? AND self.pfpValidateStatusSelect != ?",
+                invoiceTermIds,
+                InvoiceTermRepository.PFP_STATUS_LITIGATION)
+            .fetch();
+    User currenctUser = AuthUtils.getUser();
+    int updatedRecords = 0;
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      boolean invoiceTermCheck =
+          ObjectUtils.notEmpty(invoiceTerm.getInvoice())
+              && ObjectUtils.notEmpty(invoiceTerm.getInvoice().getCompany())
+              && ObjectUtils.notEmpty(reasonOfRefusalToPay);
+      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currenctUser)) {
+        refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
+        updatedRecords++;
+      }
+    }
+    return updatedRecords;
+  }
+
+  protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
+    boolean isValidUser =
+        currentUser.getIsSuperPfpUser()
+            || (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
+                && currentUser.equals(invoiceTerm.getPfpValidatorUser()));
+    if (isValidUser) {
+      return true;
+    }
+    return validateUser(invoiceTerm, currentUser)
+        && (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())
+            && invoiceTerm
+                .getPfpValidatorUser()
+                .equals(invoiceService.getPfpValidatorUser(invoiceTerm.getInvoice())))
+        && !invoiceTerm.getIsPaid();
+  }
+
+  protected boolean validateUser(InvoiceTerm invoiceTerm, User currentUser) {
+    boolean isValidUser = false;
+    if (ObjectUtils.notEmpty(invoiceTerm.getPfpValidatorUser())) {
+      List<SubstitutePfpValidator> substitutePfpValidatorList =
+          invoiceTerm.getPfpValidatorUser().getSubstitutePfpValidatorList();
+      LocalDate todayDate =
+          Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany());
+
+      for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
+        if (substitutePfpValidator.getSubstitutePfpValidatorUser().equals(currentUser)) {
+          LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+          LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+          if (substituteStartDate == null) {
+            if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+              isValidUser = true;
+              break;
+            }
+          } else {
+            if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+              isValidUser = true;
+              break;
+            } else if (substituteStartDate.isBefore(todayDate)
+                && substituteEndDate.isAfter(todayDate)) {
+              isValidUser = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    return isValidUser;
   }
 
   @Override

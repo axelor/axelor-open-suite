@@ -204,4 +204,9 @@ public interface InvoiceTermService {
       BigDecimal invoiceAmount,
       BigDecimal pfpGrantedAmount,
       PfpPartialReason partialReason);
+
+  public Integer massValidatePfp(List<Long> invoiceTermIds);
+
+  public Integer massRefusePfp(
+      List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 }

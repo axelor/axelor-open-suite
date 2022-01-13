@@ -902,6 +902,14 @@ public interface IExceptionMessage {
 
   static final String INVOICE_INVOICE_TERM_NOT_SAVED = /*$$(*/
       "Please save this invoice term first." /*)*/;
+  static final String INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD = /*$$(*/
+      "Please select at least a record within the list to proceed to such action." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL = /*$$(*/
+      "%s records(s) updated on %s record(s) selected(s)." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL = /*$$(*/
+      "%s records(s) refused on %s record(s) selected(s)." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
