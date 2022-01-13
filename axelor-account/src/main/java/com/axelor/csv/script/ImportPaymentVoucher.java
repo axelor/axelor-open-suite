@@ -56,7 +56,8 @@ public class ImportPaymentVoucher {
         PayVoucherDueElement payVoucherDueElement =
             paymentVoucherLoadService.createPayVoucherDueElement(moveLineToPay);
         paymentVoucher.addPayVoucherElementToPayListItem(
-            paymentVoucherLoadService.createPayVoucherElementToPay(payVoucherDueElement, 1));
+            paymentVoucherLoadService.createPayVoucherElementToPay(
+                paymentVoucher, payVoucherDueElement, 1));
       }
 
       if (paymentVoucher.getStatusSelect() == PaymentVoucherRepository.STATUS_CONFIRMED) {
