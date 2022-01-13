@@ -1205,4 +1205,16 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void updateUnpaidInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceService.class).updateUnpaidInvoiceTerms(invoice);
+
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
