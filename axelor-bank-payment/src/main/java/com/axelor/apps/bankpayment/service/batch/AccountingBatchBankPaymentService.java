@@ -71,6 +71,13 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
 
   public Batch billOfExchange(AccountingBatch accountingBatch) {
 
-    return Beans.get(BatchBillOfExchange.class).run(accountingBatch);
+    switch (accountingBatch.getDirectDebitDataTypeSelect()) {
+      case AccountingBatchRepository.DIRECT_DEBIT_DATA_CUSTOMER_INVOICE:
+        return Beans.get(BatchBillOfExchange.class).run(accountingBatch);
+      case AccountingBatchRepository.DIRECT_DEBIT_DATA_LCR_ACCOUNTED_CUSTOMER_INVOICE:
+        return Beans.get(BatchBankOrderGenerationBillOfExchange.class).run(accountingBatch);
+      default:
+        throw new IllegalArgumentException("Invalid direct debit data type");
+    }
   }
 }

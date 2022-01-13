@@ -58,6 +58,7 @@
         <field name="includeOtherBankAccounts"
           if="__config__.app.getApp('base').getManageMultiBanks()"/>
       </panel>
+
       <panel name="creditTransferPagePanel" title="Credit Transfer configuration"
         hideIf="actionSelect != 19">
         <field name="creditTransferTypeSelect"/>

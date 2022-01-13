@@ -1,0 +1,197 @@
+package com.axelor.apps.bankpayment.service.batch;
+
+import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected InvoiceRepository invoiceRepository;
+  protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected BankOrderMergeService bankOrderMergeService;
+  protected AppAccountService appAccountService;
+  protected BankDetailsRepository bankDetailsRepository;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected MoveValidateService moveValidateService;
+
+  @Inject
+  public BatchBankOrderGenerationBillOfExchange(
+      InvoiceRepository invoiceRepository,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      BankOrderMergeService bankOrderMergeService,
+      AppAccountService appAccountService,
+      BankDetailsRepository bankDetailsRepository,
+      InvoicePaymentRepository invoicePaymentRepository,
+      MoveValidateService moveValidateService) {
+    super();
+    this.invoiceRepository = invoiceRepository;
+    this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.bankOrderMergeService = bankOrderMergeService;
+    this.appAccountService = appAccountService;
+    this.bankDetailsRepository = bankDetailsRepository;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.moveValidateService = moveValidateService;
+  }
+
+  @Override
+  protected void process() {
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+
+    if (accountingBatch.getPaymentMode() == null
+        || !accountingBatch.getPaymentMode().getGenerateBankOrder()) {
+      return;
+    }
+
+    List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
+    Query<Invoice> query = buildOrderedQueryFetchLcrAccountedInvoices(accountingBatch, anomalyList);
+    List<Long> invoicePaymentIdList = createInvoicePayments(query, anomalyList);
+    if (invoicePaymentIdList != null && !invoicePaymentIdList.isEmpty()) {
+
+      try {
+        bankOrderMergeService.mergeFromInvoicePayments(
+            invoicePaymentIdList.stream()
+                .map(id -> invoicePaymentRepository.find(id))
+                .collect(Collectors.toList()));
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(e, "billOfExchangeBatch: Merge", batch.getId());
+      }
+    }
+  }
+
+  protected BankDetails getAccountingBankDetails(AccountingBatch accountingBatch) {
+    return accountingBatch.getBankDetails() != null
+        ? accountingBatch.getBankDetails()
+        : accountingBatch.getCompany().getDefaultBankDetails();
+  }
+
+  protected List<Long> createInvoicePayments(Query<Invoice> query, List<Long> anomalyList) {
+    List<Invoice> invoicesList = null;
+    List<Long> invoicePaymentIdList = new ArrayList<>();
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    BankDetails companyBankDetails = getAccountingBankDetails(accountingBatch);
+    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+      if (!JPA.em().contains(companyBankDetails)) {
+        companyBankDetails = bankDetailsRepository.find(companyBankDetails.getId());
+      }
+      for (Invoice invoice : invoicesList) {
+        try {
+          createInvoicePayment(invoicePaymentIdList, companyBankDetails, invoice);
+          moveValidateService.accounting(invoice.getMove());
+        } catch (Exception e) {
+          incrementAnomaly();
+          anomalyList.add(invoice.getId());
+          query.bind("anomalyList", anomalyList);
+          TraceBackService.trace(e, "billOfExchangeBatch: create invoice payment", batch.getId());
+          break;
+        }
+      }
+      JPA.clear();
+    }
+    return invoicePaymentIdList;
+  }
+
+  @Transactional
+  protected void createInvoicePayment(
+      List<Long> invoicePaymentIdList, BankDetails companyBankDetails, Invoice invoice) {
+    log.debug("Creating Invoice payments from {}", invoice);
+    invoiceRepository.find(invoice.getId());
+    invoicePaymentIdList.add(
+        invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails).getId());
+    invoice.addBatchSetItem(batch);
+
+    incrementDone();
+  }
+
+  protected Query<Invoice> buildOrderedQueryFetchLcrAccountedInvoices(
+      AccountingBatch accountingBatch, List<Long> anomalyList) {
+    StringBuilder filter = new StringBuilder();
+    boolean manageMultiBanks = appAccountService.getAppBase().getManageMultiBanks();
+    filter.append(
+        "self.operationTypeSelect = :operationTypeSelect "
+            + "AND self.statusSelect = :statusSelect "
+            + "AND self.amountRemaining > 0 "
+            + "AND self.company = :company "
+            + "AND self.hasPendingPayments = FALSE "
+            + "AND self.id NOT IN (:anomalyList) "
+            + "AND self.paymentMode = :paymentMode "
+            + "AND self.lcrAccounted = TRUE ");
+
+    Map<String, Object> bindings = new HashMap<>();
+    bindings.put("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+    bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    bindings.put("company", accountingBatch.getCompany());
+    bindings.put("paymentMode", accountingBatch.getPaymentMode());
+    bindings.put("anomalyList", anomalyList);
+
+    if (accountingBatch.getDueDate() != null) {
+      filter.append("AND self.dueDate <= :dueDate ");
+      bindings.put("dueDate", accountingBatch.getDueDate());
+    }
+    if (accountingBatch.getCurrency() != null) {
+      filter.append("AND self.currency = :currency ");
+      bindings.put("currency", accountingBatch.getCurrency());
+    }
+
+    if (manageMultiBanks) {
+      filter.append(" AND self.companyBankDetails IN (:bankDetailsSet) ");
+      Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+      bindings.put("bankDetailsSet", bankDetailsSet);
+    }
+
+    Query<Invoice> query =
+        invoiceRepository.all().filter(filter.toString()).bind(bindings).order("id");
+    return query;
+  }
+
+  @Override
+  protected void stop() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT))
+        .append(" ");
+    sb.append(
+        String.format(
+            I18n.get(
+                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                    com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                    batch.getDone())
+                + " ",
+            batch.getDone()));
+    sb.append(
+        String.format(
+            I18n.get(
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                batch.getAnomaly()),
+            batch.getAnomaly()));
+    addComment(sb.toString());
+    super.stop();
+  }
+}
