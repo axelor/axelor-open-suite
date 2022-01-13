@@ -1,0 +1,6 @@
+---
+title: "Accounting situation: fixes on customer credit computation"
+type: fix
+description: |
+  - Fix computation when having not invoiced sale orders that are in another currency than the company currency.
+  - Improve performance.
