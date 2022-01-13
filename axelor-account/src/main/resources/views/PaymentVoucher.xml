@@ -58,7 +58,7 @@
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
         domain=":company member of self.companySet"
-        onChange="action-group-payment-voucher-reset-imputation,action-pv-record-default-partner-inf"
+        onChange="action-group-payment-voucher-reset-imputation,action-payment-voucher-reset-due-element-list,action-pv-record-default-partner-inf"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
@@ -88,7 +88,7 @@
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
       <field name="paidAmount" colSpan="4"
-        onChange="action-group-payment-voucher-reset-imputation,action-payment-voucher-reset-due-element-list"/>
+        onChange="action-group-payment-voucher-reset-imputation"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
         grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation"/>
       <field name="remainingAmount" readonly="true" colSpan="4"/>
@@ -324,6 +324,7 @@
   <action-method name="action-payment-voucher-reset-imputation">
     <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
   </action-method>
+
   <action-record name="action-payment-voucher-reset-due-element-list"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <field name="payVoucherDueElementList" expr="eval: null"/>

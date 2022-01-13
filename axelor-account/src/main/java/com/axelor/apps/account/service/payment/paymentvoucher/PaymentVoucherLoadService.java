@@ -86,7 +86,8 @@ public class PaymentVoucherLoadService {
             + "and self.moveLine.account.useForPartnerBalance = 't' "
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = ?3 OR self.moveLine.move.statusSelect = ?4) "
-            + "and (?5 IS NULL OR self.moveLine.move.tradingName = ?5 OR self.invoice.tradingName = ?5) ";
+            + "and (?5 IS NULL OR self.moveLine.move.tradingName = ?5 OR self.invoice.tradingName = ?5) "
+            + "and (self.invoice = null or self.invoice.operationTypeSelect = ?6)";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -95,7 +96,7 @@ public class PaymentVoucherLoadService {
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || paymentVoucher.getOperationTypeSelect()
             == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-      query += "and (self.pfpValidateStatusSelect != ?6 OR self.pfpValidateStatusSelect != ?7) ";
+      query += "and (self.pfpValidateStatusSelect != ?7 OR self.pfpValidateStatusSelect != ?8) ";
     }
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
@@ -113,6 +114,7 @@ public class PaymentVoucherLoadService {
             MoveRepository.STATUS_DAYBOOK,
             MoveRepository.STATUS_ACCOUNTED,
             paymentVoucher.getTradingName(),
+            paymentVoucher.getOperationTypeSelect(),
             InvoiceRepository.PFP_STATUS_AWAITING,
             InvoiceRepository.PFP_STATUS_LITIGATION)
         .fetch();
@@ -273,7 +275,7 @@ public class PaymentVoucherLoadService {
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();
-    paymentVoucher.getPayVoucherDueElementList().clear();
+    // paymentVoucher.getPayVoucherDueElementList().clear();
   }
 
   /**
