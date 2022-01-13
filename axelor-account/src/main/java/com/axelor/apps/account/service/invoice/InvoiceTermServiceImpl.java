@@ -453,6 +453,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
     invoiceTerm.setDecisionPfpTakenDate(
         Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    invoiceTerm.setPfpRejectedAmount(invoiceTerm.getAmount());
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
