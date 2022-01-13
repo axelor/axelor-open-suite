@@ -76,7 +76,7 @@
 
   <form name="invoice-term-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
-    onLoad="action-invoice-term-group-onload,action-invoice-term-attrs-set-readonly">
+    onLoad="action-invoice-term-group-check-pfp-validator-user,action-invoice-term-attrs-set-readonly">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
@@ -119,7 +119,8 @@
         <panel name="pfpStatus" hidden="true"
           showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect == 1" colSpan="12">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
-          <field name="pfpValidatorUser" colSpan="4" canEdit="false"/>
+          <field name="pfpValidatorUser" colSpan="4" canEdit="false"
+            onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpStatusDecision" hidden="true"
           showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect > 1" colSpan="12">
@@ -130,14 +131,14 @@
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="pfpGrantedAmount" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4" colSpan="12"
           itemSpan="4">
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
           <field name="pfpGrantedAmount" readonly="true"/>
           <field name="pfpRejectedAmount" readonly="true"/>
         </panel>
@@ -146,18 +147,19 @@
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
-        <button name="passedForPaymentValidationBtn" title="Validate PFP"
-          showIf="[1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false" colSpan="4"
-          css="btn-success" onClick="action-invoice-term-set-validate-status-select, save"/>
+        <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
+          showIf="[1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
+          colSpan="4" css="btn-success"
+          onClick="action-invoice-term-set-validate-status-select, save"/>
         <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-          showIf="[1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false"
+          showIf="[1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
           css="btn-warning" colSpan="4"
           onClick="action-invoice-term-set-partial-validate-status-select,action-invoice-term-view-pfp-partial-reason-wizard"/>
-        <button name="refusalToPayBtn" title="Refuse PFP"
-          showIf="[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false" colSpan="4"
-          css="btn-danger" onClick="action-invoice-term-set-refuse-status-select, save"/>
+        <button name="refusalToPayBtn" title="Refuse to pay"
+          showIf="[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
+          colSpan="4" css="btn-danger" onClick="action-invoice-term-set-refuse-status-select, save"/>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
@@ -172,7 +174,7 @@
           <field name="invoice.paymentCondition" hidden="true"/>
           <field name="invoice.paymentCondition.isFree" hidden="true"/>
           <field name="invoice.statusSelect" hidden="true"/>
-          <field name="$isValidPfpValidatorUser" hidden="true"/>
+          <field name="$isValidPfpValidatorUser" type="boolean" hidden="true"/>
         </panel>
       </panel>
     </panel>
@@ -182,7 +184,8 @@
   </form>
 
   <form name="invoice-term-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-onload">
+    model="com.axelor.apps.account.db.InvoiceTerm"
+    onLoad="action-invoice-term-group-check-pfp-validator-user">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonly="true"/>
@@ -222,7 +225,8 @@
         <panel name="pfpStatus" hidden="true"
           showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect == 1" colSpan="12">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
-          <field name="pfpValidatorUser" colSpan="4" canEdit="false"/>
+          <field name="pfpValidatorUser" colSpan="4" canEdit="false"
+            onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpStatusDecision" hidden="true"
           showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect > 1" colSpan="12">
@@ -233,14 +237,14 @@
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="pfpGrantedAmount" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4" colSpan="12"
           itemSpan="4">
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
           <field name="pfpGrantedAmount" readonly="true"/>
           <field name="pfpRejectedAmount" readonly="true"/>
         </panel>
@@ -249,18 +253,19 @@
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
-            canEdit="false"/>
+            canEdit="false" onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
-        <button name="passedForPaymentValidationBtn" title="Validate PFP"
-          showIf="[1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false" colSpan="4"
-          css="btn-success" onClick="action-invoice-term-set-validate-status-select, save"/>
+        <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
+          showIf="[1,3].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
+          colSpan="4" css="btn-success"
+          onClick="action-invoice-term-set-validate-status-select, save"/>
         <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-          showIf="[1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false"
+          showIf="[1].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
           css="btn-warning" colSpan="4"
           onClick="action-invoice-term-set-partial-validate-status-select,action-invoice-term-view-pfp-partial-reason-wizard"/>
-        <button name="refusalToPayBtn" title="Refuse PFP"
-          showIf="[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false" colSpan="4"
-          css="btn-danger" onClick="action-invoice-term-set-refuse-status-select, save"/>
+        <button name="refusalToPayBtn" title="Refuse to pay"
+          showIf="[1,2,4].includes(pfpValidateStatusSelect) &amp;&amp; isPaid == false &amp;&amp; $isValidPfpValidatorUser"
+          colSpan="4" css="btn-danger" onClick="action-invoice-term-set-refuse-status-select, save"/>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
@@ -273,7 +278,7 @@
           <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
           <field name="moveLine.move.company.accountConfig.isManagePFPInRefund" hidden="true"/>
           <field name="invoice.statusSelect" hidden="true"/>
-          <field name="$isValidPfpValidatorUser" hidden="true"/>
+          <field name="$isValidPfpValidatorUser" type="boolean" hidden="true"/>
         </panel>
       </panel>
       <panel name="paymentSessionPanel" colSpan="12" showIf="paymentSession">
@@ -286,6 +291,9 @@
         <field name="paymentAmount" showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <form name="invoice-term-refusal-to-pay-wizard-form"
@@ -306,7 +314,7 @@
       <field name="pfpGrantedAmount" required="true" validIf="pfpGrantedAmount > 0"/>
       <field name="pfpPartialReason" required="true"/>
       <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
-        onClick=""/>
+        onClick="action-invoice-term-method-pfp-partial-reason-confirm-btn"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -318,7 +326,7 @@
     <action name="action-invoice-term-attrs-set-readonly"/>
   </action-group>
 
-  <action-group name="action-invoice-term-group-onload">
+  <action-group name="action-invoice-term-group-check-pfp-validator-user">
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
   </action-group>
@@ -374,6 +382,11 @@
   <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="hideSendEmailPfpBtn"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-pfp-partial-reason-confirm-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="pfpPartialReasonConfirm"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

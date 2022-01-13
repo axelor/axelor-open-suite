@@ -19,11 +19,15 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -70,10 +74,8 @@ public class InvoiceTermController {
         return;
       }
       BigDecimal percentage =
-          invoiceTerm
-              .getAmount()
-              .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          Beans.get(InvoiceTermService.class)
+              .computeCustomizedPercentage(invoiceTerm.getAmount(), inTaxTotal);
       response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
@@ -148,6 +150,42 @@ public class InvoiceTermController {
                 .equals(
                     Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void pfpPartialReasonConfirm(ActionRequest request, ActionResponse response) {
+    try {
+      if (ObjectUtils.isEmpty(request.getContext().get("_id"))) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
+        return;
+      }
+      InvoiceTerm originalInvoiceTerm =
+          Beans.get(InvoiceTermRepository.class)
+              .find(Long.valueOf((Integer) request.getContext().get("_id")));
+      BigDecimal pfpGrantedAmount = (BigDecimal) request.getContext().get("pfpGrantedAmount");
+      if (pfpGrantedAmount.compareTo(BigDecimal.ZERO) == 0) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
+        return;
+      }
+
+      BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
+      PfpPartialReason partialReason =
+          (PfpPartialReason) request.getContext().get("pfpPartialReason");
+
+      if (pfpGrantedAmount.compareTo(invoiceAmount) >= 0) {
+        response.setValue("pfpGrantedAmount", 0);
+        response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
+        return;
+      }
+      if (ObjectUtils.isEmpty(partialReason)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
+        return;
+      }
+      Beans.get(InvoiceTermService.class)
+          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
