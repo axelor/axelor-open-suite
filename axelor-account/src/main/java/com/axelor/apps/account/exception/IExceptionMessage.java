@@ -890,6 +890,18 @@ public interface IExceptionMessage {
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
 
+  /** Invoice term controller */
+  static final String INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT = /*$$(*/
+      "The input grantedAmount can't be greater or equal than the term amount." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY = /*$$(*/
+      "The PFP partial reason is required to partially pass-for-payment a term." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO = /*$$(*/
+      "The PFP granted amount can't be equal to zero in order to partially pass-for-payment a term." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_NOT_SAVED = /*$$(*/
+      "Please save this invoice term first." /*)*/;
   static final String INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD = /*$$(*/
       "Please select at least a record within the list to proceed to such action." /*)*/;
 
