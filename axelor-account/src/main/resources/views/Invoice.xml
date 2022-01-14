@@ -1190,7 +1190,6 @@ InvoiceSet.length > 0))"
   </form>
 
 
-
   <!-- invoice-account -->
   <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
     <field name="invoiceId"/>
@@ -1257,7 +1256,7 @@ InvoiceSet.length > 0))"
       domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
-        onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
     </panel>
   </form>
 
@@ -1286,9 +1285,12 @@ InvoiceSet.length > 0))"
         target="com.axelor.apps.account.db.PaymentCondition" colSpan="6" colOffset="3" width="200px"
         widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form"
         grid-view="payment-condition-grid"/>
-      <button name="confirmBtn" title="Confirm" onClick="action-group-invoice-merge-action"
-        colSpan="12" width="200px"/>
+      <button name="confirmBtn" title="Confirm"
+        onClick="action-invoice-method-merge-from-popup" colSpan="12" width="200px"/>
     </panel>
+    <panel-related name="$invoiceToMergePanel" hidden="true" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"/>
   </form>
 
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
@@ -1303,16 +1305,6 @@ InvoiceSet.length > 0))"
         colOffset="4" colSpan="4"/>
     </panel>
   </form>
-
-  <action-group name="action-group-invoice-merge-action">
-    <action name="action-invoice-method-merge-account"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-    <action name="action-invoice-method-merge-supplychain"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
-    <action name="action-invoice-method-merge-business-project"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
-
-  </action-group>
 
   <action-group name="action-account-invoice-onnew-group">
     <action name="action-invoice-record-default"/>
@@ -1837,16 +1829,13 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="fillCompanyBankDetails"/>
   </action-method>
 
-  <action-method name="action-invoice-method-merge-account">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
+  <action-method name="action-invoice-method-merge">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController" method="mergeInvoice"/>
   </action-method>
 
-  <action-method name="action-invoice-method-merge-supplychain">
-    <call class="com.axelor.apps.supplychain.web.InvoiceController" method="mergeInvoice"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-merge-business-project">
-    <call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
+  <action-method name="action-invoice-method-merge-from-popup">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="mergeInvoiceFromPopup"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
