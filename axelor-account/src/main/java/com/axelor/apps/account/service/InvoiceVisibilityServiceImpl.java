@@ -20,7 +20,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   public boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation) {
     boolean managePfpCondition = this._getManagePfpCondition(invoice);
 
-    boolean validatorUserCondition = this._getUserCondition(user);
+    boolean validatorUserCondition = this._getUserCondition(invoice, user);
 
     boolean operationTypeCondition = this._getOperationTypePurchaseCondition(invoice);
 
@@ -64,8 +64,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
     return managePfpCondition
         && operationTypeCondition
-        && invoiceTermsCondition
-        && decisionDateCondition
+        && (invoiceTermsCondition || decisionDateCondition)
         && statusCondition;
   }
 
@@ -107,8 +106,8 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
     return invoice.getCompany().getAccountConfig().getIsManagePassedForPayment();
   }
 
-  protected boolean _getUserCondition(User user) {
-    return user.getIsPfpValidator() || user.getIsSuperPfpUser();
+  protected boolean _getUserCondition(Invoice invoice, User user) {
+    return user.equals(invoice.getPfpValidatorUser()) || user.getIsSuperPfpUser();
   }
 
   protected boolean _getOperationTypeCondition(Invoice invoice) {

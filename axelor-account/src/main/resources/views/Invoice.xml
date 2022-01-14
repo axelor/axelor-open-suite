@@ -792,8 +792,7 @@ InvoiceSet.length > 0))"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
         readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
         onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
-        onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
-        canEdit="false"/>
+        onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
       <panel name="pfpEmailPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
         <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
@@ -1476,6 +1475,12 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-pfp-validator-user-onchange">
+    <action name="action-invoice-method-hide-send-email-pfp-btn"/>
+    <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
+    <action name="action-invoice-method-set-payment-visibility"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
