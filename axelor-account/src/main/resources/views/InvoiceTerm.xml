@@ -58,18 +58,26 @@
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner"
+    edit-icon="true">
+    <field name="paymentSession.name" hidden="true"/>
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.move.statusSelect"/>
+    <field name="isSelectedOnPaymentSession"/>
+    <field name="paymentAmount"/>
+    <field name="applyFinancialDiscount"/>
     <field name="financialDiscountAmount"/>
-    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"/>
-    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
+    <field name="amountPaid" aggregate="sum"/>
+    <button name="selectBtn" title="Select" icon="fa-plus-circle" onClick="act-1"
+      readonlyIf="isSelectedOnPaymentSession"/>
+    <button name="unselectBtn" title="Unselect" icon="fa-minus-circle" onClick="act-2"
+      readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="act-1"/>
+      icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="act-2"/>
+      icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
