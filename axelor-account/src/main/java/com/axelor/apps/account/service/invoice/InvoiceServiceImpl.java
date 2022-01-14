@@ -1245,6 +1245,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
+    return invoice.getPfpValidatorUser() != null
+        && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
+  }
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validatePfp(Long invoiceId) throws AxelorException {
     Invoice invoice = invoiceRepo.find(invoiceId);
