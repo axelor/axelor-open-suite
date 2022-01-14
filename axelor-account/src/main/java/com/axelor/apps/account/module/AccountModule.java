@@ -79,6 +79,8 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
+import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
@@ -459,6 +461,8 @@ public class AccountModule extends AxelorModule {
     bind(PaymentSessionRepository.class).to(PaymentSessionAccountRepository.class);
 
     bind(FECImportService.class).to(FECImportServiceImpl.class);
+
+    bind(AccountingSituationInitService.class).to(AccountingSituationInitServiceImpl.class);
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
 

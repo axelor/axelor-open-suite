@@ -215,8 +215,16 @@ public class PaymentVoucherLoadService {
 
       if (payVoucherDueElement.isSelected()) {
 
-        paymentVoucher.addPayVoucherElementToPayListItem(
-            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++));
+        PayVoucherElementToPay payVoucherElementToPay =
+            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
+        paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
+
+        if (payVoucherElementToPay != null) {
+          paymentVoucher.setRemainingAmount(
+              paymentVoucher
+                  .getRemainingAmount()
+                  .subtract(payVoucherElementToPay.getAmountToPay()));
+        }
 
         // Remove the line from the due elements lists
         toRemove.add(payVoucherDueElement);

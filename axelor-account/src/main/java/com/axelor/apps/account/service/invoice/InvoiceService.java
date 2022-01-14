@@ -288,6 +288,8 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
+
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
 

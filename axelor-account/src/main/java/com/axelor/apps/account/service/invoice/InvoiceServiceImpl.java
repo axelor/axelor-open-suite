@@ -1245,6 +1245,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
+  }
+
+  @Override
   public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
     return invoice.getPfpValidatorUser() != null
         && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
