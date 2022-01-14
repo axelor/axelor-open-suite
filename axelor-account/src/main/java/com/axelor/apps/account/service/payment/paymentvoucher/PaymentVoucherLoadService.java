@@ -80,14 +80,14 @@ public class PaymentVoucherLoadService {
     InvoiceTermRepository invoiceTermRepo = Beans.get(InvoiceTermRepository.class);
 
     String query =
-        "(self.moveLine.partner = ?1 OR self.invoice.partner = ?1) "
+        "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
             + "and (self.isPaid = FALSE OR self.amountRemaining > 0) "
-            + "and (self.moveLine.move.company = ?2 OR self.invoice.company = ?2) "
+            + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
             + "and self.moveLine.account.useForPartnerBalance = 't' "
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
-            + "and (self.moveLine.move.statusSelect = ?3 OR self.moveLine.move.statusSelect = ?4) "
-            + "and (?5 IS NULL OR self.moveLine.move.tradingName = ?5 OR self.invoice.tradingName = ?5) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = ?6)";
+            + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
+            + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
+            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect)";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -96,7 +96,8 @@ public class PaymentVoucherLoadService {
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || paymentVoucher.getOperationTypeSelect()
             == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-      query += "and (self.pfpValidateStatusSelect != ?7 OR self.pfpValidateStatusSelect != ?8) ";
+      query +=
+          "and (self.pfpValidateStatusSelect != :pfpStatusAwaiting OR self.pfpValidateStatusSelect != :pfpStatusLitigation) ";
     }
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
@@ -107,16 +108,15 @@ public class PaymentVoucherLoadService {
 
     return invoiceTermRepo
         .all()
-        .filter(
-            query,
-            paymentVoucher.getPartner(),
-            paymentVoucher.getCompany(),
-            MoveRepository.STATUS_DAYBOOK,
-            MoveRepository.STATUS_ACCOUNTED,
-            paymentVoucher.getTradingName(),
-            paymentVoucher.getOperationTypeSelect(),
-            InvoiceRepository.PFP_STATUS_AWAITING,
-            InvoiceRepository.PFP_STATUS_LITIGATION)
+        .filter(query)
+        .bind("partner", paymentVoucher.getPartner())
+        .bind("company", paymentVoucher.getCompany())
+        .bind("statusDaybook", MoveRepository.STATUS_DAYBOOK)
+        .bind("statusAccounted", MoveRepository.STATUS_ACCOUNTED)
+        .bind("tradingName", paymentVoucher.getTradingName())
+        .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
+        .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
+        .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
         .fetch();
   }
 
@@ -273,9 +273,7 @@ public class PaymentVoucherLoadService {
   }
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
-
     paymentVoucher.getPayVoucherElementToPayList().clear();
-    // paymentVoucher.getPayVoucherDueElementList().clear();
   }
 
   /**
