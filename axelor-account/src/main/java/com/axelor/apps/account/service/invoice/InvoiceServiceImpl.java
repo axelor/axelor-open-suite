@@ -1249,17 +1249,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void validatePfp(Long invoiceId) throws AxelorException {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
+
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (invoiceTerm.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED
-          || invoiceTerm.getPfpValidateStatusSelect()
-              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVOICE_VALIDATE_PFP_CONDITION_NOT_FULFILLED));
-      }
       invoiceTerm.setPfpValidatorUser(currentUser);
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     }
+
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
