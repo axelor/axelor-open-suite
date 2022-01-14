@@ -1,6 +1,6 @@
 ---
 title: "BPM : Add new property compulsory for DMN"
-type: feature
+type: change
 description: |
   The DMN node sometime required a compulsory result, if no result is return it should generate error.
   Add compulsory boolean property to make DMN complosory and it's value will be true by default. 

@@ -1,0 +1,3 @@
+---
+title: "HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract."
+type: fix

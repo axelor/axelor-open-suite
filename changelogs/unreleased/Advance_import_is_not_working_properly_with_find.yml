@@ -1,4 +1,4 @@
 ---
-title : "Advance import : Fix process for findNew"
-type : Fix
+title: "Advance import: Correctly apply 'find new' option when it is activated."
+type: fix
 
