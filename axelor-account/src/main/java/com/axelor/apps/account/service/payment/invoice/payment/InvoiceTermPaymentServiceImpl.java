@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -30,6 +31,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
@@ -69,7 +71,19 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         || CollectionUtils.isEmpty(invoicePayment.getInvoice().getInvoiceTermList())) {
       return;
     }
-    List<InvoiceTerm> invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+    List<InvoiceTerm> invoiceTerms;
+    if (invoicePayment.getMove() != null
+        && invoicePayment.getMove().getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(
+            invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
+      invoiceTerms =
+          invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .map(PayVoucherElementToPay::getInvoiceTerm)
+              .collect(Collectors.toList());
+    } else {
+      invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+    }
+
     if (CollectionUtils.isEmpty(invoiceTerms)) {
       return;
     }
