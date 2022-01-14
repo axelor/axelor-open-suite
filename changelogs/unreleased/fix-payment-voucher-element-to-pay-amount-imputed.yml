@@ -1,3 +1,0 @@
----
-title: "PaymentVoucher: Fixed a bug where amount to pay in elements to pay were not correctly imputed."
-type: fix

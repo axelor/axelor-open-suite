@@ -1,3 +1,0 @@
----
-title: "SaleOrder: fix details lines generation when adding a complementary product so the generated lines are displayed inside the title line."
-type: fix

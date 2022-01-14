@@ -1,3 +1,0 @@
----
-title : "INVENTORY: Fix exception when importing from a csv file with null values in quantity columns."
-type : fix
