@@ -93,6 +93,8 @@ import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.FiscalPositionAccountServiceImpl;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.InvoiceVisibilityServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
@@ -479,6 +481,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
 
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
+
+    bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
   }
