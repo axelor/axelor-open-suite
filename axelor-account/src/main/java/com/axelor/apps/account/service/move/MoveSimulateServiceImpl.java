@@ -12,7 +12,8 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
   protected MoveRepository moveRepository;
 
   @Inject
-  public MoveSimulateServiceImpl(MoveValidateService moveValidateService, MoveRepository moveRepository) {
+  public MoveSimulateServiceImpl(
+      MoveValidateService moveValidateService, MoveRepository moveRepository) {
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
   }
