@@ -34,8 +34,6 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Optional;
-
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -54,7 +52,7 @@ public class InvoiceToolService {
     return invoice.getInvoiceTermList().stream()
         .map(invoiceTerm -> invoiceTerm.getDueDate())
         .max(Comparator.comparing(LocalDate::toEpochDay))
-        .get();
+        .orElse(null);
   }
 
   @CallMethod
@@ -67,19 +65,15 @@ public class InvoiceToolService {
     if (invoice.getInvoiceTermList().size() == 1) {
       return invoice.getInvoiceTermList().get(0).getDueDate();
     }
-    Optional<LocalDate> nextDueDate =
-        invoice.getInvoiceTermList().stream()
-            .filter(
-                invoiceTerm ->
-                    (invoiceTerm.getDueDate().isEqual(LocalDate.now())
-                            || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
-                        && !invoiceTerm.getIsPaid())
-            .map(invoiceTerm -> invoiceTerm.getDueDate())
-            .min(Comparator.comparing(LocalDate::toEpochDay));
-    if (nextDueDate.isPresent()) {
-      return nextDueDate.get();
-    }
-    return invoice.getNextDueDate();
+    return invoice.getInvoiceTermList().stream()
+        .filter(
+            invoiceTerm ->
+                (invoiceTerm.getDueDate().isEqual(LocalDate.now())
+                        || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
+                    && !invoiceTerm.getIsPaid())
+        .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .min(Comparator.comparing(LocalDate::toEpochDay))
+        .orElse(invoice.getNextDueDate());
   }
 
   /**
