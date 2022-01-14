@@ -195,4 +195,8 @@ public interface InvoiceTermService {
 
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public void select(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException;
 }

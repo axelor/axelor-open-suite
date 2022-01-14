@@ -62,13 +62,16 @@
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.move.statusSelect"/>
+    <field name="isSelectedOnPaymentSession"/>
     <field name="financialDiscountAmount"/>
-    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"/>
-    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"/>
+    <button name="selectBtn" title="Select"
+      onClick="action-invoice-term-method-select-terms-btn" icon="fa-plus-circle"/>
+    <button name="unselectBtn" title="Unselect"
+      onClick="action-invoice-term-method-unselect-terms-btn" icon="fa-minus-circle"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="act-1"/>
+      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="act-2"/>
+      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
@@ -371,6 +374,23 @@
   <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="hideSendEmailPfpBtn"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-select-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="selectTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-select-partner-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="selectPartnerTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-unselect-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="unselectTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-unselect-partner-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="unselectPartnerTerm"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

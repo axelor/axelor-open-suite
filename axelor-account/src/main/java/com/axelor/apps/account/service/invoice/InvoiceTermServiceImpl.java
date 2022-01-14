@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -50,17 +51,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
   protected InvoiceToolService invoiceToolService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceTermServiceImpl(
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      InvoiceToolService invoiceToolService) {
+      InvoiceToolService invoiceToolService,
+      AccountConfigService accountConfigService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
     this.invoiceToolService = invoiceToolService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -441,5 +445,37 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
 
     invoiceTermRepo.save(invoiceTerm);
+  }
+
+  public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
+      if (accountConfigService
+          .getAccountConfig(invoiceTerm.getInvoice().getCompany())
+          .getIsManagePassedForPayment()) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
+      } else {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void select(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm != null) {
+      invoiceTerm.setIsSelectedOnPaymentSession(true);
+      managePassedForPayment(invoiceTerm);
+      invoiceTermRepo.save(invoiceTerm);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm != null) {
+      invoiceTerm.setIsSelectedOnPaymentSession(false);
+      managePassedForPayment(invoiceTerm);
+      invoiceTermRepo.save(invoiceTerm);
+    }
   }
 }
