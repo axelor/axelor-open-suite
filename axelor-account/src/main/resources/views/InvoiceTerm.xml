@@ -78,7 +78,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
     onLoad="action-invoice-term-group-onload,action-invoice-term-attrs-set-readonly">
     <panel name="mainPanel" colSpan="12">
-      <panel name="headerPanel" colSpan="12" itemSpan="4">
+      <panel name="headerPanel" colSpan="12" itemSpan="4" readonly="true">
         <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
         <field name="name" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -294,8 +294,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amountPaid"/>
+        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
       </panel>
-      <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
     </panel>
   </form>
 
