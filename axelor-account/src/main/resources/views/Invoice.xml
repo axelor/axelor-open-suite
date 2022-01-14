@@ -1742,7 +1742,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-attrs-invoice-other-reason">
     <attribute for="reasonOfRefusalToPayStr" name="hidden"
-      expr="reasonOfRefusalToPay.freeText == false"/>
+      expr="reasonOfRefusalToPay?.freeText == false"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-is-valid-pfp-validator-user">
