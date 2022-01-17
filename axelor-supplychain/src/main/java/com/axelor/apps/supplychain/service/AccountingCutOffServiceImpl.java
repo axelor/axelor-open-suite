@@ -706,7 +706,23 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         currencyService.getCurrencyConversionRate(
             move.getCurrency(), move.getCompanyCurrency(), moveDate);
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    // Sorting so that move lines with analytic move lines are computed first
+    List<MoveLine> sortedMoveLineList = new ArrayList<>(move.getMoveLineList());
+    sortedMoveLineList.sort(
+        (t1, t2) -> {
+          if ((CollectionUtils.isNotEmpty(t1.getAnalyticMoveLineList())
+                  && CollectionUtils.isNotEmpty(t2.getAnalyticMoveLineList()))
+              || (CollectionUtils.isEmpty(t1.getAnalyticMoveLineList())
+                  && CollectionUtils.isEmpty(t2.getAnalyticMoveLineList()))) {
+            return 0;
+          } else if (CollectionUtils.isNotEmpty(t1.getAnalyticMoveLineList())) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+
+    for (MoveLine moveLine : sortedMoveLineList) {
       if (moveLine.getAccount().getManageCutOffPeriod()
           && moveLine.getCutOffStartDate() != null
           && moveLine.getCutOffEndDate() != null
@@ -803,6 +819,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
         }
       }
+    } else if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : cutOffMoveLine.getAnalyticMoveLineList()) {
+        this.computeAnalyticMoveLine(
+            cutOffMoveLine, analyticMoveLine, analyticMoveLine.getPercentage(), newAmount, false);
+      }
     }
   }
 
@@ -823,14 +844,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         analyticMoveLineRepository.copy(analyticMoveLine, false);
 
     this.computeAnalyticMoveLine(
-        moveLine, analyticMoveLine, analyticMoveLineCopy.getPercentage(), newAmount, true);
+        moveLine, analyticMoveLineCopy, analyticMoveLineCopy.getPercentage(), newAmount, true);
 
     moveLine.addAnalyticMoveLineListItem(analyticMoveLineCopy);
   }
 
   protected void computeAnalyticMoveLine(
       MoveLine moveLine,
-      AnalyticMoveLine existingAnalyticMoveLine,
+      AnalyticMoveLine analyticMoveLine,
       BigDecimal newPercentage,
       BigDecimal newAmount,
       boolean newLine) {
@@ -838,7 +859,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         newAmount.multiply(newPercentage.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
 
     if (!newLine) {
-      amount = existingAnalyticMoveLine.getAmount().add(amount);
+      amount = analyticMoveLine.getAmount().add(amount);
     }
 
     BigDecimal percentage =
@@ -846,8 +867,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             .multiply(BigDecimal.valueOf(100))
             .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
 
-    existingAnalyticMoveLine.setPercentage(percentage);
-    existingAnalyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
+    analyticMoveLine.setPercentage(percentage);
+    analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(
