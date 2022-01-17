@@ -549,8 +549,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
       }
     } else {
-      if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
+      if (invoiceTerm.getAmountRemaining().equals(invoiceTerm.getAmount())) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
       } else {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
