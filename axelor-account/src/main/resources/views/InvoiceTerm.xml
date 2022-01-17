@@ -227,11 +227,11 @@
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
         showIf="financialDiscount != null">
         <field name="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amountPaid"/>
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
         <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
         <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amountPaid"/>
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="invoice.financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
@@ -315,12 +315,12 @@
           readonlyIf="paymentSession == null"
           onClick="save,action-invoice-term-view-show-payment-session"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
-          onChange="action-invoice-term-record-set-amountPaid"/>
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amountPaid"/>
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amountPaid"/>
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
@@ -397,14 +397,15 @@
       if="paymentConditionLine != null &amp;&amp; percentage == paymentConditionLine.paymentPercentage"/>
   </action-record>
 
-  <action-record name="action-invoice-term-record-set-amountPaid"
+  <action-record name="action-invoice-term-record-set-amount-paid"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="amountPaid" expr="eval: 0"
-      if="applyFinancialDiscount == false &amp;&amp; isSelectedOnPaymentSession == false"/>
+      if="!applyFinancialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount"
-      if="applyFinancialDiscount == false &amp;&amp; isSelectedOnPaymentSession == true"/>
+      if="!applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount - financialDiscountAmount"
-      if="applyFinancialDiscount == true &amp;&amp; isSelectedOnPaymentSession == true"/>
+      if="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
+  </action-record>
 
   <action-record name="action-invoice-term-record-validate-pfp"
     model="com.axelor.apps.account.db.InvoiceTerm">

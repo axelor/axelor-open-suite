@@ -31,19 +31,19 @@
         if="__config__.app.isApp('account')">
         <field name="canSelectInPaymentSession"
           readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"
-          onChange="action-payment-mode-record-set-canSelectInPaymentSession-value"/>
+          onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
         <field name="daysMarginOnPaySession" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession" min="0"/>
         <field name="accountingMethodSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"/>
         <field name="accountingTriggerSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"
-          readonlyIf="generateBankOrder == false &amp;&amp; canSelectInPaymentSession == true"/>
+          readonlyIf="!generateBankOrder &amp;&amp; canSelectInPaymentSession"/>
       </panel>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')">
         <field name="generateBankOrder" showIf="typeSelect == 2 || typeSelect == 9"
-          onChange="action-payment-mode-record-set-canSelectInPaymentSession-value"/>
+          onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
         <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
         <field name="automaticTransmission" showIf="generateBankOrder"/>
         <field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
@@ -75,10 +75,11 @@
     <field name="typeSelect" expr="7"/>
   </action-record>
 
-  <action-record name="action-payment-mode-record-set-canSelectInPaymentSession-value"
+  <action-record
+    name="action-payment-mode-record-set-can-select-in-payment-session-value"
     model="com.axelor.apps.account.db.PaymentMode">
     <field name="accountingTriggerSelect" expr="1"
-      if="generateBankOrder == false &amp;&amp; canSelectInPaymentSession == true"/>
+      if="!generateBankOrder &amp;&amp; canSelectInPaymentSession"/>
   </action-record>
 
   <action-method name="action-payment-mode-set-default">
