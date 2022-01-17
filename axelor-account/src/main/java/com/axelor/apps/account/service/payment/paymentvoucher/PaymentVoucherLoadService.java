@@ -56,6 +56,7 @@ public class PaymentVoucherLoadService {
   protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected PayVoucherDueElementService payVoucherDueElementService;
+  protected PayVoucherElementToPayService payVoucherElementToPayService;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -63,13 +64,15 @@ public class PaymentVoucherLoadService {
       PaymentVoucherToolService paymentVoucherToolService,
       PayVoucherDueElementRepository payVoucherDueElementRepo,
       PaymentVoucherRepository paymentVoucherRepository,
-      PayVoucherDueElementService payVoucherDueElementService) {
+      PayVoucherDueElementService payVoucherDueElementService,
+      PayVoucherElementToPayService payVoucherElementToPayService) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
+    this.payVoucherElementToPayService = payVoucherElementToPayService;
   }
 
   /**
@@ -254,19 +257,6 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setTotalAmount(payVoucherDueElement.getDueAmount());
     payVoucherElementToPay.setRemainingAmount(payVoucherDueElement.getAmountRemaining());
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
-    payVoucherElementToPay.setApplyFinancialDiscount(
-        payVoucherDueElement.getApplyFinancialDiscount());
-    payVoucherElementToPay.setFinancialDiscount(payVoucherDueElement.getFinancialDiscount());
-    payVoucherElementToPay.setFinancialDiscountAmount(
-        payVoucherDueElement.getFinancialDiscountAmount());
-    payVoucherElementToPay.setFinancialDiscountDeadlineDate(
-        payVoucherDueElement.getFinancialDiscountDeadlineDate());
-    payVoucherElementToPay.setFinancialDiscountTaxAmount(
-        payVoucherDueElement.getFinancialDiscountTaxAmount());
-    payVoucherElementToPay.setFinancialDiscountTotalAmount(
-        payVoucherDueElement.getFinancialDiscountTotalAmount());
-    payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
-        payVoucherDueElement.getAmountRemainingFinDiscountDeducted());
 
     BigDecimal amountRemainingInElementCurrency =
         currencyService
@@ -293,6 +283,9 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);
     payVoucherElementToPay.setRemainingAmountAfterPayment(
         payVoucherElementToPay.getRemainingAmount().subtract(amountImputedInElementCurrency));
+
+    payVoucherElementToPayService.updateElementToPayWithFinancialDiscount(
+        payVoucherElementToPay, payVoucherDueElement, paymentVoucher);
 
     return payVoucherElementToPay;
   }

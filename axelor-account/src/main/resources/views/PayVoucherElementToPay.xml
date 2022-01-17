@@ -36,7 +36,7 @@
       <field name="remainingAmountAfterFinDiscount" readonly="true"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"
         showIf="applyFinancialDiscount"/>
-      <field name="amountToPay"
+      <field name="amountToPay" readonly="true"
         onChange="action-method-account-payment-voucher-element-pay-amount"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
     </panel>
