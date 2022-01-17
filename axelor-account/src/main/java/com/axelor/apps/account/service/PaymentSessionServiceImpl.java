@@ -33,6 +33,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -49,6 +51,7 @@ import java.util.Map;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
 
+  protected AppBaseService appBaseService;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
@@ -60,6 +63,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Inject
   public PaymentSessionServiceImpl(
+      AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
@@ -67,6 +71,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
       PartnerRepository partnerRepo) {
+    this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
@@ -225,6 +230,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     if (paymentSession.getAccountingTriggerSelect()
         == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
+      paymentSession.setValidatedByUser(AuthUtils.getUser());
+      paymentSession.setValidatedDate(
+          appBaseService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
+
       this.generateMoveFromInvoiceTerm(
           paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
     } else {

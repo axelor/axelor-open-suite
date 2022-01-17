@@ -1077,10 +1077,10 @@ public interface IExceptionMessage {
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
-          "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
+      "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
-          "There is no sequence set for the payment session for the company %s" /*)*/;
+      "There is no sequence set for the payment session for the company %s" /*)*/;
 
   static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
