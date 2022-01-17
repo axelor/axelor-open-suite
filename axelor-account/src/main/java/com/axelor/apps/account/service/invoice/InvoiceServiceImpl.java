@@ -1245,6 +1245,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
+  }
+
+  @Override
   public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
     return invoice.getPfpValidatorUser() != null
         && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
@@ -1254,17 +1278,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void validatePfp(Long invoiceId) throws AxelorException {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
+
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (invoiceTerm.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED
-          || invoiceTerm.getPfpValidateStatusSelect()
-              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVOICE_VALIDATE_PFP_CONDITION_NOT_FULFILLED));
-      }
       invoiceTerm.setPfpValidatorUser(currentUser);
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     }
+
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));

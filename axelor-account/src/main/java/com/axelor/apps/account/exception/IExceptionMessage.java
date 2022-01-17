@@ -883,9 +883,6 @@ public interface IExceptionMessage {
   static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
 
-  static final String INVOICE_VALIDATE_PFP_CONDITION_NOT_FULFILLED = /*$$(*/
-      "Impossible at this stage to update the PFP on invoiceTerm(s) record(s) from the invoice as conditions are not fulfilled. Please validate/refuse the PFP decision on each invoiceTerm record." /*)*/;
-
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
@@ -1078,6 +1075,9 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
+      "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
