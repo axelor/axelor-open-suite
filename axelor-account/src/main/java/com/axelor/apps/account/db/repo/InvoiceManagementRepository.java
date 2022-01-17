@@ -61,11 +61,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
                 .orElse(null);
         invoice.setPaymentDate(latestPaymentDate);
       }
-      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-        InvoiceToolService invoiceToolService = Beans.get(InvoiceToolService.class);
-        invoice.setNextDueDate(invoiceToolService.getNextDueDate(invoice));
-        invoice.setDueDate(invoiceToolService.getDueDate(invoice));
-      }
       invoice = super.save(invoice);
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
