@@ -481,6 +481,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   private void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(paymentSession);
+    invoiceTerm.setIsSelectedOnPaymentSession(true);
     if (paymentSession.getNextSessionDate() != null
         && ((invoiceTerm
                     .getInvoice()
@@ -508,7 +509,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                             .getFinancialDiscount()
                             .getDiscountDelay())
                     .isEqual(paymentSession.getNextSessionDate())))) {
-      invoiceTerm.setIsSelectedOnPaymentSession(false);
       if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
       } else {
@@ -541,7 +541,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                         .getFinancialDiscount()
                         .getDiscountDelay())
                 .isEqual(paymentSession.getPaymentDate()))) {
-      invoiceTerm.setIsSelectedOnPaymentSession(true);
       if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
         invoiceTerm.setPaymentAmount(
             invoiceTerm.getPfpGrantedAmount().subtract(invoiceTerm.getFinancialDiscountAmount()));

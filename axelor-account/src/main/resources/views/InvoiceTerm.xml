@@ -404,16 +404,16 @@
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
     <view type="form" name="invoice-term-form"/>
-    <domain>self.paymentSession.id = :paymentSessionId</domain>
-    <context name="paymentSessionId" expr="eval: __this__.id"/>
+    <domain>self.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
     title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-group-by-grid"/>
     <view type="form" name="invoice-term-form"/>
-    <domain>self.paymentSession.id = :paymentSessionId</domain>
-    <context name="paymentSessionId" expr="eval: __this__.id"/>
+    <domain>self.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">
