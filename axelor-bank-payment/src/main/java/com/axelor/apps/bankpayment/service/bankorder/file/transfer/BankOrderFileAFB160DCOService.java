@@ -1,13 +1,5 @@
 package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
@@ -23,6 +15,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderFileAFB160DCOService extends BankOrderFileService {
 
@@ -70,15 +68,23 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area A : Register code
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_A), "03", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_A),
+              "03",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-1 : Operation code
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B1), "60", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B1),
+              "60",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-2 : Numbering record
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B2),
               numberingRecord++,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -86,11 +92,15 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area B-3 : Sender number
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B3), "0", cfonbToolService.STATUS_OPTIONAL, cfonbToolService.FORMAT_NUMERIC, 6));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_B3),
+              "0",
+              cfonbToolService.STATUS_OPTIONAL,
+              cfonbToolService.FORMAT_NUMERIC,
+              6));
       // Area C-1: Convention type
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C1),
               "0",
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -98,7 +108,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-2: Deposit date JJMMAA
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C2),
               getSenderC2Value(),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_NUMERIC,
@@ -106,7 +116,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-3: Raison social du cedant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_C3),
               senderCompany.getName(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -114,7 +124,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-1: Domiciliation bancaire du cedant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D1),
               getSenderD1Value(),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -122,7 +132,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-2-1: Entry code
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D21),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D21),
               getSenderD21Value(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -130,7 +140,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-2-2: Dailly code
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D22),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D22),
               getSenderD22Value(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -138,7 +148,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-2-3: Currency code
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D23),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D23),
               "E",
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -146,7 +156,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-3: Code etablissement bancaire du cédant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D3),
               "30004",
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -154,7 +164,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-4: Code guichet du cédant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D4),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D4),
               senderBankDetails.getSortCode(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -162,7 +172,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-5: Numéro de compte du cédant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D5),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D5),
               senderBankDetails.getAccountNbr(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -178,7 +188,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-1: Value's date
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_F1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_F1),
               getSenderF1Value(),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_NUMERIC,
@@ -194,7 +204,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-3: SIREN du cédant
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_F3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_F3),
               this.partnerService.getSIRENNumber(senderCompany.getPartner()),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -202,7 +212,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area G: deposit reference
       senderRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_G),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_G),
               bankOrderSeq,
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -254,15 +264,23 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area A : Register code
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_A), "06", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_A),
+              "06",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-1 : Operation code
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        	I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_B1), "60", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_B1),
+              "60",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-2 : Numbering record
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-           I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_B2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_B2),
               numberingRecord++,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -286,7 +304,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-1-2: Reference tiré
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-           I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_C12),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_C12),
               bankOrderLine.getSequence(),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -294,7 +312,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-2: Nom du tiré
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-           I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_C2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_C2),
               bankOrderLine.getPartner().getName(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -302,7 +320,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-1: Domiciliation bancaire du tiré
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D1),
               getDetailD1Value(bankOrderLine),
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -310,7 +328,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-2-1: ACceptation
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D21),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D21),
               getDetailD21Value(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -326,7 +344,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-3: Code etablissement bancaire du domiciliataire
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D3),
               receiverBankDetails.getBankCode(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -334,7 +352,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-4: Code guichet domiciliataire
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D4),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D4),
               receiverBankDetails.getSortCode(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -342,7 +360,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area D-5: Numéro de compte du tiré
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D5),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_D5),
               receiverBankDetails.getAccountNbr(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -350,7 +368,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area E1: Amount
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_E1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_E1),
               bankOrderLine.getBankOrderAmount(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -366,7 +384,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-1: Date d'échéance
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F1),
               getDetailF1Value(bankOrderLine),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -374,7 +392,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-2-1: Date de création
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F21),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F21),
               getDetailF21Value(bankOrderLine),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -402,7 +420,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-3-4: SIREN
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F34),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_F34),
               this.partnerService.getSIRENNumber(
                   bankOrderLine.getReceiverBankDetails().getPartner()),
               cfonbToolService.STATUS_DEPENDENT,
@@ -411,7 +429,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area G: Reference tireur
       mainDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName. BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_G),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_MAIN_DETAIL_RECORD_ZONE_G),
               this.bankOrderSeq,
               cfonbToolService.STATUS_OPTIONAL,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -457,15 +475,23 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area A : Register code
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_A), "07", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_A),
+              "07",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-1 : Operation code
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_B1), "60", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_B1),
+              "60",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-2 : Numbering record
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_B2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_B2),
               numberingRecord++,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -489,7 +515,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-2: Nom du tireur
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_C2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_C2),
               senderCompany.getName(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -545,7 +571,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area E: Mandatory area
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_E),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_E),
               "0000000000000000",
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -569,7 +595,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area F-3: SIREN du tireur
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_F3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_F3),
               this.partnerService.getSIRENNumber(this.senderBankDetails.getPartner()),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -605,15 +631,23 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area A : Register code
       totalRecordBuilder.append(
           cfonbToolService.createZone(
-              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_A), "08", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_A),
+              "08",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-1 : Operation code
       totalRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_B1), "60", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_B1),
+              "60",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-2 : Numbering record
       totalRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_B2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_B2),
               numberingRecord++,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -693,7 +727,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area E-1: Total amount
       totalRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_E1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_E1),
               this.arithmeticTotal,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -701,7 +735,11 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area E-2: Mandatory area
       totalRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_E2), "0000", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 4));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_TOTAL_DETAIL_RECORD_ZONE_E2),
+              "0000",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              4));
       // Area F-1: Reserved
       totalRecordBuilder.append(
           cfonbToolService.createZone(
@@ -771,15 +809,23 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area A : Register code
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_A), "16", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_A),
+              "16",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-1 : Operation code
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_B1), "60", cfonbToolService.STATUS_MANDATORY, cfonbToolService.FORMAT_NUMERIC, 2));
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_B1),
+              "60",
+              cfonbToolService.STATUS_MANDATORY,
+              cfonbToolService.FORMAT_NUMERIC,
+              2));
       // Area B-2 : Numbering record
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_B2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_B2),
               numberingRecord++,
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
@@ -795,7 +841,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-1 Adresse du tiré : N° et nom de voie
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C1),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C1),
               getAdditionalC1Value(address),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -803,7 +849,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-2 Adresse du tiré : Localité
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C2),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C2),
               getAdditionalC2Value(address),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -811,7 +857,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       // Area C-3 Adresse du tiré : Code postale et bureau distributeur
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
-        		  I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C3),
+              I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C3),
               getAdditionalC3Value(address),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,

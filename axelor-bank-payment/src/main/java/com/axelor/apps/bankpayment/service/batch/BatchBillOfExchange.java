@@ -264,7 +264,8 @@ public class BatchBillOfExchange extends AbstractBatch {
             + "AND self.hasPendingPayments = FALSE "
             + "AND self.id NOT IN (:anomalyList) "
             + "AND self.paymentMode = :paymentMode "
-            + "AND self.lcrAccounted = FALSE ");
+            + "AND self.lcrAccounted = FALSE "
+            + "AND (self.billOfExchangeBlockingOk = FALSE OR (self.billOfExchangeBlockingOk = TRUE AND self.billOfExchangeBlockingToDate < :todayDate))");
 
     Map<String, Object> bindings = new HashMap<>();
     bindings.put("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
@@ -272,6 +273,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
     bindings.put("anomalyList", anomalyList);
+    bindings.put("todayDate", appBaseService.getTodayDate(accountingBatch.getCompany()));
 
     if (accountingBatch.getDueDate() != null) {
       filter.append("AND self.dueDate <= :dueDate ");

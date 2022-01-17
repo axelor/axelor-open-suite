@@ -105,6 +105,14 @@
     <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
 
+    <boolean name="billOfExchangeBlockingOk" title="Bill of exchange blocking"/>
+    <many-to-one name="billOfExchangeBlockingReason"
+      ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <date name="billOfExchangeBlockingToDate" title="Blocking until"/>
+    <many-to-one name="billOfExchangeBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Blocking done by"/>
+
+
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"

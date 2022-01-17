@@ -771,6 +771,7 @@
 "Belong to a payment schedule","Lié à un échéancier de paiement",,
 "Bill of Exchange","LCR",,
 "Bill of exchange batch","Lancer le batch LCR",,
+"Bill of exchange configuration","Configuration des effets",,
 "Bill of exchange receivable account","Compte d'effet à recevoir",,
 "Bill of exchange type","Type d'effets",,
 "Binding file","Fichier de liaison",,
