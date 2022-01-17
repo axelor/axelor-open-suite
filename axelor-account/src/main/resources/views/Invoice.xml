@@ -52,9 +52,9 @@
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
-  
-  <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
-    orderBy="-invoiceDate">
+
+  <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <menubar>
       <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
         <item name="printInvoicesItem" title="Print invoices"
@@ -78,7 +78,7 @@
     <hilite color="danger"
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <hilite color="danger"
-      if="billOfExchangeBlockingOk == true &amp;&amp; $moment(billOfExchangeBlockingToDate).diff(todayDate, 'days') &gt;= 0"/>      
+      if="billOfExchangeBlockingOk == true &amp;&amp; $moment(billOfExchangeBlockingToDate).diff(todayDate, 'days') &gt;= 0"/>
     <hilite color="warning"
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
@@ -101,7 +101,7 @@
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
-  </grid>  
+  </grid>
 
   <grid name="invoice-with-payment-delay-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
