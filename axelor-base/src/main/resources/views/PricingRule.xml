@@ -26,6 +26,7 @@
       <field name="formula" widget="CodeEditor" x-code-syntax="groovy" colSpan="12"/>
       <field name="fieldToPopulate" domain="self.metaModel = :concernedModel"
         showIf="typeSelect == 2"/>
+      <field name="tempVarName" showIf="typeSelect == 2"/>
     </panel>
   </form>
 

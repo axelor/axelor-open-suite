@@ -27,12 +27,10 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -83,29 +81,20 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       stockLocationIdList.add(stockLocationId);
     }
 
+    CompanyRepository companyRepo = Beans.get(CompanyRepository.class);
+    ProductRepository productRepo = Beans.get(ProductRepository.class);
+
     // one line per month
     for (LocalDate periodBeginDate = beginDate.withDayOfMonth(1);
         periodBeginDate.isBefore(endDate);
         periodBeginDate = periodBeginDate.plusMonths(1)) {
       LocalDate periodEndDate = periodBeginDate.plusMonths(1);
       StockHistoryLine stockHistoryLine = new StockHistoryLine();
-      Company company = Beans.get(CompanyRepository.class).find(companyId);
-      Product product = Beans.get(ProductRepository.class).find(productId);
+      Company company = companyRepo.find(companyId);
+      Product product = productRepo.find(productId);
       stockHistoryLine.setProduct(product);
       stockHistoryLine.setCompany(company);
       stockHistoryLine.setLabel(periodBeginDate.toString());
-      StockHistoryLineRepository stockHistoryLineRepository =
-          Beans.get(StockHistoryLineRepository.class);
-      Query<StockHistoryLine> query =
-          stockHistoryLineRepository
-              .all()
-              .filter("self.product = :product and self.label = :label and self.company = :company")
-              .bind("product", productId)
-              .bind("label", stockHistoryLine.getLabel())
-              .bind("company", companyId);
-      if (query.count() > 0) {
-        stockHistoryLine = query.fetchOne();
-      }
       stockHistoryLine.setPeriod(
           Beans.get(PeriodService.class)
               .getActivePeriod(periodBeginDate, company, YearRepository.TYPE_CIVIL));
@@ -126,7 +115,6 @@ public class StockHistoryServiceImpl implements StockHistoryService {
           periodEndDate,
           false);
       stockHistoryLineList.add(stockHistoryLine);
-      stockHistoryLineRepository.save(stockHistoryLine);
     }
     StockHistoryLine totalStockHistoryLine = createStockHistoryTotalLine(stockHistoryLineList);
     StockHistoryLine avgStockHistoryLine =

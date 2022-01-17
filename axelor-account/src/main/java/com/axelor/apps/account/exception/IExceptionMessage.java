@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -296,9 +296,11 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -880,9 +882,31 @@ public interface IExceptionMessage {
 
   static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
+
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
+
+  /** Invoice term controller */
+  static final String INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT = /*$$(*/
+      "The input grantedAmount can't be greater or equal than the term amount." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY = /*$$(*/
+      "The PFP partial reason is required to partially pass-for-payment a term." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO = /*$$(*/
+      "The PFP granted amount can't be equal to zero in order to partially pass-for-payment a term." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_NOT_SAVED = /*$$(*/
+      "Please save this invoice term first." /*)*/;
+  static final String INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD = /*$$(*/
+      "Please select at least a record within the list to proceed to such action." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL = /*$$(*/
+      "%s records(s) updated on %s record(s) selected(s)." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL = /*$$(*/
+      "%s records(s) refused on %s record(s) selected(s)." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -1051,6 +1075,12 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
+          "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
+
+  static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
+          "There is no sequence set for the payment session for the company %s" /*)*/;
 
   static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;

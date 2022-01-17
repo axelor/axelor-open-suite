@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -36,6 +37,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -94,7 +96,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockLocationService stockLocationService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
-      ProductCategoryRepository productCategoryRepository) {
+      ProductCategoryRepository productCategoryRepository,
+      StockHistoryLineRepository stockHistoryLineRepository,
+      ProductCategoryService productCategoryService) {
     super(
         appBaseService,
         appPurchaseService,
@@ -110,7 +114,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineService,
         mrpForecastRepository,
         stockLocationService,
-        productCategoryRepository);
+        productCategoryRepository,
+        stockHistoryLineRepository,
+        productCategoryService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }

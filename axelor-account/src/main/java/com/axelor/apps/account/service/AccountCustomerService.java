@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,15 +52,18 @@ public class AccountCustomerService {
 
   protected AccountingSituationService accountingSituationService;
   protected AccountingSituationRepository accSituationRepo;
+  protected AccountingSituationInitService accountingSituationInitService;
   protected AppBaseService appBaseService;
 
   @Inject
   public AccountCustomerService(
       AccountingSituationService accountingSituationService,
+      AccountingSituationInitService accountingSituationInitService,
       AccountingSituationRepository accSituationRepo,
       AppBaseService appBaseService) {
 
     this.accountingSituationService = accountingSituationService;
+    this.accountingSituationInitService = accountingSituationInitService;
     this.accSituationRepo = accSituationRepo;
     this.appBaseService = appBaseService;
   }
@@ -298,7 +301,7 @@ public class AccountCustomerService {
           accountingSituationService.getAccountingSituation(partner, company);
       if (accountingSituation == null) {
         accountingSituation =
-            accountingSituationService.createAccountingSituation(partner, company);
+            accountingSituationInitService.createAccountingSituation(partner, company);
       }
       if (accountingSituation != null) {
         this.updateAccountingSituationCustomerAccount(
@@ -317,7 +320,7 @@ public class AccountCustomerService {
           accountingSituationService.getAccountingSituation(partner, company);
       if (accountingSituation == null) {
         accountingSituation =
-            accountingSituationService.createAccountingSituation(partner, company);
+            accountingSituationInitService.createAccountingSituation(partner, company);
       }
       if (accountingSituation != null) {
         accountingSituation.setCustAccountMustBeUpdateOk(true);

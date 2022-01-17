@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,6 +79,8 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
+import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
@@ -93,6 +95,8 @@ import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.FiscalPositionAccountServiceImpl;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.InvoiceVisibilityServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
@@ -458,6 +462,8 @@ public class AccountModule extends AxelorModule {
 
     bind(FECImportService.class).to(FECImportServiceImpl.class);
 
+    bind(AccountingSituationInitService.class).to(AccountingSituationInitServiceImpl.class);
+
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
 
     bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
@@ -479,6 +485,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
 
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
+
+    bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
   }
