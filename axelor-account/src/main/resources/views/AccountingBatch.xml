@@ -173,7 +173,8 @@
         showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-bill-of-exchange"
         colSpan="12"/>
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
-        onClick="action-view-accounting-batch-invoice-to-be-processed"/>
+        onClick="action-view-accounting-batch-invoice-to-be-processed" showIf="actionSelect == 24"
+        colSpan="12"/>
     </panel>
   </form>
 
