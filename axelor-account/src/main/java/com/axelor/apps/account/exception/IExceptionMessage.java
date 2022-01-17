@@ -1054,4 +1054,7 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
+
+  static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
+      "%d moves have been successfully generated." /*)*/;
 }

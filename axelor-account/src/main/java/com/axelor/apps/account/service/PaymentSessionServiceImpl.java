@@ -396,6 +396,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
 
-    return invoiceTerm;
+    return invoiceTermRepo.save(invoiceTerm);
   }
 }
