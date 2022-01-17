@@ -76,6 +76,7 @@
     <!-- Bill of exchange -->
     <integer name="billOfExchangeTypeSelect" title="Bill of exchange type"
       selection="iaccount.account.batch.bill.of.exchange.type.select"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE

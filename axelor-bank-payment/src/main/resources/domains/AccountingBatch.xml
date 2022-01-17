@@ -11,6 +11,9 @@
     <integer name="directDebitDataTypeSelect" title="Direct debit data type"
       selection="iaccount.account.batch.direct.debit.data.type.select" default="1"/>
 
+    <integer name="billOfExchangeBatchTypeSelect" title="Bill of exchange batch type"
+      selection="iaccount.account.batch.bill.of.exchange.batch.type.select"/>
+
     <extra-code><![CDATA[
 		   	// ACTION TYPE
 			public static final int ACTION_DIRECT_DEBIT = 12;
@@ -21,6 +24,10 @@
 			public static final int DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE = 2;
 			public static final int DIRECT_DEBIT_DATA_MONTHLY_PAYMENT_SCHEDULE = 3;
 			public static final int DIRECT_DEBIT_DATA_LCR_ACCOUNTED_CUSTOMER_INVOICE = 4;
+
+			//BILL OF EXCHANGE BATCH TYPE
+			public static final int BATCH_BILL_OF_EXCHANGE_GENERATION = 1;
+			public static final int BATCH_BANK_ORDER_GENERATION = 2;
 		]]></extra-code>
 
   </entity>

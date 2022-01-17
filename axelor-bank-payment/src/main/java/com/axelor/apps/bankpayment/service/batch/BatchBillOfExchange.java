@@ -16,6 +16,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.BankDetails;
@@ -54,6 +55,7 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected AccountRepository accountRepository;
   protected ReconcileService reconcileService;
   protected MoveLineService moveLineService;
+  protected MoveValidateService moveValidateService;
 
   @Inject
   public BatchBillOfExchange(
@@ -66,7 +68,8 @@ public class BatchBillOfExchange extends AbstractBatch {
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       ReconcileService reconcileService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      MoveValidateService moveValidateService) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.appAccountService = appAccountService;
@@ -78,6 +81,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     this.accountRepository = accountRepository;
     this.reconcileService = reconcileService;
     this.moveLineService = moveLineService;
+    this.moveValidateService = moveValidateService;
   }
 
   @Override
@@ -105,6 +109,7 @@ public class BatchBillOfExchange extends AbstractBatch {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(accountingBatch.getCompany());
           Move move = createLCRAccountMove(invoice, accountConfig);
+          moveValidateService.accounting(move);
           reconcilesMoves(move, invoice.getMove(), invoice);
           updateInvoice(invoice, move, accountConfig);
           incrementDone();
@@ -190,13 +195,13 @@ public class BatchBillOfExchange extends AbstractBatch {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING),
-          "autoMiscOpeJournal");
+          I18n.get("Auto Misc. Operation Journal"));
     }
     if (accountConfig.getBillOfExchReceivAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING),
-          "billOfExchReceivAccount");
+          I18n.get("Bill of exchange receivable account"));
     }
     Move move =
         moveCreateService.createMove(

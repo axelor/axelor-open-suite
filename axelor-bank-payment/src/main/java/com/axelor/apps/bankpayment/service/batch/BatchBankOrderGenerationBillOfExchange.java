@@ -104,7 +104,6 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       for (Invoice invoice : invoicesList) {
         try {
           createInvoicePayment(invoicePaymentIdList, companyBankDetails, invoice);
-          moveValidateService.accounting(invoice.getMove());
         } catch (Exception e) {
           incrementAnomaly();
           anomalyList.add(invoice.getId());

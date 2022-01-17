@@ -48,7 +48,9 @@
       </panel>
       <panel name="directDebitPagePanel" title="Direct debit configuration"
         hideIf="actionSelect != 12 &amp;&amp; actionSelect != 24">
-        <field name="directDebitDataTypeSelect" if="actionSelect != 24"/>
+        <field name="directDebitDataTypeSelect" hidden="true" showIf="actionSelect != 24"/>
+        <field name="billOfExchangeBatchTypeSelect" hidden="true" showIf="actionSelect == 24"
+          requiredIf="actionSelect == 24"/>
         <field name="billOfExchangeTypeSelect" hidden="true" showIf="actionSelect == 24"
           requiredIf="actionSelect == 24"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
