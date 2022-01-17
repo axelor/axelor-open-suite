@@ -96,6 +96,5 @@ public class PayVoucherElementToPayService {
     elementToPay.setAmountToPayCurrency(amountToPayCurrency);
     elementToPay.setRemainingAmountAfterPayment(
         elementToPay.getRemainingAmount().subtract(elementToPay.getAmountToPay()));
-    payVoucherElementToPayRepo.save(elementToPay);
   }
 }
