@@ -18,8 +18,12 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 
@@ -68,5 +72,18 @@ public class AccountAccountRepository extends AccountRepository {
     account.setCode(String.format("%s (copy)", account.getCode()));
     account.setName(String.format("%s (copy)", account.getName()));
     return account;
+  }
+
+  @Override
+  public void remove(Account account) {
+    if (account.getIsRegulatoryAccount()) {
+      Exception e =
+          new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.ACCOUNT_REGULATORY_REMOVE));
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
+    }
+    super.remove(account);
   }
 }

@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
@@ -649,5 +650,46 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setCutOffStartDate(cutOffStartDate);
       invoiceLine.setCutOffEndDate(cutOffEndDate);
     }
+  }
+
+  public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
+      throws AxelorException {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return null;
+    } else {
+      for (InvoiceLine invoiceLine : invoiceLineList) {
+
+        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+        boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+        TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
+        invoiceLine.setTaxLine(taxLine);
+        invoiceLine.setTaxRate(taxLine.getValue());
+        invoiceLine.setTaxCode(taxLine.getTax().getCode());
+
+        Tax tax =
+            accountManagementAccountService.getProductTax(
+                invoiceLine.getProduct(), invoice.getCompany(), null, isPurchase);
+        TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+
+        invoiceLine.setTaxEquiv(taxEquiv);
+
+        Account account =
+            accountManagementAccountService.getProductAccount(
+                invoiceLine.getProduct(),
+                invoice.getCompany(),
+                fiscalPosition,
+                isPurchase,
+                invoiceLine.getFixedAssets());
+        invoiceLine.setAccount(account);
+        invoiceLine.setInTaxTotal(
+            invoiceLine
+                .getExTaxTotal()
+                .multiply(invoiceLine.getTaxRate())
+                .setScale(2, RoundingMode.HALF_UP));
+        invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+      }
+    }
+    return invoiceLineList;
   }
 }

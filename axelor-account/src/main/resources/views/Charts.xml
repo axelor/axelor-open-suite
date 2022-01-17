@@ -1042,4 +1042,25 @@
     <category key="_situation" type="text" title="Situation"/>
     <series key="_amount" type="bar" title="Amount"/>
   </chart>
+
+  <custom name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"
+    title="Custom" css="report-box">
+    <dataset type="jpql"><![CDATA[
+
+	 select CONCAT(ceil(sum(self.amountRemaining)), ' €') as Montant, _partner.name as Fournisseur, _bankDetails.fullName as RIB
+	 from InvoiceTerm as self
+	 left join self.invoice.partner as _partner
+	 left join self.bankDetails as _bankDetails
+	 group by _partner.id,_bankDetails.id
+	 order by _partner.name
+	 ]]></dataset>
+    <template><![CDATA[
+
+	<report-table data='data' columns='Fournisseur,RIB,Montant'></report-table>
+
+
+	 ]]></template>
+  </custom>
+
+
 </object-views>
