@@ -51,6 +51,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
         || paymentVoucher.getPaymentDate() == null) {
       return payVoucherDueElement;
     }
+    payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     FinancialDiscount financialDiscount = paymentVoucher.getPartner().getFinancialDiscount();
     LocalDate financialDiscountDeadlineDate =
         payVoucherDueElement
