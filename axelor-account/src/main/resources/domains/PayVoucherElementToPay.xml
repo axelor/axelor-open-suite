@@ -27,6 +27,15 @@
     <many-to-one name="invoiceTerm" title="Invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
 
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
+    <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
+    <decimal name="financialDiscountTotalAmount" title="Fin. discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
   </entity>
 
 </domain-models>
