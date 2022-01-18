@@ -1,0 +1,3 @@
+---
+title: "Sequence service : get sequence method on sequence service is now trasactionnal"
+type: fix
