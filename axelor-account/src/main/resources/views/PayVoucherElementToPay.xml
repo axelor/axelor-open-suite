@@ -27,7 +27,7 @@
       <field name="remainingAmount"/>
       <field name="remainingAmountAfterPayment"/>
       <field name="amountToPay"
-        onChange="save, action-method-account-payment-voucher-element-pay-amount"/>
+        onChange="action-method-account-payment-voucher-element-pay-amount"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
     </panel>
 

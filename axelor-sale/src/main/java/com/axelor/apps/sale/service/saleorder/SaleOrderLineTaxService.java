@@ -48,10 +48,9 @@ public class SaleOrderLineTaxService {
    * devis ainsi que les sous-lignes de devis de celles-ci. Si une ligne de devis comporte des
    * sous-lignes de devis, alors on se base uniquement sur celles-ci.
    *
-   * @param invoice La facture.
-   * @param invoiceLines Les lignes de facture.
-   * @param invoiceLineTaxes Les lignes des taxes de la facture.
-   * @return La liste des lignes de taxe de la facture.
+   * @param saleOrder Le devis de vente.
+   * @param saleOrderLineList Les lignes du devis de vente.
+   * @return La liste des lignes de taxe du devis de vente.
    */
   public List<SaleOrderLineTax> createsSaleOrderLineTax(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
@@ -68,7 +67,7 @@ public class SaleOrderLineTaxService {
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Création des lignes de tva pour les lignes de commande client.");
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
