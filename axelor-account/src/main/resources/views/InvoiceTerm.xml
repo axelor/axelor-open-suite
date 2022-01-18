@@ -186,8 +186,6 @@
             colSpan="12" onClick="save"/>
           <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
             hidden="true"/>
-          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
-            hidden="true"/>
           <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
           <field name="invoice.operationTypeSelect" hidden="true"/>
           <field name="company.accountConfig.isManagePFPInRefund" hidden="true"/>
@@ -272,15 +270,15 @@
         if="__config__.app.getApp('account').getActivatePassedForPayment()" readonlyIf="!isPaid || paymentSession"
         showIf="move.company.accountConfig.isManagePassedForPayment &amp;&amp; (moveLine.account.journalType.technicalTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp;moveLine.account.journalType.technicalTypeSelect == 3)) &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
         colSpan="12">
-        <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1"
-          colSpan="12">
+        <panel name="pfpStatus" hidden="true"
+          showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect == 1" colSpan="12">
           <field name="pfpValidateStatusSelect" colSpan="8" widget="navSelect"/>
           <field name="pfpValidatorUser" colSpan="4" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
-        <panel name="pfpStatusDecision" hidden="true" showIf="pfpValidateStatusSelect > 1"
-          colSpan="12">
+        <panel name="pfpStatusDecision" hidden="true"
+          showIf="invoice.statusSelect > 1 &amp;&amp; pfpValidateStatusSelect > 1" colSpan="12">
           <field name="pfpValidateStatusSelect" widget="navSelect" colSpan="12"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" colSpan="12"
@@ -292,8 +290,8 @@
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
-        <panel name="pfpDecisionPartialPfp" readonly="true"
-          showIf="pfpValidateStatusSelect == 4" colSpan="12" itemSpan="4">
+        <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4" colSpan="12"
+          itemSpan="4">
           <field name="decisionPfpTakenDate" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
