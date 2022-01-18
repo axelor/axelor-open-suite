@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
@@ -35,24 +37,43 @@ import java.util.List;
 
 public class BatchUpdateStockHistory extends BatchStrategy {
 
+  private static final Integer ITERATIONS = 100;
+
   protected StockHistoryService stockHistoryService;
+  protected ProductCategoryRepository productCategoryRepository;
 
   @Inject
-  public BatchUpdateStockHistory(StockHistoryService stockHistoryService) {
+  public BatchUpdateStockHistory(
+      StockHistoryService stockHistoryService,
+      ProductCategoryRepository productCategoryRepository) {
     this.stockHistoryService = stockHistoryService;
+    this.productCategoryRepository = productCategoryRepository;
   }
 
   @Override
   protected void process() {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
 
-    List<Product> productList;
+    List<Product> productList = new ArrayList<>();
+    List<ProductCategory> productCategoryList = getProductCategoryList(supplychainBatch);
     List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
-    Query<Product> productQuery =
-        Beans.get(ProductRepository.class)
-            .all()
-            .filter("self.productTypeSelect = :productTypeSelect")
-            .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE);
+    Query<Product> productQuery;
+
+    if (supplychainBatch.getProductCategoryList() != null
+        && !supplychainBatch.getProductCategoryList().isEmpty()) {
+      productQuery =
+          Beans.get(ProductRepository.class)
+              .all()
+              .filter(
+                  "self.productCategory in (?1) AND self.productTypeSelect = ?2",
+                  productCategoryList,
+                  ProductRepository.PRODUCT_TYPE_STORABLE);
+    } else {
+      productQuery =
+          Beans.get(ProductRepository.class)
+              .all()
+              .filter("self.productTypeSelect = ?1", ProductRepository.PRODUCT_TYPE_STORABLE);
+    }
 
     int offset = 0;
 
@@ -92,5 +113,54 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
     super.stop();
     addComment(comment);
+  }
+
+  protected List<ProductCategory> getProductCategoryList(SupplychainBatch supplychainBatch) {
+
+    List<ProductCategory> productCategoryList = new ArrayList<>();
+
+    if (supplychainBatch.getProductCategoryList() != null
+        && !supplychainBatch.getProductCategoryList().isEmpty()) {
+
+      productCategoryList =
+          new ArrayList<ProductCategory>(supplychainBatch.getProductCategoryList());
+
+      List<ProductCategory> childProductCategoryList = new ArrayList<ProductCategory>();
+      for (ProductCategory productCategory : productCategoryList) {
+        childProductCategoryList.addAll(
+            this.getChildrenProductCategories(
+                productCategory, new ArrayList<ProductCategory>(), 0));
+      }
+      productCategoryList.addAll(childProductCategoryList);
+    }
+
+    return productCategoryList;
+  }
+
+  protected List<ProductCategory> getChildrenProductCategories(
+      ProductCategory productCategory, List<ProductCategory> productCategoryList, int count) {
+
+    if (count > ITERATIONS) {
+      return productCategoryList;
+    }
+
+    List<ProductCategory> childProductCategoryList =
+        productCategoryRepository
+            .all()
+            .filter("self.parentProductCategory = ?1", productCategory)
+            .fetch();
+
+    productCategoryList.add(productCategory);
+    count++;
+
+    if (childProductCategoryList.isEmpty()) {
+      return productCategoryList;
+    }
+
+    for (ProductCategory category : childProductCategoryList) {
+      this.getChildrenProductCategories(category, productCategoryList, count);
+    }
+
+    return productCategoryList;
   }
 }

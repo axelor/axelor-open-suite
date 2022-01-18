@@ -83,6 +83,8 @@
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
         <field name="period" domain="self.year.typeSelect = 0"/>
+        <field name="productCategoryList" colSpan="12" canNew="false" canEdit="false"
+          cenSelect="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
