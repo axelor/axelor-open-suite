@@ -70,12 +70,14 @@
     <field name="applyFinancialDiscount"/>
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
-    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle" readonlyIf="isSelectedOnPaymentSession"/>
-    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle" readonlyIf="!isSelectedOnPaymentSession"/>
+    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"
+      readonlyIf="isSelectedOnPaymentSession"/>
+    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"
+      readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-            icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
+      icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-            icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
+      icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term"
