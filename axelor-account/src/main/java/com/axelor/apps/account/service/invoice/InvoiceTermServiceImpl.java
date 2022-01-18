@@ -171,6 +171,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
     return invoiceTerm;
   }
 

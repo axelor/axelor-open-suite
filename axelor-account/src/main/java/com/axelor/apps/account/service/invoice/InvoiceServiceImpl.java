@@ -1288,4 +1288,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
   }
+
+  @Override
+  public void updateUnpaidInvoiceTerms(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
+        .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
+  }
+
+  protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
+  }
 }
