@@ -8,6 +8,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoiceMergingService {
@@ -40,6 +41,14 @@ public interface InvoiceMergingService {
     PaymentMode getCommonPaymentMode();
 
     void setCommonPaymentMode(PaymentMode commonPaymentMode);
+
+    String getCommonSupplierInvoiceNb();
+
+    void setCommonSupplierInvoiceNb(String commonSupplierInvoiceNb);
+
+    LocalDate getCommonOriginDate();
+
+    void setCommonOriginDate(LocalDate commonOriginDate);
   }
 
   interface Checks {
@@ -58,9 +67,21 @@ public interface InvoiceMergingService {
     boolean isExistPaymentModeDiff();
 
     void setExistPaymentModeDiff(boolean existPaymentModeDiff);
+
+    boolean isExistSupplierInvoiceNbDiff();
+
+    void setExistSupplierInvoiceNbDiff(boolean existSupplierInvoiceNbDiff);
+
+    boolean isExistOriginDateDiff();
+
+    void setExistOriginDateDiff(boolean existOriginDateDiff);
   }
 
   interface InvoiceMergingResult {
+    void setInvoiceType(Integer type);
+
+    Integer getInvoiceType();
+
     void setInvoice(Invoice invoice);
 
     Invoice getInvoice();
@@ -84,5 +105,15 @@ public interface InvoiceMergingService {
       PriceList priceList,
       PaymentMode paymentMode,
       PaymentCondition paymentCondition)
+      throws AxelorException;
+
+  InvoiceMergingResult mergeInvoices(
+      List<Invoice> invoicesToMerge,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
       throws AxelorException;
 }

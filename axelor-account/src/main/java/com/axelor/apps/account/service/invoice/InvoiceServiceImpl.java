@@ -489,21 +489,21 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       PaymentMode paymentMode,
       PaymentCondition paymentCondition)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
     for (Invoice invoiceLocal : invoiceList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
       }
       if (invoiceLocal.getInternalReference() != null) {
-        numSeq += invoiceLocal.getInternalReference();
+        numSeq.append(invoiceLocal.getInternalReference());
       }
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (invoiceLocal.getExternalReference() != null) {
-        externalRef += invoiceLocal.getExternalReference();
+        externalRef.append(invoiceLocal.getExternalReference());
       }
     }
 
@@ -518,8 +518,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             contactPartner,
             currency,
             priceList,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             null,
             company.getDefaultBankDetails(),
             null,
@@ -532,6 +532,100 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           }
         };
     Invoice invoiceMerged = invoiceGenerator.generate();
+    List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
+    invoiceGenerator.populate(invoiceMerged, invoiceLines);
+    this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+    invoiceRepo.save(invoiceMerged);
+    return invoiceMerged;
+  }
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition,
+            supplierInvoiceNb,
+            originDate);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException {
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (Invoice invoiceLocal : invoiceList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      if (invoiceLocal.getInternalReference() != null) {
+        numSeq.append(invoiceLocal.getInternalReference());
+      }
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
+      }
+      if (invoiceLocal.getExternalReference() != null) {
+        externalRef.append(invoiceLocal.getExternalReference());
+      }
+    }
+
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator(
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            company,
+            paymentCondition,
+            paymentMode,
+            partnerService.getInvoicingAddress(partner),
+            partner,
+            contactPartner,
+            currency,
+            priceList,
+            numSeq.toString(),
+            externalRef.toString(),
+            null,
+            company.getDefaultBankDetails(),
+            null,
+            null) {
+
+          @Override
+          public Invoice generate() throws AxelorException {
+
+            return super.createInvoiceHeader();
+          }
+        };
+    Invoice invoiceMerged = invoiceGenerator.generate();
+    invoiceMerged.setSupplierInvoiceNb(supplierInvoiceNb);
+    invoiceMerged.setOriginDate(originDate);
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);

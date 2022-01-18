@@ -176,6 +176,8 @@
           action="action-supplier-invoice-line-menu"/>
         <item title="See budget distribution lines"
           action="action-invoice-see-budget-distribution-lines"/>
+        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
+          action="action-invoice-mergesupplinvoices"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -233,6 +235,8 @@
           action="action-supplier-invoice-line-menu"/>
         <item title="See budget distribution lines"
           action="action-invoice-see-budget-overview-lines"/>
+        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
+          action="action-invoice-mergesupplinvoices"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -1261,36 +1265,87 @@ InvoiceSet.length > 0))"
   </form>
 
   <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
-    title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
-    <panel name="mainPanel" colSpan="6" colOffset="3">
-      <field name="contactPartnerToCheck" hidden="true" colOffset="12"/>
-      <field name="priceListToCheck" hidden="true" colOffset="12"/>
-      <field name="paymentModeToCheck" hidden="true" colOffset="12"/>
-      <field name="paymentConditionToCheck" hidden="true" colOffset="12"/>
+    title="Management of merge conflicts"
+    onNew="action-record-load-dummy-field-confirm-merge-invoice">
+    <panel name="mainPanel" colSpan="12">
+      <field name="contactPartnerToCheck" hidden="true" colOffset="3"/>
+      <field name="priceListToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
         domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
-        colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
+        colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="$priceList" title="Price List" type="many-to-one"
+        target="com.axelor.apps.base.db.PriceList" colOffset="3"
+        domain="self.typeSelect = 1 and self.isActive = true" showIf="priceListToCheck"
+        canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+      <field name="$paymentMode" title="Payment Mode" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.account.db.PaymentMode" widget="SuggestBox"
+        showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+      <field name="$paymentCondition" title="Payment Condition" type="many-to-one"
+        colOffset="3" target="com.axelor.apps.account.db.PaymentCondition" widget="SuggestBox"
+        showIf="paymentConditionToCheck" form-view="payment-condition-form"
+        grid-view="payment-condition-grid"/>
+      <button name="confirmBtn" title="Confirm" colOffset="3"
+        onClick="action-invoice-method-merge-from-popup"/>
+    </panel>
+    <panel-related name="$invoiceToMergePanel" hidden="true" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"/>
+  </form>
+
+  <!-- SUPPLIER INVOICES MERGE -->
+  <form name="supplier-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+    title="Merge Suppl. Invoices" width="large">
+    <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+    </panel>
+  </form>
+
+  <form name="supplier-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+    title="Management of merge conflicts"
+    onNew="action-record-load-dummy-field-confirm-merge-suppl-invoice">
+    <panel name="mainPanel" colSpan="12">
+      <field name="contactPartnerToCheck" hidden="true" colOffset="3"/>
+      <field name="priceListToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
+      <field name="supplierInvoiceNbToCheck" hidden="true" colOffset="3"/>
+      <field name="originDateToCheck" hidden="true" colOffset="3"/>
+      <field name="$contactPartner" title="Contact partner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        widget="SuggestBox" showIf="contactPartnerToCheck" colOffset="3"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
-        domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
-        width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
+        domain="self.typeSelect = 2 and self.isActive = true" colOffset="3"
+        showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="$paymentMode" title="Payment Mode" type="many-to-one"
-        target="com.axelor.apps.account.db.PaymentMode" colSpan="6" colOffset="3" width="200px"
-        widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form"
-        grid-view="payment-mode-grid"/>
+        target="com.axelor.apps.account.db.PaymentMode" colOffset="3" widget="SuggestBox"
+        showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
       <field name="$paymentCondition" title="Payment Condition" type="many-to-one"
-        target="com.axelor.apps.account.db.PaymentCondition" colSpan="6" colOffset="3" width="200px"
-        widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form"
+        target="com.axelor.apps.account.db.PaymentCondition" colOffset="3" widget="SuggestBox"
+        showIf="paymentConditionToCheck" form-view="payment-condition-form"
         grid-view="payment-condition-grid"/>
-      <button name="confirmBtn" title="Confirm"
-        onClick="action-invoice-method-merge-from-popup" colSpan="12" width="200px"/>
+      <field name="$supplierInvoiceNb" title="Supplier invoice number" type="string"
+        showIf="supplierInvoiceNbToCheck" colOffset="3"/>
+      <field name="$originDate" title="Origin date" type="date"
+        showIf="supplierInvoiceNbToCheck" colOffset="3"/>
+      <button name="confirmBtn" title="Confirm" colOffset="3"
+        onClick="action-suppl-invoice-method-merge-from-popup"/>
     </panel>
     <panel-related name="$invoiceToMergePanel" hidden="true" field="$invoiceToMerge"
-      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
-      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"/>
+      form-view="invoice-form" grid-view="invoice-grid" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"/>
   </form>
 
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
@@ -1542,6 +1597,17 @@ InvoiceSet.length > 0))"
     <field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
     <field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
     <field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+  </action-record>
+
+  <action-record name="action-record-load-dummy-field-confirm-merge-suppl-invoice"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
+    <field name="partnerId" expr="eval: contextPartnerId"/>
+    <field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
+    <field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
+    <field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+    <field name="supplierInvoiceNbToCheck" expr="eval: contextSupplierInvoiceNbToCheck"/>
+    <field name="originDateToCheck" expr="eval: contextOriginDateToCheck"/>
   </action-record>
 
   <action-record name="action-invoice-record-interco-supplychain"
@@ -1838,6 +1904,11 @@ InvoiceSet.length > 0))"
       method="mergeInvoiceFromPopup"/>
   </action-method>
 
+  <action-method name="action-suppl-invoice-method-merge-from-popup">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="mergeSupplInvoiceFromPopup"/>
+  </action-method>
+
   <action-method name="action-invoice-method-create-advance-payment-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillAdvancePaymentInvoiceSetDomain"/>
@@ -1943,6 +2014,11 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="customer-invoices-merge-form"/>
+  </action-view>
+
+  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"

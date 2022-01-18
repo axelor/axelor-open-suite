@@ -19,10 +19,15 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -32,6 +37,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.common.ObjectUtils;
@@ -45,6 +51,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,13 +64,22 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private InvoiceService invoiceService;
+  private InvoiceServiceSupplychainImpl invoiceService;
+  private InvoiceRepository invoiceRepo;
+  protected TimetableRepository timetableRepo;
+  protected AppSupplychainService appSupplychainService;
 
-  @Inject private InvoiceRepository invoiceRepo;
-
-  @Inject protected TimetableRepository timetableRepo;
-
-  @Inject protected AppSupplychainService appSupplychainService;
+  @Inject
+  public PurchaseOrderInvoiceServiceImpl(
+      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceRepository invoiceRepo,
+      TimetableRepository timetableRepo,
+      AppSupplychainService appSupplychainService) {
+    this.invoiceService = invoiceService;
+    this.invoiceRepo = invoiceRepo;
+    this.timetableRepo = timetableRepo;
+    this.appSupplychainService = appSupplychainService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -424,5 +440,76 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     purchaseOrder.setOrderDate(appSupplychainService.getTodayDate(purchaseOrder.getCompany()));
 
     return purchaseOrder;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      String supplierInvoiceNb,
+      LocalDate originDate,
+      PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    log.debug("service supplychain 1 (purchaseOrder) {}", purchaseOrder);
+    if (purchaseOrder != null) {
+      StringBuilder numSeq = new StringBuilder();
+      StringBuilder externalRef = new StringBuilder();
+
+      for (Invoice invoiceLocal : invoiceList) {
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
+        }
+        if (invoiceLocal.getInternalReference() != null) {
+          numSeq.append(invoiceLocal.getInternalReference());
+        }
+
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
+        }
+        if (invoiceLocal.getExternalReference() != null) {
+          externalRef.append(invoiceLocal.getExternalReference());
+        }
+      }
+      InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
+      Invoice invoiceMerged = invoiceGenerator.generate();
+      invoiceMerged.setExternalReference(externalRef.toString());
+      invoiceMerged.setInternalReference(numSeq.toString());
+
+      if (paymentMode != null) invoiceMerged.setPaymentMode(paymentMode);
+      if (paymentCondition != null) invoiceMerged.setPaymentCondition(paymentCondition);
+
+      List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
+      invoiceGenerator.populate(invoiceMerged, invoiceLines);
+      invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+      invoiceMerged.setPurchaseOrder(null);
+      invoiceRepo.save(invoiceMerged);
+      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceService.deleteOldInvoices(invoiceList);
+      return invoiceMerged;
+    } else {
+
+      Invoice invoiceMerged =
+          invoiceService.mergeInvoice(
+              invoiceList,
+              company,
+              currency,
+              partner,
+              contactPartner,
+              priceList,
+              paymentMode,
+              paymentCondition,
+              supplierInvoiceNb,
+              originDate);
+      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceService.deleteOldInvoices(invoiceList);
+      return invoiceMerged;
+    }
   }
 }
