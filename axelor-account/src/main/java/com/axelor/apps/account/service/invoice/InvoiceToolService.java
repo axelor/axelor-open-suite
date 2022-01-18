@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -34,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -46,18 +46,34 @@ public class InvoiceToolService {
     if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
       return invoiceDate;
     }
-    LocalDate dueDate = null;
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsPaid()
-          && (dueDate == null || invoiceTerm.getDueDate().isBefore(dueDate))) {
-        dueDate = invoiceTerm.getDueDate();
-      }
+    if (invoice.getInvoiceTermList().size() == 1) {
+      return invoice.getInvoiceTermList().get(0).getDueDate();
     }
+    return invoice.getInvoiceTermList().stream()
+        .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .max(Comparator.comparing(LocalDate::toEpochDay))
+        .orElse(null);
+  }
 
-    if (dueDate != null) {
-      return dueDate;
+  @CallMethod
+  public static LocalDate getNextDueDate(Invoice invoice) throws AxelorException {
+    LocalDate invoiceDate =
+        isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoiceDate;
     }
-    return invoiceDate;
+    if (invoice.getInvoiceTermList().size() == 1) {
+      return invoice.getInvoiceTermList().get(0).getDueDate();
+    }
+    return invoice.getInvoiceTermList().stream()
+        .filter(
+            invoiceTerm ->
+                (invoiceTerm.getDueDate().isEqual(LocalDate.now())
+                        || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
+                    && !invoiceTerm.getIsPaid())
+        .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .min(Comparator.comparing(LocalDate::toEpochDay))
+        .orElse(invoice.getNextDueDate());
   }
 
   /**

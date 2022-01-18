@@ -237,6 +237,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -489,5 +491,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
+
+    bind(PayVoucherDueElementService.class).to(PayVoucherDueElementServiceImpl.class);
   }
 }

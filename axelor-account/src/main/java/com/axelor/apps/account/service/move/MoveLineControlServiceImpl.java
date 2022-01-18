@@ -18,11 +18,15 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -75,5 +79,21 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           moveLine.getAccount().getCode());
     }
     controlAccountingAccount(moveLine);
+  }
+
+  public boolean isInvoiceTermReadonly(MoveLine moveLine, User user) {
+    if (BigDecimal.ZERO.equals(moveLine.getAmountRemaining())
+        || moveLine.getMove().getPeriod().getStatusSelect() > PeriodRepository.STATUS_OPENED) {
+      AccountConfig accountConfig = user.getActiveCompany().getAccountConfig();
+
+      return !this.checkRoles(user.getRoles(), accountConfig)
+          && !this.checkRoles(user.getGroup().getRoles(), accountConfig);
+    }
+
+    return false;
+  }
+
+  private boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
+    return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
   }
 }
