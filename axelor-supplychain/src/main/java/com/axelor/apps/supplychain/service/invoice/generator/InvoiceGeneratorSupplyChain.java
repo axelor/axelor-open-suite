@@ -141,6 +141,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
       invoice.setFiscalPosition(saleOrder.getFiscalPosition());
     } else if (purchaseOrder != null) {
       invoice.setPrintingSettings(purchaseOrder.getPrintingSettings());
+      invoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     }
 
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE

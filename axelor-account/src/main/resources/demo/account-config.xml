@@ -13,7 +13,12 @@
     type="com.axelor.apps.account.db.ServiceType" search="self.importId = :importId"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind to="accountType" search="self.technicalTypeSelect = :accountType_technicalTypeSelect">
+      <bind to="technicalTypeSelect" column="accountType_technicalTypeSelect"/>
+    </bind>
+    <bind to="isRegulatoryAccount" eval="accountType_technicalTypeSelect == 'view'"/>
+  </input>
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
