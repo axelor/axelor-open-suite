@@ -18,8 +18,13 @@
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
+  <input file="account_accountConfig.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId" update="true">
+    search="self.importId = :importId" update="true"
+    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
     <bind to="importId" column="importId"/>
     <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
       update="true">
