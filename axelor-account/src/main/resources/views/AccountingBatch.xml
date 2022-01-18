@@ -174,10 +174,16 @@
         showIf="actionSelect == 24" onClick="save,action-accounting-batch-method-bill-of-exchange"
         colSpan="12"/>
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
-        onClick="save,action-view-accounting-batch-invoice-to-be-processed"
+        onClick="save,action-group-view-accounting-batch-invoice-to-be-processed"
         showIf="actionSelect == 24" colSpan="12"/>
     </panel>
   </form>
+
+  <action-group name="action-group-view-accounting-batch-invoice-to-be-processed">
+    <action name="action-view-accounting-batch-invoice-to-be-processed" if="dueDate != null"/>
+    <action name="action-view-accounting-batch-invoice-to-be-processed-no-due-date"
+      if="dueDate == null"/>
+  </action-group>
 
   <action-view name="action-view-accounting-batch-invoice-to-be-processed"
     title="Invoices to be processed" model="com.axelor.apps.account.db.Invoice">
@@ -191,7 +197,36 @@
       AND self.hasPendingPayments = false
       AND
       self.paymentMode = :paymentMode
-      AND self.lcrAccounted = :lcrAccounted</domain>
+      AND self.lcrAccounted = :lcrAccounted
+      AND :dueDate >
+      self.dueDate</domain>
+    <context name="operationTypeSelect" expr="eval: 3"
+      if="billOfExchangeDataTypeSelect == 1"/>
+    <context name="operationTypeSelect" expr="eval: 3"
+      if="billOfExchangeDataTypeSelect == 2"/>
+    <context name="operationTypeSelect" expr="eval: 3"
+      if="billOfExchangeDataTypeSelect == 3"/>
+    <context name="company" expr="eval: __self__?.company"/>
+    <context name="paymentMode" expr="eval: __self__?.paymentMode"/>
+    <context name="lcrAccounted" expr="eval: false" if="billOfExchangeStepBatchSelect == 1"/>
+    <context name="lcrAccounted" expr="eval: true" if="billOfExchangeStepBatchSelect == 2"/>
+    <context name="dueDate" expr="eval: __self__?.dueDate"/>
+  </action-view>
+
+  <action-view name="action-view-accounting-batch-invoice-to-be-processed-no-due-date"
+    title="Invoices to be processed" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-bill-of-exchange-batch-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.operationTypeSelect = :operationTypeSelect
+      AND self.statusSelect = 3
+      AND
+      self.amountRemaining > 0
+      AND self.company = :company
+      AND self.hasPendingPayments = false
+      AND
+      self.paymentMode = :paymentMode
+      AND self.lcrAccounted = :lcrAccounted
+    </domain>
     <context name="operationTypeSelect" expr="eval: 3"
       if="billOfExchangeDataTypeSelect == 1"/>
     <context name="operationTypeSelect" expr="eval: 3"
