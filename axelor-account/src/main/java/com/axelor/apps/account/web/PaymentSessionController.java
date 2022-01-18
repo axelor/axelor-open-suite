@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.util.Optional;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PaymentSessionController {
@@ -34,22 +31,8 @@ public class PaymentSessionController {
   public void setBankDetails(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      if (paymentSession.getCompany() != null
-          && paymentSession.getPaymentMode() != null
-          && CollectionUtils.isNotEmpty(
-              paymentSession.getPaymentMode().getAccountManagementList())) {
-        Optional<BankDetails> bankDetails =
-            paymentSession.getPaymentMode().getAccountManagementList().stream()
-                .filter(
-                    accountManagement ->
-                        paymentSession.getCompany().equals(accountManagement.getCompany())
-                            && accountManagement.getBankDetails() != null)
-                .map(AccountManagement::getBankDetails)
-                .findFirst();
-        if (bankDetails.isPresent()) {
-          response.setValue("bankDetails", bankDetails.get());
-        }
-      }
+      Beans.get(PaymentSessionService.class).setBankDetails(paymentSession);
+      response.setValue("bankDetails", paymentSession.getBankDetails());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -58,22 +41,8 @@ public class PaymentSessionController {
   public void setJournal(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      if (paymentSession.getCompany() != null
-          && paymentSession.getPaymentMode() != null
-          && CollectionUtils.isNotEmpty(
-              paymentSession.getPaymentMode().getAccountManagementList())) {
-        Optional<Journal> journal =
-            paymentSession.getPaymentMode().getAccountManagementList().stream()
-                .filter(
-                    accountManagement ->
-                        paymentSession.getCompany().equals(accountManagement.getCompany())
-                            && accountManagement.getJournal() != null)
-                .map(AccountManagement::getJournal)
-                .findFirst();
-        if (journal.isPresent()) {
-          response.setValue("journal", journal.get());
-        }
-      }
+      Beans.get(PaymentSessionService.class).setJournal(paymentSession);
+      response.setValue("journal", paymentSession.getJournal());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
