@@ -1292,11 +1292,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void updateUnpaidInvoiceTerms(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
-        .filter(
-            it ->
-                !it.getIsPaid()
-                    || (it.getAmountRemaining().signum() > 0
-                        && !it.getAmount().equals(it.getAmountRemaining())))
+        .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
         .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
   }
 
