@@ -105,12 +105,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
       for (Invoice invoice : invoicesList) {
         try {
-          AccountConfig accountConfig =
-              accountConfigService.getAccountConfig(accountingBatch.getCompany());
-          Move move = createLCRAccountMove(invoice, accountConfig);
-          moveValidateService.accounting(move);
-          reconcilesMoves(move, invoice.getMove(), invoice);
-          updateInvoice(invoice, move, accountConfig);
+          createMoveAndUpdateInvoice(accountingBatch, invoice);
           incrementDone();
         } catch (Exception e) {
           anomalyList.add(invoice.getId());
@@ -123,6 +118,17 @@ public class BatchBillOfExchange extends AbstractBatch {
       }
       JPA.clear();
     }
+  }
+
+  @Transactional
+  protected void createMoveAndUpdateInvoice(AccountingBatch accountingBatch, Invoice invoice)
+      throws AxelorException {
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(accountingBatch.getCompany());
+    Move move = createLCRAccountMove(invoice, accountConfig);
+    moveValidateService.accounting(move);
+    reconcilesMoves(move, invoice.getMove(), invoice);
+    updateInvoice(invoice, move, accountConfig);
   }
 
   /**
