@@ -83,8 +83,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computePercentageSum(Invoice invoice) {
 
     BigDecimal sum = BigDecimal.ZERO;
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      sum = sum.add(invoiceTerm.getPercentage());
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        sum = sum.add(invoiceTerm.getPercentage());
+      }
     }
     return sum;
   }
@@ -92,8 +94,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   private BigDecimal computePercentageSum(MoveLine moveLine) {
 
     BigDecimal sum = BigDecimal.ZERO;
-    for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
-      sum = sum.add(invoiceTerm.getPercentage());
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
+        sum = sum.add(invoiceTerm.getPercentage());
+      }
     }
     return sum;
   }

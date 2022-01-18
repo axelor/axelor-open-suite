@@ -17,6 +17,7 @@ import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
@@ -61,16 +62,17 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           I18n.get(IExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
-    if (moveLine.getInvoiceTermList().stream()
-                .map(invoiceTerm -> invoiceTerm.getPercentage())
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .compareTo(new BigDecimal(100))
-            != 0
-        || moveLine.getInvoiceTermList().stream()
-                .map(invoiceTerm -> invoiceTerm.getAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
-            != 0) {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
+        && (moveLine.getInvoiceTermList().stream()
+                    .map(invoiceTerm -> invoiceTerm.getPercentage())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    .compareTo(new BigDecimal(100))
+                != 0
+            || moveLine.getInvoiceTermList().stream()
+                    .map(invoiceTerm -> invoiceTerm.getAmount())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
+                != 0)) {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
