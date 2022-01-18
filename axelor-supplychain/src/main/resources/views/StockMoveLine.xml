@@ -117,9 +117,9 @@
     <field name="stockMove.realDate"/>
     <field name="stockMove.statusSelect"/>
     <field name="productName"/>
-    <field name="realQty"/>
-    <field name="qtyInvoiced"/>
-    <field name="unitPriceUntaxed"/>
+    <field name="realQty" x-scale="2"/>
+    <field name="qtyInvoiced" x-scale="2"/>
+    <field name="unitPriceUntaxed" x-scale="2"/>
     <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
     <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
     <field name="stockMove" hidden="true"/>

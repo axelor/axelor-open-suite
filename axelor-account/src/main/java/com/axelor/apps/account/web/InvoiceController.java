@@ -1083,7 +1083,7 @@ public class InvoiceController {
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -65,8 +65,7 @@
         showIf="actionSelect == 1" colSpan="12">
         <field name="accountingCutOffTypeSelect"
           onChange="action-group-supplychain-batch-onchange-accounting-type"/>
-        <field name="moveDescription"
-          requiredIf="actionSelect == 1 &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
+        <field name="moveDescription" requiredIf="actionSelect == 1"/>
         <panel colSpan="6" itemSpan="12">
           <field name="moveDate" requiredIf="actionSelect == 1"
             validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
