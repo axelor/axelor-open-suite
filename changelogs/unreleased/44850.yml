@@ -1,0 +1,3 @@
+---
+title: "Payment assistant : forbid user to click on buttons if there is no paidAmount and moveLine"
+type: fix
