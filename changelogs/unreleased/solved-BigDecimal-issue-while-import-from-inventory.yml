@@ -1,0 +1,3 @@
+---
+title : "INVENTORY : solved BigDecimal issue while import csv file with a null value in quantity columns"
+type : fix

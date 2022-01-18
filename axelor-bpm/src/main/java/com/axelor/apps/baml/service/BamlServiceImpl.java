@@ -67,7 +67,7 @@ public class BamlServiceImpl implements BamlService {
     ProcessActionRootNode rootNode = null;
     try {
       rootNode = BamlParser.parse(IOUtils.toInputStream(xml, "utf-8"));
-    } catch (IOException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(ITranslation.INVALID_BAML_XML));

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
@@ -54,8 +55,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -288,12 +291,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     Tax tax =
-        accountManagementService.getProductTax(
-            product, purchaseOrder.getCompany(), supplierPartner.getFiscalPosition(), true);
+        accountManagementService.getProductTax(product, purchaseOrder.getCompany(), null, true);
 
     TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(supplierPartner.getFiscalPosition(), tax);
+        Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
@@ -376,7 +377,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrder.getOrderDate(),
               purchaseOrderLine.getProduct(),
               purchaseOrder.getCompany(),
-              purchaseOrder.getSupplierPartner().getFiscalPosition(),
+              purchaseOrder.getFiscalPosition(),
               false);
 
       BigDecimal price;
@@ -427,7 +428,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         purchaseOrder.getOrderDate(),
         purchaseOrderLine.getProduct(),
         purchaseOrder.getCompany(),
-        purchaseOrder.getSupplierPartner().getFiscalPosition(),
+        purchaseOrder.getFiscalPosition(),
         true);
   }
 
@@ -702,5 +703,42 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     } else {
       response.setAttr("differentSupplierLabel", "hidden", true);
     }
+  }
+
+  public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return null;
+    } else {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+
+        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
+        purchaseOrderLine.setTaxLine(taxLine);
+
+        Tax tax =
+            accountManagementService.getProductTax(
+                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), null, true);
+
+        TaxEquiv taxEquiv =
+            Beans.get(FiscalPositionService.class)
+                .getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
+
+        purchaseOrderLine.setTaxEquiv(taxEquiv);
+
+        purchaseOrderLine.setInTaxTotal(
+            purchaseOrderLine
+                .getExTaxTotal()
+                .multiply(purchaseOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        purchaseOrderLine.setCompanyInTaxTotal(
+            purchaseOrderLine
+                .getCompanyExTaxTotal()
+                .multiply(purchaseOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+      }
+    }
+    return purchaseOrderLineList;
   }
 }

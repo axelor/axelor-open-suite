@@ -55,6 +55,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -1050,14 +1051,28 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 null)
             .fetchOne();
 
-    this.computePricing(defaultPricing, saleOrder, orderLine, null, 0);
+    if (defaultPricing == null) {
+      return;
+    }
+
+    Context scripContext = null;
+    try {
+      scripContext =
+          new Context(
+              Mapper.toMap(orderLine),
+              Class.forName(defaultPricing.getConcernedModel().getFullName()));
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
+
+    this.computePricing(defaultPricing, saleOrder, orderLine, scripContext, 0);
   }
 
   private PricingLine computePricing(
       Pricing pricing,
       SaleOrder saleOrder,
       SaleOrderLine orderLine,
-      PricingLine previousPricingLine,
+      Context scriptContext,
       int count)
       throws AxelorException {
 
@@ -1075,17 +1090,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     // (2) Compute the classification formulas
     // (3) Search the Pricing Line
-    Context scriptContext = null;
     try {
       scriptContext =
-          new Context(
-              Mapper.toMap(orderLine), Class.forName(pricing.getConcernedModel().getFullName()));
+          new Context(scriptContext, Class.forName(pricing.getConcernedModel().getFullName()));
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
 
     scriptContext.put("saleOrder", EntityHelper.getEntity(saleOrder));
-    scriptContext.put("previousPricingLine", EntityHelper.getEntity(previousPricingLine));
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
     List<String> logClassPricingRuleList = new ArrayList<>();
@@ -1101,11 +1113,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // (4) Compute the result formulas
     // (6) Apply the results
     scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
-    scriptHelper = new GroovyScriptHelper(scriptContext);
 
     List<String> logResultPricingRuleList = new ArrayList<>();
 
-    computeResultFormulaAndApply(scriptHelper, pricing, orderLine, logResultPricingRuleList);
+    computeResultFormulaAndApply(scriptContext, pricing, orderLine, logResultPricingRuleList);
 
     for (int i = 0; i < logClassPricingRuleList.size(); i++) {
       pricingScaleLogs += logClassPricingRuleList.get(i);
@@ -1139,7 +1150,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     } else {
       orderLine.setPricingScaleLogs(pricingScaleLogs + "\n");
       Pricing childPricing = childPricingQry.fetchOne();
-      return computePricing(childPricing, saleOrder, orderLine, pricingLine, ++count);
+      return computePricing(childPricing, saleOrder, orderLine, scriptContext, ++count);
     }
   }
 
@@ -1431,10 +1442,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   public void computeResultFormulaAndApply(
-      GroovyScriptHelper scriptHelper,
-      Pricing pricing,
-      SaleOrderLine orderLine,
-      List<String> logs) {
+      Context scriptContext, Pricing pricing, SaleOrderLine orderLine, List<String> logs) {
+
+    GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
     List<PricingRule> resultPricingRuleList = new ArrayList<>();
     resultPricingRuleList.add(pricing.getResult1PricingRule());
@@ -1450,6 +1460,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               String fieldToPopulate = "";
               if (resultPricingRule.getFieldToPopulate() != null) {
                 fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
+
+                if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+                  scriptContext.put(resultPricingRule.getTempVarName(), result);
+                }
                 Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
               }
               logs.add(
@@ -1463,5 +1477,38 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                       + I18n.get("Populated field: ")
                       + fieldToPopulate);
             });
+  }
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return null;
+    } else {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+        saleOrderLine.setTaxLine(taxLine);
+
+        Tax tax =
+            accountManagementService.getProductTax(
+                saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
+
+        TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setInTaxTotal(
+            saleOrderLine
+                .getExTaxTotal()
+                .multiply(saleOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        saleOrderLine.setCompanyInTaxTotal(
+            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      }
+    }
+    return saleOrderLineList;
   }
 }

@@ -6,6 +6,7 @@
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
     <panel name="mainPanel" colSpan="12">
+      <field name="payNoticeSendingMethodSelect"/>
       <field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
       <field name="invoicesCopySelect"
         hideIf="(!isCustomer &amp;&amp; !isSupplier) || isEmployee"/>

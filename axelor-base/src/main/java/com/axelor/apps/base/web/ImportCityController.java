@@ -19,19 +19,16 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportCityService;
-import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +47,8 @@ public class ImportCityController {
   public void importCity(ActionRequest request, ActionResponse response) {
     try {
       List<ImportHistory> importHistoryList = null;
+      Map<String, Object> importCityMap = null;
+      MetaFile errorFile = null;
 
       String typeSelect = (String) request.getContext().get("typeSelect");
       if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
@@ -58,13 +57,16 @@ public class ImportCityController {
         switch (importTypeSelect) {
           case CityRepository.IMPORT_TYPE_SELECT_AUTO:
             String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-            importHistoryList = importFromGeonamesAutoConfig(downloadFileName, typeSelect);
+            importCityMap =
+                Beans.get(ImportCityService.class)
+                    .importFromGeonamesAutoConfig(downloadFileName, typeSelect);
             break;
 
           case CityRepository.IMPORT_TYPE_SELECT_MANUAL:
             Map<String, Object> map =
                 (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-            importHistoryList = importFromGeonamesManualConfig(map, typeSelect);
+            importCityMap =
+                Beans.get(ImportCityService.class).importFromGeonamesManualConfig(map, typeSelect);
             break;
 
           default:
@@ -72,60 +74,23 @@ public class ImportCityController {
         }
       }
 
-      response.setAttr("$importHistoryList", "hidden", false);
-      response.setAttr("$importHistoryList", "value", importHistoryList);
-
-      response.setFlash(I18n.get("City import completed"));
-
+      if (importCityMap.containsKey("importHistoryList")
+          && importCityMap.containsKey("errorFile")) {
+        importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
+        errorFile = (MetaFile) importCityMap.get("errorFile");
+        if (errorFile != null) {
+          response.setFlash(I18n.get(IExceptionMessage.CITIES_IMPORT_FAILED));
+          response.setAttr("errorFile", "hidden", false);
+          response.setValue("errorFile", errorFile);
+        } else {
+          response.setAttr("$importHistoryList", "hidden", false);
+          response.setAttr("errorFile", "hidden", true);
+          response.setAttr("$importHistoryList", "value", importHistoryList);
+          response.setFlash(I18n.get(ITranslation.BASE_GEONAMES_CITY_IMPORT_COMPLETED));
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  /**
-   * Imports cities from a predefined Geonames configuration.
-   *
-   * @param downloadFileName
-   * @param typeSelect
-   * @return
-   * @throws AxelorException if there is a problem when downloading the zip file
-   * @throws IOException
-   */
-  private List<ImportHistory> importFromGeonamesAutoConfig(
-      String downloadFileName, String typeSelect) throws AxelorException, IOException {
-    ImportCityService importCityService = Beans.get(ImportCityService.class);
-    MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
-    MetaFile dumpImportDataFile =
-        importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
-
-    List<ImportHistory> importHistoryList = new ArrayList<>();
-    importHistoryList.add(importCityService.importCity(typeSelect + "-zip", zipImportDataFile));
-    importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dumpImportDataFile));
-
-    return importHistoryList;
-  }
-
-  /**
-   * Imports cities from a custom Geonames file. This is useful for the countries not present in the
-   * predefined list.
-   *
-   * @param map
-   * @param typeSelect
-   * @return
-   * @throws IOException
-   * @throws AxelorException
-   */
-  private List<ImportHistory> importFromGeonamesManualConfig(
-      Map<String, Object> map, String typeSelect) throws AxelorException, IOException {
-    List<ImportHistory> importHistoryList = new ArrayList<>();
-
-    if (map != null) {
-      MetaFile dataFile =
-          Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-      importHistoryList.add(
-          Beans.get(ImportCityService.class).importCity(typeSelect + "-dump", dataFile));
-    }
-
-    return importHistoryList;
   }
 }

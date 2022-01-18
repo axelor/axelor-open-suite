@@ -41,4 +41,6 @@ public interface ITranslation {
       "AbcAnalysisLine.cumulatedQty"; /*)*/
   public static final String ABC_ANALYSIS_LINE_CUMULATED_CLASS = /*$$(*/
       "AbcAnalysisLine.class"; /*)*/
+  public static final String BASE_GEONAMES_CITY_IMPORT_COMPLETED = /*$$(*/
+      "City import completed"; /*)*/
 }

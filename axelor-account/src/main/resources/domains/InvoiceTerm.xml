@@ -45,6 +45,10 @@
     <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+    <many-to-one name="paymentSession" title="Payment session" readonly="true"
+      ref="com.axelor.apps.account.db.PaymentSession"/>
+    <boolean name="isSelectedOnPaymentSession" title="Selected on Session"/>
+    <decimal name="paymentAmount" title="Signed payment amount"/>
 
     <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
       title="Name">
@@ -92,6 +96,7 @@
       <field name="invoice"/>
       <field name="moveLine"/>
       <field name="decisionPfpTakenDate"/>
+      <field name="paymentSession"/>
     </track>
 
   </entity>

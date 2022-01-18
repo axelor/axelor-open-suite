@@ -49,7 +49,9 @@
 	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)
-	        AND (self.saleOrderLine is NULL OR self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true)"
+	        AND ((self.saleOrderLine IS NULL AND self.purchaseOrderLine IS NULL)
+	          OR (self.saleOrderLine IS NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true))
+	          OR (self.purchaseOrderLine IS NOT NULL AND (self.purchaseOrderLine.purchaseOrder.taxNumber IS NULL OR self.purchaseOrderLine.purchaseOrder.taxNumber.includeInDEB = true)))"
       orderBy="stockMove.realDate,id" all="true"/>
 
     <track on="UPDATE">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -44,7 +44,7 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
 
     List<AccountingSituation> accountingSituationList =
-        Beans.get(AccountingSituationService.class)
+        Beans.get(AccountingSituationInitService.class)
             .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 
     if (accountingSituationList != null) {

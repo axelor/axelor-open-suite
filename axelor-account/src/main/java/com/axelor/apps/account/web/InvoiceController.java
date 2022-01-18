@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
@@ -46,6 +52,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -1082,9 +1089,7 @@ public class InvoiceController {
     response.setAttr(
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
-        invoice
-            .getPfpValidatorUser()
-            .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoice)));
+        Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
@@ -1188,6 +1193,57 @@ public class InvoiceController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPaymentVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      User user = request.getUser();
+      InvoiceVisibilityService invoiceVisibilityService = Beans.get(InvoiceVisibilityService.class);
+
+      response.setAttr(
+          "passedForPaymentValidationBtn",
+          "hidden",
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, true));
+
+      response.setAttr(
+          "refusalToPayBtn",
+          "hidden",
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
+
+      response.setAttr(
+          "addPaymentBtn", "hidden", !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+
+      response.setAttr(
+          "registerPaymentBtn",
+          "hidden",
+          !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+
+      response.setAttr(
+          "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
+
+      response.setAttr(
+          "decisionPfpTakenDate",
+          "hidden",
+          !invoiceVisibilityService.isDecisionPfpVisible(invoice));
+
+      response.setAttr(
+          "sendPfpNotifyEmailBtn",
+          "hidden",
+          !invoiceVisibilityService.isSendNotifyVisible(invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Beans.get(InvoiceService.class).validatePfp(invoice.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

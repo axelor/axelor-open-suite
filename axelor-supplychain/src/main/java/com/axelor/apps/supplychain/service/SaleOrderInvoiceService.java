@@ -262,14 +262,6 @@ public interface SaleOrderInvoiceService {
       throws AxelorException;
 
   /**
-   * Compute the invoiced amount of the taxed amount of the invoice.
-   *
-   * @param saleOrder
-   * @return the tax invoiced amount
-   */
-  BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder);
-
-  /**
    * @param saleOrder the sale order from context
    * @return the domain for the operation select field in the invoicing wizard form
    */

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,36 +24,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import java.util.List;
 
 public interface AccountingSituationService {
 
-  boolean checkAccountingSituationList(
-      List<AccountingSituation> accountingSituationList, Company company);
-
-  /**
-   * Creates unexisting accounting situations for a given partner. Created situations will be
-   * appended to the partner's AccountingSituationList
-   *
-   * @param partner Partner to create accounting situation for.
-   * @return The created accounting situations (which is the same as calling
-   *     partner.getAccountingSituationList())
-   * @throws AxelorException In case of configuration issue
-   */
-  List<AccountingSituation> createAccountingSituation(Partner partner) throws AxelorException;
-
   AccountingSituation getAccountingSituation(Partner partner, Company company);
-
-  AccountingSituation createAccountingSituation(Partner partner, Company company)
-      throws AxelorException;
-
-  /**
-   * Automatically creates supplier/customer/employee accounts based on situation's company
-   * configuration.
-   *
-   * @param situation Situation on which accounts should be created.
-   */
-  void createPartnerAccounts(AccountingSituation situation) throws AxelorException;
 
   String createDomainForBankDetails(
       AccountingSituation accountingSituation, boolean isInBankDetails);
