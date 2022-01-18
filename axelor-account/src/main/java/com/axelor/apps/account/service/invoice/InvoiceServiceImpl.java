@@ -1181,7 +1181,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-    BigDecimal amount = invoicePayment.getAmount();
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
         calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
@@ -1228,7 +1229,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean checkManageCutOffDates(Invoice invoice) {
     return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
         && invoice.getInvoiceLineList().stream()
-            .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+            .anyMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
   }
 
   @Override
