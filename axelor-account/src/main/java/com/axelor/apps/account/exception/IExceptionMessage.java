@@ -1030,6 +1030,9 @@ public interface IExceptionMessage {
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 
+  static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
+      "Account '%s' is missing in account config" /*)*/;
+
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;

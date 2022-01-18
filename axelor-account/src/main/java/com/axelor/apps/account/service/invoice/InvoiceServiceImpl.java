@@ -1154,7 +1154,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-    BigDecimal amount = invoicePayment.getAmount();
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
         calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));

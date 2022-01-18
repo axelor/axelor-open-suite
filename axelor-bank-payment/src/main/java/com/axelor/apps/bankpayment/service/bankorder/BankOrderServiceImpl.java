@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderF
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160DCOService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
@@ -638,6 +639,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         file = new BankOrderFileAFB160ICTService(bankOrder).generateFile();
         break;
 
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB160_DCO:
+        file = new BankOrderFileAFB160DCOService(bankOrder).generateFile();
+        break;
+
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD:
         file =
             new BankOrderFile00800101Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE)
@@ -710,6 +715,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       case BankOrderRepository.ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER:
         return bankPaymentConfigService.getIntTreasuryTransSequence(bankPaymentConfig);
+
+      case BankOrderRepository.ORDER_TYPE_BILL_OF_EXCHANGE:
+        return bankPaymentConfigService.getBillOfExchangeSequence(bankPaymentConfig);
 
       default:
         return bankPaymentConfigService.getOtherBankOrderSequence(bankPaymentConfig);

@@ -29,7 +29,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-supplychain-batch-record-reset-period"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -101,7 +101,8 @@
       </panel>
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
-        <field name="period" domain="self.year.typeSelect = 0"/>
+        <field name="period"
+          domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -205,6 +206,11 @@
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-record name="action-supplychain-batch-record-reset-period"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="period" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-record-supplychain-batch-set-expenses-incomes"
