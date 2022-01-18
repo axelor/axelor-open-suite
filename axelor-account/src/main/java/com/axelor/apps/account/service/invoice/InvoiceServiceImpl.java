@@ -344,8 +344,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     ventilateFactory.getVentilator(invoice).process();
 
-    invoice.setNextDueDate(InvoiceToolService.getNextDueDate(invoice));
-
     invoiceRepo.save(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
       Beans.get(InvoicePrintService.class)

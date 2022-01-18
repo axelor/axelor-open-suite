@@ -188,9 +188,7 @@ public class VentilateState extends WorkflowInvoice {
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
         || invoice.getDueDate() == null) {
       invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
-      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-        invoice.setNextDueDate(InvoiceToolService.getNextDueDate(invoice));
-      }
+      invoice.setNextDueDate(InvoiceToolService.getNextDueDate(invoice));
     }
   }
 
