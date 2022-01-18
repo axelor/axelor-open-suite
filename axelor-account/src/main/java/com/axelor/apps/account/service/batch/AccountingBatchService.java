@@ -72,6 +72,8 @@ public class AccountingBatchService extends AbstractBatchService {
         break;
       case AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING:
         batch = blockCustomersWithLatePayments(accountingBatch);
+        break;
+
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -145,6 +147,11 @@ public class AccountingBatchService extends AbstractBatchService {
   }
 
   public Batch directDebit(AccountingBatch accountingBatch) {
+    throw new UnsupportedOperationException(
+        I18n.get("This batch requires the bank payment module."));
+  }
+
+  public Batch billOfExchange(AccountingBatch accountingBatch) {
     throw new UnsupportedOperationException(
         I18n.get("This batch requires the bank payment module."));
   }
