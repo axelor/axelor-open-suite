@@ -77,6 +77,9 @@
     <integer name="billOfExchangeTypeSelect" title="Bill of exchange type"
       selection="iaccount.account.batch.bill.of.exchange.type.select"/>
 
+    <many-to-one ref="com.axelor.apps.account.db.Journal" name="billOfExchangeJournal"
+      title="Bill of exchange journal"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE

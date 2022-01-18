@@ -74,14 +74,7 @@
           action="action-customer-invoice-line-menu"/>
       </menu>
     </menubar>
-    <hilite color="primary" if="statusSelect == 1"/>
-    <hilite color="danger"
-      if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-    <hilite color="danger"
-      if="billOfExchangeBlockingOk == true &amp;&amp; $moment(billOfExchangeBlockingToDate).diff(todayDate, 'days') &gt;= 0"/>
-    <hilite color="warning"
-      if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <hilite color="danger" if="billOfExchangeBlockingOk"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -96,7 +89,7 @@
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
-    <field name="debtRecoveryBlockingOk"/>
+    <field name="billOfExchangeBlockingOk"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"

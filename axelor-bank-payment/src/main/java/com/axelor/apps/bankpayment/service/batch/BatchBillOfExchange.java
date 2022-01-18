@@ -102,8 +102,7 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected void createLCRAccountingMovesForInvoices(
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
-    int offSet = 0;
-    while (!(invoicesList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
       for (Invoice invoice : invoicesList) {
         try {
           AccountConfig accountConfig =
@@ -114,13 +113,14 @@ public class BatchBillOfExchange extends AbstractBatch {
           updateInvoice(invoice, move, accountConfig);
           incrementDone();
         } catch (Exception e) {
+          anomalyList.add(invoice.getId());
+          query.bind("anomalyList", anomalyList);
           incrementAnomaly();
           TraceBackService.trace(
               e, "billOfExchangeBatch: create lcr accounting move", batch.getId());
           break;
         }
       }
-      offSet += FETCH_LIMIT;
       JPA.clear();
     }
   }
@@ -191,12 +191,6 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected Move createLCRAccountMove(Invoice invoice, AccountConfig accountConfig)
       throws AxelorException {
     log.debug("Creating lcr account move for invoice {}", invoice);
-    if (accountConfig.getAutoMiscOpeJournal() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING),
-          I18n.get("Auto Misc. Operation Journal"));
-    }
     if (accountConfig.getBillOfExchReceivAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -205,7 +199,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
     Move move =
         moveCreateService.createMove(
-            journalRepository.find(accountConfig.getAutoMiscOpeJournal().getId()),
+            journalRepository.find(batch.getAccountingBatch().getBillOfExchangeJournal().getId()),
             invoice.getCompany(),
             invoice.getCurrency(),
             invoice.getPartner(),
@@ -245,6 +239,7 @@ public class BatchBillOfExchange extends AbstractBatch {
 
       move.addMoveLineListItem(creditMoveLine);
       move.addMoveLineListItem(debitMoveLine);
+      move.addBatchSetItem(batchRepo.find(batch.getId()));
       move = moveRepository.save(move);
     }
 
@@ -265,7 +260,7 @@ public class BatchBillOfExchange extends AbstractBatch {
             + "AND self.id NOT IN (:anomalyList) "
             + "AND self.paymentMode = :paymentMode "
             + "AND self.lcrAccounted = FALSE "
-            + "AND (self.billOfExchangeBlockingOk = FALSE OR (self.billOfExchangeBlockingOk = TRUE AND self.billOfExchangeBlockingToDate < :todayDate))");
+            + "AND (self.billOfExchangeBlockingOk = FALSE OR (self.billOfExchangeBlockingOk = TRUE AND self.billOfExchangeBlockingToDate < :dueDate))");
 
     Map<String, Object> bindings = new HashMap<>();
     bindings.put("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
@@ -273,11 +268,10 @@ public class BatchBillOfExchange extends AbstractBatch {
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
     bindings.put("anomalyList", anomalyList);
-    bindings.put("todayDate", appBaseService.getTodayDate(accountingBatch.getCompany()));
+    bindings.put("dueDate", accountingBatch.getDueDate());
 
     if (accountingBatch.getDueDate() != null) {
       filter.append("AND self.dueDate <= :dueDate ");
-      bindings.put("dueDate", accountingBatch.getDueDate());
     }
     if (accountingBatch.getCurrency() != null) {
       filter.append("AND self.currency = :currency ");
