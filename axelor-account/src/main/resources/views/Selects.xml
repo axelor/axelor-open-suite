@@ -708,6 +708,7 @@
     <option value="3">Customer</option>
     <option value="4">Company</option>
     <option value="5">Other</option>
+  </selection>
 
   <selection name="account.account.chart.code.nbr.char.select">
     <option value="4">4</option>
