@@ -84,7 +84,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
     onLoad="action-invoice-term-group-check-pfp-validator-user,action-invoice-term-attrs-set-readonly">
     <panel name="mainPanel" colSpan="12">
-      <panel name="headerPanel" colSpan="12" itemSpan="4" readonly="true">
+      <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="sequence" readonly="true" readonlyIf="isPaid || !isCustomized"/>
         <field name="name" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -94,7 +94,7 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid"/>
         <field name="isHoldBack" onChange="action-invoice-term-attrs-set-readonly"/>
@@ -111,7 +111,7 @@
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null">
+        showIf="financialDiscount != null" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountAmount" readonly="true"/>
@@ -119,7 +119,8 @@
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" readOnlyIf="!isPaid"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        readonlyIf="!isPaid || paymentSession"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3,4].includes(invoice.statusSelect) "
         colSpan="12">
         <panel name="pfpStatus" hidden="true"
@@ -191,6 +192,23 @@
             hidden="true"/>
         </panel>
       </panel>
+      <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
+        showIf="paymentSession">
+        <static name="pastEventText" colSpan="12">
+          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+        <field name="paymentSession"/>
+        <button name="accessPaymentSessionBtn" title="Access payment session"
+          readonlyIf="paymentSession == null"
+          onClick="save,action-invoice-term-view-show-payment-session"/>
+        <field name="isSelectedOnPaymentSession" readonly="true"
+          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
+          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="financialDiscountAmount"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
+          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+      </panel>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -201,7 +219,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm"
     onLoad="action-invoice-term-group-check-pfp-validator-user">
     <panel name="mainPanel" colSpan="12">
-      <panel name="headerPanel" colSpan="12" itemSpan="4">
+      <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="sequence" readonly="true"/>
         <field name="name" readonly="true"/>
         <field name="invoice" readonly="true" form-view="invoice-form"
@@ -212,7 +230,7 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
@@ -225,7 +243,7 @@
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null">
+        showIf="financialDiscount != null" readonlyIf="paymentSession">
         <field name="applyFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
@@ -236,7 +254,8 @@
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" readOnlyIf="!isPaid"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        readonlyIf="!isPaid || paymentSession"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3,4].includes(invoice.statusSelect) "
         colSpan="12">
         <panel name="pfpStatus" hidden="true"
