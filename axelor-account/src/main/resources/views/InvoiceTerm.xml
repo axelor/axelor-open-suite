@@ -106,10 +106,10 @@
           if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-               onChange="action-invoice-term-method-compute-customized-percentage"/>
+          onChange="action-invoice-term-method-compute-customized-percentage"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-               onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"
@@ -211,7 +211,7 @@
   <form name="invoice-term-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm"
     onLoad="action-invoice-term-group-check-pfp-validator-user"
-        onNew="action-invoice-term-record-update-customized-true">
+    onNew="action-invoice-term-record-update-customized-true">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
@@ -394,8 +394,8 @@
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
     <alert
-            message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
-            if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
+      message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
+      if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice.id).fetch().size &gt;= 1"/>
   </action-validate>
 
   <action-record name="action-invoice-term-record-update-customized"
