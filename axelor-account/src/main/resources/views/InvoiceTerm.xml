@@ -58,8 +58,8 @@
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
-        model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner"
-        edit-icon="true">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner"
+    edit-icon="true">
     <field name="paymentSession.name" hidden="true"/>
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
@@ -71,13 +71,13 @@
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select" icon="fa-plus-circle" onClick="act-1"
-            readonlyIf="isSelectedOnPaymentSession"/>
+      readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectBtn" title="Unselect" icon="fa-minus-circle" onClick="act-2"
-            readonlyIf="!isSelectedOnPaymentSession"/>
+      readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-            icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
+      icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-            icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
+      icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
@@ -99,17 +99,18 @@
         readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount"
         colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"/>
+          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
+          onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack"
           readonlyIf="(financialDiscount != null &amp;&amp; !invoice.paymentCondition.isFree) || (invoice != null &amp;&amp; moveLine != null)"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-method-compute-customized-percentage"/>
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-method-compute-customized-amount"/>
+          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"
@@ -208,7 +209,8 @@
   </form>
 
   <form name="invoice-term-move-line-form" title="Invoice term"
-    model="com.axelor.apps.account.db.InvoiceTerm" onLoad="action-invoice-term-group-check-pfp-validator-user"
+    model="com.axelor.apps.account.db.InvoiceTerm"
+    onLoad="action-invoice-term-group-check-pfp-validator-user"
     onNew="action-invoice-term-group-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4">
@@ -223,17 +225,20 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4" readonlyIf="isPaid">
-        <field name="dueDate" requiredIf="isCustomized"/>
+        <field name="dueDate" requiredIf="isCustomized"
+          onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate"
           readonlyIf="amountRemaining != amount &amp;&amp; pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount"
           readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-percentage" validIf="amount > 0"/>
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
+          validIf="amount > 0"/>
         <field name="percentage"
           readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-amount" validIf="percentage > 0"/>
+          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
+          validIf="percentage > 0"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"

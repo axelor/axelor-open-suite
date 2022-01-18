@@ -523,7 +523,8 @@
         showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form" grid-view="invoice-term-move-line-invoice-grid"/>
+          form-view="invoice-term-move-line-invoice-form"
+          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
@@ -1086,7 +1087,7 @@ InvoiceSet.length > 0))"
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
-        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
         onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
@@ -1442,6 +1443,7 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
     <action name="save"/>
@@ -1463,7 +1465,6 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-onsave-group">
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>
   </action-group>
