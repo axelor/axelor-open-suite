@@ -184,7 +184,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           accountManagementService.getProductAccount(
               product,
               company,
-              partner.getFiscalPosition(),
+              invoice.getFiscalPosition(),
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
@@ -209,7 +209,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           Beans.get(AccountManagementService.class)
               .getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class).getTaxEquiv(partner.getFiscalPosition(), tax);
+          Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getFiscalPosition(), tax);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }

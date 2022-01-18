@@ -313,4 +313,7 @@ public interface SaleOrderLineService {
 
   public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
       throws ClassNotFoundException, AxelorException;
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException;
 }

@@ -67,6 +67,12 @@ public class MoveExcessPaymentService {
     List<MoveLine> advancePaymentMoveLines =
         Beans.get(InvoiceService.class).getMoveLinesFromAdvancePayments(invoice);
 
+    MoveLine moveLine = getOrignalInvoiceMoveLine(invoice);
+
+    if (moveLine != null) {
+      advancePaymentMoveLines.add(moveLine);
+    }
+
     if (accountConfig.getAutoReconcileOnInvoice()) {
       List<MoveLine> creditMoveLines =
           moveLineRepository
@@ -90,6 +96,23 @@ public class MoveExcessPaymentService {
     advancePaymentMoveLines =
         advancePaymentMoveLines.stream().distinct().collect(Collectors.toList());
     return advancePaymentMoveLines;
+  }
+
+  protected MoveLine getOrignalInvoiceMoveLine(Invoice invoice) {
+
+    Invoice originalInvoice = invoice.getOriginalInvoice();
+
+    if (originalInvoice != null && originalInvoice.getMove() != null) {
+      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          return moveLine;
+        }
+      }
+    }
+
+    return null;
   }
 
   public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice) {

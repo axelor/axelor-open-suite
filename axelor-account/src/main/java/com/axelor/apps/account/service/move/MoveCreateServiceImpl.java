@@ -17,13 +17,8 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
