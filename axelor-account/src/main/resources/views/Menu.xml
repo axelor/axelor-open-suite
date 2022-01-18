@@ -150,6 +150,18 @@
       expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
   </action-view>
 
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
+  </action-view>
+
   <menuitem name="account-root-move-move-line" parent="account-root-move"
     title="Move lines" action="account.root.move.move.line" order="5"/>
 
