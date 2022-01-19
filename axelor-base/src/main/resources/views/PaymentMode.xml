@@ -42,9 +42,10 @@
       </panel>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')" hidden="true"
-             hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
-        <field name="generateBankOrder" showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
-               onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
+        hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
+        <field name="generateBankOrder"
+          showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
+          onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
         <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
         <field name="automaticTransmission" showIf="generateBankOrder"/>
         <field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
@@ -79,7 +80,7 @@
     model="com.axelor.apps.account.db.PaymentMode" search="('self.typeSelect = ?1', 7)">
     <field name="typeSelect" expr="7"/>
   </action-record>
- || typeSelect == 10
+  || typeSelect == 10
   <action-record
     name="action-payment-mode-record-set-can-select-in-payment-session-value"
     model="com.axelor.apps.account.db.PaymentMode">

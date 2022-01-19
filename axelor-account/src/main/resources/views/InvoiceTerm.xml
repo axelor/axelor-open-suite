@@ -95,26 +95,28 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
+        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
         <field name="dueDate" requiredIf="isCustomized"
-          onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
+          onChange="action-invoice-term-record-update-customized-true"
+          readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
         <field name="isHoldBack"
-               readonlyIf="(financialDiscount != null &amp;&amp; $isPaymentConditionFree == false) || (invoice != null &amp;&amp; moveLine != null)"/>
+          readonlyIf="(financialDiscount != null &amp;&amp; $isPaymentConditionFree == false) || (invoice != null &amp;&amp; moveLine != null)"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           onChange="action-invoice-term-record-update-customized-true"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
-               readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-method-compute-customized-percentage"/>
         <field name="percentage" validIf="percentage > 0"
-               readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
-               showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
-               readonlyIf="isPaid"
-               requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          readonlyIf="isPaid"
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
@@ -127,7 +129,8 @@
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" readonlyIf="!isPaid || paymentSession"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        readonlyIf="!isPaid || paymentSession"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3].includes(invoice.statusSelect) "
         colSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1"
@@ -238,15 +241,19 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4" readonlyIf="isPaid || paymentSession">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
+        readonlyIf="isPaid || paymentSession">
         <field name="dueDate" requiredIf="isCustomized"/>
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
-        <field name="estimatedPaymentDate" readonlyIf="amountRemaining != amount &amp;&amp; pfpValidateStatusSelect > 1" if-module="axelor-cash-management"
-          if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-               validIf="amount > 0"/>
-        <field name="percentage" readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
-               validIf="percentage > 0"/>
+        <field name="estimatedPaymentDate"
+          readonlyIf="amountRemaining != amount &amp;&amp; pfpValidateStatusSelect > 1"
+          if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+        <field name="amount"
+          readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
+          validIf="amount > 0"/>
+        <field name="percentage"
+          readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
+          validIf="percentage > 0"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
         <field name="bankDetails"
@@ -267,7 +274,8 @@
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
-        if="__config__.app.getApp('account').getActivatePassedForPayment()" readonlyIf="!isPaid || paymentSession"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"
+        readonlyIf="!isPaid || paymentSession"
         showIf="move.company.accountConfig.isManagePassedForPayment &amp;&amp; (moveLine.account.journalType.technicalTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp;moveLine.account.journalType.technicalTypeSelect == 3)) &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
         colSpan="12">
         <panel name="pfpStatus" hidden="true"
