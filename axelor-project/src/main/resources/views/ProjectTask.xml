@@ -143,9 +143,8 @@
         <field name="targetVersion" if-module="axelor-business-support"
           if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
           colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
-        <field name="assignment" hidden="true" showIf="typeSelect == 'ticket'"
-          if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
-          colSpan="4"/>
+        <field name="assignment" hidden="true" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')" colSpan="4"/>
         <field name="taskDate" colSpan="4"
           onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
           required="true"/>

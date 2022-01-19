@@ -47,4 +47,6 @@ public interface IExceptionMessage {
       "Your card was declined. This transaction requires authentication" /*)*/;
 
   public static final String STRIPE_DEFAULT_CARD = /*$$(*/ "There is already a default card" /*)*/;
+
+  public static final String STRIPE_NO_DEFAULT_CARD = /*$$(*/ "No Default card specified" /*)*/;
 }

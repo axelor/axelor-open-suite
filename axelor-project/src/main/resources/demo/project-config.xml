@@ -13,6 +13,8 @@
     <bind to="projectTaskPrioritySet" column="projectTaskPrioritySet"
       search="self.importId in :projectTaskPrioritySet"
       eval="projectTaskPrioritySet.split('\\|') as List"/>
+    <bind to="membersUserSet" column="membersUserSet" search="self.importId in :membersUserSet"
+      eval="membersUserSet.split('\\|') as List"/>
   </input>
 
   <input file="business_project_project.csv" type="com.axelor.apps.project.db.Project"

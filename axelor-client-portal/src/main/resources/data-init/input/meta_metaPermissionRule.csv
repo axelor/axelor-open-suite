@@ -18,6 +18,10 @@
 "portalIdeaTagSet";"x";"x";;"metaperm.client.Idea";"createdBy.code != __user__.code";
 "partnerCategorySet";;;;"metaperm.client.ClientResource";;
 "resourceFile";"x";;;"metaperm.client.ClientResource";;"resourceFile == null"
-"assigningCustomerBtn";;;;"metaperm.client.ProjectTask";;
 "partner";;;;"metaperm.client.Card";;
 "partnerCategorySet";;;;"metaperm.client.DiscussionGroup";;
+"status";;;;"metaperm.client.ProjectTask";;
+"grabEventBtn";;;;"metaperm.client.ProjectTask";;
+"doneBtn";;;;"metaperm.client.ProjectTask";;
+"createPartnerBtn";;;;"metaperm.client.User";;
+"createEmployeeBtn";;;;"metaperm.client.User";;

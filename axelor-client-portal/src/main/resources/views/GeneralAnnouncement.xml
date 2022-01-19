@@ -5,17 +5,25 @@
 
   <grid name="general-announcement-grid" title="General announcements"
     model="com.axelor.apps.client.portal.db.GeneralAnnouncement">
+    <hilite if="$unread" strong="true" color="black"/>
     <field name="title"/>
     <field name="announcementDate"/>
+    <field name="$unread" type="boolean" hidden="true"/>
   </grid>
 
   <form name="general-announcement-form" title="General announcement"
-    model="com.axelor.apps.client.portal.db.GeneralAnnouncement" width="large">
+    model="com.axelor.apps.client.portal.db.GeneralAnnouncement" width="large"
+    onLoad="action-client-portal-method-general-announce-onload">
     <panel name="mainPanel">
       <field name="title" required="true"/>
       <field name="announcementDate"/>
       <field name="partnerCategorySet" widget="TagSelect"/>
     </panel>
   </form>
+
+
+  <action-method name="action-client-portal-method-general-announce-onload">
+    <call class="com.axelor.apps.portal.web.GeneralAnnouncementController" method="markRead"/>
+  </action-method>
 
 </object-views>

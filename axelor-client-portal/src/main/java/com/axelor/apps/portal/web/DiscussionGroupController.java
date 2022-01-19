@@ -51,7 +51,6 @@ public class DiscussionGroupController {
   }
 
   public void openAllPost(ActionRequest request, ActionResponse response) {
-
     User currentUser = Beans.get(UserService.class).getUser();
     List<Long> groups =
         Beans.get(MailFollowerRepository.class).all()
@@ -64,9 +63,10 @@ public class DiscussionGroupController {
     ActionViewBuilder view =
         ActionView.define(I18n.get("Discussion posts"))
             .model(DiscussionPost.class.getCanonicalName())
-            .add("grid", "discussion-post-grid")
+            .add("grid", "dashboard-discussion-post-grid")
             .add("form", "discussion-post-form")
             .context("groups", groups)
+            .context("isAdd", false)
             .param("details-view", "true")
             .param("grid-width", "25%");
 

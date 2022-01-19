@@ -1,7 +1,7 @@
 "name";"metaModel.name";"languageCode";"isDefault";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"birtTemplateSet.name"
 "Quotation generation";"PortalQuotation";"en";"true";"Quotation";"<p>Hello $PortalQuotation.saleOrder.contactPartner.firstName$,<br/></p>
 
-<p>Generated quotation : $quotationLink$</p>
+<p>Generated quotation : $QGquotationLink$</p>
 
 <p>Best regards<br/></p>";"$PortalQuotation.saleOrder.contactPartner.emailAddress.address$,$PortalQuotation.saleOrder.clientPartner.emailAddress.address$";;;2;
 "Quotation confirmation code";"PortalQuotation";"en";"true";"Quotation confirmation code";"<p>Hello ,<br/></p>
@@ -10,9 +10,9 @@
 
 <p>Best regards<br/></p>";;;;2;
 "Quotation confirmation";"PortalQuotation";"en";"true";"Quotation confirmation";"<p>Hello , $PortalQuotation.saleOrder.contactPartner.firstName$<br/></p>
-<p>Confirmed quotation : $quotationLink$</p>
+<p>Confirmed quotation : $QCquotationLink$</p>
 
 <p>$if(signatureImageByte)$<img src=""data:image/png;base64,$signatureImageByte$"" alt="""" width=""50"" height=""50"" style=""border:1px solid black"">$endif$</p>
 <p>$signatureName$<p>
 
-<p>Best regards<br/></p>";"$PortalQuotation.saleOrder.contactPartner.emailAddress.address$,$PortalQuotation.saleOrder.clientPartner.emailAddress.address$";"$PortalQuotation.saleOrder.salespersonUser.partner.emailAddress.address$,$PortalQuotation.saleOrder.company.emailAddress.address$";;2;"Portal Quotation Confirmation"
+<p>Best regards<br/></p>";"$PortalQuotation.saleOrder.contactPartner.emailAddress.address$,$PortalQuotation.saleOrder.clientPartner.emailAddress.address$";"$PortalQuotation.saleOrder.salespersonUser.partner.emailAddress.address$,$PortalQuotation.saleOrder.company.emailAddress.address$";;2;"Quotation Confirmation"

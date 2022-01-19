@@ -26,6 +26,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,10 @@ public class IdeaManagementRepository extends IdeaRepository {
       String ids = "";
       if (StringUtils.notBlank(user.getIdeaUnreadIds())) {
         ids = String.format("%s,", user.getIdeaUnreadIds());
+        List<String> idList = new ArrayList<String>(Arrays.asList(ids.split(",")));
+        if (idList.contains(idea.getId().toString())) {
+          continue;
+        }
       }
       user.setIdeaUnreadIds(String.format("%s%s", ids, idea.getId().toString()));
       userRepo.save(user);

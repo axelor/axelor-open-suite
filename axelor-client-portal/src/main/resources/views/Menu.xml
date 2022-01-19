@@ -42,7 +42,7 @@
     <view type="grid" name="portal-quotation-grid"/>
     <view type="form" name="portal-quotation-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>(self.endOfValidity &lt; :today AND self.saleOrder.electronicSignature IS NULL) OR
+    <domain>(self.endOfValidity &lt; :today AND self.signature IS NULL) OR
       (self.saleOrder.statusSelect >= :status)</domain>
     <context name="today" expr="eval: __date__"/>
     <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_COMPLETED"/>

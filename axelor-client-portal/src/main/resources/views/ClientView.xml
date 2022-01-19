@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <form name="client-dashboard-form" title="Dashboard" model="com.axelor.apps.base.db.Wizard"
-    editable="false" width="large" onNew="action-partner-portal-group-dashboard-total"
+    editable="false" width="large" onNew="action-client-portal-record-dashboard-total"
     canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false"
     canCopy="false" canAttach="false">
     <panel name="totalPanel">
@@ -33,10 +33,8 @@
       <panel if-module="axelor-project" name="ticketPanel" title="Tickets"
         if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"
         css="group-bg-linen group-title-blue">
-        <button
-          if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"
-          name="$newTicketBtn" title="New ticket" css="group-bg-linen" icon="fa-plus-square"
-          onClick="client.portal.new.ticket" widget="info-button"/>
+        <button name="$newTicketBtn" title="New ticket" css="group-bg-linen"
+          icon="fa-plus-square" onClick="client.portal.new.ticket" widget="info-button"/>
         <button name="$myTicketBtn" title="Tickets assigned to my company"
           css="group-bg-linen" icon="fa-tasks" onClick="client.portal.company.ticket"
           widget="info-button"/>
@@ -63,9 +61,8 @@
         if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageIdea()">
         <button name="$ideaBtn" title="Idea" css="group-bg-rose" icon="fa-lightbulb-o"
           onClick="idea.portal" widget="info-button"/>
-        <button if="__config__.app.getApp('portal').getManageAnnouncement()"
-          name="$ideaHisoryBtn" title="Idea history" css="group-bg-rose" icon="fa-history"
-          onClick="idea.history.portal" widget="info-button"/>
+        <button name="$ideaHisoryBtn" title="Idea history" css="group-bg-rose"
+          icon="fa-history" onClick="idea.history.portal" widget="info-button"/>
         <spacer colSpan="12" css="group-bg-rose" widget="info-button"/>
         <spacer colSpan="12" css="group-bg-rose" widget="info-button"/>
       </panel>

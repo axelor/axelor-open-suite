@@ -7,3 +7,4 @@
 "metaperm.client.ProjectTask";"com.axelor.apps.project.db.ProjectTask";"true"
 "metaperm.client.Card";"com.axelor.apps.client.portal.db.Card";"true"
 "metaperm.client.DiscussionGroup";"com.axelor.apps.client.portal.db.DiscussionGroup";"true"
+"metaperm.client.User";"com.axelor.auth.db.User";"true"

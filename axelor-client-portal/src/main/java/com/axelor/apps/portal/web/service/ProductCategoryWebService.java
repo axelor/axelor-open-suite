@@ -90,7 +90,8 @@ public class ProductCategoryWebService extends AbstractWebService {
     if (partner != null) {
       PartnerCategory partnerCategory = partner.getPartnerCategory();
       filter.append(
-          " AND (:partnerCategory MEMBER OF self.partnerCategorySet OR size(self.partnerCategorySet) = 0)");
+          " AND (:partnerCategory MEMBER OF self.partnerCategorySet OR size(self.partnerCategorySet) = 0) "
+              + "OR (:partnerCategory MEMBER OF self.productCategory.partnerCategorySet))");
       params.put("partnerCategory", partnerCategory);
     } else {
       filter.append(" AND size(self.partnerCategorySet) = 0");

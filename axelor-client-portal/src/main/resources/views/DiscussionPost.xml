@@ -12,19 +12,31 @@
     <field name="$unread" type="boolean" hidden="true"/>
   </grid>
 
+  <grid name="dashboard-discussion-post-grid" title="Discussion posts"
+    model="com.axelor.apps.client.portal.db.DiscussionPost" orderBy="-createdOn" canNew="false">
+    <hilite if="$unread" strong="true" color="black"/>
+    <field name="title"/>
+    <field name="createdOn" title="Post on"/>
+    <field name="$totalComments" title="Comments" type="integer"/>
+    <field name="$unread" type="boolean" hidden="true"/>
+  </grid>
+
   <form name="discussion-post-form" title="Discussion post" canSave="false"
-    model="com.axelor.apps.client.portal.db.DiscussionPost" width="large"
+    model="com.axelor.apps.client.portal.db.DiscussionPost" width="large" canNew="$isAdd"
     onLoad="action-client-portal-group-discussion-post-onload"
-    onNew="action-client-portal-record-discussion-post-onnew"
+    onNew="action-client-portal-attrs-discussion-post-onnew"
     onSave="save,action-client-portal-method-discussion-post-onsave">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="$isAdd &amp;&amp; discussionGroup == null">
       <field name="title" required="true" colSpan="8"/>
-      <button onClick="save" name="postBtn" title="Post" colSpan="4"/>
+      <button onClick="save,action-client-portal-attrs-discussion-post-onload" name="postBtn"
+        title="Post" colSpan="4" showIf="discussionGroup"/>
       <field name="discussionGroup" readonly="true" colSpan="3"/>
       <field name="createdOn" title="Post on" colSpan="3"/>
-      <field name="$postBy" readonly="true" colSpan="3" title="Post by" type="string"/>
+      <field name="$postBy" readonly="true" colSpan="3" title="Post by" type="string"
+        x-can-reload="true"/>
       <field name="createdBy" colSpan="3"/>
       <field name="description" colSpan="12" widget="html"/>
+      <field name="$isAdd" type="boolean" hidden="true"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
@@ -38,13 +50,14 @@
     <attribute name="value" for="$postBy"
       expr="eval: createdBy?.partner?.mainPartner?.fullName"
       if="eval: createdBy?.partner?.isContact &amp;&amp; createdBy?.partner?.mainPartner != null"/>
+    <attribute name="value" for="$isAdd" expr="eval: isAdd"/>
   </action-attrs>
 
-  <action-record name="action-client-portal-record-discussion-post-onnew"
-    model="com.axelor.apps.client.portal.db.DiscussionPost">
-    <field name="discussionGroup"
+  <action-attrs name="action-client-portal-attrs-discussion-post-onnew">
+    <attribute name="value" for="discussionGroup"
       expr="eval: __repo__(DiscussionGroup).find(discussionGroupId)" if="discussionGroupId"/>
-  </action-record>
+    <attribute name="value" for="$isAdd" expr="eval:isAdd"/>
+  </action-attrs>
 
   <action-method name="action-client-portal-method-discussion-post-onsave">
     <call class="com.axelor.apps.portal.web.DiscussionPostController" method="addFollower"/>

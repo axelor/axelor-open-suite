@@ -9,6 +9,8 @@
     <string name="ideaUnreadIds" large="true"/>
     <string name="postUnreadIds" large="true"/>
     <string name="resourceUnreadIds" large="true"/>
+    <string name="announceUnreadIds" large="true"/>
+
   </entity>
 
 </domain-models>

@@ -72,6 +72,30 @@ public class PaymentCardWebService extends AbstractWebService {
     return response.setData(data).success();
   }
 
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{id}")
+  public PortalRestResponse getById(@PathParam("id") Long id)
+      throws StripeException, AxelorException {
+    PortalRestResponse response = new PortalRestResponse();
+
+    Card card = Beans.get(CardRepository.class).find(id);
+    Partner partner = getPartner();
+    if (card == null
+        || ObjectUtils.isEmpty(partner.getCardList())
+        || !partner.getCardList().contains(card)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get("Card with given id (%s) not found for partner (%s)"),
+          id,
+          partner.getName());
+    }
+
+    Beans.get(JpaSecurity.class).check(AccessType.READ, Card.class, card.getId());
+    Map<String, Object> data = ResponseGeneratorFactory.of(Card.class.getName()).generate(card);
+    return response.setData(data).success();
+  }
+
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -91,7 +115,7 @@ public class PaymentCardWebService extends AbstractWebService {
 
     List<Card> cards = new ArrayList<>();
     try {
-      Beans.get(CardService.class).createCard(partner, cardDetails);
+      Beans.get(CardService.class).createCard(partner, cardDetails, null);
       if (ObjectUtils.notEmpty(partner.getCardList())) {
         cards = partner.getCardList();
       }
@@ -100,22 +124,63 @@ public class PaymentCardWebService extends AbstractWebService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
 
+    ResponseGenerator generator = ResponseGeneratorFactory.of(Card.class.getName());
+    List<Map<String, Object>> list =
+        cards.stream().map(generator::generate).collect(Collectors.toList());
+
     PortalRestResponse response = new PortalRestResponse();
     response.setOffset(0);
     response.setTotal(cards.size());
-    return response.setData(cards).success();
+    return response.setData(list).success();
+  }
+
+  @POST
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public PortalRestResponse update(@PathParam("id") Long id, Map<String, Object> data)
+      throws AxelorException, StripeException {
+    Beans.get(JpaSecurity.class).check(AccessType.WRITE, Card.class, id);
+    String expiry = data.get("expiry").toString();
+    Partner partner = getPartner();
+    Map<String, Object> cardDetails = new HashMap<>();
+    cardDetails.put("number", data.get("cardNumber"));
+    cardDetails.put("name", data.get("name"));
+    cardDetails.put("exp_month", expiry.substring(0, 2));
+    cardDetails.put("exp_year", expiry.substring(2));
+    cardDetails.put("cvc", data.get("cvc"));
+    cardDetails.put("isDefault", false);
+    List<Card> cards = new ArrayList<>();
+    try {
+      Beans.get(CardService.class).createCard(partner, cardDetails, id);
+      if (ObjectUtils.notEmpty(partner.getCardList())) {
+        cards = partner.getCardList();
+      }
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+    }
+
+    ResponseGenerator generator = ResponseGeneratorFactory.of(Card.class.getName());
+    List<Map<String, Object>> list =
+        cards.stream().map(generator::generate).collect(Collectors.toList());
+
+    PortalRestResponse response = new PortalRestResponse();
+    response.setOffset(0);
+    response.setTotal(cards.size());
+    return response.setData(list).success();
   }
 
   @POST
   @Produces(MediaType.APPLICATION_JSON)
-  @Path("/default")
+  @Path("/default/{id}")
   @Transactional
-  public PortalRestResponse setDefault(Map<String, Object> data)
+  public PortalRestResponse setDefault(@PathParam("id") Long id, Map<String, Object> data)
       throws StripeException, AxelorException {
 
     CardRepository cardRepo = Beans.get(CardRepository.class);
     CardService cardService = Beans.get(CardService.class);
-    Card card = cardRepo.findByStripeId(data.get("cardId").toString());
+    Card card = cardRepo.find(id);
     Beans.get(JpaSecurity.class).check(AccessType.WRITE, Card.class, card.getId());
 
     try {
@@ -161,15 +226,13 @@ public class PaymentCardWebService extends AbstractWebService {
   }
 
   @DELETE
-  @Path("/{cardId}")
+  @Path("/{id}")
   @Transactional
-  public void remove(@PathParam("cardId") String cardId) throws StripeException, AxelorException {
+  public void remove(@PathParam("id") Long id) throws StripeException, AxelorException {
 
     CardRepository cardRepo = Beans.get(CardRepository.class);
-    System.out.println(cardId);
-    Card card = cardRepo.findByStripeId(cardId);
-    System.out.println(card);
-    Beans.get(JpaSecurity.class).check(AccessType.WRITE, Card.class, card.getId());
+    Card card = cardRepo.find(id);
+    Beans.get(JpaSecurity.class).check(AccessType.REMOVE, Card.class, card.getId());
 
     Beans.get(CardRepository.class).remove(card);
   }

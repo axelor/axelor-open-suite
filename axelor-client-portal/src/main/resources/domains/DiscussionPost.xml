@@ -7,7 +7,7 @@
 
   <entity name="DiscussionPost" lang="java" cacheable="true">
 
-    <string name="title"/>
+    <string name="title" namecolumn="true"/>
     <string name="description" large="true"/>
     <many-to-one name="discussionGroup"
       ref="com.axelor.apps.client.portal.db.DiscussionGroup"/>

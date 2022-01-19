@@ -299,12 +299,21 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
   }
 
   private SaleOrder createSaleOrder(Company company) throws AxelorException {
-    Partner clientPartner = userService.getUserPartner();
+    Partner clientPartner = null, contactPartner = null;
+
+    Partner currentPartner = userService.getUserPartner();
+    if (currentPartner != null && currentPartner.getIsContact()) {
+      contactPartner = currentPartner;
+      clientPartner = contactPartner.getMainPartner();
+    } else {
+      clientPartner = currentPartner;
+    }
+
     return saleOrdeCreateService.createSaleOrder(
         userService.getUser(),
         company,
-        null,
-        company.getCurrency(),
+        contactPartner,
+        company != null ? company.getCurrency() : null,
         null,
         null,
         null,
@@ -366,6 +375,7 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
     List<Map<String, Object>> cartItems = (List<Map<String, Object>>) values.get("cart");
     Company company = userService.getUserActiveCompany();
     SaleOrder order = createOrder(company, cartItems);
+    setAddresses(values, order);
     return order;
   }
 

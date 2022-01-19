@@ -23,12 +23,14 @@ import com.axelor.apps.client.portal.db.repo.CardRepository;
 import com.axelor.apps.client.portal.db.repo.ClientResourceRepository;
 import com.axelor.apps.client.portal.db.repo.DiscussionGroupRepository;
 import com.axelor.apps.client.portal.db.repo.DiscussionPostRepository;
+import com.axelor.apps.client.portal.db.repo.GeneralAnnouncementRepository;
 import com.axelor.apps.client.portal.db.repo.IdeaRepository;
 import com.axelor.apps.client.portal.db.repo.PortalQuotationRepository;
 import com.axelor.apps.portal.db.repo.CardManagementRepository;
 import com.axelor.apps.portal.db.repo.ClientResourceManagementRepository;
 import com.axelor.apps.portal.db.repo.DiscussionGroupManagementRepository;
 import com.axelor.apps.portal.db.repo.DiscussionPostManagementRepository;
+import com.axelor.apps.portal.db.repo.GeneralAnnounceManagementRepository;
 import com.axelor.apps.portal.db.repo.IdeaManagementRepository;
 import com.axelor.apps.portal.db.repo.PortalQuotationManagementRepository;
 import com.axelor.apps.portal.db.repo.ProductPortalRepository;
@@ -98,5 +100,6 @@ public class ClientPortalModule extends AxelorModule {
     bind(ProductProductionRepository.class).to(ProductPortalRepository.class);
 
     bind(MailController.class).to(MailPortalController.class);
+    bind(GeneralAnnouncementRepository.class).to(GeneralAnnounceManagementRepository.class);
   }
 }

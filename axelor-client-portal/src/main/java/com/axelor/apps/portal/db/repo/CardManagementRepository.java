@@ -54,6 +54,7 @@ public class CardManagementRepository extends CardRepository {
         cardDetails.put("cvc", card.getCvc());
         sCard = stripePaymentService.createCard(customer, cardDetails);
         card.setStripeCardId(sCard.getId());
+        card.setBrand(sCard.getBrand());
       }
 
       if (!card.getIsDefault()) {

@@ -99,7 +99,8 @@
           if="__config__.app.isApp('business-project')"/>
         <field name="progressSelect" colSpan="6" widget="SelectProgress"
           onChange="action-project-task-update-planned-progress" readonlyIf="id"/>
-        <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
+        <field name="assignment" hidden="true" readonlyIf="id"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" readonlyIf="id">

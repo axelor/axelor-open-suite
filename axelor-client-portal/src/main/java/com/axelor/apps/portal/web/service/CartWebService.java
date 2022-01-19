@@ -23,7 +23,10 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.client.portal.db.Card;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.portal.exception.IExceptionMessage;
+import com.axelor.apps.portal.service.CardService;
 import com.axelor.apps.portal.service.SaleOrderPortalService;
 import com.axelor.apps.portal.service.paybox.PayboxService;
 import com.axelor.apps.portal.service.response.PortalRestResponse;
@@ -92,6 +95,14 @@ public class CartWebService extends AbstractWebService {
   @Consumes(MediaType.APPLICATION_JSON)
   public PortalRestResponse stripeCheckout(Map<String, Object> values)
       throws AxelorException, IOException, StripeException {
+
+    Card card = Beans.get(CardService.class).getDefault(getPartner());
+    if (card == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STRIPE_NO_DEFAULT_CARD));
+    }
+
     SaleOrder saleOrder = Beans.get(SaleOrderPortalService.class).checkOutUsingStripe(values);
 
     Map<String, Object> data =

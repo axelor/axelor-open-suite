@@ -7,6 +7,7 @@
     <field name="partner"/>
     <field name="name"/>
     <field name="cardNumber" widget="string"/>
+    <field name="brand"/>
     <field name="expiryMonth"/>
     <field name="expiryYear" widget="string"/>
     <field name="isDefault"/>
@@ -19,8 +20,9 @@
       <field name="name"/>
       <field name="isDefault" colSpan="2"/>
       <field name="partner" colSpan="4" readonly="true"/>
-      <field name="cardNumber" colSpan="12" pattern="^[0-9]{13,16}$" widget="string"
+      <field name="cardNumber" colSpan="8" pattern="^[0-9]{13,16}$" widget="string"
         readonlyIf="version > 0"/>
+      <field name="brand" colSpan="4" readonly="true"/>
       <field name="expiryMonth" min="1" max="12" required="true" colSpan="4"/>
       <field name="expiryYear" min="1" max="99" required="true" colSpan="4"/>
       <field name="cvc" min="0" max="999" required="true" colSpan="4" readonlyIf="version > 0"/>

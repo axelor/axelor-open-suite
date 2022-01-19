@@ -27,6 +27,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,10 @@ public class DiscussionPostManagementRepository extends DiscussionPostRepository
       String ids = "";
       if (StringUtils.notBlank(user.getPostUnreadIds())) {
         ids = String.format("%s,", user.getPostUnreadIds());
+        List<String> idList = new ArrayList<String>(Arrays.asList(ids.split(",")));
+        if (idList.contains(post.getId().toString())) {
+          continue;
+        }
       }
       user.setPostUnreadIds(String.format("%s%s", ids, post.getId().toString()));
       userRepo.save(user);

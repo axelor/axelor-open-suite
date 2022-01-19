@@ -24,42 +24,14 @@ public class CardResponseGenerator extends ResponseGenerator {
 
   @Override
   public void init() {
-    modelFields.addAll(Arrays.asList("name", "cardNumber", "cvc", "isDefault", "partner"));
-    extraFieldMap.put("id", this::getStripeId);
-    extraFieldMap.put("cardId", this::getId);
-    extraFieldMap.put("last4", this::getCardNumber);
-    extraFieldMap.put("expMonth", this::getExpiryMonth);
-    extraFieldMap.put("expYear", this::getExpiryYear);
+    modelFields.addAll(Arrays.asList("id", "name", "cardNumber", "cvc", "brand"));
+    extraFieldMap.put("expiry", this::getExpiry);
     classType = Card.class;
   }
 
-  private Object getCardNumber(Object object) {
+  private Object getExpiry(Object object) {
 
     Card card = (Card) object;
-    return card.getCardNumber().toString().substring(12);
-  }
-
-  private Object getExpiryMonth(Object object) {
-
-    Card card = (Card) object;
-    return card.getExpiryMonth();
-  }
-
-  private Object getExpiryYear(Object object) {
-
-    Card card = (Card) object;
-    return card.getExpiryYear();
-  }
-
-  private Object getStripeId(Object object) {
-
-    Card card = (Card) object;
-    return card.getStripeCardId();
-  }
-
-  private Object getId(Object object) {
-
-    Card card = (Card) object;
-    return card.getId();
+    return String.format("%02d%02d", card.getExpiryMonth(), card.getExpiryYear());
   }
 }

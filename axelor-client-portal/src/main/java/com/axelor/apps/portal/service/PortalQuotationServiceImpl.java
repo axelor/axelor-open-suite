@@ -19,6 +19,7 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.AppPortal;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.AppPortalRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.client.portal.db.PortalQuotation;
@@ -39,6 +40,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -136,10 +138,10 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
       AppPortal appPortal = Beans.get(AppPortalRepository.class).all().fetchOne();
       Template template = appPortal.getQuotationGenerationTemplate();
       if (template != null) {
-        setContextValue(template, "quotationLink", link);
+        setContextValue(template, "QGquotationLink", link);
         message =
             Beans.get(TemplateMessageService.class).generateMessage(portalQuotation, template);
-        setContextValue(template, "quotationLink", null);
+        setContextValue(template, "QGquotationLink", null);
 
       } else {
         String content = String.format("%s : %s", subject, link);
@@ -245,16 +247,20 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
     }
 
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-    saleOrderWorkflowService.finalizeQuotation(saleOrder);
+    boolean isFinalised = true;
+    if (SaleOrderRepository.STATUS_DRAFT_QUOTATION == saleOrder.getStatusSelect()) {
+      saleOrderWorkflowService.finalizeQuotation(saleOrder);
+      isFinalised = false;
+    }
     saleOrderWorkflowService.confirmSaleOrder(saleOrder);
     portalQuotation = portalQuotationRepo.find(portalQuotation.getId());
     portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     portalQuotationRepo.save(portalQuotation);
-    sendQuotationConfirmationMessage(portalQuotation, saleOrder, name);
+    sendQuotationConfirmationMessage(portalQuotation, saleOrder, name, isFinalised);
   }
 
   protected void sendQuotationConfirmationMessage(
-      PortalQuotation portalQuotation, SaleOrder saleOrder, String name) {
+      PortalQuotation portalQuotation, SaleOrder saleOrder, String name, boolean isFinalised) {
 
     try {
       Message message;
@@ -267,13 +273,20 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
                 AppSettings.get().getBaseURL(),
                 portalQuotation.getId(),
                 saleOrder.getSaleOrderSeq());
-        setContextValue(template, "quotationLink", link);
+
+        Set<BirtTemplate> reports = template.getBirtTemplateSet();
+        if (isFinalised) {
+          template.setBirtTemplateSet(null);
+        }
+        setContextValue(template, "QCquotationLink", link);
         setContextValue(template, "signatureName", String.format("\"%s\"", name));
         message =
             Beans.get(TemplateMessageService.class).generateMessage(portalQuotation, template);
-        setContextValue(template, "quotationLink", null);
+        setContextValue(template, "QCquotationLink", null);
         setContextValue(template, "signatureName", null);
-
+        if (isFinalised && ObjectUtils.notEmpty(reports)) {
+          template.setBirtTemplateSet(reports);
+        }
       } else {
         List<EmailAddress> toEmailAddresses = new ArrayList<>();
         if (saleOrder.getContactPartner() != null
@@ -313,8 +326,8 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
       }
 
       Set<MetaFile> metaFiles = new HashSet<>();
-      if (saleOrder.getElectronicSignature() != null) {
-        metaFiles.add(saleOrder.getElectronicSignature());
+      if (portalQuotation.getSignature() != null) {
+        metaFiles.add(portalQuotation.getSignature());
       }
       List<MetaFile> attachments =
           Beans.get(MetaFileRepository.class)

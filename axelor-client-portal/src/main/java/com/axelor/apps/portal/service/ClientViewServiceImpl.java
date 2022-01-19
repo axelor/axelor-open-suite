@@ -20,6 +20,7 @@ package com.axelor.apps.portal.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerCategory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
@@ -696,7 +697,7 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
-                + "((self.endOfValidity < :today AND self.saleOrder.electronicSignature IS NULL) OR (self.saleOrder.statusSelect >= :status))")
+                + "((self.endOfValidity < :today AND self.signature IS NULL) OR (self.saleOrder.statusSelect >= :status))")
         .bind("today", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
         .bind("status", SaleOrderRepository.STATUS_ORDER_COMPLETED)
         .bind("clientPartner", getClientUser().getPartner())
@@ -816,34 +817,31 @@ public class ClientViewServiceImpl implements ClientViewService {
   @Override
   public Long getDiscussionGroup() {
 
-    Partner partner = getClientUser().getPartner();
     return discussionGroupRepo
         .all()
         .filter(":partnerCategory MEMBER OF self.partnerCategorySet")
-        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .bind("partnerCategory", getUserPartnerCategory())
         .count();
   }
 
   @Override
   public Long getAnnouncement() {
 
-    Partner partner = getClientUser().getPartner();
     return announcementRepo
         .all()
         .filter(":partnerCategory MEMBER OF self.partnerCategorySet")
-        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .bind("partnerCategory", getUserPartnerCategory())
         .count();
   }
 
   @Override
   public Long getResouces() {
 
-    Partner partner = getClientUser().getPartner();
     return clientResourceRepo
         .all()
         .filter(
             ":partnerCategory MEMBER OF self.partnerCategorySet OR size(self.partnerCategorySet) = 0")
-        .bind("partnerCategory", partner != null ? partner.getPartnerCategory() : null)
+        .bind("partnerCategory", getUserPartnerCategory())
         .count();
   }
 
@@ -860,5 +858,20 @@ public class ClientViewServiceImpl implements ClientViewService {
   @Override
   public Long getIdeaTag() {
     return ideaTagRepo.all().count();
+  }
+
+  protected PartnerCategory getUserPartnerCategory() {
+
+    Partner partner = getClientUser().getPartner();
+    PartnerCategory partnerCategory = null;
+    if (partner != null) {
+      partnerCategory = partner.getPartnerCategory();
+      if (partner.getIsContact()) {
+        partnerCategory =
+            partner.getMainPartner() != null ? partner.getMainPartner().getPartnerCategory() : null;
+      }
+    }
+
+    return partnerCategory;
   }
 }

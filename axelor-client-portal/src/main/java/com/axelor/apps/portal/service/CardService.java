@@ -23,7 +23,7 @@ import java.util.Map;
 
 public interface CardService {
 
-  public Card createCard(Partner partner, Map<String, Object> details);
+  public Card createCard(Partner partner, Map<String, Object> details, Long id);
 
   public Card getDefault(Partner partner);
 }

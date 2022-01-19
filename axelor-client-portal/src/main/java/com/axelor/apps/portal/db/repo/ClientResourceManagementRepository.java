@@ -28,6 +28,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,10 @@ public class ClientResourceManagementRepository extends ClientResourceRepository
         String ids = "";
         if (StringUtils.notBlank(user.getResourceUnreadIds())) {
           ids = String.format("%s,", user.getResourceUnreadIds());
+          List<String> idList = new ArrayList<String>(Arrays.asList(ids.split(",")));
+          if (idList.contains(clientResource.getId().toString())) {
+            continue;
+          }
         }
         user.setResourceUnreadIds(String.format("%s%s", ids, clientResource.getId().toString()));
         userRepo.save(user);

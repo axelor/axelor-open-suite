@@ -8,11 +8,12 @@
   <entity name="Card" lang="java" cacheable="true">
 
     <string name="name"/>
-    <long name="cardNumber" unique="true" required="true"/>
+    <long name="cardNumber"/>
     <integer name="expiryMonth"/>
     <integer name="expiryYear"/>
     <integer name="cvc" title="CVC"/>
     <boolean name="isDefault" title="Default"/>
+    <string name="brand"/>
     <string name="stripeCardId"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
 
