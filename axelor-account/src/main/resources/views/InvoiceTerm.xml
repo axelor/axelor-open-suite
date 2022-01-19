@@ -99,24 +99,24 @@
         readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount"
         colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-record-update-customized-true"/>
-        <field name="isHoldBack"
-          readonlyIf="(financialDiscount != null &amp;&amp; !invoice.paymentCondition.isFree) || (invoice != null &amp;&amp; moveLine != null)"/>
+          onChange="action-invoice-term-record-update-customized-true" readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false || isPaid"/>
+        <field name="isHoldBack" readonlyIf="(financialDiscount != null &amp;&amp; $isPaymentConditionFree == false) || (invoice != null &amp;&amp; moveLine != null)"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
-          if="__config__.app.isApp('cash-management')" if-module="axelor-cash-management"/>
+          onChange="action-invoice-term-record-update-customized-true"
+          if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
+               readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" validIf="percentage > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || !invoice.paymentCondition.isFree"
-          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
+               readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
+          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
         <field name="amountRemaining" readonly="true"/>
-        <field name="paymentMode" required="true"/>
+        <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
-          showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
-          readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+               showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+               readonlyIf="isPaid"
+               requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+        <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
@@ -129,7 +129,7 @@
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" readOnlyIf="!isPaid"
-        showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3].includes(invoice.statusSelect)"
+        showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3].includes(invoice.statusSelect) "
         colSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1"
           colSpan="12">
@@ -185,8 +185,6 @@
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
             colSpan="12" onClick="save"/>
-          <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
-            hidden="true"/>
           <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
             hidden="true"/>
           <field name="invoice.company.accountConfig.isManagePassedForPayment" hidden="true"/>
@@ -369,11 +367,13 @@
 
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-term-method-hide-send-email-pfp-btn"/>
+    <action name="action-invoice-term-record-set-is-payment-condition-free"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-validate-pfp">
@@ -383,6 +383,11 @@
     <action name="action-invoice-term-record-validate-pfp"/>
     <action name="save"/>
   </action-group>
+
+  <action-record name="action-invoice-term-record-set-is-payment-condition-free"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <field name="$isPaymentConditionFree" expr="eval: __parent__.paymentCondition.isFree"/>
+  </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">
