@@ -545,9 +545,10 @@ public class InventoryService {
               stockLocationLineList.stream()
                   .filter(
                       sll ->
-                          sll.getProduct().equals(stockLocationLine.getProduct())
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
                               && sll.getTrackingNumber() != null
-                              && sll.getDetailsStockLocation().equals(inventory.getStockLocation()))
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
