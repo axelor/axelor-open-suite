@@ -83,8 +83,8 @@
   </chart>
 
   <custom name="report-delay-rate" title="Supplier's delay on payment" css="report-box">
-	  <dataset type="jpql"><![CDATA[
-	
+    <dataset type="jpql"><![CDATA[
+
 	Select 100*(select sum((self.operationTypeSelect + 1.5) * 2 * self.companyExTaxTotal)
 	 from Invoice as self
 	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
@@ -92,7 +92,7 @@
 	 from Invoice as self
 	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
 	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2)) as total,
-	
+
 	  (select sum( :__date__ - self.dueDate)
 	 from Invoice as self
 	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
@@ -101,22 +101,22 @@
 	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
 	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2) and self.dueDate <= :__date__) as avgdelay
 	 FROM Invoice as self
-	
+
 	 ]]></dataset>
-	  <template><![CDATA[
-	
+    <template><![CDATA[
+
 	 <div class="report-data">
 	   <h1>{{first.total | number : 2}} %</h1>
-	
+
 	   <small x-translate>Delay rate</small>
 	   <div class="report-percent font-bold text-error pull-right">
 	    <span x-translate>Average delay :</span> {{first.avgdelay | number : 2}} <span x-translate> days</span>
 	   </div>
 	   <div class="report-tags"><span class="label label-success" x-translate>Today</span></div>
 	 </div>
-	
+
 	 ]]></template>
-	</custom>
+  </custom>
 
 
   <custom name="report-supplier-amount-remaining" title="Supplier amount in progress"
