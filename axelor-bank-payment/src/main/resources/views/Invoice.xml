@@ -16,4 +16,24 @@
       method="checkBankOrderAlreadyExist"/>
   </action-method>
 
+  <action-record name="action.chart.set.active.company"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="_company" expr="eval:__repo__(User).find(__user__.id)?.activeCompany"/>
+  </action-record>
+
+  <action-view name="account.root.payments.suppl.invoices.to.pay.from.chart"
+    model="com.axelor.apps.account.db.Invoice" title="Suppl. Invoices to pay">
+    <view name="invoice-supplier-grid" type="grid"/>
+    <view name="invoice-form" type="form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <domain>self.operationTypeSelect in (1,2) and self.statusSelect in (2,3) and
+      self.pfpValidateStatusSelect = 3 AND self.reasonOfRefusalToPay.name =
+      :_reasonOfRefusalToPayName AND (:_company is null OR self.company = :_company)</domain>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="_chart" expr="eval: _chart"/>
+    <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+    <context name="_company" expr="eval: _company"/>
+  </action-view>
+
 </object-views>

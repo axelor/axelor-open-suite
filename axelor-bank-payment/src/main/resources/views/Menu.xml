@@ -352,4 +352,11 @@
     <domain>self.typeSelect = 3</domain>
   </action-view>
 
+  <menuitem name="menu-account-bank-payment-dashboard-1" parent="account-root-report"
+    title="Accounting Dashboard" action="account.sale.payment.dashboard.1.view"/>
+
+  <action-view name="account.sale.payment.dashboard.1.view" title="Accounting Dashboard">
+    <view type="dashboard" name="accounting-bank-payment-dashboard"/>
+  </action-view>
+
 </object-views>
