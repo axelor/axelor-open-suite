@@ -590,7 +590,7 @@ public class MoveController {
 
         response.setValue("moveLineList", move.getMoveLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
