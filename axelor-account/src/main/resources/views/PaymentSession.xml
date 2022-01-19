@@ -71,7 +71,8 @@
     </panel>
     <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" sidebar="true">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true" onClick=""/>
+        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
+        onClick="save,action-payment-session-method-send-emails,save"/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
     <panel name="bankOrderPanel" title="Bank order"
@@ -97,6 +98,10 @@
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>
+
+  <action-method name="action-payment-session-method-send-emails">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="sendEmails"/>
+  </action-method>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"

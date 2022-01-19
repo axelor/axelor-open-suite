@@ -36,6 +36,7 @@
           requiredIf="canSelectInPaymentSession"/>
         <field name="accountingTriggerSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"/>
+        <field name="pmtNotificationTemplate" showIf="canSelectInPaymentSession"/>
       </panel>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')">

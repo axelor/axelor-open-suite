@@ -1081,4 +1081,8 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  static final String PAYMENT_SESSION_NO_EMAIL_SENT = /*$$(*/ "No email have been sent." /*)*/;
+
+  static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d emails have been sent." /*)*/;
 }
