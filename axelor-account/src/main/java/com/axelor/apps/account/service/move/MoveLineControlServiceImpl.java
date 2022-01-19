@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -32,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -79,22 +82,36 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           I18n.get(IExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && (moveLine.getInvoiceTermList().stream()
-                    .map(invoiceTerm -> invoiceTerm.getPercentage())
-                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .compareTo(new BigDecimal(100))
-                != 0
-            || moveLine.getInvoiceTermList().stream()
-                    .map(invoiceTerm -> invoiceTerm.getAmount())
-                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
-                != 0)) {
-      throw new AxelorException(
-          moveLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_8),
-          moveLine.getAccount().getCode());
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+      Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+      if (invoiceAttached != null) {
+        invoiceTermList = invoiceAttached.getInvoiceTermList();
+      }
+      if (invoiceTermList.stream()
+                  .map(invoiceTerm -> invoiceTerm.getPercentage())
+                  .reduce(BigDecimal.ZERO, BigDecimal::add)
+                  .compareTo(new BigDecimal(100))
+              != 0
+          || (invoiceAttached == null
+              && invoiceTermList.stream()
+                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .reduce(BigDecimal.ZERO, BigDecimal::add)
+                      .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
+                  != 0)
+          || (invoiceAttached != null
+              && invoiceTermList.stream()
+                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .reduce(BigDecimal.ZERO, BigDecimal::add)
+                      .compareTo(invoiceAttached.getInTaxTotal())
+                  != 0)) {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_8),
+            moveLine.getAccount().getCode());
+      }
     }
     controlAccountingAccount(moveLine);
   }
