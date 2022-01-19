@@ -83,52 +83,55 @@
   </chart>
 
   <custom name="report-delay-rate" title="Supplier's delay on payment" css="report-box">
-    <dataset type="sql"><![CDATA[
+	  <dataset type="jpql"><![CDATA[
+	
+	Select 100*(select sum((self.operationTypeSelect + 1.5) * 2 * self.companyExTaxTotal)
+	 from Invoice as self
+	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
+	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2) and self.dueDate <= :__date__) / (select sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal)
+	 from Invoice as self
+	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
+	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2)) as total,
+	
+	  (select sum( :__date__ - self.dueDate)
+	 from Invoice as self
+	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
+	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2) and self.dueDate <= :__date__) / (select count(id)
+	 from Invoice as self
+	 WHERE self.statusSelect = 3 and self.amountRemaining > 0
+	 and (self.operationTypeSelect = 1 OR self.operationTypeSelect = 2) and self.dueDate <= :__date__) as avgdelay
+	 FROM Invoice as self
+	
+	 ]]></dataset>
+	  <template><![CDATA[
+	
+	 <div class="report-data">
+	   <h1>{{first.total | number : 2}} %</h1>
+	
+	   <small x-translate>Delay rate</small>
+	   <div class="report-percent font-bold text-error pull-right">
+	    <span x-translate>Average delay :</span> {{first.avgdelay | number : 2}} <span x-translate> days</span>
+	   </div>
+	   <div class="report-tags"><span class="label label-success" x-translate>Today</span></div>
+	 </div>
+	
+	 ]]></template>
+	</custom>
 
-	 Select 100 * (select sum((self.operation_type_select + 1.5) * 2 * self.company_ex_tax_total)
-	  from account_invoice as self
-	  WHERE self.status_select = 3 and self.amount_remaining > 0
-	  and (self.operation_type_select = 1 OR self.operation_type_select = 2) and self.due_date <= :__date__) / (select sum((self.operation_type_select + 1.5)*2*self.company_ex_tax_total)
-	  from account_invoice as self
-	  WHERE self.status_select = 3 and self.amount_remaining > 0
-	  and (self.operation_type_select = 1 OR self.operation_type_select = 2)) as total,
-
-	   (select sum( :__date__ - self.due_date)
-	  from account_invoice as self
-	  WHERE self.status_select = 3 and self.amount_remaining > 0
-	  and (self.operation_type_select = 1 OR self.operation_type_select = 2) and self.due_date <= :__date__) / (select count(id)
-	  from account_invoice as self
-	  WHERE self.status_select = 3 and self.amount_remaining > 0
-	  and (self.operation_type_select = 1 OR self.operation_type_select = 2) and self.due_date <= :__date__) as avgdelay
-
-	  ]]></dataset>
-    <template><![CDATA[
-
-	  <div class="report-data">
-	    <h1>{{first.total | number : 2}} %</h1>
-
-	    <small x-translate>Delay rate</small>
-	    <div class="report-percent font-bold text-error pull-right">
-	     <span x-translate>Average delay :</span> {{first.avgdelay | number : 2}} <span x-translate> days</span>
-	    </div>
-	    <div class="report-tags"><span class="label label-success" x-translate>Today</span></div>
-	  </div>
-
-	  ]]></template>
-  </custom>
 
   <custom name="report-supplier-amount-remaining" title="Supplier amount in progress"
     css="report-box">
-    <dataset type="sql"><![CDATA[
+    <dataset type="jpql"><![CDATA[
 
-	 Select  (select sum(self.company_in_tax_total_remaining)
-	  from account_invoice as self
-	  WHERE self.status_select = 3
-	  and self.operation_type_select = 1)
-	- COALESCE((select sum(self.company_in_tax_total_remaining)
-	  from account_invoice as self
-	  WHERE self.status_select = 3
-	  and self.operation_type_select = 2), 0) as total
+	 Select  (select sum(self.companyInTaxTotalRemaining)
+	  from Invoice as self
+	  WHERE self.statusSelect = 3
+	  and self.operationTypeSelect = 1)
+	- COALESCE((select sum(self.companyInTaxTotalRemaining)
+	  from Invoice as self
+	  WHERE self.statusSelect = 3
+	  and self.operationTypeSelect = 2), 0) as total
+	from Invoice as self
 
 	  ]]></dataset>
     <template><![CDATA[
@@ -149,13 +152,13 @@
 	  where self.statusSelect = 3
 	  and self.operationTypeSelect in (1,2)
 	  group by _partner.id
-	  order by Montant desc
+	  order by Amount desc
 
 
 	  ]]></dataset>
     <template><![CDATA[
 
-	 <report-table data='data' columns='Supplier,Amount'></report-table>
+	 <report-table data='data' columns='<span x-translate>Supplier</span>,<span x-translate>Amount</span>'></report-table>
 
 
 	  ]]></template>
