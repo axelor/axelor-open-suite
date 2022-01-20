@@ -30,7 +30,7 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -162,8 +162,7 @@
 							]]>
             </viewer>
           </field>
-          <field name="mobilePhone" widget="phone" colSpan="4" placeholder="+33100000000"
-            onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+          <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false">
@@ -171,8 +170,8 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="fixedPhone" widget="phone" colSpan="4" placeholder="+33100000000"
-            onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+          <field name="fixedPhone" widget="phone" colSpan="4"
+            x-placeholder-number-type="FIXED_LINE"/>
           <field name="webSite" colSpan="6" placeholder="http://www.url.com"
             pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
         </panel>
@@ -285,7 +284,7 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -306,7 +305,7 @@
     <field name="name"/>
     <field name="firstName"/>
     <field name="enterpriseName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address"/>
     <field name="statusSelect"/>

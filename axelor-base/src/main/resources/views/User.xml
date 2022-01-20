@@ -90,7 +90,7 @@
             form-view="partner-employee-form" grid-view="partner-employee-grid">
             <editor x-viewer="true">
               <field name="fullName" readonly="true"/>
-              <field name="fixedPhone" widget="phone"/>
+              <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone"/>
               <field name="fax" widget="phone"/>
               <field name="emailAddress" form-view="email-address-simple-form"
@@ -234,7 +234,7 @@
           form-view="partner-employee-form" grid-view="partner-employee-grid">
           <editor x-viewer="true">
             <field name="fullName" readonly="true"/>
-            <field name="fixedPhone" widget="phone"/>
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
             <field name="fax" widget="phone"/>
             <field name="emailAddress" form-view="email-address-simple-form"
