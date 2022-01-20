@@ -2,17 +2,35 @@ package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
 
 public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServiceSupplychainImpl {
+
+  private final PurchaseOrderInvoiceProjectServiceImpl purchaseOrderInvoiceProjectServiceImpl;
+  private final SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl;
+
+  @Inject
+  public InvoiceMergingServiceBusinessProjectImpl(
+      InvoiceService invoiceService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService,
+      SaleOrderInvoiceService saleOrderInvoiceService,
+      PurchaseOrderInvoiceProjectServiceImpl purchaseOrderInvoiceProjectServiceImpl,
+      SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl) {
+    super(invoiceService, purchaseOrderInvoiceService, saleOrderInvoiceService);
+    this.purchaseOrderInvoiceProjectServiceImpl = purchaseOrderInvoiceProjectServiceImpl;
+    this.saleOrderInvoiceProjectServiceImpl = saleOrderInvoiceProjectServiceImpl;
+  }
 
   protected static class CommonFieldsBusinessProjectImpl extends CommonFieldsSupplychainImpl {
     private Project commonProject;
@@ -100,34 +118,32 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   protected Invoice generateMergedInvoice(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) throws AxelorException {
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-      return Beans.get(PurchaseOrderInvoiceProjectServiceImpl.class)
-          .mergeInvoice(
-              invoicesToMerge,
-              getCommonFields(result).getCommonCompany(),
-              getCommonFields(result).getCommonCurrency(),
-              getCommonFields(result).getCommonPartner(),
-              getCommonFields(result).getCommonContactPartner(),
-              getCommonFields(result).getCommonPriceList(),
-              getCommonFields(result).getCommonPaymentMode(),
-              getCommonFields(result).getCommonPaymentCondition(),
-              getCommonFields(result).getCommonSupplierInvoiceNb(),
-              getCommonFields(result).getCommonOriginDate(),
-              getCommonFields(result).getCommonPurchaseOrder(),
-              getCommonFields(result).getCommonProject());
+      return purchaseOrderInvoiceProjectServiceImpl.mergeInvoice(
+          invoicesToMerge,
+          getCommonFields(result).getCommonCompany(),
+          getCommonFields(result).getCommonCurrency(),
+          getCommonFields(result).getCommonPartner(),
+          getCommonFields(result).getCommonContactPartner(),
+          getCommonFields(result).getCommonPriceList(),
+          getCommonFields(result).getCommonPaymentMode(),
+          getCommonFields(result).getCommonPaymentCondition(),
+          getCommonFields(result).getCommonSupplierInvoiceNb(),
+          getCommonFields(result).getCommonOriginDate(),
+          getCommonFields(result).getCommonPurchaseOrder(),
+          getCommonFields(result).getCommonProject());
     }
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
-      return Beans.get(SaleOrderInvoiceProjectServiceImpl.class)
-          .mergeInvoice(
-              invoicesToMerge,
-              getCommonFields(result).getCommonCompany(),
-              getCommonFields(result).getCommonCurrency(),
-              getCommonFields(result).getCommonPartner(),
-              getCommonFields(result).getCommonContactPartner(),
-              getCommonFields(result).getCommonPriceList(),
-              getCommonFields(result).getCommonPaymentMode(),
-              getCommonFields(result).getCommonPaymentCondition(),
-              getCommonFields(result).getCommonSaleOrder(),
-              getCommonFields(result).getCommonProject());
+      return saleOrderInvoiceProjectServiceImpl.mergeInvoice(
+          invoicesToMerge,
+          getCommonFields(result).getCommonCompany(),
+          getCommonFields(result).getCommonCurrency(),
+          getCommonFields(result).getCommonPartner(),
+          getCommonFields(result).getCommonContactPartner(),
+          getCommonFields(result).getCommonPriceList(),
+          getCommonFields(result).getCommonPaymentMode(),
+          getCommonFields(result).getCommonPaymentCondition(),
+          getCommonFields(result).getCommonSaleOrder(),
+          getCommonFields(result).getCommonProject());
     }
     return null;
   }

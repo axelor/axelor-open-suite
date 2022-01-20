@@ -457,7 +457,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       LocalDate originDate,
       PurchaseOrder purchaseOrder)
       throws AxelorException {
-    log.debug("service supplychain 1 (purchaseOrder) {}", purchaseOrder);
     if (purchaseOrder != null) {
       StringBuilder numSeq = new StringBuilder();
       StringBuilder externalRef = new StringBuilder();
@@ -482,8 +481,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       invoiceMerged.setExternalReference(externalRef.toString());
       invoiceMerged.setInternalReference(numSeq.toString());
 
-      if (paymentMode != null) invoiceMerged.setPaymentMode(paymentMode);
-      if (paymentCondition != null) invoiceMerged.setPaymentCondition(paymentCondition);
+      if (paymentMode != null) {
+        invoiceMerged.setPaymentMode(paymentMode);
+      }
+      if (paymentCondition != null) {
+        invoiceMerged.setPaymentCondition(paymentCondition);
+      }
 
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);

@@ -24,7 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
 
-  private String getViewName(InvoiceMergingResult result) {
+  private String getMergeConfirmFormViewName(InvoiceMergingResult result) {
     if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
       return "supplier-invoices-merge-confirm-form";
     }
@@ -49,7 +49,7 @@ public class InvoiceMergingController {
           ActionView.ActionViewBuilder confirmView =
               ActionView.define("Confirm merge invoice")
                   .model(Wizard.class.getName())
-                  .add("form", getViewName(result))
+                  .add("form", getMergeConfirmFormViewName(result))
                   .param("popup", Boolean.TRUE.toString())
                   .param("show-toolbar", Boolean.FALSE.toString())
                   .param("show-confirm", Boolean.FALSE.toString())

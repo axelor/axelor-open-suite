@@ -816,7 +816,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       PaymentCondition paymentCondition,
       SaleOrder saleOrder)
       throws AxelorException {
-    log.debug("service supplychain 1 (saleOrder) {}", saleOrder);
     if (saleOrder != null) {
       String numSeq = "";
       String externalRef = "";
@@ -841,8 +840,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoiceMerged.setExternalReference(externalRef);
       invoiceMerged.setInternalReference(numSeq);
 
-      if (paymentMode != null) invoiceMerged.setPaymentMode(paymentMode);
-      if (paymentCondition != null) invoiceMerged.setPaymentCondition(paymentCondition);
+      if (paymentMode != null) {
+        invoiceMerged.setPaymentMode(paymentMode);
+      }
+      if (paymentCondition != null) {
+        invoiceMerged.setPaymentCondition(paymentCondition);
+      }
 
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
