@@ -17,22 +17,20 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -123,10 +121,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
-            invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
+        invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-            .isEmpty()) {
+        .isEmpty()) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 

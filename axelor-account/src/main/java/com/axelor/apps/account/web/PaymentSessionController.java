@@ -49,12 +49,12 @@ public class PaymentSessionController {
     }
   }
 
-    public void cancelPaymentSession(ActionRequest request, ActionResponse response){
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+  public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
+    PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+    paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
-      Beans.get(PaymentSessionService.class).cancelPaymentSession(paymentSession);
+    Beans.get(PaymentSessionService.class).cancelPaymentSession(paymentSession);
 
-      response.setReload(true);
-    }
+    response.setReload(true);
+  }
 }
