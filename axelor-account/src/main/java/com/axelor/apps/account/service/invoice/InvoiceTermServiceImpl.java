@@ -102,7 +102,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return sum;
   }
 
-  private BigDecimal computePercentageSum(MoveLine moveLine) {
+  protected BigDecimal computePercentageSum(MoveLine moveLine) {
 
     BigDecimal sum = BigDecimal.ZERO;
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
@@ -315,7 +315,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  private int initInvoiceTermsSequence(MoveLine moveLine) {
+  protected int initInvoiceTermsSequence(MoveLine moveLine) {
     if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
       return 1;
     }
