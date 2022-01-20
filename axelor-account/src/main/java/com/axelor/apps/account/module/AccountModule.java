@@ -43,6 +43,8 @@ import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
@@ -487,6 +489,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticToolService.class).to(AnalyticToolServiceImpl.class);
 
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
+
+    bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
 
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 

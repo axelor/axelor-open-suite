@@ -94,8 +94,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computePercentageSum(Invoice invoice) {
 
     BigDecimal sum = BigDecimal.ZERO;
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      sum = sum.add(invoiceTerm.getPercentage());
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        sum = sum.add(invoiceTerm.getPercentage());
+      }
+    }
+    return sum;
+  }
+
+  protected BigDecimal computePercentageSum(MoveLine moveLine) {
+
+    BigDecimal sum = BigDecimal.ZERO;
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
+        sum = sum.add(invoiceTerm.getPercentage());
+      }
     }
     return sum;
   }
@@ -222,6 +235,41 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm) {
+
+    invoiceTerm.setMoveLine(moveLine);
+    invoiceTerm.setInvoice(moveLine.getMove().getInvoice());
+    invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
+
+    invoiceTerm.setIsCustomized(true);
+    invoiceTerm.setIsPaid(false);
+    invoiceTerm.setIsHoldBack(false);
+    BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
+    BigDecimal percentageSum = computePercentageSum(moveLine);
+    if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
+      invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
+    }
+    invoiceTerm.setPercentage(invoiceTermPercentage);
+    BigDecimal amount;
+    if (moveLine.getCredit().compareTo(moveLine.getDebit()) <= 0) {
+      amount = moveLine.getDebit();
+    } else {
+      amount = moveLine.getCredit();
+    }
+    amount =
+        amount
+            .multiply(invoiceTermPercentage)
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
+    invoiceTerm.setAmount(amount);
+    invoiceTerm.setAmountRemaining(amount);
+
+    return invoiceTerm;
+  }
+
+  @Override
   public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice) {
 
     InvoiceTerm invoiceTerm =
@@ -265,6 +313,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setSequence(sequence);
       sequence++;
     }
+  }
+
+  protected int initInvoiceTermsSequence(MoveLine moveLine) {
+    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      return 1;
+    }
+    return moveLine.getInvoiceTermList().stream()
+            .max(Comparator.comparing(InvoiceTerm::getSequence))
+            .get()
+            .getSequence()
+        + 1;
   }
 
   @Override

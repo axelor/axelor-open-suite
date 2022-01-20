@@ -53,7 +53,8 @@
     <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true"/>
 
-    <string name="name" namecolumn="true" search="invoice,dueDate,amount" title="Name">
+    <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
+      title="Name">
             <![CDATA[
             if( invoice != null ){
                if (dueDate != null) {
@@ -63,7 +64,12 @@
                  return invoice.getInvoiceId() + "_" + amount;
                }
             } else {
-            return null;
+               if (dueDate != null) {
+            	 return moveLine.getName() + "_" + dueDate + "_" + amount;
+               }
+               else {
+                 return moveLine.getName() + "_" + amount;
+               }
             }
 	    ]]>
     </string>

@@ -107,10 +107,10 @@
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-method-compute-customized-percentage"/>
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+          onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
         <field name="bankDetails"
@@ -118,6 +118,7 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
+        <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
@@ -225,10 +226,10 @@
     </panel-mail>
   </form>
 
-  <form name="invoice-term-form" title="Invoice term"
+  <form name="invoice-term-move-line-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm"
     onLoad="action-invoice-term-group-check-pfp-validator-user"
-    onNew="action-invoice-term-record-update-customized-true">
+    onNew="action-invoice-term-group-onnew">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
@@ -242,17 +243,17 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || paymentSession">
-        <field name="dueDate" requiredIf="isCustomized"/>
+        readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
+        <field name="dueDate" requiredIf="isCustomized"
+          onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
-        <field name="estimatedPaymentDate"
-          readonlyIf="amountRemaining != amount &amp;&amp; pfpValidateStatusSelect > 1"
+        <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount"
-          readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
+        <field name="amount" readonlyIf="pfpValidateStatusSelect > 1"
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
           validIf="amount > 0"/>
-        <field name="percentage"
-          readonlyIf="amountRemaining != amount  &amp;&amp;  pfpValidateStatusSelect > 1"
+        <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
+          onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
         <field name="amountRemaining" readonly="true"/>
         <field name="paymentMode" required="true"/>
@@ -260,6 +261,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+        <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
@@ -396,6 +398,7 @@
 
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
+    <action name="action-invoice-term-record-update-customized-true"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -414,7 +417,9 @@
 
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$isPaymentConditionFree" expr="eval: __parent__.paymentCondition.isFree"/>
+    <field name="$isPaymentConditionFree"
+      if="__parent__._model == 'com.axelor.apps.account.db.Invoice'"
+      expr="eval: __parent__.paymentCondition.isFree"/>
   </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"

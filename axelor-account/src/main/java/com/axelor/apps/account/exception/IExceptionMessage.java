@@ -274,6 +274,8 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
+  static final String MOVE_LINE_8 = /*$$(*/
+      "The sum of all invoice terms is not equal to the move line amount" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
@@ -1004,7 +1006,7 @@ public interface IExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;

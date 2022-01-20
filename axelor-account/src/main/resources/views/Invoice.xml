@@ -1141,9 +1141,9 @@ InvoiceSet.length > 0))"
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
-        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
-        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
+        onClick="action-invoice-group-ventilate-button"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-invoice-method-cancel,save"
@@ -1500,6 +1500,7 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
     <action name="save"/>
@@ -1521,7 +1522,6 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-onsave-group">
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>

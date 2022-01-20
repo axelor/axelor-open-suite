@@ -120,6 +120,7 @@ public class MoveManagementRepository extends MoveRepository {
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
+          moveLineControlService.validateMoveLine(moveLine);
           List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
           if (analyticMoveLineList != null) {
             for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {

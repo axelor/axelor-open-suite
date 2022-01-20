@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -48,14 +49,19 @@ public class InvoiceTermController {
   public void computeCustomizedAmount(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal inTaxTotal = invoiceTerm.getInvoice().getInTaxTotal();
-      if (inTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      BigDecimal total;
+      if (invoiceTerm.getInvoice() != null) {
+        total = invoiceTerm.getInvoice().getInTaxTotal();
+      } else {
+        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      }
+      if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal amount =
           invoiceTerm
               .getPercentage()
-              .multiply(inTaxTotal)
+              .multiply(total)
               .divide(
                   new BigDecimal(100),
                   AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
@@ -70,13 +76,18 @@ public class InvoiceTermController {
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal inTaxTotal = invoiceTerm.getInvoice().getInTaxTotal();
-      if (inTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      BigDecimal total;
+      if (invoiceTerm.getInvoice() != null) {
+        total = invoiceTerm.getInvoice().getInTaxTotal();
+      } else {
+        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      }
+      if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal percentage =
           Beans.get(InvoiceTermService.class)
-              .computeCustomizedPercentage(invoiceTerm.getAmount(), inTaxTotal);
+              .computeCustomizedPercentage(invoiceTerm.getAmount(), total);
       response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
@@ -93,11 +104,21 @@ public class InvoiceTermController {
   public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-      if (invoice != null) {
-        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-        response.setValues(invoiceTerm);
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
+        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+        if (invoice != null) {
+          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+          response.setValues(invoiceTerm);
+        }
+      } else {
+        if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
+          MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+          if (moveLine != null) {
+            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+            response.setValues(invoiceTerm);
+          }
+        }
       }
 
     } catch (Exception e) {
