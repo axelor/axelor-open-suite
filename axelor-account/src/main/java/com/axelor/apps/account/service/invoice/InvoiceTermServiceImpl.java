@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -534,12 +533,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepo
             .all()
-            .filter(
-                "self.moveLine.move.company = :company AND self.paymentMode = :paymentMode AND self.dueDate <= :paymentDatePlusMargin AND self.dueDate >= :paymentDateMinusMargin AND (self.invoice.currency = :currency OR self.moveLine.move.currency = :currency) AND self.bankDetails != NULL"
-                    + " AND (self.moveLine != NULL AND (self.moveLine.move.partner.isCustomer = TRUE OR self.moveLine.move.partner.isSupplier = TRUE OR self.moveLine.move.partner.isEmployee = TRUE) OR self.moveLine = NULL AND (self.invoice.partner.isCustomer = TRUE OR self.invoice.partner.isSupplier = TRUE OR self.invoice.partner.isEmployee = TRUE))"
-                    + " AND ((self.moveLine != NULL AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE) OR (self.moveLine = NULL AND self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE))"
-                    + " AND (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE) AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))"
-                    + " AND self.isPaid = FALSE AND self.amountRemaining > 0 AND self.paymentSession = NULL")
+            .filter(retrieveEligibleTermsQuery())
             .bind("company", paymentSession.getCompany())
             .bind("paymentMode", paymentSession.getPaymentMode())
             .bind(
@@ -547,19 +541,47 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 paymentSession
                     .getPaymentDate()
                     .plusDays(paymentSession.getPaymentMode().getDaysMarginOnPaySession()))
-            .bind(
-                "paymentDateMinusMargin",
-                paymentSession
-                    .getPaymentDate()
-                    .minusDays(paymentSession.getPaymentMode().getDaysMarginOnPaySession()))
             .bind("currency", paymentSession.getCurrency())
             .fetch();
     eligibleInvoiceTermList.forEach(
         invoiceTerm -> {
           fillEligibleTerm(paymentSession, invoiceTerm);
           invoiceTermRepo.save(invoiceTerm);
-          Beans.get(PaymentSessionRepository.class).save(paymentSession);
         });
+  }
+
+  private String retrieveEligibleTermsQuery() {
+    String generalCondition =
+        "self.moveLine.move.company = :company"
+            + " AND self.paymentMode = :paymentMode"
+            + " AND self.dueDate <= :paymentDatePlusMargin"
+            + " AND (self.invoice.currency = :currency OR self.moveLine.move.currency = :currency)"
+            + " AND self.bankDetails IS NOT NULL";
+    String termsFromInvoiceAndMoveLineCondition =
+        " AND (self.moveLine IS NOT NULL"
+            + " AND (self.moveLine.move.partner.isCustomer = TRUE"
+            + " OR self.moveLine.move.partner.isSupplier = TRUE"
+            + " OR self.moveLine.move.partner.isEmployee = TRUE)"
+            + " OR self.moveLine IS NULL"
+            + " AND (self.invoice.partner.isCustomer = TRUE"
+            + " OR self.invoice.partner.isSupplier = TRUE"
+            + " OR self.invoice.partner.isEmployee = TRUE))"
+            + " AND ((self.moveLine IS NOT NULL"
+            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE)"
+            + " OR (self.moveLine IS NULL AND self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE))";
+    String pfpCondition =
+        " AND (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
+            + " OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
+            + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))";
+    String paymentHistoryCondition =
+        " AND self.isPaid = FALSE"
+            + " AND self.amountRemaining > 0"
+            + " AND self.paymentSession IS NULL";
+    return generalCondition
+        + termsFromInvoiceAndMoveLineCondition
+        + pfpCondition
+        + paymentHistoryCondition;
   }
 
   private void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
