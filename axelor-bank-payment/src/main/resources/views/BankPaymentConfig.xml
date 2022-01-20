@@ -38,6 +38,13 @@
           domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
           form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
       </panel>
+      <panel name="billOfExchangeBankOrderSequencesPanel"
+        title="Bill of exchange bank orders sequences" colSpan="4"
+        if="eval: __config__.app.getApp('bank-payment').manageBillOfExchange">
+        <field name="billOfExchangeSequence" colSpan="12"
+          domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
+          form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+      </panel>
       <panel name="directDebitBankOrderSequencesPanel"
         title="Direct debit bank orders sequences" colSpan="4"
         if="eval: __config__.app.getApp('bank-payment').manageDirectDebitPayment">

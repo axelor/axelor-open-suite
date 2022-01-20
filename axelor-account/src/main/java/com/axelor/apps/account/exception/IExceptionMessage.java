@@ -274,6 +274,8 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
+  static final String MOVE_LINE_8 = /*$$(*/
+      "The sum of all invoice terms is not equal to the move line amount" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
@@ -863,8 +865,8 @@ public interface IExceptionMessage {
   static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
-  static final String INVOICE_NO_CUT_OFF_TO_APPLY = /*$$(*/
-      "The Cut off configuration on invoice line(s) associated account(s) doesn't support Cut off application" /*)*/;
+  static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
+      "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
 
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
@@ -917,9 +919,6 @@ public interface IExceptionMessage {
 
   static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
-
-  static final String MOVE_NO_CUT_OFF_TO_APPLY = /*$$(*/
-      "The Cut off configuration on move line(s) associated account(s) doesn't support Cut off application" /*)*/;
 
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
@@ -1007,7 +1006,7 @@ public interface IExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
@@ -1076,8 +1075,18 @@ public interface IExceptionMessage {
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 
+  static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
+      "Account '%s' is missing in account config" /*)*/;
+
+  // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
+
+  static final String ACCOUNT_CODE_CHAR_EXCEEDED = /*$$(*/
+      "The input code length %s is higher than the defined parameter %s in the company to which belong this account. Code will be corrected to fit this requirement" /*)*/;
+
+  static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
+      "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
