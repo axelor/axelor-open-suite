@@ -32,6 +32,8 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -86,9 +88,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                           && accountManagement.getBankDetails() != null)
               .map(AccountManagement::getBankDetails)
               .findFirst();
-      if (bankDetails.isPresent()) {
-        paymentSession.setBankDetails(bankDetails.get());
-      }
+      bankDetails.ifPresent(paymentSession::setBankDetails);
     }
   }
 
@@ -105,9 +105,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                           && accountManagement.getJournal() != null)
               .map(AccountManagement::getJournal)
               .findFirst();
-      if (journal.isPresent()) {
-        paymentSession.setJournal(journal.get());
-      }
+      journal.ifPresent(paymentSession::setJournal);
     }
   }
 
@@ -134,6 +132,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
         invoiceTerm.setPaymentSession(null);
         invoiceTerm.setIsSelectedOnPaymentSession(false);
+        invoiceTerm.setApplyFinancialDiscount(false);
+        invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
 
         invoiceTermRepo.save(invoiceTerm);
       }
