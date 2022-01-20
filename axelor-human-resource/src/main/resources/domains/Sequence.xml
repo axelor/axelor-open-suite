@@ -6,15 +6,15 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Sequence" lang="java">
-    
-     <extra-code><![CDATA[
-        
+
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
   		public static final String EXPENSE = "expense";
   		public static final String EMPLOYMENT_CONTRACT = "employmentContract";
-        
+
      ]]></extra-code>
-    
+
   </entity>
 
 </domain-models>

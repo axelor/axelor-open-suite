@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bpm>
 
-	<wkfModels>
-		
-		<wkfModel>
-								
-			<code>STOCK_STOCKMOVE</code>
-								
-			<name>Stock_StockMove</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>STOCK_STOCKMOVE</code>
+
+      <name>Stock_StockMove</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="StockMoveProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -135,23 +135,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>STOCK_LOGISTICALFORM</code>
-								
-			<name>Stock_LogisticalForm</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>STOCK_LOGISTICALFORM</code>
+
+      <name>Stock_LogisticalForm</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="LogisticalFormProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -259,23 +259,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>STOCK_INVENTORY</code>
-								
-			<name>Stock_Inventory</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>STOCK_INVENTORY</code>
+
+      <name>Stock_Inventory</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="InventoryProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -511,23 +511,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>STOCK_STOCKCORRECTION</code>
-								
-			<name>Stock_StockCorrection</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>STOCK_STOCKCORRECTION</code>
+
+      <name>Stock_StockCorrection</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="StockCorrectionProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -574,23 +574,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>STOCK_MRPFORECAST</code>
-								
-			<name>Stock_MRPForecast</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>STOCK_MRPFORECAST</code>
+
+      <name>Stock_MRPForecast</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="MRPForecastProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -688,15 +688,15 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-	</wkfModels>
-	
-	
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
 </bpm>

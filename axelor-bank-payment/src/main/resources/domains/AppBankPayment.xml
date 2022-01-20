@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="AppBankPayment" lang="java" >
-    	 
-    	<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
-    	 
-        <boolean name="manageDirectDebitPayment" title="Manage direct debit payment" default="false" />
-        <boolean name="manageCreditTransferPayment" title="Manage credit transfer payment" default="true"/>
-        <boolean name="manageBankToBankTransferPayment" title="Manage bank to bank transfer payment" default="true"/>
-        <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
-        
-        <track>
-        	<field name="manageDirectDebitPayment" on="UPDATE"/>
-        	<field name="manageCreditTransferPayment" on="UPDATE"/>
-        	<field name="manageBankToBankTransferPayment" on="UPDATE"/>
-        	<field name="enableEbicsModule" on="UPDATE"/>
-        </track>
-    </entity>
+  <entity name="AppBankPayment" lang="java">
+
+    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+
+    <boolean name="manageDirectDebitPayment" title="Manage direct debit payment"
+      default="false"/>
+    <boolean name="manageCreditTransferPayment" title="Manage credit transfer payment"
+      default="true"/>
+    <boolean name="manageBankToBankTransferPayment"
+      title="Manage bank to bank transfer payment" default="true"/>
+    <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
+
+    <track>
+      <field name="manageDirectDebitPayment" on="UPDATE"/>
+      <field name="manageCreditTransferPayment" on="UPDATE"/>
+      <field name="manageBankToBankTransferPayment" on="UPDATE"/>
+      <field name="enableEbicsModule" on="UPDATE"/>
+    </track>
+  </entity>
 
 </domain-models>

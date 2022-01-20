@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
-  
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
-  
+
   <entity name="ForecastRecapLine" lang="java">
 
-	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type" required="true"/>
-	<decimal name="amount" title="Amount"/>
-	<date name="estimatedDate" title="Date"/>
-	<decimal name="balance" title="ForecastRecapLine.balance"/>
-    <many-to-one name="forecastRecapLineType" title="Forecast Recap Line Type" ref="com.axelor.apps.cash.management.db.ForecastRecapLineType"/>
-	<many-to-one name="forecastRecap" ref="com.axelor.apps.cash.management.db.ForecastRecap"/>
-	<string name="relatedToSelect" title="ForecastRecapLine.relatedToSelect" selection="forecast.recap.line.related.to.select"/>
-	<long name="relatedToSelectId"/>
-	<string name="relatedToSelectName" title="Reference"/>
-	
+    <integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"
+      required="true"/>
+    <decimal name="amount" title="Amount"/>
+    <date name="estimatedDate" title="Date"/>
+    <decimal name="balance" title="ForecastRecapLine.balance"/>
+    <many-to-one name="forecastRecapLineType" title="Forecast Recap Line Type"
+      ref="com.axelor.apps.cash.management.db.ForecastRecapLineType"/>
+    <many-to-one name="forecastRecap"
+      ref="com.axelor.apps.cash.management.db.ForecastRecap"/>
+    <string name="relatedToSelect" title="ForecastRecapLine.relatedToSelect"
+      selection="forecast.recap.line.related.to.select"/>
+    <long name="relatedToSelectId"/>
+    <string name="relatedToSelectName" title="Reference"/>
+
   </entity>
-  
+
 </domain-models>

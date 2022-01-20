@@ -7,7 +7,7 @@
 
   <entity name="TicketType">
 
-        <string name="name" required="true"/>
+    <string name="name" required="true"/>
 
   </entity>
 

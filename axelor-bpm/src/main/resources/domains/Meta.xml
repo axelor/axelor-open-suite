@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-  <module name="meta" package="com.axelor.meta.db" />
-  
+  <module name="meta" package="com.axelor.meta.db"/>
+
   <entity name="MetaAttrs" table="META_ATTRS" logUpdates="false">
-    <string name="wkfModelId" />
+    <string name="wkfModelId"/>
   </entity>
- 
+
 </domain-models>

@@ -1,108 +1,162 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-  <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
-    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="hr-config-grid" title="Human Resources configurations"
+    model="com.axelor.apps.hr.db.HRConfig">
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
 
-	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
-	  	<panel name="mainPanel">
-	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
-	  	</panel>
-	  	<panel name="generalPanel" title="General">
-	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
-	  		<field name="weeklyPlanning" canNew="true"/>
-			<field name="healthService"/>
-			<field name="healthServiceAddress"/>
-	  	</panel>
-	  	<panel-tabs name="mainPanelTab">
-			<panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
-				<field name="useUniqueProductForTimesheet" />
-				<field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid" domain="self.dtype = 'Product'"/>
-			    <panel name="timesheetTemplatesPanel" title="Timesheet Templates" colSpan="12">
-					<field name="timesheetMailNotification" colSpan="12"/>
-			    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-			    	<field name="validatedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-			    	<field name="refusedTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-					<field name="canceledTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
-			  	</panel>
-			</panel>
-			<panel name="extraHoursPanel" title="Extra Hours" if="__config__.app.isApp('exthrs')">
-			    <panel name="extraHoursTemplatesPanel" title="Extra Hours Templates" colSpan="12">
-					<field name="extraHoursMailNotification" colSpan="12"/>
-			    	<field name="sentExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-			    	<field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-			    	<field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-					<field name="canceledExtraHoursTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!extraHoursMailNotification" domain="self.metaModel.name = 'ExtraHours'"/>
-			  	</panel>
-			</panel>
-			<panel name="expensePanel" title="Expense" if="__config__.app.isApp('expense')">
-			    <panel name="expenseTemplatesPanel" title="Expense Templates" colSpan="12">
-					<field name="expenseMailNotification" colSpan="12"/>
-			    	<field name="sentExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-			    	<field name="validatedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-			    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-					<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
-			  	</panel>
-		  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true AND self.dtype = 'Product'" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
-				<field name="expenseSequence" domain="self.codeSelect = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
-			  	<panel-related name="kilometricAllowanceRateListPanel" field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
-			</panel>
-			<panel name="leavesPanel" title="Leaves" if="__config__.app.isApp('leave')">
-			  	<panel name="leavesTemplatesPanel" title="Leaves Templates" colSpan="12">
-					<field name="leaveMailNotification" colSpan="12"/>
-			    	<field name="sentLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-			    	<field name="validatedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-			    	<field name="refusedLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-					<field name="canceledLeaveTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!leaveMailNotification" domain="self.metaModel.name = 'LeaveRequest'"/>
-			  	</panel>
-		  		<field name="toJustifyLeaveReason" form-view="leave-reason-form" grid-view="leave-reason-grid"/>
-			  	<panel name="ruleListPanel" title="Leave Batch rules" colSpan="12">
-			  		<panel-related name="leaveManagementBatchRuleListPanel" field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form" grid-view="leave-management-batch-rule-grid" colSpan="12" />
-			  	</panel>
-			</panel>
-			<panel name="formulaVariablesConfigPanel" title="Formula variables configuration">
-				<field name="seniorityVariableName" />
-				<field name="ageVariableName" />
-				<field name="workingDaysVariableName" />
-		        <field name="totalWorkingDaysVariableName"/>
-			</panel>
-        <panel name="lunchVoucherPanel" title="Lunch vouchers" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
-		  		<field name="lunchVoucherWageShare"/>
-		  		<field name="lunchVoucherEmployersShare"/>
-		  		<field name="minStockLunchVoucher"/>
-		  		<field name="availableStockLunchVoucher"/>
-		  		<field name="supplierLunchVoucher" domain="self.isSupplier = true AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-		  		<field name="lunchVoucherFormatSelect"/>
-		  	</panel>
-		  	<panel name="exportsPanel" title="Exports" >
-		  		<field name="exportCodeForLunchVoucherManagement" />
-		  		<field name="exportCodeForExtraHours" />
-		  		<field name="exportCodeForDuration"/>
-		  	</panel>
-        <panel name="dpaePanel" title="DPAE">
-          <field name="enableDPAE" widget="BooleanSwitch"/>
+  <form name="hr-config-form" title="Human Resources configuration"
+    model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
+    <panel name="mainPanel">
+      <field name="company" canEdit="false" form-view="company-form" colSpan="4"
+        grid-view="company-grid"/>
+    </panel>
+    <panel name="generalPanel" title="General">
+      <field name="publicHolidayEventsPlanning" canNew="true"/>
+      <field name="weeklyPlanning" canNew="true"/>
+      <field name="healthService"/>
+      <field name="healthServiceAddress"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
+        <field name="useUniqueProductForTimesheet"/>
+        <field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet"
+          showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid"
+          domain="self.dtype = 'Product'"/>
+        <panel name="timesheetTemplatesPanel" title="Timesheet Templates" colSpan="12">
+          <field name="timesheetMailNotification" colSpan="12"/>
+          <field name="sentTimesheetTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!timesheetMailNotification"
+            domain="self.metaModel.name = 'Timesheet'"/>
+          <field name="validatedTimesheetTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!timesheetMailNotification"
+            domain="self.metaModel.name = 'Timesheet'"/>
+          <field name="refusedTimesheetTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!timesheetMailNotification"
+            domain="self.metaModel.name = 'Timesheet'"/>
+          <field name="canceledTimesheetTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!timesheetMailNotification"
+            domain="self.metaModel.name = 'Timesheet'"/>
         </panel>
-		</panel-tabs>
-				        
-        <panel-mail name="mailPanel">
-		    <mail-messages limit="4" />
-			<mail-followers />
-		</panel-mail>
-	</form>
-	
-	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">
-		<field name="company" expr="eval: _company" if="_company != null"/>
-		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-	</action-record>
-	
-	<action-view name="action-company-view-hr-config" title="Human Resource config (${ name })" model="com.axelor.apps.hr.db.HRConfig">
-    	<view type="form" name="hr-config-form"/>
-    	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
-    	<context name="_company" expr="eval: __this__"/>
-    </action-view>
+      </panel>
+      <panel name="extraHoursPanel" title="Extra Hours" if="__config__.app.isApp('exthrs')">
+        <panel name="extraHoursTemplatesPanel" title="Extra Hours Templates" colSpan="12">
+          <field name="extraHoursMailNotification" colSpan="12"/>
+          <field name="sentExtraHoursTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!extraHoursMailNotification"
+            domain="self.metaModel.name = 'ExtraHours'"/>
+          <field name="validatedExtraHoursTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!extraHoursMailNotification"
+            domain="self.metaModel.name = 'ExtraHours'"/>
+          <field name="refusedExtraHoursTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!extraHoursMailNotification"
+            domain="self.metaModel.name = 'ExtraHours'"/>
+          <field name="canceledExtraHoursTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!extraHoursMailNotification"
+            domain="self.metaModel.name = 'ExtraHours'"/>
+        </panel>
+      </panel>
+      <panel name="expensePanel" title="Expense" if="__config__.app.isApp('expense')">
+        <panel name="expenseTemplatesPanel" title="Expense Templates" colSpan="12">
+          <field name="expenseMailNotification" colSpan="12"/>
+          <field name="sentExpenseTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!expenseMailNotification"
+            domain="self.metaModel.name = 'Expense'"/>
+          <field name="validatedExpenseTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!expenseMailNotification"
+            domain="self.metaModel.name = 'Expense'"/>
+          <field name="refusedExpenseTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!expenseMailNotification"
+            domain="self.metaModel.name = 'Expense'"/>
+          <field name="canceledExpenseTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!expenseMailNotification"
+            domain="self.metaModel.name = 'Expense'"/>
+        </panel>
+        <field name="kilometricExpenseProduct" canEdit="false" canView="false"
+          domain="self.expense = true AND self.dtype = 'Product'" widget="SuggestBox"
+          form-view="product-expense-form" grid-view="product-expense-grid"/>
+        <field name="expenseSequence"
+          domain="self.codeSelect = 'expense' and self.company = :company" form-view="sequence-form"
+          grid-view="sequence-grid"/>
+        <panel-related name="kilometricAllowanceRateListPanel"
+          field="kilometricAllowanceRateList" colSpan="12"
+          form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
+      </panel>
+      <panel name="leavesPanel" title="Leaves" if="__config__.app.isApp('leave')">
+        <panel name="leavesTemplatesPanel" title="Leaves Templates" colSpan="12">
+          <field name="leaveMailNotification" colSpan="12"/>
+          <field name="sentLeaveTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!leaveMailNotification"
+            domain="self.metaModel.name = 'LeaveRequest'"/>
+          <field name="validatedLeaveTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!leaveMailNotification"
+            domain="self.metaModel.name = 'LeaveRequest'"/>
+          <field name="refusedLeaveTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!leaveMailNotification"
+            domain="self.metaModel.name = 'LeaveRequest'"/>
+          <field name="canceledLeaveTemplate" canNew="true" form-view="template-form"
+            grid-view="template-grid" hideIf="!leaveMailNotification"
+            domain="self.metaModel.name = 'LeaveRequest'"/>
+        </panel>
+        <field name="toJustifyLeaveReason" form-view="leave-reason-form"
+          grid-view="leave-reason-grid"/>
+        <panel name="ruleListPanel" title="Leave Batch rules" colSpan="12">
+          <panel-related name="leaveManagementBatchRuleListPanel"
+            field="leaveManagementBatchRuleList" form-view="leave-management-batch-rule-form"
+            grid-view="leave-management-batch-rule-grid" colSpan="12"/>
+        </panel>
+      </panel>
+      <panel name="formulaVariablesConfigPanel" title="Formula variables configuration">
+        <field name="seniorityVariableName"/>
+        <field name="ageVariableName"/>
+        <field name="workingDaysVariableName"/>
+        <field name="totalWorkingDaysVariableName"/>
+      </panel>
+      <panel name="lunchVoucherPanel" title="Lunch vouchers"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
+        <field name="lunchVoucherWageShare"/>
+        <field name="lunchVoucherEmployersShare"/>
+        <field name="minStockLunchVoucher"/>
+        <field name="availableStockLunchVoucher"/>
+        <field name="supplierLunchVoucher"
+          domain="self.isSupplier = true AND :company member of self.companySet"
+          form-view="partner-form" grid-view="partner-grid"/>
+        <field name="lunchVoucherFormatSelect"/>
+      </panel>
+      <panel name="exportsPanel" title="Exports">
+        <field name="exportCodeForLunchVoucherManagement"/>
+        <field name="exportCodeForExtraHours"/>
+        <field name="exportCodeForDuration"/>
+      </panel>
+      <panel name="dpaePanel" title="DPAE">
+        <field name="enableDPAE" widget="BooleanSwitch"/>
+      </panel>
+    </panel-tabs>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-record name="action-hr-config-record-default"
+    model="com.axelor.apps.hr.db.HRConfig">
+    <field name="company" expr="eval: _company" if="_company != null"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="_company == null &amp;&amp; __user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-view name="action-company-view-hr-config"
+    title="Human Resource config (${ name })" model="com.axelor.apps.hr.db.HRConfig">
+    <view type="form" name="hr-config-form"/>
+    <context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
+    <context name="_company" expr="eval: __this__"/>
+  </action-view>
 
 </object-views>

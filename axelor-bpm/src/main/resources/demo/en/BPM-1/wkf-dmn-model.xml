@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wkf-dmn-models>
 
-		<wkf-dmn-model>
-							
-			<name>Budget check</name>
-							
-			<description></description>
-							
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkf-dmn-model>
+
+    <name>Budget check</name>
+
+    <description></description>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1oj7khq" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
   <decision id="Decision_1jui1qr" name="Validation demande ?">
     <informationRequirement id="InformationRequirement_1t4gm82">
@@ -356,12 +356,12 @@
   </dmndi:DMNDI>
 </definitions>
 ]]></diagramXml>
-							
-			<metaModel></metaModel>
-							
-			<jsonModel></jsonModel>
-							
-			<appBuilder>BPM-1</appBuilder>
-							
-		</wkf-dmn-model>
+
+    <metaModel></metaModel>
+
+    <jsonModel></jsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </wkf-dmn-model>
 </wkf-dmn-models>

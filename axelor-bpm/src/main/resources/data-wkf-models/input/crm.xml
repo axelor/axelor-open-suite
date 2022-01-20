@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bpm>
 
-	<wkfModels>
-		
-		<wkfModel>
-								
-			<code>CRM_OPPORTUNITY</code>
-								
-			<name>CRM_Opportunity</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>CRM_OPPORTUNITY</code>
+
+      <name>CRM_Opportunity</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="OpportunityProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -333,23 +333,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>CRM_LEAD</code>
-								
-			<name>CRM_Lead</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>CRM_LEAD</code>
+
+      <name>CRM_Lead</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="LeadProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -603,15 +603,15 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-	</wkfModels>
-	
-	
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
 </bpm>

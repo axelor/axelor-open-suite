@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -132,13 +132,23 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
 
     if (appProd != null && appProd.getManageWorkCenterGroup()) {
 
+      if (confProdProcessLine.getWorkCenterGroup() == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    IExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER_GROUP),
+                confProdProcessLine.getId()));
+      }
+
       // Case of Work Center Group management
       // In order to prevent synchronization issue when switching multiple time management
       // explicit call is made to make sure that the work center group is taken into account
       // Values impacted are : workCenter, minCapacityPerCycle, maxCapacityPerCycle,
       // durationPerCycle, timingOfImplementation
-      this.fillMainWorkCenterFromGroup(
-          confProdProcessLine, confProdProcessLine.getWorkCenterGroup());
+      this.fillMainWorkCenterFromGroup(confProdProcessLine);
       workCenter = confProdProcessLine.getWorkCenter();
       minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
       maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
@@ -286,11 +296,10 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       ConfiguratorProdProcessLine confProdProcessLine, WorkCenterGroup workCenterGroup)
       throws AxelorException {
     confProdProcessLine = copyWorkCenterGroup(confProdProcessLine, workCenterGroup);
-    fillMainWorkCenterFromGroup(confProdProcessLine, workCenterGroup);
+    fillMainWorkCenterFromGroup(confProdProcessLine);
   }
 
-  protected void fillMainWorkCenterFromGroup(
-      ConfiguratorProdProcessLine confProdProcessLine, WorkCenterGroup workCenterGroup)
+  protected void fillMainWorkCenterFromGroup(ConfiguratorProdProcessLine confProdProcessLine)
       throws AxelorException {
     WorkCenter workCenter =
         workCenterService.getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup());

@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    <grid name="cfonb-config-grid" title="Cfonb configurations" model="com.axelor.apps.account.db.CfonbConfig">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    </grid>
-    
-    <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig" width="large" >
-	    
-	   <panel name="mainPanel" >
-	     <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	   </panel> 
-      
-        
-      	<panel name="cfonbExportPanel" title="CFONB Export">
-	       	<field name="senderRecordCodeExportCFONB"/>
-	       	<field name="senderNumExportCFONB"/>
-	       	<field name="senderNameCodeExportCFONB"/>
-	       	<field name="recipientRecordCodeExportCFONB"/>
-	       	<field name="totalRecordCodeExportCFONB"/>
-	       	<field name="transferOperationCodeExportCFONB"/>
-	       	<field name="directDebitOperationCodeExportCFONB"/>
-	     </panel>
-        
-        <panel name="cfonbImportPanel" title="CFONB Import">
-	       	<field name="headerRecordCodeImportCFONB"/>
-	       	<field name="detailRecordCodeImportCFONB"/>
-	       	<field name="endingRecordCodeImportCFONB"/>
-	       	<field name="transferOperationCodeImportCFONB"/>
-	       	<field name="directDebitOperationCodeImportCFONB"/>
-       </panel>
-    </form>
-	
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="cfonb-config-grid" title="Cfonb configurations"
+    model="com.axelor.apps.account.db.CfonbConfig">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+  </grid>
+
+  <form name="cfonb-config-form" title="Cfonb configuration"
+    model="com.axelor.apps.account.db.CfonbConfig" width="large">
+
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </panel>
+
+
+    <panel name="cfonbExportPanel" title="CFONB Export">
+      <field name="senderRecordCodeExportCFONB"/>
+      <field name="senderNumExportCFONB"/>
+      <field name="senderNameCodeExportCFONB"/>
+      <field name="recipientRecordCodeExportCFONB"/>
+      <field name="totalRecordCodeExportCFONB"/>
+      <field name="transferOperationCodeExportCFONB"/>
+      <field name="directDebitOperationCodeExportCFONB"/>
+    </panel>
+
+    <panel name="cfonbImportPanel" title="CFONB Import">
+      <field name="headerRecordCodeImportCFONB"/>
+      <field name="detailRecordCodeImportCFONB"/>
+      <field name="endingRecordCodeImportCFONB"/>
+      <field name="transferOperationCodeImportCFONB"/>
+      <field name="directDebitOperationCodeImportCFONB"/>
+    </panel>
+  </form>
+
 </object-views>

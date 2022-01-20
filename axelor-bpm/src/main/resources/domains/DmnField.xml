@@ -7,10 +7,10 @@
 
   <entity name="DmnField" cacheable="true">
 
-      <string name="name" title="Name" required="true" />
-      <string name="field" title="Field" />
-      <string name="fieldType" title="Field type" />
-      <many-to-one name="outputDmnTable" ref="DmnTable" title="Output dmn table" />
+    <string name="name" title="Name" required="true"/>
+    <string name="field" title="Field"/>
+    <string name="fieldType" title="Field type"/>
+    <many-to-one name="outputDmnTable" ref="DmnTable" title="Output dmn table"/>
 
   </entity>
 

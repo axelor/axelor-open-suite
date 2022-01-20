@@ -1,50 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-			   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="account" package="com.axelor.apps.account.db"/>
+  <module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountingSituation" lang="java">
+  <entity name="AccountingSituation" lang="java">
 
-		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Payer partner" />
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
+      title="Payer partner"/>
 
 
-		<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
-		<many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-		<many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>
-		<many-to-one name="defaultExpenseAccount" ref="com.axelor.apps.account.db.Account" title="Default expense account" help="When inputing moves on an expense journal, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
-		<many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account" title="Default income account" help="When inputing moves on a sale jounral, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
+    <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Customer account"/>
+    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Supplier account"/>
+    <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account"
+      title="Employee account"/>
+    <many-to-one name="defaultExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Default expense account"
+      help="When inputing moves on an expense journal, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
+    <many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account"
+      title="Default income account"
+      help="When inputing moves on a sale jounral, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
 
-		<!-- PAGE Compte Client -->
-		<decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
-		<decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
-		<decimal name="balanceDueDebtRecoveryCustAccount" title="Due balance recoverable" readonly="true"/>
-		<boolean name="custAccountMustBeUpdateOk" title="Partner situation must be updated"/>
+    <!-- PAGE Compte Client -->
+    <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
+    <decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
+    <decimal name="balanceDueDebtRecoveryCustAccount" title="Due balance recoverable"
+      readonly="true"/>
+    <boolean name="custAccountMustBeUpdateOk" title="Partner situation must be updated"/>
 
-		<!--  PAGE Debt recovery -->
-		<one-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="accountingSituation" title="Debt recovery"/>
-		<one-to-many name="tradingNameDebtRecoveryList" ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="tradingNameAccountingSituation" title="Debt recoveries"/>
+    <!-- PAGE Debt recovery -->
+    <one-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery"
+      mappedBy="accountingSituation" title="Debt recovery"/>
+    <one-to-many name="tradingNameDebtRecoveryList"
+      ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="tradingNameAccountingSituation"
+      title="Debt recoveries"/>
 
-		<many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for in payment mode"/>
-		<many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for out payment mode"/>
+    <many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Company bank for in payment mode"/>
+    <many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Company bank for out payment mode"/>
 
-		<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
-		<!-- Invoice mail -->
-		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
-		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-		<boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate" default="false" />
-		<many-to-one name="invoiceMessageTemplateOnValidate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-		
+    <!-- Invoice mail -->
+    <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
+      default="false"/>
+    <many-to-one name="invoiceMessageTemplate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate"
+      default="false"/>
+    <many-to-one name="invoiceMessageTemplateOnValidate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
 
-		<!-- Reported Balance -->
-		<one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation" title="Reported balance lines"/>
-		
-		<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
-		
-		<string name="name">
+
+    <!-- Reported Balance -->
+    <one-to-many name="reportedBalanceLineList"
+      ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation"
+      title="Reported balance lines"/>
+
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+
+    <string name="name">
 			<![CDATA[
 			String name = "";
 		    if (partner != null) {
@@ -59,14 +80,14 @@
                name += "("+partner.getPartnerSeq()+")";
               }
             }
-		    if (company != null) name += (name.isEmpty()?"":"-") +company.getName(); 
+		    if (company != null) name += (name.isEmpty()?"":"-") +company.getName();
 			return name;
 	    ]]>
-		</string>
+    </string>
     <track>
       <field name="defaultExpenseAccount"/>
       <field name="defaultIncomeAccount"/>
     </track>
 
-	</entity>
+  </entity>
 </domain-models>

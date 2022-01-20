@@ -6,11 +6,11 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Currency" lang="java" cacheable="true">
-  
-    <string name="name" title="Name" required="true" />
+
+    <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
     <string name="symbol" title="Symbol"/>
-    
+
   </entity>
-  
+
 </domain-models>

@@ -6,7 +6,8 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="ConfiguratorSOLineFormula" extends="ConfiguratorFormula">
-    <integer name="updateFromSelect" title="Update from" default="0" selection="configurator.update.sale.order.line"/>
+    <integer name="updateFromSelect" title="Update from" default="0"
+      selection="configurator.update.sale.order.line"/>
     <many-to-one name="soLineCreator" ref="com.axelor.apps.sale.db.ConfiguratorCreator"/>
   </entity>
 

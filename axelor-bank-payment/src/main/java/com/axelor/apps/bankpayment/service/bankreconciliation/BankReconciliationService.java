@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -140,6 +140,7 @@ public class BankReconciliationService {
       BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
+      AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
@@ -164,6 +165,7 @@ public class BankReconciliationService {
     this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
+    this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
   }
 
@@ -257,6 +259,9 @@ public class BankReconciliationService {
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
             accountManagement.getPaymentMode(),
+            bankStatementRule.getPartner() != null
+                ? bankStatementRule.getPartner().getFiscalPosition()
+                : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankReconciliationLine.getBankStatementLine().getOrigin(),
@@ -855,6 +860,9 @@ public class BankReconciliationService {
 
   public String printNewBankReconciliation(BankReconciliation bankReconciliation)
       throws AxelorException {
+    if (bankReconciliation.getCompany() == null) {
+      return null;
+    }
     PrintingSettings printingSettings = bankReconciliation.getCompany().getPrintingSettings();
     String watermark = null;
     String fileLink = null;
@@ -868,7 +876,8 @@ public class BankReconciliationService {
               .toString();
     }
     fileLink =
-        ReportFactory.createReport(IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
+        ReportFactory.createReport(
+                IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
             .addParam("BankReconciliationId", bankReconciliation.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam(
@@ -893,6 +902,25 @@ public class BankReconciliationService {
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLineContext.getIsSelectedBankReconciliation());
     return bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  public String createDomainForMoveLine(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    String domain = "";
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(getRequestMoveLines(bankReconciliation))
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    String idList = StringTool.getIdListString(authorizedMoveLines);
+    if (idList.equals("")) {
+      domain = "self.id IN (0)";
+    } else {
+      domain = "self.id IN (" + idList + ")";
+    }
+    return domain;
   }
 
   public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
