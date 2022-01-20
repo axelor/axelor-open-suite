@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
@@ -31,6 +32,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -49,6 +51,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
 
@@ -107,6 +111,40 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       name.append((isFr ? " par " : " by ") + createdBy.getName());
     }
     return name.toString();
+  }
+
+  @Override
+  public void setBankDetails(PaymentSession paymentSession) {
+    if (paymentSession.getCompany() != null
+        && paymentSession.getPaymentMode() != null
+        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
+      Optional<BankDetails> bankDetails =
+          paymentSession.getPaymentMode().getAccountManagementList().stream()
+              .filter(
+                  accountManagement ->
+                      paymentSession.getCompany().equals(accountManagement.getCompany())
+                          && accountManagement.getBankDetails() != null)
+              .map(AccountManagement::getBankDetails)
+              .findFirst();
+      bankDetails.ifPresent(paymentSession::setBankDetails);
+    }
+  }
+
+  @Override
+  public void setJournal(PaymentSession paymentSession) {
+    if (paymentSession.getCompany() != null
+        && paymentSession.getPaymentMode() != null
+        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
+      Optional<Journal> journal =
+          paymentSession.getPaymentMode().getAccountManagementList().stream()
+              .filter(
+                  accountManagement ->
+                      paymentSession.getCompany().equals(accountManagement.getCompany())
+                          && accountManagement.getJournal() != null)
+              .map(AccountManagement::getJournal)
+              .findFirst();
+      journal.ifPresent(paymentSession::setJournal);
+    }
   }
 
   @Override

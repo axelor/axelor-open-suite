@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -520,6 +521,20 @@ public class MoveLineController {
           && Move.class.equals(parentContext.getContextClass())) {
         response.setValue("$validatePeriod", parentContext.get("validatePeriod"));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      response.setAttr(
+          "invoiceTermPanel",
+          "readonly",
+          Beans.get(MoveLineControlService.class)
+              .isInvoiceTermReadonly(moveLine, request.getUser()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

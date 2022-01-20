@@ -27,6 +27,10 @@ public interface PaymentSessionService {
 
   public String computeName(PaymentSession paymentSession);
 
+  public void setBankDetails(PaymentSession paymentSession);
+
+  public void setJournal(PaymentSession paymentSession);
+
   boolean validateInvoiceTerms(PaymentSession paymentSession);
 
   Map<Partner, Move> processPaymentSession(PaymentSession paymentSession) throws AxelorException;
