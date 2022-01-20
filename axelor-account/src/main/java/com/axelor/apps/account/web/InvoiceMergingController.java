@@ -168,8 +168,14 @@ public class InvoiceMergingController {
           MapTools.findObject(PaymentMode.class, request.getContext().get("paymentMode"));
       PaymentCondition paymentCondition =
           MapTools.findObject(PaymentCondition.class, request.getContext().get("paymentCondition"));
-      String supplierInvoiceNb = request.getContext().get("supplierInvoiceNb").toString();
-      LocalDate originDate = LocalDate.parse(request.getContext().get("originDate").toString());
+      String supplierInvoiceNb =
+          request.getContext().get("supplierInvoiceNb") == null
+              ? null
+              : request.getContext().get("supplierInvoiceNb").toString();
+      LocalDate originDate =
+          request.getContext().get("originDate") == null
+              ? null
+              : LocalDate.parse(request.getContext().get("originDate").toString());
       if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
         InvoiceMergingResult result =
             invoiceMergingService.mergeInvoices(
