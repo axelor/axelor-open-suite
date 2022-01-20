@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -43,10 +44,13 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -207,8 +211,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Map<Partner, Move> processPaymentSession(PaymentSession paymentSession)
-      throws AxelorException {
+  public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
@@ -218,8 +221,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("paymentSession", paymentSession)
             .order("id");
 
-    Map<Partner, Move> moveMap = new HashMap<>();
-    Map<Partner, BigDecimal> paymentAmountMap = new HashMap<>();
+    Map<Partner, List<Move>> moveMap = new HashMap<>();
+    Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
     counter = 0;
     boolean out = paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT;
     boolean isGlobal =
@@ -245,33 +248,31 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     if (!moveMap.isEmpty()) {
-      Account cashAccount = this.getCashAccount(paymentSession, isGlobal);
-
-      for (Partner partner : moveMap.keySet()) {
-        this.generateCashMoveLine(
-            moveMap.get(partner), partner, cashAccount, paymentAmountMap.get(partner), out);
-      }
+      this.generateCashMoveLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
 
       if (isGlobal) {
-        this.generateCashMove(paymentSession, cashAccount, paymentAmountMap.get(null), out);
+        this.generateCashMove(paymentSession, paymentAmountMap.values().iterator().next(), out);
       }
     }
 
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    for (Move move : moveMap.values()) {
-      move = moveRepo.find(move.getId());
-      this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+    for (List<Move> moveList : moveMap.values()) {
+      for (Move move : moveList) {
+        move = moveRepo.find(move.getId());
+        move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
+        this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+      }
     }
 
-    return moveMap;
+    return this.getMoveCount(moveMap, isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, Move> moveMap,
-      Map<Partner, BigDecimal> paymentAmountMap,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -295,8 +296,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected Move generateMoveFromInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, Move> moveMap,
-      Map<Partner, BigDecimal> paymentAmountMap,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -316,13 +317,17 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         || !moveMap.containsKey(partner)) {
       move = this.createMove(paymentSession, invoiceTerm, partner);
 
-      moveMap.put(partner, move);
-      paymentAmountMap.put(partner, invoiceTerm.getPaymentAmount());
+      if (!moveMap.containsKey(partner)) {
+        moveMap.put(partner, new ArrayList<>());
+      }
+
+      moveMap.get(partner).add(move);
+      paymentAmountMap.put(move, invoiceTerm.getPaymentAmount());
     } else {
-      move = moveMap.get(partner);
+      move = moveMap.get(partner).get(0);
       move = moveRepo.find(move.getId());
       paymentAmountMap.replace(
-          partner, paymentAmountMap.get(partner).add(invoiceTerm.getPaymentAmount()));
+          move, paymentAmountMap.get(move).add(invoiceTerm.getPaymentAmount()));
     }
 
     this.generateMoveLineFromInvoiceTerm(
@@ -333,15 +338,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected Move createMove(PaymentSession paymentSession, InvoiceTerm invoiceTerm, Partner partner)
       throws AxelorException {
-    String description =
-        String.format(
-            "%s - %s - %s - %s",
-            paymentSession.getJournal() == null
-                ? ""
-                : paymentSession.getJournal().getDescriptionModel(),
-            invoiceTerm == null ? "" : invoiceTerm.getMoveLine().getPartner().getFullName(),
-            invoiceTerm == null ? "" : invoiceTerm.getPaymentAmount(),
-            paymentSession.getCurrency() == null ? "" : paymentSession.getCurrency().getCode());
 
     return moveCreateService.createMove(
         paymentSession.getJournal(),
@@ -354,8 +350,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         null,
         MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
         MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-        invoiceTerm == null ? "" : invoiceTerm.getMoveLine().getOrigin(),
-        description);
+        paymentSession.getSequence(),
+        "");
+  }
+
+  protected String getMoveDescription(PaymentSession paymentSession, BigDecimal amount) {
+    return String.format(
+        "%s - %s%s",
+        paymentSession.getName(),
+        amount,
+        paymentSession.getCurrency() == null ? "" : paymentSession.getCurrency().getCode());
+  }
+
+  protected String getMoveLineDescription(PaymentSession paymentSession) {
+    return String.format("%s : %s", paymentSession.getSequence(), paymentSession.getName());
   }
 
   protected Move generateMoveLineFromInvoiceTerm(
@@ -368,6 +376,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             invoiceTerm.getMoveLine().getAccount(),
             invoiceTerm.getPaymentAmount(),
             origin,
+            this.getMoveLineDescription(paymentSession),
             out);
 
     this.reconcile(paymentSession, invoiceTerm, moveLine);
@@ -381,6 +390,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       Account account,
       BigDecimal paymentAmount,
       String origin,
+      String description,
       boolean isDebit)
       throws AxelorException {
     MoveLine moveLine =
@@ -393,7 +403,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             move.getDate(),
             ++counter,
             origin,
-            move.getDescription());
+            description);
 
     move.addMoveLineListItem(moveLine);
 
@@ -417,15 +427,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   protected Move generateCashMove(
-      PaymentSession paymentSession, Account cashAccount, BigDecimal paymentAmount, boolean out)
-      throws AxelorException {
+      PaymentSession paymentSession, BigDecimal paymentAmount, boolean out) throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
     Move move = this.createMove(paymentSession, null, null);
+    String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, true), paymentAmount, out);
+        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, out);
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, false), paymentAmount, !out);
+        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, !out);
 
     moveRepo.save(move);
 
@@ -435,8 +445,34 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  protected void generateCashMoveLines(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    Account cashAccount = this.getCashAccount(paymentSession, isGlobal);
+    BigDecimal amount;
+
+    for (Partner partner : moveMap.keySet()) {
+      for (Move move : moveMap.get(partner)) {
+        amount = paymentAmountMap.get(move);
+
+        this.generateCashMoveLine(
+            move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
   protected Move generateCashMoveLine(
-      Move move, Partner partner, Account cashAccount, BigDecimal paymentAmount, boolean out)
+      Move move,
+      Partner partner,
+      Account cashAccount,
+      BigDecimal paymentAmount,
+      String description,
+      boolean out)
       throws AxelorException {
     move = moveRepo.find(move.getId());
 
@@ -444,19 +480,30 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       partner = partnerRepo.find(partner.getId());
     }
 
-    this.generateMoveLine(move, partner, cashAccount, paymentAmount, null, !out);
+    this.generateMoveLine(move, partner, cashAccount, paymentAmount, null, description, !out);
 
     return moveRepo.save(move);
   }
 
-  protected Account getCashAccount(PaymentSession paymentSession, boolean isGlobal) {
+  protected Account getCashAccount(PaymentSession paymentSession, boolean isGlobal)
+      throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
     AccountManagement accountManagement =
         paymentSession.getPaymentMode().getAccountManagementList().get(0);
 
-    return isGlobal
-        ? accountManagement.getGlobalAccountingCashAccount()
-        : accountManagement.getCashAccount();
+    Account cashAccount =
+        isGlobal
+            ? accountManagement.getGlobalAccountingCashAccount()
+            : accountManagement.getCashAccount();
+
+    if (cashAccount == null && isGlobal) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT),
+          paymentSession.getPaymentMode().getName());
+    }
+
+    return cashAccount;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -475,5 +522,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     } else {
       moveValidateService.accounting(move);
     }
+  }
+
+  protected int getMoveCount(Map<Partner, List<Move>> moveMap, boolean isGlobal) {
+    return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
+        + (isGlobal ? 1 : 0);
   }
 }
