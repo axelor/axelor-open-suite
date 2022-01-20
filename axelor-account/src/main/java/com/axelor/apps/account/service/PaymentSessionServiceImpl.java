@@ -22,6 +22,10 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -30,6 +34,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
 
@@ -68,6 +74,44 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
+  public void setBankDetails(PaymentSession paymentSession) {
+    if (paymentSession.getCompany() != null
+        && paymentSession.getPaymentMode() != null
+        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
+      Optional<BankDetails> bankDetails =
+          paymentSession.getPaymentMode().getAccountManagementList().stream()
+              .filter(
+                  accountManagement ->
+                      paymentSession.getCompany().equals(accountManagement.getCompany())
+                          && accountManagement.getBankDetails() != null)
+              .map(AccountManagement::getBankDetails)
+              .findFirst();
+      if (bankDetails.isPresent()) {
+        paymentSession.setBankDetails(bankDetails.get());
+      }
+    }
+  }
+
+  @Override
+  public void setJournal(PaymentSession paymentSession) {
+    if (paymentSession.getCompany() != null
+        && paymentSession.getPaymentMode() != null
+        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
+      Optional<Journal> journal =
+          paymentSession.getPaymentMode().getAccountManagementList().stream()
+              .filter(
+                  accountManagement ->
+                      paymentSession.getCompany().equals(accountManagement.getCompany())
+                          && accountManagement.getJournal() != null)
+              .map(AccountManagement::getJournal)
+              .findFirst();
+      if (journal.isPresent()) {
+        paymentSession.setJournal(journal.get());
+      }
+    }
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPaymentSession(PaymentSession paymentSession) {
     paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
@@ -81,10 +125,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
+            invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
+            .isEmpty()) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 

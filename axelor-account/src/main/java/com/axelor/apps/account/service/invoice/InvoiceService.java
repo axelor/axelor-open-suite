@@ -288,6 +288,8 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
+
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
 
@@ -320,4 +322,10 @@ public interface InvoiceService {
   boolean checkManageCutOffDates(Invoice invoice);
 
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
+
+  public void validatePfp(Long invoiceId) throws AxelorException;
+
+  void updateUnpaidInvoiceTerms(Invoice invoice);
 }

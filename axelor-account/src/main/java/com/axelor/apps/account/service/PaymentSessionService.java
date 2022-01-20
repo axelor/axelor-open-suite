@@ -23,5 +23,9 @@ public interface PaymentSessionService {
 
   public String computeName(PaymentSession paymentSession);
 
+  public void setBankDetails(PaymentSession paymentSession);
+
+  public void setJournal(PaymentSession paymentSession);
+
   void cancelPaymentSession(PaymentSession paymentSession);
 }

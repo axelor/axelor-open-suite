@@ -21,7 +21,11 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -196,6 +200,54 @@ public class AccountService {
       }
       accountRepository.save(account);
     }
+  }
+
+  public Account fillAccountCode(Account account) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED),
+            accountCodeLength,
+            accountCodeNbrCharSelect);
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
+  }
+
+  public Account fillAccountCodeOnImport(Account account, int lineNo) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT),
+            lineNo,
+            account.getCode());
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
   }
 
   protected Account activate(Account account) {

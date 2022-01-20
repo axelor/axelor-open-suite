@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -33,6 +34,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -65,6 +67,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -885,9 +888,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
+
+    User currentUser = AuthUtils.getUser();
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      invoiceTerm.setPfpValidatorUser(currentUser);
+      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
+      invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
+      invoiceTerm.setReasonOfRefusalToPayStr(
+          reasonOfRefusalToPayStr != null
+              ? reasonOfRefusalToPayStr
+              : reasonOfRefusalToPay.getName());
+    }
+    invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -918,7 +932,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         pfpValidatorUser.getSubstitutePfpValidatorList();
     List<User> validPfpValidatorUserList = new ArrayList<>();
     StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
-    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
+    LocalDate todayDate = appBaseService.getTodayDate(invoice.getCompany());
 
     validPfpValidatorUserList.add(pfpValidatorUser);
 
@@ -1167,7 +1181,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-    BigDecimal amount = invoicePayment.getAmount();
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
         calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
@@ -1214,7 +1229,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean checkManageCutOffDates(Invoice invoice) {
     return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
         && invoice.getInvoiceLineList().stream()
-            .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+            .anyMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
   }
 
   @Override
@@ -1228,5 +1243,62 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                   invoiceLineService.applyCutOffDates(
                       invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
     }
+  }
+
+  @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
+  }
+
+  @Override
+  public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
+    return invoice.getPfpValidatorUser() != null
+        && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validatePfp(Long invoiceId) throws AxelorException {
+    Invoice invoice = invoiceRepo.find(invoiceId);
+    User currentUser = AuthUtils.getUser();
+
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      invoiceTerm.setPfpValidatorUser(currentUser);
+      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+    }
+
+    invoice.setPfpValidatorUser(currentUser);
+    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
+    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+  }
+
+  @Override
+  public void updateUnpaidInvoiceTerms(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
+        .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
+  }
+
+  protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
   }
 }

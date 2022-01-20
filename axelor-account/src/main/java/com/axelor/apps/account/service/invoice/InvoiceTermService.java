@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -185,6 +186,8 @@ public interface InvoiceTermService {
    */
   public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
 
+  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm);
+
   /**
    * return existing moveLine related to invoiceTerm with isHoldBack = false
    *
@@ -195,4 +198,17 @@ public interface InvoiceTermService {
 
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
+
+  public void generateInvoiceTerm(
+      InvoiceTerm originalInvoiceTerm,
+      BigDecimal invoiceAmount,
+      BigDecimal pfpGrantedAmount,
+      PfpPartialReason partialReason);
+
+  public Integer massValidatePfp(List<Long> invoiceTermIds);
+
+  public Integer massRefusePfp(
+      List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 }

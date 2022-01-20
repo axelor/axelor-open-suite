@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -73,6 +73,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -308,6 +309,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     AccountConfig accountConfig = accountConfigSupplychainService.getAccountConfig(company);
 
     Partner partner = stockMove.getPartner();
+    FiscalPosition fiscalPosition = partner != null ? partner.getFiscalPosition() : null;
     Account partnerAccount = null;
 
     Currency currency = null;
@@ -318,6 +320,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = saleOrder.getClientPartner();
       }
+      fiscalPosition = saleOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
@@ -327,6 +330,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
       }
+      fiscalPosition = purchaseOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
     }
 
@@ -341,7 +345,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             moveDate,
             originDate,
             null,
-            partner != null ? partner.getFiscalPosition() : null,
+            fiscalPosition,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,
@@ -705,7 +709,23 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         currencyService.getCurrencyConversionRate(
             move.getCurrency(), move.getCompanyCurrency(), moveDate);
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    // Sorting so that move lines with analytic move lines are computed first
+    List<MoveLine> sortedMoveLineList = new ArrayList<>(move.getMoveLineList());
+    sortedMoveLineList.sort(
+        (t1, t2) -> {
+          if ((CollectionUtils.isNotEmpty(t1.getAnalyticMoveLineList())
+                  && CollectionUtils.isNotEmpty(t2.getAnalyticMoveLineList()))
+              || (CollectionUtils.isEmpty(t1.getAnalyticMoveLineList())
+                  && CollectionUtils.isEmpty(t2.getAnalyticMoveLineList()))) {
+            return 0;
+          } else if (CollectionUtils.isNotEmpty(t1.getAnalyticMoveLineList())) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+
+    for (MoveLine moveLine : sortedMoveLineList) {
       if (moveLine.getAccount().getManageCutOffPeriod()
           && moveLine.getCutOffStartDate() != null
           && moveLine.getCutOffEndDate() != null
@@ -749,13 +769,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         }
 
         // Copy analytic move lines
-        if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
-          cutOffMoveLine.setAnalyticMoveLineList(
-              new ArrayList<>(moveLine.getAnalyticMoveLineList())
-                  .stream()
-                      .map(it -> analyticMoveLineRepository.copy(it, true))
-                      .collect(Collectors.toList()));
-        }
+        this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
       }
     }
 
@@ -767,6 +781,97 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             company.getAccountConfig(), accountingCutOffTypeSelect);
 
     this.generatePartnerMoveLine(cutOffMove, origin, account, moveDescription, originDate);
+  }
+
+  protected void copyAnalyticMoveLines(
+      MoveLine moveLine, MoveLine cutOffMoveLine, BigDecimal newAmount) {
+    if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+      if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+        AnalyticMoveLine existingAnalyticMoveLine;
+        List<AnalyticMoveLine> toComputeAnalyticMoveLineList =
+            new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
+
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          existingAnalyticMoveLine =
+              this.getExistingAnalyticMoveLine(cutOffMoveLine, analyticMoveLine);
+
+          if (existingAnalyticMoveLine == null) {
+            this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
+          } else {
+            this.computeAnalyticMoveLine(
+                cutOffMoveLine,
+                existingAnalyticMoveLine,
+                analyticMoveLine.getPercentage(),
+                newAmount,
+                false);
+
+            toComputeAnalyticMoveLineList.remove(existingAnalyticMoveLine);
+          }
+        }
+
+        for (AnalyticMoveLine toComputeAnalyticMoveLine : toComputeAnalyticMoveLineList) {
+          this.computeAnalyticMoveLine(
+              cutOffMoveLine, toComputeAnalyticMoveLine, BigDecimal.ZERO, newAmount, false);
+        }
+      } else {
+        if (cutOffMoveLine.getAnalyticMoveLineList() == null) {
+          cutOffMoveLine.setAnalyticMoveLineList(new ArrayList<>());
+        }
+
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
+        }
+      }
+    } else if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : cutOffMoveLine.getAnalyticMoveLineList()) {
+        this.computeAnalyticMoveLine(
+            cutOffMoveLine, analyticMoveLine, analyticMoveLine.getPercentage(), newAmount, false);
+      }
+    }
+  }
+
+  protected AnalyticMoveLine getExistingAnalyticMoveLine(
+      MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+    return moveLine.getAnalyticMoveLineList().stream()
+        .filter(
+            it ->
+                it.getAnalyticAxis().equals(analyticMoveLine.getAnalyticAxis())
+                    && it.getAnalyticAccount().equals(analyticMoveLine.getAnalyticAccount()))
+        .findFirst()
+        .orElse(null);
+  }
+
+  protected void copyAnalyticMoveLine(
+      MoveLine moveLine, AnalyticMoveLine analyticMoveLine, BigDecimal newAmount) {
+    AnalyticMoveLine analyticMoveLineCopy =
+        analyticMoveLineRepository.copy(analyticMoveLine, false);
+
+    this.computeAnalyticMoveLine(
+        moveLine, analyticMoveLineCopy, analyticMoveLineCopy.getPercentage(), newAmount, true);
+
+    moveLine.addAnalyticMoveLineListItem(analyticMoveLineCopy);
+  }
+
+  protected void computeAnalyticMoveLine(
+      MoveLine moveLine,
+      AnalyticMoveLine analyticMoveLine,
+      BigDecimal newPercentage,
+      BigDecimal newAmount,
+      boolean newLine) {
+    BigDecimal amount =
+        newAmount.multiply(newPercentage.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
+
+    if (!newLine) {
+      amount = analyticMoveLine.getAmount().add(amount);
+    }
+
+    BigDecimal percentage =
+        amount
+            .multiply(BigDecimal.valueOf(100))
+            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+
+    analyticMoveLine.setPercentage(percentage);
+    analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(

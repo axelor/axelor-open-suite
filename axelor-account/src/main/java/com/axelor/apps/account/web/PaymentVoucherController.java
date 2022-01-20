@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.db.BankDetails;
@@ -66,7 +67,7 @@ public class PaymentVoucherController {
   }
 
   // Loading move lines of the selected partner (1st O2M)
-  public void loadMoveLines(ActionRequest request, ActionResponse response) {
+  public void loadInvoiceTerms(ActionRequest request, ActionResponse response) {
 
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
@@ -122,6 +123,11 @@ public class PaymentVoucherController {
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
         if (journal.getExcessPaymentOk()) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
+        }
+        if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
+          response.setError(
+              I18n.get(
+                  "Some move amounts have been changed since the impuration. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

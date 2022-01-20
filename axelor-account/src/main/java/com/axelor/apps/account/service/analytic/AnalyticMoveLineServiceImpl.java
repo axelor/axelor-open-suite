@@ -158,7 +158,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         }
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
-        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
+        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) != 0) {
           return false;
         }
       }

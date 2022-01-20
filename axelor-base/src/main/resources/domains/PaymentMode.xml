@@ -26,6 +26,7 @@
 		public static final int TYPE_CHEQUE = 7;
 		public static final int TYPE_WEB = 8;
 		public static final int TYPE_TRANSFER = 9;
+		public static final int TYPE_EXCHANGES = 10;
 
 		// Sales or purchase
 		public static final int SALES = 1;
