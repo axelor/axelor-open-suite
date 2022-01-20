@@ -284,9 +284,12 @@ public class BatchBillOfExchange extends AbstractBatch {
       bindings.put("currency", accountingBatch.getCurrency());
     }
 
-    if (manageMultiBanks) {
+    if (accountingBatch.getBankDetails() != null) {
       filter.append(" AND self.companyBankDetails IN (:bankDetailsSet) ");
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+      if (manageMultiBanks && accountingBatch.getIncludeOtherBankAccounts()) {
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+      }
       bindings.put("bankDetailsSet", bankDetailsSet);
     }
 
