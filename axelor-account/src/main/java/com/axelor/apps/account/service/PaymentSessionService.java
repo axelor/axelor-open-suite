@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.exception.AxelorException;
 
 public interface PaymentSessionService {
 
@@ -27,8 +26,4 @@ public interface PaymentSessionService {
   public void setBankDetails(PaymentSession paymentSession);
 
   public void setJournal(PaymentSession paymentSession);
-
-  boolean validateInvoiceTerms(PaymentSession paymentSession);
-
-  int processPaymentSession(PaymentSession paymentSession) throws AxelorException;
 }
