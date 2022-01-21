@@ -227,12 +227,27 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       partner = invoiceTerm.getMoveLine().getPartner();
     }
 
+    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
+
+    this.generateMoveLineFromInvoiceTerm(
+        paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
+
+    return moveRepo.save(move);
+  }
+
+  protected Move getMove(
+      PaymentSession paymentSession,
+      Partner partner,
+      InvoiceTerm invoiceTerm,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap)
+      throws AxelorException {
     Move move;
 
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
         || !moveMap.containsKey(partner)) {
-      move = this.createMove(paymentSession, invoiceTerm, partner);
+      move = this.createMove(paymentSession, partner);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -247,14 +262,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           move, paymentAmountMap.get(move).add(invoiceTerm.getPaymentAmount()));
     }
 
-    this.generateMoveLineFromInvoiceTerm(
-        paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
-
-    return moveRepo.save(move);
+    return move;
   }
 
-  protected Move createMove(PaymentSession paymentSession, InvoiceTerm invoiceTerm, Partner partner)
-      throws AxelorException {
+  protected Move createMove(PaymentSession paymentSession, Partner partner) throws AxelorException {
 
     return moveCreateService.createMove(
         paymentSession.getJournal(),
@@ -346,7 +357,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Move generateCashMove(
       PaymentSession paymentSession, BigDecimal paymentAmount, boolean out) throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null, null);
+    Move move = this.createMove(paymentSession, null);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
