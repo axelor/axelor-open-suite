@@ -70,9 +70,9 @@
     <field name="applyFinancialDiscount"/>
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
-    <button name="selectBtn" title="Select" icon="fa-plus-circle" onClick="act-1"
+    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"
       readonlyIf="isSelectedOnPaymentSession"/>
-    <button name="unselectBtn" title="Unselect" icon="fa-minus-circle" onClick="act-2"
+    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"
       readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
       icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
@@ -418,8 +418,8 @@
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$isPaymentConditionFree"
-      if="__parent__._model == 'com.axelor.apps.account.db.Invoice'"
-      expr="eval: __parent__.paymentCondition.isFree"/>
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"
+      expr="eval: __parent__?.paymentCondition?.isFree"/>
   </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"
@@ -531,6 +531,8 @@
     title="Term(s) to pay/be paid by partner" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
     <view type="form" name="invoice-term-form"/>
+    <domain>self.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
@@ -538,6 +540,8 @@
     <view type="custom"
       name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"/>
     <view type="form" name="invoice-term-form"/>
+    <domain>self.paymentSession.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
   <action-condition name="action-invoiceterm-refusal-to-pay-cancel-reason-check">

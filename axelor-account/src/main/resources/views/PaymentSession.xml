@@ -51,7 +51,8 @@
     <panel name="searchPanel"
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
-      <button name="searchEligibleTermsBtn" title="Search due Terms" onClick=""/>
+      <button name="searchEligibleTermsBtn" title="Search due Terms"
+        onClick="com.axelor.apps.account.web.InvoiceTermController:searchEligibleTerms"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0" onClick=""/>
       <panel-dashlet showIf="id" colSpan="12"
