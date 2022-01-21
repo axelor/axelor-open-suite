@@ -1499,7 +1499,7 @@ InvoiceSet.length > 0))"
     <action name="save"/>
   </action-group>
 
-  <action-group name="action-invoice-group-validate-and-venilate">
+  <action-group name="action-invoice-group-validate-and-ventilate">
     <action name="save"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
