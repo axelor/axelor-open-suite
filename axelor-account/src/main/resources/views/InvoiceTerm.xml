@@ -418,8 +418,8 @@
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$isPaymentConditionFree"
-      if="__parent__._model == 'com.axelor.apps.account.db.Invoice'"
-      expr="eval: __parent__.paymentCondition.isFree"/>
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"
+      expr="eval: __parent__?.paymentCondition?.isFree"/>
   </action-record>
 
   <action-record name="action-invoice-term-record-update-customized-true"
