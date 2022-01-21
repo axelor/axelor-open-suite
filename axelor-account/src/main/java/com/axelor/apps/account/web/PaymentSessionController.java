@@ -3,7 +3,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.PaymentSessionService;
+import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -16,7 +16,7 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
-      int emailCount = Beans.get(PaymentSessionService.class).sendEmails(paymentSession);
+      int emailCount = Beans.get(PaymentSessionEmailService.class).sendEmails(paymentSession);
 
       response.setReload(true);
 

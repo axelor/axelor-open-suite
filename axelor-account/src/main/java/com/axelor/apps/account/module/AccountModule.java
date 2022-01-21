@@ -107,6 +107,8 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PaymentSessionEmailService;
+import com.axelor.apps.account.service.PaymentSessionEmailServiceImpl;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionServiceImpl;
 import com.axelor.apps.account.service.PeriodControlService;
@@ -489,5 +491,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
+
+    bind(PaymentSessionEmailService.class).to(PaymentSessionEmailServiceImpl.class);
   }
 }
