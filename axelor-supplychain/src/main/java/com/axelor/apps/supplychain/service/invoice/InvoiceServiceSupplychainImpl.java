@@ -298,22 +298,24 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
   @Transactional
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
-    com.axelor.db.Query<StockMove> stockMoveQuery =
-        stockMoveRepository
-            .all()
-            .filter("self.invoiceSet.id in (" + getIdListString(invoiceList) + ")");
-    stockMoveQuery
-        .fetch()
-        .forEach(
-            stockMove -> {
-              if (stockMove.getInvoiceSet() != null) {
-                stockMove.getInvoiceSet().add(newInvoice);
-              } else {
-                Set<Invoice> invoiceSet = new HashSet<>();
-                invoiceSet.add(newInvoice);
-                stockMove.setInvoiceSet(invoiceSet);
-              }
-              stockMoveRepository.save(stockMove);
-            });
+    for (Invoice invoice : invoiceList) {
+      List<StockMove> stockMoveList =
+          stockMoveRepository
+              .all()
+              .filter(":invoiceId in self.invoiceSet.id")
+              .bind("invoiceId", invoice.getId())
+              .fetch();
+      for (StockMove stockMove : stockMoveList) {
+        if (stockMove.getInvoiceSet() != null) {
+          stockMove.getInvoiceSet().add(newInvoice);
+          stockMove.getInvoiceSet().remove(invoice);
+        } else {
+          Set<Invoice> invoiceSet = new HashSet<>();
+          invoiceSet.add(newInvoice);
+          stockMove.setInvoiceSet(invoiceSet);
+        }
+        stockMoveRepository.save(stockMove);
+      }
+    }
   }
 }
