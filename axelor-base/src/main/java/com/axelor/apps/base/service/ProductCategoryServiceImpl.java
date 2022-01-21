@@ -95,13 +95,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
   }
 
-  /**
-   * Find parent of given category, and recursively parents of found parents.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  protected List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
+  @Override
+  public List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
     int i = 0;
@@ -127,13 +122,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Find child of given category, and recursively children of found children.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  protected List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
+  @Override
+  public List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
     int i = 0;

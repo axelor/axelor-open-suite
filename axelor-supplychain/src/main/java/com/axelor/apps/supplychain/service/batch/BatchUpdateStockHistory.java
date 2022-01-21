@@ -21,12 +21,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -54,48 +56,62 @@ public class BatchUpdateStockHistory extends BatchStrategy {
   protected void process() {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
 
-    List<Product> productList = new ArrayList<>();
-    List<ProductCategory> productCategoryList = getProductCategoryList(supplychainBatch);
-    List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
-    Query<Product> productQuery;
+    try {
+      List<Product> productList = new ArrayList<>();
+      List<ProductCategory> productCategoryList = getProductCategoryList(supplychainBatch);
+      List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
+      Query<Product> productQuery;
 
-    if (supplychainBatch.getProductCategoryList() != null
-        && !supplychainBatch.getProductCategoryList().isEmpty()) {
-      productQuery =
-          Beans.get(ProductRepository.class)
-              .all()
-              .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2",
-                  productCategoryList,
-                  ProductRepository.PRODUCT_TYPE_STORABLE);
-    } else {
-      productQuery =
-          Beans.get(ProductRepository.class)
-              .all()
-              .filter("self.productTypeSelect = ?1", ProductRepository.PRODUCT_TYPE_STORABLE);
-    }
-
-    int offset = 0;
-
-    while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
-
-      for (Product product : productList) {
-        ++offset;
-        try {
-          stockHistoryLineList.addAll(
-              stockHistoryService.computeStockHistoryLineList(
-                  product.getId(),
-                  supplychainBatch.getCompany().getId(),
-                  null,
-                  supplychainBatch.getPeriod().getFromDate(),
-                  supplychainBatch.getPeriod().getToDate()));
-          incrementDone();
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(e, ExceptionOriginRepository.UPDATE_STOCK_HISTORY, batch.getId());
-        }
+      if (supplychainBatch.getProductCategorySet() != null
+          && !supplychainBatch.getProductCategorySet().isEmpty()) {
+        productQuery =
+            Beans.get(ProductRepository.class)
+                .all()
+                .filter(
+                    "self.productCategory in (?1) AND self.productTypeSelect = ?2",
+                    productCategoryList,
+                    ProductRepository.PRODUCT_TYPE_STORABLE);
+      } else {
+        productQuery =
+            Beans.get(ProductRepository.class)
+                .all()
+                .filter("self.productTypeSelect = ?1", ProductRepository.PRODUCT_TYPE_STORABLE);
       }
-      JPA.clear();
+
+      int offset = 0;
+
+      while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+
+        for (Product product : productList) {
+          ++offset;
+          try {
+            stockHistoryLineList.addAll(
+                stockHistoryService.computeStockHistoryLineList(
+                    product.getId(),
+                    supplychainBatch.getCompany().getId(),
+                    null,
+                    supplychainBatch.getPeriod().getFromDate(),
+                    supplychainBatch.getPeriod().getToDate()));
+            incrementDone();
+          } catch (Exception e) {
+            incrementAnomaly();
+            TraceBackService.trace(
+                e, ExceptionOriginRepository.UPDATE_STOCK_HISTORY, batch.getId());
+          }
+        }
+        JPA.clear();
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(
+              e,
+              e.getCategory(),
+              I18n.get(IExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_1),
+              batch.getId()),
+          ExceptionOriginRepository.REIMBURSEMENT,
+          batch.getId());
+      incrementAnomaly();
+      stop();
     }
   }
 
@@ -115,50 +131,24 @@ public class BatchUpdateStockHistory extends BatchStrategy {
     addComment(comment);
   }
 
-  protected List<ProductCategory> getProductCategoryList(SupplychainBatch supplychainBatch) {
+  protected List<ProductCategory> getProductCategoryList(SupplychainBatch supplychainBatch)
+      throws AxelorException {
 
     List<ProductCategory> productCategoryList = new ArrayList<>();
 
-    if (supplychainBatch.getProductCategoryList() != null
-        && !supplychainBatch.getProductCategoryList().isEmpty()) {
+    if (supplychainBatch.getProductCategorySet() != null
+        && !supplychainBatch.getProductCategorySet().isEmpty()) {
 
       productCategoryList =
-          new ArrayList<ProductCategory>(supplychainBatch.getProductCategoryList());
+          new ArrayList<ProductCategory>(supplychainBatch.getProductCategorySet());
 
       List<ProductCategory> childProductCategoryList = new ArrayList<ProductCategory>();
+      ProductCategoryService productCategoryService = Beans.get(ProductCategoryService.class);
       for (ProductCategory productCategory : productCategoryList) {
         childProductCategoryList.addAll(
-            this.getChildrenProductCategories(
-                productCategory, new ArrayList<ProductCategory>(), 0));
+            productCategoryService.fetchChildrenCategoryList(productCategory));
       }
       productCategoryList.addAll(childProductCategoryList);
-    }
-
-    return productCategoryList;
-  }
-
-  protected List<ProductCategory> getChildrenProductCategories(
-      ProductCategory productCategory, List<ProductCategory> productCategoryList, int count) {
-
-    if (count > ITERATIONS) {
-      return productCategoryList;
-    }
-
-    List<ProductCategory> childProductCategoryList =
-        productCategoryRepository
-            .all()
-            .filter("self.parentProductCategory = ?1", productCategory)
-            .fetch();
-
-    productCategoryList.add(productCategory);
-    count++;
-
-    if (childProductCategoryList.isEmpty()) {
-      return productCategoryList;
-    }
-
-    for (ProductCategory category : childProductCategoryList) {
-      this.getChildrenProductCategories(category, productCategoryList, count);
     }
 
     return productCategoryList;
