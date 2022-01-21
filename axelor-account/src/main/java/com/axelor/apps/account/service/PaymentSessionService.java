@@ -26,6 +26,4 @@ public interface PaymentSessionService {
   public void setBankDetails(PaymentSession paymentSession);
 
   public void setJournal(PaymentSession paymentSession);
-
-  void cancelPaymentSession(PaymentSession paymentSession);
 }
