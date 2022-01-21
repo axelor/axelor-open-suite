@@ -1089,4 +1089,18 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
+          && !Beans.get(InvoiceService.class).checkInvoiceLinesCutOffDates(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
