@@ -49,6 +49,8 @@ public class BatchContract extends BatchStrategy {
         return Beans.get(BatchContractFactoryNextActivation.class);
       case ContractBatchRepository.CURRENT_VERSION_ACTIVATION:
         return Beans.get(BatchContractFactoryCurrentActivation.class);
+      case ContractBatchRepository.REMINDER_END_OF_CONTRACTS:
+        return Beans.get(BatchContractFactoryEndOfContractReminder.class);
       default:
         return null;
     }

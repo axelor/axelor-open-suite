@@ -30,6 +30,7 @@ import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.ResponseMessageType;
@@ -37,6 +38,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -247,5 +249,18 @@ public class ContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void scheduleEvent(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
+    ActionViewBuilder scheduleEventView =
+        ActionView.define("Schedule event")
+            .model(Event.class.getName())
+            .add("form", "event-form")
+            .context("_relatedToSelect", Contract.class.getName())
+            .context("_relatedToSelectId", contract.getId());
+    response.setView(scheduleEventView.map());
   }
 }

@@ -40,4 +40,6 @@ public interface IExceptionMessage {
   String CONTRACT_WAITING_WRONG_STATUS = /*$$(*/ "Can only put on hold drafted contract." /*)*/;
   String CONTRACT_ONGOING_WRONG_STATUS = /*$$(*/ "Can only activate waiting contract." /*)*/;
   String CONTRACT_TERMINATE_WRONG_STATUS = /*$$(*/ "Can only terminate ongoing contract." /*)*/;
+  String CONTRACT_END_REMINDER_TEMPLATE_NOT_DEFINED = /*$$(*/
+      "The end of contract reminder template is not defined." /*)*/;
 }

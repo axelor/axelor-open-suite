@@ -21,6 +21,8 @@
     <toolbar>
       <button name="printContractBtn" title="Print" hidden="true" icon="fa-print"
         onClick="notImplementedYet"/>
+      <button name="scheduleEventBtn" title="Schedule Event"
+        onClick="save,action-contract-method-schedule-event"/>
     </toolbar>
     <panel name="mainPanel">
       <panel colSpan="9" name="generalInfoPanel">
@@ -322,6 +324,8 @@
           </editor>
         </field>
       </panel>
+      <panel-dashlet name="eventsPanel" title="Événements"
+        action="action-contract-view-related-events"/>
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
         showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
         form-view="contract-archived-version-form">
@@ -465,6 +469,15 @@
     <context name="contractId" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-contract-view-related-events" title="Événements"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="event-grid"/>
+    <view type="form" name="event-form"/>
+    <domain>self.relatedToSelect = 'com.axelor.apps.contract.db.Contract' AND self.relatedToSelectId
+      = :contractId</domain>
+    <context name="contractId" expr="eval: __self__?.id"/>
+  </action-view>
+
   <action-attrs name="action-contract-attrs-domains-template">
     <attribute for="$contractTemplate" name="domain"
       expr="eval: &quot;self.targetTypeSelect = ${targetTypeSelect}&quot;"/>
@@ -506,6 +519,10 @@
 
   <action-method name="action-contract-method-is-valid">
     <call class="com.axelor.apps.contract.web.ContractController" method="isValid"/>
+  </action-method>
+
+  <action-method name="action-contract-method-schedule-event">
+    <call class="com.axelor.apps.contract.web.ContractController" method="scheduleEvent"/>
   </action-method>
 
   <action-validate name="action-contract-validate-on-going">
