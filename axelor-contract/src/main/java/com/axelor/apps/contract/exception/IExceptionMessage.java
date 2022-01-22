@@ -37,4 +37,6 @@ public interface IExceptionMessage {
       "Please fill the first period end date and the invoice frequency." /*)*/;
   String CONTRACT_VERSION_EMPTY_NEXT_CONTRACT = /*$$(*/
       "The next contract field is not set on the current contract version." /*)*/;
+  String CONTRACT_END_REMINDER_TEMPLATE_NOT_DEFINED = /*$$(*/
+      "The end of contract reminder template is not defined."; /*)*/
 }

@@ -14,6 +14,7 @@
       <panel name="generalPanel" title="General" colSpan="12">
         <field name="isUnchangableContract" colSpan="4" widget="boolean-switch"/>
         <field name="isAmendmentManagement" colSpan="4" widget="boolean-switch"/>
+        <field name="contractEndReminderTemplate" domain="self.metaModel.name = 'Contract'"/>
       </panel>
       <panel name="advancedPanel" title="Advanced" colSpan="12">
         <field name="isConfigContract" colSpan="4" widget="boolean-switch"/>
@@ -27,6 +28,8 @@
           hidden="true" showIf="isInvoicingManagement"/>
         <field name="isAdditionalBenefitManagement" colSpan="4" widget="boolean-switch"
           hidden="true" showIf="isInvoicingManagement"/>
+        <field name="contractInvoicingReminderTemplate"
+          domain="self.metaModel.name = 'Contract'"/>
       </panel>
     </panel>
 

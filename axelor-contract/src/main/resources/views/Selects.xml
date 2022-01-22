@@ -51,6 +51,7 @@
     <option value="2">Terminate</option>
     <option value="3">Current version activation</option>
     <option value="4">Next version activation</option>
+    <option value="5">Reminder end of contracts</option>
   </selection>
 
   <selection name="account.analytic.move.line.type.select"
@@ -61,6 +62,16 @@
   <selection name="meta.schedule.batch.service.select"
     id="contract.meta.schedule.batch.service.select">
     <option value="com.axelor.apps.contract.batch.service.BatchContractService">com.axelor.apps.contract.batch.service.BatchContractService</option>
+  </selection>
+
+  <selection id="contract.crm.event.related.to.select" name="crm.event.related.to.select">
+    <option value="com.axelor.apps.contract.db.Contract">Contract</option>
+  </selection>
+
+  <selection name="collin.contract.batch.duration.type">
+    <option value="1">Days</option>
+    <option value="2">Months</option>
+    <option value="3">Weeks</option>
   </selection>
 
 

@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
@@ -27,6 +28,8 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
+import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -41,7 +44,10 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
-      ContractRepository contractRepository) {
+      ContractRepository contractRepository,
+      TemplateMessageService templateMessageService,
+      MessageService messageService,
+      AppService appService) {
     super(
         appBaseService,
         versionService,
@@ -49,7 +55,10 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
         durationService,
         contractLineRepo,
         consumptionLineRepo,
-        contractRepository);
+        contractRepository,
+        templateMessageService,
+        messageService,
+        appService);
   }
 
   @Override

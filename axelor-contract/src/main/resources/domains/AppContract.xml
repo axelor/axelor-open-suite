@@ -18,6 +18,10 @@
     <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"/>
 
     <boolean name="isConfigContract" title="Configurable contract"/>
+    <many-to-one name="contractEndReminderTemplate"
+      ref="com.axelor.apps.message.db.Template" title="End of contract reminder mail template"/>
+    <many-to-one name="contractInvoicingReminderTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Contract invoicing mail template"/>
 
     <track>
       <field name="isUnchangableContract" on="UPDATE"/>

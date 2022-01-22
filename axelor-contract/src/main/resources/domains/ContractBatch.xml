@@ -14,11 +14,23 @@
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="contractBatch" title="Batchs"/>
 
+    <integer name="duration" title="Duration"/>
+    <integer name="durationTypeSelect" title="Duration Type"
+      selection="collin.contract.batch.duration.type"/>
+    <integer name="contractTypeSelect" title="Contract Type"
+      selection="contract.target.type.select"/>
+
     <extra-code><![CDATA[
         public static final int INVOICING = 1;
         public static final int TERMINATE = 2;
         public static final int CURRENT_VERSION_ACTIVATION = 3;
         public static final int NEXT_VERSION_ACTIVATION = 4;
+        public static final int REMINDER_END_OF_CONTRACTS = 5;
+
+        public static final int CONTRACT_DURATION_TYPE_DAYS = 1;
+        public static final int CONTRACT_DURATION_TYPE_MONTHS = 2;
+        public static final int CONTRACT_DURATION_TYPE_WEEKS = 3;
+
       ]]></extra-code>
   </entity>
 
