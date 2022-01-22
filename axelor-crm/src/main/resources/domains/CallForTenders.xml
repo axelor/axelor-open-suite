@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="CallForTenders" lang="java">
+
+    <string name="name" title="Name" required="true" namecolumn="true"/>
+    <integer name="statusSelect" selection="crm.call.for.tenders.status.select" default="0"
+      readonly="true" title="Status"/>
+
+    <many-to-one name="institution" ref="com.axelor.apps.base.db.Partner"
+      title="Institution"/>
+    <many-to-one name="city" ref="com.axelor.apps.base.db.City" title="City"/>
+    <many-to-one name="department" ref="com.axelor.apps.base.db.Department"
+      title="Department"/>
+    <many-to-many name="includedInstitutionSet" ref="com.axelor.apps.base.db.Partner"
+      title="Included institutions"/>
+
+    <many-to-one name="salesman" ref="com.axelor.auth.db.User" title="Salesman"/>
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      title="Opportunity"/>
+
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date" required="true"/>
+    <many-to-one name="rolloverDuration" ref="com.axelor.apps.base.db.Duration"
+      title="Duration of the rollover"/>
+    <date name="conductivityEndDate" title="End date of conductivity"/>
+
+    <string name="notes" large="true" title="CallForTenders.Notes" translatable="true"/>
+
+    <boolean name="isAppointementScheduled" title="Appointement scheduled" default="false"/>
+    <boolean name="isAppointementMade" title="Appointement made" default="false"/>
+
+    <extra-code><![CDATA[
+
+			// STATUS SELECT
+			public static final int STATUS_IN_PROGRESS = 0;
+			public static final int STATUS_WON = 1;
+			public static final int STATUS_LOST = 2;
+
+		]]></extra-code>
+
+  </entity>
+
+</domain-models>

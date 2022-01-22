@@ -96,6 +96,24 @@
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
 
+  <menuitem name="crm-root-top-opportunity" parent="crm-root" title="Top opportunities"
+    action="action.view.top.opportunity" order="25"/>
+
+  <action-view name="action.view.top.opportunity" title="Top opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" home="true">
+    <view type="kanban" name="opportunity-kanban"/>
+    <view type="grid" name="opportunity-grid"/>
+    <view type="form" name="opportunity-form"/>
+    <view-param name="search-filters" value="opportunity-filters"/>
+    <domain>self.amount &gt;= :_amount</domain>
+    <context name="_amount"
+      expr="eval:__config__.app.getApp('crm').getMinAmtTopOpportunities()"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+  </action-view>
+
   <menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
     title="My CRM events" action="crm.root.meeting.my.calendar" order="2"/>
 
@@ -398,6 +416,18 @@
     model="com.axelor.apps.base.db.PartnerRole">
     <view type="grid" name="partner-role-grid"/>
     <view type="form" name="partner-role-form"/>
+  </action-view>
+
+  <menuitem name="crm-root-call-for-tenders-all" parent="crm-root"
+    title="Calls for tenders" action="action.view.call.for.tenders.all" order="35"/>
+
+  <action-view name="action.view.call.for.tenders.all" title="Calls for tenders"
+    model="com.axelor.apps.crm.db.CallForTenders">
+    <view type="grid" name="call-for-tenders-grid"/>
+    <view type="form" name="call-for-tenders-form"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="plus3MonthDate" expr="eval:__config__.app.getTodayDate().plusMonths(3)"/>
+    <context name="plus6MonthDate" expr="eval:__config__.app.getTodayDate().plusMonths(6)"/>
   </action-view>
 
 

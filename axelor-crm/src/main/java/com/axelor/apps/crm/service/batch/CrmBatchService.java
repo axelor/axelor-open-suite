@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de comptabilité et
@@ -57,6 +58,10 @@ public class CrmBatchService extends AbstractBatchService {
         batch = target(crmBatch);
         break;
 
+      case CrmBatchRepository.ACTION_CALL_FOR_TENDERS_REMINDER:
+        batch = callForTendersReminder(crmBatch);
+        break;
+
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -76,5 +81,28 @@ public class CrmBatchService extends AbstractBatchService {
   public Batch target(CrmBatch crmBatch) {
 
     return Beans.get(BatchTarget.class).run(crmBatch);
+  }
+
+  public Batch callForTendersReminder(CrmBatch crmBatch) throws AxelorException {
+    if (crmBatch.getMonthLimitNbr() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.CRM_BATCH_MONTH_NOT_POSITIVE));
+    }
+
+    if (!crmBatch.getTemplate().getContent().contains("_callForTendersList")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.CRM_BATCH_IMPROPER_TEMPLATE));
+    }
+
+    if (Strings.isNullOrEmpty(crmBatch.getSenderEmail())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              com.axelor.apps.crm.exception.IExceptionMessage
+                  .CRM_BATCH_SENDER_EMAIL_NOT_CONFIGURED));
+    }
+    return Beans.get(BatchCallForTendersReminder.class).run(crmBatch);
   }
 }

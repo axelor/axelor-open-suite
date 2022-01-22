@@ -1,0 +1,7 @@
+---
+title: "Call for tenders"
+type: feature
+description: |
+  This adds a new model (CallForTenders) to the crm module,
+  and a new batch action to crm batches to send an alert for every call for tender coming to an end within a given duration. 
+

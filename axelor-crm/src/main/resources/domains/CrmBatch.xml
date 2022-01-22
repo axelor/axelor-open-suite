@@ -24,11 +24,18 @@
     <many-to-many name="targetConfigurationSet"
       ref="com.axelor.apps.crm.db.TargetConfiguration" title="Targets configurations"/>
 
+    <string name="senderEmail" title="Sender email"/>
+    <integer name="monthLimitNbr" title="Month limit before end date"/>
+    <many-to-one name="template" title="Message template"
+      ref="com.axelor.apps.message.db.Template"
+      help="The body of the template must contain '_callForTendersList' at the place to diplay the call for tenders list."/>
+
     <extra-code><![CDATA[
 
 	   	//ACTION SELECT
 	   	public static final int ACTION_BATCH_EVENT_REMINDER = 21;
         public static final int ACTION_BATCH_TARGET = 22;
+        public static final int ACTION_CALL_FOR_TENDERS_REMINDER = 23;
 
 		public static final String CODE_BATCH_EVENT_REMINDER = "AX_EVENT_REMINDER";
 	]]></extra-code>
