@@ -32,6 +32,16 @@
         <button name="targetBatchBtn" title="Target batch" colSpan="4"
           onClick="save,action-crm-batch-method-run-batch"/>
       </panel>
+      <panel name="callForTendersRemindersPanel" title="Call for tenders reminder"
+        showIf="actionSelect == 23" itemSpan="4">
+        <field name="senderEmail" requiredIf="actionSelect == 23"
+          pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+        <field name="monthLimitNbr" requiredIf="actionSelect == 23"/>
+        <field name="template" requiredIf="actionSelect == 23"
+          domain="self.mediaTypeSelect = 2 and self.metaModel.name = 'User'"/>
+        <button name="callForTendersBatchBtn" title="Call for tenders reminder batch"
+          colSpan="4" onClick="save,action-crm-batch-method-action-call-for-tenders-reminder"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -67,6 +77,11 @@
   <!-- ACTION METHOD -->
   <action-method name="action-crm-batch-method-run-batch">
     <call class="com.axelor.apps.crm.web.CrmBatchController" method="runBatch"/>
+  </action-method>
+
+  <action-method name="action-crm-batch-method-action-call-for-tenders-reminder">
+    <call class="com.axelor.apps.crm.web.CrmBatchController"
+      method="actionCallForTendersReminder"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

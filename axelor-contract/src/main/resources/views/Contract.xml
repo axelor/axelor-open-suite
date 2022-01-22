@@ -22,7 +22,7 @@
       <button name="printContractBtn" title="Print" hidden="true" icon="fa-print"
         onClick="notImplementedYet"/>
       <button name="scheduleEventBtn" title="Schedule Event"
-        onClick="save,action-contract-method-schedule-event"/>
+        onClick="save,action-contract-method-schedule-event" showIf="id != null"/>
     </toolbar>
     <panel name="mainPanel">
       <panel colSpan="9" name="generalInfoPanel">

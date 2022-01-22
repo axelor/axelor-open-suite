@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid name="call-for-tenders-grid" title="Calls for tenders"
+    model="com.axelor.apps.crm.db.CallForTenders">
+    <hilite
+      if="$moment(todayDate) &lt; $moment(conductivityEndDate) &amp;&amp; $moment(conductivityEndDate) &lt; $moment(plus3MonthDate)"
+      color="danger"/>
+    <hilite
+      if="$moment(plus3MonthDate) &lt; $moment(conductivityEndDate) &amp;&amp; $moment(conductivityEndDate) &lt; $moment(plus6MonthDate)"
+      color="warning"/>
+    <field name="name"/>
+    <field name="statusSelect"/>
+    <field name="institution" grid-view="partner-grid" form-view="partner-form"/>
+    <field name="department" grid-view="department-grid" form-view="department-form"/>
+    <field name="city" grid-view="city-grid" form-view="city-form"/>
+    <field name="salesman" grid-view="user-grid" form-view="user-form"/>
+    <field name="opportunity" grid-view="opportunity-grid" form-view="opportunity-form"/>
+    <field name="startDate"/>
+    <field name="endDate"/>
+    <field name="notes"/>
+    <field name="conductivityEndDate" hidden="false"/>
+  </grid>
+
+
+  <form name="call-for-tenders-form" title="Call for tenders"
+    model="com.axelor.apps.crm.db.CallForTenders" width="large">
+    <panel name="mainPanel" colSpan="7" itemSpan="12">
+      <field name="statusSelect" showTitle="false" widget="NavSelect"/>
+      <spacer/>
+      <field name="name" colSpan="3"/>
+      <panel name="generalInfoPanel" title="General informations" itemSpan="4">
+        <field name="institution" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="city" form-view="city-form" grid-view="city-grid"/>
+        <field name="department" form-view="department-form" grid-view="department-grid"/>
+      </panel>
+      <panel name="commercialInfoPanel" title="Commercial informations">
+        <field name="salesman" form-view="user-form" grid-view="user-grid"/>
+        <field name="opportunity" form-view="opportunity-form" grid-view="opportunity-grid"/>
+        <field name="includedInstitutionSet" colSpan="12" widget="TagSelect" canNew="false"
+          form-view="partner-form" grid-view="partner-grid"/>
+        <field name="isAppointementScheduled" title="Appointement scheduled"/>
+        <field name="isAppointementMade" title="Appointement made"/>
+      </panel>
+      <panel name="datesPanel" title="Dates" itemSpan="4">
+        <field name="startDate"/>
+        <field name="endDate" onChange="action-crm-method-set-conductivity-end-date"/>
+        <field name="rolloverDuration" onChange="action-crm-method-set-conductivity-end-date"/>
+        <field name="conductivityEndDate"/>
+      </panel>
+      <panel name="notesPanel" title="CallForTenders.Notes" itemSpan="12">
+        <field name="notes" showTitle="false" widget="html"/>
+      </panel>
+    </panel>
+    <panel name="actionsPanel" colSpan="6" sidebar="true">
+      <button name="winBtn" title="Won" showIf="statusSelect == 0" css="btn-primary"
+        onClick="save, action-crm-method-win-call-for-tenders"/>
+      <button name="looseBtn" title="Lost" showIf="statusSelect == 0" css="btn-danger"
+        onClick="save, action-crm-method-loose-call-for-tenders"/>
+      <button name="backToInProgressBtn" title="Back to 'In progress' status"
+        showIf="statusSelect != 0" css="btn-custom"
+        onClick="save, action-crm-method-set-call-for-tenders-back-in-progress"/>
+    </panel>
+  </form>
+
+
+  <action-method name="action-crm-method-win-call-for-tenders">
+    <call class="com.axelor.apps.crm.web.CallForTendersController" method="win"/>
+  </action-method>
+
+  <action-method name="action-crm-method-loose-call-for-tenders">
+    <call class="com.axelor.apps.crm.web.CallForTendersController" method="loose"/>
+  </action-method>
+
+  <action-method name="action-crm-method-set-call-for-tenders-back-in-progress">
+    <call class="com.axelor.apps.crm.web.CallForTendersController" method="setBackInProgress"/>
+  </action-method>
+
+  <action-method name="action-crm-method-set-conductivity-end-date">
+    <call class="com.axelor.apps.crm.web.CallForTendersController"
+      method="setEndDateConductivity"/>
+  </action-method>
+
+
+</object-views>
