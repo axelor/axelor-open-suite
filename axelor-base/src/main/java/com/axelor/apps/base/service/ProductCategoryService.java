@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductCategoryService {
@@ -40,4 +41,22 @@ public interface ProductCategoryService {
    * @return an optional with the maximum applicable discount if found.
    */
   Optional<BigDecimal> computeMaxDiscount(ProductCategory productCategory) throws AxelorException;
+
+  /**
+   * Find child of given category, and recursively children of found children.
+   *
+   * @param productCategory a product category
+   * @return all parents of the category
+   */
+  List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
+      throws AxelorException;
+
+  /**
+   * Find parent of given category, and recursively parents of found parents.
+   *
+   * @param productCategory a product category
+   * @return all parents of the category
+   */
+  List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
+      throws AxelorException;
 }
