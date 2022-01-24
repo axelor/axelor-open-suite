@@ -13,7 +13,7 @@ public class AccountInvoiceTermRepository extends InvoiceTermRepository {
     return Query.of(InvoiceTerm.class)
         .filter("self.paymentSession.id = :id AND self.invoice.partner.id = :partnerId")
         .bind("id", paymentSession.getId())
-        .bind("partnerId", partner)
+        .bind("partnerId", partner.getId())
         .fetch();
   }
 }
