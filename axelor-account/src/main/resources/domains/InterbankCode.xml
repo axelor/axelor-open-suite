@@ -6,14 +6,23 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InterbankCode" lang="java" cacheable="true">
-  
+
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" required="true"/>
     <date name="endDate" title="Expiration date (only for reference)"/>
     <string name="description" multiline="true" title="Description"/>
     <integer name="typeSelect" title="Type" selection="account.interbankcode.type.select"/>
-    <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine" mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
-  
+    <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine"
+      mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
+
+    <extra-code><![CDATA[
+
+	   // TYPE SELECT
+		public static final int TYPE_OPERATION_CODE = 1;
+		public static final int TYPE_REJECT_RETURN_CODE = 2;
+
+	]]></extra-code>
+
   </entity>
 
 </domain-models>

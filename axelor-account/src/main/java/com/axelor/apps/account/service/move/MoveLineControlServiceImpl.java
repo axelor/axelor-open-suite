@@ -23,25 +23,25 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     Journal journal = move == null ? null : move.getJournal();
     Account account = line.getAccount();
     AccountType accountType = line.getAccount() == null ? null : line.getAccount().getAccountType();
+    boolean isValid = false;
 
     if (move != null && journal != null && account != null) {
       Set<Account> validAccounts = journal.getValidAccountSet();
       Set<AccountType> validAccountTypes = journal.getValidAccountTypeSet();
-      if (!ObjectUtils.isEmpty(validAccounts) && !validAccounts.contains(account)) {
-        throw new AxelorException(
-            line,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
-            account.getName(),
-            line.getName());
+      if (!ObjectUtils.isEmpty(validAccounts) && validAccounts.contains(account)) {
+        isValid = true;
       }
-      if (!ObjectUtils.isEmpty(validAccountTypes) && !validAccountTypes.contains(accountType)) {
+      if (!ObjectUtils.isEmpty(validAccountTypes) && validAccountTypes.contains(accountType)) {
+        isValid = true;
+      }
+      if (!isValid) {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
-            account.getName(),
-            line.getName());
+            account.getCode(),
+            line.getName(),
+            journal.getCode());
       }
     }
   }

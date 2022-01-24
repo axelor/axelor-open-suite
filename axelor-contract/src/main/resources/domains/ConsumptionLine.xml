@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="contract" package="com.axelor.apps.contract.db" />
+  <module name="contract" package="com.axelor.apps.contract.db"/>
 
-	<entity name="ConsumptionLine" >
+  <entity name="ConsumptionLine">
 
-		<decimal name="qty" title="Quantity"/>
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
-		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-		<date name="lineDate" title="Date" />
-		<boolean name="isInvoiced" title="Invoiced" />
-		<boolean name="isError" title="Error" />
-		<string name="reference" title="Reference" />
-		<many-to-one name="contractLine" ref="com.axelor.apps.contract.db.ContractLine" title="Contract line" />
-		<many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice line" />
-		
-		<string name="fullName" namecolumn="true">
+    <decimal name="qty" title="Quantity"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <date name="lineDate" title="Date"/>
+    <boolean name="isInvoiced" title="Invoiced"/>
+    <boolean name="isError" title="Error"/>
+    <string name="reference" title="Reference"/>
+    <many-to-one name="contractLine" ref="com.axelor.apps.contract.db.ContractLine"
+      title="Contract line"/>
+    <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"
+      title="Invoice line"/>
+
+    <string name="fullName" namecolumn="true">
 		<![CDATA[
 	  		String fullName = "";
 	  		if(product != null && product.getName() != null)  {
@@ -27,8 +31,8 @@
 			}
 	  		return fullName;
 	  	]]>
-		</string>
+    </string>
 
-	</entity>
+  </entity>
 
 </domain-models>

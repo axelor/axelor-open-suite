@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
@@ -71,6 +71,7 @@ public class MoveTemplateService {
       MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
+      TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -147,6 +148,7 @@ public class MoveTemplateService {
                 moveDate,
                 moveDate,
                 null,
+                partner != null ? partner.getFiscalPosition() : null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 0,
                 origin,
@@ -237,6 +239,7 @@ public class MoveTemplateService {
                 null,
                 moveDate,
                 moveDate,
+                null,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 0,

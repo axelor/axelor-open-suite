@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
@@ -57,6 +58,7 @@ public class MoveManagementRepository extends MoveRepository {
           && entity.getStatusSelect() == STATUS_SIMULATED) {
         copy.setStatusSelect(STATUS_SIMULATED);
       }
+      copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
       copy.setReference(null);
       copy.setExportNumber(null);
       copy.setExportDate(null);
@@ -87,6 +89,12 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
     moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+    moveLine.setReconcileGroup(null);
+    moveLine.setDebitReconcileList(null);
+    moveLine.setCreditReconcileList(null);
+    moveLine.setAmountPaid(BigDecimal.ZERO);
+    moveLine.setTaxPaymentMoveLineList(null);
+    moveLine.setTaxAmount(BigDecimal.ZERO);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 

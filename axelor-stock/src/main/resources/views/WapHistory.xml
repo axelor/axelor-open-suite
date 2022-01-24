@@ -12,19 +12,21 @@
   </grid>
 
   <form name="wap-history-form" title="WAP history" model="com.axelor.apps.stock.db.WapHistory"
-		onNew="action-wap-history-attrs-set-scale" onLoad="action-wap-history-attrs-set-scale">
+    onNew="action-wap-history-attrs-set-scale" onLoad="action-wap-history-attrs-set-scale">
     <panel name="main">
       <field name="date"/>
       <field name="wap"/>
       <field name="qty"/>
       <field name="unit"/>
       <field name="origin" colSpan="12" showIf="!stockMoveLine"/>
-      <field name="stockMoveLine.stockMove" title="Origin" colSpan="12" showIf="stockMoveLine" form-view="stock-move-form" grid-view="stock-move-grid"/>
+      <field name="stockMoveLine.stockMove" title="Origin" colSpan="12" showIf="stockMoveLine"
+        form-view="stock-move-form" grid-view="stock-move-grid"/>
     </panel>
   </form>
-  
+
   <action-attrs name="action-wap-history-attrs-set-scale">
-	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
-  
+
 </object-views>

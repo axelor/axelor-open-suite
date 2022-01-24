@@ -72,6 +72,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               detailPaymentAmount,
               appBaseService.getTodayDate(reconcile.getCompany()));
 
+      taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
+
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
       customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);

@@ -7,10 +7,11 @@
 
   <entity name="DmnTable" cacheable="true">
 
-      <string name="name" title="Name" readonly="true"  />
-      <string name="decisionId" title="Decision Id" readonly="true" unique="true"/>
-      <many-to-one name="wkfDmnModel" ref="WkfDmnModel" title="Dmn model" />
-      <one-to-many name="outputDmnFieldList" ref="DmnField" title="Outputs" mappedBy="outputDmnTable"/>
+    <string name="name" title="Name" readonly="true"/>
+    <string name="decisionId" title="Decision Id" readonly="true" unique="true"/>
+    <many-to-one name="wkfDmnModel" ref="WkfDmnModel" title="Dmn model"/>
+    <one-to-many name="outputDmnFieldList" ref="DmnField" title="Outputs"
+      mappedBy="outputDmnTable"/>
 
   </entity>
 

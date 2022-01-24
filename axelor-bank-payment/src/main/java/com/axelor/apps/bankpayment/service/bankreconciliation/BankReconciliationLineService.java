@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -171,20 +171,23 @@ public class BankReconciliationLineService {
   public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
     if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
-      if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
-        throw new AxelorException(
-            bankReconciliationLine,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(
-                com.axelor.apps.bankpayment.exception.IExceptionMessage
-                    .BANK_RECONCILIATION_INCOMPLETE_LINE));
-      } else if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
-        throw new AxelorException(
-            bankReconciliationLine,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(
-                com.axelor.apps.bankpayment.exception.IExceptionMessage
-                    .BANK_RECONCILIATION_MISSING_JOURNAL));
+      if (ObjectUtils.notEmpty(bankReconciliationLine.getAccount())) {
+        if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
+          throw new AxelorException(
+              bankReconciliationLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(
+                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                      .BANK_RECONCILIATION_MISSING_JOURNAL));
+        }
+        if (bankReconciliationLine.getBankReconciliation().getCashAccount() == null) {
+          throw new AxelorException(
+              bankReconciliationLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(
+                  com.axelor.apps.bankpayment.exception.IExceptionMessage
+                      .BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
+        }
       }
     }
   }

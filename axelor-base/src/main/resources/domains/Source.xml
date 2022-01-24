@@ -9,8 +9,8 @@
 
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
-    
-    
+
+
   </entity>
 
 </domain-models>

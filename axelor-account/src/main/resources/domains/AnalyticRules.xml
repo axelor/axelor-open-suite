@@ -6,11 +6,14 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticRules" lang="java">
-  	<string name="name" title="Name" required="true"/>
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-	<many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account" title="From Account"/>
-	<many-to-one name="toAccount" ref="com.axelor.apps.account.db.Account" title="To Account"/>
-	<many-to-many name="analyticAccountSet" ref="com.axelor.apps.account.db.AnalyticAccount" title="Authorized Analytic Accounts"/>
+    <string name="name" title="Name" required="true" unique="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account"
+      title="From Account"/>
+    <many-to-one name="toAccount" ref="com.axelor.apps.account.db.Account"
+      title="To Account"/>
+    <many-to-many name="analyticAccountSet"
+      ref="com.axelor.apps.account.db.AnalyticAccount" title="Authorized Analytic Accounts"/>
   </entity>
- 
+
 </domain-models>

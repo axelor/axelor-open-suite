@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bpm>
 
-	<wkfModels>
-		
-		<wkfModel>
-								
-			<code>ACCOUNTING_BUDGET</code>
-								
-			<name>Accounting_Budget</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>ACCOUNTING_BUDGET</code>
+
+      <name>Accounting_Budget</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="BudgetProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -64,23 +64,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_JOURNAL</code>
-								
-			<name>Accounting_Journal</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_JOURNAL</code>
+
+      <name>Accounting_Journal</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="JournalProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -127,23 +127,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_ACCOUNTCLEARANCE</code>
-								
-			<name>Accounting_AccountClearance</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_ACCOUNTCLEARANCE</code>
+
+      <name>Accounting_AccountClearance</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="AccountClearanceProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -190,23 +190,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_ACCOUNTINGREPORT</code>
-								
-			<name>Accounting_AccountingReport</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_ACCOUNTINGREPORT</code>
+
+      <name>Accounting_AccountingReport</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="AccountingReportProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -253,23 +253,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_SUBROGATIONRELEASE</code>
-								
-			<name>Accounting_SubrogationRelease</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_SUBROGATIONRELEASE</code>
+
+      <name>Accounting_SubrogationRelease</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="SubrogationReleaseProcess" name="SubrogationRelease" isExecutable="true">
     <bpmn2:extensionElements>
@@ -380,23 +380,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_FIXEDASSET</code>
-								
-			<name>Accounting_FixedAsset</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_FIXEDASSET</code>
+
+      <name>Accounting_FixedAsset</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="FixedAssetProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -518,23 +518,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_CHEQUEREJECTION</code>
-								
-			<name>Accounting_ChequeRejection</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_CHEQUEREJECTION</code>
+
+      <name>Accounting_ChequeRejection</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="ChequeRejectionProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -581,23 +581,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_FIXEDASSETLINE</code>
-								
-			<name>Accounting_FixedAssetLine</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_FIXEDASSETLINE</code>
+
+      <name>Accounting_FixedAssetLine</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="FixedAssetLineProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -644,23 +644,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_IRRECOVERABLE</code>
-								
-			<name>Accounting_Irrecoverable</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_IRRECOVERABLE</code>
+
+      <name>Accounting_Irrecoverable</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="IrrecoverableProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -707,23 +707,23 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-		<wkfModel>
-								
-			<code>ACCOUNTING_MOVE</code>
-								
-			<name>Accounting_Move</name>
-								
-			<isActive>true</isActive>
-								
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+    <wkfModel>
+
+      <code>ACCOUNTING_MOVE</code>
+
+      <name>Accounting_Move</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="MoveProcess" isExecutable="true">
     <bpmn2:extensionElements>
@@ -848,15 +848,15 @@
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-								
-			<versionTag></versionTag>
-								
-			<previousVersion></previousVersion>
-								
-			<description></description>
-								
-		</wkfModel>
-	</wkfModels>
-	
-	
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
 </bpm>

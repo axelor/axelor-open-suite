@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.generator;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -189,7 +184,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           accountManagementService.getProductAccount(
               product,
               company,
-              partner.getFiscalPosition(),
+              invoice.getFiscalPosition(),
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
@@ -214,7 +209,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           Beans.get(AccountManagementService.class)
               .getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class).getTaxEquiv(partner.getFiscalPosition(), tax);
+          Beans.get(FiscalPositionService.class).getTaxEquiv(invoice.getFiscalPosition(), tax);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }
@@ -249,14 +244,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
       taxLine =
           accountManagementService.getTaxLine(
-              today,
-              product,
-              company,
-              partner.getFiscalPosition(),
-              InvoiceToolService.isPurchase(invoice));
+              today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
 

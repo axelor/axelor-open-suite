@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <baml-models>
 
-		<baml-model>
-							
-			<name>Create inventory</name>
-							
-			<bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <baml-model>
+
+    <name>Create inventory</name>
+
+    <bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <process-action id="Process_1" name="Create new inventory" targetModel="Inventory" sourceModel="ProductFamily">
     <query id="Query_0hr41ft" name="Fetch stock location" target="stockLocation" expression="&#34;self.name = ?1&#34;, &#39;Main Warehouse&#39;" expressionValue="[{&#34;metaModalName&#34;:&#34;StockLocation&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;name&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;Entrepôt principal&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;STRING&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;name&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Name&#34;,&#34;required&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;name&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Name&#34;,&#34;required&#34;:true}]}]}],&#34;generateWithId&#34;:false}]" model="StockLocation" returnType="SINGLE" />
@@ -76,8 +76,8 @@ return $ctx.save(rec)</script>
   </bpmndi:BPMNDiagram>
 </process-actions>
 ]]></bamlXml>
-							
-			<resultScript><![CDATA[import com.axelor.db.mapper.Adapter
+
+    <resultScript><![CDATA[import com.axelor.db.mapper.Adapter
 import com.axelor.inject.Beans
 import com.axelor.apps.bpm.context.*
 
@@ -114,15 +114,15 @@ return inventory.getTarget()
 }
 return _execute(productFamily)
 ]]></resultScript>
-							
-			<appBuilder>BPM-18</appBuilder>
-							
-		</baml-model>
-		<baml-model>
-							
-			<name>Create Invoice From Sale Order</name>
-							
-			<bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+    <appBuilder>BPM-18</appBuilder>
+
+  </baml-model>
+  <baml-model>
+
+    <name>Create Invoice From Sale Order</name>
+
+    <bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <process-action id="ProcessAction_1" name="Create Invoice From Sale Order" targetModel="Invoice" sourceModel="SaleOrder">
     <mapper id="Mapper_0g762qq" name="Create Invoice" sourceField="SaleOrder" targetField="Invoice">
@@ -220,8 +220,8 @@ invoice.invoiceMessageTemplate = $ctx.filterOne('Template','self.name = ?1','Cus
   </bpmndi:BPMNDiagram>
 </process-actions>
 ]]></bamlXml>
-							
-			<resultScript><![CDATA[import com.axelor.db.mapper.Adapter
+
+    <resultScript><![CDATA[import com.axelor.db.mapper.Adapter
 import com.axelor.inject.Beans
 import com.axelor.apps.bpm.context.*
 
@@ -292,8 +292,8 @@ return invoice.getTarget()
 }
 return _execute(saleOrder)
 ]]></resultScript>
-							
-			<appBuilder>BPM-18</appBuilder>
-							
-		</baml-model>
+
+    <appBuilder>BPM-18</appBuilder>
+
+  </baml-model>
 </baml-models>
