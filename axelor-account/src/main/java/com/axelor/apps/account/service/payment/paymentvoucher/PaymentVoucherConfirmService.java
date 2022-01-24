@@ -18,6 +18,8 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -26,6 +28,8 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
@@ -33,6 +37,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -69,6 +74,7 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
   protected PaymentVoucherControlService paymentVoucherControlService;
   protected PaymentVoucherToolService paymentVoucherToolService;
+  protected AccountConfigService accountConfigService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
 
@@ -83,6 +89,7 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherSequenceService paymentVoucherSequenceService,
       PaymentVoucherControlService paymentVoucherControlService,
       PaymentVoucherToolService paymentVoucherToolService,
+      AccountConfigService accountConfigService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -95,6 +102,7 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
     this.paymentVoucherControlService = paymentVoucherControlService;
     this.paymentVoucherToolService = paymentVoucherToolService;
+    this.accountConfigService = accountConfigService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
   }
@@ -238,6 +246,7 @@ public class PaymentVoucherConfirmService {
       paymentVoucher.setGeneratedMove(move);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
+      BigDecimal totalFinancialDiscount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
@@ -251,8 +260,13 @@ public class PaymentVoucherConfirmService {
         BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
-
           paidLineTotal = paidLineTotal.add(amountToPay);
+
+          boolean financialDiscount = payVoucherElementToPay.getApplyFinancialDiscount();
+          boolean financialDiscountVat =
+              financialDiscount
+                  && payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
+                      == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
 
           this.payMoveLine(
               move,
@@ -263,6 +277,27 @@ public class PaymentVoucherConfirmService {
               payVoucherElementToPay,
               isDebitToPay,
               paymentDate);
+
+          if (financialDiscount) {
+            totalFinancialDiscount =
+                totalFinancialDiscount
+                    .add(payVoucherElementToPay.getFinancialDiscountAmount())
+                    .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
+
+            moveLineNo =
+                this.createFinancialDiscountMoveLines(
+                    move,
+                    paymentVoucher,
+                    payVoucherElementToPay,
+                    company,
+                    payerPartner,
+                    moveLineToPay,
+                    payVoucherElementToPay.getFinancialDiscountAmount(),
+                    paymentDate,
+                    moveLineNo,
+                    isDebitToPay,
+                    financialDiscountVat);
+          }
         }
       }
       // Create move line for the payment amount
@@ -271,13 +306,15 @@ public class PaymentVoucherConfirmService {
       // cancelling the moveLine (excess payment) by creating the balance of all the payments
       // on the same account as the moveLine (excess payment)
       // in the else case we create a classical balance on the bank account of the payment mode
+      BigDecimal paidAmount = paymentVoucher.getPaidAmount().subtract(totalFinancialDiscount);
+
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 paymentVoucher.getPartner(),
                 paymentVoucher.getMoveLine().getAccount(),
-                paymentVoucher.getPaidAmount(),
+                paidAmount,
                 isDebitToPay,
                 paymentDate,
                 moveLineNo++,
@@ -296,7 +333,7 @@ public class PaymentVoucherConfirmService {
                 move,
                 payerPartner,
                 paymentModeAccount,
-                paymentVoucher.getPaidAmount(),
+                paidAmount,
                 isDebitToPay,
                 paymentDate,
                 moveLineNo++,
@@ -350,6 +387,87 @@ public class PaymentVoucherConfirmService {
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
 
     deleteUnPaidLines(paymentVoucher);
+  }
+
+  protected int createFinancialDiscountMoveLines(
+      Move move,
+      PaymentVoucher paymentVoucher,
+      PayVoucherElementToPay payVoucherElementToPay,
+      Company company,
+      Partner payerPartner,
+      MoveLine moveLineToPay,
+      BigDecimal financialDiscountAmount,
+      LocalDate paymentDate,
+      int moveLineNo,
+      boolean isDebitToPay,
+      boolean financialDiscountVat)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    boolean isPurchase =
+        paymentVoucher.getOperationTypeSelect()
+                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || paymentVoucher.getOperationTypeSelect()
+                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+
+    LocalDate dueDate =
+        moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
+    Account financialDiscountAccount =
+        isPurchase
+            ? accountConfig.getPurchFinancialDiscountAccount()
+            : accountConfig.getSaleFinancialDiscountAccount();
+    String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
+
+    MoveLine financialDiscountMoveLine =
+        moveLineCreateService.createMoveLine(
+            move,
+            payerPartner,
+            financialDiscountAccount,
+            financialDiscountAmount,
+            isDebitToPay,
+            paymentDate,
+            dueDate,
+            moveLineNo++,
+            invoiceName,
+            null);
+
+    Tax financialDiscountTax = null;
+    if (financialDiscountVat) {
+      financialDiscountTax =
+          isPurchase
+              ? accountConfig.getPurchFinancialDiscountTax()
+              : accountConfig.getSaleFinancialDiscountTax();
+
+      financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+      financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+      financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
+    }
+
+    move.addMoveLineListItem(financialDiscountMoveLine);
+
+    if (financialDiscountVat) {
+      AccountManagement accountManagement =
+          financialDiscountTax.getAccountManagementList().stream()
+              .filter(it -> it.getCompany().equals(company))
+              .findFirst()
+              .orElse(null);
+
+      if (accountManagement != null) {
+        move.addMoveLineListItem(
+            moveLineCreateService.createMoveLine(
+                move,
+                payerPartner,
+                accountManagement.getFinancialDiscountAccount(),
+                payVoucherElementToPay.getFinancialDiscountTaxAmount(),
+                isDebitToPay,
+                paymentDate,
+                dueDate,
+                moveLineNo++,
+                invoiceName,
+                null));
+      }
+    }
+
+    return moveLineNo;
   }
 
   public void deleteUnPaidLines(PaymentVoucher paymentVoucher) {
@@ -439,12 +557,8 @@ public class PaymentVoucherConfirmService {
       boolean isDebitToPay,
       LocalDate paymentDate)
       throws AxelorException {
-    String invoiceName = "";
-    if (moveLineToPay.getMove().getInvoice() != null) {
-      invoiceName = moveLineToPay.getMove().getInvoice().getInvoiceId();
-    } else {
-      invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
-    }
+    String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             paymentMove,
@@ -470,5 +584,14 @@ public class PaymentVoucherConfirmService {
       reconcileService.confirmReconcile(reconcile, true);
     }
     return moveLine;
+  }
+
+  protected String getInvoiceName(
+      MoveLine moveLineToPay, PayVoucherElementToPay payVoucherElementToPay) {
+    if (moveLineToPay.getMove().getInvoice() != null) {
+      return moveLineToPay.getMove().getInvoice().getInvoiceId();
+    } else {
+      return payVoucherElementToPay.getPaymentVoucher().getRef();
+    }
   }
 }
