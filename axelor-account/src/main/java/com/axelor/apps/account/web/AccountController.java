@@ -148,4 +148,15 @@ public class AccountController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void fillAccountCode(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      account = Beans.get(AccountService.class).fillAccountCode(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setValue("code", account.getCode());
+    }
+  }
 }

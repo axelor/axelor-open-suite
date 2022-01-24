@@ -138,10 +138,13 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
             .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
             .setScale(2, RoundingMode.HALF_UP);
 
-    BigDecimal taxProratedAmount =
-        taxLine == null
-            ? BigDecimal.ZERO
-            : exTaxProratedAmount.multiply(taxLine.getValue()).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal taxProratedAmount = BigDecimal.ZERO;
+    if (taxLine != null) {
+      taxProratedAmount =
+          taxLine == null
+              ? BigDecimal.ZERO
+              : exTaxProratedAmount.multiply(taxLine.getValue()).setScale(2, RoundingMode.HALF_UP);
+    }
 
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);
     paymentMvlD.setTaxProratedAmount(taxProratedAmount);

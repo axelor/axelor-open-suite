@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1477,5 +1477,38 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                       + I18n.get("Populated field: ")
                       + fieldToPopulate);
             });
+  }
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return null;
+    } else {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+        saleOrderLine.setTaxLine(taxLine);
+
+        Tax tax =
+            accountManagementService.getProductTax(
+                saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
+
+        TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setInTaxTotal(
+            saleOrderLine
+                .getExTaxTotal()
+                .multiply(saleOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        saleOrderLine.setCompanyInTaxTotal(
+            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      }
+    }
+    return saleOrderLineList;
   }
 }

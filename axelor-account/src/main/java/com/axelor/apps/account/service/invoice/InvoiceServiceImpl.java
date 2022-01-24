@@ -1181,7 +1181,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-    BigDecimal amount = invoicePayment.getAmount();
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
         calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
@@ -1228,7 +1229,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean checkManageCutOffDates(Invoice invoice) {
     return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
         && invoice.getInvoiceLineList().stream()
-            .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+            .anyMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
   }
 
   @Override
@@ -1245,23 +1246,59 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
+  }
+
+  @Override
+  public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
+    return invoice.getPfpValidatorUser() != null
+        && invoice.getPfpValidatorUser().equals(this.getPfpValidatorUser(invoice));
+  }
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validatePfp(Long invoiceId) throws AxelorException {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
+
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (invoiceTerm.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED
-          || invoiceTerm.getPfpValidateStatusSelect()
-              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVOICE_VALIDATE_PFP_CONDITION_NOT_FULFILLED));
-      }
       invoiceTerm.setPfpValidatorUser(currentUser);
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     }
+
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+  }
+
+  @Override
+  public void updateUnpaidInvoiceTerms(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
+        .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
+  }
+
+  protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
   }
 }

@@ -7,6 +7,7 @@
 
   <entity name="Partner" lang="java">
     <string name="purchaseOrderInformation" multiline="true" large="true"/>
+    <string name="specificTaxNote" title="Specific tax note" large="true"/>
     <one-to-many name="supplierCatalogList"
       ref="com.axelor.apps.purchase.db.SupplierCatalog" mappedBy="supplierPartner"
       title="Supplier Catalog Lines"/>

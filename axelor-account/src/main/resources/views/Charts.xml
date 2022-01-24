@@ -1051,6 +1051,7 @@
 	 from InvoiceTerm as self
 	 left join self.invoice.partner as _partner
 	 left join self.bankDetails as _bankDetails
+	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
 	 group by _partner.id,_bankDetails.id
 	 order by _partner.name
 	 ]]></dataset>

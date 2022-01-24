@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
@@ -51,6 +52,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -1087,9 +1089,7 @@ public class InvoiceController {
     response.setAttr(
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
-        invoice
-            .getPfpValidatorUser()
-            .equals(Beans.get(InvoiceService.class).getPfpValidatorUser(invoice)));
+        Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
@@ -1189,8 +1189,49 @@ public class InvoiceController {
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPaymentVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      User user = request.getUser();
+      InvoiceVisibilityService invoiceVisibilityService = Beans.get(InvoiceVisibilityService.class);
+
+      response.setAttr(
+          "passedForPaymentValidationBtn",
+          "hidden",
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, true));
+
+      response.setAttr(
+          "refusalToPayBtn",
+          "hidden",
+          !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
+
+      response.setAttr(
+          "addPaymentBtn", "hidden", !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+
+      response.setAttr(
+          "registerPaymentBtn",
+          "hidden",
+          !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+
+      response.setAttr(
+          "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
+
+      response.setAttr(
+          "decisionPfpTakenDate",
+          "hidden",
+          !invoiceVisibilityService.isDecisionPfpVisible(invoice));
+
+      response.setAttr(
+          "sendPfpNotifyEmailBtn",
+          "hidden",
+          !invoiceVisibilityService.isSendNotifyVisible(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1203,6 +1244,18 @@ public class InvoiceController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateUnpaidInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceService.class).updateUnpaidInvoiceTerms(invoice);
+
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

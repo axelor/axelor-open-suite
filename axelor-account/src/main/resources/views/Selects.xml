@@ -86,6 +86,8 @@
     <option order="20" value="20">Fees declaration supporting file</option>
     <option order="21" value="21">Preparatory declaration DGI 2054</option>
     <option order="22" value="22">Preparatory declaration DGI 2055</option>
+    <option order="23" value="23">Personnalized report</option>
+    <option order="24" value="24">Personnalized report</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1006">Export sale -> Acc. Soft.</option>
@@ -206,6 +208,7 @@
     <option value="21">Close the annual accounts of the past year</option>
     <option value="22">Open the annual accounts of the next year</option>
     <option value="23">Block customer with late payment issues</option>
+    <option value="24">Exchanges</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -663,6 +666,10 @@
   <selection name='ianalytic.account.status.select'>
     <option value="0">Inactive</option>
     <option value="1">Active</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.bill.of.exchange.type.select">
+    <option value="1">Direct bank LCR</option>
   </selection>
 
   <selection name="iaccount.payment.session.select">
