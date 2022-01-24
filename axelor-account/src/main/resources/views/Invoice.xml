@@ -981,6 +981,7 @@ InvoiceSet.length > 0))"
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')" colSpan="12"/>
+        <field name="paymentDelay" readonly="true" colSpan="12"/>
       </panel>
     </panel-stack>
 
