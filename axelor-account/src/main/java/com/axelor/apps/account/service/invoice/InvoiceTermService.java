@@ -214,4 +214,6 @@ public interface InvoiceTermService {
 
   public Integer massRefusePfp(
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public void computeTotalPaymentSession(PaymentSession paymentSession);
 }

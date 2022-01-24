@@ -18,7 +18,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -43,6 +45,17 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       Beans.get(PaymentSessionService.class).setJournal(paymentSession);
       response.setValue("journal", paymentSession.getJournal());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotal(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(InvoiceTermService.class).computeTotalPaymentSession(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

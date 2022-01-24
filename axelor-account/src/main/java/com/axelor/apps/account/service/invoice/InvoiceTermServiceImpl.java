@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -548,6 +549,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           fillEligibleTerm(paymentSession, invoiceTerm);
           invoiceTermRepo.save(invoiceTerm);
         });
+    computeTotalPaymentSession(paymentSession);
   }
 
   private String retrieveEligibleTermsQuery() {
@@ -834,5 +836,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     originalInvoiceTerm.setPfpRejectedAmount(amount);
     originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
+  }
+
+  @Override
+  @Transactional
+  public void computeTotalPaymentSession(PaymentSession paymentSession) {
+    BigDecimal sessionTotalAmount =
+        invoiceTermRepo
+            .all()
+            .filter(
+                "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = TRUE")
+            .bind("paymentSession", paymentSession.getId())
+            .fetchStream()
+            .map(InvoiceTerm::getAmountPaid)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    paymentSession.setSessionTotalAmount(sessionTotalAmount);
+    Beans.get(PaymentSessionRepository.class).save(paymentSession);
   }
 }

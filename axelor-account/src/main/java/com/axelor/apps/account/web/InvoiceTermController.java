@@ -269,4 +269,14 @@ public class InvoiceTermController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      Beans.get(InvoiceTermService.class)
+          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

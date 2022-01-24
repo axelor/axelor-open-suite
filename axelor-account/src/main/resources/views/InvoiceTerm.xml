@@ -70,14 +70,18 @@
     <field name="applyFinancialDiscount"/>
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
-    <button name="selectBtn" title="Select" onClick="act-1" icon="fa-plus-circle"
+    <button name="selectBtn" title="Select"
+      onClick="act-1,action-invoice-term-method-compute-total-payment-session" icon="fa-plus-circle"
       readonlyIf="isSelectedOnPaymentSession"/>
-    <button name="unselectBtn" title="Unselect" onClick="act-2" icon="fa-minus-circle"
-      readonlyIf="!isSelectedOnPaymentSession"/>
+    <button name="unselectBtn" title="Unselect"
+      onClick="act-2,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-minus-circle" readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="act-1" readonlyIf="isSelectedOnPaymentSession"/>
+      icon="fa-user-plus" onClick="act-1,action-invoice-term-method-compute-total-payment-session"
+      readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="act-2" readonlyIf="!isSelectedOnPaymentSession"/>
+      icon="fa-user-times" onClick="act-2,action-invoice-term-method-compute-total-payment-session"
+      readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
@@ -501,6 +505,11 @@
   <action-method name="action-invoice-term-method-pfp-partial-reason-confirm-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="pfpPartialReasonConfirm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-compute-total-payment-session">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="computeTotalPaymentSession"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
