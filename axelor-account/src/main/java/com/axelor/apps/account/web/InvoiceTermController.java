@@ -208,6 +208,7 @@ public class InvoiceTermController {
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
       response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -275,6 +276,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermService.class)
           .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

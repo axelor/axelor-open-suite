@@ -56,6 +56,7 @@ public class PaymentSessionController {
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(InvoiceTermService.class).computeTotalPaymentSession(paymentSession);
       response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

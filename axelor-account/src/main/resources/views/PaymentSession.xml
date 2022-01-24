@@ -21,7 +21,7 @@
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="12">
-      <field name="statusSelect" canEdit="true" colSpan="12"/>
+      <field name="statusSelect" canEdit="true" colSpan="12" widget="NavSelect"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -52,10 +52,10 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
-        onClick="com.axelor.apps.account.web.InvoiceTermController:searchEligibleTerms"/>
+        onClick="action-method-payment-session-search-eligible-terms"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0"
-        onClick="action-method-payment-session-compute-total"/>
+        onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet showIf="id" colSpan="12"
         action="action-invoice-term-view-payment-session-dashlet" canSearch="true"/>
       <panel-dashlet showIf="id" colSpan="8"
@@ -165,6 +165,11 @@
 
   <action-method name="action-method-payment-session-compute-total">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="computeTotal"/>
+  </action-method>
+
+  <action-method name="action-method-payment-session-search-eligible-terms">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="searchEligibleTerms"/>
   </action-method>
 
   <action-group name="action-group-payment-session-on-company-change">

@@ -539,7 +539,7 @@
   <action-view name="action-invoice-term-view-payment-session-dashlet"
     title="Term(s) to pay/be paid by partner" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
-    <view type="form" name="invoice-term-form"/>
+    <view type="form" name="invoice-term-move-line-form"/>
     <domain>self.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
