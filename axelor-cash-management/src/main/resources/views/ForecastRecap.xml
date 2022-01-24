@@ -35,6 +35,7 @@
         if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4"/>
       <field name="bankDetails.balanceUpdatedDate" title="Balance updated date"
         if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails" colSpan="4"/>
+      <field name="userRecap"/>
       <field name="opportunitiesTypeSelect" colSpan="4"/>
       <field name="startingBalance" colSpan="4"/>
       <field type="date" name="company.defaultBankDetails.balanceUpdatedDate"

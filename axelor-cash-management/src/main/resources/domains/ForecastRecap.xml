@@ -12,6 +12,7 @@
       title="Company"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Bank"/>
+    <many-to-one ref="com.axelor.auth.db.User" name="userRecap" title="User"/>
     <decimal name="startingBalance" title="Starting Balance" required="true"/>
     <decimal name="endingBalance" title="Ending Balance"/>
     <decimal name="currentBalance"/>
