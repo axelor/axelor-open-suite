@@ -1,8 +1,19 @@
 package com.axelor.apps.sale.service.saleorder.model;
 
+/**
+ * Specific object for merge process of sale orders. When merging sales order, there is a control
+ * that checks if the sale orders that we try to merge shares common values on specific fields (ex:
+ * company, taxNumber, etc..)
+ *
+ * <p>But because there are some differences in the control (some fields are mandatory and some will
+ * require confirmation if different) it was needed to create a {@link SaleOrderMergeObject} in
+ * order to differentiate them.
+ */
 public class SaleOrderMergeObject {
 
+  /** Boolean that indicate that commonObject can be null. */
   private boolean canBeNull;
+
   private Object commonObject;
   private boolean existDiff = false;
 

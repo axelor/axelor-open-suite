@@ -1364,10 +1364,7 @@
   </action-group>
 
   <action-group name="action-group-sale-order-merge-action">
-    <action name="action-sale-order-method-merge-sale"
-      if="!__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-method-merge-supplychain"
-      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-method-merge-sale"/>
   </action-group>
 
   <action-group name="action-sale-group-onchange-company">
@@ -1579,11 +1576,6 @@
 
   <action-method name="action-sale-order-method-merge-sale">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="mergeSaleOrder"/>
-  </action-method>
-
-  <action-method name="action-sale-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="mergeSaleOrder"/>
   </action-method>
 
   <action-method name="action-sale-order-method-confirm">

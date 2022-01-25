@@ -46,6 +46,9 @@ import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergeControlServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergeViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
@@ -123,6 +126,9 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderMergeControlSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderMergeSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderMergeViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
@@ -261,5 +267,9 @@ public class SupplychainModule extends AxelorModule {
     bind(StockHistoryServiceImpl.class).to(StockHistoryServiceSupplyChainImpl.class);
     bind(AccountingSituationInitServiceImpl.class)
         .to(AccountingSituationInitSupplychainServiceImpl.class);
+    bind(SaleOrderMergeControlServiceImpl.class)
+        .to(SaleOrderMergeControlSupplychainServiceImpl.class);
+    bind(SaleOrderMergeServiceImpl.class).to(SaleOrderMergeSupplychainServiceImpl.class);
+    bind(SaleOrderMergeViewServiceImpl.class).to(SaleOrderMergeViewSupplychainServiceImpl.class);
   }
 }

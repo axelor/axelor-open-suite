@@ -11,6 +11,7 @@ import com.axelor.i18n.I18n;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -118,6 +119,16 @@ public class SaleOrderMergeControlServiceImpl implements SaleOrderMergeControlSe
     return isDiff.get();
   }
 
+  /**
+   * Init commonMap. The commonMap regroup the common values that the merged sale order will have.
+   * {@link Entry#getKey()} is the name of the field. IMPORTANT: The name field must be accurate
+   * with the real name used in SaleOrder, if it not the same name, calling {@link
+   * #isDiffWithCommonMap(SaleOrder, Map)} will fail. {@link Entry#getValue()} is a {@link
+   * SaleOrderMergeObject}
+   *
+   * @param commonMap
+   * @param firstSaleOrder
+   */
   protected void initCommonMap(
       Map<String, SaleOrderMergeObject> commonMap, SaleOrder firstSaleOrder) {
     commonMap.put("currency", new SaleOrderMergeObject(firstSaleOrder.getCurrency(), false));
