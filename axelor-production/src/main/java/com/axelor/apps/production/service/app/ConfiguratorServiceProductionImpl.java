@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,14 +67,18 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
    * @param configurator
    * @param jsonAttributes
    * @param jsonIndicators
+   * @param saleOrderId
    * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generate(
-      Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
+  public void generateProduct(
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
       throws AxelorException {
-    super.generate(configurator, jsonAttributes, jsonIndicators);
+    super.generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrderId);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Product generatedProduct = configurator.getProduct();

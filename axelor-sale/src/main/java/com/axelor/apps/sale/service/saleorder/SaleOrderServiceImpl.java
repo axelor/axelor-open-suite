@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -252,6 +252,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrderLineList == null) {
       saleOrderLineList = new ArrayList<>();
     }
+    Integer sequence = -1;
+
+    if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
+      sequence = saleOrderLineList.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
+    }
 
     SaleOrderLine originSoLine = null;
     for (SaleOrderLine soLine : saleOrderLineList) {
@@ -305,6 +310,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             newSoLine.setParentId(originSoLine.getManualId());
 
             saleOrderLineList.add(newSoLine);
+            newSoLine.setSequence(++sequence);
           }
         } else {
           newSoLine.setQty(

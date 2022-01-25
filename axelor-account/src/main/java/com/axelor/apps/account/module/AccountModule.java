@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountManagementAccountRepository;
+import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
@@ -74,23 +76,11 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
+import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticAxisByCompanyService;
-import com.axelor.apps.account.service.AnalyticAxisByCompanyServiceImpl;
-import com.axelor.apps.account.service.AnalyticAxisFetchService;
-import com.axelor.apps.account.service.AnalyticAxisFetchServiceImpl;
-import com.axelor.apps.account.service.AnalyticAxisService;
-import com.axelor.apps.account.service.AnalyticAxisServiceImpl;
-import com.axelor.apps.account.service.AnalyticDistributionLineService;
-import com.axelor.apps.account.service.AnalyticDistributionLineServiceImpl;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateServiceImpl;
-import com.axelor.apps.account.service.AnalyticGroupingService;
-import com.axelor.apps.account.service.AnalyticGroupingServiceImpl;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
-import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
@@ -118,10 +108,26 @@ import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticAxisFetchService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisFetchServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionLineService;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionLineServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fecimport.FECImportService;
+import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
@@ -383,5 +389,11 @@ public class AccountModule extends AxelorModule {
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+
+    bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
+
+    bind(FECImportService.class).to(FECImportServiceImpl.class);
+
+    bind(AccountingSituationInitService.class).to(AccountingSituationInitServiceImpl.class);
   }
 }

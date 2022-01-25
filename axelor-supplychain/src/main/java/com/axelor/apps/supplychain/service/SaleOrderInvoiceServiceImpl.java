@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,12 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.tool.StringTool.getIdListString;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -304,10 +299,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (partnerAccount != null) {
       Partner partner = invoice.getPartner();
-      if (partner != null) {
+      FiscalPosition fiscalPosition = null;
+      if (saleOrder != null) {
+        fiscalPosition = saleOrder.getFiscalPosition();
+      }
+      if (fiscalPosition != null) {
         partnerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(partner.getFiscalPosition(), partnerAccount);
+                .getAccount(fiscalPosition, partnerAccount);
       }
       invoice.setPartnerAccount(partnerAccount);
     }
@@ -503,6 +502,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+    invoice.setFiscalPosition(fiscalPosition);
 
     invoiceRepo.save(invoice);
 
@@ -895,21 +897,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public BigDecimal getInTaxInvoicedAmount(SaleOrder saleOrder) {
-    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    BigDecimal inTaxTotal = saleOrder.getInTaxTotal();
-
-    BigDecimal exTaxAmountInvoiced = saleOrder.getAmountInvoiced();
-    if (exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
-      return BigDecimal.ZERO;
-    } else {
-      return inTaxTotal
-          .multiply(exTaxAmountInvoiced)
-          .divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_UP);
-    }
-  }
-
-  @Override
   public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
@@ -984,7 +971,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
     BigDecimal sumInvoices = computeSumInvoices(invoices);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

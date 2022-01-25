@@ -29,7 +29,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-supplychain-batch-record-reset-period"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -80,6 +80,11 @@
         <field name="ati" showIf="!recoveredTax"/>
         <field name="includeNotStockManagedProduct"/>
       </panel>
+      <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
+        showIf="actionSelect == 4" colSpan="12">
+        <field name="period"
+          domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -98,6 +103,9 @@
         if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
       <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3"
         onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
+      <button name="invoiceOrdersBatchBtn" title="Update stock history"
+        showIf="actionSelect == 4"
+        onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
     </panel>
   </form>
 
@@ -142,6 +150,11 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
 
+  <action-record name="action-supplychain-batch-record-reset-period"
+    model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="period" expr="eval: null"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-supplychain-batch-method-invoice-outgoing-stock-moves">
@@ -157,6 +170,11 @@
   <action-method name="action-supplychain-batch-method-accounting-cut-off">
     <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
       method="accountingCutOff"/>
+  </action-method>
+
+  <action-method name="action-supplychain-batch-method-update-stock-history">
+    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
+      method="updateStockHistory"/>
   </action-method>
 
 
@@ -182,6 +200,13 @@
       expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
   </action-view>
 
+  <action-view name="action-batch-show-stock-history-lines" title="Stock history line"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-form"/>
+    <domain>self.period = :period</domain>
+    <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
 
   <search-filters name="supplychain-batch-filters"
     model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">

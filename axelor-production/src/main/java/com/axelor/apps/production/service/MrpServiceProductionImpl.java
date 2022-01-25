@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -92,7 +93,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
       ManufOrderRepository manufOrderRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ProductCategoryService productCategoryService) {
     super(
         appBaseService,
         appPurchaseService,
@@ -107,7 +109,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockRulesService,
         mrpLineService,
         mrpForecastRepository,
-        stockLocationService);
+        stockLocationService,
+        productCategoryService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }
