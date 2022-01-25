@@ -54,7 +54,7 @@
 			ForecastRecapLine AS self
 		INNER JOIN self.forecastRecap AS recap ON recap.isReport = true
 		WHERE self.estimatedDate is not null
-		AND (:bankDetails is null OR :bankDetails = recap.bankDetails)
+		AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
 		AND (recap.userRecap = :_user OR :_user is null)
 		AND self.estimatedDate BETWEEN :fromDate AND :toDate
 

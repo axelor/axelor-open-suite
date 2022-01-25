@@ -54,8 +54,8 @@
     <view name="forecast-recap-line-dashboard-grid" type="grid"/>
     <view name="forecast-recap-line-form" type="form"/>
     <view-param name="limit" value="100"/>
-    <domain>self.forecastRecap.isReport = true AND (:bankDetails is null OR :bankDetails =
-      self.forecastRecap.bankDetails)</domain>
+    <domain>self.forecastRecap.isReport = true AND (:bankDetails is null OR :bankDetails MEMBER OF
+      self.forecastRecap.bankDetailsSet)</domain>
     <context name="_fromForecastDashboard" expr="eval: true"/>
   </action-view>
 

@@ -34,7 +34,7 @@ public class ChartServiceImpl implements ChartService {
         forecastRepo
             .all()
             .filter(
-                "self.isReport = true AND (self.userRecap = :user OR :user is null) AND (:bankDetails is null OR :bankDetails = self.bankDetails)")
+                "self.isReport = true AND (self.userRecap = :user OR :user is null) AND (:bankDetails is null OR :bankDetails MEMBER OF self.bankDetailsSet)")
             .bind("user", user)
             .bind("bankDetails", bankDetails)
             .fetchOne();

@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,7 +199,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .bind("fromDate", forecastRecap.getFromDate())
             .bind("toDate", forecastRecap.getToDate())
             .bind("statusSelectList", statusSelectList)
-            .bind("bankDetails", forecastRecap.getBankDetails())
+            .bind(
+                "bankDetailsSet",
+                CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
+                    ? null
+                    : forecastRecap.getBankDetailsSet())
             .bind("operationTypeSelect", forecastRecapLineType.getOperationTypeSelect())
             .bind("forecastRecapLineTypeId", forecastRecapLineType.getId())
             .bind(
@@ -604,15 +609,19 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.saleOrder.company = :company"
                       + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList) AND self.amount != 0"
-                      + (forecastRecap.getBankDetails() != null
-                          ? " AND self.saleOrder.companyBankDetails = :bankDetails "
+                      + (CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
+                          ? " AND self.saleOrder.companyBankDetails IN (:bankDetailsSet) "
                           : "")
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
               .bind("saleOrderStatusList", statusList)
-              .bind("bankDetails", forecastRecap.getBankDetails())
+              .bind(
+                  "bankDetailsSet",
+                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
+                      ? null
+                      : forecastRecap.getBankDetailsSet())
               .bind(
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
@@ -625,15 +634,19 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.purchaseOrder.company = :company"
                       + " AND self.purchaseOrder.statusSelect IN (:purchaseOrderStatusList) AND self.amount != 0"
-                      + (forecastRecap.getBankDetails() != null
-                          ? " AND self.purchaseOrder.companyBankDetails = :bankDetails "
+                      + (CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
+                          ? " AND self.purchaseOrder.companyBankDetails IN (:bankDetailsSet) "
                           : "")
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
               .bind("purchaseOrderStatusList", statusList)
-              .bind("bankDetails", forecastRecap.getBankDetails())
+              .bind(
+                  "bankDetailsSet",
+                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
+                      ? null
+                      : forecastRecap.getBankDetailsSet())
               .bind(
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
