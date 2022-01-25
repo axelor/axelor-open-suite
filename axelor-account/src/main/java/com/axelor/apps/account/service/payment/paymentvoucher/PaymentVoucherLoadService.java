@@ -186,8 +186,8 @@ public class PaymentVoucherLoadService {
    */
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
-	  int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-	  paymentVoucher
+    int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
+    paymentVoucher
         .getPayVoucherDueElementList()
         .sort(
             (payVoucherDueElem1, payVoucherDueElem2) ->
@@ -203,11 +203,11 @@ public class PaymentVoucherLoadService {
         paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
 
         if (payVoucherElementToPay != null) {
-            paymentVoucher.setRemainingAmount(
-                paymentVoucher
-                    .getRemainingAmount()
-                    .subtract(payVoucherElementToPay.getAmountToPay()));
-          }
+          paymentVoucher.setRemainingAmount(
+              paymentVoucher
+                  .getRemainingAmount()
+                  .subtract(payVoucherElementToPay.getAmountToPay()));
+        }
 
         // Remove the line from the due elements lists
         toRemove.add(payVoucherDueElement);
