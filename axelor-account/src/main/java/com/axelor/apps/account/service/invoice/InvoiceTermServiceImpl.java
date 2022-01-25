@@ -524,6 +524,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
     invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
     invoiceTerm.setPfpRejectedAmount(invoiceTerm.getAmount());
+    invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -668,6 +669,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
+    invoiceTerm.setDecisionPfpTakenDate(
+        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
+    invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+    invoiceTerm.setPfpValidatorUser(currentUser);
+    invoiceTermRepo.save(invoiceTerm);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
     List<InvoiceTerm> invoiceTermList =
         invoiceTermRepo
@@ -677,15 +689,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTermIds,
                 InvoiceTermRepository.PFP_STATUS_VALIDATED)
             .fetch();
-    User currenctUser = AuthUtils.getUser();
+    User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (canUpdateInvoiceTerm(invoiceTerm, currenctUser)) {
-        invoiceTerm.setDecisionPfpTakenDate(
-            Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany()));
-        invoiceTerm.setPfpGrantedAmount(invoiceTerm.getAmount());
-        invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-        invoiceTerm.setPfpValidatorUser(currenctUser);
+      if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
+        validatePfp(invoiceTerm, currentUser);
         updatedRecords++;
       }
     }
@@ -705,14 +713,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTermIds,
                 InvoiceTermRepository.PFP_STATUS_LITIGATION)
             .fetch();
-    User currenctUser = AuthUtils.getUser();
+    User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       boolean invoiceTermCheck =
           ObjectUtils.notEmpty(invoiceTerm.getInvoice())
               && ObjectUtils.notEmpty(invoiceTerm.getInvoice().getCompany())
               && ObjectUtils.notEmpty(reasonOfRefusalToPay);
-      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currenctUser)) {
+      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
         refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
         updatedRecords++;
       }
