@@ -71,16 +71,16 @@
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select"
-      onClick="act-1,action-invoice-term-method-compute-total-payment-session" icon="fa-plus-circle"
+      onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session" icon="fa-plus-circle"
       readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectBtn" title="Unselect"
-      onClick="act-2,action-invoice-term-method-compute-total-payment-session"
+      onClick="action-invoice-term-method-unselect-terms-btn,action-invoice-term-method-compute-total-payment-session"
       icon="fa-minus-circle" readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="act-1,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="act-2,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
@@ -496,6 +496,23 @@
   <action-method name="action-invoice-term-method-hide-send-email-pfp-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="hideSendEmailPfpBtn"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-select-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="selectTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-select-partner-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="selectPartnerTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-unselect-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="unselectTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-unselect-partner-terms-btn">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="unselectPartnerTerm"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-mass-validate-pfp">

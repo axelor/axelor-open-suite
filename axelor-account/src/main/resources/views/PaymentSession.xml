@@ -21,7 +21,8 @@
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="12">
-      <field name="statusSelect" canEdit="true" colSpan="12" widget="NavSelect"/>
+      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
+        colSpan="12"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -54,27 +55,25 @@
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0"
-        onClick="action-method-payment-session-search-eligible-terms"/>
-      <panel-dashlet showIf="id" colSpan="12"
-        action="action-invoice-term-view-payment-session-dashlet" canSearch="true"/>
-      <panel-dashlet showIf="id" colSpan="8"
-        action="action-invoice-term-view-payment-session-group-by-partner-dashlet" canSearch="true"/>
-      <field name="sessionTotalAmount" readonly="true" colSpan="4"/>
+        showIf="id &amp;&amp; sessionTotalAmount > 0" onClick="action-method-payment-session-search-eligible-terms"/>
+      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
+        showIf="id" colSpan="12" canSearch="true"/>
+      <panel-dashlet
+        action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
+        colSpan="8" canSearch="true"/>
+      <field name="sessionTotalAmount" colSpan="4" readonly="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
-      <button name="validateBtn" title="Validate"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" css="btn-success"
-        onClick=""/>
-      <button name="cancelBtn" title="Cancel"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" css="btn-danger"
-        onClick=""/>
+      <button name="validateBtn" title="Validate" onClick="" css="btn-success"
+        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+      <button name="cancelBtn" title="Cancel" onClick="" css="btn-danger"
+        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
     </panel>
-    <panel name="validationPanel" sidebar="true" itemSpan="6" readonly="true">
-      <field name="validatedByUser"/>
-      <field name="validatedDate"/>
+    <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
+      <field name="validatedByUser" readonly="true"/>
+      <field name="validatedDate" readonly="true"/>
     </panel>
-    <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" sidebar="true">
+    <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
         showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true" onClick=""/>
       <field name="hasEmailsSent" readonly="true"/>
