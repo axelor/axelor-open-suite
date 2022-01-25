@@ -101,6 +101,7 @@
             grid-view="stop-reason-grid"/>
           <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
             grid-view="user-grid"/>
+          <field name="blockingComment" widget="html" colSpan="12"/>
         </editor>
       </field>
     </panel>
