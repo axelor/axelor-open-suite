@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -430,8 +430,6 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
-  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
-      "Refresh page to reflect changes in selection" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
@@ -443,6 +441,9 @@ public interface IExceptionMessage {
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
+  public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
+      "Please upload csv or txt or zip files only." /*)*/;
+  public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
 
   public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
 
@@ -452,4 +453,7 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String CITIES_IMPORT_FAILED = /*$$(*/
+      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }

@@ -20,6 +20,15 @@
     <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
       title="Accounting family"/>
 
+    <extra-code><![CDATA[
+
+		   	// TYPE SELECT
+			public static final int TYPE_PRODUCT = 1;
+			public static final int TYPE_TAX = 2;
+			public static final int TYPE_PAYMENT = 3;
+
+		]]></extra-code>
+
   </entity>
 
 </domain-models>

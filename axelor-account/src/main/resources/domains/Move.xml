@@ -29,6 +29,8 @@
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
@@ -55,7 +57,12 @@
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
+
+    <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
+      title="FEC Import"/>
     <unique-constraint columns="reference,company"/>
+
+    <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
 
     <extra-code><![CDATA[
 
@@ -94,6 +101,7 @@
       <field name="reference"/>
       <field name="period"/>
       <field name="partner"/>
+      <field name="fiscalPosition" on="UPDATE"/>
       <field name="currency"/>
       <field name="companyCurrency"/>
       <field name="ignoreInAccountingOk"/>

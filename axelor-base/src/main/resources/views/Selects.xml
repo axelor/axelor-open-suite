@@ -560,10 +560,6 @@
     <option value="2">Landscape</option>
   </selection>
 
-  <selection name="print.template.line.test.reference.select">
-    <option value="Default" order="0" hidden="true">Default</option>
-  </selection>
-
   <selection name="base.print.settings.footer.font.select">
     <option value="Courier">Courier</option>
     <option value="Courier-Bold">Courier-Bold</option>
@@ -650,6 +646,11 @@
     <option value="-1">&lt;</option>
     <option value="0">=</option>
     <option value="1">&gt;</option>
+  </selection>
+
+  <selection name="printing.setting.address.position">
+    <option value="0">Right</option>
+    <option value="1">Left</option>
   </selection>
 
 </object-views>

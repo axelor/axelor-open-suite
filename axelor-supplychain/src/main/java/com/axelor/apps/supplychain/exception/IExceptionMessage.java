@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -113,6 +113,11 @@ public interface IExceptionMessage {
 
   String BATCH_ORDER_INVOICING_DONE_SINGULAR = /*$$(*/ "%d order invoiced successfully," /*)*/;
   String BATCH_ORDER_INVOICING_DONE_PLURAL = /*$$(*/ "%d orders invoiced successfully," /*)*/;
+
+  /** Batch update stock history */
+  static final String BATCH_UPDATE_STOCK_HISTORY_1 = /*$$(*/ "Batch update stock history :" /*)*/;
+
+  static final String BATCH_UPDATE_STOCK_HISTORY_2 = /*$$(*/ "Stock history updated" /*)*/;
 
   /** Mrp Line Service */
   static final String MRP_LINE_1 = /*$$(*/

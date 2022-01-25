@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,18 @@ public class SupplychainBatchController {
       SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
       supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
       Batch batch = Beans.get(SupplychainBatchService.class).accountingCutOff(supplychainBatch);
+      response.setFlash(batch.getComments());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateStockHistory(ActionRequest request, ActionResponse response) {
+    try {
+      SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+      supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
+      Batch batch = Beans.get(SupplychainBatchService.class).updateStockHistory(supplychainBatch);
       response.setFlash(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {

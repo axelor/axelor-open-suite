@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,6 +63,10 @@ public interface IExceptionMessage {
       "The move lines %s are reconciled and should not have been removed." /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
+
+  /** Account management repostiroy */
+  static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
+      "A payment mode already exists with the same information." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -256,6 +260,7 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
+  static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
@@ -730,7 +735,7 @@ public interface IExceptionMessage {
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
   static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
-      "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
+      "%s : The paid amount is superior to the imputed amount(s)" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -762,6 +767,10 @@ public interface IExceptionMessage {
   /** Payment voucher tool service */
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
+
+  /** Payment voucher controller */
+  static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
+      "You can't remove this payment voucher as it is already used in a move." /*)*/;
 
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
@@ -889,7 +898,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -905,4 +914,8 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  /* FEC IMPORT */
+  static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
+      "The import failed: the move %s already exist." /*)*/;
 }
