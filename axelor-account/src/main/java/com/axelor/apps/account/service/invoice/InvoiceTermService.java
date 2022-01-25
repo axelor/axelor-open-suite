@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.exception.AxelorException;
@@ -198,6 +199,12 @@ public interface InvoiceTermService {
 
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public void select(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
