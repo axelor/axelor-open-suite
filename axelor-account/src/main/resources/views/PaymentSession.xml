@@ -66,7 +66,7 @@
         onClick=""/>
       <button name="cancelBtn" title="Cancel"
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" css="btn-danger"
-        onClick=""/>
+        onClick="action-payment-session-group-cancel"/>
     </panel>
     <panel name="validationPanel" sidebar="true" itemSpan="6" readonly="true">
       <field name="validatedByUser"/>
