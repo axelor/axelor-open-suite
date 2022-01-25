@@ -55,7 +55,8 @@
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0" onClick="action-method-payment-session-search-eligible-terms"/>
+        showIf="id &amp;&amp; sessionTotalAmount > 0"
+        onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
         showIf="id" colSpan="12" canSearch="true"/>
       <panel-dashlet

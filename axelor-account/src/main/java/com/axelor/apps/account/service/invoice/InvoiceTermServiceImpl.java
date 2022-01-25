@@ -666,6 +666,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
     }
+    invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
   }
 
   @Override
