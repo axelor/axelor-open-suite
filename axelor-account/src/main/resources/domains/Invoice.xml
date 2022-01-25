@@ -97,6 +97,7 @@
     <date name="debitBlockingToDate" title="Blocking until"/>
     <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
+    <string name="commentOnDebitBlocking" title="Blocking Comment" large="true"/>
 
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <many-to-one name="debtRecoveryBlockingReason"
@@ -104,6 +105,7 @@
     <date name="debtRecoveryBlockingToDate" title="Blocking until"/>
     <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
+    <string name="commentOnRecoveryBlocking" title="Blocking Comment" large="true"/>
 
     <boolean name="billOfExchangeBlockingOk" title="Bill of exchange blocking"/>
     <many-to-one name="billOfExchangeBlockingReason"
@@ -111,7 +113,7 @@
     <date name="billOfExchangeBlockingToDate" title="Blocking until"/>
     <many-to-one name="billOfExchangeBlockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
-
+    <string name="commentOnExchangeBlocking" title="Blocking Comment" large="true"/>
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
@@ -287,6 +289,9 @@
       <field name="irrecoverableStatusSelect" on="UPDATE"/>
       <field name="debitBlockingOk" on="UPDATE"/>
       <field name="debtRecoveryBlockingOk" on="UPDATE"/>
+      <field name="commentOnDebitBlocking" on="UPDATE"/>
+      <field name="commentOnRecoveryBlocking" on="UPDATE"/>
+      <field name="commentOnExchangeBlocking" on="UPDATE"/>
       <field name="usherPassageOk" on="UPDATE"/>
       <field name="exTaxTotal" on="UPDATE"/>
       <field name="taxTotal" on="UPDATE"/>

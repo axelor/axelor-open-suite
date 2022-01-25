@@ -735,6 +735,7 @@ InvoiceSet.length > 0))"
           <field name="debitBlockingToDate"/>
           <field name="debitBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnDebitBlocking" widget="html" colSpan="12"/>
         </panel>
         <panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlockingPanel"
           title="Debt recovery blocking" colSpan="12">
@@ -743,6 +744,7 @@ InvoiceSet.length > 0))"
           <field name="debtRecoveryBlockingToDate"/>
           <field name="debtRecoveryBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnRecoveryBlocking" widget="html" colSpan="12"/>
         </panel>
         <panel showIf="billOfExchangeBlockingOk" name="debtRecoveryBlockingPanel"
           title="Bill of exchange blocking" colSpan="12">
@@ -751,6 +753,7 @@ InvoiceSet.length > 0))"
           <field name="billOfExchangeBlockingToDate"/>
           <field name="billOfExchangeBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
+          <field name="commentOnExchangeBlocking" widget="html" colSpan="12"/>
         </panel>
       </panel>
       <panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
