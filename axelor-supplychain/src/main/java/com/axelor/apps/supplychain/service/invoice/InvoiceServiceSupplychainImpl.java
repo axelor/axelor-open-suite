@@ -306,14 +306,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
               .bind("invoiceId", invoice.getId())
               .fetch();
       for (StockMove stockMove : stockMoveList) {
-        if (stockMove.getInvoiceSet() != null) {
-          stockMove.getInvoiceSet().add(newInvoice);
-          stockMove.getInvoiceSet().remove(invoice);
-        } else {
-          Set<Invoice> invoiceSet = new HashSet<>();
-          invoiceSet.add(newInvoice);
-          stockMove.setInvoiceSet(invoiceSet);
-        }
+        stockMove.removeInvoiceSetItem(invoice);
+        stockMove.addInvoiceSetItem(newInvoice);
+        invoice.removeStockMoveSetItem(stockMove);
+        newInvoice.addStockMoveSetItem(stockMove);
+        invoiceRepo.save(invoice);
+        invoiceRepo.save(newInvoice);
         stockMoveRepository.save(stockMove);
       }
     }
