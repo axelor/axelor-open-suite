@@ -25,12 +25,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.saleorder.model.SaleOrderMergeObject;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface SaleOrderCreateService {
 
@@ -143,4 +145,8 @@ public interface SaleOrderCreateService {
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
 
   public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+
+  SaleOrder mergeSaleOrders(
+      List<SaleOrder> saleOrderList, Map<String, SaleOrderMergeObject> valuesMap)
+      throws AxelorException;
 }
