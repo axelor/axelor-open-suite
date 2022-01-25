@@ -294,9 +294,11 @@ public class InvoiceTermController {
                 .findByPaymentSessionAndPartner(
                     invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
-            invoiceTermTemp = Beans.get(InvoiceTermRepository.class).find(invoiceTermTemp.getId());
-            Beans.get(InvoiceTermService.class).select(invoiceTermTemp);
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.select(invoiceTermTemp);
           }
         }
       }
@@ -328,9 +330,11 @@ public class InvoiceTermController {
                 .findByPaymentSessionAndPartner(
                     invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
-            invoiceTermTemp = Beans.get(InvoiceTermRepository.class).find(invoiceTermTemp.getId());
-            Beans.get(InvoiceTermService.class).unselect(invoiceTermTemp);
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.unselect(invoiceTermTemp);
           }
         }
       }
