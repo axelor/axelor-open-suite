@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
@@ -43,6 +44,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -379,27 +381,54 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       return;
     }
-    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+
+    this.updateInvoiceTermsPaidAmount(
+        invoicePayment.getInvoiceTermPaymentList(),
+        invoicePayment.getPaymentMode(),
+        invoicePayment.getFinancialDiscount(),
+        invoicePayment.getFinancialDiscountTotalAmount(),
+        invoicePayment.getApplyFinancialDiscount());
+  }
+
+  @Override
+  public void updateInvoiceTermsPaidAmount(
+      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException {
+    this.updateInvoiceTermsPaidAmount(
+        Collections.singletonList(invoiceTermPayment),
+        invoiceTermToPay.getPaymentMode(),
+        null,
+        null,
+        false);
+  }
+
+  protected void updateInvoiceTermsPaidAmount(
+      List<InvoiceTermPayment> invoiceTermPaymentList,
+      PaymentMode paymentMode,
+      FinancialDiscount financialDiscount,
+      BigDecimal financialDiscountTotalAmount,
+      boolean applyFinancialDiscount)
+      throws AxelorException {
+    for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
 
       if (appAccountService.getAppAccount().getManageFinancialDiscount()
-          && invoicePayment.getApplyFinancialDiscount()) {
-        invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
-        invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountTotalAmount());
+          && applyFinancialDiscount) {
+        invoiceTerm.setFinancialDiscount(financialDiscount);
+        invoiceTerm.setFinancialDiscountAmount(financialDiscountTotalAmount);
       } else {
         invoiceTerm.setFinancialDiscount(null);
       }
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
-      invoiceTerm.setPaymentMode(invoicePayment.getPaymentMode());
+      invoiceTerm.setPaymentMode(paymentMode);
 
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
         Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
-          invoice.setDueDate(invoiceToolService.getDueDate(invoice));
+          invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
       }
       invoiceTerm.setAmountRemaining(amountRemaining);

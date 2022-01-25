@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentSession;
@@ -105,6 +106,9 @@ public interface InvoiceTermService {
    * @param invoicePayment
    */
   public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException;
+
+  public void updateInvoiceTermsPaidAmount(
+      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException;
 
   /**
    * Update amount remaining and paid status after unreconcile
