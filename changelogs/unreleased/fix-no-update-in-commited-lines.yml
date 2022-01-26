@@ -1,0 +1,5 @@
+---
+title: "Budget: Fix No update in committed lines"
+type: fix
+description : |
+      fix no update in committed lines when we cancel an purchase order and when we get the purchase order back to draft.
