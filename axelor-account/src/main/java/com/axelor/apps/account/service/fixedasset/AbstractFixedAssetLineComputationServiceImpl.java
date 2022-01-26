@@ -121,6 +121,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         line.setAccountingValue(
             line.getAccountingValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
       }
+      if (line.getDepreciationBase().equals(getAlreadyDepreciatedAmount(fixedAsset))) {
+        return Optional.empty();
+      }
     }
 
     return Optional.ofNullable(line);
