@@ -576,10 +576,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " OR (self.moveLine IS NULL AND self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE))";
     String pfpCondition =
         " AND (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
+            + " OR (self.invoice.operationTypeSelect != 1 AND self.invoice.operationTypeSelect != 2"
+            + " AND self.moveLine.move.journal.journalType.technicalTypeSelect != 1)"
             + " OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
             + " AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2"
-            + " OR self.moveLine.move.journalType.technicalTypeSelect = 1)"
+            + " OR self.moveLine.move.journal.journalType.technicalTypeSelect = 1)"
             + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
