@@ -544,8 +544,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 "paymentDatePlusMargin",
                 paymentSession
                     .getPaymentDate()
-                    .plusDays(paymentSession.getPaymentMode().getDaysMarginOnPaySession()))
+                    .plusDays(paymentSession.getDaysMarginOnPaySession()))
             .bind("currency", paymentSession.getCurrency())
+            .bind("partnerTypeSelect", paymentSession.getPartnerTypeSelect())
             .fetch();
     eligibleInvoiceTermList.forEach(
         invoiceTerm -> {
@@ -563,13 +564,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND self.bankDetails IS NOT NULL";
     String termsFromInvoiceAndMoveLineCondition =
         " AND (self.moveLine IS NOT NULL"
-            + " AND (self.moveLine.move.partner.isCustomer = TRUE"
-            + " OR self.moveLine.move.partner.isSupplier = TRUE"
-            + " OR self.moveLine.move.partner.isEmployee = TRUE)"
+            + " AND (self.moveLine.move.partner.isCustomer = TRUE AND :partnerTypeSelect = 3"
+            + " OR self.moveLine.move.partner.isSupplier = TRUE AND :partnerTypeSelect = 1"
+            + " OR self.moveLine.move.partner.isEmployee = TRUE AND :partnerTypeSelect = 2)"
             + " OR self.moveLine IS NULL"
-            + " AND (self.invoice.partner.isCustomer = TRUE"
-            + " OR self.invoice.partner.isSupplier = TRUE"
-            + " OR self.invoice.partner.isEmployee = TRUE))"
+            + " AND (self.invoice.partner.isCustomer = TRUE AND :partnerTypeSelect = 3"
+            + " OR self.invoice.partner.isSupplier = TRUE AND :partnerTypeSelect = 1"
+            + " OR self.invoice.partner.isEmployee = TRUE AND :partnerTypeSelect = 2))"
             + " AND ((self.moveLine IS NOT NULL"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE)"
             + " OR (self.moveLine IS NULL AND self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE))";
@@ -577,6 +578,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         " AND (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
             + " OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
+            + " AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2"
+            + " OR self.moveLine.move.journalType.technicalTypeSelect = 1)"
             + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
@@ -619,7 +622,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                             .getDiscountDelay())
                     .isEqual(paymentSession.getNextSessionDate())))) {
       if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
       } else {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
