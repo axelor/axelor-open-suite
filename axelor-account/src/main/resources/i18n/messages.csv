@@ -2833,6 +2833,7 @@
 "Year closure move",,,
 "Year opening account",,,
 "Year or period or date is null, you must set a period.",,,
+"You are about to lose your work in progress. Are you confirming the cancellation of the session ?",,,
 "You can't archive this move %s",,,
 "You can't remove this move %s",,,
 "You can't remove this payment voucher as it is already used in a move.",,,
