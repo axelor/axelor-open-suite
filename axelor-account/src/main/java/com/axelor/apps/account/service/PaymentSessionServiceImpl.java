@@ -20,9 +20,14 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -89,5 +94,19 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         paymentSession.setJournal(journal.get());
       }
     }
+  }
+
+  @Override
+  @Transactional
+  public void computeTotalPaymentSession(PaymentSession paymentSession) {
+    BigDecimal sessionTotalAmount =
+        (BigDecimal)
+            JPA.em()
+                .createQuery(
+                    "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
+                .setParameter(1, paymentSession)
+                .getSingleResult();
+    paymentSession.setSessionTotalAmount(sessionTotalAmount);
+    Beans.get(PaymentSessionRepository.class).save(paymentSession);
   }
 }

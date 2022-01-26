@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -54,7 +53,7 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(InvoiceTermService.class).computeTotalPaymentSession(paymentSession);
+      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
       response.setAttr("searchPanel", "refresh", true);
       response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
     } catch (Exception e) {
