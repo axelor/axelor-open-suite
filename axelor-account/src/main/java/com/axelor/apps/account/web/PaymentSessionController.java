@@ -51,11 +51,15 @@ public class PaymentSessionController {
   }
 
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
-    PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-    paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
-    Beans.get(PaymentSessionCancelService.class).cancelPaymentSession(paymentSession);
+      Beans.get(PaymentSessionCancelService.class).cancelPaymentSession(paymentSession);
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

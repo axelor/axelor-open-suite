@@ -138,7 +138,7 @@
 
   <action-validate name="action-payment-session-validate-cancel">
     <alert
-      message="You are about to loose your work in progress. Are you confirming the cancellation of the session ?"/>
+      message="You are about to lose your work in progress. Are you confirming the cancellation of the session ?"/>
   </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"

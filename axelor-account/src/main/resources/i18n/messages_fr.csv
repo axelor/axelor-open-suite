@@ -2832,7 +2832,7 @@
 "Year closure move","Ecriture de clôture ",,
 "Year opening account","Compte d'ouverture",,
 "Year or period or date is null, you must set a period.","L’année ou la période ou la date est nulle, vous devez sélectionner une période.",,
-"You are about to loose your work in progress. Are you confirming the cancellation of the session ?","Vous allez perdre votre travail en cours. Confirmez-vous l’annulation de la session ?",,
+"You are about to lose your work in progress. Are you confirming the cancellation of the session ?","Vous allez perdre votre travail en cours. Confirmez-vous l’annulation de la session ?",,
 "You can't archive this move %s","Vous ne pouvez pas archiver cette écriture %s",,
 "You can't remove this move %s","Vous ne pouvez pas supprimer cette écriture %s",,
 "You can't remove this payment voucher as it is already used in a move.","Vous ne pouvez pas supprimer cette saisie paiement, car elle est utilisée dans une écriture.",,
