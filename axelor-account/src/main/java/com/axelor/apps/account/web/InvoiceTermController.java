@@ -20,8 +20,11 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.repo.AccountInvoiceTermRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -37,6 +40,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,6 +204,17 @@ public class InvoiceTermController {
     }
   }
 
+  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void massValidatePfp(ActionRequest request, ActionResponse response) {
     try {
@@ -252,6 +267,78 @@ public class InvoiceTermController {
       Beans.get(InvoiceTermService.class)
           .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
+      Beans.get(InvoiceTermService.class).select(invoiceTerm);
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectPartnerTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getInvoice().getPartner() != null
+          && invoiceTerm.getPaymentSession() != null) {
+        List<InvoiceTerm> invoiceTermList =
+            Beans.get(AccountInvoiceTermRepository.class)
+                .findByPaymentSessionAndPartner(
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+        if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
+          for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.select(invoiceTermTemp);
+          }
+        }
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unselectTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
+      Beans.get(InvoiceTermService.class).unselect(invoiceTerm);
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unselectPartnerTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getInvoice().getPartner() != null
+          && invoiceTerm.getPaymentSession() != null) {
+        List<InvoiceTerm> invoiceTermList =
+            Beans.get(AccountInvoiceTermRepository.class)
+                .findByPaymentSessionAndPartner(
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+        if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
+          for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.unselect(invoiceTermTemp);
+          }
+        }
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
