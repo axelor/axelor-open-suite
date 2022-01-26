@@ -621,11 +621,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                             .getFinancialDiscount()
                             .getDiscountDelay())
                     .isEqual(paymentSession.getNextSessionDate())))) {
-      if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
-      } else {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-      }
+      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
     } else if (invoiceTerm.getInvoice().getFinancialDiscountDeadlineDate() != null
         && (invoiceTerm
                 .getInvoice()
@@ -653,19 +649,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                         .getFinancialDiscount()
                         .getDiscountDelay())
                 .isEqual(paymentSession.getPaymentDate()))) {
-      if (paymentSession.getCompany().getAccountConfig().getIsManagePassedForPayment()) {
-        invoiceTerm.setPaymentAmount(
-            invoiceTerm.getPfpGrantedAmount().subtract(invoiceTerm.getFinancialDiscountAmount()));
-      } else {
-        invoiceTerm.setPaymentAmount(
-            invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
-      }
+      invoiceTerm.setPaymentAmount(
+          invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
     } else {
-      if (invoiceTerm.getAmountRemaining().equals(invoiceTerm.getAmount())) {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
-      } else {
-        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-      }
+      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
     }
   }
 
