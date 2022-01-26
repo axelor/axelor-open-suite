@@ -1,3 +1,28 @@
+## [5.4.11] (2022-01-26)
+
+#### Fixed
+
+* STOCKMOVE/INVOICING: Correctly apply unit conversion when updating invoiced quantity in stock move lines.
+* INTERCO: Fix analytical distribution model of generated interco invoice.
+* Move: fix wrong currency amount and rate computation in VAT move line.
+* SALE ORDER: Blocking invoice generation when the full amount of the order has already been invoiced.
+* STOCK: Fix filters of stock forecast menu entries.
+* SaleOrderLine: Fix invoiced quantities computation when having refunds.
+* Stock reservation: fix german translation of error message.
+* PERIODS: Removed overlapping periods in demo data.
+* LeaveLine: Fixed demo data where leave lines did not have a name.
+* Sequence: Fix full name and prefix or suffix issue on data init.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* PrintingSettings : remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+* Event: fix NPE happening on start date update.
+* Product: fix stock details never showing any stock location line.
+* STOCK DETAILS: Fixed issue where stock locations were sometimes not properly filtered.
+* Human resources: restored chart view for leave per employee.
+* Expense Line: Prevent negative and inconsistent amounts in expense lines.
+* Budget: Fix budget lines update on cancelling an invoice.
+* Budget: Fix budget lines update on cancelling a purchase order.
+
+
 ## [5.4.10] (2021-11-02)
 
 #### Changes
@@ -438,6 +463,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.11]: https://github.com/axelor/axelor-open-suite/compare/v5.4.10...v5.4.11
 [5.4.10]: https://github.com/axelor/axelor-open-suite/compare/v5.4.9...v5.4.10
 [5.4.9]: https://github.com/axelor/axelor-open-suite/compare/v5.4.8...v5.4.9
 [5.4.8]: https://github.com/axelor/axelor-open-suite/compare/v5.4.7...v5.4.8
