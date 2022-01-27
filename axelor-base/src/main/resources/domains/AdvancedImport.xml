@@ -26,6 +26,8 @@
 
     <one-to-many name="fileTabList" ref="com.axelor.apps.base.db.FileTab"
       title="Tabs configuration" mappedBy="advancedImport"/>
+    <one-to-many name="importHistoryList" title="Historical"
+      ref="com.axelor.apps.base.db.ImportHistory"/>
 
     <many-to-one name="errorLog" ref="com.axelor.meta.db.MetaFile" title="Error logs"/>
 
