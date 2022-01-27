@@ -19,7 +19,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -53,7 +53,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -89,7 +89,7 @@
     </menubar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
@@ -115,7 +115,7 @@
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
@@ -132,7 +132,7 @@
     groupBy="user">
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -417,13 +417,10 @@
             colSpan="12"/>
         </panel>
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
-          <field name="fixedPhone" colSpan="3" placeholder="+33100000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="fax" colSpan="3" placeholder="+33000000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"
-            placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            onChange="action-partner-method-normalize-mobilePhone"/>
+          <field name="fixedPhone" colSpan="3" widget="phone"
+            x-placeholder-number-type="FIXED_LINE"/>
+          <field name="fax" colSpan="3" widget="phone"/>
+          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false">
@@ -598,7 +595,7 @@
 
   <grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
     <field name="simpleFullName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
@@ -656,14 +653,10 @@
               <field name="address"/>
             </editor>
           </field>
-          <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            widget="phone" onChange="action-partner-method-normalize-fax"/>
-          <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-            widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-          <field name="mobilePhone" placeholder="+33100000000" widget="phone"
-            pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
+          <field name="fax" widget="phone"/>
+          <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+          <field name="mobilePhone" widget="phone"/>
           <field name="webSite" placeholder="http://www.url.com" widget="url"/>
-
         </panel>
       </panel>
     </panel-tabs>
@@ -756,10 +749,8 @@
         <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
         <field name="functionBusinessCard"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -768,8 +759,7 @@
               colSpan="12"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid" colSpan="12"/>
         <field name="timeSlot" colSpan="12"/>
@@ -829,14 +819,10 @@
             pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
         </editor>
       </field>
-      <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-fax"/>
-      <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-      <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
+      <field name="fax" widget="phone"/>
+      <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+      <field name="mobilePhone" widget="phone"/>
       <field name="webSite" placeholder="http://www.url.com" widget="url"/>
-
     </panel>
   </form>
 
@@ -940,7 +926,7 @@
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
     <field name="firstName"/>
-    <field name="fixedPhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
@@ -1000,10 +986,8 @@
       <panel name="contactDetailsPanel" title="Contact details">
         <field name="jobTitleFunction"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
-        <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false">
@@ -1011,8 +995,7 @@
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
           </editor>
         </field>
-        <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-          widget="phone" onChange="action-partner-method-normalize-fax"/>
+        <field name="fax" widget="phone"/>
         <field name="mainAddress" canNew="true" form-view="address-form"
           grid-view="address-grid"/>
       </panel>
@@ -1302,18 +1285,6 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="supplierQualityRating" expr="eval: supplierQualityRatingSelect"/>
   </action-record>
-
-  <action-method name="action-partner-method-normalize-fixedPhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-fax">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
-
-  <action-method name="action-partner-method-normalize-mobilePhone">
-    <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
-  </action-method>
 
   <action-record name="action-partner-record-empty-freight-carrier-mode"
     model="com.axelor.apps.base.db.Partner">
