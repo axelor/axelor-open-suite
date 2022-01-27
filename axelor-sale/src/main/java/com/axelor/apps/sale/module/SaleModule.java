@@ -67,12 +67,10 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeControlService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeControlServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeViewService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeViewServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -113,8 +111,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
     bind(ConfiguratorMetaJsonFieldService.class).to(ConfiguratorMetaJsonFieldServiceImpl.class);
-    bind(SaleOrderMergeControlService.class).to(SaleOrderMergeControlServiceImpl.class);
-    bind(SaleOrderMergeService.class).to(SaleOrderMergeServiceImpl.class);
-    bind(SaleOrderMergeViewService.class).to(SaleOrderMergeViewServiceImpl.class);
+    bind(SaleOrderMergingViewService.class).to(SaleOrderMergingViewServiceImpl.class);
+    bind(SaleOrderMergingService.class).to(SaleOrderMergingServiceImpl.class);
   }
 }

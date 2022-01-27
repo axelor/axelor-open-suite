@@ -1,50 +1,37 @@
 package com.axelor.apps.supplychain.service;
 
+import java.util.List;
+
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergeViewServiceImpl;
-import com.axelor.apps.sale.service.saleorder.model.SaleOrderMergeObject;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
-import java.util.List;
-import java.util.Map;
 
-public class SaleOrderMergeViewSupplychainServiceImpl extends SaleOrderMergeViewServiceImpl {
+public class SaleOrderMergeViewSupplychainServiceImpl extends SaleOrderMergingViewServiceImpl {
 
   protected AppSaleService appSaleService;
 
   @Inject
-  public SaleOrderMergeViewSupplychainServiceImpl(AppSaleService appSaleService) {
-    this.appSaleService = appSaleService;
-  }
-
-  @Override
-  public boolean existDiffForConfirmView(Map<String, SaleOrderMergeObject> commonMap) {
-    if (!appSaleService.isApp("supplychain")) {
-      return super.existDiffForConfirmView(commonMap);
-    }
-
-    if (commonMap.get("stockLocation") == null) {
-      throw new IllegalStateException(
-          "Entry of stockLocation in map should not be null when calling this function");
-    }
-    return super.existDiffForConfirmView(commonMap)
-        || commonMap.get("stockLocation").getExistDiff();
+  public SaleOrderMergeViewSupplychainServiceImpl(SaleOrderMergingService saleOrderMergingService, AppSaleService appSaleService) {
+	  super(saleOrderMergingService);
+	  this.appSaleService = appSaleService;    
   }
 
   @Override
   public ActionViewBuilder buildConfirmView(
-      Map<String, SaleOrderMergeObject> commonMap, String lineToMerge, List<Long> saleOrderIdList) {
+		  SaleOrderMergingResult result, String lineToMerge, List<SaleOrder> saleOrderToMerge) {
     if (!appSaleService.isApp("supplychain")) {
-      return super.buildConfirmView(commonMap, lineToMerge, saleOrderIdList);
+      return super.buildConfirmView(result, lineToMerge, saleOrderToMerge);
     }
-    if (commonMap.get("stockLocation") == null) {
-      throw new IllegalStateException(
-          "Entry of stockLocation in map should not be null when calling this function");
-    }
-    ActionViewBuilder confirmView = super.buildConfirmView(commonMap, lineToMerge, saleOrderIdList);
-    if (commonMap.get("stockLocation").getExistDiff()) {
-      confirmView.context("contextLocationToCheck", "true");
-    }
+
+    ActionViewBuilder confirmView = super.buildConfirmView(result, lineToMerge, saleOrderToMerge);
+    //TODO check Location diff
+//    if (saleOrderMergingService.getChecks(result).is) {
+//      confirmView.context("contextLocationToCheck", "true");
+//    }
     return confirmView;
   }
 }
