@@ -64,10 +64,11 @@
       <field name="sessionTotalAmount" colSpan="4" readonly="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
-      <button name="validateBtn" title="Validate" onClick="" css="btn-success"
-        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
-      <button name="cancelBtn" title="Cancel" onClick="" css="btn-danger"
-        showIf="statusSelect = 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"/>
+      <button name="validateBtn" title="Validate" css="btn-success"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" onClick=""/>
+      <button name="cancelBtn" title="Cancel" css="btn-danger"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+        onClick="action-payment-session-group-cancel"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
       <field name="validatedByUser" readonly="true"/>
@@ -102,6 +103,17 @@
     </panel>
   </form>
 
+  <action-group name="action-payment-session-group-cancel">
+    <action name="action-payment-session-validate-cancel"/>
+    <action name="save"/>
+    <action name="action-payment-session-method-cancel"/>
+  </action-group>
+
+  <action-method name="action-payment-session-method-cancel">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="cancelPaymentSession"/>
+  </action-method>
+
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"
       expr="eval: &quot;self.id IN (${__user__?.companySet?.collect{it.id}.join(',')}) &quot;"
@@ -125,6 +137,11 @@
     <attribute name="value" expr="eval: null" for="paymentMode"/>
     <attribute name="value" expr="eval: company?.currency" for="currency"/>
   </action-attrs>
+
+  <action-validate name="action-payment-session-validate-cancel">
+    <alert
+      message="You are about to lose your work in progress. Are you confirming the cancellation of the session ?"/>
+  </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
     title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
