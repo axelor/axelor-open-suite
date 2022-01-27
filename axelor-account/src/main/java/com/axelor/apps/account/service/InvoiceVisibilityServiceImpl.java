@@ -110,7 +110,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   @Override
   public boolean getOperationTypePurchaseCondition(Invoice invoice) {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             && invoice.getCompany().getAccountConfig().getIsManagePFPInRefund());
   }
 

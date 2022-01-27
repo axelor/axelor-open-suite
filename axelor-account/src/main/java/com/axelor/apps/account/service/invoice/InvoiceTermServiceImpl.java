@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.CancelReason;
@@ -573,6 +574,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           fillEligibleTerm(paymentSession, invoiceTerm);
           invoiceTermRepo.save(invoiceTerm);
         });
+    Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
   }
 
   private String retrieveEligibleTermsQuery() {
@@ -685,6 +687,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
       }
     }
+    invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
   }
 
   @Override

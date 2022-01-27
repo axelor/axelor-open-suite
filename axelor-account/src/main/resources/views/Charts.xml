@@ -1044,10 +1044,10 @@
   </chart>
 
   <custom name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"
-    title="Custom" css="report-box">
+    title="Custom">
     <dataset type="jpql"><![CDATA[
 
-	 select CONCAT(ceil(sum(self.amountRemaining)), ' €') as Amount, _partner.name as Supplier, _bankDetails.fullName as BankDetails
+	 select CONCAT(round(sum(self.amountPaid),2), ' €') as Amount, _partner.name as Supplier, _bankDetails.fullName as BankDetails
 	 from InvoiceTerm as self
 	 left join self.invoice.partner as _partner
 	 left join self.bankDetails as _bankDetails
@@ -1057,7 +1057,7 @@
 	 ]]></dataset>
     <template><![CDATA[
 
-	<report-table data='data' columns='Supplier,Bank Details,Amount'></report-table>
+	<report-table data='data' columns='Supplier,BankDetails,Amount'></report-table>
 
 
 	 ]]></template>

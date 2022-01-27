@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.AccountInvoiceTermRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -211,6 +212,7 @@ public class InvoiceTermController {
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
       response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -351,6 +353,17 @@ public class InvoiceTermController {
           }
         }
       }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      Beans.get(PaymentSessionService.class)
+          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

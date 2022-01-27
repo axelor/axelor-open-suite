@@ -50,6 +50,18 @@ public class PaymentSessionController {
     }
   }
 
+  public void computeTotal(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);

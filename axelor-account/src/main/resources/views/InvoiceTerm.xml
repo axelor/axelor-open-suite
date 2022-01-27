@@ -71,16 +71,18 @@
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select"
-      onClick="action-invoice-term-method-select-terms-btn" icon="fa-plus-circle"
-      readonlyIf="isSelectedOnPaymentSession"/>
+      onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-plus-circle" readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectBtn" title="Unselect"
-      onClick="action-invoice-term-method-unselect-terms-btn" icon="fa-minus-circle"
-      readonlyIf="!isSelectedOnPaymentSession"/>
+      onClick="action-invoice-term-method-unselect-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-minus-circle" readonlyIf="!isSelectedOnPaymentSession"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
+      icon="fa-user-plus"
+      onClick="action-invoice-term-method-select-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="isSelectedOnPaymentSession"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
+      icon="fa-user-times"
+      onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="!isSelectedOnPaymentSession"/>
   </grid>
 
@@ -520,6 +522,11 @@
       method="pfpPartialReasonConfirm"/>
   </action-method>
 
+  <action-method name="action-invoice-term-method-compute-total-payment-session">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="computeTotalPaymentSession"/>
+  </action-method>
+
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="form" name="invoice-term-refusal-to-pay-wizard-form"/>
@@ -547,7 +554,7 @@
   <action-view name="action-invoice-term-view-payment-session-dashlet"
     title="Term(s) to pay/be paid by partner" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-payment-session-grid"/>
-    <view type="form" name="invoice-term-form"/>
+    <view type="form" name="invoice-term-move-line-form"/>
     <domain>self.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
