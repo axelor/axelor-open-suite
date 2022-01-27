@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -112,9 +111,8 @@ public class MrpServiceImpl implements MrpService {
   protected MrpLineService mrpLineService;
   protected MrpForecastRepository mrpForecastRepository;
   protected StockLocationService stockLocationService;
-  protected ProductCategoryRepository productCategoryRepository;
-  protected StockHistoryLineRepository stockHistoryLineRepository;
   protected ProductCategoryService productCategoryService;
+  protected StockHistoryLineRepository stockHistoryLineRepository;
 
   protected AppBaseService appBaseService;
   protected AppPurchaseService appPurchaseService;
@@ -140,7 +138,6 @@ public class MrpServiceImpl implements MrpService {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
-      ProductCategoryRepository productCategoryRepository,
       StockHistoryLineRepository stockHistoryLineRepository,
       ProductCategoryService productCategoryService) {
 
@@ -155,13 +152,12 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
-    this.productCategoryRepository = productCategoryRepository;
+    this.productCategoryService = productCategoryService;
 
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.stockLocationService = stockLocationService;
     this.stockHistoryLineRepository = stockHistoryLineRepository;
-    this.productCategoryService = productCategoryService;
   }
 
   @Override
@@ -1281,12 +1277,10 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
-        Set<ProductCategory> childProductCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          childProductCategorySet.addAll(
-              this.getProductCategories(productCategory, new HashSet<>(), 0));
+          productCategorySet.addAll(
+              productCategoryService.fetchChildrenCategoryList(productCategory));
         }
-        productCategorySet.addAll(childProductCategorySet);
       }
 
       productSet.addAll(
@@ -1547,32 +1541,5 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
-  }
-
-  protected Set<ProductCategory> getProductCategories(
-      ProductCategory productCategory, Set<ProductCategory> productCategorySet, int count) {
-
-    if (count > ITERATIONS) {
-      return productCategorySet;
-    }
-
-    List<ProductCategory> childProductCategoryList =
-        productCategoryRepository
-            .all()
-            .filter("self.parentProductCategory = ?1", productCategory)
-            .fetch();
-
-    productCategorySet.add(productCategory);
-    count++;
-
-    if (childProductCategoryList.isEmpty()) {
-      return productCategorySet;
-    }
-
-    for (ProductCategory category : childProductCategoryList) {
-      this.getProductCategories(category, productCategorySet, count);
-    }
-
-    return productCategorySet;
   }
 }

@@ -13,4 +13,8 @@ public interface InvoiceVisibilityService {
   boolean isDecisionPfpVisible(Invoice invoice);
 
   boolean isSendNotifyVisible(Invoice invoice);
+
+  boolean getManagePfpCondition(Invoice invoice);
+
+  boolean getOperationTypePurchaseCondition(Invoice invoice);
 }

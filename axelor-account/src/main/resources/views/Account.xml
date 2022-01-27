@@ -105,10 +105,6 @@
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="compatibleAccountSet" widget="TagSelect"
             showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
-          <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
-            if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
-            <field name="isRetrievedOnPaymentSession"/>
-          </panel>
           <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
             hideIf="accountType.technicalTypeSelect == 'view'">
             <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
