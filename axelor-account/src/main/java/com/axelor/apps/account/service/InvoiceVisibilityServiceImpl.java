@@ -18,11 +18,11 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation) {
-    boolean managePfpCondition = this._getManagePfpCondition(invoice);
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean validatorUserCondition = this._getUserCondition(invoice, user);
 
-    boolean operationTypeCondition = this._getOperationTypePurchaseCondition(invoice);
+    boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
     boolean statusCondition = this._getStatusCondition(invoice);
 
@@ -52,9 +52,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isValidatorUserVisible(Invoice invoice) {
-    boolean managePfpCondition = this._getManagePfpCondition(invoice);
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
-    boolean operationTypeCondition = this._getOperationTypePurchaseCondition(invoice);
+    boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
     boolean invoiceTermsCondition = this._getInvoiceTermsCondition(invoice);
 
@@ -70,9 +70,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isDecisionPfpVisible(Invoice invoice) {
-    boolean managePfpCondition = this._getManagePfpCondition(invoice);
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
-    boolean operationTypeCondition = this._getOperationTypePurchaseCondition(invoice);
+    boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
     boolean decisionDateCondition = this._getDecisionDateCondition(invoice);
 
@@ -81,9 +81,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isSendNotifyVisible(Invoice invoice) {
-    boolean managePfpCondition = this._getManagePfpCondition(invoice);
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
-    boolean operationTypeCondition = this._getOperationTypePurchaseCondition(invoice);
+    boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
     boolean pfpValidateStatusCondition = this._getPfpValidateStatusCondition(invoice, false);
 
@@ -102,8 +102,16 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         && otherCondition;
   }
 
-  protected boolean _getManagePfpCondition(Invoice invoice) {
+  @Override
+  public boolean getManagePfpCondition(Invoice invoice) {
     return invoice.getCompany().getAccountConfig().getIsManagePassedForPayment();
+  }
+
+  @Override
+  public boolean getOperationTypePurchaseCondition(Invoice invoice) {
+    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            && invoice.getCompany().getAccountConfig().getIsManagePFPInRefund());
   }
 
   protected boolean _getUserCondition(Invoice invoice, User user) {
@@ -113,19 +121,13 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected boolean _getOperationTypeCondition(Invoice invoice) {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
         || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-        || !this._getManagePfpCondition(invoice)
+        || !this.getManagePfpCondition(invoice)
         || (this._getInvoiceTermsCondition2(invoice)
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || !invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
                 || invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
-  }
-
-  protected boolean _getOperationTypePurchaseCondition(Invoice invoice) {
-    return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-        || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            && invoice.getCompany().getAccountConfig().getIsManagePFPInRefund());
   }
 
   protected boolean _getStatusCondition(Invoice invoice) {

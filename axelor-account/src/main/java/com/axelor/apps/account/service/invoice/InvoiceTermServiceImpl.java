@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.CancelReason;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -58,6 +60,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
   protected InvoiceToolService invoiceToolService;
+  protected InvoiceVisibilityService invoiceVisibilityService;
   protected AccountConfigService accountConfigService;
 
   @Inject
@@ -67,12 +70,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceService invoiceService,
       AppAccountService appAccountService,
       InvoiceToolService invoiceToolService,
+      InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
     this.invoiceToolService = invoiceToolService;
+    this.invoiceVisibilityService = invoiceVisibilityService;
     this.accountConfigService = accountConfigService;
   }
 
@@ -333,12 +338,27 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) {
+    String queryStr = "self.invoice = :invoice AND self.isPaid IS NOT TRUE";
+    boolean pfpCondition =
+        appAccountService.getAppAccount().getActivatePassedForPayment()
+            && invoiceVisibilityService.getManagePfpCondition(invoice)
+            && invoiceVisibilityService.getOperationTypePurchaseCondition(invoice);
 
-    return invoiceTermRepo
-        .all()
-        .filter("self.invoice = ?1 AND self.isPaid is not true", invoice)
-        .order("dueDate")
-        .fetch();
+    if (pfpCondition) {
+      queryStr =
+          queryStr + " AND self.pfpValidateStatusSelect IN (:validated, :partiallyValidated)";
+    }
+
+    Query<InvoiceTerm> invoiceTermQuery =
+        invoiceTermRepo.all().filter(queryStr).bind("invoice", invoice);
+
+    if (pfpCondition) {
+      invoiceTermQuery
+          .bind("validated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
+          .bind("partiallyValidated", InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
+    }
+
+    return invoiceTermQuery.order("dueDate").fetch();
   }
 
   @Override
