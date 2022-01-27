@@ -172,8 +172,7 @@
           </field>
           <field name="fixedPhone" widget="phone" colSpan="4"
             x-placeholder-number-type="FIXED_LINE"/>
-          <field name="webSite" colSpan="6" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+          <field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"/>
         </panel>
 
         <panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">

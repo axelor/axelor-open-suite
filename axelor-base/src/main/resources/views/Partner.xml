@@ -428,8 +428,7 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -657,9 +656,7 @@
           <field name="fax" widget="phone"/>
           <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
           <field name="mobilePhone" widget="phone"/>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
+          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -825,9 +822,7 @@
       <field name="fax" widget="phone"/>
       <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
       <field name="mobilePhone" widget="phone"/>
-      <field name="webSite" placeholder="http://www.url.com"
-        pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
+      <field name="webSite" placeholder="http://www.url.com" widget="url"/>
     </panel>
   </form>
 
