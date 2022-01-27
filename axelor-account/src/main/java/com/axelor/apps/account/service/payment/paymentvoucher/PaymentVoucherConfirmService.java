@@ -246,7 +246,6 @@ public class PaymentVoucherConfirmService {
       paymentVoucher.setGeneratedMove(move);
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
-      BigDecimal totalFinancialDiscount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
@@ -257,7 +256,11 @@ public class PaymentVoucherConfirmService {
         log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
         log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
 
-        BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
+        BigDecimal amountToPay =
+            payVoucherElementToPay
+                .getAmountToPayCurrency()
+                .add(payVoucherElementToPay.getFinancialDiscountAmount())
+                .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
           paidLineTotal = paidLineTotal.add(amountToPay);
@@ -279,11 +282,6 @@ public class PaymentVoucherConfirmService {
               paymentDate);
 
           if (financialDiscount) {
-            totalFinancialDiscount =
-                totalFinancialDiscount
-                    .add(payVoucherElementToPay.getFinancialDiscountAmount())
-                    .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
-
             moveLineNo =
                 this.createFinancialDiscountMoveLines(
                     move,
@@ -306,7 +304,6 @@ public class PaymentVoucherConfirmService {
       // cancelling the moveLine (excess payment) by creating the balance of all the payments
       // on the same account as the moveLine (excess payment)
       // in the else case we create a classical balance on the bank account of the payment mode
-      BigDecimal paidAmount = paymentVoucher.getPaidAmount().subtract(totalFinancialDiscount);
 
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
@@ -314,7 +311,7 @@ public class PaymentVoucherConfirmService {
                 move,
                 paymentVoucher.getPartner(),
                 paymentVoucher.getMoveLine().getAccount(),
-                paidAmount,
+                paymentVoucher.getPaidAmount(),
                 isDebitToPay,
                 paymentDate,
                 moveLineNo++,
@@ -333,7 +330,7 @@ public class PaymentVoucherConfirmService {
                 move,
                 payerPartner,
                 paymentModeAccount,
-                paidAmount,
+                paymentVoucher.getPaidAmount(),
                 isDebitToPay,
                 paymentDate,
                 moveLineNo++,
