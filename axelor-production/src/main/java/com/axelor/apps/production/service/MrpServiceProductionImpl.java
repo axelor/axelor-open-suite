@@ -19,7 +19,6 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -96,7 +95,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockLocationService stockLocationService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
-      ProductCategoryRepository productCategoryRepository,
       StockHistoryLineRepository stockHistoryLineRepository,
       ProductCategoryService productCategoryService) {
     super(
@@ -114,7 +112,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineService,
         mrpForecastRepository,
         stockLocationService,
-        productCategoryRepository,
         stockHistoryLineRepository,
         productCategoryService);
     this.manufOrderRepository = manufOrderRepository;

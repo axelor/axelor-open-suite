@@ -44,8 +44,9 @@
 
         // STATUS SELECT
         public static final int STATUS_ONGOING = 1;
-        public static final int STATUS_CLOSED = 2;
-        public static final int STATUS_CANCELLED = 3;
+        public static final int STATUS_AWAITING_PAYMENT = 2;
+        public static final int STATUS_CLOSED = 3;
+        public static final int STATUS_CANCELLED = 4;
 
 		// PARTNER TYPE SELECT
 		public static final int PARTNER_TYPE_SUPPLIER = 1;

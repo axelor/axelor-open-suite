@@ -71,9 +71,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                           && accountManagement.getBankDetails() != null)
               .map(AccountManagement::getBankDetails)
               .findFirst();
-      if (bankDetails.isPresent()) {
-        paymentSession.setBankDetails(bankDetails.get());
-      }
+      bankDetails.ifPresent(paymentSession::setBankDetails);
     }
   }
 
@@ -90,9 +88,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                           && accountManagement.getJournal() != null)
               .map(AccountManagement::getJournal)
               .findFirst();
-      if (journal.isPresent()) {
-        paymentSession.setJournal(journal.get());
-      }
+      journal.ifPresent(paymentSession::setJournal);
     }
   }
 

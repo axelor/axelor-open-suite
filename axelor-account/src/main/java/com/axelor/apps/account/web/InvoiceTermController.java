@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -212,6 +213,18 @@ public class InvoiceTermController {
       Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
       response.setAttr("searchPanel", "refresh", true);
       response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceterm =
+          Beans.get(InvoiceTermRepository.class)
+              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      Beans.get(InvoiceTermService.class).validatePfp(invoiceterm, AuthUtils.getUser());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

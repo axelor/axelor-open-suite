@@ -103,6 +103,10 @@
             grid-view="stop-reason-grid"/>
           <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
             grid-view="user-grid"/>
+          <panel colSpan="3">
+            <field name="createdOn" colSpan="6"/>
+            <field name="updatedOn" colSpan="6"/>
+          </panel>
         </editor>
       </field>
     </panel>
@@ -189,7 +193,5 @@
     <context name="_partner" expr="eval: __self__"/>
     <context name="_showSingle" expr="eval:true"/>
   </action-view>
-
-
 
 </object-views>

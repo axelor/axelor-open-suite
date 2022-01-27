@@ -417,7 +417,7 @@
     <action name="save"/>
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
-    <action name="action-invoice-term-record-validate-pfp"/>
+    <action name="action-invoice-term-method-validate-pfp"/>
     <action name="save"/>
   </action-group>
 
@@ -457,13 +457,9 @@
       if="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
   </action-record>
 
-  <action-record name="action-invoice-term-record-validate-pfp"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="pfpValidateStatusSelect" expr="eval: 2"/>
-    <field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
-    <field name="pfpGrantedAmount" expr="eval: amount"/>
-    <field name="pfpValidatorUser" expr="eval: __user__" if="!pfpValidatorUser"/>
-  </action-record>
+  <action-method name="action-invoice-term-method-validate-pfp">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="validatePfp"/>
+  </action-method>
 
   <action-method name="action-invoice-term-method-compute-customized-amount">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
