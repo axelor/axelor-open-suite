@@ -4,11 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <chart name="chart.sales.turnover.per.analytic.account.per.month"
-    title="Turnover invoiced of first Analytic Axis by Month"
-    onInit="action.chart.set.active.company">
+    title="Turnover invoiced for an Analytic Axis by Month" onInit="action.chart.set.active.company">
     <search-fields>
       <field name="_company" title="Company" type="reference"
         target="com.axelor.apps.base.db.Company"/>
+      <field name="_axis" title="Analytic Axis" type="reference"
+        target="com.axelor.apps.account.db.AnalyticAxis"/>
     </search-fields>
     <dataset type="jpql"><![CDATA[
 
@@ -31,7 +32,7 @@
 				self.analyticAxis as _analyticAxis
 	  WHERE
 	      (_move.statusSelect = 3 OR _move.statusSelect = 2) AND (:_company is null OR _move.company = :_company)
-	 			AND _account.code LIKE '7%'  AND _analyticAxis.code = 'AXE1'
+	 			AND _account.code LIKE '7%'  AND (:_axis is null OR _analyticAxis = :_axis)
 	  GROUP BY
 	      to_char(_moveLine.date,'yyyy-MM'),
 				_analyticAccount.name
@@ -158,7 +159,7 @@
 	  ]]></dataset>
     <template><![CDATA[
 
-	 <report-table data='data' columns='<span x-translate>Supplier</span>,<span x-translate>Amount</span>'></report-table>
+	 <report-table data='data' columns='Supplier,Amount'></report-table>
 
 
 	  ]]></template>
