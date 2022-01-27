@@ -185,6 +185,15 @@
     <view type="form" name="import-export-interface-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-ftp-connection" parent="admin-root-general"
+    title="FTP connection" action="admin.root.general.ftp.connection" order="70"/>
+
+  <action-view name="admin.root.general.ftp.connection" title="FTP connection"
+    model="com.axelor.apps.base.db.FtpConnection">
+    <view type="grid" name="ftp-connection-grid"/>
+    <view type="form" name="ftp-connection-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="15" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"

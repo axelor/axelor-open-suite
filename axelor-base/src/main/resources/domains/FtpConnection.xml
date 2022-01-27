@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FtpConnection" lang="java">
+
+    <string name="name" title="FtpConnection.name" namecolumn="true" required="true"/>
+    <integer name="port" title="Port" required="true"/>
+    <string name="host" title="Host" required="true"/>
+    <string name="username" title="Login" required="true"/>
+    <string name="password" title="Password" required="true"/>
+    <many-to-one name="keyFile" title="Key file" ref="com.axelor.meta.db.MetaFile"/>
+    <string name="keyFilePassphrase" title="Key file passphrase"/>
+
+  </entity>
+
+</domain-models>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="ftp-connection-grid" title="FTP connections"
+    model="com.axelor.apps.base.db.FtpConnection">
+    <field name="name"/>
+    <field name="host"/>
+    <field name="port"/>
+    <field name="username"/>
+  </grid>
+
+  <form name="ftp-connection-form" title="FTP connection"
+    model="com.axelor.apps.base.db.FtpConnection" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="host" colSpan="3"/>
+      <field name="port" colSpan="3"/>
+      <field name="username" colSpan="3"/>
+      <field name="password" widget="password" colSpan="3"/>
+      <field name="keyFile" widget="binary-link" colSpan="3"/>
+      <field name="keyFilePassphrase" colSpan="3"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="testConnection" title="Test connection" onClick="save"/>
+    </panel>
+  </form>
+
+</object-views>
