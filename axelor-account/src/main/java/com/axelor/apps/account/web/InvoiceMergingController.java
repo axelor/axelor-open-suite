@@ -1,5 +1,6 @@
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -8,6 +9,7 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMergingResult;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.tool.MapTools;
 import com.axelor.auth.db.AuditableModel;
@@ -75,6 +77,12 @@ public class InvoiceMergingController {
           if (invoiceMergingService.getChecks(result).isExistPaymentConditionDiff()) {
             confirmView.context("contextPaymentConditionToCheck", Boolean.TRUE.toString());
           }
+          if (invoiceMergingService.getChecks(result).isExistTradingNameDiff()) {
+            confirmView.context("contextTradingNameToCheck", Boolean.TRUE.toString());
+          }
+          if (invoiceMergingService.getChecks(result).isExistFiscalPositionDiff()) {
+            confirmView.context("contextFiscalPositionToCheck", Boolean.TRUE.toString());
+          }
           if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
             if (invoiceMergingService.getChecks(result).isExistSupplierInvoiceNbDiff()) {
               confirmView.context("contextSupplierInvoiceNbToCheck", Boolean.TRUE.toString());
@@ -126,10 +134,20 @@ public class InvoiceMergingController {
           MapTools.findObject(PaymentMode.class, request.getContext().get("paymentMode"));
       PaymentCondition paymentCondition =
           MapTools.findObject(PaymentCondition.class, request.getContext().get("paymentCondition"));
+      TradingName tradingName =
+          MapTools.findObject(TradingName.class, request.getContext().get("tradingName"));
+      FiscalPosition fiscalPosition =
+          MapTools.findObject(FiscalPosition.class, request.getContext().get("fiscalPosition"));
       if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
         InvoiceMergingResult result =
             invoiceMergingService.mergeInvoices(
-                invoicesToMerge, contactPartner, priceList, paymentMode, paymentCondition);
+                invoicesToMerge,
+                contactPartner,
+                priceList,
+                paymentMode,
+                paymentCondition,
+                tradingName,
+                fiscalPosition);
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
@@ -168,6 +186,10 @@ public class InvoiceMergingController {
           MapTools.findObject(PaymentMode.class, request.getContext().get("paymentMode"));
       PaymentCondition paymentCondition =
           MapTools.findObject(PaymentCondition.class, request.getContext().get("paymentCondition"));
+      TradingName tradingName =
+          MapTools.findObject(TradingName.class, request.getContext().get("tradingName"));
+      FiscalPosition fiscalPosition =
+          MapTools.findObject(FiscalPosition.class, request.getContext().get("fiscalPosition"));
       String supplierInvoiceNb =
           request.getContext().get("supplierInvoiceNb") == null
               ? null
@@ -184,6 +206,8 @@ public class InvoiceMergingController {
                 priceList,
                 paymentMode,
                 paymentCondition,
+                tradingName,
+                fiscalPosition,
                 supplierInvoiceNb,
                 originDate);
         if (result.getInvoice() != null) {

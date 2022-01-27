@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
-import static com.axelor.apps.tool.StringTool.getIdListString;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;

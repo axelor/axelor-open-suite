@@ -127,6 +127,8 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
+          getCommonFields(result).getTradingName(),
+          getCommonFields(result).getFiscalPosition(),
           getCommonFields(result).getCommonSupplierInvoiceNb(),
           getCommonFields(result).getCommonOriginDate(),
           getCommonFields(result).getCommonPurchaseOrder(),
@@ -142,6 +144,8 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
+          getCommonFields(result).getTradingName(),
+          getCommonFields(result).getFiscalPosition(),
           getCommonFields(result).getCommonSaleOrder(),
           getCommonFields(result).getCommonProject());
     }
