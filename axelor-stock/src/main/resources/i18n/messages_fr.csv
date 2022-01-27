@@ -74,6 +74,7 @@
 "Cancellation confirmation",,,
 "Cancelled Arrivals","Réceptions annulées",,
 "Cannot go back to draft status.",,,
+"Cannot realize a stock move that is not planned.","Impossible de réaliser un mouvement de stock qui n'est pas planifié.",,
 "Carriage (Sea/Air) to port of import","Transport principal",,
 "Carriage to place of destination","Acheminement vers l’usine ou l’entrepôt d’arrivée",,
 "Carriage to port of export","Acheminement vers une plateforme de départ",,
