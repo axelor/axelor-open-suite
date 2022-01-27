@@ -66,7 +66,8 @@
     </panel>
     <panel name="btnPanel" sidebar="true">
       <button name="validateBtn" title="Validate" css="btn-success"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" onClick=""/>
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+        onClick="action-payment-session-group-validate"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger"
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-payment-session-group-cancel"/>
@@ -104,16 +105,17 @@
     </panel>
   </form>
 
+  <action-group name="action-payment-session-group-validate">
+    <action name="save"/>
+    <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="action-payment-session-method-validate-payment-session"/>
+  </action-group>
+
   <action-group name="action-payment-session-group-cancel">
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
   </action-group>
-
-  <action-method name="action-payment-session-method-cancel">
-    <call class="com.axelor.apps.account.web.PaymentSessionController"
-      method="cancelPaymentSession"/>
-  </action-method>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"
@@ -138,6 +140,21 @@
     <attribute name="value" expr="eval: null" for="paymentMode"/>
     <attribute name="value" expr="eval: company?.currency" for="currency"/>
   </action-attrs>
+
+  <action-method name="action-payment-session-method-validate-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-validate-payment-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validatePaymentSession"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-cancel">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+          method="cancelPaymentSession"/>
+  </action-method>
 
   <action-validate name="action-payment-session-validate-cancel">
     <alert

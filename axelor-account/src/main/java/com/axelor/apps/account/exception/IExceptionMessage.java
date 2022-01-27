@@ -1090,4 +1090,13 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
+      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
+
+  static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
+      "%d accounting move(s) successfully generated." /*)*/;
+
+  static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
+      "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
 }

@@ -48,6 +48,17 @@
         public static final int STATUS_CLOSED = 3;
         public static final int STATUS_CANCELLED = 4;
 
+        // ACCOUNTING METHOD SELECT
+        public static final int ACCOUNTING_METHOD_BY_INVOICE_TERM = 1;
+        public static final int ACCOUNTING_METHOD_BY_PARTNER = 2;
+        public static final int ACCOUNTING_METHOD_GLOBAL = 3;
+
+        // ACCOUNTING TRIGGER SELECT
+        public static final int ACCOUNTING_TRIGGER_IMMEDIATE = 1;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_REALIZATION = 4;
+
 		// PARTNER TYPE SELECT
 		public static final int PARTNER_TYPE_SUPPLIER = 1;
 		public static final int PARTNER_TYPE_EMPLOYEE = 2;
