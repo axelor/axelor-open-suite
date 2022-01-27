@@ -84,10 +84,10 @@ public class PaymentSessionController {
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
       int moveCount =
-              Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
 
       response.setFlash(
-              String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

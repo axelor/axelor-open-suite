@@ -20,14 +20,9 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
@@ -65,13 +60,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
       invoiceService.setDraftSequence(invoice);
-
-      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
-          && !invoiceService.checkInvoiceLinesCutOffDates(invoice)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
-      }
 
       return invoice;
     } catch (Exception e) {
