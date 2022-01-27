@@ -609,12 +609,14 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
         showTitle="false">
-        <field name="debitBlockingOk"/>
-        <field name="debtRecoveryBlockingOk"/>
+        <field name="debitBlockingOk"
+          onChange="action-invoice-record-set-user-on-debit-blocking"/>
+        <field name="debtRecoveryBlockingOk"
+          onChange="action-invoice-record-set-user-on-recovery-blocking"/>
         <panel name="debitBlockingGroupPanel" title="Direct debit blocking"
           showIf="debitBlockingOk" colSpan="12">
           <field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false"
-            form-view="user-form" grid-view="user-grid"/>
+            form-view="user-form" grid-view="user-grid" readonly="true"/>
           <field name="debitBlockingToDate"/>
           <field name="debitBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -622,7 +624,7 @@ InvoiceSet.length > 0))"
         <panel showIf="debtRecoveryBlockingOk" name="debtRecoveryBlockingPanel"
           title="Debt recovery blocking" colSpan="12">
           <field name="debtRecoveryBlockingByUser" canNew="false" canEdit="false"
-            canView="false" form-view="user-form" grid-view="user-grid"/>
+            canView="false" form-view="user-form" grid-view="user-grid" readonly="true"/>
           <field name="debtRecoveryBlockingToDate"/>
           <field name="debtRecoveryBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -1460,6 +1462,16 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings"
       if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
+  </action-record>
+
+  <action-record name="action-invoice-record-set-user-on-debit-blocking"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="debitBlockingByUser" expr="eval:__user__"/>
+  </action-record>
+
+  <action-record name="action-invoice-record-set-user-on-recovery-blocking"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="debtRecoveryBlockingByUser" expr="eval:__user__"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
