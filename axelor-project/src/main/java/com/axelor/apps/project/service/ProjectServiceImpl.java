@@ -24,18 +24,21 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.ProjectTaskSection;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskSectionRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -53,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -61,15 +65,18 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
+  protected ProjectTaskSectionRepository projectTaskSectionRepository;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectTaskSectionRepository projectTaskSectionRepository) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
+    this.projectTaskSectionRepository = projectTaskSectionRepository;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -387,5 +394,24 @@ public class ProjectServiceImpl implements ProjectService {
     return contextProjectIds.contains(0l)
         ? null
         : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+  }
+
+  @Override
+  public String getSectionColumnsTobeExcluded(Project project) {
+
+    Query<ProjectTaskSection> query;
+
+    Set<ProjectTaskSection> projectTaskSectionSet = project.getProjectTaskSectionSet();
+
+    if (CollectionUtils.isEmpty(projectTaskSectionSet)) {
+      query = projectTaskSectionRepository.all();
+    } else {
+      query = projectTaskSectionRepository.all().filter("self NOT IN (?1)", projectTaskSectionSet);
+    }
+
+    return query.fetch().stream()
+        .map(ProjectTaskSection::getId)
+        .map(String::valueOf)
+        .collect(Collectors.joining(","));
   }
 }

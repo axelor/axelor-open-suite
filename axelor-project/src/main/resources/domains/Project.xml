@@ -81,6 +81,8 @@
     <boolean name="isShowTaskCategory" title="Categories?" default="true"/>
     <many-to-many name="projectTaskCategorySet"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
+    <many-to-many name="projectTaskSectionSet"
+      ref="com.axelor.apps.project.db.ProjectTaskSection" title="Type of authorized sections"/>
     <boolean name="isShowProgress" title="Progress?" default="true"/>
     <boolean name="isShowPlanning" title="Planning?" default="true"/>
     <boolean name="isShowFrequency" title="Frequency?"/>

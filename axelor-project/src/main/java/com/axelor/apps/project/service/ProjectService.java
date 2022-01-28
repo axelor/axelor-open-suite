@@ -72,4 +72,6 @@ public interface ProjectService {
 
   @CallMethod
   public String getContextProjectIdsString();
+
+  public String getSectionColumnsTobeExcluded(Project project);
 }
