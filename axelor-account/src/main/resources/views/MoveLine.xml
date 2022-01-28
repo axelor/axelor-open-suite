@@ -454,7 +454,7 @@
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
-        onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+        onChange="action-account-move-line-move-form-account-group-on-change"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0"/>
@@ -691,7 +691,7 @@
   </action-group>
 
   <action-group name="action-account-move-line-account-group-on-change">
-    <action name="action-move-line-record-empty-cut-off-dates"
+    <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
@@ -699,6 +699,13 @@
     <action name="action-method-move-line-hide-axis-analytic-account"/>
     <action name="action-method-move-line-set-required-analytic-accounts"/>
     <action name="action-method-change-account-set-default-distribution-template"/>
+  </action-group>
+
+  <action-group name="action-account-move-line-move-form-account-group-on-change">
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-attrs-show-tax-amount"/>
+    <action name="action-move-line-record-set-cut-off-dates"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
   </action-group>
 
   <action-group name="action-group-analytic-axis-onchange">
@@ -723,7 +730,7 @@
   </action-group>
 
   <action-group name="action-move-line-group-account-onchange">
-    <action name="action-move-line-record-empty-cut-off-dates"
+    <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
@@ -896,10 +903,12 @@
       if="account?.commonPosition == 1"/>
   </action-record>
 
-  <action-record name="action-move-line-record-empty-cut-off-dates"
+  <action-record name="action-move-line-record-set-cut-off-dates"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="cutOffStartDate" expr="eval: null"/>
-    <field name="cutOffEndDate" expr="eval: null"/>
+    <field name="cutOffStartDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
+    <field name="cutOffEndDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"

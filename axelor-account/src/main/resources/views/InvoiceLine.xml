@@ -399,6 +399,8 @@
 
   <action-group name="action-group-account-invoice-line-product-onchange">
     <action name="action-invoice-line-method-get-product-information"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
     <action name="action-budget-validate-exceed-line-amount"/>
@@ -422,7 +424,7 @@
   <action-group name="action-invoice-line-group-account-onchange">
     <action name="action-attrs-account-invoice-line-account-onchange"/>
     <action name="action-invoice-line-record-account-onchange"
-      if="__config__.app.getApp('account').manageCutOffPeriod &amp;&amp; (account == null || !account.manageCutOffPeriod)"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-method-account-invoice-line-account-onchange"/>
   </action-group>
   <!-- ACTION RECORDS -->
@@ -447,8 +449,10 @@
 
   <action-record name="action-invoice-line-record-account-onchange"
     model="com.axelor.apps.account.db.InvoiceLine">
-    <field name="cutOffStartDate" expr=""/>
-    <field name="cutOffEndDate" expr=""/>
+    <field name="cutOffStartDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
+    <field name="cutOffEndDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
   <!-- ACTION METHOD -->
