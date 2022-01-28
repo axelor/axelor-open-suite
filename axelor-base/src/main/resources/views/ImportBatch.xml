@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="import-batch-grid" title="Import batches"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <field name="actionSelect"/>
+    <field name="code"/>
+    <field name="company"/>
+    <field name="createdOn"/>
+    <field name="createdBy"/>
+  </grid>
+
+  <form name="import-batch-form" title="Import batch"
+    model="com.axelor.apps.base.db.ImportBatch" width="large">
+    <panel name="mainPanel">
+      <field name="actionSelect"/>
+      <field name="code"/>
+      <field name="company"/>
+      <spacer colSpan="6"/>
+      <field name="archived"/>
+    </panel>
+    <panel-tabs name="panelTabs">
+      <panel name="importConfigPanel" title="Import Configuration">
+        <panel name="importConfigPanel" colSpan="12" showIf="actionSelect == 0">
+          <field name="importConfig" form-view="import-configuration-form"
+            grid-view="import-configuration-grid"/>
+        </panel>
+        <panel name="advanceImportPanel" showIf="actionSelect == 1" colSpan="12">
+          <field name="advandedImport" form-view="advanced-import-form"
+            grid-view="advanced-import-grid"/>
+          <field name="dataFileName"/>
+        </panel>
+        <field name="fTPConnection" form-view="ftp-connection-form"
+          grid-view="ftp-connection-grid"/>
+        <field name="filesNamingRule" showIf="fTPConnection" requiredIf="fTPConnection"/>
+        <field name="sourceFolder" showIf="fTPConnection" requiredIf="fTPConnection"/>
+        <field name="destinationFolder" showIf="fTPConnection" requiredIf="fTPConnection"/>
+      </panel>
+      <panel name="batchInfoPanel" title="Informations">
+        <field name="createdOn"/>
+        <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+        <field name="description"/>
+        <field name="batchList" form-view="batch-form" grid-view="batch-grid" colSpan="12"/>
+      </panel>
+    </panel-tabs>
+    <panel name="actionsPanel" sidebar="true">
+      <button name="importBtn" title="Import" onClick="save"/>
+    </panel>
+  </form>
+
+</object-views>

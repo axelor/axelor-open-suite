@@ -695,6 +695,15 @@
     <view-param name="search-filters" value="mail-batch-filters"/>
   </action-view>
 
+  <menuitem name="admin-root-batch-import-batch" parent="admin-root-batch"
+    title="Import batch" action="admin.root.batch.import.batch"/>
+
+  <action-view name="admin.root.batch.import.batch" title="Import batch"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <view type="grid" name="import-batch-grid"/>
+    <view type="form" name="import-batch-form"/>
+  </action-view>
+
   <menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
     if="__config__.app.isApp('base')" title="Message" order="40"/>
 

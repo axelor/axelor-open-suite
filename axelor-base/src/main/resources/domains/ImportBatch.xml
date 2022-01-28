@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ImportBatch" lang="java">
+
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="import.batch.action.select"/>
+    <one-to-many name="batchList" title="Batchs" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="importBatch"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <string name="description" title="Description" large="true"/>
+
+    <many-to-one name="importConfig" title="Import"
+      ref="com.axelor.apps.base.db.ImportConfiguration"/>
+    <many-to-one name="advandedImport" title="Advanced import"
+      ref="com.axelor.apps.base.db.AdvancedImport"/>
+
+    <many-to-one name="fTPConnection" title="FTP connection"
+      ref="com.axelor.apps.base.db.FtpConnection"/>
+    <string name="sourceFolder" title="Source folder"/>
+    <string name="destinationFolder" title="Destination folder"/>
+    <string name="filesNamingRule" title="File naming rule"
+      help="This field allows to filter files and download only those that respect specified naming without sensitive case. Example : 'ABCD' will filter on files that contain 'ABCD' in their name."/>
+    <string name="dataFileName" title="Data file name"
+      help="This field is used to enter the name of the data file used in the XML binding file. This will be used to rename the data files imported from the FTP server."/>
+
+    <extra-code><![CDATA[
+
+
+		//actionSelect
+		public static final Integer ACTION_SELECT_IMPORT = 0;
+		public static final Integer ACTION_SELECT_ADVANCE_IMPORT = 1;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

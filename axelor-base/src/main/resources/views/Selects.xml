@@ -654,4 +654,9 @@
     <option value="1">Left</option>
   </selection>
 
+  <selection name="import.batch.action.select">
+    <option value="0">Import</option>
+    <option value="1">Advanced Import</option>
+  </selection>
+
 </object-views>
