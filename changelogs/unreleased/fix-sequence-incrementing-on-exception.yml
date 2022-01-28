@@ -1,3 +1,0 @@
----
-title: "Sequence: fixed issue where the sequence count would increment after an exception cancelling the process."
-type: fix

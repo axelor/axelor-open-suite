@@ -1,3 +1,24 @@
+## [6.0.18] (2022-01-28)
+
+#### Fixed
+
+* GEONAMES: fix NPE while importing cities from geonames.
+* Stock move: add server side check on status before realizing a stock move.
+* Sequence: fixed issue where the sequence count would increment after an exception cancelling the process.
+* HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract.
+* Budget: Fix budget lines update on cancelling a purchase order.
+* Studio: Fix widget attrs width default on custom field
+
+Removed default value of width from widget attrs of custom field, when created from studio.
+
+* STOCK: Fix filters of stock forecast menu entries.
+* Stock reservation: fix german translation of error message.
+* INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`).
+* Sequence: fix data init by adding missing full name and activating yearly reset configuration on some sequences.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* PrintingSettings: remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+* Event: fix NPE when updating start date on an unsaved event.
+
 ## [6.0.17] (2021-12-16)
 
 #### Fixed
@@ -645,6 +666,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.18]: https://github.com/axelor/axelor-open-suite/compare/v6.0.17...v6.0.18
 [6.0.17]: https://github.com/axelor/axelor-open-suite/compare/v6.0.16...v6.0.17
 [6.0.16]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.0.16
 [6.0.15]: https://github.com/axelor/axelor-open-suite/compare/v6.0.14...v6.0.15
