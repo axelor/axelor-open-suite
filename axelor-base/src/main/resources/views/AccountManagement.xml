@@ -160,6 +160,7 @@
           form-view="sequence-form" grid-view="sequence-grid" requiredIf="typeSelect == 3"/>
         <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"
           form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+        <field name="pmtNotificationTemplate" showIf="paymentMode" if="__config__.app.isApp('account')"/>
         <field name="paymentMode.accountingMethodSelect" hidden="true"/>
       </panel>
 

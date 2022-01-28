@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -7,6 +8,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -18,6 +20,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailService {
@@ -45,8 +48,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   public int sendEmails(PaymentSession paymentSession)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, JSONException {
-    if (paymentSession.getPaymentMode() == null
-        || paymentSession.getPaymentMode().getPmtNotificationTemplate() == null) {
+    if (this.getEmailTemplate(paymentSession) == null) {
       return 0;
     }
 
@@ -95,6 +97,23 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
     return partnerIdList.size();
   }
 
+  protected Template getEmailTemplate(PaymentSession paymentSession) {
+    if (paymentSession.getPaymentMode() != null
+        && CollectionUtils.isNotEmpty(paymentSession.getPaymentMode().getAccountManagementList())) {
+      AccountManagement accountManagement =
+          paymentSession.getPaymentMode().getAccountManagementList().stream()
+              .filter(it -> it.getCompany().equals(paymentSession.getCompany()))
+              .findFirst()
+              .orElse(null);
+
+      if (accountManagement != null) {
+        return accountManagement.getPmtNotificationTemplate();
+      }
+    }
+
+    return null;
+  }
+
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
@@ -121,7 +140,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
             paymentSession.getId(),
             PaymentSession.class.getName(),
             PaymentSession.class.getSimpleName(),
-            paymentSession.getPaymentMode().getPmtNotificationTemplate());
+            this.getEmailTemplate(paymentSession));
 
     messageService.addMessageRelatedTo(
         message, PaymentSession.class.getName(), paymentSession.getId());

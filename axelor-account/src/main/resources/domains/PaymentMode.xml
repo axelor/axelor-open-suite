@@ -10,8 +10,6 @@
     <one-to-many name="accountManagementList"
       ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode"
       title="Accounting settings"/>
-    <many-to-one name="pmtNotificationTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Email model for Payment notice"/>
     <boolean name="validatePaymentByDepositSlipPublication"/>
     <boolean name="canSelectInPaymentSession" title="Select on sessions ?"/>
     <integer name="daysMarginOnPaySession"
