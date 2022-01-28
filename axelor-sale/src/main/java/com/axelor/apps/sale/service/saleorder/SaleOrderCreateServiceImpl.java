@@ -32,7 +32,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.model.SaleOrderMergeObject;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -44,8 +43,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,24 +156,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrderService.computeEndOfValidityDate(saleOrder);
 
     return saleOrder;
-  }
-
-  @Override
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList, Map<String, SaleOrderMergeObject> valuesMap)
-      throws AxelorException {
-    Objects.requireNonNull(saleOrderList);
-    Objects.requireNonNull(valuesMap);
-    return mergeSaleOrders(
-        saleOrderList,
-        (Currency) valuesMap.get("currency").getCommonObject(),
-        (Partner) valuesMap.get("clientPartner").getCommonObject(),
-        (Company) valuesMap.get("company").getCommonObject(),
-        (Partner) valuesMap.get("contactPartner").getCommonObject(),
-        (PriceList) valuesMap.get("priceList").getCommonObject(),
-        (Team) valuesMap.get("team").getCommonObject(),
-        (TaxNumber) valuesMap.get("taxNumber").getCommonObject(),
-        (FiscalPosition) valuesMap.get("fiscalPosition").getCommonObject());
   }
 
   @Override
