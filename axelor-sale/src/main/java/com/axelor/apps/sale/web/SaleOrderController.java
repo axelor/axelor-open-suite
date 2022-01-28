@@ -17,23 +17,6 @@
  */
 package com.axelor.apps.sale.web;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
@@ -62,14 +45,10 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
-import com.axelor.apps.tool.MapTools;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
@@ -80,13 +59,25 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.Nullable;
+import org.eclipse.birt.core.exception.BirtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class SaleOrderController {
@@ -351,72 +342,6 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-  
-  public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
-
-    String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
-    try {
-      List<SaleOrder> saleOrdersToMerge = MapTools.makeList(SaleOrder.class, request.getContext().get(lineToMerge));
-      if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
-    	  SaleOrderMergingResult result = Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
-    	  if (result.isConfirmationNeeded()) {
-    		 ActionViewBuilder confirmView = Beans.get(SaleOrderMergingViewService.class).buildConfirmView(result, lineToMerge, saleOrdersToMerge);
-    		 response.setView(confirmView.map());
-    		 return; 
-    	  }
-    	  if (result.getSaleOrder() != null) {
-    	        // Open the generated sale order in a new tab
-    	        response.setView(
-    	            ActionView.define("Sale order")
-    	                .model(SaleOrder.class.getName())
-    	                .add("grid", "sale-order-grid")
-    	                .add("form", "sale-order-form")
-    	                .param("search-filters", "sale-order-filters")
-    	                .param("forceEdit", "true")
-    	                .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
-    	                .map());
-    	        response.setCanClose(true);
-    	  }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-  
-  public void mergeSaleOrderFromPopUp(ActionRequest request, ActionResponse response) {
-	  String lineToMerge;
-	    if (request.getContext().get("saleQuotationToMerge") != null) {
-	        lineToMerge = "saleQuotationToMerge";
-	      } else {
-	        lineToMerge = "saleOrderToMerge";
-	      }
-	  try {
-		  List<SaleOrder> saleOrdersToMerge = MapTools.makeList(SaleOrder.class, request.getContext().get(lineToMerge));		  
-		  if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
-			  SaleOrderMergingResult result = Beans.get(SaleOrderMergingService.class).mergeSaleOrdersWithContext(saleOrdersToMerge, request.getContext());
-			  if (result.getSaleOrder() != null) {
-	    	        // Open the generated sale order in a new tab
-	    	        response.setView(
-	        	            ActionView.define("Sale order")
-	        	                .model(SaleOrder.class.getName())
-	        	                .add("grid", "sale-order-grid")
-	        	                .add("form", "sale-order-form")
-	        	                .param("search-filters", "sale-order-filters")
-	        	                .param("forceEdit", "true")
-	        	                .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
-	        	                .map());
-	        	        response.setCanClose(true);
-			  }
-		  }
-	  } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
   }
 
   /**

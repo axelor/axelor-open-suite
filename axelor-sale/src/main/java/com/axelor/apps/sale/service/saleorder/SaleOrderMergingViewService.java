@@ -1,10 +1,9 @@
 package com.axelor.apps.sale.service.saleorder;
 
-import java.util.List;
-
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.util.List;
 
 public interface SaleOrderMergingViewService {
 
@@ -14,6 +13,6 @@ public interface SaleOrderMergingViewService {
    * @param SaleOrderMergingResult
    * @return ActionViewBuilder
    */
-ActionViewBuilder buildConfirmView(SaleOrderMergingResult result, String lineToMerge,
-		List<SaleOrder> saleOrdersToMerge);
+  ActionViewBuilder buildConfirmView(
+      SaleOrderMergingResult result, String lineToMerge, List<SaleOrder> saleOrdersToMerge);
 }

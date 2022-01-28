@@ -33,7 +33,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorder.model.SaleOrderMergeObject;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.auth.AuthUtils;
@@ -46,7 +45,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,27 +186,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
 
     return saleOrder;
-  }
-
-  @Override
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList, Map<String, SaleOrderMergeObject> valuesMap)
-      throws AxelorException {
-
-    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
-      return super.mergeSaleOrders(saleOrderList, valuesMap);
-    }
-    return mergeSaleOrders(
-        saleOrderList,
-        (Currency) valuesMap.get("currency").getCommonObject(),
-        (Partner) valuesMap.get("clientPartner").getCommonObject(),
-        (Company) valuesMap.get("company").getCommonObject(),
-        (StockLocation) valuesMap.get("stockLocation").getCommonObject(),
-        (Partner) valuesMap.get("contactPartner").getCommonObject(),
-        (PriceList) valuesMap.get("priceList").getCommonObject(),
-        (Team) valuesMap.get("team").getCommonObject(),
-        (TaxNumber) valuesMap.get("taxNumber").getCommonObject(),
-        (FiscalPosition) valuesMap.get("fiscalPosition").getCommonObject());
   }
 
   @Transactional(rollbackOn = {Exception.class})

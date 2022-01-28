@@ -1,7 +1,5 @@
 package com.axelor.apps.sale.service.saleorder;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
@@ -12,6 +10,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
+import java.util.List;
 
 public interface SaleOrderMergingService {
 
@@ -101,6 +100,7 @@ public interface SaleOrderMergingService {
   Checks getChecks(SaleOrderMergingResult result);
 
   SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge) throws AxelorException;
-  
-  SaleOrderMergingResult mergeSaleOrdersWithContext(List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
+
+  SaleOrderMergingResult mergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
 }

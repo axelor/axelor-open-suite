@@ -1,9 +1,5 @@
 package com.axelor.apps.sale.service.saleorder;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
-
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
@@ -19,6 +15,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
@@ -238,26 +237,26 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       return isConfirmationNeeded;
     }
   }
-  
+
   protected SaleOrderCreateService saleOrderCreateService;
-  
+
   @Inject
   public SaleOrderMergingServiceImpl(SaleOrderCreateService saleOrderCreateService) {
-	this.saleOrderCreateService = saleOrderCreateService;
-}
+    this.saleOrderCreateService = saleOrderCreateService;
+  }
 
   @Override
-  public SaleOrderMergingResult create() {
+  public SaleOrderMergingResultImpl create() {
     return new SaleOrderMergingResultImpl();
   }
 
   @Override
-  public CommonFields getCommonFields(SaleOrderMergingResult result) {
+  public CommonFieldsImpl getCommonFields(SaleOrderMergingResult result) {
     return ((SaleOrderMergingResultImpl) result).commonFields;
   }
 
   @Override
-  public Checks getChecks(SaleOrderMergingResult result) {
+  public ChecksImpl getChecks(SaleOrderMergingResult result) {
     return ((SaleOrderMergingResultImpl) result).checks;
   }
 
@@ -266,40 +265,45 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       throws AxelorException {
     Objects.requireNonNull(saleOrdersToMerge);
     SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
-    
+
     if (isConfirmationNeeded(result)) {
-    	return result;
+      result.needConfirmation();
+      return result;
     }
     result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
     return result;
   }
-  
+
   @Override
-  public SaleOrderMergingResult mergeSaleOrdersWithContext(List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
-  	Objects.requireNonNull(saleOrdersToMerge);
-  	Objects.requireNonNull(context);
-  	
-  	SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
-  	updateResultWithContext(result, context);
-  	return result;
+  public SaleOrderMergingResult mergeSaleOrdersWithContext(
+      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
+    Objects.requireNonNull(saleOrdersToMerge);
+    Objects.requireNonNull(context);
+
+    SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
+    updateResultWithContext(result, context);
+    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
+    return result;
   }
 
-  
-protected void updateResultWithContext(SaleOrderMergingResult result, Context context) {
+  protected void updateResultWithContext(SaleOrderMergingResult result, Context context) {
     if (context.get("priceList") != null) {
-    	getCommonFields(result).setCommonPriceList(MapTools.findObject(PriceList.class, context.get("priceList"))); 
-      }
-      if (context.get("contactPartner") != null) {
-    	 getCommonFields(result).setCommonContactPartner(MapTools.findObject(Partner.class, context.get("contactPartner")));
-      }
-      if (context.get("team") != null) {
-    	 getCommonFields(result).setCommonTeam(MapTools.findObject(Team.class, context.get("team")));
-      }
-	
-}
+      getCommonFields(result)
+          .setCommonPriceList(MapTools.findObject(PriceList.class, context.get("priceList")));
+    }
+    if (context.get("contactPartner") != null) {
+      getCommonFields(result)
+          .setCommonContactPartner(
+              MapTools.findObject(Partner.class, context.get("contactPartner")));
+    }
+    if (context.get("team") != null) {
+      getCommonFields(result).setCommonTeam(MapTools.findObject(Team.class, context.get("team")));
+    }
+  }
 
-protected SaleOrderMergingResult controlSaleOrdersToMerge(List<SaleOrder> saleOrdersToMerge) throws AxelorException {
-	SaleOrderMergingResult result = create();
+  protected SaleOrderMergingResult controlSaleOrdersToMerge(List<SaleOrder> saleOrdersToMerge)
+      throws AxelorException {
+    SaleOrderMergingResult result = create();
 
     if (saleOrdersToMerge.isEmpty()) {
       throw new AxelorException(
@@ -314,105 +318,113 @@ protected SaleOrderMergingResult controlSaleOrdersToMerge(List<SaleOrder> saleOr
             saleOrder -> {
               updateDiffsCommonFields(saleOrder, result);
             });
-    
+
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
     if (fieldErrors.length() > 0) {
-    	throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, fieldErrors.toString());
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, fieldErrors.toString());
     }
-	return result;
-}
-
+    return result;
+  }
 
   protected boolean isConfirmationNeeded(SaleOrderMergingResult result) {
-	
-	  if (getChecks(result).isExistContactPartnerDiff() ||
-			  getChecks(result).isExistPriceListDiff() ||
-			  getChecks(result).isExistTeamDiff()) {
-		  return true;
-	  }
-	return false;
-}
 
-protected SaleOrder mergeSaleOrders(List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
-	return saleOrderCreateService.mergeSaleOrders(saleOrdersToMerge,
-			getCommonFields(result).getCommonCurrency(),
-			getCommonFields(result).getCommonClientPartner(),
-			getCommonFields(result).getCommonCompany(),
-			getCommonFields(result).getCommonContactPartner(),
-			getCommonFields(result).getCommonPriceList(),
-			getCommonFields(result).getCommonTeam(),
-			getCommonFields(result).getCommonTaxNumber(),
-			getCommonFields(result).getCommonFiscalPosition());
-}
+    if (getChecks(result).isExistContactPartnerDiff()
+        || getChecks(result).isExistPriceListDiff()
+        || getChecks(result).isExistTeamDiff()) {
+      return true;
+    }
+    return false;
+  }
 
-protected void checkErrors(StringJoiner fieldErrors, SaleOrderMergingResult result) {
-    if (getChecks(result).isExistCurrencyDiff()) {
-    	fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
-      }
-      if (getChecks(result).isExistClientPartnerDiff()) {
-    	  fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
-      }
-      if (getChecks(result).isExistCompanyDiff()) {
-    	  fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
-      }
-      if (getChecks(result).isExistTaxNumberDiff()) {
-    	  fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
-      }
-      if (getChecks(result).isExistFiscalPositionDiff()) {
-    	  fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
-      }
-	
-}
+  protected SaleOrder mergeSaleOrders(
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
+    return saleOrderCreateService.mergeSaleOrders(
+        saleOrdersToMerge,
+        getCommonFields(result).getCommonCurrency(),
+        getCommonFields(result).getCommonClientPartner(),
+        getCommonFields(result).getCommonCompany(),
+        getCommonFields(result).getCommonContactPartner(),
+        getCommonFields(result).getCommonPriceList(),
+        getCommonFields(result).getCommonTeam(),
+        getCommonFields(result).getCommonTaxNumber(),
+        getCommonFields(result).getCommonFiscalPosition());
+  }
 
-protected void updateDiffsCommonFields(SaleOrder saleOrder, SaleOrderMergingResult result) {
+  protected void checkErrors(StringJoiner fieldErrors, SaleOrderMergingResult result) {
+    if (getChecks(result).isExistCurrencyDiff()
+        || getCommonFields(result).getCommonCurrency() == null) {
+      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
+    }
+    if (getChecks(result).isExistClientPartnerDiff()
+        || getCommonFields(result).getCommonClientPartner() == null) {
+      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
+    }
+    if (getChecks(result).isExistCompanyDiff()
+        || getCommonFields(result).getCommonCompany() == null) {
+      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+    // TaxNumber can be null
+    if (getChecks(result).isExistTaxNumberDiff()) {
+      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
+    // FiscalPosition can be null
+    if (getChecks(result).isExistFiscalPositionDiff()) {
+      fieldErrors.add(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
+    }
+  }
+
+  protected void updateDiffsCommonFields(SaleOrder saleOrder, SaleOrderMergingResult result) {
     CommonFields commonFields = getCommonFields(result);
     Checks checks = getChecks(result);
-    if (commonFields.getCommonCurrency() != null
-        && !commonFields.getCommonCurrency().equals(saleOrder.getCurrency())) {
+    if ((commonFields.getCommonCurrency() == null ^ saleOrder.getCurrency() == null)
+        || (commonFields.getCommonCurrency() != saleOrder.getCurrency()
+            && !commonFields.getCommonCurrency().equals(saleOrder.getCurrency()))) {
       commonFields.setCommonCurrency(null);
       checks.setExistCurrencyDiff(true);
     }
-    if (commonFields.getCommonClientPartner() != null
-        && !commonFields.getCommonClientPartner().equals(saleOrder.getClientPartner())) {
+    if ((commonFields.getCommonClientPartner() == null ^ saleOrder.getClientPartner() == null)
+        || (commonFields.getCommonClientPartner() != saleOrder.getClientPartner()
+            && !commonFields.getCommonClientPartner().equals(saleOrder.getClientPartner()))) {
       commonFields.setCommonClientPartner(null);
       checks.setExistClientPartnerDiff(true);
     }
-    if (commonFields.getCommonCompany() != null
-        && !commonFields.getCommonCompany().equals(saleOrder.getCompany())) {
+    if ((commonFields.getCommonCompany() == null ^ saleOrder.getCompany() == null)
+        || (commonFields.getCommonCompany() != saleOrder.getCompany()
+            && !commonFields.getCommonCompany().equals(saleOrder.getCompany()))) {
       commonFields.setCommonCompany(null);
       checks.setExistCompanyDiff(true);
     }
-    if (commonFields.getCommonContactPartner() != null
-        && !commonFields.getCommonContactPartner().equals(saleOrder.getContactPartner())) {
+    if ((commonFields.getCommonContactPartner() == null ^ saleOrder.getContactPartner() == null)
+        || (commonFields.getCommonContactPartner() != saleOrder.getContactPartner()
+            && !commonFields.getCommonContactPartner().equals(saleOrder.getContactPartner()))) {
       commonFields.setCommonContactPartner(null);
       checks.setExistContactPartnerDiff(true);
     }
-    if (commonFields.getCommonTeam() != null
-        && !commonFields.getCommonTeam().equals(saleOrder.getTeam())) {
+    if ((commonFields.getCommonTeam() == null ^ saleOrder.getTeam() == null)
+        || (commonFields.getCommonTeam() != saleOrder.getTeam()
+            && !commonFields.getCommonTeam().equals(saleOrder.getTeam()))) {
       commonFields.setCommonTeam(null);
       checks.setExistTeamDiff(true);
     }
-    if (commonFields.getCommonPriceList() != null
-        && !commonFields.getCommonPriceList().equals(saleOrder.getPriceList())) {
+    if ((commonFields.getCommonPriceList() == null ^ saleOrder.getPriceList() == null)
+        || (commonFields.getCommonPriceList() != saleOrder.getPriceList()
+            && !commonFields.getCommonPriceList().equals(saleOrder.getPriceList()))) {
       commonFields.setCommonPriceList(null);
       checks.setExistPriceListDiff(true);
     }
-    // TaxNumber can be null
     if ((commonFields.getCommonTaxNumber() == null ^ saleOrder.getTaxNumber() == null)
-    		|| (commonFields.getCommonTaxNumber() != saleOrder.getTaxNumber()
-    		&& !commonFields.getCommonTaxNumber().equals(saleOrder.getTaxNumber()))) {
+        || (commonFields.getCommonTaxNumber() != saleOrder.getTaxNumber()
+            && !commonFields.getCommonTaxNumber().equals(saleOrder.getTaxNumber()))) {
       commonFields.setCommonTaxNumber(null);
       checks.setExistTaxNumberDiff(true);
     }
-    // FiscalPosition can be null
     if ((commonFields.getCommonFiscalPosition() == null ^ saleOrder.getFiscalPosition() == null)
-    		|| (commonFields.getCommonFiscalPosition() != saleOrder.getFiscalPosition()
-    		&& !commonFields.getCommonFiscalPosition().equals(saleOrder.getFiscalPosition()))) {
+        || (commonFields.getCommonFiscalPosition() != saleOrder.getFiscalPosition()
+            && !commonFields.getCommonFiscalPosition().equals(saleOrder.getFiscalPosition()))) {
       commonFields.setCommonFiscalPosition(null);
       checks.setExistFiscalPositionDiff(true);
     }
-
   }
 
   protected void fillCommonFields(SaleOrder firstSaleOrder, SaleOrderMergingResult result) {
@@ -426,6 +438,4 @@ protected void updateDiffsCommonFields(SaleOrder saleOrder, SaleOrderMergingResu
     commonFields.setCommonTeam(firstSaleOrder.getTeam());
     commonFields.setCommonClientPartner(firstSaleOrder.getClientPartner());
   }
-
-
 }
