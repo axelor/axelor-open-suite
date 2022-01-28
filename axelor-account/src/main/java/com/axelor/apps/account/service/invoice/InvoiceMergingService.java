@@ -52,13 +52,13 @@ public interface InvoiceMergingService {
 
     void setCommonOriginDate(LocalDate commonOriginDate);
 
-    void setTradingName(TradingName tradingName);
+    void setCommonTradingName(TradingName commonTradingName);
 
-    TradingName getTradingName();
+    TradingName getCommonTradingName();
 
-    void setFiscalPosition(FiscalPosition fiscalPosition);
+    void setCommonFiscalPosition(FiscalPosition commonFiscalPosition);
 
-    FiscalPosition getFiscalPosition();
+    FiscalPosition getCommonFiscalPosition();
   }
 
   interface Checks {

@@ -12,6 +12,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceImpl {
@@ -51,23 +52,23 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   }
 
   protected static class ChecksSupplychainImpl extends ChecksImpl {
-    private boolean saleOrderIsNull;
-    private boolean purchaseOrderIsNull;
+    private boolean existSaleOrderDiff = false;
+    private boolean existPurchaseOrderDiff = false;
 
-    public boolean isSaleOrderIsNull() {
-      return saleOrderIsNull;
+    public boolean isExistSaleOrderDiff() {
+      return existSaleOrderDiff;
     }
 
-    public void setSaleOrderIsNull(boolean saleOrderIsNull) {
-      this.saleOrderIsNull = saleOrderIsNull;
+    public void setExistSaleOrderDiff(boolean existSaleOrderDiff) {
+      this.existSaleOrderDiff = existSaleOrderDiff;
     }
 
-    public boolean isPurchaseOrderIsNull() {
-      return purchaseOrderIsNull;
+    public boolean isExistPurchaseOrderDiff() {
+      return existPurchaseOrderDiff;
     }
 
-    public void setPurchaseOrderIsNull(boolean purchaseOrderIsNull) {
-      this.purchaseOrderIsNull = purchaseOrderIsNull;
+    public void setExistPurchaseOrderDiff(boolean existPurchaseOrderDiff) {
+      this.existPurchaseOrderDiff = existPurchaseOrderDiff;
     }
   }
 
@@ -98,41 +99,40 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   }
 
   @Override
-  protected void fillCommonFields(Invoice invoice, InvoiceMergingResult result, int invoiceCount) {
-    super.fillCommonFields(invoice, result, invoiceCount);
-    if (invoiceCount == 1) {
-      if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
-        getCommonFields(result).setCommonSaleOrder(invoice.getSaleOrder());
-        if (getCommonFields(result).getCommonSaleOrder() == null) {
-          getChecks(result).setSaleOrderIsNull(true);
-        }
+  protected void extractFirstNonNullCommonFields(
+      List<Invoice> invoicesToMerge, InvoiceMergingResult result) {
+    super.extractFirstNonNullCommonFields(invoicesToMerge, result);
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
+      invoicesToMerge.stream()
+          .map(Invoice::getSaleOrder)
+          .filter(Objects::nonNull)
+          .findFirst()
+          .ifPresent(it -> getCommonFields(result).setCommonSaleOrder(it));
+    }
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+      invoicesToMerge.stream()
+          .map(Invoice::getPurchaseOrder)
+          .filter(Objects::nonNull)
+          .findFirst()
+          .ifPresent(it -> getCommonFields(result).setCommonPurchaseOrder(it));
+    }
+  }
+
+  @Override
+  protected void fillCommonFields(Invoice invoice, InvoiceMergingResult result) {
+    super.fillCommonFields(invoice, result);
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
+      if (getCommonFields(result).getCommonSaleOrder() != null
+          && !getCommonFields(result).getCommonSaleOrder().equals(invoice.getSaleOrder())) {
+        getCommonFields(result).setCommonSaleOrder(null);
+        getChecks(result).setExistSaleOrderDiff(true);
       }
-      if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-        getCommonFields(result).setCommonPurchaseOrder(invoice.getPurchaseOrder());
-        if (getCommonFields(result).getCommonPurchaseOrder() == null) {
-          getChecks(result).setPurchaseOrderIsNull(true);
-        }
-      }
-    } else {
-      if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
-        if (getCommonFields(result).getCommonSaleOrder() != null
-            && !getCommonFields(result).getCommonSaleOrder().equals(invoice.getSaleOrder())) {
-          getCommonFields(result).setCommonSaleOrder(null);
-        }
-        if (invoice.getSaleOrder() != null) {
-          getChecks(result).setSaleOrderIsNull(true);
-        }
-      }
-      if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-        if (getCommonFields(result).getCommonPurchaseOrder() != null
-            && !getCommonFields(result)
-                .getCommonPurchaseOrder()
-                .equals(invoice.getPurchaseOrder())) {
-          getCommonFields(result).setCommonPurchaseOrder(null);
-        }
-        if (invoice.getPurchaseOrder() != null) {
-          getChecks(result).setPurchaseOrderIsNull(true);
-        }
+    }
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+      if (getCommonFields(result).getCommonPurchaseOrder() != null
+          && !getCommonFields(result).getCommonPurchaseOrder().equals(invoice.getPurchaseOrder())) {
+        getCommonFields(result).setCommonPurchaseOrder(null);
+        getChecks(result).setExistPurchaseOrderDiff(true);
       }
     }
   }
@@ -143,7 +143,7 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
     super.checkErrors(fieldErrors, result);
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
       if (getCommonFields(result).getCommonSaleOrder() == null
-          && !getChecks(result).isSaleOrderIsNull()) {
+          && getChecks(result).isExistSaleOrderDiff()) {
         fieldErrors.add(
             I18n.get(
                 com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
@@ -151,7 +151,7 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
     }
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
       if (getCommonFields(result).getCommonPurchaseOrder() == null
-          && !getChecks(result).isPurchaseOrderIsNull()) {
+          && getChecks(result).isExistPurchaseOrderDiff()) {
         fieldErrors.add(
             I18n.get(
                 com.axelor.apps.account.exception.IExceptionMessage
@@ -173,8 +173,8 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
-          getCommonFields(result).getTradingName(),
-          getCommonFields(result).getFiscalPosition(),
+          getCommonFields(result).getCommonTradingName(),
+          getCommonFields(result).getCommonFiscalPosition(),
           getCommonFields(result).getCommonSupplierInvoiceNb(),
           getCommonFields(result).getCommonOriginDate(),
           getCommonFields(result).getCommonPurchaseOrder());
@@ -189,8 +189,8 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
-          getCommonFields(result).getTradingName(),
-          getCommonFields(result).getFiscalPosition(),
+          getCommonFields(result).getCommonTradingName(),
+          getCommonFields(result).getCommonFiscalPosition(),
           getCommonFields(result).getCommonSaleOrder());
     }
     return null;

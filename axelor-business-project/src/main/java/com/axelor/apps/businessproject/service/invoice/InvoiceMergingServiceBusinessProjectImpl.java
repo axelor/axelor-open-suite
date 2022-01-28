@@ -13,6 +13,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServiceSupplychainImpl {
@@ -45,14 +46,14 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   }
 
   protected static class ChecksBusinessProjectImpl extends ChecksSupplychainImpl {
-    private boolean projectIsNull;
+    private boolean existProjectDiff = false;
 
-    public boolean isProjectIsNull() {
-      return projectIsNull;
+    public boolean isExistProjectDiff() {
+      return existProjectDiff;
     }
 
-    public void setProjectIsNull(boolean projectIsNull) {
-      this.projectIsNull = projectIsNull;
+    public void setExistProjectDiff(boolean existProjectDiff) {
+      this.existProjectDiff = existProjectDiff;
     }
   }
 
@@ -84,21 +85,23 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   }
 
   @Override
-  protected void fillCommonFields(Invoice invoice, InvoiceMergingResult result, int invoiceCount) {
-    super.fillCommonFields(invoice, result, invoiceCount);
-    if (invoiceCount == 1) {
-      getCommonFields(result).setCommonProject(invoice.getProject());
-      if (getCommonFields(result).getCommonProject() == null) {
-        getChecks(result).setProjectIsNull(true);
-      }
-    } else {
-      if (getCommonFields(result).getCommonProject() != null
-          && !getCommonFields(result).getCommonProject().equals(invoice.getProject())) {
-        getCommonFields(result).setCommonProject(null);
-      }
-      if (invoice.getProject() != null) {
-        getChecks(result).setProjectIsNull(true);
-      }
+  protected void extractFirstNonNullCommonFields(
+      List<Invoice> invoicesToMerge, InvoiceMergingResult result) {
+    super.extractFirstNonNullCommonFields(invoicesToMerge, result);
+    invoicesToMerge.stream()
+        .map(Invoice::getProject)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(it -> getCommonFields(result).setCommonProject(it));
+  }
+
+  @Override
+  protected void fillCommonFields(Invoice invoice, InvoiceMergingResult result) {
+    super.fillCommonFields(invoice, result);
+    if (getCommonFields(result).getCommonProject() != null
+        && !getCommonFields(result).getCommonProject().equals(invoice.getProject())) {
+      getCommonFields(result).setCommonProject(null);
+      getChecks(result).setExistProjectDiff(true);
     }
   }
 
@@ -107,7 +110,7 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
       throws AxelorException {
     super.checkErrors(fieldErrors, result);
     if (getCommonFields(result).getCommonProject() == null
-        && !getChecks(result).isProjectIsNull()) {
+        && getChecks(result).isExistProjectDiff()) {
       fieldErrors.add(
           I18n.get(
               com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_PROJECT));
@@ -127,8 +130,8 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
-          getCommonFields(result).getTradingName(),
-          getCommonFields(result).getFiscalPosition(),
+          getCommonFields(result).getCommonTradingName(),
+          getCommonFields(result).getCommonFiscalPosition(),
           getCommonFields(result).getCommonSupplierInvoiceNb(),
           getCommonFields(result).getCommonOriginDate(),
           getCommonFields(result).getCommonPurchaseOrder(),
@@ -144,8 +147,8 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
           getCommonFields(result).getCommonPriceList(),
           getCommonFields(result).getCommonPaymentMode(),
           getCommonFields(result).getCommonPaymentCondition(),
-          getCommonFields(result).getTradingName(),
-          getCommonFields(result).getFiscalPosition(),
+          getCommonFields(result).getCommonTradingName(),
+          getCommonFields(result).getCommonFiscalPosition(),
           getCommonFields(result).getCommonSaleOrder(),
           getCommonFields(result).getCommonProject());
     }
