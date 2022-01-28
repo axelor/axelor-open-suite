@@ -19,12 +19,18 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.repo.AccountInvoiceTermRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -36,6 +42,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +55,19 @@ public class InvoiceTermController {
   public void computeCustomizedAmount(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal inTaxTotal = invoiceTerm.getInvoice().getInTaxTotal();
-      if (inTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      BigDecimal total;
+      if (invoiceTerm.getInvoice() != null) {
+        total = invoiceTerm.getInvoice().getInTaxTotal();
+      } else {
+        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      }
+      if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal amount =
           invoiceTerm
               .getPercentage()
-              .multiply(inTaxTotal)
+              .multiply(total)
               .divide(
                   new BigDecimal(100),
                   AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
@@ -70,13 +82,18 @@ public class InvoiceTermController {
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal inTaxTotal = invoiceTerm.getInvoice().getInTaxTotal();
-      if (inTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      BigDecimal total;
+      if (invoiceTerm.getInvoice() != null) {
+        total = invoiceTerm.getInvoice().getInTaxTotal();
+      } else {
+        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+      }
+      if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal percentage =
           Beans.get(InvoiceTermService.class)
-              .computeCustomizedPercentage(invoiceTerm.getAmount(), inTaxTotal);
+              .computeCustomizedPercentage(invoiceTerm.getAmount(), total);
       response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
@@ -93,11 +110,21 @@ public class InvoiceTermController {
   public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-      if (invoice != null) {
-        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-        response.setValues(invoiceTerm);
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
+        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+        if (invoice != null) {
+          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+          response.setValues(invoiceTerm);
+        }
+      } else {
+        if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
+          MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+          if (moveLine != null) {
+            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+            response.setValues(invoiceTerm);
+          }
+        }
       }
 
     } catch (Exception e) {
@@ -179,6 +206,30 @@ public class InvoiceTermController {
     }
   }
 
+  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceterm =
+          Beans.get(InvoiceTermRepository.class)
+              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      Beans.get(InvoiceTermService.class).validatePfp(invoiceterm, AuthUtils.getUser());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void massValidatePfp(ActionRequest request, ActionResponse response) {
     try {
@@ -231,6 +282,89 @@ public class InvoiceTermController {
       Beans.get(InvoiceTermService.class)
           .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
+      Beans.get(InvoiceTermService.class).select(invoiceTerm);
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectPartnerTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getInvoice().getPartner() != null
+          && invoiceTerm.getPaymentSession() != null) {
+        List<InvoiceTerm> invoiceTermList =
+            Beans.get(AccountInvoiceTermRepository.class)
+                .findByPaymentSessionAndPartner(
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+        if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
+          for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.select(invoiceTermTemp);
+          }
+        }
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unselectTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
+      Beans.get(InvoiceTermService.class).unselect(invoiceTerm);
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unselectPartnerTerm(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getInvoice().getPartner() != null
+          && invoiceTerm.getPaymentSession() != null) {
+        List<InvoiceTerm> invoiceTermList =
+            Beans.get(AccountInvoiceTermRepository.class)
+                .findByPaymentSessionAndPartner(
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+        if (!CollectionUtils.isEmpty(invoiceTermList)) {
+          InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+          InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
+          for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
+            invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
+            invoiceTermService.unselect(invoiceTermTemp);
+          }
+        }
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      Beans.get(PaymentSessionService.class)
+          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

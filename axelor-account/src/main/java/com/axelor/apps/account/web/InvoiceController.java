@@ -1189,7 +1189,7 @@ public class InvoiceController {
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1244,6 +1244,32 @@ public class InvoiceController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateUnpaidInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceService.class).updateUnpaidInvoiceTerms(invoice);
+
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
+          && !Beans.get(InvoiceService.class).checkInvoiceLinesCutOffDates(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

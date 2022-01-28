@@ -22,4 +22,10 @@ import com.axelor.apps.account.db.PaymentSession;
 public interface PaymentSessionService {
 
   public String computeName(PaymentSession paymentSession);
+
+  public void setBankDetails(PaymentSession paymentSession);
+
+  public void setJournal(PaymentSession paymentSession);
+
+  public void computeTotalPaymentSession(PaymentSession paymentSession);
 }

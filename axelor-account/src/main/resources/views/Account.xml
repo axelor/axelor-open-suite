@@ -59,7 +59,8 @@
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8"
         readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
+          onChange="action-method-account-fill-account-code"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
       </panel>
@@ -81,7 +82,8 @@
       <panel name="settingsPanel" title="Account.settings">
         <field name="accountType" required="true" form-view="account-type-form"
           grid-view="account-type-grid" colSpan="3"
-          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
+          onChange="action-method-account-fill-account-code"/>
         <field name="isRegulatoryAccount" colSpan="3"/>
         <field name="commonPosition"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
@@ -99,44 +101,47 @@
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
-        <field name="compatibleAccountSet" widget="TagSelect"
-          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
-        <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
-          if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
-          <field name="isRetrievedOnPaymentSession"/>
-        </panel>
-        <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
-          hideIf="accountType.technicalTypeSelect == 'view'">
-          <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
-            onChange="action-account-record-uncheck-tax-required"/>
-          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="boolean-switch"/>
-          <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
-        </panel>
-        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
-          hideIf="accountType.technicalTypeSelect == 'view'">
-          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
-          <field name="analyticDistributionRequiredOnInvoiceLines"
-            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field name="analyticDistributionRequiredOnMoveLines"
-            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field
-            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-            name="analyticDistributionTemplate"
-            domain="self.company = :company AND self.isSpecific = false"
-            form-view="analytic-distribution-template-form"
-            grid-view="analytic-distribution-template-grid" showIf="analyticDistributionAuthorized"
-            colSpan="3"/>
-          <button name="personalizeBtn" title="Create personalized analytic template"
-            hideIf="analyticDistributionTemplate" colSpan="3"
-            showIf="analyticDistributionAuthorized"
-            onClick="action-account-account-method-new-analytic-dist-template"/>
-          <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
-        </panel>
-        <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
-          if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="manageCutOffPeriod" widget="boolean-switch"/>
+        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
+        <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
+          <field name="compatibleAccountSet" widget="TagSelect"
+            showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
+          <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
+            hideIf="accountType.technicalTypeSelect == 'view'">
+            <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
+              onChange="action-account-record-uncheck-tax-required"/>
+            <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine"
+              colSpan="4" widget="boolean-switch"/>
+            <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+          </panel>
+          <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
+            hideIf="accountType.technicalTypeSelect == 'view'">
+            <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+              onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+            <field name="analyticDistributionRequiredOnInvoiceLines"
+              showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+            <field name="analyticDistributionRequiredOnMoveLines"
+              showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+            <field
+              if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+              name="analyticDistributionTemplate"
+              domain="self.company = :company AND self.isSpecific = false"
+              form-view="analytic-distribution-template-form"
+              grid-view="analytic-distribution-template-grid"
+              showIf="analyticDistributionAuthorized" colSpan="3"/>
+            <button name="personalizeBtn" title="Create personalized analytic template"
+              hideIf="analyticDistributionTemplate" colSpan="3"
+              showIf="analyticDistributionAuthorized"
+              onClick="action-account-account-method-new-analytic-dist-template"/>
+            <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
+          </panel>
+          <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
+            if="__config__.app.getApp('account').manageCutOffPeriod">
+            <field name="manageCutOffPeriod" widget="boolean-switch"/>
+          </panel>
+          <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
+            if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
+            <field name="isRetrievedOnPaymentSession" widget="boolean-switch"/>
+          </panel>
         </panel>
       </panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings"
@@ -328,6 +333,10 @@
 
   <action-method name="action-method-account-hide-analytic">
     <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
+
+  <action-method name="action-method-account-fill-account-code">
+    <call class="com.axelor.apps.account.web.AccountController" method="fillAccountCode"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -891,13 +890,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     User currentUser = AuthUtils.getUser();
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTerm.setPfpValidatorUser(currentUser);
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-      invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-      invoiceTerm.setReasonOfRefusalToPayStr(
-          reasonOfRefusalToPayStr != null
-              ? reasonOfRefusalToPayStr
-              : reasonOfRefusalToPay.getName());
+      invoiceTermService.refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
@@ -1181,7 +1174,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-    BigDecimal amount = invoicePayment.getAmount();
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
         calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
@@ -1228,7 +1222,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean checkManageCutOffDates(Invoice invoice) {
     return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
         && invoice.getInvoiceLineList().stream()
-            .allMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+            .anyMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
   }
 
   @Override
@@ -1280,12 +1274,23 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     User currentUser = AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTerm.setPfpValidatorUser(currentUser);
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+      invoiceTermService.validatePfp(invoiceTerm, currentUser);
     }
 
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+  }
+
+  @Override
+  public void updateUnpaidInvoiceTerms(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
+        .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
+  }
+
+  protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
   }
 }

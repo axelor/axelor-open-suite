@@ -27,6 +27,7 @@ import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -42,8 +43,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
   protected AppBaseService appBaseService;
 
-  protected PartnerService partnerService;
-
   protected MetaFiles metaFiles;
 
   protected DMSFileRepository dmsFileRepo;
@@ -52,12 +51,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   public JobApplicationServiceImpl(
       JobApplicationRepository jobApplicationRepo,
       AppBaseService appBaseService,
-      PartnerService partnerService,
       MetaFiles metaFiles,
       DMSFileRepository dmsFileRepo) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
-    this.partnerService = partnerService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
   }
@@ -117,7 +114,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         TraceBackService.trace(e);
       }
     }
-    partnerService.setPartnerFullName(contact);
+    Beans.get(PartnerService.class).setPartnerFullName(contact);
 
     return contact;
   }

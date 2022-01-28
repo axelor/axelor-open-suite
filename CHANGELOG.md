@@ -1,3 +1,33 @@
+## [6.1.4] (2022-01-14)
+
+#### Changes
+
+* BPM: Add new property `compulsory` for DMN
+
+The DMN node sometimes require a compulsory result, if no result are returned it should generate an error.
+Add compulsory boolean property to make DMN complosory and it's value will be true by default.
+
+* Chart Builder: Add support to open records on click.
+* Geonames: Addition of error log while importing geonames.
+
+#### Fixed
+
+* BPM: Fix logo on bpm studio.
+* INVENTORY: Fix exception when importing from a csv file with null values in quantity columns.
+* Sequence: fixed issue where the sequence count would increment after an exception cancelled the process.
+* Product: Remove blank space in purchase/costs tab in product form view.
+* Fixed assets: Fix typo in french translation.
+* PaymentVoucher: Fixed a bug where amount to pay in elements to pay were not correctly imputed.
+* STOCK: Fix filters of stock forecast menu entries.
+* Stock reservation: fix german translation of error message.
+* Sequence: Fix full name and prefix or suffix issue on data init.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* Meta Translation: Add missing english translation.
+* Event: fix NPE happening on start date update.
+* Advance import: Correctly apply 'find new' option when it is activated.
+* SaleOrder: fix details lines generation when adding a complementary product so the generated lines are displayed inside the title line.
+* HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract.
+
 ## [6.1.3] (2021-12-16)
 
 #### Fixed
@@ -326,6 +356,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4
 [6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
 [6.1.2]: https://github.com/axelor/axelor-open-suite/compare/v6.1.1...v6.1.2
 [6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1

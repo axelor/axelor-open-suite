@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -145,6 +145,19 @@ public class BankPaymentConfigService {
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIntTreasuryTransSequence();
+  }
+
+  public Sequence getBillOfExchangeSequence(BankPaymentConfig bankPaymentConfig)
+      throws AxelorException {
+    if (bankPaymentConfig.getBillOfExchangeSequence() == null) {
+      throw new AxelorException(
+          bankPaymentConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          bankPaymentConfig.getCompany().getName());
+    }
+    return bankPaymentConfig.getBillOfExchangeSequence();
   }
 
   public Sequence getOtherBankOrderSequence(BankPaymentConfig bankPaymentConfig)

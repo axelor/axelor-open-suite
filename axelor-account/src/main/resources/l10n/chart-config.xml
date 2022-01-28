@@ -18,7 +18,8 @@
     search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromAccount.code = :fromAccount_code AND self.toAccount.code = :toAccount_code"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.code = :code AND self.company.id = :_companyId " update="true">
+    search="self.code = :code AND self.company.id = :_companyId " update="true"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
     <bind to="parentAccount"
       search="self.code = :parent_code AND self.company.id = :_companyId" update="true"/>
   </input>

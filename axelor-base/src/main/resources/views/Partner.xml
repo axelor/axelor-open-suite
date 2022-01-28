@@ -434,8 +434,7 @@
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
           </field>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -666,8 +665,7 @@
             widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
           <field name="mobilePhone" placeholder="+33100000000" widget="phone"
             pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-          <field name="webSite" placeholder="http://www.url.com"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+          <field name="webSite" placeholder="http://www.url.com" widget="url"/>
 
         </panel>
       </panel>
@@ -840,8 +838,7 @@
         widget="phone" onChange="action-partner-method-normalize-fixedPhone"/>
       <field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
         widget="phone" onChange="action-partner-method-normalize-mobilePhone"/>
-      <field name="webSite" placeholder="http://www.url.com"
-        pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+      <field name="webSite" placeholder="http://www.url.com" widget="url"/>
 
     </panel>
   </form>
@@ -871,6 +868,13 @@
     <field name="registrationCode"/>
     <field name="companyStr"/>
     <field name="mainAddress"/>
+    <field name="isSupplier"/>
+    <field name="isCustomer"/>
+    <field name="isProspect"/>
+    <field name="isEmployee"/>
+    <field name="isSubcontractor"/>
+    <field name="isFactor"/>
+    <field name="isCarrier"/>
     <template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -894,6 +898,15 @@
 			    {{partnerCategory.name}}<br/>
 			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
 			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
+			    <h4 style="text-align: right;">
+					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+				</h4>
 			  </div>
 			</div>
 		]]>

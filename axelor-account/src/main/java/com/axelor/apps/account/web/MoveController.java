@@ -296,18 +296,14 @@ public class MoveController {
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
         if (!moveList.isEmpty()) {
-          if (moveList.size() == 1) {
-            this.removeOneMove(moveList.get(0), response);
+          int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
+          if (errorNB > 0) {
+            response.setFlash(
+                String.format(
+                    I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
-            if (errorNB > 0) {
-              response.setFlash(
-                  String.format(
-                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
-            } else {
-              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-              response.setReload(true);
-            }
+            response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+            response.setReload(true);
           }
         } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
       } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
@@ -590,7 +586,7 @@ public class MoveController {
 
         response.setValue("moveLineList", move.getMoveLineList());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_NO_CUT_OFF_TO_APPLY));
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
