@@ -101,4 +101,6 @@ public interface AddressService {
    * @param address
    */
   public void autocompleteAddress(Address address);
+
+  String getZipCode(Address address);
 }
