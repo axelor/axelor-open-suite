@@ -330,7 +330,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Company company = invoice.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
 
       Account purchAccount = new Account();
 
@@ -349,7 +350,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               purchAccount,
               accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount());
 
-    } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+    } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
 
       Account saleAccount = new Account();
       for (AccountManagement accountManagement :
