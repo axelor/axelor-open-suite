@@ -490,11 +490,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       return;
     }
 
-    log.debug("Add of the product : {}", product.getFullName());
-    this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
-
-    if (product.getDefaultBillOfMaterial() != null) {
+    if (product.getDefaultBillOfMaterial() != null
+        && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
       this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
+    } else {
+      log.debug("Add product: {}", product.getFullName());
+      this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
     }
   }
 
@@ -530,19 +531,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+    Product product = billOfMaterial.getProduct();
 
-      Product subProduct = billOfMaterial.getProduct();
+    log.debug("Add product: {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
-      if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
-        log.debug(
-            "Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-        this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
-      }
-    } else {
-
-      level = level + 1;
+    level = level + 1;
+    if (billOfMaterial.getBillOfMaterialSet() != null
+        && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
 
       for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
 
