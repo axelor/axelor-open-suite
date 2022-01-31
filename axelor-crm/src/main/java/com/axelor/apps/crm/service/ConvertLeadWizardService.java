@@ -35,6 +35,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,6 +60,7 @@ public class ConvertLeadWizardService {
    * @return
    * @throws AxelorException
    */
+  @Transactional(rollbackOn = {AxelorException.class})
   public Partner createPartner(Map<String, Object> context, Address primaryAddress)
       throws AxelorException {
 
