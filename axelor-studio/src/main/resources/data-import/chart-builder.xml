@@ -24,7 +24,8 @@
       <bind node="isJsonAggregateOn" to="isJsonAggregateOn"/>
       <bind node="isJsonDisplayField" to="isJsonDisplayField"/>
       <bind node="aggregateOnJson" to="aggregateOnJson"
-        search="self.name = :aggregateOnJson and (self.jsonModel.name = :_model OR self.model = :_model)" create="false"/>
+        search="self.name = :aggregateOnJson and (self.jsonModel.name = :_model OR self.model = :_model)"
+        create="false"/>
       <bind node="aggregateOn" to="aggregateOn"
         search="self.name = :aggregateOn and self.metaModel.fullName = :_model" create="false"/>
       <bind node="aggregateOnTarget" to="aggregateOnTarget"/>
@@ -33,7 +34,8 @@
       <bind node="displayField" to="displayField"
         search="self.name = :displayField and self.metaModel.fullName = :_model" create="false"/>
       <bind node="displayFieldJson" to="displayFieldJson"
-        search="self.name = :displayFieldJson and (self.jsonModel.name = :_model OR self.model = :_model)" create="false"/>
+        search="self.name = :displayFieldJson and (self.jsonModel.name = :_model OR self.model = :_model)"
+        create="false"/>
       <bind node="displayType" to="displayType"/>
       <bind node="filters/filter" to="filterList"
         search="self.chartBuilder.name = :_chartName and (self.metaField is not null and self.metaField.
