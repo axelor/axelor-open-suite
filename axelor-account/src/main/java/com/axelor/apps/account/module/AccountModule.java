@@ -109,8 +109,12 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PaymentSessionCancelService;
+import com.axelor.apps.account.service.PaymentSessionCancelServiceImpl;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionServiceImpl;
+import com.axelor.apps.account.service.PaymentSessionValidateService;
+import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.PeriodControlService;
 import com.axelor.apps.account.service.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -495,6 +499,10 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
 
     bind(PaymentSessionService.class).to(PaymentSessionServiceImpl.class);
+
+    bind(PaymentSessionValidateService.class).to(PaymentSessionValidateServiceImpl.class);
+
+    bind(PaymentSessionCancelService.class).to(PaymentSessionCancelServiceImpl.class);
 
     bind(PayVoucherDueElementService.class).to(PayVoucherDueElementServiceImpl.class);
   }

@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -208,6 +209,10 @@ public interface InvoiceTermService {
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
+  public void select(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException;
+
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
@@ -217,6 +222,8 @@ public interface InvoiceTermService {
       BigDecimal invoiceAmount,
       BigDecimal pfpGrantedAmount,
       PfpPartialReason partialReason);
+
+  public void validatePfp(InvoiceTerm invoiceTerm, User currenctUser);
 
   public Integer massValidatePfp(List<Long> invoiceTermIds);
 

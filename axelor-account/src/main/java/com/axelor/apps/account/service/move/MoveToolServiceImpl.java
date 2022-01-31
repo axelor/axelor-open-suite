@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -500,7 +499,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void setOriginAndDescriptionOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (!Objects.isNull(moveLine)) {
+      if (moveLine != null) {
         moveLine.setDescription(move.getDescription());
         moveLine.setOrigin(move.getOrigin());
       }

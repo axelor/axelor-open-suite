@@ -78,12 +78,12 @@ public interface IExceptionMessage {
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
-  static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
+  static final String MOVE_REMOVED_OK = /*$$(*/ "Move has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Move(s) has been removed or archived successfully" /*)*/;
+      "Selected move(s) has/have been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -1090,4 +1090,13 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
+      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
+
+  static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
+      "%d accounting move(s) successfully generated." /*)*/;
+
+  static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
+      "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
 }

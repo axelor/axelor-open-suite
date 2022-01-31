@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -891,13 +890,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     User currentUser = AuthUtils.getUser();
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTerm.setPfpValidatorUser(currentUser);
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-      invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-      invoiceTerm.setReasonOfRefusalToPayStr(
-          reasonOfRefusalToPayStr != null
-              ? reasonOfRefusalToPayStr
-              : reasonOfRefusalToPay.getName());
+      invoiceTermService.refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
@@ -1281,8 +1274,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     User currentUser = AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTerm.setPfpValidatorUser(currentUser);
-      invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+      invoiceTermService.validatePfp(invoiceTerm, currentUser);
     }
 
     invoice.setPfpValidatorUser(currentUser);
