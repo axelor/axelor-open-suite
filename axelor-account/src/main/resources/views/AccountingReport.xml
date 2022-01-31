@@ -176,6 +176,8 @@
           showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
         <field name="displayCumulativeBalance"
           showIf="reportType.typeSelect==7 || reportType.typeSelect==1"/>
+        <field name="displayCurrencyAmounts"
+          showIf="reportType.typeSelect == 1 || reportType.typeSelect == 7 || reportType.typeSelect == 14"/>
       </panel>
     </panel-tabs>
 

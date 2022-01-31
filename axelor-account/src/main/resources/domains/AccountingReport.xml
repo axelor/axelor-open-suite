@@ -53,6 +53,7 @@
       default="false"/>
     <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves"
       default="true"/>
+    <boolean name="displayCurrencyAmounts" title="Display the currency amounts"/>
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"

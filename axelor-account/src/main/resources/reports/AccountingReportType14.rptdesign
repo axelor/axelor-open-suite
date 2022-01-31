@@ -185,6 +185,12 @@
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountName</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">display_currency_amounts</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_currency_amounts</text-property>
+                    <text-property name="heading">display_currency_amounts</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -255,6 +261,21 @@
                         <property name="position">11</property>
                         <property name="name">AccountName</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">currency_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">display_currency_amounts</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -338,12 +359,31 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">currency_code</property>
+                    <property name="nativeName">currency_code</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">display_currency_amounts</property>
+                    <property name="nativeName">display_currency_amounts</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit",
 MoveLine.date_val as "MoveLineDate", MoveLine.partner_full_name as "PartnerFullName", MoveLine.partner as "PartnerId",
 MoveLine.partner_seq as "PartnerSeq", MoveLine.account_code as "AccountCode", MoveLine.account_name as "AccountName",
 MoveLine.currency_amount,
-Move.currency_code
+Move.currency_code,
+AccountingReport.display_currency_amounts as display_currency_amounts
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -377,24 +417,28 @@ AND (AccountingReport.display_opening_accounting_moves is true
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">CompanyName</property>
+                    <property name="alias">CompanyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CompanyName</text-property>
                     <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PeriodName</property>
+                    <property name="alias">PeriodName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PeriodName</text-property>
                     <text-property name="heading">PeriodName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DateFrom</property>
+                    <property name="alias">DateFrom</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DateFrom</text-property>
                     <text-property name="heading">DateFrom</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDate</property>
+                    <property name="alias">ReportDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <property name="onColumnLayout">false</property>
@@ -402,12 +446,14 @@ AND (AccountingReport.display_opening_accounting_moves is true
                 </structure>
                 <structure>
                     <property name="columnName">DateTo</property>
+                    <property name="alias">DateTo</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DateTo</text-property>
                     <text-property name="heading">DateTo</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
+                    <property name="alias">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
                     <property name="onColumnLayout">false</property>
@@ -415,6 +461,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
@@ -1108,6 +1155,12 @@ else {
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">display_currency_amounts</property>
+                    <text-property name="displayName">display_currency_amounts</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_currency_amounts"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <structure name="toc"/>
             <property name="pageBreakInterval">0</property>
@@ -1133,12 +1186,30 @@ else {
                 <property name="width">1.1875in</property>
             </column>
             <column id="3219">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["display_currency_amounts"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">0.8229166666666666in</property>
             </column>
             <column id="3239">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["display_currency_amounts"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">0.96875in</property>
             </column>
             <column id="3229">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["display_currency_amounts"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">0.8958333333333334in</property>
             </column>
             <header>

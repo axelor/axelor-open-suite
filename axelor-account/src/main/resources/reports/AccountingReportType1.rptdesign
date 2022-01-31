@@ -838,6 +838,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                         <property name="name">display_simulated_move</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">display_currency_amounts</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -968,6 +973,12 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="nativeName">display_simulated_move</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">display_currency_amounts</property>
+                    <property name="nativeName">display_currency_amounts</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Company.name as company_name,
@@ -990,7 +1001,8 @@ AccountingReport.display_move_line_sequence_on_printing as display_move_line_seq
 AccountingReport.display_name_account_column_on_printing as display_name_account,
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
-AccountingReport.display_simulated_move as display_simulated_move
+AccountingReport.display_simulated_move as display_simulated_move,
+AccountingReport.display_currency_amounts as display_currency_amounts
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -1502,6 +1514,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_currency_amounts</property>
+                    <text-property name="displayName">display_currency_amounts</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_currency_amounts"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <column id="492">
@@ -2248,12 +2266,30 @@ else {
                             <property name="width">9%</property>
                         </column>
                         <column id="5146">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_currency_amounts"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">9%</property>
                         </column>
                         <column id="5161">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_currency_amounts"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">9%</property>
                         </column>
                         <column id="5154">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_currency_amounts"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">9%</property>
                         </column>
                         <header>
