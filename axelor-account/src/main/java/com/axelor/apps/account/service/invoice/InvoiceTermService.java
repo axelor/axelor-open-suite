@@ -119,6 +119,10 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException;
 
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInvoiceTermsAmountRemaining(List<InvoiceTermPayment> invoiceTermPaymentList)
+      throws AxelorException;
+
   /**
    * Check if invoice term were customized
    *

@@ -423,7 +423,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       invoiceTerm.setPaymentMode(paymentMode);
 
-      if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
+      if (amountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
         Invoice invoice = invoiceTerm.getInvoice();
@@ -439,16 +439,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException {
+    this.updateInvoiceTermsAmountRemaining(invoicePayment.getInvoiceTermPaymentList());
+  }
 
-    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInvoiceTermsAmountRemaining(List<InvoiceTermPayment> invoiceTermPaymentList)
+      throws AxelorException {
+
+    for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
-      if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+      if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
         Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
-          invoice.setDueDate(invoiceToolService.getDueDate(invoice));
+          invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
         invoiceTermRepo.save(invoiceTerm);
       }

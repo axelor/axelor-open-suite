@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -76,6 +77,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected AppBaseService appBaseService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected InvoiceTermPaymentRepository invoiceTermPaymentRepo;
 
   @Inject
   public ReconcileServiceImpl(
@@ -92,7 +94,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService,
-      InvoiceTermPaymentService invoiceTermPaymentService) {
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      InvoiceTermPaymentRepository invoiceTermPaymentRepo) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -108,6 +111,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.appBaseService = appBaseService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.invoiceTermPaymentRepo = invoiceTermPaymentRepo;
   }
 
   /**
@@ -375,6 +379,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceTermPayment(reconcile, creditMoveLine, amount);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
@@ -389,6 +394,8 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoiceTermService.updateInvoiceTermsPaidAmount(invoiceTermToPay, invoiceTermPayment);
 
           invoiceTermPayment.addReconcileListItem(reconcile);
+          invoiceTermPaymentRepo.save(invoiceTermPayment);
+
           amount = amount.subtract(invoiceTermPayment.getPaidAmount());
         }
 
@@ -578,9 +585,21 @@ public class ReconcileServiceImpl implements ReconcileService {
   public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {
 
     log.debug("updateInvoiceTermsAmountRemaining : reconcile : {}", reconcile);
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
-      invoiceTermService.updateInvoiceTermsAmountRemaining(invoicePayment);
+
+    List<InvoicePayment> invoicePaymentList =
+        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+
+    if (!invoicePaymentList.isEmpty()) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        invoiceTermService.updateInvoiceTermsAmountRemaining(invoicePayment);
+      }
+    } else {
+      List<InvoiceTermPayment> invoiceTermPaymentList =
+          invoiceTermPaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+
+      if (CollectionUtils.isNotEmpty(invoiceTermPaymentList)) {
+        invoiceTermService.updateInvoiceTermsAmountRemaining(invoiceTermPaymentList);
+      }
     }
   }
 

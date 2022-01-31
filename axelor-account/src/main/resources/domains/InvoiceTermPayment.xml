@@ -18,6 +18,9 @@
     <many-to-many name="reconcileList" ref="com.axelor.apps.account.db.Reconcile"
       readonly="true" title="Reconciliations"/>
 
+    <finder-method name="findByReconcileId" using="Long:reconcileId"
+      filter="(:reconcileId) MEMBER OF self.reconcileList " all="true"/>
+
   </entity>
 
 </domain-models>
