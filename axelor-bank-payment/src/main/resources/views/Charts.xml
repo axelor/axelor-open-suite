@@ -124,35 +124,34 @@
     css="report-box">
     <dataset type="jpql"><![CDATA[
 
-	 Select  (select sum(self.companyInTaxTotalRemaining)
+	  Select  CONCAT((select sum(self.companyInTaxTotalRemaining)
 	  from Invoice as self
-	  WHERE self.statusSelect = 3
+	  WHERE self.statusSelect = 3 and (self.company = :_company)
 	  and self.operationTypeSelect = 1)
 	- COALESCE((select sum(self.companyInTaxTotalRemaining)
 	  from Invoice as self
-	  WHERE self.statusSelect = 3
-	  and self.operationTypeSelect = 2), 0) as total
+	  WHERE self.statusSelect = 3 and (self.company = :_company)
+	  and self.operationTypeSelect = 2), 0), self.currency.symbol) as total
 	from Invoice as self
 
 	  ]]></dataset>
     <template><![CDATA[
 
 	  <div class="report-data">
-	    <h1>{{first.total | number : 2}} €</h1>
+	    <h1>{{first.total | number : 2}}</h1>
 	  </div>
-
 	  ]]></template>
   </custom>
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
 
-	  select CONCAT(ceil(sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal)), ' €') as Amount, _partner.name as Supplier
+	  select CONCAT(ceil(sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal)), _partner.currency.symbol) as Amount, _partner.name as Supplier
 	  from Invoice as self
 	  left join self.partner as _partner
 	  where self.statusSelect = 3
 	  and self.operationTypeSelect in (1,2)
-	  group by _partner.id
+	  group by _partner.id, _partner.currency.symbol
 	  order by Amount desc
 
 

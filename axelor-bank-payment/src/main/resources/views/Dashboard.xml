@@ -24,7 +24,7 @@
   </dashboard>
 
   <action-view name="accounting-dashboard-company-bank-details-action"
-    title="Soldes bancaires" model="com.axelor.apps.base.db.BankDetails">
+    title="Bank Balance" model="com.axelor.apps.base.db.BankDetails">
     <view type="grid" name="bank-details-bank-order-company-grid"/>
     <view type="form" name="bank-details-form"/>
     <domain>self.company is not null</domain>
@@ -66,7 +66,7 @@
   <action-view name="action-accounting-dashboard-report-supplier-amount-remaining"
     title="Supplier amount in progress">
     <view type="custom" name="report-supplier-amount-remaining"/>
-    <view type="form"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
   </action-view>
 
   <action-view name="action-accounting-dashboard-report-top-3-suppliers"
