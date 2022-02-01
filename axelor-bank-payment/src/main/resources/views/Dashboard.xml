@@ -78,6 +78,7 @@
   <action-view name="action-accounting-dashboard-report-top-3-suppliers"
     title="Top 3 supplier">
     <view type="custom" name="report-top-3-suppliers"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
   </action-view>
 
   <action-view name="action-daf-dashboard-customer-late-invoice"

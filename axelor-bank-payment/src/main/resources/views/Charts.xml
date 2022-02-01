@@ -131,7 +131,7 @@
 	- COALESCE((select sum(self.companyInTaxTotalRemaining)
 	  from Invoice as self
 	  WHERE self.statusSelect = 3 and (self.company = :_company)
-	  and self.operationTypeSelect = 2), 0), self.currency.symbol) as total
+	  and self.operationTypeSelect = 2), 0), self.company.currency.symbol) as total
 	from Invoice as self
 
 	  ]]></dataset>
@@ -146,19 +146,21 @@
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
 
-	  select CONCAT(ceil(sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal)), _partner.currency.symbol) as Amount, _partner.name as Supplier
-	  from Invoice as self
-	  left join self.partner as _partner
-	  where self.statusSelect = 3
-	  and self.operationTypeSelect in (1,2)
-	  group by _partner.id, _partner.currency.symbol
-	  order by Amount desc
+	 select sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal) as Amount,
+	 CONCAT(ceil(sum((self.operationTypeSelect + 1.5)*2*self.companyExTaxTotal)), self.company.currency.symbol) as AmountPrint,
+	 _partner.name as Supplier
+	 from Invoice as self
+	 left join self.partner as _partner
+	 where self.statusSelect = 3 and (self.company = :_company)
+	 and self.operationTypeSelect in (1,2)
+	 group by _partner.id, self.company.currency.symbol
+	 order by Amount desc
 
 
 	  ]]></dataset>
     <template><![CDATA[
 
-	 <report-table data='data' columns='Supplier,Amount'></report-table>
+	 <report-table data='data' columns='Supplier,AmountPrint'></report-table>
 
 
 	  ]]></template>
