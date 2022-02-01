@@ -37,13 +37,9 @@
       <field name="startingBalance" colSpan="4"/>
       <field name="company.defaultBankDetails.balance"
         showIf="company.defaultBankDetails.balanceUpdatedDate &amp;&amp;!bankDetails" colSpan="3"/>
-      <field name="company.defaultBankDetails.balanceUpdatedDate"
-        showIf="company?.defaultBankDetails?.balanceUpdatedDate" colSpan="3" type="date"/>
-      <field name="userRecap"/>
-      <field name="opportunitiesTypeSelect" colSpan="4"/>
-      <field name="startingBalance" colSpan="4"/>
       <field type="date" name="company.defaultBankDetails.balanceUpdatedDate"
         showIf="$get('company.defaultBankDetails.balanceUpdatedDate')" colSpan="3"/>
+      <field name="userRecap"/>
       <button name="populateRecapBtn" title="Populate"
         onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
       <panel-dashlet name="forecastRecapLineListPanel" canSearch="true" showIf="id"
