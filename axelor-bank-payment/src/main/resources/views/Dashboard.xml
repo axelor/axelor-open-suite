@@ -3,7 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <dashboard name="accounting-bank-payment-dashboard" title="Accounting dashboard">
+  <dashboard title="Accounting Dashboard" name="accounting.dashboard.sample" width="large"
+    id="bank.payment.accounting.dashboard.sample">
+    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.nbr"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.amount"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.by.amount" height="350"
+      canSearch="true"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
     <dashlet colSpan="6" height="350"
       action="accounting-dashboard-company-bank-details-action" canSearch="true"/>
     <dashlet colSpan="6" height="350"
@@ -47,7 +55,6 @@
   <action-view name="action-accounting-dashboard-chart-purchases-invoice-per-month-pie"
     title="Supplier invoice by reason of refusal to pay">
     <view type="chart" name="chart.purchases.invoice.per.month.pie"/>
-    <view type="form"/>
   </action-view>
 
   <action-view name="action-pfp-disputed-invoice" title="Supplier invoice in dispute"
@@ -60,7 +67,6 @@
   <action-view name="action-accounting-dashboard-report-delay-rate"
     title="Dashboard delay rate">
     <view type="custom" name="report-delay-rate"/>
-    <view type="form"/>
   </action-view>
 
   <action-view name="action-accounting-dashboard-report-supplier-amount-remaining"
@@ -72,7 +78,6 @@
   <action-view name="action-accounting-dashboard-report-top-3-suppliers"
     title="Top 3 supplier">
     <view type="custom" name="report-top-3-suppliers"/>
-    <view type="form"/>
   </action-view>
 
   <action-view name="action-daf-dashboard-customer-late-invoice"
