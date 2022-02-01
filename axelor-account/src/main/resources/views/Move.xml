@@ -364,7 +364,7 @@
           showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"
           colSpan="12" onClick="action-move-account-group-simulate"/>
         <button name="counterpartGenerateBtn" title="Generate counterpart"
-          showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="statusSelect == 1 &amp;&amp; journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           colSpan="12" onClick="action-account-move-group-generate-counterpart"/>
       </panel>
     </panel>
