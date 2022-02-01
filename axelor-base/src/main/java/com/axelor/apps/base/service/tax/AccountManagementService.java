@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -33,15 +33,15 @@ public interface AccountManagementService {
       List<AccountManagement> accountManagements, Company company);
 
   /**
-   * Obtenir le compte comptable d'une taxe.
+   * Get product tax equiv from fiscal position.
    *
    * @param product
    * @param company
-   * @param isPurchase
-   * @return
+   * @param isPurchase specify if we want get the tax for purchase or sale
+   * @return the tax equiv found for the product, null if nothing was found.
    * @throws AxelorException
    */
-  public Tax getProductTax(
+  TaxEquiv getProductTaxEquiv(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException;
 
