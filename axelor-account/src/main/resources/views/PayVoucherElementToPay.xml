@@ -2,8 +2,9 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
   <grid name="pay-voucher-element-to-pay-grid" title="Payment voucher invoices to pay"
-    model="com.axelor.apps.account.db.PayVoucherElementToPay">
+    model="com.axelor.apps.account.db.PayVoucherElementToPay" orderBy="sequence">
     <field name="sequence"/>
     <field name="moveLine.move.invoice" width="120" grid-view="invoice-grid"
       form-view="invoice-form"/>
@@ -18,6 +19,7 @@
     <field name="remainingAmountAfterPayment" aggregate="sum"/>
     <field name="amountToPay" aggregate="sum"/>
   </grid>
+
   <form name="pay-voucher-element-to-pay-form" title="Payment voucher invoices to pay"
     model="com.axelor.apps.account.db.PayVoucherElementToPay">
     <panel name="mainPanel">
