@@ -320,8 +320,7 @@
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
@@ -544,8 +543,7 @@
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"

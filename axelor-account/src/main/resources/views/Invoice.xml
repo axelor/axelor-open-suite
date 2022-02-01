@@ -566,7 +566,7 @@
         showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"
-          colSpan="12" form-view="invoice-term-move-line-invoice-form"
+          colSpan="12" form-view="invoice-term-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "

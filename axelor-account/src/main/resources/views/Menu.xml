@@ -109,7 +109,7 @@
   <action-view name="invoice.root.invoice.terms" title="Terms list"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
+    <view type="form" name="invoice-term-form"/>
     <domain>self.invoice IS NOT NULL</domain>
   </action-view>
 
