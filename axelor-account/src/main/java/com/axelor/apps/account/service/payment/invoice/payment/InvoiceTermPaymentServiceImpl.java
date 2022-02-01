@@ -30,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -71,6 +72,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         || CollectionUtils.isEmpty(invoicePayment.getInvoice().getInvoiceTermList())) {
       return;
     }
+
     List<InvoiceTerm> invoiceTerms;
     if (invoicePayment.getMove() != null
         && invoicePayment.getMove().getPaymentVoucher() != null
@@ -78,16 +80,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
       invoiceTerms =
           invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
               .map(PayVoucherElementToPay::getInvoiceTerm)
               .collect(Collectors.toList());
     } else {
       invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
     }
 
-    if (CollectionUtils.isEmpty(invoiceTerms)) {
-      return;
+    if (CollectionUtils.isNotEmpty(invoiceTerms)) {
+      initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, invoicePayment.getAmount());
     }
-    initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, invoicePayment.getAmount());
   }
 
   @Override
