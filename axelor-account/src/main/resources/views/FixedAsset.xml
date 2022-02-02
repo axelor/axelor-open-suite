@@ -16,6 +16,8 @@
     <field name="partner" grid-view="partner-supplier-grid" form-view="partner-form"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form"
+           grid-view="trading-name-grid"/>
     <field name="fixedAssetCategory" form-view="fixed-asset-category-form"
       grid-view="fixed-asset-category-grid"/>
     <field name="acquisitionDate"/>
@@ -41,10 +43,13 @@
       </panel>
       <panel name="mainPanel" colSpan="12">
         <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
+        <spacer colSpan="6"/>
         <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false"
           form-view="company-form" grid-view="company-grid"/>
         <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form"
           grid-view="currency-grid"/>
+        <field name="tradingName" form-view="trading-name-form"
+               grid-view="trading-name-grid"/>
         <field name="fixedAssetCategory" domain="self.company = :company"
           readonlyIf="statusSelect > 1" canEdit="false"
           onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date"

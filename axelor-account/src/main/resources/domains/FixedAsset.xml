@@ -22,6 +22,8 @@
       title="Invoice line"/>
     <many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account"
       title="Purchase account"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+                 title="Trading Name"/>
 
     <many-to-one name="fixedAssetCategory"
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"

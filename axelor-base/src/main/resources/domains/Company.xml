@@ -37,8 +37,11 @@
     <integer name="defaultPartnerCategorySelect" title="Partner default category"
       selection="company.partner.category.select" massUpdate="true"/>
 
+    <boolean name="requireTradingName" title="Require trading name" help="This field defines if trading name should be required when filling an invoice, move, purchase order or a fixed asset."/>
     <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName"
       title="Trading names"/>
+    <many-to-one name="mainTradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Default trading name"/>
     <one-to-many name="tradingNamePrintingSettingsList"
       ref="com.axelor.apps.base.db.TradingNamePrintingSettings" mappedBy="company"/>
 

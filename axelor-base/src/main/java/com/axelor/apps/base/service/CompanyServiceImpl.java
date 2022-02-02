@@ -20,7 +20,11 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.util.List;
 
@@ -36,6 +40,19 @@ public class CompanyServiceImpl implements CompanyService {
         appBaseService.setManageMultiBanks(true);
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void handleTradingNames(Company company) throws AxelorException {
+    if (Beans.get(AppBaseService.class).getAppBase().getEnableTradingNamesManagement())
+      if (company.getTradingNameSet().isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.MISSING_TRADING_NAME));
+      } else if (company.getTradingNameSet().size() == 1) {
+        company.setMainTradingName(company.getTradingNameSet().iterator().next());
+      }
   }
 
   /**

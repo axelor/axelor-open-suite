@@ -452,4 +452,8 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  /* company service */
+  public static final String MISSING_TRADING_NAME = /*$$(*/
+      "Trading names are enabled in base module configuration. Thus you need to select at least one trading name." /*)*/;
 }

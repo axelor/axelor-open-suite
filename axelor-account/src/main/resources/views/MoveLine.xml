@@ -238,8 +238,10 @@
         <field name="dueDate" showIf="dueDate"/>
         <field name="originDate"/>
       </panel>
+      <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
+             grid-view="trading-name-grid"/>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" colSpan="3"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
@@ -391,13 +393,15 @@
         <field name="dueDate" showIf="dueDate"/>
         <field name="originDate"/>
       </panel>
+      <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
+             grid-view="trading-name-grid"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        readonlyIf="amountPaid &gt; 0" colSpan="3"/>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
-      <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-attrs-domain-partner" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"
@@ -721,6 +725,7 @@
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
     <field name="description" expr="eval: __parent__?.description"/>
+    <field name="tradingName" expr="eval: __parent__?.tradingName"/>
   </action-record>
 
   <action-record name="action-move-line-record-update-due-date"

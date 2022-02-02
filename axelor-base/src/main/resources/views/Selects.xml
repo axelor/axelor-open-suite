@@ -652,4 +652,10 @@
     <option value="1">&gt;</option>
   </selection>
 
+  <selection name="base.trading.name.type.select">
+    <option value="1">Brand</option>
+    <option value="2">Facility</option>
+    <option value="3">Agency</option>
+  </selection>
+
 </object-views>

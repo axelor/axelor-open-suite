@@ -103,6 +103,11 @@
         <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
           if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="requireTradingName"
+          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="mainTradingName" form-view="trading-name-form"
+          grid-view="trading-name-grid"
+          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="tradingNamePrintingSettingsList" canNew="true"
           form-view="trading-name-printing-settings-company-form"
           grid-view="trading-name-printing-settings-company-grid" colSpan="12"
@@ -181,6 +186,15 @@
   <action-method name="action-company-logo-onchange-update-dimension">
     <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
   </action-method>
+
+  <action-method name="action-company-method-handle-trading-names">
+    <call class="com.axelor.apps.base.web.CompanyController" method="handleTradingNames"/>
+  </action-method>
+
+  <action-group name="action-company-group-onsave">
+    <action name="action-company-check-multi-banks"/>
+    <action name="action-company-method-handle-trading-names"/>
+  </action-group>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">

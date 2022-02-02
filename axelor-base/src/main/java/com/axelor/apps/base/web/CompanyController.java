@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CompanyService;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,5 +36,17 @@ public class CompanyController {
   public void checkMultiBanks(ActionRequest request, ActionResponse response) {
     Company company = request.getContext().asType(Company.class);
     Beans.get(CompanyService.class).checkMultiBanks(company);
+  }
+
+  /**
+   * @see com.axelor.apps.base.service.CompanyService#handleTradingNames
+   * @param request
+   * @param response
+   */
+  public void handleTradingNames(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Company company = request.getContext().asType(Company.class);
+    Beans.get(CompanyService.class).handleTradingNames(company);
+    response.setValue("mainTradingName", company.getMainTradingName());
   }
 }

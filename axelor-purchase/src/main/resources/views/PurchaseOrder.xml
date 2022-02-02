@@ -158,7 +158,7 @@
           readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"
           domain=":company MEMBER OF self.companySet"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.requireTradingName"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" canEdit="false" colSpan="3" form-view="currency-form"
@@ -577,6 +577,7 @@
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-update-info-company"/>
+    <action name="action-purchase-order-record-trading-name"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -682,7 +683,10 @@
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="project" expr="eval:_project"/>
-    <field name="tradingName" expr="eval: __user__?.tradingName"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+      if="__user__?.tradingName == null"/>
     <field name="stockLocation"
       expr="eval: __user__?.tradingName?.receiptDefaultStockLocation"/>
   </action-record>
@@ -764,6 +768,14 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="supplierPartner" expr="eval: contactPartner.mainPartner"
       if="contactPartner.mainPartner != null"/>
+  </action-record>
+
+  <action-record name="action-purchase-order-record-trading-name"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+      if="__user__?.tradingName == null"/>
   </action-record>
 
   <action-method name="action-purchase-order-method-validate-supplier">

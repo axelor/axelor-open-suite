@@ -52,7 +52,7 @@
       selection="iinvoice.operation.type.select"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="TradingName"/>
+      title="Trading name"/>
 
     <decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[

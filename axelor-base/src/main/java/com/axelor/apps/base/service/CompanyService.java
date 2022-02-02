@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.exception.AxelorException;
 
 public interface CompanyService {
 
@@ -28,4 +29,12 @@ public interface CompanyService {
    * @param company the company to check for multiple active bank details
    */
   void checkMultiBanks(Company company);
+
+  /**
+   * Check whether the provided company has at least one trading name selected. If there is only one
+   * selected, fill the default trading name field
+   *
+   * @param company the company to handle trading names
+   */
+  void handleTradingNames(Company company) throws AxelorException;
 }

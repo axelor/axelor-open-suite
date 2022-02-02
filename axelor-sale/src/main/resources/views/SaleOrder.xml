@@ -384,7 +384,7 @@
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
           domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"
-          requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+          requiredIf="company.requireTradingName"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" required="true"
@@ -1693,7 +1693,10 @@
     <field name="template" expr="eval:_template"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
-    <field name="tradingName" expr="eval: __user__?.tradingName"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+           if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+           if="__user__?.tradingName == null"/>
     <field name="stockLocation"
       expr="eval: __user__?.tradingName?.shippingDefaultStockLocation"/>
   </action-record>
@@ -2056,8 +2059,10 @@
 
   <action-record name="action-sale-record-update-info-company"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="tradingName" expr="eval: null"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+           if="__config__.app.getApp('base').enableTradingNamesManagement &amp;&amp; __user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+           if="__config__.app.getApp('base').enableTradingNamesManagement &amp;&amp; __user__?.tradingName == null"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
     <field name="incoterm"
       expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"

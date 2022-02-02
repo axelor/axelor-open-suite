@@ -66,8 +66,8 @@
         <panel name="moveContentPanel"
           readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-method-hide-axis-analytic-account-move-line"
-            form-view="company-form" grid-view="company-grid"/>
+            onChange="action-move-group-company-onchange" form-view="company-form"
+            grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-account-record-set-journal-technical-type-select"/>
@@ -78,7 +78,8 @@
           <field name="originDate" colSpan="3"/>
           <field name="tradingName"
             if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
-            form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
+            requiredIf="company.requireTradingName" form-view="trading-name-form"
+            grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             form-view="partner-form" grid-view="partner-grid"
@@ -342,6 +343,14 @@
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
+  <action-group name="action-move-group-company-onchange">
+    <action name="action-move-record-journal"/>
+    <action name="action-move-method-get-period"/>
+    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-record-trading-name"/>
+  </action-group>
+
   <action-validate name="action-account-validate-prompt">
     <alert
       message="The validation of a move brings irrevocable integration of a move in Moves book"/>
@@ -371,7 +380,10 @@
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
       if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     <field name="technicalOriginSelect" expr="1"/>
-    <field name="tradingName" expr="eval: __user__?.tradingName"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+      if="__user__?.tradingName == null"/>
   </action-record>
 
   <action-record name="default-move-record-currency"
@@ -400,6 +412,14 @@
     model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect"
       expr="eval: journal?.journalType.technicalTypeSelect"/>
+  </action-record>
+
+  <action-record name="action-move-record-trading-name"
+    model="com.axelor.apps.account.db.Move">
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+      if="__user__?.tradingName == null"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
