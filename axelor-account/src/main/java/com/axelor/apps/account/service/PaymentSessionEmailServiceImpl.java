@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -60,9 +61,10 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
             .filter(
                 "self.paymentSession = :paymentSession "
                     + "AND self.isSelectedOnPaymentSession IS TRUE "
-                    + "AND (self.invoice.partner.payNoticeSendingMethodSelect = 1 "
-                    + "OR self.moveLine.partner.payNoticeSendingMethodSelect = 1)")
+                    + "AND (self.invoice.partner.payNoticeSendingMethodSelect = :paymentNoticeEmail "
+                    + "OR self.moveLine.partner.payNoticeSendingMethodSelect = paymentNoticeEmail)")
             .bind("paymentSession", paymentSession)
+            .bind("paymentNoticeEmail", PartnerRepository.PAYMENT_NOTICE_EMAIL)
             .order("id");
 
     List<Long> partnerIdList = new ArrayList<>();
