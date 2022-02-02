@@ -62,7 +62,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
                 "self.paymentSession = :paymentSession "
                     + "AND self.isSelectedOnPaymentSession IS TRUE "
                     + "AND (self.invoice.partner.payNoticeSendingMethodSelect = :paymentNoticeEmail "
-                    + "OR self.moveLine.partner.payNoticeSendingMethodSelect = paymentNoticeEmail)")
+                    + "OR self.moveLine.partner.payNoticeSendingMethodSelect = :paymentNoticeEmail)")
             .bind("paymentSession", paymentSession)
             .bind("paymentNoticeEmail", PartnerRepository.PAYMENT_NOTICE_EMAIL)
             .order("id");
