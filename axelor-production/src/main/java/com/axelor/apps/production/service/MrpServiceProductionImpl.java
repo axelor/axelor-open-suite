@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,8 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -78,6 +78,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected ProductCompanyService productCompanyService;
 
+  protected BillOfMaterialService billOfMaterialService;
+
   protected AppProductionService appProductionService;
 
   @Inject
@@ -99,9 +101,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AppPurchaseService appPurchaseService,
-      ProductCategoryRepository productCategoryRepository,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
+      ProductCategoryService productCategoryService,
+      BillOfMaterialService billOfMaterialService,
       AppProductionService appProductionService) {
     super(
         mrpRepository,
@@ -115,15 +118,16 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockRulesService,
         mrpLineService,
         mrpForecastRepository,
+        productCategoryService,
         stockLocationService,
         mailMessageService,
         unitConversionService,
         appBaseService,
         appSaleService,
-        appPurchaseService,
-        productCategoryRepository);
+        appPurchaseService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
+    this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
   }
 
@@ -404,7 +408,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (!appProductionService.isApp("production")) {
       return;
     }
-    BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
@@ -501,12 +506,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       super.assignProductAndLevel(product);
       return;
     }
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
-    log.debug("Add of the product : {}", product.getFullName());
-    this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
-
-    if (product.getDefaultBillOfMaterial() != null) {
-      this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
+    if (billOfMaterial != null && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
+      this.assignProductLevel(billOfMaterial, 0);
+    } else {
+      log.debug("Add product: {}", product.getFullName());
+      this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
     }
   }
 
@@ -542,19 +549,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+    Product product = billOfMaterial.getProduct();
 
-      Product subProduct = billOfMaterial.getProduct();
+    log.debug("Add product: {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
-      if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
-        log.debug(
-            "Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-        this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
-      }
-    } else {
-
-      level = level + 1;
+    level = level + 1;
+    if (billOfMaterial.getBillOfMaterialSet() != null
+        && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
 
       for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
 
@@ -563,8 +565,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         if (this.isMrpProduct(subProduct)) {
           this.assignProductLevel(subBillOfMaterial, level);
 
-          if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+          Company company = mrp.getStockLocation().getCompany();
+          BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
+          if (defaultBOM != null) {
+            this.assignProductLevel(defaultBOM, level);
           }
         }
       }

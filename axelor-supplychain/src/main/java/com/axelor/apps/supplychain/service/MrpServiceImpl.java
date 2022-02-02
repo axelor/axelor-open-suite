@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -113,7 +113,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockLocationService stockLocationService;
   protected MailMessageService mailMessageService;
   protected UnitConversionService unitConversionService;
-  protected ProductCategoryRepository productCategoryRepository;
+  protected ProductCategoryService productCategoryService;
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -137,13 +137,13 @@ public class MrpServiceImpl implements MrpService {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
+      ProductCategoryService productCategoryService,
       StockLocationService stockLocationService,
       MailMessageService mailMessageService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       AppSaleService appSaleService,
-      AppPurchaseService appPurchaseService,
-      ProductCategoryRepository productCategoryRepository) {
+      AppPurchaseService appPurchaseService) {
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
     this.productRepository = productRepository;
@@ -155,7 +155,7 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
-    this.productCategoryRepository = productCategoryRepository;
+    this.productCategoryService = productCategoryService;
     this.stockLocationService = stockLocationService;
     this.mailMessageService = mailMessageService;
     this.unitConversionService = unitConversionService;
@@ -1097,12 +1097,10 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
-        Set<ProductCategory> childProductCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          childProductCategorySet.addAll(
-              this.getProductCategories(productCategory, new HashSet<>(), 0));
+          productCategorySet.addAll(
+              productCategoryService.fetchChildrenCategoryList(productCategory));
         }
-        productCategorySet.addAll(childProductCategorySet);
       }
 
       productSet.addAll(
@@ -1393,32 +1391,5 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
-  }
-
-  protected Set<ProductCategory> getProductCategories(
-      ProductCategory productCategory, Set<ProductCategory> productCategorySet, int count) {
-
-    if (count > ITERATIONS) {
-      return productCategorySet;
-    }
-
-    List<ProductCategory> childProductCategoryList =
-        productCategoryRepository
-            .all()
-            .filter("self.parentProductCategory = ?1", productCategory)
-            .fetch();
-
-    productCategorySet.add(productCategory);
-    count++;
-
-    if (childProductCategoryList.isEmpty()) {
-      return productCategorySet;
-    }
-
-    for (ProductCategory category : childProductCategoryList) {
-      this.getProductCategories(category, productCategorySet, count);
-    }
-
-    return productCategorySet;
   }
 }

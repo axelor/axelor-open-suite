@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -47,6 +48,7 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
@@ -62,7 +64,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,
-        accountConfigService);
+        accountConfigService,
+        saleOrderService);
   }
 
   @Override

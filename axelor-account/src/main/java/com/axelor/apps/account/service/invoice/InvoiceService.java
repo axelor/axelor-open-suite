@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -286,6 +286,8 @@ public interface InvoiceService {
   public User getPfpValidatorUser(Invoice invoice);
 
   public String getPfpValidatorUserDomain(Invoice invoice);
+
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
 
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
