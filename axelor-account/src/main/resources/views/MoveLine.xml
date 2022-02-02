@@ -239,9 +239,10 @@
         <field name="originDate"/>
       </panel>
       <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
-             grid-view="trading-name-grid"/>
+        grid-view="trading-name-grid"/>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" colSpan="3"/>
+        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        colSpan="3"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
@@ -394,7 +395,7 @@
         <field name="originDate"/>
       </panel>
       <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
-             grid-view="trading-name-grid"/>
+        grid-view="trading-name-grid"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0" colSpan="3"/>
