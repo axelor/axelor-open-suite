@@ -130,26 +130,67 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   @Override
   public InvoiceTermPayment createInvoiceTermPayment(
-      InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount) {
+      InvoiceTerm invoiceTermToPay, BigDecimal amount) {
+    if (amount.signum() > 0) {
+      BigDecimal amountToPay = amount.min(invoiceTermToPay.getAmountRemaining());
 
+      return this.initInvoiceTermPayment(invoiceTermToPay, amountToPay);
+    }
+
+    return null;
+  }
+
+  @Override
+  public InvoiceTermPayment createInvoiceTermPayment(
+      InvoicePayment invoicePayment, InvoiceTerm invoiceTermToPay, BigDecimal paidAmount) {
+    return this.initInvoiceTermPayment(
+        invoicePayment,
+        invoiceTermToPay,
+        invoicePayment.getAmount(),
+        invoicePayment.getFinancialDiscountTotalAmount(),
+        paidAmount,
+        invoicePayment.getApplyFinancialDiscount());
+  }
+
+  protected InvoiceTermPayment initInvoiceTermPayment(
+      InvoiceTerm invoiceTermToPay, BigDecimal amount) {
+    return initInvoiceTermPayment(null, invoiceTermToPay, null, null, amount, false);
+  }
+
+  protected InvoiceTermPayment initInvoiceTermPayment(
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      BigDecimal amount,
+      BigDecimal financialDiscountTotalAmount,
+      BigDecimal paidAmount,
+      boolean applyFinancialDiscount) {
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
+
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
     invoiceTermPayment.setPaidAmount(paidAmount);
-    manageInvoiceTermFinancialDiscount(invoiceTermPayment, invoicePayment, paidAmount);
+
+    manageInvoiceTermFinancialDiscount(
+        invoiceTermPayment,
+        amount,
+        financialDiscountTotalAmount,
+        paidAmount,
+        applyFinancialDiscount);
+
     return invoiceTermPayment;
   }
 
   public void manageInvoiceTermFinancialDiscount(
-      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, BigDecimal paidAmount) {
-    if (invoicePayment.getApplyFinancialDiscount()) {
+      InvoiceTermPayment invoiceTermPayment,
+      BigDecimal amount,
+      BigDecimal financialDiscountTotalAmount,
+      BigDecimal paidAmount,
+      boolean applyFinancialDiscount) {
+    if (applyFinancialDiscount) {
       invoiceTermPayment.setFinancialDiscountAmount(
           paidAmount
-              .multiply(invoicePayment.getFinancialDiscountTotalAmount())
-              .divide(
-                  invoicePayment.getAmount(),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP));
+              .multiply(financialDiscountTotalAmount)
+              .divide(amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     }
   }
 
