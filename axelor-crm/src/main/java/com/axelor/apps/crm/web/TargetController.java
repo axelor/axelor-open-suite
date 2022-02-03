@@ -20,7 +20,6 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.crm.db.Target;
 import com.axelor.apps.crm.db.repo.TargetRepository;
 import com.axelor.apps.crm.service.TargetService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,15 +32,11 @@ public class TargetController {
 
     Target target = request.getContext().asType(Target.class);
 
-    try {
-      Beans.get(TargetService.class).update(Beans.get(TargetRepository.class).find(target.getId()));
-      response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
-      response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
-      response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
-      response.setValue("callEmittedNumber", target.getCallEmittedNumber());
-      response.setValue("meetingNumber", target.getMeetingNumber());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(TargetService.class).update(Beans.get(TargetRepository.class).find(target.getId()));
+    response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
+    response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
+    response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
+    response.setValue("callEmittedNumber", target.getCallEmittedNumber());
+    response.setValue("meetingNumber", target.getMeetingNumber());
   }
 }

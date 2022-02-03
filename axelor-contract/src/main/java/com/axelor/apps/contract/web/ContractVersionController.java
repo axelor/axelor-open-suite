@@ -31,7 +31,8 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -83,47 +84,41 @@ public class ContractVersionController {
     response.setReload(true);
   }
 
-  public void active(ActionRequest request, ActionResponse response) {
-    try {
-      Long id = request.getContext().asType(ContractVersion.class).getId();
-      ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
-      if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
-        return;
-      }
-      Beans.get(ContractService.class)
-          .activeNextVersion(
-              contractVersion.getNextContract(),
-              getTodayDate(contractVersion.getNextContract().getCompany()));
-      response.setView(
-          ActionView.define("Contract")
-              .model(Contract.class.getName())
-              .add("form", "contract-form")
-              .add("grid", "contract-grid")
-              .param("search-filters", "contract-filters")
-              .context("_showRecord", contractVersion.getContract().getId())
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void active(ActionRequest request, ActionResponse response) throws AxelorException {
+    Long id = request.getContext().asType(ContractVersion.class).getId();
+    ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
+    if (contractVersion.getNextContract() == null) {
+      response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+      return;
     }
+    Beans.get(ContractService.class)
+        .activeNextVersion(
+            contractVersion.getNextContract(),
+            getTodayDate(contractVersion.getNextContract().getCompany()));
+    response.setView(
+        ActionView.define("Contract")
+            .model(Contract.class.getName())
+            .add("form", "contract-form")
+            .add("grid", "contract-grid")
+            .param("search-filters", "contract-filters")
+            .context("_showRecord", contractVersion.getContract().getId())
+            .map());
   }
 
-  public void waiting(ActionRequest request, ActionResponse response) {
-    try {
-      Long id = request.getContext().asType(ContractVersion.class).getId();
-      ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
-      if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
-        return;
-      }
-      Beans.get(ContractService.class)
-          .waitingNextVersion(
-              contractVersion.getNextContract(),
-              getTodayDate(contractVersion.getNextContract().getCompany()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void waiting(ActionRequest request, ActionResponse response) throws AxelorException {
+    Long id = request.getContext().asType(ContractVersion.class).getId();
+    ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
+    if (contractVersion.getNextContract() == null) {
+      response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+      return;
     }
+    Beans.get(ContractService.class)
+        .waitingNextVersion(
+            contractVersion.getNextContract(),
+            getTodayDate(contractVersion.getNextContract().getCompany()));
+    response.setReload(true);
   }
 
   public void changeProduct(ActionRequest request, ActionResponse response) {

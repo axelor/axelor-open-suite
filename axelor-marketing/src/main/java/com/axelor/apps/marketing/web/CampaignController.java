@@ -25,7 +25,8 @@ import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.marketing.service.CampaignService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -40,76 +41,62 @@ public class CampaignController {
 
     Campaign campaign = request.getContext().asType(Campaign.class);
 
-    try {
-      campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
+    campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
-      if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
-        return;
-      }
-      MetaFile logFile = Beans.get(CampaignService.class).sendEmail(campaign);
-
-      if (logFile == null) {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
-      }
-
-      response.setValue("emailLog", logFile);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
+      response.setFlash(I18n.get(IExceptionMessage.EMPTY_TARGET));
+      return;
     }
+    MetaFile logFile = Beans.get(CampaignService.class).sendEmail(campaign);
+
+    if (logFile == null) {
+      response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+    }
+
+    response.setValue("emailLog", logFile);
   }
 
   public void sendReminderEmail(ActionRequest request, ActionResponse response) {
 
     Campaign campaign = request.getContext().asType(Campaign.class);
 
-    try {
-      campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
+    campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
-      if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.REMINDER_EMAIL1));
-        return;
-      }
-
-      MetaFile logFile = Beans.get(CampaignService.class).sendReminderEmail(campaign);
-
-      if (logFile == null) {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
-      }
-
-      response.setValue("emailLog", logFile);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
+      response.setFlash(I18n.get(IExceptionMessage.REMINDER_EMAIL1));
+      return;
     }
+
+    MetaFile logFile = Beans.get(CampaignService.class).sendReminderEmail(campaign);
+
+    if (logFile == null) {
+      response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+    }
+
+    response.setValue("emailLog", logFile);
   }
 
   public void generateEvents(ActionRequest request, ActionResponse response) {
 
     Campaign campaign = request.getContext().asType(Campaign.class);
 
-    try {
-      campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
-      Beans.get(CampaignService.class).generateEvents(campaign);
-      response.setAttr("plannedEventsPanel", "refresh", true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
+    Beans.get(CampaignService.class).generateEvents(campaign);
+    response.setAttr("plannedEventsPanel", "refresh", true);
   }
 
-  public void generateTargets(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateTargets(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Campaign campaign = request.getContext().asType(Campaign.class);
 
-    try {
-      campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
-      Beans.get(CampaignService.class).generateTargets(campaign);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
+    Beans.get(CampaignService.class).generateTargets(campaign);
 
     response.setReload(true);
   }
@@ -118,55 +105,39 @@ public class CampaignController {
 
     Campaign campaignContext = request.getContext().asType(Campaign.class);
 
-    try {
-      Beans.get(CampaignService.class)
-          .inviteSelectedTargets(
-              Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .inviteSelectedTargets(
+            Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
+    response.setReload(true);
   }
 
   public void inviteAllTargets(ActionRequest request, ActionResponse response) {
 
     Campaign campaign = request.getContext().asType(Campaign.class);
 
-    try {
-      Beans.get(CampaignService.class)
-          .inviteAllTargets(Beans.get(CampaignRepository.class).find(campaign.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .inviteAllTargets(Beans.get(CampaignRepository.class).find(campaign.getId()));
+    response.setReload(true);
   }
 
   public void addParticipatingTargets(ActionRequest request, ActionResponse response) {
 
     Campaign campaignContext = request.getContext().asType(Campaign.class);
 
-    try {
-      Beans.get(CampaignService.class)
-          .addParticipatingTargets(
-              Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .addParticipatingTargets(
+            Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
+    response.setReload(true);
   }
 
   public void addNotParticipatingTargets(ActionRequest request, ActionResponse response) {
 
     Campaign campaignContext = request.getContext().asType(Campaign.class);
 
-    try {
-      Beans.get(CampaignService.class)
-          .addNotParticipatingTargets(
-              Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .addNotParticipatingTargets(
+            Beans.get(CampaignRepository.class).find(campaignContext.getId()), campaignContext);
+    response.setReload(true);
   }
 
   public void markPartnerPresent(ActionRequest request, ActionResponse response) {
@@ -175,13 +146,9 @@ public class CampaignController {
     Partner partner = request.getContext().asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
 
-    try {
-      Beans.get(CampaignService.class)
-          .markPartnerPresent(Beans.get(CampaignRepository.class).find(campaign.getId()), partner);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .markPartnerPresent(Beans.get(CampaignRepository.class).find(campaign.getId()), partner);
+    response.setReload(true);
   }
 
   public void markLeadPresent(ActionRequest request, ActionResponse response) {
@@ -190,12 +157,8 @@ public class CampaignController {
     Lead lead = request.getContext().asType(Lead.class);
     lead = Beans.get(LeadRepository.class).find(lead.getId());
 
-    try {
-      Beans.get(CampaignService.class)
-          .markLeadPresent(Beans.get(CampaignRepository.class).find(campaign.getId()), lead);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(CampaignService.class)
+        .markLeadPresent(Beans.get(CampaignRepository.class).find(campaign.getId()), lead);
+    response.setReload(true);
   }
 }

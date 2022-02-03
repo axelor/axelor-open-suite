@@ -20,7 +20,8 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,15 +30,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class FixedAssetLineController {
 
-  public void realize(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void realize(ActionRequest request, ActionResponse response) throws AxelorException {
     FixedAssetLine fixedAssetLine = request.getContext().asType(FixedAssetLine.class);
     fixedAssetLine = Beans.get(FixedAssetLineRepository.class).find(fixedAssetLine.getId());
 
-    try {
-      Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine);
+    response.setReload(true);
   }
 }

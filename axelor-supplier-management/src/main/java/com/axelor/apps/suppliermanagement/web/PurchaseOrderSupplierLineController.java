@@ -27,7 +27,8 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierLineService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -38,7 +39,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class PurchaseOrderSupplierLineController {
 
-  public void accept(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void accept(ActionRequest request, ActionResponse response) throws AxelorException {
 
     PurchaseOrderSupplierLine purchaseOrderSupplierLine =
         Beans.get(PurchaseOrderSupplierLineRepository.class)
@@ -51,12 +53,8 @@ public class PurchaseOrderSupplierLineController {
               .find(request.getContext().getParent().asType(PurchaseOrderLine.class).getId()));
     }
 
-    try {
-      Beans.get(PurchaseOrderSupplierLineService.class).accept(purchaseOrderSupplierLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(PurchaseOrderSupplierLineService.class).accept(purchaseOrderSupplierLine);
+    response.setReload(true);
   }
 
   /**

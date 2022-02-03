@@ -26,7 +26,7 @@ import com.axelor.apps.dmn.service.DmnImportService;
 import com.axelor.apps.dmn.service.DmnService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -38,6 +38,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 
 public class WkfDmnModelController {
@@ -52,6 +53,7 @@ public class WkfDmnModelController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void executeDmn(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -94,56 +96,48 @@ public class WkfDmnModelController {
     response.setValue("script", script);
   }
 
-  public void exportDmnTable(ActionRequest request, ActionResponse response) {
-    try {
-      WkfDmnModel dmnModel = request.getContext().asType(WkfDmnModel.class);
+  @HandleExceptionResponse
+  public void exportDmnTable(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+    WkfDmnModel dmnModel = request.getContext().asType(WkfDmnModel.class);
 
-      dmnModel = Beans.get(WkfDmnModelRepository.class).find(dmnModel.getId());
-      File file = Beans.get(DmnExportService.class).exportDmnTable(dmnModel);
+    dmnModel = Beans.get(WkfDmnModelRepository.class).find(dmnModel.getId());
+    File file = Beans.get(DmnExportService.class).exportDmnTable(dmnModel);
 
-      FileInputStream inStream = new FileInputStream(file);
-      MetaFile exportFile =
-          Beans.get(MetaFiles.class).upload(inStream, dmnModel.getName() + ".xlsx");
-      inStream.close();
-      file.delete();
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile exportFile = Beans.get(MetaFiles.class).upload(inStream, dmnModel.getName() + ".xlsx");
+    inStream.close();
+    file.delete();
 
-      if (exportFile != null) {
-        response.setView(
-            ActionView.define(I18n.get("Export file"))
-                .model(WkfDmnModel.class.getName())
-                .add(
-                    "html",
-                    "ws/rest/com.axelor.meta.db.MetaFile/"
-                        + exportFile.getId()
-                        + "/content/download?v="
-                        + exportFile.getVersion())
-                .param("download", "true")
-                .map());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (exportFile != null) {
+      response.setView(
+          ActionView.define(I18n.get("Export file"))
+              .model(WkfDmnModel.class.getName())
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + exportFile.getId()
+                      + "/content/download?v="
+                      + exportFile.getVersion())
+              .param("download", "true")
+              .map());
     }
   }
 
   @SuppressWarnings("rawtypes")
-  public void importDmnTable(ActionRequest request, ActionResponse response) {
-    try {
-      MetaFile dataFile =
-          Beans.get(MetaFileRepository.class)
-              .find(
-                  Long.parseLong(
-                      ((Map) request.getContext().get("dataFile")).get("id").toString()));
+  @HandleExceptionResponse
+  public void importDmnTable(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MetaFile dataFile =
+        Beans.get(MetaFileRepository.class)
+            .find(
+                Long.parseLong(((Map) request.getContext().get("dataFile")).get("id").toString()));
 
-      Long dmnModelId = Long.parseLong(request.getContext().get("_dmnModelId").toString());
-      WkfDmnModel dmnModel = Beans.get(WkfDmnModelRepository.class).find(dmnModelId);
+    Long dmnModelId = Long.parseLong(request.getContext().get("_dmnModelId").toString());
+    WkfDmnModel dmnModel = Beans.get(WkfDmnModelRepository.class).find(dmnModelId);
 
-      Beans.get(DmnImportService.class).importDmnTable(dataFile, dmnModel);
+    Beans.get(DmnImportService.class).importDmnTable(dataFile, dmnModel);
 
-      response.setCanClose(true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setCanClose(true);
   }
 }

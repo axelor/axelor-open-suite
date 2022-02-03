@@ -25,7 +25,8 @@ import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -62,63 +63,59 @@ public class MoveTemplateController {
   }
 
   @SuppressWarnings("unchecked")
-  public void generateMove(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
-      Context context = request.getContext();
+    Context context = request.getContext();
 
-      HashMap<String, Object> moveTemplateTypeMap =
-          (HashMap<String, Object>) context.get("moveTemplateType");
-      MoveTemplateType moveTemplateType =
-          Beans.get(MoveTemplateTypeRepository.class)
-              .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
+    HashMap<String, Object> moveTemplateTypeMap =
+        (HashMap<String, Object>) context.get("moveTemplateType");
+    MoveTemplateType moveTemplateType =
+        Beans.get(MoveTemplateTypeRepository.class)
+            .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
 
-      HashMap<String, Object> moveTemplateMap =
-          (HashMap<String, Object>) context.get("moveTemplate");
-      MoveTemplate moveTemplate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
-        moveTemplate =
-            Beans.get(MoveTemplateRepository.class)
-                .find(Long.parseLong(moveTemplateMap.get("id").toString()));
+    HashMap<String, Object> moveTemplateMap = (HashMap<String, Object>) context.get("moveTemplate");
+    MoveTemplate moveTemplate = null;
+    if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+      moveTemplate =
+          Beans.get(MoveTemplateRepository.class)
+              .find(Long.parseLong(moveTemplateMap.get("id").toString()));
+    }
+
+    List<HashMap<String, Object>> dataList =
+        (List<HashMap<String, Object>>) context.get("dataInputList");
+
+    List<HashMap<String, Object>> moveTemplateList =
+        (List<HashMap<String, Object>>) context.get("moveTemplateSet");
+
+    LocalDate moveDate = null;
+    if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+      moveDate =
+          LocalDate.parse(
+              (String) context.get("moveDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    LOG.debug("MoveTemplate : {}", moveTemplate);
+    LOG.debug("Data inputlist : {}", dataList);
+    LOG.debug("Data inputlist : {}", moveTemplateList);
+
+    if ((dataList != null && !dataList.isEmpty())
+        || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
+      List<Long> moveList =
+          Beans.get(MoveTemplateService.class)
+              .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
+      if (moveList != null && !moveList.isEmpty()) {
+        response.setView(
+            ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))
+                .model(Move.class.getName())
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .param("search-filters", "move-filters")
+                .domain("self.id in (" + Joiner.on(",").join(moveList) + ")")
+                .map());
       }
-
-      List<HashMap<String, Object>> dataList =
-          (List<HashMap<String, Object>>) context.get("dataInputList");
-
-      List<HashMap<String, Object>> moveTemplateList =
-          (List<HashMap<String, Object>>) context.get("moveTemplateSet");
-
-      LocalDate moveDate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
-        moveDate =
-            LocalDate.parse(
-                (String) context.get("moveDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-      }
-
-      LOG.debug("MoveTemplate : {}", moveTemplate);
-      LOG.debug("Data inputlist : {}", dataList);
-      LOG.debug("Data inputlist : {}", moveTemplateList);
-
-      if ((dataList != null && !dataList.isEmpty())
-          || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
-        List<Long> moveList =
-            Beans.get(MoveTemplateService.class)
-                .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
-        if (moveList != null && !moveList.isEmpty()) {
-          response.setView(
-              ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))
-                  .model(Move.class.getName())
-                  .add("grid", "move-grid")
-                  .add("form", "move-form")
-                  .param("search-filters", "move-filters")
-                  .domain("self.id in (" + Joiner.on(",").join(moveList) + ")")
-                  .map());
-        }
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
     }
   }
 
@@ -138,12 +135,8 @@ public class MoveTemplateController {
   }
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
-    try {
-      MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-      Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
-      response.setValues(values);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+    Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
+    response.setValues(values);
   }
 }

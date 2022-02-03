@@ -19,7 +19,8 @@ package com.axelor.apps.businessproduction.web;
 
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,13 +34,12 @@ public class TimesheetController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void updateOperationOrders(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      Beans.get(OperationOrderTimesheetService.class).updateOperationOrders(timesheet);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void updateOperationOrders(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    Beans.get(OperationOrderTimesheetService.class).updateOperationOrders(timesheet);
   }
 }

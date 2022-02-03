@@ -33,6 +33,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -87,6 +88,7 @@ public class ExtraHoursController {
     }
   }
 
+  @HandleExceptionResponse
   public void validateExtraHours(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -188,7 +190,7 @@ public class ExtraHoursController {
   }
 
   // confirming request and sending mail to manager
-  public void confirm(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void confirm(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -215,9 +217,8 @@ public class ExtraHoursController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -242,7 +243,7 @@ public class ExtraHoursController {
   }
 
   // refusing request and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -265,7 +266,7 @@ public class ExtraHoursController {
   }
 
   // canceling request and sending mail to applicant
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
       extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
@@ -287,12 +288,9 @@ public class ExtraHoursController {
 
   // counting total hours while computing extra hours lines
   public void compute(ActionRequest request, ActionResponse response) {
-    try {
-      ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      Beans.get(ExtraHoursService.class).compute(extraHours);
-      response.setValue("totalQty", extraHours.getTotalQty());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+    Beans.get(ExtraHoursService.class).compute(extraHours);
+    response.setValue("totalQty", extraHours.getTotalQty());
   }
 }

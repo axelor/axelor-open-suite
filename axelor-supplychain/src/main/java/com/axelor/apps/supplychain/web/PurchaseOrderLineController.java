@@ -23,6 +23,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,6 +32,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderLineController {
 
+  @HandleExceptionResponse
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
@@ -43,6 +45,7 @@ public class PurchaseOrderLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);

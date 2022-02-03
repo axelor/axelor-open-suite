@@ -27,6 +27,7 @@ import com.axelor.apps.production.service.batch.ProductionBatchService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -64,6 +65,7 @@ public class ProductionBatchController {
     }
   }
 
+  @HandleExceptionResponse
   public void showValuation(ActionRequest request, ActionResponse response) throws AxelorException {
     ProductionBatch productionBatch = request.getContext().asType(ProductionBatch.class);
     productionBatch = Beans.get(ProductionBatchRepository.class).find(productionBatch.getId());

@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.base.service.currency.CurrencyConversionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,6 +36,7 @@ import com.axelor.quartz.JobRunner;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import wslite.json.JSONException;
 
 @Singleton
 public class AppBaseController {
@@ -55,17 +57,15 @@ public class AppBaseController {
     }
   }
 
-  public void checkMapApi(ActionRequest request, ActionResponse response) {
-    try {
-      AppBase appBase = request.getContext().asType(AppBase.class);
-      Integer apiType = appBase.getMapApiSelect();
+  @HandleExceptionResponse
+  public void checkMapApi(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
+    AppBase appBase = request.getContext().asType(AppBase.class);
+    Integer apiType = appBase.getMapApiSelect();
 
-      if (apiType == 1) {
-        Beans.get(MapService.class).testGMapService();
-        response.setFlash(IExceptionMessage.GENERAL_6);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (apiType == 1) {
+      Beans.get(MapService.class).testGMapService();
+      response.setFlash(IExceptionMessage.GENERAL_6);
     }
   }
 

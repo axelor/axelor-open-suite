@@ -23,7 +23,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
@@ -37,67 +37,57 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FileTabController {
 
-  public void updateFields(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      Map<String, Object> map = context.getParent();
-      if (map == null || (boolean) map.get("isConfigInFile") == true) {
-        return;
-      }
-
-      FileTab fileTab = context.asType(FileTab.class);
-      Beans.get(FileTabService.class).updateFields(fileTab);
-      response.setValue("fileFieldList", fileTab.getFileFieldList());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void updateFields(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    Context context = request.getContext();
+    Map<String, Object> map = context.getParent();
+    if (map == null || (boolean) map.get("isConfigInFile") == true) {
+      return;
     }
+
+    FileTab fileTab = context.asType(FileTab.class);
+    Beans.get(FileTabService.class).updateFields(fileTab);
+    response.setValue("fileFieldList", fileTab.getFileFieldList());
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-    try {
-      FileTab fileTab = request.getContext().asType(FileTab.class);
-      fileTab = Beans.get(FileTabService.class).compute(fileTab);
-      response.setValues(fileTab);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+    fileTab = Beans.get(FileTabService.class).compute(fileTab);
+    response.setValues(fileTab);
   }
 
-  public void showRecord(ActionRequest request, ActionResponse response) {
-    try {
-      FileTab fileTab = request.getContext().asType(FileTab.class);
-      fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
+  @HandleExceptionResponse
+  public void showRecord(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+    fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
 
-      String btnName = request.getContext().get("_signal").toString();
-      String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
+    String btnName = request.getContext().get("_signal").toString();
+    String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
 
-      MetaJsonField jsonField =
-          Beans.get(MetaJsonFieldRepository.class)
-              .all()
-              .filter(
-                  "self.name = ?1 AND self.type = 'many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
-                  fieldName,
-                  fileTab.getClass().getName())
-              .fetchOne();
+    MetaJsonField jsonField =
+        Beans.get(MetaJsonFieldRepository.class)
+            .all()
+            .filter(
+                "self.name = ?1 AND self.type = 'many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
+                fieldName,
+                fileTab.getClass().getName())
+            .fetchOne();
 
-      if (jsonField == null) {
-        return;
-      }
-
-      String ids = Beans.get(FileTabService.class).getShowRecordIds(fileTab, jsonField.getName());
-
-      response.setView(
-          ActionView.define(I18n.get(jsonField.getTitle()))
-              .model(jsonField.getTargetModel())
-              .add("grid", jsonField.getGridView())
-              .add("form", jsonField.getFormView())
-              .domain("self.id IN (" + ids + ")")
-              .map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (jsonField == null) {
+      return;
     }
+
+    String ids = Beans.get(FileTabService.class).getShowRecordIds(fileTab, jsonField.getName());
+
+    response.setView(
+        ActionView.define(I18n.get(jsonField.getTitle()))
+            .model(jsonField.getTargetModel())
+            .add("grid", jsonField.getGridView())
+            .add("form", jsonField.getFormView())
+            .domain("self.id IN (" + ids + ")")
+            .map());
   }
 
   public void validateActions(ActionRequest request, ActionResponse response) {

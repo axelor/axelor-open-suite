@@ -23,6 +23,7 @@ import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -68,6 +69,7 @@ public class CrmBatchController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Batch batch = Beans.get(CrmBatchService.class).run((String) request.getContext().get("code"));

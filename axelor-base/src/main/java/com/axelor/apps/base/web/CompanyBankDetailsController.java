@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -38,6 +39,7 @@ public class CompanyBankDetailsController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = (Partner) request.getContext().get("partner");
