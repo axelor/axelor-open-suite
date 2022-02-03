@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,14 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -54,6 +47,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -96,6 +90,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
+  protected SaleOrderService saleOrderService;
   protected int counter = 0;
 
   @Inject
@@ -118,7 +113,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       MoveLineCreateService moveLineCreateService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      SaleOrderService saleOrderService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -139,6 +135,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.saleOrderService = saleOrderService;
   }
 
   public List<StockMove> getStockMoves(
@@ -271,6 +268,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     AccountConfig accountConfig = accountConfigSupplychainService.getAccountConfig(company);
 
     Partner partner = stockMove.getPartner();
+    FiscalPosition fiscalPosition = partner != null ? partner.getFiscalPosition() : null;
     Account partnerAccount = null;
 
     Currency currency = null;
@@ -281,6 +279,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = saleOrder.getClientPartner();
       }
+      fiscalPosition = saleOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
@@ -290,6 +289,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
       }
+      fiscalPosition = purchaseOrder.getFiscalPosition();
       partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
     }
 
@@ -304,6 +304,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             moveDate,
             originDate,
             null,
+            fiscalPosition,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
             origin,
@@ -406,6 +407,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal totalQty = null;
     BigDecimal notInvoicedQty = null;
 
+    FiscalPosition fiscalPosition = null;
+
     if (isPurchase && purchaseOrderLine != null) {
       totalQty = purchaseOrderLine.getQty();
 
@@ -423,6 +426,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       } else {
         amountInCurrency = purchaseOrderLine.getExTaxTotal();
       }
+
+      fiscalPosition = purchaseOrderLine.getPurchaseOrder().getFiscalPosition();
     }
     if (!isPurchase && saleOrderLine != null) {
       totalQty = saleOrderLine.getQty();
@@ -439,6 +444,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       } else {
         amountInCurrency = saleOrderLine.getExTaxTotal();
       }
+
+      fiscalPosition = saleOrderLine.getSaleOrder().getFiscalPosition();
     }
     if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
       return null;
@@ -455,7 +462,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     Account account =
         accountManagementAccountService.getProductAccount(
-            product, company, partner.getFiscalPosition(), isPurchase, isFixedAssets);
+            product, company, fiscalPosition, isPurchase, isFixedAssets);
 
     boolean isDebit = false;
     if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == 1)
@@ -487,7 +494,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     if (recoveredTax) {
       TaxLine taxLine =
           accountManagementAccountService.getTaxLine(
-              originDate, product, company, partner.getFiscalPosition(), isPurchase);
+              originDate, product, company, fiscalPosition, isPurchase);
       if (taxLine != null) {
         moveLine.setTaxLine(taxLine);
         moveLine.setTaxRate(taxLine.getValue());

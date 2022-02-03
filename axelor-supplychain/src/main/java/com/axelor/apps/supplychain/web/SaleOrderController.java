@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1007,9 +1007,10 @@ public class SaleOrderController {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      Beans.get(SaleOrderLineServiceSupplyChain.class)
-          .updateStockMoveReservationDateTime(saleOrderLine);
+    SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+      Beans.get(SaleOrderLineServiceSupplyChain.class);
+          for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
     }
   }
 

@@ -71,6 +71,7 @@
             <field name="chkPassword" title="Confirm password" placeholder="confirm password"
               widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
             <label name="passwordPatternDescriptionLabel" css="label-danger"/>
+            <field name="passwordUpdatedOn" readonly="true"/>
           </panel>
           <panel name="passwordOptionsPanel" showIf="code != $user">
             <field name="$generateRandomPassword" title="Generate random password"
@@ -90,7 +91,7 @@
             form-view="partner-employee-form" grid-view="partner-employee-grid">
             <editor x-viewer="true">
               <field name="fullName" readonly="true"/>
-              <field name="fixedPhone" widget="phone"/>
+              <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone"/>
               <field name="fax" widget="phone"/>
               <field name="emailAddress" form-view="email-address-simple-form"
@@ -151,7 +152,8 @@
         if="__config__.app.isApp('employee')"/>
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
-      showIf="stepStatusSelect == 5">
+      showIf="stepStatusSelect == 5"
+      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
       <field name="today"/>
     </panel>
     <panel name="mainUserPanel" showIf="stepStatusSelect == 5" colSpan="12">
@@ -200,6 +202,7 @@
             <field name="sendEmailUponPasswordChange"/>
           </panel>
         </panel>
+        <field name="passwordUpdatedOn" readonly="true"/>
       </panel>
     </panel>
 
@@ -233,7 +236,7 @@
           form-view="partner-employee-form" grid-view="partner-employee-grid">
           <editor x-viewer="true">
             <field name="fullName" readonly="true"/>
-            <field name="fixedPhone" widget="phone"/>
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
             <field name="fax" widget="phone"/>
             <field name="emailAddress" form-view="email-address-simple-form"

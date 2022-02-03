@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
@@ -56,8 +57,13 @@ public class BaseBatchController {
     try {
       BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
       baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
-      Batch batch = Beans.get(BaseBatchService.class).synchronizeCalendars(baseBatch);
-      response.setFlash(batch.getComments());
+      BaseBatchService baseBatchService = Beans.get(BaseBatchService.class);
+      baseBatchService.setBatchModel(baseBatch);
+      ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
+      Batch batch = batchControllerCallableTool.runInSeparateThread(baseBatchService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,10 +117,12 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+      payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
@@ -185,15 +187,27 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
 
       if (payVoucherDueElement.isSelected()) {
 
-        paymentVoucher.addPayVoucherElementToPayListItem(
-            this.createPayVoucherElementToPay(payVoucherDueElement, sequence++));
+        PayVoucherElementToPay payVoucherElementToPay =
+            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
+        paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
+
+        if (payVoucherElementToPay != null) {
+          paymentVoucher.setRemainingAmount(
+              paymentVoucher
+                  .getRemainingAmount()
+                  .subtract(payVoucherElementToPay.getAmountToPay()));
+        }
 
         // Remove the line from the due elements lists
         toRemove.add(payVoucherDueElement);
@@ -205,9 +219,9 @@ public class PaymentVoucherLoadService {
   }
 
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PayVoucherDueElement payVoucherDueElement, int sequence) throws AxelorException {
+      PaymentVoucher paymentVoucher, PayVoucherDueElement payVoucherDueElement, int sequence)
+      throws AxelorException {
 
-    PaymentVoucher paymentVoucher = payVoucherDueElement.getPaymentVoucher();
     BigDecimal amountRemaining = paymentVoucher.getRemainingAmount();
     LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
@@ -385,7 +399,7 @@ public class PaymentVoucherLoadService {
       if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
           && paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
         paymentVoucher.addPayVoucherElementToPayListItem(
-            createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
+            createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
         it.remove();
       }
     }

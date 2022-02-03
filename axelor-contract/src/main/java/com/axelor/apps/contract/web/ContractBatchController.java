@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,9 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.contract.batch.BatchContract;
+import com.axelor.apps.contract.batch.service.BatchContractService;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.inject.Beans;
@@ -30,10 +31,20 @@ import com.google.inject.Singleton;
 public class ContractBatchController {
 
   public void runBatch(ActionRequest request, ActionResponse response) {
-    ContractBatch contractBatch = request.getContext().asType(ContractBatch.class);
-    contractBatch = Beans.get(ContractBatchRepository.class).find(contractBatch.getId());
-    Batch batch = Beans.get(BatchContract.class).run(contractBatch);
-    response.setFlash(batch.getComments());
-    response.setReload(true);
+    try {
+      ContractBatch contractBatch = request.getContext().asType(ContractBatch.class);
+      contractBatch = Beans.get(ContractBatchRepository.class).find(contractBatch.getId());
+      BatchContractService batchContractService = Beans.get(BatchContractService.class);
+      batchContractService.setBatchModel(contractBatch);
+      ControllerCallableTool<Batch> controllerCallableTool = new ControllerCallableTool<>();
+      Batch batch = controllerCallableTool.runInSeparateThread(batchContractService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 }

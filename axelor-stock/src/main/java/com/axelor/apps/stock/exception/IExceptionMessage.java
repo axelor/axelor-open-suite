@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -90,6 +90,8 @@ public interface IExceptionMessage {
       "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
+  String STOCK_MOVE_REALIZATION_WRONG_STATUS = /*$$(*/
+      "Cannot realize a stock move that is not planned." /*)*/;
   static final String STOCK_MOVE_PLANNED_NOT_DELETED = /*$$(*/
       "Can't delete a planned stock move" /*)*/;
   static final String STOCK_MOVE_REALIZED_NOT_DELETED = /*$$(*/
