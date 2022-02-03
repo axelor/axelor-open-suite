@@ -65,8 +65,8 @@
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-method-hide-axis-analytic-account-move-line"
-            form-view="company-form" grid-view="company-grid"/>
+            onChange="action-group-move-company-onchange" form-view="company-form"
+            grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
@@ -294,8 +294,8 @@
         <panel name="moveContentPanel"
           readonlyIf="moveLineList.length > 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" widget="SuggestBox" canEdit="false"
-            onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-method-hide-axis-analytic-account-move-line"
-            form-view="company-form" grid-view="company-grid"/>
+            onChange="action-group-move-company-onchange" form-view="company-form"
+            grid-view="company-grid"/>
           <field name="journal" colSpan="3" canNew="false" canEdit="false"
             onChange="action-move-account-record-set-journal-technical-type-select"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
@@ -304,16 +304,9 @@
             onChange="action-move-method-get-period"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
-          <field name="originDate" hidden="true" colSpan="3"/>
           <field if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
-          <field name="partner" hidden="true" colSpan="6" canNew="false" canEdit="false"
-            onChange="action-account-move-record-set-currency"
-            onSelect="action-account-move-method-filter-partner" form-view="partner-form"
-            grid-view="partner-grid"/>
-          <field hidden="true" name="currency" colSpan="3"
-            onChange="action-move-record-set-currency-code"/>
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
         </panel>
@@ -354,8 +347,6 @@
 
 	                ]]></viewer>
         </field>
-        <field name="getInfoFromFirstMoveLineOk" hidden="true" colSpan="12"
-          widget="boolean-switch"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <button name="validateBtn" title="Validate"
           hideIf="statusSelect == 3 || statusSelect == 4" colSpan="12"
@@ -430,41 +421,6 @@
 			]]></viewer>
       </field>
     </panel>
-    <panel-tabs name="mainPanelTab">
-      <panel name="relatedToPanel" hidden="true" title="Related to" readonly="true">
-        <field name="invoice" canNew="false"
-          domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form"
-          grid-view="invoice-grid"/>
-        <field name="paymentVoucher" canNew="false" domain="self.company = :company"
-          form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
-        <field name="paymentMode" canNew="false" canView="false"
-          onSelect="action-move-attrs-set-domain-payment-mode" form-view="payment-mode-form"
-          grid-view="payment-mode-grid"/>
-        <field if-module="axelor-supplychain" name="stockMove" canNew="false" canEdit="false"
-          form-view="stock-move-form" grid-view="stock-move-grid"/>
-      </panel>
-      <panel name="accountingExportPanel" title="Accounting export" hidden="true"
-        readonly="true" hideIf="statusSelect == 1">
-        <field name="accountingOk"/>
-        <field name="exportNumber" showIf="accountingOk"/>
-        <field name="exportDate" showIf="accountingOk"/>
-        <field name="accountingReport" showIf="accountingOk"
-          form-view="accounting-report-export-form" grid-view="accounting-report-grid"/>
-      </panel>
-      <panel name="currencyPanel" hidden="true" title="Currencies">
-        <field name="currency"
-          readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0"
-          onChange="action-move-record-set-currency-code" required="true"/>
-        <field name="companyCurrency" readonly="true"/>
-        <field name="currencyCode" hidden="true"/>
-      </panel>
-      <panel name="othersPanel" hidden="true" title="Others">
-        <field name="ignoreInAccountingOk" readonly="true" showIf="ignoreInAccountingOk"/>
-        <field name="ignoreInDebtRecoveryOk"/>
-        <field name="rejectOk" readonly="true" showIf="rejectOk"/>
-        <field name="attrs"/>
-      </panel>
-    </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -567,6 +523,13 @@
   <action-group name="action-move-account-group-simulate">
     <action name="save"/>
     <action name="action-move-method-set-status-simulate"/>
+  </action-group>
+
+  <action-group name="action-group-move-company-onchange">
+    <action name="action-move-record-journal"/>
+    <action name="action-move-method-get-period"/>
+    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-validate name="action-account-accounting-prompt">
