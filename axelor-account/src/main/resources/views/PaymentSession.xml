@@ -53,7 +53,7 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
-        onClick="action-method-payment-session-search-eligible-terms"/>
+        onClick="action-group-payment-session-search-eligible-terms"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-method-payment-session-search-eligible-terms"/>
@@ -205,6 +205,11 @@
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="searchEligibleTerms"/>
   </action-method>
+
+  <action-group name="action-group-payment-session-search-eligible-terms">
+    <action name="save" if="!id"/>
+    <action name="action-method-payment-session-search-eligible-terms"/>
+  </action-group>
 
   <action-group name="action-group-payment-session-on-company-change">
     <action name="action-attrs-payment-session-reset-on-company-change"/>
