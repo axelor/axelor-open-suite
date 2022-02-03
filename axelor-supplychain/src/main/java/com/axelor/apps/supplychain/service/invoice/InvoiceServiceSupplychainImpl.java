@@ -38,6 +38,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -63,6 +65,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
   protected InvoiceLineRepository invoiceLineRepo;
   protected IntercoService intercoService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -79,7 +82,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
       IntercoService intercoService,
-      TaxService taxService) {
+      TaxService taxService,
+      StockMoveRepository stockMoveRepository) {
     super(
         validateFactory,
         ventilateFactory,
@@ -95,6 +99,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         taxService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -287,5 +292,26 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       }
     }
     return invoice;
+  }
+
+  @Transactional
+  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
+    for (Invoice invoice : invoiceList) {
+      List<StockMove> stockMoveList =
+          stockMoveRepository
+              .all()
+              .filter(":invoiceId in self.invoiceSet.id")
+              .bind("invoiceId", invoice.getId())
+              .fetch();
+      for (StockMove stockMove : stockMoveList) {
+        stockMove.removeInvoiceSetItem(invoice);
+        stockMove.addInvoiceSetItem(newInvoice);
+        invoice.removeStockMoveSetItem(stockMove);
+        newInvoice.addStockMoveSetItem(stockMove);
+        invoiceRepo.save(invoice);
+        invoiceRepo.save(newInvoice);
+        stockMoveRepository.save(stockMove);
+      }
+    }
   }
 }
