@@ -73,7 +73,7 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING:
         batch = blockCustomersWithLatePayments(accountingBatch);
         break;
-      case AccountingBatchRepository.ACTION_CLOSE_ANNUAL_ACCOUNTS_OF_PAST_YEAR:
+      case AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS:
         batch = closeAnnualAccounts(accountingBatch);
         break;
       default:

@@ -104,8 +104,7 @@ public class AccountingBatchController {
   }
 
   public void actionCloseAnnualAccounts(ActionRequest request, ActionResponse response) {
-    runBatch(
-        AccountingBatchRepository.ACTION_CLOSE_ANNUAL_ACCOUNTS_OF_PAST_YEAR, request, response);
+    runBatch(AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS, request, response);
   }
 
   public void runBatch(Integer actionSelect, ActionRequest request, ActionResponse response) {
