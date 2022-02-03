@@ -2,6 +2,7 @@ package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
@@ -10,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Tool class to call specific callable services in a controller.
@@ -25,11 +28,8 @@ public class ControllerCallableTool<V> {
    * @param callable a callable service
    * @param response a response available in a controller
    * @return what is returned by the service
-   * @throws InterruptedException if this exception occurs while waiting for callable result
    */
-  public V runInSeparateThread(Callable<V> callable, ActionResponse response)
-      throws InterruptedException {
-    boolean isDone = false;
+  public V runInSeparateThread(Callable<V> callable, ActionResponse response) {
     V result = null;
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -38,25 +38,16 @@ public class ControllerCallableTool<V> {
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
     // Wait processTimeout seconds
-    int count = 0;
-    while (count++ < processTimeout) {
-      Thread.sleep(1000);
-
-      if (future.isDone()) {
-        try {
-          result = future.get();
-          isDone = true;
-        } catch (ExecutionException e) {
-          // cause already traced in traceback
-          response.setFlash(e.getCause().getMessage());
-          isDone = true;
-          break;
-        }
-        break;
-      }
-    }
-    if (!isDone) {
+    try {
+      result = future.get(processTimeout, TimeUnit.SECONDS);
+    } catch (ExecutionException e) {
+      // cause already traced in traceback
+      response.setFlash(e.getCause().getMessage());
+    } catch (TimeoutException e) {
       response.setNotify(I18n.get(IExceptionMessage.PROCESS_BEING_COMPUTED));
+    } catch (InterruptedException e) {
+      TraceBackService.trace(e);
+      Thread.currentThread().interrupt();
     }
     return result;
   }
