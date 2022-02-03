@@ -72,6 +72,10 @@ public class AccountingBatchService extends AbstractBatchService {
         break;
       case AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING:
         batch = blockCustomersWithLatePayments(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_CLOSE_ANNUAL_ACCOUNTS_OF_PAST_YEAR:
+        batch = closeAnnualAccounts(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
