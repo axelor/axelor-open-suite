@@ -75,14 +75,17 @@
             title="This batch has already been running for this move date" hidden="true"
             css="label-danger"/>
         </panel>
-        <panel name="expensesIncomesPanel" colSpan="12" showIf="actionSelect == 1">
-          <field name="automaticReverse" colSpan="3"/>
-          <field name="automaticReconcile" colSpan="3"
+        <panel name="expensesIncomesPanel" colSpan="12" itemSpan="3"
+          showIf="actionSelect == 1">
+          <field name="automaticReverse"/>
+          <field name="automaticReconcile"
             showIf="automaticReverse &amp;&amp; cutOffMoveStatusSelect != 5"/>
-          <panel colSpan="6" itemSpan="12">
+          <panel name="reversePanel" colSpan="6"
+            showIf="actionSelect == 1 &amp;&amp; automaticReverse">
             <field name="reverseMoveDate"
-              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"
-              showIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
+            <field name="reverseMoveDescription"
+              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
           </panel>
           <field name="miscOpeJournal" colSpan="6"
             onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
