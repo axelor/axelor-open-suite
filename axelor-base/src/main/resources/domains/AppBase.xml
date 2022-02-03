@@ -136,7 +136,7 @@
     <one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
       title="Email links"/>
 
-    <string name="geoNamesDumpUrl" title="GeoNames DumpURL"/>
+    <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
     <boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners"
