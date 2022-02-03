@@ -85,7 +85,10 @@
     title="Customer late invoices" model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.amountRemaining &gt; 0 AND self.dueDate &lt; CURRENT_DATE AND self.statusSelect = 3</domain>
+    <domain>self.amountRemaining &gt; 0 AND self.dueDate &lt; :todayDate AND self.statusSelect
+      = 3</domain>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
 
 </object-views>
