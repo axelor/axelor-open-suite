@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 public class DataBackupServiceImpl implements DataBackupService {
 
-  static final String CONFIG_FILE_NAME = "config.xml";
+  public static final String CONFIG_FILE_NAME = "config.xml";
 
   @Inject private DataBackupCreateService createService;
 

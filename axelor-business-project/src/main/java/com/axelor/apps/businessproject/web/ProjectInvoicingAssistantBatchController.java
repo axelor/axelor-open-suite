@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -25,6 +26,7 @@ import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRep
 import com.axelor.apps.businessproject.service.batch.ProjectInvoicingAssistantBatchService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,7 +38,7 @@ import java.util.Map;
 
 public class ProjectInvoicingAssistantBatchController {
 
-  public void actionUpdateTask(ActionRequest request, ActionResponse response) {
+  public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch =
           request.getContext().asType(ProjectInvoicingAssistantBatch.class);
@@ -44,11 +46,16 @@ public class ProjectInvoicingAssistantBatchController {
       projectInvoicingAssistantBatch =
           Beans.get(ProjectInvoicingAssistantBatchRepository.class)
               .find(projectInvoicingAssistantBatch.getId());
-
+      ProjectInvoicingAssistantBatchService projectInvoicingAssistantBatchService =
+          Beans.get(ProjectInvoicingAssistantBatchService.class);
+      projectInvoicingAssistantBatchService.setBatchModel(projectInvoicingAssistantBatch);
+      ControllerCallableTool<Batch> controllerCallableTool = new ControllerCallableTool<>();
       Batch batch =
-          Beans.get(ProjectInvoicingAssistantBatchService.class)
-              .updateTask(projectInvoicingAssistantBatch);
-      response.setFlash(batch.getComments());
+          controllerCallableTool.runInSeparateThread(
+              projectInvoicingAssistantBatchService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -56,75 +63,45 @@ public class ProjectInvoicingAssistantBatchController {
     }
   }
 
-  public void showUpdatedTask(ActionRequest request, ActionResponse response) {
-    try {
-      Map<String, Object> values = new HashMap<String, Object>();
-      values.put("field", "updatedTaskSet");
-      values.put("title", I18n.get("Updated tasks"));
-      values.put("model", ProjectTask.class.getName());
-      values.put("grid", "business-project-project-task-grid");
-      values.put("form", "project-task-form");
-      values.put("search-filters", "project-task-filters");
+  @HandleExceptionResponse
+  public void showUpdatedTask(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    Map<String, Object> values = new HashMap<String, Object>();
+    values.put("field", "updatedTaskSet");
+    values.put("title", I18n.get("Updated tasks"));
+    values.put("model", ProjectTask.class.getName());
+    values.put("grid", "business-project-project-task-grid");
+    values.put("form", "project-task-form");
+    values.put("search-filters", "project-task-filters");
 
-      this.showRecords(request, response, values);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.showRecords(request, response, values);
   }
 
-  public void showUpdatedTimesheetLine(ActionRequest request, ActionResponse response) {
-    try {
-      Map<String, Object> values = new HashMap<String, Object>();
-      values.put("field", "updatedTimesheetLineSet");
-      values.put("title", I18n.get("Updated timesheet lines"));
-      values.put("model", TimesheetLine.class.getName());
-      values.put("grid", "timesheet-line-project-grid");
-      values.put("form", "timesheet-line-project-form");
+  @HandleExceptionResponse
+  public void showUpdatedTimesheetLine(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    Map<String, Object> values = new HashMap<String, Object>();
+    values.put("field", "updatedTimesheetLineSet");
+    values.put("title", I18n.get("Updated timesheet lines"));
+    values.put("model", TimesheetLine.class.getName());
+    values.put("grid", "timesheet-line-project-grid");
+    values.put("form", "timesheet-line-project-form");
 
-      this.showRecords(request, response, values);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.showRecords(request, response, values);
   }
 
-  public void actionGenerateInvoicingProject(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch =
-          request.getContext().asType(ProjectInvoicingAssistantBatch.class);
+  @HandleExceptionResponse
+  public void showGeneratedInvoicingProject(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    Map<String, Object> values = new HashMap<String, Object>();
+    values.put("field", "generatedInvoicingProjectSet");
+    values.put("title", I18n.get("Generated invoicing projects"));
+    values.put("model", InvoicingProject.class.getName());
+    values.put("grid", "invoicing-project-grid");
+    values.put("form", "invoicing-project-form");
+    values.put("search-filters", "invoicing-project-filters");
 
-      projectInvoicingAssistantBatch =
-          Beans.get(ProjectInvoicingAssistantBatchRepository.class)
-              .find(projectInvoicingAssistantBatch.getId());
-
-      Batch batch =
-          Beans.get(ProjectInvoicingAssistantBatchService.class)
-              .generateInvoicingProject(projectInvoicingAssistantBatch);
-
-      response.setFlash(batch.getComments());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    } finally {
-      response.setReload(true);
-    }
-  }
-
-  public void showGeneratedInvoicingProject(ActionRequest request, ActionResponse response) {
-    try {
-      Map<String, Object> values = new HashMap<String, Object>();
-      values.put("field", "generatedInvoicingProjectSet");
-      values.put("title", I18n.get("Generated invoicing projects"));
-      values.put("model", InvoicingProject.class.getName());
-      values.put("grid", "invoicing-project-grid");
-      values.put("form", "invoicing-project-form");
-      values.put("search-filters", "invoicing-project-filters");
-
-      this.showRecords(request, response, values);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    this.showRecords(request, response, values);
   }
 
   private void showRecords(

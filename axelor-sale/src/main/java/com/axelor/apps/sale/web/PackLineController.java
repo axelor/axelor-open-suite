@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.service.PackLineService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,7 +30,9 @@ import com.axelor.rpc.Context;
 
 public class PackLineController {
 
-  public void getProductInformation(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void getProductInformation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
     PackLine packLine = context.asType(PackLine.class);
     Pack pack = this.getPack(context);
@@ -41,12 +44,8 @@ public class PackLineController {
       return;
     }
 
-    try {
-      packLine = packLineService.computeProductInformation(pack, packLine);
-      response.setValues(packLine);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    packLine = packLineService.computeProductInformation(pack, packLine);
+    response.setValues(packLine);
   }
 
   public Pack getPack(Context context) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
@@ -53,18 +54,21 @@ public class PaymentVoucherLoadService {
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
 
   @Inject
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
       PayVoucherDueElementRepository payVoucherDueElementRepo,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
   }
 
   /**
@@ -108,8 +112,8 @@ public class PaymentVoucherLoadService {
         .fetch();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void searchDueElements(PaymentVoucher paymentVoucher) throws AxelorException {
+  public List<PayVoucherDueElement> searchDueElements(PaymentVoucher paymentVoucher)
+      throws AxelorException {
 
     if (paymentVoucher.getPayVoucherElementToPayList() != null) {
       paymentVoucher.getPayVoucherElementToPayList().clear();
@@ -118,13 +122,15 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+      payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
-    paymentVoucherRepository.save(paymentVoucher);
+    return paymentVoucher.getPayVoucherDueElementList();
   }
 
   public PayVoucherDueElement createPayVoucherDueElement(MoveLine moveLine) throws AxelorException {
@@ -156,13 +162,11 @@ public class PaymentVoucherLoadService {
     return payVoucherDueElement;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void loadSelectedLines(PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext)
-      throws AxelorException {
+  public void loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {
 
-    if (paymentVoucherContext.getPayVoucherElementToPayList() != null) {
+    if (paymentVoucher.getPayVoucherElementToPayList() != null) {
 
-      if (paymentVoucherContext.getPaidAmount() == null) {
+      if (paymentVoucher.getPaidAmount() == null) {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -170,14 +174,8 @@ public class PaymentVoucherLoadService {
             I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
       }
 
-      paymentVoucher.setPaidAmount(paymentVoucherContext.getPaidAmount());
-
-      this.completeElementToPay(paymentVoucher, paymentVoucherContext);
+      this.completeElementToPay(paymentVoucher);
     }
-
-    paymentVoucher.setPaidAmount(paymentVoucherContext.getPaidAmount());
-
-    paymentVoucherRepository.save(paymentVoucher);
   }
 
   /**
@@ -191,31 +189,44 @@ public class PaymentVoucherLoadService {
    * @return values Map of data
    * @throws AxelorException
    */
-  public void completeElementToPay(
-      PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) throws AxelorException {
+  public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
+    List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
-    for (PayVoucherDueElement payVoucherDueElementContext :
-        paymentVoucherContext.getPayVoucherDueElementList()) {
-      PayVoucherDueElement payVoucherDueElement =
-          payVoucherDueElementRepo.find(payVoucherDueElementContext.getId());
+    for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
 
-      if (payVoucherDueElementContext.isSelected()) {
+      if (payVoucherDueElement.isSelected()) {
 
-        paymentVoucher.addPayVoucherElementToPayListItem(
-            this.createPayVoucherElementToPay(payVoucherDueElement, sequence++));
+        PayVoucherElementToPay payVoucherElementToPay =
+            this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
+        paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
+
+        if (payVoucherElementToPay != null) {
+          paymentVoucher.setRemainingAmount(
+              paymentVoucher
+                  .getRemainingAmount()
+                  .subtract(payVoucherElementToPay.getAmountToPay()));
+        }
 
         // Remove the line from the due elements lists
-        paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
+        toRemove.add(payVoucherDueElement);
       }
+    }
+    for (PayVoucherDueElement payVoucherDueElement : toRemove) {
+      paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
     }
   }
 
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PayVoucherDueElement payVoucherDueElement, int sequence) throws AxelorException {
+      PaymentVoucher paymentVoucher, PayVoucherDueElement payVoucherDueElement, int sequence)
+      throws AxelorException {
 
-    PaymentVoucher paymentVoucher = payVoucherDueElement.getPaymentVoucher();
     BigDecimal amountRemaining = paymentVoucher.getRemainingAmount();
     LocalDate paymentDate = paymentVoucher.getPaymentDate();
 
@@ -256,7 +267,6 @@ public class PaymentVoucherLoadService {
     return payVoucherElementToPay;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();
@@ -394,9 +404,25 @@ public class PaymentVoucherLoadService {
       if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())
           && paymentVoucher.getCurrency().equals(payVoucherDueElement.getCurrency())) {
         paymentVoucher.addPayVoucherElementToPayListItem(
-            createPayVoucherElementToPay(payVoucherDueElement, ++sequence));
+            createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, ++sequence));
         it.remove();
       }
     }
+  }
+
+  @Transactional
+  public void reloadElementToPayList(
+      PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) {
+
+    List<PayVoucherElementToPay> listToKeep = paymentVoucherContext.getPayVoucherElementToPayList();
+    paymentVoucher.clearPayVoucherElementToPayList();
+
+    listToKeep.forEach(
+        elementToPay -> {
+          paymentVoucher.addPayVoucherElementToPayListItem(
+              payVoucherElementToPayRepo.find(elementToPay.getId()));
+        });
+
+    paymentVoucherRepository.save(paymentVoucher);
   }
 }

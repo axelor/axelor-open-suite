@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -36,20 +36,19 @@ import com.google.inject.Singleton;
 @Singleton
 public class EmployeeBonusController {
 
-  public void compute(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
     PeriodService periodService = Beans.get(PeriodService.class);
-    try {
-      employeeBonusMgt = Beans.get(EmployeeBonusMgtRepository.class).find(employeeBonusMgt.getId());
-      Beans.get(EmployeeBonusService.class).compute(employeeBonusMgt);
-      response.setReload(true);
-      periodService.checkPeriod(employeeBonusMgt.getPayPeriod());
-      periodService.checkPeriod(employeeBonusMgt.getLeavePeriod());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    employeeBonusMgt = Beans.get(EmployeeBonusMgtRepository.class).find(employeeBonusMgt.getId());
+    Beans.get(EmployeeBonusService.class).compute(employeeBonusMgt);
+    response.setReload(true);
+    periodService.checkPeriod(employeeBonusMgt.getPayPeriod());
+    periodService.checkPeriod(employeeBonusMgt.getLeavePeriod());
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     EmployeeBonusMgt bonus =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,37 +30,28 @@ import java.math.BigDecimal;
 public class LogisticalFormLineController {
 
   public void setQty(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      if (logisticalFormLine.getQty() == null) {
-        BigDecimal qty =
-            Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
-        response.setValue("qty", qty);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    if (logisticalFormLine.getQty() == null) {
+      BigDecimal qty =
+          Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
+      response.setValue("qty", qty);
     }
   }
 
   public void setStockMoveLineDomain(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      String domain =
-          Beans.get(LogisticalFormLineService.class).getStockMoveLineDomain(logisticalFormLine);
-      response.setAttr("stockMoveLine", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    String domain =
+        Beans.get(LogisticalFormLineService.class).getStockMoveLineDomain(logisticalFormLine);
+    response.setAttr("stockMoveLine", "domain", domain);
   }
 
   public void initParcelPallet(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      Beans.get(LogisticalFormLineService.class).initParcelPallet(logisticalFormLine);
-      response.setValue("parcelPalletNumber", logisticalFormLine.getParcelPalletNumber());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    Beans.get(LogisticalFormLineService.class).initParcelPallet(logisticalFormLine);
+    response.setValue("parcelPalletNumber", logisticalFormLine.getParcelPalletNumber());
   }
 
   private LogisticalFormLine getLogisticalFormLine(ActionRequest request) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -106,6 +107,7 @@ public class MpsChargeController {
     response.setData(dataMapList);
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     String name = I18n.get(ITranslation.MPS_CHARGE);

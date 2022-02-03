@@ -21,7 +21,8 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineServic
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -31,24 +32,19 @@ import java.util.Map;
 
 public class BankStatementLineController {
 
-  public void print(ActionRequest request, ActionResponse response) {
-    try {
-      LocalDate fromDate = LocalDate.parse(request.getContext().get("fromDate").toString());
-      LocalDate toDate = LocalDate.parse(request.getContext().get("toDate").toString());
-      Long bankDetail =
-          Long.valueOf((Integer) ((Map) request.getContext().get("bankDetails")).get("id"));
-      BankDetails bankDetails = Beans.get(BankDetailsRepository.class).find(bankDetail);
-      String exportType = (String) request.getContext().get("exportTypeSelect");
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+    LocalDate fromDate = LocalDate.parse(request.getContext().get("fromDate").toString());
+    LocalDate toDate = LocalDate.parse(request.getContext().get("toDate").toString());
+    Long bankDetail =
+        Long.valueOf((Integer) ((Map) request.getContext().get("bankDetails")).get("id"));
+    BankDetails bankDetails = Beans.get(BankDetailsRepository.class).find(bankDetail);
+    String exportType = (String) request.getContext().get("exportTypeSelect");
 
-      String fileLink =
-          Beans.get(BankStatementLineService.class)
-              .print(fromDate, toDate, bankDetails, exportType);
-      if (StringUtils.notEmpty(fileLink)) {
-        response.setView(ActionView.define("Bank statement lines").add("html", fileLink).map());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    String fileLink =
+        Beans.get(BankStatementLineService.class).print(fromDate, toDate, bankDetails, exportType);
+    if (StringUtils.notEmpty(fileLink)) {
+      response.setView(ActionView.define("Bank statement lines").add("html", fileLink).map());
     }
 
     response.setReload(true);

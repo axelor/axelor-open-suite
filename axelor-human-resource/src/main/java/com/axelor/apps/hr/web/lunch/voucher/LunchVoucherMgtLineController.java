@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,8 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,15 +29,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class LunchVoucherMgtLineController {
 
-  public void compute(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
-      LunchVoucherMgtLine line = request.getContext().asType(LunchVoucherMgtLine.class);
-      Beans.get(LunchVoucherMgtLineService.class).compute(line);
+    LunchVoucherMgtLine line = request.getContext().asType(LunchVoucherMgtLine.class);
+    Beans.get(LunchVoucherMgtLineService.class).compute(line);
 
-      response.setValue("lunchVoucherNumber", line.getLunchVoucherNumber());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue("lunchVoucherNumber", line.getLunchVoucherNumber());
   }
 }

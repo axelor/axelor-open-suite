@@ -28,7 +28,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -47,7 +47,10 @@ public class GenerateMessageController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void callMessageWizard(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void callMessageWizard(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
 
     Model context = request.getContext().asType(Model.class);
     String model = request.getModel();
@@ -61,47 +64,44 @@ public class GenerateMessageController {
             .all()
             .filter("self.metaModel.fullName = ?1 AND self.isSystem != true", model);
 
-    try {
+    long templateNumber = templateQuery.count();
 
-      long templateNumber = templateQuery.count();
+    LOG.debug("Template number : {} ", templateNumber);
 
-      LOG.debug("Template number : {} ", templateNumber);
+    if (templateNumber == 0) {
 
-      if (templateNumber == 0) {
+      response.setView(
+          ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
+              .model(Message.class.getName())
+              .add("form", "message-form")
+              .param("forceEdit", "true")
+              .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
+              .context("_templateContextModel", model)
+              .context("_objectId", context.getId().toString())
+              .map());
 
-        response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
-                .model(Message.class.getName())
-                .add("form", "message-form")
-                .param("forceEdit", "true")
-                .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
-                .context("_templateContextModel", model)
-                .context("_objectId", context.getId().toString())
-                .map());
+    } else if (templateNumber > 1) {
 
-      } else if (templateNumber > 1) {
+      response.setView(
+          ActionView.define(I18n.get(IExceptionMessage.MESSAGE_2))
+              .model(Wizard.class.getName())
+              .add("form", "generate-message-wizard-form")
+              .param("show-confirm", "false")
+              .context("_objectId", context.getId().toString())
+              .context("_templateContextModel", model)
+              .context("_tag", simpleModel)
+              .map());
 
-        response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_2))
-                .model(Wizard.class.getName())
-                .add("form", "generate-message-wizard-form")
-                .param("show-confirm", "false")
-                .context("_objectId", context.getId().toString())
-                .context("_templateContextModel", model)
-                .context("_tag", simpleModel)
-                .map());
-
-      } else {
-        response.setView(
-            generateMessage(context.getId(), model, simpleModel, templateQuery.fetchOne()));
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    } else {
+      response.setView(
+          generateMessage(context.getId(), model, simpleModel, templateQuery.fetchOne()));
     }
   }
 
-  public void generateMessage(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateMessage(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
 
     Context context = request.getContext();
     Map<?, ?> templateContext = (Map<?, ?>) context.get("_xTemplate");
@@ -116,14 +116,11 @@ public class GenerateMessageController {
     String model = (String) context.get("_templateContextModel");
     String tag = (String) context.get("_tag");
 
-    try {
-      response.setView(generateMessage(objectId, model, tag, template));
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(generateMessage(objectId, model, tag, template));
+    response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public Map<String, Object> generateMessage(
       long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,

@@ -112,14 +112,11 @@ public class SaleOrderProjectController {
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
-      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
+    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   private LocalDateTime getElementStartDate(Context context) {

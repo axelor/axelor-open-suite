@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -30,8 +30,8 @@ public class PartnerHRRepository extends PartnerAccountRepository {
 
   @Inject
   public PartnerHRRepository(
-      AppService appService, AccountingSituationService accountingSituationService) {
-    super(appService, accountingSituationService);
+      AppService appService, AccountingSituationInitService accountingSituationInitService) {
+    super(appService, accountingSituationInitService);
   }
 
   @Override

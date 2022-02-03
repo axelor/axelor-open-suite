@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,14 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,10 +57,15 @@ public class MrpController {
     MrpService mrpService = Beans.get(MrpService.class);
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+      mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
+
+      // Tool class that does not need to be injected
+      ControllerCallableTool<Mrp> mrpControllerCallableTool = new ControllerCallableTool<>();
+
+      mrpControllerCallableTool.runInSeparateThread(mrpService, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.onError(mrpRepository.find(mrp.getId()), e);
+      mrpService.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }
@@ -87,30 +94,27 @@ public class MrpController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void printWeeks(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void printWeeks(ActionRequest request, ActionResponse response) throws AxelorException {
     Mrp mrp = request.getContext().asType(Mrp.class);
     mrp = Beans.get(MrpRepository.class).find(mrp.getId());
     String name = I18n.get("MRP") + "-" + mrp.getId();
 
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_WEEKS, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "endDate",
-                  Beans.get(MrpService.class).findMrpEndDate(mrp).atStartOfDay().toString())
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
+    String fileLink =
+        ReportFactory.createReport(IReport.MRP_WEEKS, name)
+            .addParam("mrpId", mrp.getId())
+            .addParam("Timezone", getTimezone(mrp))
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "endDate",
+                Beans.get(MrpService.class).findMrpEndDate(mrp).atStartOfDay().toString())
+            .addFormat(ReportSettings.FORMAT_PDF)
+            .generate()
+            .getFileLink();
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   private String getTimezone(Mrp mrp) {
@@ -125,25 +129,22 @@ public class MrpController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void printList(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void printList(ActionRequest request, ActionResponse response) throws AxelorException {
     Mrp mrp = request.getContext().asType(Mrp.class);
     String name = I18n.get("MRP") + "-" + mrp.getId();
 
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_LIST, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
+    String fileLink =
+        ReportFactory.createReport(IReport.MRP_LIST, name)
+            .addParam("mrpId", mrp.getId())
+            .addParam("Timezone", getTimezone(mrp))
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addFormat(ReportSettings.FORMAT_PDF)
+            .generate()
+            .getFileLink();
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }

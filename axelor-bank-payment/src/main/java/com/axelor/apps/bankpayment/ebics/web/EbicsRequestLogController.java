@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,8 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -29,25 +30,23 @@ import com.axelor.rpc.ActionResponse;
 
 public class EbicsRequestLogController {
 
-  public void print(ActionRequest request, ActionResponse response) {
-    try {
-      EbicsRequestLog ebicsRequestLog = request.getContext().asType(EbicsRequestLog.class);
-      ebicsRequestLog = Beans.get(EbicsRequestLogRepository.class).find(ebicsRequestLog.getId());
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      String name = "Ebics report log " + ebicsRequestLog.getRequestType();
+    EbicsRequestLog ebicsRequestLog = request.getContext().asType(EbicsRequestLog.class);
+    ebicsRequestLog = Beans.get(EbicsRequestLogRepository.class).find(ebicsRequestLog.getId());
 
-      String fileLink =
-          ReportFactory.createReport("EbicsReportLog.rptdesign", name + "-${date}")
-              .addParam("EbicsReportLogId", ebicsRequestLog.getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat("pdf")
-              .toAttach(ebicsRequestLog)
-              .generate()
-              .getFileLink();
+    String name = "Ebics report log " + ebicsRequestLog.getRequestType();
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String fileLink =
+        ReportFactory.createReport("EbicsReportLog.rptdesign", name + "-${date}")
+            .addParam("EbicsReportLogId", ebicsRequestLog.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addFormat("pdf")
+            .toAttach(ebicsRequestLog)
+            .generate()
+            .getFileLink();
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }

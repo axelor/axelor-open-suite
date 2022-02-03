@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,54 +28,49 @@ import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import wslite.json.JSONException;
 
 @Singleton
 public class DebtRecoveryController {
 
   @Inject DebtRecoveryService debtRecoveryService;
 
-  public void runDebtRecovery(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void runDebtRecovery(ActionRequest request, ActionResponse response)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException, JSONException {
     DebtRecovery debtRecovery = request.getContext().asType(DebtRecovery.class);
     debtRecovery = Beans.get(DebtRecoveryRepository.class).find(debtRecovery.getId());
-    try {
-      if (debtRecoveryService.getAccountingSituation(debtRecovery) == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.DEBT_RECOVERY_1));
-      }
-      debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
-      Beans.get(DebtRecoveryActionService.class).runManualAction(debtRecovery);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (debtRecoveryService.getAccountingSituation(debtRecovery) == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.DEBT_RECOVERY_1));
     }
+    debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
+    Beans.get(DebtRecoveryActionService.class).runManualAction(debtRecovery);
+    response.setReload(true);
   }
 
   public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
-    try {
-      AccountingBatch accountingBatch =
-          Beans.get(AccountingBatchRepository.class)
-              .all()
-              .filter("self.actionSelect = :select")
-              .bind("select", AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING)
-              .fetchOne();
-      if (accountingBatch != null) {
-        Batch batch =
-            Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
-        response.setFlash(batch.getComments());
-      } else {
-        response.setError(
-            I18n.get(IExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    AccountingBatch accountingBatch =
+        Beans.get(AccountingBatchRepository.class)
+            .all()
+            .filter("self.actionSelect = :select")
+            .bind("select", AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING)
+            .fetchOne();
+    if (accountingBatch != null) {
+      Batch batch =
+          Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
+      response.setFlash(batch.getComments());
+    } else {
+      response.setError(I18n.get(IExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING));
     }
   }
 }

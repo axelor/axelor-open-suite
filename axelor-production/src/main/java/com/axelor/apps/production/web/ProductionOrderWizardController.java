@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,6 +39,7 @@ import java.time.temporal.ChronoUnit;
 @Singleton
 public class ProductionOrderWizardController {
 
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

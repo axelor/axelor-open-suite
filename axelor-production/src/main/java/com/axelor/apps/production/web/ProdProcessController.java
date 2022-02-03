@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -66,6 +67,7 @@ public class ProdProcessController {
     }
   }
 
+  @HandleExceptionResponse
   public void changeProdProcessListOutsourcing(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
@@ -82,15 +84,12 @@ public class ProdProcessController {
     }
   }
 
-  public void print(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
-      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-      String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
-      response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
+    response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
   }
 
   public void checkOriginalProductionProcess(ActionRequest request, ActionResponse response) {

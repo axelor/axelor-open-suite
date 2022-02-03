@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,42 +24,49 @@ import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 
 @Singleton
 public class ConfiguratorController {
 
+  protected static final String saleOrderContextIdKey = "_saleOrderId";
+
   /**
    * Called from configurator form view, set values for the indicators JSON field. call {@link
-   * ConfiguratorService#updateIndicators(Configurator, JsonContext, JsonContext)}
+   * ConfiguratorService#updateIndicators(Configurator, JsonContext, JsonContext, Long)}
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void updateIndicators(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void updateIndicators(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Configurator configurator = request.getContext().asType(Configurator.class);
     JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
     JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
-    try {
-      Beans.get(ConfiguratorService.class)
-          .updateIndicators(configurator, jsonAttributes, jsonIndicators);
-      response.setValue("indicators", request.getContext().get("indicators"));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(ConfiguratorService.class)
+        .updateIndicators(
+            configurator, jsonAttributes, jsonIndicators, getSaleOrderId(request.getContext()));
+    response.setValue("indicators", request.getContext().get("indicators"));
   }
 
   /**
    * Called from configurator form view, call {@link
-   * ConfiguratorService#generateProduct(Configurator, JsonContext, JsonContext)}
+   * ConfiguratorService#generateProduct(Configurator, JsonContext, JsonContext, Long)}
    *
    * @param request
    * @param response
@@ -70,7 +77,9 @@ public class ConfiguratorController {
     JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
     try {
-      Beans.get(ConfiguratorService.class).generate(configurator, jsonAttributes, jsonIndicators);
+      Beans.get(ConfiguratorService.class)
+          .generateProduct(
+              configurator, jsonAttributes, jsonIndicators, getSaleOrderId(request.getContext()));
       response.setReload(true);
       if (configurator.getProduct() != null) {
         response.setView(
@@ -94,23 +103,28 @@ public class ConfiguratorController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
+   * @throws InvocationTargetException
+   * @throws IllegalAccessException
+   * @throws NoSuchMethodException
+   * @throws ClassNotFoundException
    */
-  public void generateForSaleOrder(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateForSaleOrder(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, AxelorException {
     Configurator configurator = request.getContext().asType(Configurator.class);
-    long saleOrderId = ((Integer) request.getContext().get("_saleOrderId")).longValue();
+    long saleOrderId = getSaleOrderId(request.getContext());
 
     JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
     JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
 
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
     SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
-    try {
-      Beans.get(ConfiguratorService.class)
-          .addLineToSaleOrder(configurator, saleOrder, jsonAttributes, jsonIndicators);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(ConfiguratorService.class)
+        .addLineToSaleOrder(configurator, saleOrder, jsonAttributes, jsonIndicators);
+    response.setCanClose(true);
   }
 
   /**
@@ -124,5 +138,14 @@ public class ConfiguratorController {
         "configuratorCreator",
         "domain",
         Beans.get(ConfiguratorCreatorService.class).getConfiguratorCreatorDomain());
+  }
+
+  protected Long getSaleOrderId(Context context) {
+    Integer saleOrderIdInt = (Integer) context.get(saleOrderContextIdKey);
+    if (saleOrderIdInt != null) {
+      return saleOrderIdInt.longValue();
+    } else {
+      return null;
+    }
   }
 }

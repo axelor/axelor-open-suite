@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,6 +36,7 @@ import java.util.Set;
 @Singleton
 public class InventoryLineController {
 
+  @HandleExceptionResponse
   public void updateInventoryLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -64,36 +65,30 @@ public class InventoryLineController {
   }
 
   public void setStockLocationDomain(ActionRequest request, ActionResponse response) {
-    try {
-      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-      Inventory inventory =
-          request.getContext().getParent() != null
-              ? request.getContext().getParent().asType(Inventory.class)
-              : inventoryLine.getInventory();
 
-      if (inventory != null && inventory.getStockLocation() != null) {
-        Set<StockLocation> stockLocationSet = new HashSet<StockLocation>();
-        stockLocationSet.add(inventory.getStockLocation());
-        stockLocationSet = Beans.get(InventoryService.class).getStockLocations(stockLocationSet);
-        response.setAttr(
-            "stockLocation",
-            "domain",
-            "self.id IN(" + StringTool.getIdListString(stockLocationSet) + ")");
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+    Inventory inventory =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Inventory.class)
+            : inventoryLine.getInventory();
+
+    if (inventory != null && inventory.getStockLocation() != null) {
+      Set<StockLocation> stockLocationSet = new HashSet<StockLocation>();
+      stockLocationSet.add(inventory.getStockLocation());
+      stockLocationSet = Beans.get(InventoryService.class).getStockLocations(stockLocationSet);
+      response.setAttr(
+          "stockLocation",
+          "domain",
+          "self.id IN(" + StringTool.getIdListString(stockLocationSet) + ")");
     }
   }
 
   public void updateCurrentQty(ActionRequest request, ActionResponse response) {
-    try {
-      InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-      BigDecimal updatedCurrentQty =
-          Beans.get(InventoryLineService.class)
-              .getCurrentQty(inventoryLine.getStockLocation(), inventoryLine.getProduct());
-      response.setValue("currentQty", updatedCurrentQty);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+    BigDecimal updatedCurrentQty =
+        Beans.get(InventoryLineService.class)
+            .getCurrentQty(inventoryLine.getStockLocation(), inventoryLine.getProduct());
+    response.setValue("currentQty", updatedCurrentQty);
   }
 }

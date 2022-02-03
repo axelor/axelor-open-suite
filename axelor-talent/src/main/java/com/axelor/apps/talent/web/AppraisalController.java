@@ -22,121 +22,110 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.apps.talent.service.AppraisalService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.mail.MessagingException;
 
 @Singleton
 public class AppraisalController {
 
-  public void send(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void send(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException {
 
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
-    try {
-      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
+    appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      Beans.get(AppraisalService.class).send(appraisal);
+    Beans.get(AppraisalService.class).send(appraisal);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
   public void realize(ActionRequest request, ActionResponse response) {
 
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
-    try {
-      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
+    appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      Beans.get(AppraisalService.class).realize(appraisal);
+    Beans.get(AppraisalService.class).realize(appraisal);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
   public void cancel(ActionRequest request, ActionResponse response) {
 
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
-    try {
-      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
+    appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      Beans.get(AppraisalService.class).cancel(appraisal);
+    Beans.get(AppraisalService.class).cancel(appraisal);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
   public void draft(ActionRequest request, ActionResponse response) {
 
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
-    try {
-      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
+    appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      Beans.get(AppraisalService.class).draft(appraisal);
+    Beans.get(AppraisalService.class).draft(appraisal);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
-  public void createAppraisals(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void createAppraisals(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException {
 
-    try {
-      Context context = request.getContext();
+    Context context = request.getContext();
 
-      Set<Map<String, Object>> employeeSet = new HashSet<Map<String, Object>>();
+    Set<Map<String, Object>> employeeSet = new HashSet<Map<String, Object>>();
 
-      employeeSet.addAll((Collection<? extends Map<String, Object>>) context.get("employeeSet"));
+    employeeSet.addAll((Collection<? extends Map<String, Object>>) context.get("employeeSet"));
 
-      Set<Employee> employees = new HashSet<Employee>();
+    Set<Employee> employees = new HashSet<Employee>();
 
-      EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
+    EmployeeRepository employeeRepo = Beans.get(EmployeeRepository.class);
 
-      for (Map<String, Object> emp : employeeSet) {
-        Long empId = Long.parseLong(emp.get("id").toString());
-        employees.add(employeeRepo.find(empId));
-      }
-
-      Long templateId = Long.parseLong(context.get("templateId").toString());
-
-      Appraisal appraisalTemplate = Beans.get(AppraisalRepository.class).find(templateId);
-
-      Boolean send = (Boolean) context.get("sendAppraisals");
-
-      Set<Long> createdIds =
-          Beans.get(AppraisalService.class).createAppraisals(appraisalTemplate, employees, send);
-
-      response.setView(
-          ActionView.define("Appraisal")
-              .model(Appraisal.class.getName())
-              .add("grid", "appraisal-grid")
-              .add("form", "appraisal-form")
-              .param("search-filters", "appraisal-fitlers")
-              .domain("self.id in :createdIds")
-              .context("createdIds", createdIds)
-              .map());
-
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    for (Map<String, Object> emp : employeeSet) {
+      Long empId = Long.parseLong(emp.get("id").toString());
+      employees.add(employeeRepo.find(empId));
     }
+
+    Long templateId = Long.parseLong(context.get("templateId").toString());
+
+    Appraisal appraisalTemplate = Beans.get(AppraisalRepository.class).find(templateId);
+
+    Boolean send = (Boolean) context.get("sendAppraisals");
+
+    Set<Long> createdIds =
+        Beans.get(AppraisalService.class).createAppraisals(appraisalTemplate, employees, send);
+
+    response.setView(
+        ActionView.define("Appraisal")
+            .model(Appraisal.class.getName())
+            .add("grid", "appraisal-grid")
+            .add("form", "appraisal-form")
+            .param("search-filters", "appraisal-fitlers")
+            .domain("self.id in :createdIds")
+            .context("createdIds", createdIds)
+            .map());
+
+    response.setCanClose(true);
   }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpm>
+
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>BPM_WKFMODEL</code>
+
+      <name>Bpm_WkfModel</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_1" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="WkfModel" isStartModel="true" model="com.axelor.apps.bpm.db.WkfModel" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>Flow_0xcl9gc</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_0xcl9gc" sourceRef="StartEvent_1" targetRef="Activity_1bh9plq" />
+    <bpmn2:sequenceFlow id="Flow_1gcjkda" sourceRef="Activity_1bh9plq" targetRef="Activity_01eq4ef" />
+    <bpmn2:sequenceFlow id="Flow_0es6ic0" sourceRef="Activity_01eq4ef" targetRef="Activity_1y0q6ri" />
+    <bpmn2:sequenceFlow id="Flow_17hfyrr" sourceRef="Activity_1y0q6ri" targetRef="Activity_1bh9plq" />
+    <bpmn2:userTask id="Activity_1bh9plq" name="New" camunda:key="New" camunda:completedIf="wkfModel?.statusSelect == 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;WkfModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:false,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;bpm.model.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;On Going&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Terminated&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;allField&#34;:[{&#34;selection&#34;:&#34;bpm.model.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;On Going&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Terminated&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0xcl9gc</bpmn2:incoming>
+      <bpmn2:incoming>Flow_17hfyrr</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1gcjkda</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_01eq4ef" name="On Going" camunda:completedIf="wkfModel?.statusSelect == 3" camunda:completedIfValue="undefined" camunda:completedIfCombinator="undefined">
+      <bpmn2:incoming>Flow_1gcjkda</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0es6ic0</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1y0q6ri" name="Teminate" camunda:completedIf="wkfModel?.statusSelect == 1" camunda:completedIfValue="undefined" camunda:completedIfCombinator="undefined">
+      <bpmn2:incoming>Flow_0es6ic0</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_17hfyrr</bpmn2:outgoing>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_0xcl9gc_di" bpmnElement="Flow_0xcl9gc">
+        <di:waypoint x="198" y="258" />
+        <di:waypoint x="250" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gcjkda_di" bpmnElement="Flow_1gcjkda">
+        <di:waypoint x="350" y="258" />
+        <di:waypoint x="410" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0es6ic0_di" bpmnElement="Flow_0es6ic0">
+        <di:waypoint x="510" y="258" />
+        <di:waypoint x="570" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17hfyrr_di" bpmnElement="Flow_17hfyrr">
+        <di:waypoint x="620" y="218" />
+        <di:waypoint x="620" y="170" />
+        <di:waypoint x="300" y="170" />
+        <di:waypoint x="300" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b6t0wt_di" bpmnElement="Activity_1bh9plq">
+        <dc:Bounds x="250" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n1wu57_di" bpmnElement="Activity_01eq4ef">
+        <dc:Bounds x="410" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s1p5r7_di" bpmnElement="Activity_1y0q6ri">
+        <dc:Bounds x="570" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
+</bpm>

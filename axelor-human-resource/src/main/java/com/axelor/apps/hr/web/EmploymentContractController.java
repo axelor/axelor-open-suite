@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,8 @@ package com.axelor.apps.hr.web;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.service.EmploymentContractService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,26 +31,22 @@ import java.io.IOException;
 @Singleton
 public class EmploymentContractController {
 
-  public void addAmendment(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void addAmendment(ActionRequest request, ActionResponse response) throws AxelorException {
 
     EmploymentContract employmentContract = request.getContext().asType(EmploymentContract.class);
 
-    try {
-
-      Beans.get(EmploymentContractService.class)
-          .addAmendment(
-              Beans.get(EmploymentContractRepository.class).find(employmentContract.getId()));
-      response.setFlash(
-          String.format(
-              "Contrat %s - avenant %s",
-              employmentContract.getFullName(), employmentContract.getEmploymentContractVersion()));
-      response.setReload(true);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(EmploymentContractService.class)
+        .addAmendment(
+            Beans.get(EmploymentContractRepository.class).find(employmentContract.getId()));
+    response.setFlash(
+        String.format(
+            "Contrat %s - avenant %s",
+            employmentContract.getFullName(), employmentContract.getEmploymentContractVersion()));
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void exportEmploymentContract(ActionRequest request, ActionResponse response)
       throws IOException {
     EmploymentContract employmentContract =

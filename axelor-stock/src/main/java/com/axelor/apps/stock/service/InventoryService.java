@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -222,9 +223,10 @@ public class InventoryService {
         stockLocation = stockLocationRepo.findByName(stockLocationName);
       }
 
-      BigDecimal realQty;
+      BigDecimal realQty = null;
       try {
-        realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)].replace("\"", ""));
+        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
+          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
       } catch (NumberFormatException e) {
         throw new AxelorException(
             new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
@@ -240,7 +242,8 @@ public class InventoryService {
 
       if (inventoryLineMap.containsKey(key)) {
         InventoryLine inventoryLine = inventoryLineMap.get(key);
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
 
         if (inventoryLine.getTrackingNumber() != null) {
@@ -284,7 +287,8 @@ public class InventoryService {
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
         inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(
             this.getTrackingNumber(trackingNumberSeq, product, realQty));
@@ -615,6 +619,21 @@ public class InventoryService {
     if (stockLocationLineList != null) {
       Boolean succeed = false;
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        if (ObjectUtils.isEmpty(stockLocationLine.getTrackingNumber())) {
+          long numberOfTrackingNumberOnAProduct =
+              stockLocationLineList.stream()
+                  .filter(
+                      sll ->
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
+                              && sll.getTrackingNumber() != null
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
+                  .count();
+
+          if (numberOfTrackingNumberOnAProduct != 0) {
+            continue;
+          }
+        }
         inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
         succeed = true;
       }
@@ -624,7 +643,7 @@ public class InventoryService {
     return null;
   }
 
-  public List<? extends StockLocationLine> getStockLocationLines(Inventory inventory) {
+  public List<StockLocationLine> getStockLocationLines(Inventory inventory) {
     String query = "";
     List<Object> params = new ArrayList<>();
     Set<StockLocation> stockLocations = new HashSet<>();
@@ -784,11 +803,8 @@ public class InventoryService {
           }
         });
 
-    String todayDate =
-        appBaseService
-            .getTodayDate(inventory.getCompany())
-            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    String fileName = I18n.get("Inventory") + " " + inventory.getInventorySeq() + "-" + todayDate;
+    String fileName = computeExportFileName(inventory);
+
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
@@ -810,6 +826,16 @@ public class InventoryService {
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
     }
+  }
+
+  public String computeExportFileName(Inventory inventory) {
+    return I18n.get("Inventory")
+        + "_"
+        + inventory.getInventorySeq()
+        + "_"
+        + appBaseService
+            .getTodayDate(inventory.getCompany())
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {

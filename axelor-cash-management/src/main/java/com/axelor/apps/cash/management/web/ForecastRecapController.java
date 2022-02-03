@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,20 +44,17 @@ public class ForecastRecapController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void populate(ActionRequest request, ActionResponse response) {
-    try {
-      ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
-      if (forecastRecap.getCompany() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.FORECAST_COMPANY));
-      }
-      Beans.get(ForecastRecapService.class)
-          .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
+    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+    if (forecastRecap.getCompany() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.FORECAST_COMPANY));
     }
+    Beans.get(ForecastRecapService.class)
+        .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
+    response.setReload(true);
   }
 
   public void fillStartingBalance(ActionRequest request, ActionResponse response) {
@@ -89,23 +87,20 @@ public class ForecastRecapController {
     }
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
 
-      Context context = request.getContext();
-      Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
-      String reportType = (String) context.get("reportTypeSelect");
-      ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(forecastRecapId);
+    Context context = request.getContext();
+    Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
+    String reportType = (String) context.get("reportTypeSelect");
+    ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(forecastRecapId);
 
-      String fileLink =
-          Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecap, reportType);
-      String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
-      title += "-" + forecastRecap.getForecastRecapSeq();
-      logger.debug("Printing {}", title);
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String fileLink =
+        Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecap, reportType);
+    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
+    title += "-" + forecastRecap.getForecastRecapSeq();
+    logger.debug("Printing {}", title);
+    response.setView(ActionView.define(title).add("html", fileLink).map());
+    response.setCanClose(true);
   }
 }

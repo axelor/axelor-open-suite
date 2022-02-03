@@ -18,6 +18,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,13 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
                   .append(partner.getFullName())
                   .append("</br>");
               customersToBlock.add(partner.getId());
+              customersToBlock.addAll(
+                  Query.of(Partner.class)
+                      .filter("self.parentPartner = :parentPartner")
+                      .bind("parentPartner", partner.getId())
+                      .fetchStream()
+                      .map(parentPartner -> parentPartner.getId())
+                      .collect(Collectors.toList()));
               incrementDone();
             }
           } catch (Exception e) {

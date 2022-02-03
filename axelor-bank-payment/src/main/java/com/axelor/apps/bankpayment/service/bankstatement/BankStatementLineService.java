@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,13 +29,25 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
 public class BankStatementLineService {
+
+  protected BankPaymentBankStatementLineAFB120Repository
+      bankPaymentBankStatementLineAFB120Repository;
+
+  @Inject
+  public BankStatementLineService(
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
+    this.bankPaymentBankStatementLineAFB120Repository =
+        bankPaymentBankStatementLineAFB120Repository;
+  }
 
   public BankStatementLine createBankStatementLine(
       BankStatement bankStatement,
@@ -80,23 +92,20 @@ public class BankStatementLineService {
     String fileLink = null;
 
     BankStatementLineAFB120 initalBankStatementLine =
-        Beans.get(BankPaymentBankStatementLineAFB120Repository.class)
-            .findLineBetweenDate(
-                fromDate,
-                toDate,
-                BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
-                true,
-                bankDetails);
+        bankPaymentBankStatementLineAFB120Repository.findLineBetweenDate(
+            fromDate,
+            toDate,
+            BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
+            true,
+            bankDetails);
     BankStatementLineAFB120 finalBankStatementLine =
-        Beans.get(BankPaymentBankStatementLineAFB120Repository.class)
-            .findLineBetweenDate(
-                fromDate,
-                toDate,
-                BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE,
-                false,
-                bankDetails);
-    if (exportType.equals("pdf")
-        && ObjectUtils.notEmpty(initalBankStatementLine)
+        bankPaymentBankStatementLineAFB120Repository.findLineBetweenDate(
+            fromDate,
+            toDate,
+            BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE,
+            false,
+            bankDetails);
+    if (ObjectUtils.notEmpty(initalBankStatementLine)
         && ObjectUtils.notEmpty(finalBankStatementLine)) {
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
@@ -104,16 +113,23 @@ public class BankStatementLineService {
           ReportFactory.createReport(
                   IReport.BANK_STATEMENT_LINES,
                   "Bank statement lines - " + fromDate + " to " + toDate)
-              .addParam("InitialLineId", initalBankStatementLine.getId())
-              .addParam("FinalLineId", finalBankStatementLine.getId())
               .addParam("FromDate", Date.valueOf(fromDate))
               .addParam("ToDate", Date.valueOf(toDate))
               .addParam("BankDetails", bankDetails.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(ReportSettings.FORMAT_PDF)
+              .addFormat(exportType)
               .generate()
               .getFileLink();
     }
     return fileLink;
+  }
+
+  @Transactional
+  public void removeBankReconciliationLines(BankStatement bankStatement) {
+    JPA.em()
+        .createQuery(
+            "delete from BankStatementLineAFB120 self where self.bankStatement.id = "
+                + bankStatement.getId())
+        .executeUpdate();
   }
 }

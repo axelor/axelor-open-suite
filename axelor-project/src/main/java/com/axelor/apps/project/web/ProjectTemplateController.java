@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTemplateService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,19 +39,20 @@ import java.util.Map;
 @Singleton
 public class ProjectTemplateController {
 
-  public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
-      Map<String, Object> projectTemplateView =
-          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
-      response.setView(projectTemplateView);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void createProjectFromTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
+    Map<String, Object> projectTemplateView =
+        Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+    response.setView(projectTemplateView);
   }
 
   @SuppressWarnings("unchecked")
-  public void createProjectFromWizard(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void createProjectFromWizard(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Context context = request.getContext();
 
@@ -72,23 +73,20 @@ public class ProjectTemplateController {
     }
 
     Project project;
-    try {
-      project =
-          Beans.get(ProjectService.class)
-              .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
-      response.setCanClose(true);
 
-      response.setView(
-          ActionView.define(I18n.get("Project"))
-              .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
-              .param("search-filters", "project-filters")
-              .context("_showRecord", project.getId())
-              .map());
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+    project =
+        Beans.get(ProjectService.class)
+            .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+    response.setCanClose(true);
+
+    response.setView(
+        ActionView.define(I18n.get("Project"))
+            .model(Project.class.getName())
+            .add("form", "project-form")
+            .add("grid", "project-grid")
+            .param("search-filters", "project-filters")
+            .context("_showRecord", project.getId())
+            .map());
   }
 
   public void addParentTaskTemplate(ActionRequest request, ActionResponse response) {

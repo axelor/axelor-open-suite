@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,12 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,13 +33,14 @@ import java.util.List;
 @Singleton
 public class PartnerController {
 
+  @HandleExceptionResponse
   public void createAccountingSituations(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Partner partner = request.getContext().asType(Partner.class);
 
     List<AccountingSituation> accountingSituationList =
-        Beans.get(AccountingSituationService.class)
+        Beans.get(AccountingSituationInitService.class)
             .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
 
     if (accountingSituationList != null) {

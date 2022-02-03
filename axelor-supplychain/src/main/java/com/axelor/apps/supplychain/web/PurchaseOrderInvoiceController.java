@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -33,29 +34,30 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderInvoiceController {
 
-  public void generateInvoice(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateInvoice(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-    try {
-      Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
+    Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 
-      if (invoice != null) {
-        response.setReload(true);
-        response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
-                .model(Invoice.class.getName())
-                .add("form", "invoice-form")
-                .add("grid", "invoice-grid")
-                .param("search-filters", "customer-invoices-filters")
-                .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
-                .context("_showRecord", String.valueOf(invoice.getId()))
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (invoice != null) {
+      response.setReload(true);
+      response.setView(
+          ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+              .model(Invoice.class.getName())
+              .add("form", "invoice-form")
+              .add("grid", "invoice-grid")
+              .param("search-filters", "customer-invoices-filters")
+              .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
+              .domain(
+                  "self.operationTypeSelect = " + String.valueOf(invoice.getOperationTypeSelect()))
+              .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+              .context("_showRecord", String.valueOf(invoice.getId()))
+              .map());
     }
   }
 }

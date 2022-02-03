@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpm>
+
+  <wkfModels>
+
+    <wkfModel>
+
+      <code>HR_APPRAISAL</code>
+
+      <name>HR_Appraisal</name>
+
+      <isActive>true</isActive>
+
+      <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="ApraisalProcess" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Appraisal" isStartModel="true" model="com.axelor.apps.talent.db.Appraisal" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="Astart">
+      <bpmn2:outgoing>AStartDraft</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="AStartDraft" sourceRef="Astart" targetRef="ADraft" />
+    <bpmn2:exclusiveGateway id="ADraftCondition">
+      <bpmn2:incoming>AAfterDraft</bpmn2:incoming>
+      <bpmn2:outgoing>AdraftSend</bpmn2:outgoing>
+      <bpmn2:outgoing>AdraftCancel</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="AAfterDraft" sourceRef="ADraft" targetRef="ADraftCondition" />
+    <bpmn2:sequenceFlow id="AdraftSend" sourceRef="ADraftCondition" targetRef="ASend" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">appraisal?.statusSelect == 1</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="AdraftCancel" sourceRef="ADraftCondition" targetRef="ACancel" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">appraisal?.statusSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="ACancelDraft" sourceRef="ACancel" targetRef="ADraft" />
+    <bpmn2:exclusiveGateway id="ASendCondition">
+      <bpmn2:incoming>AAfterSend</bpmn2:incoming>
+      <bpmn2:outgoing>ASendComplate</bpmn2:outgoing>
+      <bpmn2:outgoing>ASendCancel</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="AAfterSend" sourceRef="ASend" targetRef="ASendCondition" />
+    <bpmn2:endEvent id="AComplete" name="Completed">
+      <bpmn2:incoming>ASendComplate</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="ASendComplate" name="Realise" sourceRef="ASendCondition" targetRef="AComplete" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">appraisal?.statusSelect == 2</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="ASendCancel" sourceRef="ASendCondition" targetRef="ACancel" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="or">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">appraisal?.statusSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="ADraft" name="Draft" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="appraisal?.statusSelect == 1 || appraisal?.statusSelect == 3" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]},{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="appraisal?.statusSelect == 1 || appraisal?.statusSelect == 3" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>AStartDraft</bpmn2:incoming>
+      <bpmn2:incoming>ACancelDraft</bpmn2:incoming>
+      <bpmn2:outgoing>AAfterDraft</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="ASend" name="Send" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="appraisal?.statusSelect == 2 || appraisal?.statusSelect == 3" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]},{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="appraisal?.statusSelect == 2 || appraisal?.statusSelect == 3" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>AdraftSend</bpmn2:incoming>
+      <bpmn2:outgoing>AAfterSend</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="ACancel" name="Cancel" camunda:modelerTemplate="com.camunda.example.CustomProperty" camunda:completedIf="appraisal?.statusSelect == 0" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Appraisal&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;or&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;0&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;appraisal.status.selected&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Sent&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Completed&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="or">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="buttons" value="" />
+          <camunda:property name="completedIf" value="appraisal?.statusSelect == 0" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>AdraftCancel</bpmn2:incoming>
+      <bpmn2:incoming>ASendCancel</bpmn2:incoming>
+      <bpmn2:outgoing>ACancelDraft</bpmn2:outgoing>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ApraisalProcess">
+      <bpmndi:BPMNEdge id="Flow_08j0j4u_di" bpmnElement="ASendCancel">
+        <di:waypoint x="574" y="283" />
+        <di:waypoint x="574" y="370" />
+        <di:waypoint x="407" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_191rry6_di" bpmnElement="ASendComplate">
+        <di:waypoint x="599" y="258" />
+        <di:waypoint x="670" y="258" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="240" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b7jz2d_di" bpmnElement="AAfterSend">
+        <di:waypoint x="528" y="258" />
+        <di:waypoint x="549" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wskdrw_di" bpmnElement="ACancelDraft">
+        <di:waypoint x="307" y="370" />
+        <di:waypoint x="260" y="370" />
+        <di:waypoint x="260" y="298" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0as5ag1_di" bpmnElement="AdraftCancel">
+        <di:waypoint x="357" y="283" />
+        <di:waypoint x="357" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pbs5nd_di" bpmnElement="AdraftSend">
+        <di:waypoint x="382" y="258" />
+        <di:waypoint x="428" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bwbqk4_di" bpmnElement="AAfterDraft">
+        <di:waypoint x="310" y="258" />
+        <di:waypoint x="332" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11pwche_di" bpmnElement="AStartDraft">
+        <di:waypoint x="188" y="258" />
+        <di:waypoint x="210" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Astart">
+        <dc:Bounds x="152" y="240" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19ahzmg_di" bpmnElement="ADraftCondition" isMarkerVisible="true">
+        <dc:Bounds x="332" y="233" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18jt8nx_di" bpmnElement="ASendCondition" isMarkerVisible="true">
+        <dc:Bounds x="549" y="233" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lam771_di" bpmnElement="AComplete">
+        <dc:Bounds x="670" y="240" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="662" y="283" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02k7nb5_di" bpmnElement="ADraft">
+        <dc:Bounds x="210" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1t7jpbu_di" bpmnElement="ASend">
+        <dc:Bounds x="428" y="218" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1y1ce6d_di" bpmnElement="ACancel">
+        <dc:Bounds x="307" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+      <versionTag></versionTag>
+
+      <previousVersion></previousVersion>
+
+      <description></description>
+
+    </wkfModel>
+  </wkfModels>
+
+
+</bpm>

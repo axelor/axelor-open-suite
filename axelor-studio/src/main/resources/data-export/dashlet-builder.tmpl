@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 		
 	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashletBuilderRepository' as Class).all()
@@ -27,7 +28,7 @@
 	})
 	
 	if (!dashletBuilders.isEmpty()) {
-		dashletBuilders = """<?xml version="1.0" encoding="utf-8"?>\n<dashlet-builders>\n""" +  dashletBuilders + """\n</dashlet-builders>"""
+		dashletBuilders = """<dashlet-builders>\n""" +  dashletBuilders + """\n</dashlet-builders>"""
 	}
 	
 	out << """$dashletBuilders"""

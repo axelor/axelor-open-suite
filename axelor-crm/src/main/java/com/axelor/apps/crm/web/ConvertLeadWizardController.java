@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,39 +46,35 @@ import java.util.Map;
 public class ConvertLeadWizardController {
 
   @SuppressWarnings("unchecked")
-  public void convertLead(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Context context = request.getContext();
+
+    Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+
+    Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
+
+    Partner partner = createPartnerData(context);
+    Partner contactPartner = null;
+
+    if (partner != null) {
+      contactPartner = createContactData(context, partner);
+    }
 
     try {
-      Context context = request.getContext();
-
-      Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
-
-      Lead lead =
-          Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
-
-      Partner partner = createPartnerData(context);
-      Partner contactPartner = null;
-
-      if (partner != null) {
-        contactPartner = createContactData(context, partner);
-      }
-
-      try {
-        lead = Beans.get(LeadService.class).convertLead(lead, partner, contactPartner);
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-      }
-
-      if (lead.getPartner() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR));
-      }
-
-      openPartner(response, lead);
+      lead = Beans.get(LeadService.class).convertLead(lead, partner, contactPartner);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(e);
     }
+
+    if (lead.getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR));
+    }
+
+    openPartner(response, lead);
   }
 
   @SuppressWarnings("unchecked")
@@ -174,6 +171,7 @@ public class ConvertLeadWizardController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Lead lead = findLead(request);
@@ -192,6 +190,7 @@ public class ConvertLeadWizardController {
     response.setAttr("$leadToContactSelect", "value", 1);
   }
 
+  @HandleExceptionResponse
   public void setPartnerDefaults(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -227,6 +226,7 @@ public class ConvertLeadWizardController {
     response.setAttr("nbrEmployees", "value", 0);
   }
 
+  @HandleExceptionResponse
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -241,6 +241,7 @@ public class ConvertLeadWizardController {
     }
   }
 
+  @HandleExceptionResponse
   public void setContactDefaults(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -257,6 +258,7 @@ public class ConvertLeadWizardController {
     response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
   }
 
+  @HandleExceptionResponse
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

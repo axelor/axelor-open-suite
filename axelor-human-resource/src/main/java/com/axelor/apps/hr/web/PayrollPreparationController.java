@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,6 +47,7 @@ public class PayrollPreparationController {
             .generateFromEmploymentContract(payrollPreparation, employmentContract));
   }
 
+  @HandleExceptionResponse
   public void fillInPayrollPreparation(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -71,6 +73,7 @@ public class PayrollPreparationController {
     response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
   }
 
+  @HandleExceptionResponse
   public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -81,6 +84,7 @@ public class PayrollPreparationController {
     response.setValue("$payrollLeavesList", payrollLeaveList);
   }
 
+  @HandleExceptionResponse
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,13 +37,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,126 +77,101 @@ public class OperationOrderController {
         .setRealDates(operationOrder, realStartDateT, realEndDateT);
   }
 
-  public void machineChange(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
-      OperationOrderWorkflowService operationOrderWorkflowService =
-          Beans.get(OperationOrderWorkflowService.class);
+  @HandleExceptionResponse
+  public void machineChange(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      operationOrder = operationOrderRepo.find(operationOrder.getId());
-      if (operationOrder != null
-          && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
-        operationOrder = operationOrderWorkflowService.replan(operationOrder);
-        List<OperationOrder> operationOrderList =
-            operationOrderRepo
-                .all()
-                .filter(
-                    "self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
-                    operationOrder.getManufOrder(),
-                    operationOrder.getPriority(),
-                    operationOrder.getId())
-                .order("priority")
-                .order("plannedEndDateT")
-                .fetch();
-        for (OperationOrder operationOrderIt : operationOrderList) {
-          operationOrderWorkflowService.replan(operationOrderIt);
-        }
-        response.setReload(true);
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
+    OperationOrderWorkflowService operationOrderWorkflowService =
+        Beans.get(OperationOrderWorkflowService.class);
+
+    operationOrder = operationOrderRepo.find(operationOrder.getId());
+    if (operationOrder != null
+        && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
+      operationOrder = operationOrderWorkflowService.replan(operationOrder);
+      List<OperationOrder> operationOrderList =
+          operationOrderRepo
+              .all()
+              .filter(
+                  "self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
+                  operationOrder.getManufOrder(),
+                  operationOrder.getPriority(),
+                  operationOrder.getId())
+              .order("priority")
+              .order("plannedEndDateT")
+              .fetch();
+      for (OperationOrder operationOrderIt : operationOrderList) {
+        operationOrderWorkflowService.replan(operationOrderIt);
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 
-  public void plan(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      if (operationOrder.getManufOrder() != null
-          && operationOrder.getManufOrder().getStatusSelect()
-              < ManufOrderRepository.STATUS_PLANNED) {
-        return;
-      }
-      Beans.get(OperationOrderWorkflowService.class)
-          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void plan(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    if (operationOrder.getManufOrder() != null
+        && operationOrder.getManufOrder().getStatusSelect() < ManufOrderRepository.STATUS_PLANNED) {
+      return;
     }
+    Beans.get(OperationOrderWorkflowService.class)
+        .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
+    response.setReload(true);
   }
 
-  public void start(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void start(ActionRequest request, ActionResponse response) throws AxelorException {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+    Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
+    response.setReload(true);
   }
 
   public void pause(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class).pause(operationOrder);
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+    Beans.get(OperationOrderWorkflowService.class).pause(operationOrder);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
   public void resume(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(ManufOrderWorkflowService.class).resume(operationOrder.getManufOrder());
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+    Beans.get(ManufOrderWorkflowService.class).resume(operationOrder.getManufOrder());
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
-  public void finish(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      // this attribute is not in the database, only in the view
-      LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      operationOrder.setRealStartDateT(realStartDateT);
-      Beans.get(OperationOrderWorkflowService.class).finishAndAllOpFinished(operationOrder);
+  @HandleExceptionResponse
+  public void finish(ActionRequest request, ActionResponse response) throws AxelorException {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    // this attribute is not in the database, only in the view
+    LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+    operationOrder.setRealStartDateT(realStartDateT);
+    Beans.get(OperationOrderWorkflowService.class).finishAndAllOpFinished(operationOrder);
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
-  public void partialFinish(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+  @HandleExceptionResponse
+  public void partialFinish(ActionRequest request, ActionResponse response) throws AxelorException {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
-      Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
+    response.setReload(true);
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      Beans.get(OperationOrderWorkflowService.class)
-          .cancel(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
+  @HandleExceptionResponse
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    Beans.get(OperationOrderWorkflowService.class)
+        .cancel(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setReload(true);
   }
 
   /**
@@ -205,54 +180,50 @@ public class OperationOrderController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
-  public void print(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
     String operationOrderIds = "";
-    try {
 
-      @SuppressWarnings("unchecked")
-      List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
-      if (lstSelectedOperationOrder != null) {
-        for (Integer it : lstSelectedOperationOrder) {
-          operationOrderIds += it.toString() + ",";
-        }
+    @SuppressWarnings("unchecked")
+    List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
+    if (lstSelectedOperationOrder != null) {
+      for (Integer it : lstSelectedOperationOrder) {
+        operationOrderIds += it.toString() + ",";
+      }
+    }
+
+    if (!operationOrderIds.equals("")) {
+      operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
+      operationOrder =
+          Beans.get(OperationOrderRepository.class)
+              .find(new Long(lstSelectedOperationOrder.get(0)));
+    } else if (operationOrder.getId() != null) {
+      operationOrderIds = operationOrder.getId().toString();
+    }
+
+    if (!operationOrderIds.equals("")) {
+
+      String name = " ";
+      if (operationOrder.getName() != null) {
+        name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
       }
 
-      if (!operationOrderIds.equals("")) {
-        operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
-        operationOrder =
-            Beans.get(OperationOrderRepository.class)
-                .find(new Long(lstSelectedOperationOrder.get(0)));
-      } else if (operationOrder.getId() != null) {
-        operationOrderIds = operationOrder.getId().toString();
-      }
+      String fileLink =
+          ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam("Timezone", getTimezone(operationOrder))
+              .addParam("OperationOrderId", operationOrderIds)
+              .generate()
+              .getFileLink();
 
-      if (!operationOrderIds.equals("")) {
+      LOG.debug("Printing " + name);
 
-        String name = " ";
-        if (operationOrder.getName() != null) {
-          name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
-        }
-
-        String fileLink =
-            ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addParam("Timezone", getTimezone(operationOrder))
-                .addParam("OperationOrderId", operationOrderIds)
-                .generate()
-                .getFileLink();
-
-        LOG.debug("Printing " + name);
-
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.OPERATION_ORDER_1));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.OPERATION_ORDER_1));
     }
   }
 
@@ -264,40 +235,36 @@ public class OperationOrderController {
     return operationOrder.getManufOrder().getCompany().getTimezone();
   }
 
-  public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
-    try {
-      LocalDateTime fromDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-      LocalDateTime toDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+  @HandleExceptionResponse
+  public void chargeByMachineHours(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    LocalDateTime fromDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime toDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
 
-      List<Map<String, Object>> dataList =
-          Beans.get(OperationOrderService.class).chargeByMachineHours(fromDateTime, toDateTime);
+    List<Map<String, Object>> dataList =
+        Beans.get(OperationOrderService.class).chargeByMachineHours(fromDateTime, toDateTime);
 
-      response.setData(dataList);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setData(dataList);
   }
 
-  public void chargeByMachineDays(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void chargeByMachineDays(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-    try {
-      LocalDateTime fromDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-      LocalDateTime toDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime fromDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime toDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
 
-      List<Map<String, Object>> dataList =
-          Beans.get(OperationOrderService.class).chargeByMachineDays(fromDateTime, toDateTime);
-      response.setData(dataList);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    List<Map<String, Object>> dataList =
+        Beans.get(OperationOrderService.class).chargeByMachineDays(fromDateTime, toDateTime);
+    response.setData(dataList);
   }
 
   /**
@@ -324,17 +291,15 @@ public class OperationOrderController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void updateConsumedStockMoveFromOperationOrder(
-      ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderService.class)
-          .updateConsumedStockMoveFromOperationOrder(operationOrder);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+    Beans.get(OperationOrderService.class)
+        .updateConsumedStockMoveFromOperationOrder(operationOrder);
+    response.setReload(true);
   }
 }
