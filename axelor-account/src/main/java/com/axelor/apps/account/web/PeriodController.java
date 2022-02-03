@@ -54,10 +54,10 @@ public class PeriodController {
     } else {
 
       ClosePeriodCallableService closePeriodCallableService =
-            Beans.get(ClosePeriodCallableService.class);
-        closePeriodCallableService.setPeriod(period);
-        ControllerCallableTool<Period> controllerCallableTool = new ControllerCallableTool<>();
-        controllerCallableTool.runInSeparateThread(closePeriodCallableService, response);
+          Beans.get(ClosePeriodCallableService.class);
+      closePeriodCallableService.setPeriod(period);
+      ControllerCallableTool<Period> controllerCallableTool = new ControllerCallableTool<>();
+      controllerCallableTool.runInSeparateThread(closePeriodCallableService, response);
       response.setReload(true);
     }
   }

@@ -188,7 +188,8 @@ public class BillOfMaterialController {
             .map());
   }
 
-  public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
+  public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 

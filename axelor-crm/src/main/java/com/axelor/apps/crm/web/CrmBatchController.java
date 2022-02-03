@@ -24,6 +24,7 @@ import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

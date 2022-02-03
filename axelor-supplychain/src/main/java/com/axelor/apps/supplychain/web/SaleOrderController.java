@@ -1008,9 +1008,9 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
-      Beans.get(SaleOrderLineServiceSupplyChain.class);
-          for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
+        Beans.get(SaleOrderLineServiceSupplyChain.class);
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
     }
   }
 

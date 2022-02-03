@@ -105,21 +105,17 @@ public class InvoiceLineController {
       return;
     }
 
-    try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+    Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
 
-      response.setValues(invoiceLine);
-      response.setAttr(
-          "priceDiscounted",
-          "hidden",
-          invoiceLine
-                  .getPriceDiscounted()
-                  .compareTo(
-                      invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
-              == 0);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValues(invoiceLine);
+    response.setAttr(
+        "priceDiscounted",
+        "hidden",
+        invoiceLine
+                .getPriceDiscounted()
+                .compareTo(
+                    invoice.getInAti() ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice())
+            == 0);
   }
 
   @HandleExceptionResponse
@@ -295,7 +291,8 @@ public class InvoiceLineController {
       Invoice invoice = this.getInvoice(request.getContext());
 
       if (product != null) {
-        FiscalPosition fiscalPosition = invoice.getFiscalPosition();Account account =
+        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+        Account account =
             Beans.get(AccountManagementServiceAccountImpl.class)
                 .getProductAccount(
                     product,

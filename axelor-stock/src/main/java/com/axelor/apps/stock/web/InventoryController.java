@@ -72,8 +72,8 @@ public class InventoryController {
 
     String fileLink =
         ReportFactory.createReport(
-                  IReport.INVENTORY,
-                  Beans.get(InventoryService.class).computeExportFileName(inventory))
+                IReport.INVENTORY,
+                Beans.get(InventoryService.class).computeExportFileName(inventory))
             .addParam("InventoryId", inventory.getId())
             .addParam(
                 "Timezone",

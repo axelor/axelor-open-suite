@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.contract.batch.service.BatchContractService;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
