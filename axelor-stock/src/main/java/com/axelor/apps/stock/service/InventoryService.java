@@ -621,12 +621,13 @@ public class InventoryService {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         if (ObjectUtils.isEmpty(stockLocationLine.getTrackingNumber())) {
           long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
+              stockLocationLineList.stream()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
+                      sll ->
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
+                              && sll.getTrackingNumber() != null
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) {

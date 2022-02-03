@@ -201,7 +201,16 @@ public class PaymentVoucherController {
     response.setValues(paymentVoucher);
   }
 
+  @HandleExceptionResponse
   public void reloadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    PaymentVoucher contextPaymentVoucher = request.getContext().asType(PaymentVoucher.class);
+    PaymentVoucher paymentVoucher =
+        Beans.get(PaymentVoucherRepository.class).find(contextPaymentVoucher.getId());
+    if (paymentVoucher != null) {
+
+      Beans.get(PaymentVoucherLoadService.class)
+          .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
+    }
     response.setReload(true);
   }
 }

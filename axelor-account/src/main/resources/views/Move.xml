@@ -98,7 +98,7 @@
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3" readonlyIf="statusSelect == 3">
-        <field name="$viewerTags" showTitle="false" readonly="true">
+        <field name="$viewerTags" showTitle="false" readonly="true" colSpan="4">
           <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -117,14 +117,29 @@
             <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
           </editor>
         </field>
-        <field name="$technicalOriginTags" showTitle="false" readonly="true">
+        <field name="$technicalOriginTags" showTitle="false" readonly="true" colSpan="4">
           <viewer depends="technicalOriginSelect">
                     <![CDATA[
-                      <h4 class="text-right">
+                      <h4 class="text-center">
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Entry</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Automatic</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 3" x-translate>Template</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 4" x-translate>Import</span>
+                      </h4>
+                    ]]>
+          </viewer>
+        </field>
+        <field name="$functionalOriginTags" showTitle="false" readonly="true" colSpan="4">
+          <viewer depends="functionalOriginSelect">
+            <![CDATA[
+                      <h4 class="text-left">
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 1" x-translate>Opening</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 2" x-translate>Closure</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 3" x-translate>Sale</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 4" x-translate>Purchase</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
                       </h4>
                     ]]>
           </viewer>
