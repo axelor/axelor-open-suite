@@ -207,6 +207,8 @@ public class NotificationServiceImpl implements NotificationService {
       subrogationReleaseService.clear(subrogationRelease);
     }
 
+    paymentMove.setInvoice(invoice);
+
     return paymentMove;
   }
 

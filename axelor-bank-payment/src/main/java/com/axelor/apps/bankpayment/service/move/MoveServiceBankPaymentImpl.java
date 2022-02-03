@@ -20,6 +20,8 @@ package com.axelor.apps.bankpayment.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.NotificationItemRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -53,7 +55,9 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      NotificationItemRepository notificationItemRepository,
+      SubrogationReleaseRepository subrogationReleaseRepository) {
     super(
         appAccountService,
         moveLineService,
@@ -66,7 +70,9 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
         paymentService,
         moveExcessPaymentService,
         moveRepository,
-        accountConfigService);
+        accountConfigService,
+        notificationItemRepository,
+        subrogationReleaseRepository);
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})

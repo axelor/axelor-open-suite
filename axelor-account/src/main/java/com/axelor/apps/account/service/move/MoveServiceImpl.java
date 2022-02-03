@@ -27,7 +27,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.NotificationItemRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -74,6 +76,8 @@ public class MoveServiceImpl implements MoveService {
   protected MoveRepository moveRepository;
 
   protected AppAccountService appAccountService;
+  protected NotificationItemRepository notificationItemRepository;
+  protected SubrogationReleaseRepository subrogationReleaseRepository;
 
   @Inject
   public MoveServiceImpl(
@@ -88,7 +92,9 @@ public class MoveServiceImpl implements MoveService {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      NotificationItemRepository notificationItemRepository,
+      SubrogationReleaseRepository subrogationReleaseRepository) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -103,6 +109,8 @@ public class MoveServiceImpl implements MoveService {
     this.accountConfigService = accountConfigService;
 
     this.appAccountService = appAccountService;
+    this.notificationItemRepository = notificationItemRepository;
+    this.subrogationReleaseRepository = subrogationReleaseRepository;
   }
 
   @Override
@@ -581,6 +589,21 @@ public class MoveServiceImpl implements MoveService {
 
   @Override
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+
+    Invoice invoice = move.getInvoice();
+
+    if (invoice != null) {
+
+      notificationItemRepository.all().filter("self.invoice.id = ?1", invoice.getId()).remove();
+
+      if (invoice.getSubrogationRelease() != null) {
+        subrogationReleaseRepository
+            .all()
+            .filter("self.id = ?1", invoice.getSubrogationRelease().getId())
+            .update("statusSelect", SubrogationReleaseRepository.STATUS_ACCOUNTED);
+      }
+    }
+
     move =
         generateReverse(
             move,
