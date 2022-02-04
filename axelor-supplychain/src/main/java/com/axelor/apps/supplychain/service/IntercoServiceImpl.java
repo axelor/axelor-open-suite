@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -43,7 +42,6 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -423,12 +421,12 @@ public class IntercoServiceImpl implements IntercoService {
       invoiceLine.setTaxLine(taxLine);
       invoiceLine.setTaxRate(taxLine.getValue());
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
+          accountManagementAccountService.getProductTaxEquiv(
+              invoiceLine.getProduct(),
+              intercoInvoice.getCompany(),
+              intercoInvoice.getPartner().getFiscalPosition(),
+              isPurchase);
       invoiceLine.setTaxEquiv(taxEquiv);
       invoiceLine.setCompanyExTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));

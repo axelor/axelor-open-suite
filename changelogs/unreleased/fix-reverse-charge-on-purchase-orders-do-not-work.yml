@@ -1,0 +1,3 @@
+---
+title: "Fiscal Position: fix issue where reverse charge tax lines on purchase order were not correctly generated."
+type: fix
