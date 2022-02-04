@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	
+	query = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.WkfDmnModelRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__)
+	}
+	
+	wkfDmnModels = ""
+	query.fetch().each({
+		wkfDmnModel -> wkfDmnModels += """\n\t\t<wkf-dmn-model>
+							\n\t\t\t<name>${wkfDmnModel.name}</name>
+							\n\t\t\t<description>${wkfDmnModel.description}</description>
+							\n\t\t\t<diagramXml><![CDATA[""" + wkfDmnModel.diagramXml + """]]></diagramXml>
+							\n\t\t\t<metaModel>${wkfDmnModel.metaModel?.name}</metaModel>
+							\n\t\t\t<jsonModel>${wkfDmnModel.jsonModel?.name}</jsonModel>
+							\n\t\t\t<appBuilder>${wkfDmnModel.appBuilder?.code}</appBuilder>
+							\n\t\t</wkf-dmn-model>"""
+	})
+	
+	if (!wkfDmnModels.isEmpty()) {
+		wkfDmnModels = """<wkf-dmn-models>\n""" +  wkfDmnModels + """\n</wkf-dmn-models>"""
+	}
+	
+	out << """$wkfDmnModels"""
+%>

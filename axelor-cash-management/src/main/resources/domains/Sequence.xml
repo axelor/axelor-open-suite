@@ -7,12 +7,12 @@
 
   <entity name="Sequence" lang="java">
 
-     <extra-code><![CDATA[
-        
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
   		public static final String FORECAST_RECAP_SEQUENCE = "forecastRecap";
   		public static final String FORECAST_SEQUENCE = "forecast";
-        
+
      ]]></extra-code>
 
   </entity>

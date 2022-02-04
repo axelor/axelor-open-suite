@@ -64,9 +64,13 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
               accountingReport.getReportType().getTemplate().getFilePath());
 
     } else {
-      file =
-          String.format(
-              IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getReportType().getTypeSelect());
+      final Integer typeSelect = accountingReport.getReportType().getTypeSelect();
+      String typeSelectStr =
+          typeSelect.equals(AccountingReportRepository.REPORT_GENERAL_BALANCE)
+                  && accountingReport.getIsComparativeBalance()
+              ? typeSelect + "_1"
+              : typeSelect.toString();
+      file = String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelectStr);
     }
     return ReportFactory.createReport(file, name + "-${date}")
         .addParam("AccountingReportId", accountingReport.getId())

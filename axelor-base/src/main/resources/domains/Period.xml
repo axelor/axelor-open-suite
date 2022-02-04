@@ -6,24 +6,27 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Period" lang="java" cacheable="true">
-  
+
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
-    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" required="true"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"
+      required="true"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
-    <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
+    <integer name="statusSelect" title="Status" readonly="true"
+      selection="base.period.status.select" default="1"/>
     <datetime name="closureDateTime" title="Closure date"/>
-    <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory" title="Adjust History" mappedBy="period"/>
-  
-  	<extra-code><![CDATA[
-	
+    <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory"
+      title="Adjust History" mappedBy="period"/>
+
+    <extra-code><![CDATA[
+
 	   	// STATUS SELECT
 		public static final int STATUS_OPENED = 1;
 		public static final int STATUS_CLOSED = 2;
 		public static final int STATUS_ADJUSTING = 3;
 
-	]]></extra-code>   
+	]]></extra-code>
   </entity>
 
 </domain-models>

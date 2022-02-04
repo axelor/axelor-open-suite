@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-models>
+
+  <json-model>
+
+    <name>Pizza</name>
+
+    <title>Pizza</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth></formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-pizza' title='Pizza' xmlId='studio-pizza'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>PizzaOrder</name>
+
+    <title>Pizza order</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth></formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-pizza-order' title='Pizza order'
+      xmlId='studio-pizza-order'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>HungryPizza</name>
+
+    <title>Hungry Pizza</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth></formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-hungry-pizza' title='Hungry Pizza'
+      xmlId='studio-hungry-pizza'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>CalmCustomer</name>
+
+    <title>Calm customer</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth></formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-pizza-calm-customer' title='Calm customer'
+      xmlId='studio-pizza-calm-customer'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>AskPizza</name>
+
+    <title>Ask pizza</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth></formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='studio-ask-pizza' title='Ask Pizza' xmlId='studio-ask-pizza'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </json-model>
+</json-models>

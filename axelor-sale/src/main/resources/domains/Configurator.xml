@@ -7,14 +7,15 @@
 
   <entity name="Configurator" lang="java">
 
-    <many-to-one name="configuratorCreator" ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator type" required="true" />
-    <string name="configuratorCreatorName" hidden="true" namecolumn="true" />
-    <string name="attributes" title="Attributes" json="true" />
-    <string name="indicators" title="Indicators" json="true" />
+    <many-to-one name="configuratorCreator"
+      ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator type" required="true"/>
+    <string name="configuratorCreatorName" hidden="true" namecolumn="true"/>
+    <string name="attributes" title="Attributes" json="true"/>
+    <string name="indicators" title="Indicators" json="true"/>
     <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 
 
-      <extra-code><![CDATA[
+    <extra-code><![CDATA[
           //update sale order line
           public static final int UPDATE_FROM_PRODUCT = 0;
           public static final int UPDATE_FROM_CONFIGURATOR = 1;

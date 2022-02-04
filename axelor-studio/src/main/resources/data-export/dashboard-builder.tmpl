@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%		
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashboardBuilderRepository' as Class).all()
+		
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__)
+	}
+	
+	dashboardBuilders = ""
+	query.fetch().each({
+		dashboard -> 
+				dashboardBuilders += """\n\t\t<dashboard-builder>
+				\n\t\t\t<name>${dashboard.name}</name>
+				\n\t\t\t<title>${dashboard.title}</title>
+				\n\t\t\t<model>${dashboard.model}</model>
+				\n\t\t\t<appBuilder>${dashboard.appBuilder?.code}</appBuilder>
+				\n\t\t</dashboard-builder>""" 
+				
+	})
+	
+	if (!dashboardBuilders.isEmpty()) {
+		dashboardBuilders = """<dashboard-builders>\n""" +  dashboardBuilders + """\n</dashboard-builders>"""
+	}
+
+	out << """$dashboardBuilders"""
+%>

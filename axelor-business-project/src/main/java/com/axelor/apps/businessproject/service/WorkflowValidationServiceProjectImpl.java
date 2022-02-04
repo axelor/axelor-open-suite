@@ -18,22 +18,16 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.supplychain.service.IntercoService;
-import com.axelor.apps.supplychain.service.workflow.WorkflowValidationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class WorkflowValidationServiceProjectImpl extends WorkflowValidationServiceSupplychainImpl {
+public class WorkflowValidationServiceProjectImpl extends WorkflowValidationServiceImpl {
 
   @Inject InvoicingProjectRepository invoicingProjectRepo;
-
-  @Inject
-  public WorkflowValidationServiceProjectImpl(IntercoService intercoService) {
-    super(intercoService);
-  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})

@@ -6,23 +6,23 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Batch" lang="java" sequential="true">
-  	
-  	<!-- NOT DISPLAY -->
-  	<many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch" />
-  	<many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch" />
-  	<many-to-one name="mailBatch" ref="com.axelor.apps.base.db.MailBatch"/>
 
-  	<!-- HEADER -->
-    <datetime name="startDate" title="Start Date" readonly="true" tz="true" />
-    <datetime name="endDate" title="End Date" readonly="true" tz="true" />
-    <long name="duration" title="Duration" readonly="true" />
-    <integer name="done" title="Succeeded" />
-    <integer name="anomaly" title="Anomaly" />
-    <string name="comments" title="Comments" large="true" />
-    
-    
-    <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile" />
-  
+    <!-- NOT DISPLAY -->
+    <many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch"/>
+    <many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch"/>
+    <many-to-one name="mailBatch" ref="com.axelor.apps.base.db.MailBatch"/>
+
+    <!-- HEADER -->
+    <datetime name="startDate" title="Start Date" readonly="true" tz="true"/>
+    <datetime name="endDate" title="End Date" readonly="true" tz="true"/>
+    <long name="duration" title="Duration" readonly="true"/>
+    <integer name="done" title="Succeeded"/>
+    <integer name="anomaly" title="Anomaly"/>
+    <string name="comments" title="Comments" large="true"/>
+
+
+    <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
+
   </entity>
 
 </domain-models>

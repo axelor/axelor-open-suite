@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="WkfTaskConfig" cacheable="true">
+
+    <string name="name" title="Name"/>
+    <string name="description" title="Description" large="true"/>
+    <string name="expression" title="Expression"/>
+    <string name="button" title="Button"/>
+    <string name="messages" title="Send messages"/>
+    <many-to-one name="wkfModel" ref="WkfModel"/>
+    <boolean name="createTask" title="Create user action"/>
+    <string name="taskEmailTitle" title="Action/Email Title"/>
+    <string name="userPath" title="User field path"/>
+    <string name="deadlineFieldPath" title="Deadline field path"/>
+    <boolean name="notificationEmail" title="Email notification"/>
+    <boolean name="newMenu" title="New menu"/>
+    <string name="menuName" title="Menu name"/>
+    <string name="parentMenuName" title="Menu parent"/>
+    <string name="menuPosition" title="Position"/>
+    <string name="positionMenuName" title="Position menu"/>
+    <string name="formView" title="Form view"/>
+    <string name="gridView" title="Grid view"/>
+    <boolean name="displayTagCount" title="Display tag count"/>
+    <boolean name="userNewMenu" title="New user menu"/>
+    <string name="userMenuName" title="User menu name"/>
+    <string name="userParentMenuName" title="User Parent menu"/>
+    <string name="userMenuPosition" title="Position"/>
+    <string name="userPositionMenuName" title="Position menu"/>
+    <string name="modelName" title="Model name"/>
+    <string name="jsonModelName" title="Json model name"/>
+    <string name="processId" title="Process id"/>
+    <string name="userFormView" title="Form view"/>
+    <string name="userGridView" title="Grid view"/>
+    <boolean name="userDisplayTagCount" title="Display tag count"/>
+    <boolean name="displayStatus" title="Display status"/>
+    <string name="displayOnModels" title="Display for models" large="true"/>
+    <string name="defaultForm" title="Default form"/>
+    <string name="templateName" title="Email template"/>
+    <string name="type" title="Type"/>
+    <string name="helpText" title="Help"/>
+    <boolean name="permanentMenu" title="Permanent menu"/>
+    <boolean name="userPermanentMenu" title="User Permanent menu"/>
+    <string name="callModel" title="Call model"/>
+    <string name="callLink" title="Call link"/>
+    <string name="callLinkCondition" title="Call link condition"/>
+    <entity-listener class="com.axelor.apps.bpm.listener.WkfTaskConfigListener"/>
+
+  </entity>
+
+</domain-models>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<action-builders>
+
+
+  <action-builder>
+
+    <name>studio-menu-billsubscription</name>
+
+    <xmlId>studio-menu-billsubscription</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>BillSubscription</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Bill subscription</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-BillSubscription-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-BillSubscription-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-menu-creditcardbillsubcription</name>
+
+    <xmlId>studio-menu-creditcardbillsubcription</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>CreditCardBillSubcription</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>CC bill subscription</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-CreditCardBillSubcription-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-CreditCardBillSubcription-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>studio-menu-electricitybillsubscription</name>
+
+    <xmlId>studio-menu-electricitybillsubscription</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>ElectricityBillSubscription</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Electricity bill subcription</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-ElectricityBillSubscription-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-ElectricityBillSubscription-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </action-builder>
+
+
+</action-builders>

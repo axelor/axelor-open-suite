@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,6 @@ import com.axelor.studio.db.repo.ActionBuilderLineRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterSqlService;
-import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -149,12 +148,6 @@ public class ActionScriptBuilderService {
       stb.append(format("var target = $json.create('" + targetModel + "');", level));
       stb.append(format("target = setVar0(null, ctx, {});", level));
       stb.append(format("target = $json.save(target);", level));
-      stb.append(
-          format(
-              "Beans.get("
-                  + WkfTrackingService.class.getName()
-                  + ".class).track(0, target, false);",
-              level));
     } else {
       stb.append(format("var target = new " + targetModel + "();", level));
       stb.append(format("target = setVar0(null, ctx, {});", level));

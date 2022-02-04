@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu-builders>
+
+
+  <menu-builder>
+
+    <name>bpm-product-root</name>
+
+    <xmlId>bpm-product-root</xmlId>
+
+    <title>Produits</title>
+
+    <icon>fa-cube</icon>
+
+    <iconBackground>red</iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>false</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu></parentMenu>
+
+    <actionBuilder></actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>menu-json-model-ProductCategory</name>
+
+    <xmlId>menu-json-model-ProductCategory</xmlId>
+
+    <title>Catégorie de produit</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>bpm-product-root</parentMenu>
+
+    <actionBuilder>menu-json-model-ProductCategory</actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>menu-json-model-Product</name>
+
+    <xmlId>menu-json-model-Product</xmlId>
+
+    <title>Produits</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>bpm-product-root</parentMenu>
+
+    <actionBuilder>menu-json-model-Product</actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>menu-json-model-ProductOrder</name>
+
+    <xmlId>menu-json-model-ProductOrder</xmlId>
+
+    <title>Commande produit</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>bpm-product-root</parentMenu>
+
+    <actionBuilder>menu-json-model-ProductOrder</actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>menu-json-model-ProductOrderLine</name>
+
+    <xmlId>menu-json-model-ProductOrderLine</xmlId>
+
+    <title>Ligne de commande produit</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>bpm-product-root</parentMenu>
+
+    <actionBuilder>menu-json-model-ProductOrderLine</actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>bpm-dashboard-product-dashboard</name>
+
+    <xmlId>bpm-dashboard-product-dashboard</xmlId>
+
+    <title>Tableau de bord produit</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>bpm-product-root</parentMenu>
+
+    <actionBuilder>bpm-dashboard-product-dashboard</actionBuilder>
+
+    <appBuilder>PRD</appBuilder>
+
+  </menu-builder>
+
+
+</menu-builders>

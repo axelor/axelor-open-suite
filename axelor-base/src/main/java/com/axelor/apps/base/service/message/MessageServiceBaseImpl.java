@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -169,6 +169,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
                   .bind("email", fromEmailAddress.getAddress())
+                  .cacheable()
                   .fetch());
         }
 
@@ -178,6 +179,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
                   .bind("emails", emailAddresses)
+                  .cacheable()
                   .fetch());
         }
 

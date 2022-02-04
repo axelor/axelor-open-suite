@@ -13,8 +13,8 @@
     model="com.axelor.apps.production.db.WorkshopSequenceConfigLine">
     <panel name="mainPanel">
       <field name="sequence" canEdit="true" canNew="true"
-        onSelect="action-workshop-sequence-config-line-attrs-seq-domain"
-        form-view="sequence-form" grid-view="sequence-grid"/>
+        onSelect="action-workshop-sequence-config-line-attrs-seq-domain" form-view="sequence-form"
+        grid-view="sequence-grid"/>
       <field name="workshopStockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid"
         onSelect="action-workshop-sequence-config-line-attrs-workshop-domain"

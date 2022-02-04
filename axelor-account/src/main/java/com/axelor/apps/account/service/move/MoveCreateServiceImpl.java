@@ -1,10 +1,23 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
@@ -27,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MoveCreateServiceImpl implements MoveCreateService {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PeriodService periodService;
@@ -68,8 +82,11 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -77,9 +94,13 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         currency,
         partner,
         appAccountService.getTodayDate(company),
+        null,
         paymentMode,
+        fiscalPosition,
         technicalOriginSelect,
-        functionalOriginSelect);
+        functionalOriginSelect,
+        origin,
+        description);
   }
 
   /**
@@ -91,6 +112,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
    * @return
    * @throws AxelorException
@@ -102,9 +124,13 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -112,12 +138,16 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         currency,
         partner,
         date,
+        originDate,
         paymentMode,
+        fiscalPosition,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
         false,
-        false);
+        false,
+        origin,
+        description);
   }
 
   /**
@@ -129,6 +159,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
    * @param ignoreInDebtRecoveryOk
    * @param ignoreInAccountingOk
@@ -142,12 +173,16 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
-      boolean autoYearClosureMove)
+      boolean autoYearClosureMove,
+      String origin,
+      String description)
       throws AxelorException {
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",
@@ -176,6 +211,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
 
     move.setDate(date);
+    move.setOriginDate(originDate);
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
@@ -192,9 +228,11 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       move.setCurrency(currency);
       move.setCurrencyCode(currency.getCode());
     }
-
+    move.setOrigin(origin);
+    move.setDescription(description);
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
+    move.setFiscalPosition(fiscalPosition);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -224,8 +262,11 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     Move move =
         this.createMove(
@@ -234,9 +275,54 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             paymentVoucher.getCurrency(),
             partner,
             date,
+            null,
             paymentMode,
+            fiscalPosition,
             technicalOriginSelect,
-            functionalOriginSelect);
+            functionalOriginSelect,
+            origin,
+            description);
+    move.setPaymentVoucher(paymentVoucher);
+    return move;
+  }
+
+  @Override
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      boolean ignoreInDebtRecoveryOk,
+      boolean ignoreInAccountingOk,
+      boolean autoYearClosureMove,
+      String origin,
+      String description,
+      Invoice invoice,
+      PaymentVoucher paymentVoucher)
+      throws AxelorException {
+    Move move =
+        this.createMove(
+            journal,
+            company,
+            currency,
+            partner,
+            date,
+            null,
+            paymentMode,
+            fiscalPosition,
+            technicalOriginSelect,
+            functionalOriginSelect,
+            ignoreInDebtRecoveryOk,
+            ignoreInAccountingOk,
+            autoYearClosureMove,
+            origin,
+            description);
+    move.setInvoice(invoice);
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }
