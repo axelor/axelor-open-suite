@@ -79,6 +79,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
 
+    boolean allowToCreateNewInvPayments = move.getInvoice() == null;
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
       Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
@@ -119,9 +121,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {
-          reconcileService.reconcile(moveLine, newMoveLine, false, true);
+          reconcileService.reconcile(moveLine, newMoveLine, false, allowToCreateNewInvPayments);
         } else {
-          reconcileService.reconcile(newMoveLine, moveLine, false, true);
+          reconcileService.reconcile(newMoveLine, moveLine, false, allowToCreateNewInvPayments);
         }
       }
     }
