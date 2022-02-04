@@ -75,13 +75,10 @@
           <panel name="generalContactDetailsPanel" title="General contact details"
             colSpan="12">
             <field name="mobilePhone" widget="phone" colSpan="4"
-              hideIf="partnerTypeSelect == 1" placeholder="+33100000000"
-              pattern="^\+?([\s()-.]*\d){7,}$"
-              onChange="action-partner-method-normalize-mobilePhone"/>
-            <field name="fixedPhone" widget="phone" colSpan="4" placeholder="+33100000000"
-              pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-            <field name="fax" widget="phone" colSpan="4" placeholder="+33000000000"
-              pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
+              hideIf="partnerTypeSelect == 1"/>
+            <field name="fixedPhone" widget="phone" colSpan="4"
+              x-placeholder-number-type="FIXED_LINE"/>
+            <field name="fax" widget="phone" colSpan="4"/>
             <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
               colSpan="4"/>
             <field name="webSite" placeholder="http://www.url.com" widget="url"/>
@@ -144,7 +141,7 @@
           <label name="contactLabel" title="Contact" colSpan="12"/>
           <field name="jobTitleFunction"/>
           <field name="reportsTo" domain="self.isContact = true"/>
-          <field name="fixedPhone" widget="phone"/>
+          <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
           <field name="mobilePhone" widget="phone"/>
           <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
           <field name="fax" widget="phone"/>

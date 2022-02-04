@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.base.db.Company;
@@ -69,10 +70,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
+  protected MoveToolService moveToolService;
   protected MoveRepository moveRepository;
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected AppAccountService appAccountService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
 
   @Inject
@@ -81,20 +84,24 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
+      MoveToolService moveToolService,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
+      AppAccountService appAccountService,
       FixedAssetGenerationService fixedAssetGenerationService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
+    this.moveToolService = moveToolService;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.appAccountService = appAccountService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
   }
 
@@ -170,6 +177,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
+    }
+
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()
+        && move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
+        && !moveToolService.checkMoveLinesCutOffDates(move)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
     }
 
     if (move.getMoveLineList().stream()

@@ -223,6 +223,15 @@
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv.due_date::DATE)-1 > 0 AND inv.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv.due_date::DATE) -1 ELSE 0 END from account_invoice inv WHERE inv.id =
+	      id]]>
+    </integer>
+
+
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
