@@ -145,6 +145,11 @@
 
     <string name="customAppStyle" title="Custom style" large="true"
       help="Custom css to personnalize web user interface."/>
+
+    <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
+      help="Maximum time before a process called by an user starts running in the background"
+      min="1"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
