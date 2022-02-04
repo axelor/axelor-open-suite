@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,9 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -56,6 +58,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
       IntercoService intercoService,
+      TaxService taxService,
+      StockMoveRepository stockMoveRepository,
       InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
     super(
         validateFactory,
@@ -70,7 +74,9 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         moveToolService,
         invoiceLineRepo,
         appBaseService,
-        intercoService);
+        intercoService,
+        taxService,
+        stockMoveRepository);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,24 +55,24 @@ public class PayVoucherElementToPayService {
    * @return
    */
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PaymentVoucher paymentVoucher,
+      PaymentVoucher pv,
       int seq,
       Invoice invoice,
-      MoveLine moveLine,
+      MoveLine ml,
       BigDecimal totalAmount,
       BigDecimal remainingAmount,
       BigDecimal amountToPay) {
 
     log.debug("In  createPayVoucherElementToPay....");
 
-    if (paymentVoucher != null && moveLine != null) {
+    if (pv != null && ml != null) {
       PayVoucherElementToPay piToPay = new PayVoucherElementToPay();
       piToPay.setSequence(seq);
-      piToPay.setMoveLine(moveLine);
+      piToPay.setMoveLine(ml);
       piToPay.setTotalAmount(totalAmount);
       piToPay.setRemainingAmount(remainingAmount);
       piToPay.setAmountToPay(amountToPay);
-      piToPay.setPaymentVoucher(paymentVoucher);
+      piToPay.setPaymentVoucher(pv);
 
       log.debug("End createPayVoucherElementToPay IF.");
 

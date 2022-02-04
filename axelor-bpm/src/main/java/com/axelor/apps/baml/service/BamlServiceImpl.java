@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,7 @@ public class BamlServiceImpl implements BamlService {
     ProcessActionRootNode rootNode = null;
     try {
       rootNode = BamlParser.parse(IOUtils.toInputStream(xml, "utf-8"));
-    } catch (IOException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(ITranslation.INVALID_BAML_XML));
