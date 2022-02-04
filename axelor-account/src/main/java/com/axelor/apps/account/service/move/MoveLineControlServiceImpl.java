@@ -80,4 +80,14 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     }
     return move;
   }
+
+  @Override
+  public Move setMoveLineOriginDates(Move move) throws AxelorException {
+    if (move.getOriginDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setOriginDate(move.getOriginDate());
+      }
+    }
+    return move;
+  }
 }

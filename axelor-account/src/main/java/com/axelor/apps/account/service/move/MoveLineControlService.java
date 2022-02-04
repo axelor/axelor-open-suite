@@ -17,4 +17,6 @@ public interface MoveLineControlService {
   void validateMoveLine(MoveLine moveLine) throws AxelorException;
 
   Move setMoveLineDates(Move move) throws AxelorException;
+
+  Move setMoveLineOriginDates(Move move) throws AxelorException;
 }

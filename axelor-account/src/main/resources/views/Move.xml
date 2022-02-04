@@ -48,7 +48,7 @@
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
+    onSave="action-move-method-check-dates,action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
 
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -76,7 +76,8 @@
           <field name="date"
             onChange="action-move-method-get-period,action-move-method-set-moveline-dates"
             hideIf="statusSelect == 3" colSpan="3"/>
-          <field name="originDate" colSpan="3"/>
+          <field name="originDate" colSpan="3"
+            onChange="action-move-method-set-moveline-origin-dates"/>
           <field name="tradingName"
             if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
@@ -155,7 +156,7 @@
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
         form-view="move-line-move-form"
-        onChange="save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
+        onChange="action-move-method-check-dates,save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
@@ -522,6 +523,9 @@
     <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineDates"/>
   </action-method>
 
+  <action-method name="action-move-method-set-moveline-origin-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineOriginDates"/>
+  </action-method>
 
   <action-method name="action-move-method-set-status-simulate">
     <call class="com.axelor.apps.account.web.MoveController" method="setSimulate"/>
@@ -529,6 +533,10 @@
 
   <action-method name="action-move-method-simulate-multiple-moves">
     <call class="com.axelor.apps.account.web.MoveController" method="simulateMultipleMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDates"/>
   </action-method>
 
   <!-- ACTION VIEW -->

@@ -290,15 +290,14 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
-    if (!(move != null
-        && move.getPeriod() != null
-        && moveLine.getDate().isAfter(move.getPeriod().getFromDate())
-        && moveLine.getDate().isBefore(move.getPeriod().getToDate()))) {
-      moveLine.setDate(moveLineRepository.find(moveLine.getId()).getDate());
+    if (move == null
+        || move.getPeriod() == null
+        || !moveLine.getDate().isAfter(move.getPeriod().getFromDate())
+        || !moveLine.getDate().isBefore(move.getPeriod().getToDate())) {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
+          I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE));
     }
   }
 }
