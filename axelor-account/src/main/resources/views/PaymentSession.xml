@@ -13,6 +13,36 @@
     <field name="assignedToUser" hidden="true"/>
   </grid>
 
+  <grid name="my-payment-session-dashlet-grid" title="My payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <hilite color="success"
+      if="(!$get('paymentMode.generateBankOrder') &amp;&amp; statusSelect == 3) || ($get('paymentMode.generateBankOrder') &amp;&amp; statusSelect == 3 &amp;&amp; $get('bankOrder.statusSelect') == 4)"/>
+    <hilite color="danger"
+      if="(statusSelect == 1 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &gt; 7 &amp;&amp; todayDate &gt; paymentDate) || (statusSelect == 2 &amp;&amp; accountingTriggerSelect != 1 &amp;&amp; $get('bankOrder.statusSelect') != 4 &amp;&amp; $get('bankOrder.statusSelect') &lt; 4 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &gt; 7)"/>
+    <hilite color="warning"
+      if="statusSelect == 2 || (statusSelect == 1 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &lt; 7 &amp;&amp; todayDate &gt; paymentDate) || ($get('paymentMode.generateBankOrder') &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; $get('bankOrder.statusSelect') == 5) || ($get('paymentMode.generateBankOrder') &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; $get('bankOrder.statusSelect') &lt; 4 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &lt; 7)"/>
+    <hilite color="primary" if="statusSelect == 1 &amp;&amp; paymentDate &gt;= todayDate"/>
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+    <field name="paymentDate" hidden="true"/>
+    <field name="accountingTriggerSelect" hidden="true"/>
+    <field name="bankOrder.statusSelect" hidden="true"/>
+    <field name="paymentMode.generateBankOrder" hidden="true"/>
+  </grid>
+
+  <grid name="payment-session-dashlet-grid" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="assignedToUser"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+  </grid>
+
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
     model="com.axelor.apps.account.db.PaymentSession" width="large">
@@ -238,5 +268,23 @@
       if="nextSessionDate != null &amp;&amp; nextSessionDate &lt; paymentDate"
       error="Next session date cannot be inferior to payment date"/>
   </action-condition>
+
+  <action-view name="dashlet.paymentSession.my.paymentSessions"
+    title="My payment sessions" model="com.axelor.apps.account.db.PaymentSession">
+    <view type="grid" name="my-payment-session-dashlet-grid"/>
+    <view type="form" name="payment-session-form"/>
+    <domain>self.assignedToUser.id = :userId</domain>
+    <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <action-view name="dashlet.paymentSession.paymentSessions" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <view type="grid" name="payment-session-dashlet-grid"/>
+    <view type="form" name="payment-session-form"/>
+    <domain>self.assignedToUser.id = :userId OR self.assignedToUser.employee.managerUser = :userId</domain>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
 
 </object-views>
