@@ -46,6 +46,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public int sendEmails(PaymentSession paymentSession)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, JSONException {
@@ -116,6 +117,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
     return null;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
