@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,9 @@ import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -33,6 +36,7 @@ import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder;
 import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.model.bpmn.impl.BpmnModelConstants;
+import org.camunda.bpm.model.bpmn.instance.BpmnModelElementInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.MessageEventDefinition;
 import org.slf4j.Logger;
@@ -53,6 +57,38 @@ public class WkfExecutionListener implements ExecutionListener {
         createWkfInstance(execution);
       } else {
         processNodeStart(execution);
+      }
+
+    } else if (eventName.equals(EVENTNAME_END)) {
+
+      BpmnModelElementInstance modelElementInstance = execution.getBpmnModelElementInstance();
+      String typeName = modelElementInstance.getElementType().getTypeName();
+      if (modelElementInstance != null
+          && typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
+        checkDMNValue(execution);
+      }
+    }
+  }
+
+  private void checkDMNValue(DelegateExecution execution) throws AxelorException {
+
+    String compulsory =
+        execution
+            .getBpmnModelElementInstance()
+            .getAttributeValueNs(BpmnModelConstants.CAMUNDA_NS, "compulsory");
+
+    if (compulsory != null && compulsory.equals("true")) {
+      String varName =
+          execution
+              .getBpmnModelElementInstance()
+              .getAttributeValueNs(
+                  BpmnModelConstants.CAMUNDA_NS,
+                  BpmnModelConstants.CAMUNDA_ATTRIBUTE_RESULT_VARIABLE);
+      if (execution.getVariable(varName) == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get("No result from DMN : %s"),
+            execution.getCurrentActivityName());
       }
     }
   }

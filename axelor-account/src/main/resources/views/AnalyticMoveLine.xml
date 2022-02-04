@@ -206,13 +206,13 @@
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
     <attribute name="value" for="isValidAnalyticMoveLineList"
-      expr="call: com.axelor.apps.account.service.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
   </action-attrs>
 
   <action-condition
     name="action-analytic-move-line-condition-valid-analytic-move-line-list">
     <check
-      error="Invalid Analytic moveLines, some axes percentage values are higher than 100%."
+      error="Invalid Analytic moveLines, some axes percentage values are different than 100%."
       field="analyticMoveLineList" if="!isValidAnalyticMoveLineList"/>
   </action-condition>
 

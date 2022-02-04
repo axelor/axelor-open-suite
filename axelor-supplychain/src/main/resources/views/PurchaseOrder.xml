@@ -41,7 +41,6 @@
       method="cancelReceipt"/>
   </action-method>
 
-
   <action-attrs name="action-purchase-order-attrs-interco">
     <attribute for="interco" name="hidden"
       expr="eval: createdByInterco || !supplierPartner || __repo__(Company).all().filter('self.partner = ?', supplierPartner).fetchOne() == null"/>
