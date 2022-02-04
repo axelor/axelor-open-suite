@@ -19,8 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,10 +28,12 @@ import com.google.inject.Singleton;
 @Singleton
 public class TemplateController {
 
-  @HandleExceptionResponse
-  public void checkTargetReceptor(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Beans.get(TemplateService.class)
-        .checkTargetReceptor(request.getContext().asType(Template.class));
+  public void checkTargetReceptor(ActionRequest request, ActionResponse response) {
+    try {
+      Beans.get(TemplateService.class)
+          .checkTargetReceptor(request.getContext().asType(Template.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

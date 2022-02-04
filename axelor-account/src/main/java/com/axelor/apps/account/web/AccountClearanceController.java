@@ -22,8 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountClearanceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,18 +35,19 @@ import java.util.Map;
 @Singleton
 public class AccountClearanceController {
 
-  @HandleExceptionResponse
-  public void getExcessPayment(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void getExcessPayment(ActionRequest request, ActionResponse response) {
 
     AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
-    Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
-    response.setReload(true);
+
+    try {
+      Beans.get(AccountClearanceService.class).setExcessPayment(accountClearance);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void validateAccountClearance(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateAccountClearance(ActionRequest request, ActionResponse response) {
 
     AccountClearanceRepository accountClearanceRepo = Beans.get(AccountClearanceRepository.class);
     AccountClearanceService accountClearanceService = Beans.get(AccountClearanceService.class);
@@ -55,8 +55,12 @@ public class AccountClearanceController {
     AccountClearance accountClearance = request.getContext().asType(AccountClearance.class);
     accountClearance = accountClearanceRepo.find(accountClearance.getId());
 
-    accountClearanceService.validateAccountClearance(accountClearance);
-    response.setReload(true);
+    try {
+      accountClearanceService.validateAccountClearance(accountClearance);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void showAccountClearanceMoveLines(ActionRequest request, ActionResponse response) {

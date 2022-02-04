@@ -21,8 +21,7 @@ import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorGroupingService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,31 +31,37 @@ import com.google.inject.Singleton;
 @Singleton
 public class IndicatorGeneratorGroupingController {
 
-  @HandleExceptionResponse
-  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void run(ActionRequest request, ActionResponse response) {
 
     IndicatorGeneratorGrouping indicatorGeneratorGrouping =
         request.getContext().asType(IndicatorGeneratorGrouping.class);
 
-    Beans.get(IndicatorGeneratorGroupingService.class)
-        .run(
-            Beans.get(IndicatorGeneratorGroupingRepository.class)
-                .find(indicatorGeneratorGrouping.getId()));
-    response.setReload(true);
-    response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+    try {
+      Beans.get(IndicatorGeneratorGroupingService.class)
+          .run(
+              Beans.get(IndicatorGeneratorGroupingRepository.class)
+                  .find(indicatorGeneratorGrouping.getId()));
+      response.setReload(true);
+      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void export(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void export(ActionRequest request, ActionResponse response) {
 
     IndicatorGeneratorGrouping indicatorGeneratorGrouping =
         request.getContext().asType(IndicatorGeneratorGrouping.class);
 
-    Beans.get(IndicatorGeneratorGroupingService.class)
-        .export(
-            Beans.get(IndicatorGeneratorGroupingRepository.class)
-                .find(indicatorGeneratorGrouping.getId()));
-    response.setReload(true);
-    response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
+    try {
+      Beans.get(IndicatorGeneratorGroupingService.class)
+          .export(
+              Beans.get(IndicatorGeneratorGroupingRepository.class)
+                  .find(indicatorGeneratorGrouping.getId()));
+      response.setReload(true);
+      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

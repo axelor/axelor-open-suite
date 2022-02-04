@@ -21,7 +21,6 @@ import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServic
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,7 +29,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class ProductionOrderBusinessController {
 
-  @HandleExceptionResponse
   public void generateSaleOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

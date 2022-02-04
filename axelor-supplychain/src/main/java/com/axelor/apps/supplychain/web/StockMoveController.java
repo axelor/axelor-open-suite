@@ -100,21 +100,27 @@ public class StockMoveController {
    * @param response
    */
   public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  stockMove.getPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    String strFilter =
-        Beans.get(PartnerSupplychainLinkService.class)
-            .computePartnerFilter(
-                stockMove.getPartner(),
-                PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
-
-    response.setAttr("invoicedPartner", "domain", strFilter);
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setDefaultInvoicedPartner(ActionRequest request, ActionResponse response) {
-
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
-    response.setValues(stockMove);
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
+      response.setValues(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

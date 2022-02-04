@@ -20,8 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,24 +30,30 @@ import com.google.inject.Singleton;
 public class ReconcileController {
 
   // Unreconcile button
-  @HandleExceptionResponse
-  public void unreconcile(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void unreconcile(ActionRequest request, ActionResponse response) {
 
     Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
-    Beans.get(ReconcileService.class)
-        .unreconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
-    response.setReload(true);
+    try {
+      Beans.get(ReconcileService.class)
+          .unreconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   // Reconcile button
-  @HandleExceptionResponse
-  public void reconcile(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void reconcile(ActionRequest request, ActionResponse response) {
 
     Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
-    Beans.get(ReconcileService.class)
-        .confirmReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()), true);
-    response.setReload(true);
+    try {
+      Beans.get(ReconcileService.class)
+          .confirmReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()), true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

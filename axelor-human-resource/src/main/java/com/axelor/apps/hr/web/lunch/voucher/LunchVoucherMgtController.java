@@ -28,8 +28,6 @@ import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -43,15 +41,18 @@ import java.util.List;
 @Singleton
 public class LunchVoucherMgtController {
 
-  @HandleExceptionResponse
-  public void calculate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void calculate(ActionRequest request, ActionResponse response) {
 
-    LunchVoucherMgt lunchVoucherMgt =
-        Beans.get(LunchVoucherMgtRepository.class)
-            .find(request.getContext().asType(LunchVoucherMgt.class).getId());
-    Beans.get(LunchVoucherMgtService.class).calculate(lunchVoucherMgt);
+    try {
+      LunchVoucherMgt lunchVoucherMgt =
+          Beans.get(LunchVoucherMgtRepository.class)
+              .find(request.getContext().asType(LunchVoucherMgt.class).getId());
+      Beans.get(LunchVoucherMgtService.class).calculate(lunchVoucherMgt);
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
@@ -85,19 +86,20 @@ public class LunchVoucherMgtController {
     response.setValue("givenLunchVouchers", lunchVoucherMgt.getGivenLunchVouchers());
   }
 
-  @HandleExceptionResponse
   public void export(ActionRequest request, ActionResponse response) throws IOException {
     LunchVoucherMgt lunchVoucherMgt =
         Beans.get(LunchVoucherMgtRepository.class)
             .find(request.getContext().asType(LunchVoucherMgt.class).getId());
 
-    Beans.get(LunchVoucherMgtService.class).export(lunchVoucherMgt);
-    response.setReload(true);
+    try {
+      Beans.get(LunchVoucherMgtService.class).export(lunchVoucherMgt);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void print(ActionRequest request, ActionResponse response)
-      throws IOException, AxelorException {
+  public void print(ActionRequest request, ActionResponse response) throws IOException {
     LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
 
     String name =
@@ -107,40 +109,48 @@ public class LunchVoucherMgtController {
                 .getTodayDate(lunchVoucherMgt.getCompany())
                 .format(DateTimeFormatter.BASIC_ISO_DATE);
 
-    String fileLink =
-        ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
-            .addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
-            .addParam(
-                "Timezone",
-                lunchVoucherMgt.getCompany() != null
-                    ? lunchVoucherMgt.getCompany().getTimezone()
-                    : null)
-            .addParam("Locale", Beans.get(UserService.class).getLanguage())
-            .addFormat(ReportSettings.FORMAT_PDF)
-            .generate()
-            .getFileLink();
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
+              .addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
+              .addParam(
+                  "Timezone",
+                  lunchVoucherMgt.getCompany() != null
+                      ? lunchVoucherMgt.getCompany().getTimezone()
+                      : null)
+              .addParam("Locale", Beans.get(UserService.class).getLanguage())
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
 
-    response.setView(ActionView.define(name).add("html", fileLink).map());
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void updateStock(ActionRequest request, ActionResponse response) throws AxelorException {
-    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-    if (lunchVoucherMgt.getId() == null) {
-      return;
+  public void updateStock(ActionRequest request, ActionResponse response) {
+    try {
+      LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+      if (lunchVoucherMgt.getId() == null) {
+        return;
+      }
+      List<LunchVoucherMgtLine> oldLunchVoucherLines =
+          Beans.get(LunchVoucherMgtLineRepository.class)
+              .all()
+              .filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
+              .fetch();
+      int stockQuantityStatus =
+          Beans.get(LunchVoucherMgtService.class)
+              .updateStock(
+                  lunchVoucherMgt.getLunchVoucherMgtLineList(),
+                  oldLunchVoucherLines,
+                  lunchVoucherMgt.getCompany());
+      response.setValue("stockQuantityStatus", stockQuantityStatus);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    List<LunchVoucherMgtLine> oldLunchVoucherLines =
-        Beans.get(LunchVoucherMgtLineRepository.class)
-            .all()
-            .filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
-            .fetch();
-    int stockQuantityStatus =
-        Beans.get(LunchVoucherMgtService.class)
-            .updateStock(
-                lunchVoucherMgt.getLunchVoucherMgtLineList(),
-                oldLunchVoucherLines,
-                lunchVoucherMgt.getCompany());
-    response.setValue("stockQuantityStatus", stockQuantityStatus);
   }
 
   public void checkPayPeriod(ActionRequest request, ActionResponse response) {

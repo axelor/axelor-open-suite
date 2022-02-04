@@ -28,7 +28,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -48,7 +48,6 @@ public class EmployeeController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @HandleExceptionResponse
   public void showAnnualReport(ActionRequest request, ActionResponse response)
       throws JSONException, NumberFormatException, AxelorException {
 
@@ -107,7 +106,6 @@ public class EmployeeController {
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
-  @HandleExceptionResponse
   public void printEmployeePhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -128,7 +126,6 @@ public class EmployeeController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  @HandleExceptionResponse
   public void printEmployeeReport(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -156,22 +153,24 @@ public class EmployeeController {
     return user.getActiveCompany().getTimezone();
   }
 
-  @HandleExceptionResponse
-  public void generateNewDPAE(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void generateNewDPAE(ActionRequest request, ActionResponse response) {
     Employee employee = request.getContext().asType(Employee.class);
     employee = Beans.get(EmployeeRepository.class).find(employee.getId());
 
-    Long dpaeId = Beans.get(EmployeeService.class).generateNewDPAE(employee);
+    try {
+      Long dpaeId = Beans.get(EmployeeService.class).generateNewDPAE(employee);
 
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get("DPAE"))
-            .model(DPAE.class.getName())
-            .add("grid", "dpae-grid")
-            .add("form", "dpae-form")
-            .param("search-filters", "dpae-filters")
-            .context("_showRecord", dpaeId);
-    response.setView(builder.map());
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("DPAE"))
+              .model(DPAE.class.getName())
+              .add("grid", "dpae-grid")
+              .add("form", "dpae-form")
+              .param("search-filters", "dpae-filters")
+              .context("_showRecord", dpaeId);
+      response.setView(builder.map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
 
     response.setReload(true);
   }

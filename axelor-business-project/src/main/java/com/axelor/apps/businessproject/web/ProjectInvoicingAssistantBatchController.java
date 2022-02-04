@@ -26,7 +26,6 @@ import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRep
 import com.axelor.apps.businessproject.service.batch.ProjectInvoicingAssistantBatchService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,45 +62,54 @@ public class ProjectInvoicingAssistantBatchController {
     }
   }
 
-  @HandleExceptionResponse
-  public void showUpdatedTask(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException {
-    Map<String, Object> values = new HashMap<String, Object>();
-    values.put("field", "updatedTaskSet");
-    values.put("title", I18n.get("Updated tasks"));
-    values.put("model", ProjectTask.class.getName());
-    values.put("grid", "business-project-project-task-grid");
-    values.put("form", "project-task-form");
-    values.put("search-filters", "project-task-filters");
+  public void showUpdatedTask(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> values = new HashMap<String, Object>();
+      values.put("field", "updatedTaskSet");
+      values.put("title", I18n.get("Updated tasks"));
+      values.put("model", ProjectTask.class.getName());
+      values.put("grid", "business-project-project-task-grid");
+      values.put("form", "project-task-form");
+      values.put("search-filters", "project-task-filters");
 
-    this.showRecords(request, response, values);
+      this.showRecords(request, response, values);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void showUpdatedTimesheetLine(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException {
-    Map<String, Object> values = new HashMap<String, Object>();
-    values.put("field", "updatedTimesheetLineSet");
-    values.put("title", I18n.get("Updated timesheet lines"));
-    values.put("model", TimesheetLine.class.getName());
-    values.put("grid", "timesheet-line-project-grid");
-    values.put("form", "timesheet-line-project-form");
+  public void showUpdatedTimesheetLine(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> values = new HashMap<String, Object>();
+      values.put("field", "updatedTimesheetLineSet");
+      values.put("title", I18n.get("Updated timesheet lines"));
+      values.put("model", TimesheetLine.class.getName());
+      values.put("grid", "timesheet-line-project-grid");
+      values.put("form", "timesheet-line-project-form");
 
-    this.showRecords(request, response, values);
+      this.showRecords(request, response, values);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void showGeneratedInvoicingProject(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException {
-    Map<String, Object> values = new HashMap<String, Object>();
-    values.put("field", "generatedInvoicingProjectSet");
-    values.put("title", I18n.get("Generated invoicing projects"));
-    values.put("model", InvoicingProject.class.getName());
-    values.put("grid", "invoicing-project-grid");
-    values.put("form", "invoicing-project-form");
-    values.put("search-filters", "invoicing-project-filters");
+  public void showGeneratedInvoicingProject(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> values = new HashMap<String, Object>();
+      values.put("field", "generatedInvoicingProjectSet");
+      values.put("title", I18n.get("Generated invoicing projects"));
+      values.put("model", InvoicingProject.class.getName());
+      values.put("grid", "invoicing-project-grid");
+      values.put("form", "invoicing-project-form");
+      values.put("search-filters", "invoicing-project-filters");
 
-    this.showRecords(request, response, values);
+      this.showRecords(request, response, values);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   private void showRecords(

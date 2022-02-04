@@ -20,8 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Querie;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.querie.QuerieService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,10 +30,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class QuerieController {
 
-  @HandleExceptionResponse
-  public void checkQuerie(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void checkQuerie(ActionRequest request, ActionResponse response) {
 
-    Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
-    response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+    try {
+      Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
+      response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -25,7 +25,7 @@ import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -36,19 +36,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class EmployeeBonusController {
 
-  @HandleExceptionResponse
-  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void compute(ActionRequest request, ActionResponse response) {
     EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
     PeriodService periodService = Beans.get(PeriodService.class);
-
-    employeeBonusMgt = Beans.get(EmployeeBonusMgtRepository.class).find(employeeBonusMgt.getId());
-    Beans.get(EmployeeBonusService.class).compute(employeeBonusMgt);
-    response.setReload(true);
-    periodService.checkPeriod(employeeBonusMgt.getPayPeriod());
-    periodService.checkPeriod(employeeBonusMgt.getLeavePeriod());
+    try {
+      employeeBonusMgt = Beans.get(EmployeeBonusMgtRepository.class).find(employeeBonusMgt.getId());
+      Beans.get(EmployeeBonusService.class).compute(employeeBonusMgt);
+      response.setReload(true);
+      periodService.checkPeriod(employeeBonusMgt.getPayPeriod());
+      periodService.checkPeriod(employeeBonusMgt.getLeavePeriod());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     EmployeeBonusMgt bonus =

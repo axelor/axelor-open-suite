@@ -54,7 +54,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -67,7 +66,6 @@ import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.time.LocalDate;
@@ -87,6 +85,7 @@ public class HumanResourceMobileController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    *     <p>POST
    *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
    *     Content-Type: application/json
@@ -99,7 +98,6 @@ public class HumanResourceMobileController {
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
   @Transactional(rollbackOn = {Exception.class})
-  @HandleExceptionResponse
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -151,6 +149,7 @@ public class HumanResourceMobileController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    *     <p>POST
    *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
    *     Content-Type: application/json
@@ -163,40 +162,45 @@ public class HumanResourceMobileController {
 
     User user = AuthUtils.getUser();
 
-    if (user == null) {
-      return;
-    }
+    try {
+      if (user == null) {
+        return;
+      }
 
-    Expense expense =
-        Beans.get(ExpenseRepository.class)
-            .all()
-            .filter(
-                "self.statusSelect = ?1 AND self.user.id = ?2",
-                ExpenseRepository.STATUS_DRAFT,
-                user.getId())
-            .order("-id")
-            .fetchOne();
+      Expense expense =
+          Beans.get(ExpenseRepository.class)
+              .all()
+              .filter(
+                  "self.statusSelect = ?1 AND self.user.id = ?2",
+                  ExpenseRepository.STATUS_DRAFT,
+                  user.getId())
+              .order("-id")
+              .fetchOne();
 
-    if (expense == null) {
-      return;
-    }
+      if (expense == null) {
+        return;
+      }
 
-    List<ExpenseLine> expenseLineList = Beans.get(ExpenseService.class).getExpenseLineList(expense);
-    if (expenseLineList != null && !expenseLineList.isEmpty()) {
-      Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
-      while (expenseLineIter.hasNext()) {
-        ExpenseLine generalExpenseLine = expenseLineIter.next();
+      List<ExpenseLine> expenseLineList =
+          Beans.get(ExpenseService.class).getExpenseLineList(expense);
+      if (expenseLineList != null && !expenseLineList.isEmpty()) {
+        Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
+        while (expenseLineIter.hasNext()) {
+          ExpenseLine generalExpenseLine = expenseLineIter.next();
 
-        if (generalExpenseLine.getKilometricExpense() != null
-            && (expense.getKilometricExpenseLineList() != null
-                    && !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
-                || expense.getKilometricExpenseLineList() == null)) {
+          if (generalExpenseLine.getKilometricExpense() != null
+              && (expense.getKilometricExpenseLineList() != null
+                      && !expense.getKilometricExpenseLineList().contains(generalExpenseLine)
+                  || expense.getKilometricExpenseLineList() == null)) {
 
-          expenseLineIter.remove();
+            expenseLineIter.remove();
+          }
         }
       }
+      response.setValue("expenseLineList", expenseLineList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("expenseLineList", expenseLineList);
   }
 
   /*
@@ -226,80 +230,82 @@ public class HumanResourceMobileController {
    * } }
    */
   @Transactional
-  @HandleExceptionResponse
-  public void insertOrUpdateExpenseLine(ActionRequest request, ActionResponse response)
-      throws IOException {
-    User user = AuthUtils.getUser();
-    Map<String, Object> requestData = request.getData();
-    Project project =
-        Beans.get(ProjectRepository.class)
-            .find(Long.valueOf(requestData.get("project").toString()));
-    Product product =
-        Beans.get(ProductRepository.class)
-            .find(Long.valueOf(requestData.get("expenseType").toString()));
-    if (user != null) {
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
-      Expense expense = expenseService.getOrCreateExpense(user);
+  public void insertOrUpdateExpenseLine(ActionRequest request, ActionResponse response) {
+    try {
+      User user = AuthUtils.getUser();
+      Map<String, Object> requestData = request.getData();
+      Project project =
+          Beans.get(ProjectRepository.class)
+              .find(Long.valueOf(requestData.get("project").toString()));
+      Product product =
+          Beans.get(ProductRepository.class)
+              .find(Long.valueOf(requestData.get("expenseType").toString()));
+      if (user != null) {
+        ExpenseService expenseService = Beans.get(ExpenseService.class);
+        Expense expense = expenseService.getOrCreateExpense(user);
 
-      ExpenseLine expenseLine;
-      Object idO = requestData.get("id");
-      if (idO != null) {
-        expenseLine = Beans.get(ExpenseLineRepository.class).find(Long.valueOf(idO.toString()));
-      } else {
-        expenseLine = new ExpenseLine();
-      }
-      expenseLine.setExpenseDate(
-          LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
-      expenseLine.setComments(requestData.get("comments").toString());
-      expenseLine.setExpenseProduct(product);
-      expenseLine.setProject(project);
-      expenseLine.setUser(user);
-      expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
-      expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
-      expenseLine.setUntaxedAmount(
-          expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-      expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
-      String justification = (String) requestData.get("justification");
-
-      if (!Strings.isNullOrEmpty(justification)) {
-        String MIME_IMAGE_X_ICON = "image/x-icon";
-        String MIME_IMAGE_SVG_XML = "image/svg+xml";
-        String MIME_IMAGE_BMP = "image/bmp";
-        String MIME_IMAGE_GIF = "image/gif";
-        String MIME_IMAGE_JPEG = "image/jpeg";
-        String MIME_IMAGE_TIFF = "image/tiff";
-        String MIME_IMAGE_PNG = "image/png";
-
-        Map<String, String> mimeTypeMapping = new HashMap<>(200);
-
-        mimeTypeMapping.put(MIME_IMAGE_X_ICON, "ico");
-        mimeTypeMapping.put(MIME_IMAGE_SVG_XML, "svg");
-        mimeTypeMapping.put(MIME_IMAGE_BMP, "bmp");
-        mimeTypeMapping.put(MIME_IMAGE_GIF, "gif");
-        mimeTypeMapping.put(MIME_IMAGE_JPEG, "jpg");
-        mimeTypeMapping.put(MIME_IMAGE_TIFF, "tif");
-        mimeTypeMapping.put(MIME_IMAGE_PNG, "png");
-
-        byte[] decodedFile = Base64.getDecoder().decode(justification);
-        String formatName =
-            URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(decodedFile));
-        String extension = "";
-        if (mimeTypeMapping.containsKey(formatName)) {
-          extension = "." + mimeTypeMapping.get(formatName);
-          File file = MetaFiles.createTempFile("justification", extension).toFile();
-          Files.write(decodedFile, file);
-          MetaFile metaFile = Beans.get(MetaFiles.class).upload(file);
-          expenseLine.setJustificationMetaFile(metaFile);
+        ExpenseLine expenseLine;
+        Object idO = requestData.get("id");
+        if (idO != null) {
+          expenseLine = Beans.get(ExpenseLineRepository.class).find(Long.valueOf(idO.toString()));
+        } else {
+          expenseLine = new ExpenseLine();
         }
-      }
-      expense.addGeneralExpenseLineListItem(expenseLine);
-      expense = expenseService.compute(expense);
+        expenseLine.setExpenseDate(
+            LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
+        expenseLine.setComments(requestData.get("comments").toString());
+        expenseLine.setExpenseProduct(product);
+        expenseLine.setProject(project);
+        expenseLine.setUser(user);
+        expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
+        expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
+        expenseLine.setUntaxedAmount(
+            expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
+        expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
+        String justification = (String) requestData.get("justification");
 
-      Beans.get(ExpenseRepository.class).save(expense);
-      HashMap<String, Object> data = new HashMap<>();
-      data.put("id", expenseLine.getId());
-      response.setData(data);
-      response.setTotal(1);
+        if (!Strings.isNullOrEmpty(justification)) {
+          String MIME_IMAGE_X_ICON = "image/x-icon";
+          String MIME_IMAGE_SVG_XML = "image/svg+xml";
+          String MIME_IMAGE_BMP = "image/bmp";
+          String MIME_IMAGE_GIF = "image/gif";
+          String MIME_IMAGE_JPEG = "image/jpeg";
+          String MIME_IMAGE_TIFF = "image/tiff";
+          String MIME_IMAGE_PNG = "image/png";
+
+          Map<String, String> mimeTypeMapping = new HashMap<>(200);
+
+          mimeTypeMapping.put(MIME_IMAGE_X_ICON, "ico");
+          mimeTypeMapping.put(MIME_IMAGE_SVG_XML, "svg");
+          mimeTypeMapping.put(MIME_IMAGE_BMP, "bmp");
+          mimeTypeMapping.put(MIME_IMAGE_GIF, "gif");
+          mimeTypeMapping.put(MIME_IMAGE_JPEG, "jpg");
+          mimeTypeMapping.put(MIME_IMAGE_TIFF, "tif");
+          mimeTypeMapping.put(MIME_IMAGE_PNG, "png");
+
+          byte[] decodedFile = Base64.getDecoder().decode(justification);
+          String formatName =
+              URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(decodedFile));
+          String extension = "";
+          if (mimeTypeMapping.containsKey(formatName)) {
+            extension = "." + mimeTypeMapping.get(formatName);
+            File file = MetaFiles.createTempFile("justification", extension).toFile();
+            Files.write(decodedFile, file);
+            MetaFile metaFile = Beans.get(MetaFiles.class).upload(file);
+            expenseLine.setJustificationMetaFile(metaFile);
+          }
+        }
+        expense.addGeneralExpenseLineListItem(expenseLine);
+        expense = expenseService.compute(expense);
+
+        Beans.get(ExpenseRepository.class).save(expense);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("id", expenseLine.getId());
+        response.setData(data);
+        response.setTotal(1);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -460,7 +466,6 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
-  @HandleExceptionResponse
   @Transactional(rollbackOn = {Exception.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);

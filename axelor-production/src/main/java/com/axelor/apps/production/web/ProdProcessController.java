@@ -24,7 +24,6 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -67,7 +66,6 @@ public class ProdProcessController {
     }
   }
 
-  @HandleExceptionResponse
   public void changeProdProcessListOutsourcing(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
@@ -84,12 +82,15 @@ public class ProdProcessController {
     }
   }
 
-  @HandleExceptionResponse
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void print(ActionRequest request, ActionResponse response) {
 
-    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-    String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
-    response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
+      response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkOriginalProductionProcess(ActionRequest request, ActionResponse response) {

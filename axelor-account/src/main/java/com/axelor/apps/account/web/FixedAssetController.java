@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,21 +40,24 @@ public class FixedAssetController {
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
     FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-    if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+    try {
+      if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
-      if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
+        if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
+          fixedAsset.getFixedAssetLineList().clear();
+        }
+        fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
+
+      } else {
         fixedAsset.getFixedAssetLineList().clear();
       }
-      fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
-
-    } else {
-      fixedAsset.getFixedAssetLineList().clear();
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
     response.setValue("residualValue", fixedAsset.getGrossValue());
     response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
   }
 
-  @HandleExceptionResponse
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     if (context.get("disposalDate") == null || context.get("disposalAmount") == null) {
@@ -75,37 +78,51 @@ public class FixedAssetController {
         Beans.get(FixedAssetRepository.class)
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-      Beans.get(FixedAssetService.class).validate(fixedAsset);
+      try {
+        Beans.get(FixedAssetService.class).validate(fixedAsset);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
     }
     response.setReload(true);
   }
 
-  @HandleExceptionResponse
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
 
-    FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-    Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+
+      Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @SuppressWarnings("unchecked")
   public void massValidation(ActionRequest request, ActionResponse response) {
-    if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
-      List<Long> ids =
-          (List)
-              (((List) request.getContext().get("_ids"))
-                  .stream()
-                      .filter(ObjectUtils::notEmpty)
-                      .map(input -> Long.parseLong(input.toString()))
-                      .collect(Collectors.toList()));
-      int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
-      response.setFlash(
-          validatedFixedAssets
-              + " "
-              + I18n.get("fixed asset validated", "fixed assets validated", validatedFixedAssets));
-      response.setReload(true);
-    } else {
-      response.setFlash(I18n.get("Please select something to validate"));
+    try {
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            (List)
+                (((List) request.getContext().get("_ids"))
+                    .stream()
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
+        int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+        response.setFlash(
+            validatedFixedAssets
+                + " "
+                + I18n.get(
+                    "fixed asset validated", "fixed assets validated", validatedFixedAssets));
+        response.setReload(true);
+      } else {
+        response.setFlash(I18n.get("Please select something to validate"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

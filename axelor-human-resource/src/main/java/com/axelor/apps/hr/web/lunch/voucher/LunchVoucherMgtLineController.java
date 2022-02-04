@@ -19,8 +19,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,12 +28,15 @@ import com.google.inject.Singleton;
 @Singleton
 public class LunchVoucherMgtLineController {
 
-  @HandleExceptionResponse
-  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void compute(ActionRequest request, ActionResponse response) {
 
-    LunchVoucherMgtLine line = request.getContext().asType(LunchVoucherMgtLine.class);
-    Beans.get(LunchVoucherMgtLineService.class).compute(line);
+    try {
+      LunchVoucherMgtLine line = request.getContext().asType(LunchVoucherMgtLine.class);
+      Beans.get(LunchVoucherMgtLineService.class).compute(line);
 
-    response.setValue("lunchVoucherNumber", line.getLunchVoucherNumber());
+      response.setValue("lunchVoucherNumber", line.getLunchVoucherNumber());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

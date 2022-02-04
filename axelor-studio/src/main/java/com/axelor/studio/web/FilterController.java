@@ -19,7 +19,6 @@ package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -64,7 +63,6 @@ public class FilterController {
     response.setValue("operator", null);
   }
 
-  @HandleExceptionResponse
   public void updateTargetType(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

@@ -20,8 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,20 +29,27 @@ import com.google.inject.Singleton;
 @Singleton
 public class PeriodController {
 
-  @HandleExceptionResponse
-  public void close(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void close(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
     period = Beans.get(PeriodRepository.class).find(period.getId());
 
-    Beans.get(PeriodService.class).close(period);
-    response.setReload(true);
+    try {
+      Beans.get(PeriodService.class).close(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void adjust(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
     period = Beans.get(PeriodRepository.class).find(period.getId());
 
-    Beans.get(PeriodService.class).adjust(period);
-    response.setReload(true);
+    try {
+      Beans.get(PeriodService.class).adjust(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

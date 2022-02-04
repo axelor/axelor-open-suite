@@ -27,7 +27,6 @@ import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,7 +46,6 @@ public class BillOfMaterialController {
 
   private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
 
-  @HandleExceptionResponse
   public void computeCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -75,7 +73,6 @@ public class BillOfMaterialController {
     response.setReload(true);
   }
 
-  @HandleExceptionResponse
   public void updateProductCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -154,7 +151,6 @@ public class BillOfMaterialController {
     }
   }
 
-  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
@@ -188,18 +184,20 @@ public class BillOfMaterialController {
             .map());
   }
 
-  public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+  public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    Beans.get(BillOfMaterialService.class).setBillOfMaterialAsDefault(billOfMaterial);
+      Beans.get(BillOfMaterialService.class).setBillOfMaterialAsDefault(billOfMaterial);
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void computeName(ActionRequest request, ActionResponse response) {
-
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
     if (billOfMaterial.getName() == null) {
@@ -207,19 +205,21 @@ public class BillOfMaterialController {
     }
   }
 
-  @HandleExceptionResponse
-  public void addRawMaterials(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void addRawMaterials(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      @SuppressWarnings("unchecked")
+      ArrayList<LinkedHashMap<String, Object>> rawMaterials =
+          (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
 
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> rawMaterials =
-        (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
+      if (rawMaterials != null && !rawMaterials.isEmpty()) {
+        Beans.get(BillOfMaterialService.class)
+            .addRawMaterials(billOfMaterial.getId(), rawMaterials);
 
-    if (rawMaterials != null && !rawMaterials.isEmpty()) {
-      Beans.get(BillOfMaterialService.class).addRawMaterials(billOfMaterial.getId(), rawMaterials);
-
-      response.setReload(true);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

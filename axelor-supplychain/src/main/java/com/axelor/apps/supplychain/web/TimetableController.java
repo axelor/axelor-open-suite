@@ -28,7 +28,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -46,7 +46,6 @@ public class TimetableController {
 
   @Inject TimetableService timetableService;
 
-  @HandleExceptionResponse
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Timetable timetable = request.getContext().asType(Timetable.class);
@@ -88,24 +87,27 @@ public class TimetableController {
             .map());
   }
 
-  @HandleExceptionResponse
-  public void applyTemplate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void applyTemplate(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
-    if (context.get("timetableTemplate") == null
-        || context.get("exTaxTotal") == null
-        || context.get("computationDate") == null) {
-      return;
+    try {
+      if (context.get("timetableTemplate") == null
+          || context.get("exTaxTotal") == null
+          || context.get("computationDate") == null) {
+        return;
+      }
+
+      TimetableTemplate template = (TimetableTemplate) context.get("timetableTemplate");
+
+      List<Timetable> timetableList =
+          timetableService.applyTemplate(
+              template,
+              (BigDecimal) context.get("exTaxTotal"),
+              (LocalDate) context.get("computationDate"));
+
+      response.setValue("timetableList", timetableList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    TimetableTemplate template = (TimetableTemplate) context.get("timetableTemplate");
-
-    List<Timetable> timetableList =
-        timetableService.applyTemplate(
-            template,
-            (BigDecimal) context.get("exTaxTotal"),
-            (LocalDate) context.get("computationDate"));
-
-    response.setValue("timetableList", timetableList);
   }
 }

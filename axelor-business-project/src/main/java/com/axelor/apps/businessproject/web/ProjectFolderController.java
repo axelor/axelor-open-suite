@@ -21,42 +21,50 @@ import com.axelor.apps.businessproject.db.ProjectFolder;
 import com.axelor.apps.businessproject.report.ITranslation;
 import com.axelor.apps.businessproject.service.ProjectFolderService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 
 @Singleton
 public class ProjectFolderController {
 
-  @HandleExceptionResponse
   public void printProjectsPlanificationAndCost(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+      throws AxelorException {
 
     ProjectFolder projectFolder = request.getContext().asType(ProjectFolder.class);
     String fileLink;
     String title;
 
-    fileLink =
-        Beans.get(ProjectFolderService.class).printProjectsPlanificationAndCost(projectFolder);
-    title = I18n.get(ITranslation.PROJECT_REPORT_TITLE_FOR_PLANIFICATION_AND_COST);
-    response.setView(ActionView.define(title).add("html", fileLink).map());
+    try {
+      fileLink =
+          Beans.get(ProjectFolderService.class).printProjectsPlanificationAndCost(projectFolder);
+      title = I18n.get(ITranslation.PROJECT_REPORT_TITLE_FOR_PLANIFICATION_AND_COST);
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
-  @HandleExceptionResponse
   public void printProjectsFinancialReport(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+      throws AxelorException {
 
     ProjectFolder projectFolder = request.getContext().asType(ProjectFolder.class);
     String fileLink;
     String title;
 
-    fileLink = Beans.get(ProjectFolderService.class).printProjectFinancialReport(projectFolder);
-    title = I18n.get(ITranslation.PROJECT_REPORT_TITLE_FOR_FINANCIAL);
-    response.setView(ActionView.define(title).add("html", fileLink).map());
+    try {
+      fileLink = Beans.get(ProjectFolderService.class).printProjectFinancialReport(projectFolder);
+      title = I18n.get(ITranslation.PROJECT_REPORT_TITLE_FOR_FINANCIAL);
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

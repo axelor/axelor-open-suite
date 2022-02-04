@@ -25,7 +25,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -33,7 +32,6 @@ import com.axelor.rpc.ActionResponse;
 
 public class ModelEmailLinkController {
 
-  @HandleExceptionResponse
   public void validateModelFields(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

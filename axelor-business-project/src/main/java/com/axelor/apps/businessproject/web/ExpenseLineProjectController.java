@@ -101,10 +101,14 @@ public class ExpenseLineProjectController {
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
-    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    expenseLine = expenseLineRepository.find(expenseLine.getId());
-    expenseLine.setToInvoice(!expenseLine.getToInvoice());
-    expenseLineRepository.save(expenseLine);
-    response.setValue("toInvoice", expenseLine.getToInvoice());
+    try {
+      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+      expenseLine = expenseLineRepository.find(expenseLine.getId());
+      expenseLine.setToInvoice(!expenseLine.getToInvoice());
+      expenseLineRepository.save(expenseLine);
+      response.setValue("toInvoice", expenseLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

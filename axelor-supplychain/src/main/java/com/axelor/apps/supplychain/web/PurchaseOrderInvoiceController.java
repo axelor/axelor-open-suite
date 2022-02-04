@@ -22,8 +22,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -34,30 +33,33 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderInvoiceController {
 
-  @HandleExceptionResponse
-  public void generateInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void generateInvoice(ActionRequest request, ActionResponse response) {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-    Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
+    try {
+      Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 
-    if (invoice != null) {
-      response.setReload(true);
-      response.setView(
-          ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
-              .model(Invoice.class.getName())
-              .add("form", "invoice-form")
-              .add("grid", "invoice-grid")
-              .param("search-filters", "customer-invoices-filters")
-              .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
-              .domain(
-                  "self.operationTypeSelect = " + String.valueOf(invoice.getOperationTypeSelect()))
-              .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-              .context("_showRecord", String.valueOf(invoice.getId()))
-              .map());
+      if (invoice != null) {
+        response.setReload(true);
+        response.setView(
+            ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .param("search-filters", "customer-invoices-filters")
+                .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
+                .domain(
+                    "self.operationTypeSelect = "
+                        + String.valueOf(invoice.getOperationTypeSelect()))
+                .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

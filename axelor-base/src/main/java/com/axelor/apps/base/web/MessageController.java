@@ -25,15 +25,16 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +49,9 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
    * @param request
    * @param response
    * @return
-   * @throws AxelorException
+   * @throws BirtException
+   * @throws IOException
    */
-  @HandleExceptionResponse
   public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Message message = request.getContext().asType(Message.class);
@@ -65,7 +66,6 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
     } else response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
   }
 
-  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Message message = request.getContext().asType(Message.class);

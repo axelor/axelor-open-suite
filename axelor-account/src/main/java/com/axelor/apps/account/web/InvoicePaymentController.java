@@ -37,7 +37,6 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -53,16 +52,18 @@ import javax.annotation.Nullable;
 @Singleton
 public class InvoicePaymentController {
 
-  @HandleExceptionResponse
-  public void cancelInvoicePayment(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void cancelInvoicePayment(ActionRequest request, ActionResponse response) {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
-    Move move = invoicePayment.getMove();
-    Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
-    if (ObjectUtils.notEmpty(move)) {
-      Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
+    try {
+      Move move = invoicePayment.getMove();
+      Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
+      if (ObjectUtils.notEmpty(move)) {
+        Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
     response.setReload(true);
   }
@@ -117,7 +118,6 @@ public class InvoicePaymentController {
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
   public void fillBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -148,31 +148,34 @@ public class InvoicePaymentController {
     response.setValue("bankDetails", defaultBankDetails);
   }
 
-  @HandleExceptionResponse
-  public void validateMassPayment(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+  public void validateMassPayment(ActionRequest request, ActionResponse response) {
+    try {
 
-    if (!ObjectUtils.isEmpty(request.getContext().get("_selectedInvoices"))) {
-      List<Long> invoiceIdList =
-          Lists.transform(
-              (List) request.getContext().get("_selectedInvoices"),
-              new Function<Object, Long>() {
-                @Nullable
-                @Override
-                public Long apply(@Nullable Object input) {
-                  return Long.parseLong(input.toString());
-                }
-              });
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
-      Beans.get(InvoicePaymentCreateService.class)
-          .createMassInvoicePayment(
-              invoiceIdList,
-              invoicePayment.getPaymentMode(),
-              invoicePayment.getCompanyBankDetails(),
-              invoicePayment.getPaymentDate(),
-              invoicePayment.getBankDepositDate(),
-              invoicePayment.getChequeNumber());
+      if (!ObjectUtils.isEmpty(request.getContext().get("_selectedInvoices"))) {
+        List<Long> invoiceIdList =
+            Lists.transform(
+                (List) request.getContext().get("_selectedInvoices"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+
+        Beans.get(InvoicePaymentCreateService.class)
+            .createMassInvoicePayment(
+                invoiceIdList,
+                invoicePayment.getPaymentMode(),
+                invoicePayment.getCompanyBankDetails(),
+                invoicePayment.getPaymentDate(),
+                invoicePayment.getBankDepositDate(),
+                invoicePayment.getChequeNumber());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
     response.setReload(true);
   }

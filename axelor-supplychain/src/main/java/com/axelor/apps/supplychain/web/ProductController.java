@@ -22,8 +22,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,35 +34,36 @@ import java.util.Map;
 
 public class ProductController {
 
-  @HandleExceptionResponse
-  public void setIndicatorsOfProduct(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Map<String, Long> mapId =
-        Beans.get(ProjectedStockService.class)
-            .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
-    if (mapId == null) {
-      return;
-    }
-    Context context = request.getContext();
-    Long productId = mapId.get("productId");
-    Long companyId = mapId.get("companyId");
-    Long stockLocationId = mapId.get("stockLocationId");
-    if (companyId == 0L && stockLocationId != 0L) {
-      stockLocationId = 0L;
-    } else if (companyId != 0L && stockLocationId != 0L) {
-      StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
-      if (sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
-        stockLocationId = 0L;
-        response.setValue("stockLocation", null);
-        context.put("$stockLocation", null);
+  public void setIndicatorsOfProduct(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Long> mapId =
+          Beans.get(ProjectedStockService.class)
+              .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+      if (mapId == null) {
+        return;
       }
-    }
+      Context context = request.getContext();
+      Long productId = mapId.get("productId");
+      Long companyId = mapId.get("companyId");
+      Long stockLocationId = mapId.get("stockLocationId");
+      if (companyId == 0L && stockLocationId != 0L) {
+        stockLocationId = 0L;
+      } else if (companyId != 0L && stockLocationId != 0L) {
+        StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
+        if (sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
+          stockLocationId = 0L;
+          response.setValue("stockLocation", null);
+          context.put("$stockLocation", null);
+        }
+      }
 
-    Map<String, Object> map =
-        Beans.get(ProductStockLocationService.class)
-            .computeIndicators(productId, companyId, stockLocationId);
-    response.setValues(map);
+      Map<String, Object> map =
+          Beans.get(ProductStockLocationService.class)
+              .computeIndicators(productId, companyId, stockLocationId);
+      response.setValues(map);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @SuppressWarnings("unchecked")

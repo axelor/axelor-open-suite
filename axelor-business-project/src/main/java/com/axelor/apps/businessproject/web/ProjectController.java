@@ -31,7 +31,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -47,18 +47,20 @@ public class ProjectController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @HandleExceptionResponse
-  public void generateQuotation(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Project project = request.getContext().asType(Project.class);
-    SaleOrder order = Beans.get(ProjectBusinessService.class).generateQuotation(project);
-    response.setView(
-        ActionView.define(I18n.get("Sale quotation"))
-            .model(SaleOrder.class.getName())
-            .add("form", "sale-order-form")
-            .param("forceTitle", "true")
-            .context("_showRecord", String.valueOf(order.getId()))
-            .map());
+  public void generateQuotation(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      SaleOrder order = Beans.get(ProjectBusinessService.class).generateQuotation(project);
+      response.setView(
+          ActionView.define(I18n.get("Sale quotation"))
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-form")
+              .param("forceTitle", "true")
+              .context("_showRecord", String.valueOf(order.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generatePurchaseQuotation(ActionRequest request, ActionResponse response) {
@@ -75,7 +77,6 @@ public class ProjectController {
     }
   }
 
-  @HandleExceptionResponse
   public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
     Project project = request.getContext().asType(Project.class);
 
@@ -124,7 +125,6 @@ public class ProjectController {
             .map());
   }
 
-  @HandleExceptionResponse
   public void printPlannifAndCost(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

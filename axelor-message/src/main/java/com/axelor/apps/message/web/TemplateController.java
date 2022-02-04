@@ -23,7 +23,7 @@ import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.apps.message.translation.ITranslation;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaModel;
@@ -35,9 +35,7 @@ import com.axelor.rpc.Context;
 
 public class TemplateController {
 
-  @HandleExceptionResponse
-  public void generateDraftMessage(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException, AxelorException {
+  public void generateDraftMessage(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
     Template template = context.asType(Template.class);
@@ -48,16 +46,20 @@ public class TemplateController {
             .filter("self.fullName = ?", context.get("reference").toString())
             .fetchOne();
 
-    Message message =
-        Beans.get(TemplateService.class)
-            .generateDraftMessage(template, metaModel, context.get("referenceId").toString());
-    response.setView(
-        ActionView.define(I18n.get(ITranslation.MESSAGE_TEST_TEMPLATE))
-            .model(Message.class.getName())
-            .add("form", "message-form")
-            .add("grid", "message-grid")
-            .param("forceTitle", "true")
-            .context("_message", message)
-            .map());
+    try {
+      Message message =
+          Beans.get(TemplateService.class)
+              .generateDraftMessage(template, metaModel, context.get("referenceId").toString());
+      response.setView(
+          ActionView.define(I18n.get(ITranslation.MESSAGE_TEST_TEMPLATE))
+              .model(Message.class.getName())
+              .add("form", "message-form")
+              .add("grid", "message-grid")
+              .param("forceTitle", "true")
+              .context("_message", message)
+              .map());
+    } catch (NumberFormatException | ClassNotFoundException | AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

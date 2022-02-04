@@ -20,8 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.ChequeRejection;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.service.ChequeRejectionService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,14 +29,16 @@ import com.google.inject.Singleton;
 @Singleton
 public class ChequeRejectionController {
 
-  @HandleExceptionResponse
-  public void validateChequeRejection(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateChequeRejection(ActionRequest request, ActionResponse response) {
 
     ChequeRejection chequeRejection = request.getContext().asType(ChequeRejection.class);
     chequeRejection = Beans.get(ChequeRejectionRepository.class).find(chequeRejection.getId());
 
-    Beans.get(ChequeRejectionService.class).validateChequeRejection(chequeRejection);
-    response.setReload(true);
+    try {
+      Beans.get(ChequeRejectionService.class).validateChequeRejection(chequeRejection);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -40,7 +40,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -58,42 +57,45 @@ import java.util.Objects;
 @Singleton
 public class PurchaseOrderController {
 
-  @HandleExceptionResponse
   public void createStockMove(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    if (purchaseOrder.getId() != null) {
+    try {
+      if (purchaseOrder.getId() != null) {
 
-      List<Long> stockMoveList =
-          Beans.get(PurchaseOrderStockServiceImpl.class)
-              .createStockMoveFromPurchaseOrder(
-                  Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+        List<Long> stockMoveList =
+            Beans.get(PurchaseOrderStockServiceImpl.class)
+                .createStockMoveFromPurchaseOrder(
+                    Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 
-      if (stockMoveList != null && stockMoveList.size() == 1) {
-        response.setView(
-            ActionView.define(I18n.get("Stock move"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .param("search-filters", "internal-stock-move-filters")
-                .param("forceEdit", "true")
-                .domain("self.id = " + stockMoveList.get(0))
-                .context("_showRecord", String.valueOf(stockMoveList.get(0)))
-                .map());
-      } else if (stockMoveList != null && stockMoveList.size() > 1) {
-        response.setView(
-            ActionView.define(I18n.get("Stock move"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .param("search-filters", "internal-stock-move-filters")
-                .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
-                .map());
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+        if (stockMoveList != null && stockMoveList.size() == 1) {
+          response.setView(
+              ActionView.define(I18n.get("Stock move"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
+                  .param("forceEdit", "true")
+                  .domain("self.id = " + stockMoveList.get(0))
+                  .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .map());
+        } else if (stockMoveList != null && stockMoveList.size() > 1) {
+          response.setView(
+              ActionView.define(I18n.get("Stock move"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
+                  .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
+                  .map());
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -110,7 +112,6 @@ public class PurchaseOrderController {
     }
   }
 
-  @HandleExceptionResponse
   public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -347,28 +348,36 @@ public class PurchaseOrderController {
 
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
+    try {
 
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    Beans.get(PurchaseOrderSupplychainService.class)
-        .updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
-    response.setValue(
-        "amountToBeSpreadOverTheTimetable", purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      Beans.get(PurchaseOrderSupplychainService.class)
+          .updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+      response.setValue(
+          "amountToBeSpreadOverTheTimetable", purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService =
+          Beans.get(PurchaseOrderSupplychainService.class);
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
 
-    PurchaseOrderSupplychainService purchaseOrderSupplychainService =
-        Beans.get(PurchaseOrderSupplychainService.class);
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
+      if (appBudget.getManageMultiBudget()) {
+        purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
+      } else {
+        purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
 
-    if (appBudget.getManageMultiBudget()) {
-      purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
-    } else {
-      purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
+        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+      }
 
-      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -418,23 +427,27 @@ public class PurchaseOrderController {
   }
 
   public void backToValidatedStatus(ActionRequest request, ActionResponse response) {
-
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    Beans.get(PurchaseOrderSupplychainService.class).updateToValidatedStatus(purchaseOrder);
-    response.setReload(true);
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderSupplychainService.class).updateToValidatedStatus(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void createShipmentCostLine(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    String message =
-        Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
-    if (message != null) {
-      response.setFlash(message);
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      String message =
+          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValues(purchaseOrder);
   }
 }

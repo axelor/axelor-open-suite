@@ -24,7 +24,6 @@ import com.axelor.apps.bpm.db.repo.BamlModelRepository;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -42,7 +41,6 @@ public class BamlModelController {
 
   @Inject protected BamlService bamlService;
 
-  @HandleExceptionResponse
   public void generateCode(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BamlModel model = request.getContext().asType(BamlModel.class);

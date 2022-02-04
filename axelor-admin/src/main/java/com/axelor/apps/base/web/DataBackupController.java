@@ -19,7 +19,6 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.service.app.DataBackupService;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,14 +26,12 @@ import java.io.IOException;
 
 public class DataBackupController {
 
-  @HandleExceptionResponse
   public void createBackup(ActionRequest req, ActionResponse res) throws IOException {
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
     Beans.get(DataBackupService.class).createBackUp(dataBackup);
     res.setReload(true);
   }
 
-  @HandleExceptionResponse
   public void restoreBackup(ActionRequest req, ActionResponse res) throws IOException {
     DataBackupService dataBackupService = Beans.get(DataBackupService.class);
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);

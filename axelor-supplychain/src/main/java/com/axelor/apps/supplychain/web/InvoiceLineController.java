@@ -24,7 +24,6 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,7 +34,6 @@ import java.util.List;
 
 public class InvoiceLineController {
 
-  @HandleExceptionResponse
   public List<InvoiceLine> updateQty(
       List<InvoiceLine> invoiceLines, BigDecimal oldKitQty, BigDecimal newKitQty, Invoice invoice)
       throws AxelorException {

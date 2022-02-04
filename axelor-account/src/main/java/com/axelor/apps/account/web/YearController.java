@@ -19,8 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,16 +28,25 @@ import com.google.inject.Singleton;
 @Singleton
 public class YearController {
 
-  @HandleExceptionResponse
-  public void close(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void close(ActionRequest request, ActionResponse response) {
     Year year = request.getContext().asType(Year.class);
-    Beans.get(YearServiceAccountImpl.class).closeYearProcess(year);
-    response.setReload(true);
+
+    try {
+      Beans.get(YearServiceAccountImpl.class).closeYearProcess(year);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void adjust(ActionRequest request, ActionResponse response) {
     Year year = request.getContext().asType(Year.class);
-    Beans.get(YearServiceAccountImpl.class).adjust(year);
-    response.setReload(true);
+
+    try {
+      Beans.get(YearServiceAccountImpl.class).adjust(year);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

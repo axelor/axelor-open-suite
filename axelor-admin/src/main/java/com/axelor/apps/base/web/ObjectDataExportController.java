@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.ObjectDataConfigRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataExportService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -34,7 +33,6 @@ import com.axelor.rpc.Context;
 
 public class ObjectDataExportController {
 
-  @HandleExceptionResponse
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
     ObjectDataConfigExport objDataConfigExport =
@@ -63,7 +61,6 @@ public class ObjectDataExportController {
     response.setCanClose(true);
   }
 
-  @HandleExceptionResponse
   public void anonymize(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

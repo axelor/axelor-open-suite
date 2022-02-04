@@ -20,8 +20,7 @@ package com.axelor.apps.businessproduction.web;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,19 +33,20 @@ public class TimesheetLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void updateOperationOrder(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-    Timesheet timesheet = timesheetLine.getTimesheet();
-    if (timesheet == null && request.getContext().getParent() != null) {
-      timesheet = request.getContext().getParent().asType(Timesheet.class);
-    }
+  public void updateOperationOrder(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      Timesheet timesheet = timesheetLine.getTimesheet();
+      if (timesheet == null && request.getContext().getParent() != null) {
+        timesheet = request.getContext().getParent().asType(Timesheet.class);
+      }
 
-    if (timesheet != null) {
-      Beans.get(OperationOrderTimesheetService.class).updateOperationOrders(timesheet);
+      if (timesheet != null) {
+        Beans.get(OperationOrderTimesheetService.class).updateOperationOrders(timesheet);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

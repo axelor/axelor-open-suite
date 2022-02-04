@@ -20,8 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,16 +33,17 @@ public class StockLocationLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void allocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
-    stockLocationLine =
-        Beans.get(StockLocationLineRepository.class).find(stockLocationLine.getId());
-    Beans.get(StockLocationLineReservationService.class).allocateAll(stockLocationLine);
-    response.setReload(true);
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
+      stockLocationLine =
+          Beans.get(StockLocationLineRepository.class).find(stockLocationLine.getId());
+      Beans.get(StockLocationLineReservationService.class).allocateAll(stockLocationLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -52,15 +52,16 @@ public class StockLocationLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void deallocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
-    stockLocationLine =
-        Beans.get(StockLocationLineRepository.class).find(stockLocationLine.getId());
-    Beans.get(StockLocationLineReservationService.class).deallocateAll(stockLocationLine);
-    response.setReload(true);
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
+      stockLocationLine =
+          Beans.get(StockLocationLineRepository.class).find(stockLocationLine.getId());
+      Beans.get(StockLocationLineReservationService.class).deallocateAll(stockLocationLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

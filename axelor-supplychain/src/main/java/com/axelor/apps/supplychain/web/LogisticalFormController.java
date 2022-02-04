@@ -21,8 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.supplychain.report.IReport;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -32,28 +31,30 @@ import com.google.inject.Singleton;
 @Singleton
 public class LogisticalFormController {
 
-  @HandleExceptionResponse
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void print(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 
-    LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      String name =
+          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumberSeq());
 
-    String name =
-        String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumberSeq());
+      String fileLink =
+          ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
+              .addParam("LogisticalFormId", logisticalForm.getId())
+              .addParam(
+                  "Timezone",
+                  logisticalForm.getCompany() != null
+                      ? logisticalForm.getCompany().getTimezone()
+                      : null)
+              .addParam(
+                  "Locale",
+                  ReportSettings.getPrintingLocale(logisticalForm.getDeliverToCustomerPartner()))
+              .generate()
+              .getFileLink();
 
-    String fileLink =
-        ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
-            .addParam("LogisticalFormId", logisticalForm.getId())
-            .addParam(
-                "Timezone",
-                logisticalForm.getCompany() != null
-                    ? logisticalForm.getCompany().getTimezone()
-                    : null)
-            .addParam(
-                "Locale",
-                ReportSettings.getPrintingLocale(logisticalForm.getDeliverToCustomerPartner()))
-            .generate()
-            .getFileLink();
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

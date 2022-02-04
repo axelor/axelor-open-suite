@@ -45,7 +45,6 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -76,57 +75,68 @@ public class MoveController {
     }
   }
 
-  @HandleExceptionResponse
-  public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void updateLines(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
 
-    move =
-        Beans.get(MoveViewHelperService.class)
-            .updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
-    response.setValue("moveLineList", move.getMoveLineList());
-  }
+    try {
 
-  @HandleExceptionResponse
-  public void getPeriod(ActionRequest request, ActionResponse response) throws AxelorException {
+      move =
+          Beans.get(MoveViewHelperService.class)
+              .updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
+      response.setValue("moveLineList", move.getMoveLineList());
 
-    Move move = request.getContext().asType(Move.class);
-
-    if (move.getDate() != null && move.getCompany() != null) {
-      Period period =
-          Beans.get(PeriodService.class)
-              .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-      if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
-
-        response.setValue("period", period);
-      }
-    } else {
-      response.setValue("period", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  @HandleExceptionResponse
-  public void generateReverse(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Context context = request.getContext();
+  public void getPeriod(ActionRequest request, ActionResponse response) {
 
-    Move move = context.asType(Move.class);
-    move = Beans.get(MoveRepository.class).find(move.getId());
+    Move move = request.getContext().asType(Move.class);
 
-    Map<String, Object> assistantMap =
-        Beans.get(ExtractContextMoveService.class).getMapFromMoveWizardGenerateReverseForm(context);
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        Period period =
+            Beans.get(PeriodService.class)
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+        if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
 
-    Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
-    if (newMove != null) {
-      response.setView(
-          ActionView.define(I18n.get("Account move"))
-              .model("com.axelor.apps.account.db.Move")
-              .add("grid", "move-grid")
-              .add("form", "move-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", newMove.getId().toString())
-              .map());
-      response.setCanClose(true);
+          response.setValue("period", period);
+        }
+      } else {
+        response.setValue("period", null);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateReverse(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      Move move = context.asType(Move.class);
+      move = Beans.get(MoveRepository.class).find(move.getId());
+
+      Map<String, Object> assistantMap =
+          Beans.get(ExtractContextMoveService.class)
+              .getMapFromMoveWizardGenerateReverseForm(context);
+
+      Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
+      if (newMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Account move"))
+                .model("com.axelor.apps.account.db.Move")
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", newMove.getId().toString())
+                .map());
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -196,7 +206,6 @@ public class MoveController {
     }
   }
 
-  @HandleExceptionResponse
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -221,7 +230,6 @@ public class MoveController {
     }
   }
 
-  @HandleExceptionResponse
   protected void removeOneMove(Move move, ActionResponse response) throws Exception {
     MoveRemoveService moveRemoveService = Beans.get(MoveRemoveService.class);
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
@@ -300,38 +308,49 @@ public class MoveController {
 
   public void showMoveLines(ActionRequest request, ActionResponse response) {
 
-    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move Lines"));
-    actionViewBuilder.model(MoveLine.class.getName());
-    actionViewBuilder.add("grid", "move-line-grid");
-    actionViewBuilder.add("form", "move-line-form");
-    actionViewBuilder.param("search-filters", "move-line-filters");
+    try {
+      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move Lines"));
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-grid");
+      actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.param("search-filters", "move-line-filters");
 
-    if (request.getContext().get("_accountingReportId") != null) {
-      Long accountingReportId =
-          Long.valueOf(request.getContext().get("_accountingReportId").toString());
-      actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+      if (request.getContext().get("_accountingReportId") != null) {
+        Long accountingReportId =
+            Long.valueOf(request.getContext().get("_accountingReportId").toString());
+        actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+      }
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setView(actionViewBuilder.map());
   }
 
-  @HandleExceptionResponse
-  public void updateInDayBookMode(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
     move = Beans.get(MoveRepository.class).find(move.getId());
-    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-        || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
-      Beans.get(MoveValidateService.class).updateInDayBookMode(move);
-      response.setReload(true);
+
+    try {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+        Beans.get(MoveValidateService.class).updateInDayBookMode(move);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
 
-    Map<String, Object> values = Beans.get(MoveComputeService.class).computeTotals(move);
-    response.setValues(values);
+    try {
+      Map<String, Object> values = Beans.get(MoveComputeService.class).computeTotals(move);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
@@ -353,8 +372,12 @@ public class MoveController {
   public void filterPartner(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
-      String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
-      response.setAttr("partner", "domain", domain);
+      try {
+        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        response.setAttr("partner", "domain", domain);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 
@@ -362,76 +385,87 @@ public class MoveController {
 
     Move move = request.getContext().asType(Move.class);
     boolean isHidden = true;
-    if (move.getMoveLineList() != null
-        && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
-            || moveLine.getReconcileGroup() != null) {
-          isHidden = false;
+    try {
+      if (move.getMoveLineList() != null
+          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
+              || moveLine.getReconcileGroup() != null) {
+            isHidden = false;
+          }
         }
       }
+      response.setAttr("$reconcileTags", "hidden", isHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("$reconcileTags", "hidden", isHidden);
   }
 
   public void checkRemoveLines(ActionRequest request, ActionResponse response) {
-    Move moveView = request.getContext().asType(Move.class);
-    if (moveView.getId() == null) {
-      return;
-    }
-    Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
-    List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
-    for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
-      if (!moveView.getMoveLineList().contains(moveLineBD)) {
-        if (moveLineBD.getReconcileGroup() != null) {
-          moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
+    try {
+      Move moveView = request.getContext().asType(Move.class);
+      if (moveView.getId() == null) {
+        return;
+      }
+      Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
+      List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
+      for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
+        if (!moveView.getMoveLineList().contains(moveLineBD)) {
+          if (moveLineBD.getReconcileGroup() != null) {
+            moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
+          }
         }
       }
-    }
-    if (moveLineReconciledAndRemovedNameList != null
-        && !moveLineReconciledAndRemovedNameList.isEmpty()) {
-      response.setError(
-          String.format(
-              I18n.get(IExceptionMessage.MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED),
-              moveLineReconciledAndRemovedNameList.toString()));
+      if (moveLineReconciledAndRemovedNameList != null
+          && !moveLineReconciledAndRemovedNameList.isEmpty()) {
+        response.setError(
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED),
+                moveLineReconciledAndRemovedNameList.toString()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  @HandleExceptionResponse
   public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    if (move.getCompany() != null) {
-      AccountConfig accountConfig =
-          Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-      if (accountConfig != null
-          && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticAxis analyticAxis = null;
-        for (int i = 1; i <= 5; i++) {
-          response.setAttr(
-              "moveLineList.axis" + i + "AnalyticAccount",
-              "hidden",
-              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getOrderSelect() == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        if (accountConfig != null
+            && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+            && accountConfig.getManageAnalyticAccounting()) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr(
+                "moveLineList.axis" + i + "AnalyticAccount",
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getOrderSelect() == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
+              response.setAttr(
+                  "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+              analyticAxis = null;
             }
           }
-          if (analyticAxis != null) {
-            response.setAttr(
-                "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
-            analyticAxis = null;
+        } else {
+          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
+          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
           }
         }
-      } else {
-        response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
-        response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
-        for (int i = 1; i <= 5; i++) {
-          response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
-        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -459,9 +493,13 @@ public class MoveController {
   }
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-    Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
-    response.setValue("moveLineList", move.getMoveLineList());
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setSimulate(ActionRequest request, ActionResponse response) {

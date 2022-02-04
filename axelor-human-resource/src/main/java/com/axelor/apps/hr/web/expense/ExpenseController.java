@@ -67,7 +67,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -94,7 +93,6 @@ public class ExpenseController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -104,7 +102,6 @@ public class ExpenseController {
     response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
   }
 
-  @HandleExceptionResponse
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -278,26 +275,27 @@ public class ExpenseController {
     response.setValue("period", expense.getPeriod());
   }
 
-  @HandleExceptionResponse
   public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-    Move move = Beans.get(ExpenseService.class).ventilate(expense);
-    response.setReload(true);
-    if (move != null) {
-      response.setView(
-          ActionView.define(I18n.get("Move"))
-              .model(Move.class.getName())
-              .add("grid", "move-grid")
-              .add("form", "move-form")
-              .param("search-filters", "move-filters")
-              .context("_showRecord", String.valueOf(move.getId()))
-              .map());
+    try {
+      Expense expense = request.getContext().asType(Expense.class);
+      expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+      Move move = Beans.get(ExpenseService.class).ventilate(expense);
+      response.setReload(true);
+      if (move != null) {
+        response.setView(
+            ActionView.define(I18n.get("Move"))
+                .model(Move.class.getName())
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .param("search-filters", "move-filters")
+                .context("_showRecord", String.valueOf(move.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  @HandleExceptionResponse
   public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
@@ -335,7 +333,7 @@ public class ExpenseController {
     return String.format("%s", total);
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) {
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
@@ -357,13 +355,15 @@ public class ExpenseController {
     }
   }
 
-  @HandleExceptionResponse
-  public void addPayment(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void addPayment(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-
-    Beans.get(ExpenseService.class).addPayment(expense);
-    response.setReload(true);
+    try {
+      Beans.get(ExpenseService.class).addPayment(expense);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -371,19 +371,20 @@ public class ExpenseController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void cancelPayment(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancelPayment(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-
-    Beans.get(ExpenseService.class).cancelPayment(expense);
-    response.setReload(true);
+    try {
+      Beans.get(ExpenseService.class).cancelPayment(expense);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   // sending expense and sending mail to manager
-  public void send(ActionRequest request, ActionResponse response) {
+  public void send(ActionRequest request, ActionResponse response) throws AxelorException {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -419,7 +420,7 @@ public class ExpenseController {
   }
 
   // validating expense and sending mail to applicant
-  public void valid(ActionRequest request, ActionResponse response) {
+  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -444,7 +445,7 @@ public class ExpenseController {
   }
 
   // refusing expense and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) {
+  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -468,14 +469,17 @@ public class ExpenseController {
     }
   }
 
-  @HandleExceptionResponse
   public void fillKilometricExpenseProduct(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    Expense expense = request.getContext().getParent().asType(Expense.class);
-    Product expenseProduct = Beans.get(ExpenseService.class).getKilometricExpenseProduct(expense);
-    logger.debug("Get Kilometric expense product : {}", expenseProduct);
-    response.setValue("expenseProduct", expenseProduct);
+    try {
+      Expense expense = request.getContext().getParent().asType(Expense.class);
+      Product expenseProduct = Beans.get(ExpenseService.class).getKilometricExpenseProduct(expense);
+      logger.debug("Get Kilometric expense product : {}", expenseProduct);
+      response.setValue("expenseProduct", expenseProduct);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validateAndCompute(ActionRequest request, ActionResponse response) {
@@ -519,7 +523,6 @@ public class ExpenseController {
     compute(request, response);
   }
 
-  @HandleExceptionResponse
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -555,13 +558,16 @@ public class ExpenseController {
     }
 
     BigDecimal amount = BigDecimal.ZERO;
-    amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+    try {
+      amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
 
     response.setValue("totalAmount", amount);
     response.setValue("untaxedAmount", amount);
   }
 
-  @HandleExceptionResponse
   public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
@@ -570,36 +576,41 @@ public class ExpenseController {
       setExpense(request, expenseLine);
     }
 
-    List<KilometricAllowParam> kilometricAllowParamList =
-        Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
-    if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
-      response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr(
-          "kilometricAllowParam",
-          "domain",
-          "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
-    }
+    try {
+      List<KilometricAllowParam> kilometricAllowParamList =
+          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+      if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
+        response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
+      } else {
+        response.setAttr(
+            "kilometricAllowParam",
+            "domain",
+            "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+      }
 
-    KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
-    boolean vehicleOk = false;
+      KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
+      boolean vehicleOk = false;
 
-    if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
-      response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-    } else if (kilometricAllowParamList != null) {
-      for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
-        if (currentKilometricAllowParam != null
-            && currentKilometricAllowParam.equals(kilometricAllowParam)) {
-          expenseLine.setKilometricAllowParam(kilometricAllowParam);
-          vehicleOk = true;
-          break;
+      if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
+        response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
+      } else if (kilometricAllowParamList != null) {
+        for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
+          if (currentKilometricAllowParam != null
+              && currentKilometricAllowParam.equals(kilometricAllowParam)) {
+            expenseLine.setKilometricAllowParam(kilometricAllowParam);
+            vehicleOk = true;
+            break;
+          }
+        }
+        if (!vehicleOk) {
+          response.setValue("kilometricAllowParam", null);
+        } else {
+          response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
         }
       }
-      if (!vehicleOk) {
-        response.setValue("kilometricAllowParam", null);
-      } else {
-        response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
-      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -612,7 +623,6 @@ public class ExpenseController {
     }
   }
 
-  @HandleExceptionResponse
   public void domainOnSelectOnKAP(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -622,64 +632,72 @@ public class ExpenseController {
       setExpense(request, expenseLine);
     }
 
-    List<KilometricAllowParam> kilometricAllowParamList =
-        Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
-    response.setAttr(
-        "kilometricAllowParam",
-        "domain",
-        "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+    try {
+      List<KilometricAllowParam> kilometricAllowParamList =
+          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+      response.setAttr(
+          "kilometricAllowParam",
+          "domain",
+          "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
   public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     // Compute distance.
+    try {
 
-    if (!Beans.get(AppHumanResourceService.class)
-        .getAppExpense()
-        .getComputeDistanceWithWebService()) {
-      return;
+      if (!Beans.get(AppHumanResourceService.class)
+          .getAppExpense()
+          .getComputeDistanceWithWebService()) {
+        return;
+      }
+
+      Context context = request.getContext();
+      ExpenseLine expenseLine = context.asType(ExpenseLine.class);
+
+      if (Strings.isNullOrEmpty(expenseLine.getFromCity())
+          || Strings.isNullOrEmpty(expenseLine.getToCity())) {
+        return;
+      }
+
+      KilometricService kilometricService = Beans.get(KilometricService.class);
+      BigDecimal distance = kilometricService.computeDistance(expenseLine);
+      expenseLine.setDistance(distance);
+      response.setValue("distance", distance);
+
+      // Compute kilometric expense.
+
+      if (expenseLine.getKilometricAllowParam() == null
+          || expenseLine.getExpenseDate() == null
+          || expenseLine.getKilometricTypeSelect() == 0) {
+        return;
+      }
+
+      Expense expense = expenseLine.getExpense();
+
+      if (expense == null) {
+        expense = context.getParent().asType(Expense.class);
+      }
+
+      Employee employee = expense.getUser().getEmployee();
+
+      if (employee == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            expense.getUser().getName());
+      }
+
+      BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+      response.setValue("totalAmount", amount);
+      response.setValue("untaxedAmount", amount);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    Context context = request.getContext();
-    ExpenseLine expenseLine = context.asType(ExpenseLine.class);
-
-    if (Strings.isNullOrEmpty(expenseLine.getFromCity())
-        || Strings.isNullOrEmpty(expenseLine.getToCity())) {
-      return;
-    }
-
-    KilometricService kilometricService = Beans.get(KilometricService.class);
-    BigDecimal distance = kilometricService.computeDistance(expenseLine);
-    expenseLine.setDistance(distance);
-    response.setValue("distance", distance);
-
-    // Compute kilometric expense.
-
-    if (expenseLine.getKilometricAllowParam() == null
-        || expenseLine.getExpenseDate() == null
-        || expenseLine.getKilometricTypeSelect() == 0) {
-      return;
-    }
-
-    Expense expense = expenseLine.getExpense();
-
-    if (expense == null) {
-      expense = context.getParent().asType(Expense.class);
-    }
-
-    Employee employee = expense.getUser().getEmployee();
-
-    if (employee == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          expense.getUser().getName());
-    }
-
-    BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
-    response.setValue("totalAmount", amount);
-    response.setValue("untaxedAmount", amount);
   }
 }

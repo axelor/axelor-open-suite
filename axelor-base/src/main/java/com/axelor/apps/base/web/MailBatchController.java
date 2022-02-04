@@ -25,7 +25,6 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,7 +35,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class MailBatchController {
 
-  @HandleExceptionResponse
   public void remindTimesheet(ActionRequest request, ActionResponse response) {
 
     try {
@@ -57,7 +55,6 @@ public class MailBatchController {
     }
   }
 
-  @HandleExceptionResponse
   public void remindTimesheetGeneral(ActionRequest request, ActionResponse response) {
     try {
 

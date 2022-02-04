@@ -23,7 +23,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -41,81 +41,94 @@ import java.util.LinkedHashMap;
 @Singleton
 public class UnitCostCalculationController {
 
-  @HandleExceptionResponse
   public void runUnitCostCalc(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    UnitCostCalculation unitCostCalculation =
-        request.getContext().asType(UnitCostCalculation.class);
-    unitCostCalculation =
-        Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
-    Beans.get(UnitCostCalculationService.class).runUnitCostCalc(unitCostCalculation);
+    try {
+      UnitCostCalculation unitCostCalculation =
+          request.getContext().asType(UnitCostCalculation.class);
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+      Beans.get(UnitCostCalculationService.class).runUnitCostCalc(unitCostCalculation);
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
   public void updateUnitCosts(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    UnitCostCalculation unitCostCalculation =
-        request.getContext().asType(UnitCostCalculation.class);
-    unitCostCalculation =
-        Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
-    Beans.get(UnitCostCalculationService.class).updateUnitCosts(unitCostCalculation);
+    try {
+      UnitCostCalculation unitCostCalculation =
+          request.getContext().asType(UnitCostCalculation.class);
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+      Beans.get(UnitCostCalculationService.class).updateUnitCosts(unitCostCalculation);
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
   public void exportUnitCostCalc(ActionRequest request, ActionResponse response)
       throws IOException {
 
-    UnitCostCalculation unitCostCalculation =
-        request.getContext().asType(UnitCostCalculation.class);
-    unitCostCalculation =
-        Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
-    String fileName =
-        unitCostCalculation.getUnitCostCalcSeq()
-            + "-"
-            + Beans.get(AppProductionService.class)
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-    MetaFile metaFile =
-        Beans.get(UnitCostCalculationService.class)
-            .exportUnitCostCalc(unitCostCalculation, fileName);
+    try {
+      UnitCostCalculation unitCostCalculation =
+          request.getContext().asType(UnitCostCalculation.class);
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+      String fileName =
+          unitCostCalculation.getUnitCostCalcSeq()
+              + "-"
+              + Beans.get(AppProductionService.class)
+                  .getTodayDateTime()
+                  .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+      MetaFile metaFile =
+          Beans.get(UnitCostCalculationService.class)
+              .exportUnitCostCalc(unitCostCalculation, fileName);
 
-    response.setView(
-        ActionView.define(fileName)
-            .add(
-                "html",
-                "ws/rest/com.axelor.meta.db.MetaFile/"
-                    + metaFile.getId()
-                    + "/content/download?v="
-                    + metaFile.getVersion())
-            .map());
-    response.setReload(true);
+      response.setView(
+          ActionView.define(fileName)
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + metaFile.getId()
+                      + "/content/download?v="
+                      + metaFile.getVersion())
+              .map());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
   public void importUnitCostCalc(ActionRequest request, ActionResponse response)
       throws IOException {
 
-    LinkedHashMap<String, Object> map =
-        (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-    MetaFile dataFile =
-        Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
-    File csvFile = MetaFiles.getPath(dataFile).toFile();
-    Long unitCostCalculationId = Long.valueOf(request.getContext().get("_id").toString());
-    UnitCostCalculation unitCostCalculation =
-        Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculationId);
+    try {
+      LinkedHashMap<String, Object> map =
+          (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+      MetaFile dataFile =
+          Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
+      File csvFile = MetaFiles.getPath(dataFile).toFile();
+      Long unitCostCalculationId = Long.valueOf(request.getContext().get("_id").toString());
+      UnitCostCalculation unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculationId);
 
-    if (Files.getFileExtension(csvFile.getName()).equals("csv")) {
-      Beans.get(UnitCostCalculationService.class).importUnitCostCalc(dataFile, unitCostCalculation);
-      response.setCanClose(true);
-    } else {
-      response.setError(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_CSV_ERROR);
+      if (Files.getFileExtension(csvFile.getName()).equals("csv")) {
+        Beans.get(UnitCostCalculationService.class)
+            .importUnitCostCalc(dataFile, unitCostCalculation);
+        response.setCanClose(true);
+      } else {
+        response.setError(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_CSV_ERROR);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

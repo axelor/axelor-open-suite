@@ -21,8 +21,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,18 +31,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class SaleOrderLineController {
 
-  @HandleExceptionResponse
-  public void customizeBillOfMaterial(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+  public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-    BillOfMaterial copyBillOfMaterial =
-        Beans.get(BillOfMaterialService.class).customizeBillOfMaterial(saleOrderLine);
+      BillOfMaterial copyBillOfMaterial =
+          Beans.get(BillOfMaterialService.class).customizeBillOfMaterial(saleOrderLine);
 
-    if (copyBillOfMaterial != null) {
+      if (copyBillOfMaterial != null) {
 
-      response.setValue("billOfMaterial", copyBillOfMaterial);
-      response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
+        response.setValue("billOfMaterial", copyBillOfMaterial);
+        response.setFlash(I18n.get(IExceptionMessage.SALE_ORDER_LINE_1));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

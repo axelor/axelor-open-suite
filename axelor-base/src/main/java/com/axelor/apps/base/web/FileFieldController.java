@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.service.advanced.imports.FileFieldService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -26,8 +27,13 @@ import com.axelor.rpc.ActionResponse;
 public class FileFieldController {
 
   public void fillType(ActionRequest request, ActionResponse response) {
-    FileField fileField = request.getContext().asType(FileField.class);
-    fileField = Beans.get(FileFieldService.class).fillType(fileField);
-    response.setValues(fileField);
+    try {
+      FileField fileField = request.getContext().asType(FileField.class);
+      fileField = Beans.get(FileFieldService.class).fillType(fileField);
+      response.setValues(fileField);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

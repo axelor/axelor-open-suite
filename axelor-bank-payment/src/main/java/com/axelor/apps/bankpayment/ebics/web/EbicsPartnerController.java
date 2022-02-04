@@ -21,29 +21,30 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
 public class EbicsPartnerController {
 
-  @HandleExceptionResponse
-  public void getBankStatement(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+  public void getBankStatement(ActionRequest request, ActionResponse response) {
 
-    EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
-    List<BankStatement> bankStatementList =
-        Beans.get(EbicsPartnerService.class)
-            .getBankStatements(Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()));
-    response.setFlash(String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
-
+    try {
+      EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
+      List<BankStatement> bankStatementList =
+          Beans.get(EbicsPartnerService.class)
+              .getBankStatements(
+                  Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()));
+      response.setFlash(
+          String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
     response.setReload(true);
   }
 

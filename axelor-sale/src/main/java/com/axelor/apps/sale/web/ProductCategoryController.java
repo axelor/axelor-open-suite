@@ -19,8 +19,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.sale.service.ProductCategorySaleService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,14 +32,15 @@ public class ProductCategoryController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void updateSaleOrderLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    ProductCategory productCategory = request.getContext().asType(ProductCategory.class);
-    if (productCategory.getId() != null) {
-      Beans.get(ProductCategorySaleService.class).updateSaleOrderLines(productCategory);
+  public void updateSaleOrderLines(ActionRequest request, ActionResponse response) {
+    try {
+      ProductCategory productCategory = request.getContext().asType(ProductCategory.class);
+      if (productCategory.getId() != null) {
+        Beans.get(ProductCategorySaleService.class).updateSaleOrderLines(productCategory);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

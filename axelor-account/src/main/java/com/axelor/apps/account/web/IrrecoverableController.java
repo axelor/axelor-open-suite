@@ -24,7 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,15 +40,17 @@ public class IrrecoverableController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @HandleExceptionResponse
-  public void getIrrecoverable(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void getIrrecoverable(ActionRequest request, ActionResponse response) {
 
     Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
     irrecoverable = Beans.get(IrrecoverableRepository.class).find(irrecoverable.getId());
 
-    Beans.get(IrrecoverableService.class).getIrrecoverable(irrecoverable);
-    response.setReload(true);
+    try {
+      Beans.get(IrrecoverableService.class).getIrrecoverable(irrecoverable);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createIrrecoverableReport(ActionRequest request, ActionResponse response) {
@@ -56,30 +58,35 @@ public class IrrecoverableController {
     Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
     irrecoverable = Beans.get(IrrecoverableRepository.class).find(irrecoverable.getId());
 
-    Beans.get(IrrecoverableService.class).createIrrecoverableReport(irrecoverable);
-    response.setReload(true);
+    try {
+      Beans.get(IrrecoverableService.class).createIrrecoverableReport(irrecoverable);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void passInIrrecoverable(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
 
     Irrecoverable irrecoverable = request.getContext().asType(Irrecoverable.class);
     irrecoverable = Beans.get(IrrecoverableRepository.class).find(irrecoverable.getId());
 
-    int anomaly = Beans.get(IrrecoverableService.class).passInIrrecoverable(irrecoverable);
+    try {
+      int anomaly = Beans.get(IrrecoverableService.class).passInIrrecoverable(irrecoverable);
 
-    response.setReload(true);
+      response.setReload(true);
 
-    response.setFlash(
-        I18n.get(IExceptionMessage.IRRECOVERABLE_5)
-            + " - "
-            + anomaly
-            + " "
-            + I18n.get(IExceptionMessage.IRRECOVERABLE_6));
+      response.setFlash(
+          I18n.get(IExceptionMessage.IRRECOVERABLE_5)
+              + " - "
+              + anomaly
+              + " "
+              + I18n.get(IExceptionMessage.IRRECOVERABLE_6));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
   public void printIrrecoverable(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

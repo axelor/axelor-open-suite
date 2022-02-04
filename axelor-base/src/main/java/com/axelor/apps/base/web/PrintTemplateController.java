@@ -28,7 +28,7 @@ import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -39,7 +39,6 @@ import com.axelor.rpc.Context;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
@@ -53,9 +52,7 @@ public class PrintTemplateController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @HandleExceptionResponse
-  public void openPrint(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException, AxelorException, IOException {
+  public void openPrint(ActionRequest request, ActionResponse response) {
     Model context = request.getContext().asType(Model.class);
     String model = request.getModel();
 
@@ -64,34 +61,36 @@ public class PrintTemplateController {
     Query<PrintTemplate> printTemplateQuery =
         Beans.get(PrintTemplateRepository.class).all().filter("self.metaModel.fullName = ?", model);
 
-    long templatesCount = printTemplateQuery.count();
+    try {
+      long templatesCount = printTemplateQuery.count();
 
-    LOG.debug("Print templates count : {} ", templatesCount);
+      LOG.debug("Print templates count : {} ", templatesCount);
 
-    if (templatesCount == 0) {
-      response.setError(I18n.get("Please define a print template for the model :" + model));
-    } else if (templatesCount == 1) {
-      Print print =
-          Beans.get(PrintTemplateService.class)
-              .generatePrint(context.getId(), printTemplateQuery.fetchOne());
+      if (templatesCount == 0) {
+        response.setError(I18n.get("Please define a print template for the model :" + model));
+      } else if (templatesCount == 1) {
+        Print print =
+            Beans.get(PrintTemplateService.class)
+                .generatePrint(context.getId(), printTemplateQuery.fetchOne());
 
-      response.setView(getPrintView(print));
+        response.setView(getPrintView(print));
 
-    } else if (templatesCount >= 2) {
-      response.setView(
-          ActionView.define(I18n.get("Select template"))
-              .model(Wizard.class.getName())
-              .add("form", "select-print-template-wizard-form")
-              .param("show-confirm", "false")
-              .context("_objectId", context.getId().toString())
-              .context("_templateContextModel", model)
-              .map());
+      } else if (templatesCount >= 2) {
+        response.setView(
+            ActionView.define(I18n.get("Select template"))
+                .model(Wizard.class.getName())
+                .add("form", "select-print-template-wizard-form")
+                .param("show-confirm", "false")
+                .context("_objectId", context.getId().toString())
+                .context("_templateContextModel", model)
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  @HandleExceptionResponse
-  public void generatePrint(ActionRequest request, ActionResponse response)
-      throws AxelorException, ClassNotFoundException, IOException {
+  public void generatePrint(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
     Map templateContext = (Map) context.get("template");
@@ -104,9 +103,14 @@ public class PrintTemplateController {
 
     Long objectId = Long.parseLong(context.get("_objectId").toString());
 
-    response.setCanClose(true);
-    Print print = Beans.get(PrintTemplateService.class).generatePrint(objectId, printTemplate);
-    response.setView(getPrintView(print));
+    try {
+      response.setCanClose(true);
+      Print print = Beans.get(PrintTemplateService.class).generatePrint(objectId, printTemplate);
+      response.setView(getPrintView(print));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   private Map<String, Object> getPrintView(Print print) throws AxelorException {
@@ -122,34 +126,38 @@ public class PrintTemplateController {
     }
   }
 
-  @HandleExceptionResponse
-  public void importPrintTemplate(ActionRequest request, ActionResponse response)
-      throws IOException {
+  public void importPrintTemplate(ActionRequest request, ActionResponse response) {
 
     String config = "/data-import/import-print-template-config.xml";
 
-    InputStream inputStream = this.getClass().getResourceAsStream(config);
-    File configFile = File.createTempFile("config", ".xml");
-    FileOutputStream fout = new FileOutputStream(configFile);
-    IOUtil.copyCompletely(inputStream, fout);
+    try {
+      InputStream inputStream = this.getClass().getResourceAsStream(config);
+      File configFile = File.createTempFile("config", ".xml");
+      FileOutputStream fout = new FileOutputStream(configFile);
+      IOUtil.copyCompletely(inputStream, fout);
 
-    Path path =
-        MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
-    File tempDir = Files.createTempDir();
-    File importFile = new File(tempDir, "print-template.xml");
-    Files.copy(path.toFile(), importFile);
+      Path path =
+          MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
+      File tempDir = Files.createTempDir();
+      File importFile = new File(tempDir, "print-template.xml");
+      Files.copy(path.toFile(), importFile);
 
-    XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+      XMLImporter importer =
+          new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
 
-    ImporterListener listner = new ImporterListener("PrintTemplate");
+      ImporterListener listner = new ImporterListener("PrintTemplate");
 
-    importer.addListener(listner);
+      importer.addListener(listner);
 
-    importer.run();
+      importer.run();
 
-    FileUtils.forceDelete(configFile);
+      FileUtils.forceDelete(configFile);
 
-    FileUtils.forceDelete(tempDir);
-    response.setValue("importLog", listner.getImportLog());
+      FileUtils.forceDelete(tempDir);
+      response.setValue("importLog", listner.getImportLog());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

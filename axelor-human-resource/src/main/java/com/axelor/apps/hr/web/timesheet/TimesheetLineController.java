@@ -21,8 +21,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,25 +42,26 @@ public class TimesheetLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void setStoredDuration(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setStoredDuration(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      Timesheet timesheet;
+      Context parent = request.getContext().getParent();
+      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+        timesheet = parent.asType(Timesheet.class);
+      } else {
+        timesheet = timesheetLine.getTimesheet();
+      }
+      BigDecimal hoursDuration =
+          Beans.get(TimesheetLineService.class)
+              .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
 
-    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-    Timesheet timesheet;
-    Context parent = request.getContext().getParent();
-    if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-      timesheet = parent.asType(Timesheet.class);
-    } else {
-      timesheet = timesheetLine.getTimesheet();
+      response.setValue(HOURS_DURATION_FIELD, hoursDuration);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    BigDecimal hoursDuration =
-        Beans.get(TimesheetLineService.class)
-            .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
-
-    response.setValue(HOURS_DURATION_FIELD, hoursDuration);
   }
 
   /**
@@ -70,24 +70,26 @@ public class TimesheetLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void setDuration(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void setDuration(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      Timesheet timesheet;
+      Context parent = request.getContext().getParent();
+      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+        timesheet = parent.asType(Timesheet.class);
+      } else {
+        timesheet = timesheetLine.getTimesheet();
+      }
+      BigDecimal duration =
+          Beans.get(TimesheetLineService.class)
+              .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false);
 
-    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-    Timesheet timesheet;
-    Context parent = request.getContext().getParent();
-    if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-      timesheet = parent.asType(Timesheet.class);
-    } else {
-      timesheet = timesheetLine.getTimesheet();
+      response.setValue(DURATION_FIELD, duration);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    BigDecimal duration =
-        Beans.get(TimesheetLineService.class)
-            .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false);
-
-    response.setValue(DURATION_FIELD, duration);
   }
 
   /**
@@ -98,11 +100,15 @@ public class TimesheetLineController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      timesheetLine = Beans.get(TimesheetLineRepository.class).find(timesheetLine.getId());
+      timesheetLine.setToInvoice(!timesheetLine.getToInvoice());
+      Beans.get(TimesheetLineRepository.class).save(timesheetLine);
+      response.setValue("toInvoice", timesheetLine.getToInvoice());
 
-    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-    timesheetLine = Beans.get(TimesheetLineRepository.class).find(timesheetLine.getId());
-    timesheetLine.setToInvoice(!timesheetLine.getToInvoice());
-    Beans.get(TimesheetLineRepository.class).save(timesheetLine);
-    response.setValue("toInvoice", timesheetLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

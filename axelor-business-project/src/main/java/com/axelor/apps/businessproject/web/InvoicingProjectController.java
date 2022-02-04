@@ -25,7 +25,6 @@ import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,7 +44,6 @@ public class InvoicingProjectController {
 
   @Inject private InvoicingProjectRepository invoicingProjectRepository;
 
-  @HandleExceptionResponse
   public void fillIn(ActionRequest request, ActionResponse response) throws AxelorException {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
     InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
@@ -61,7 +59,6 @@ public class InvoicingProjectController {
   }
 
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

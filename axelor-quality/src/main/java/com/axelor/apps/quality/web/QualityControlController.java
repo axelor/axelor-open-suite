@@ -28,7 +28,7 @@ import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,7 +38,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
-import javax.mail.MessagingException;
-import wslite.json.JSONException;
 
 @Singleton
 public class QualityControlController {
@@ -79,7 +76,6 @@ public class QualityControlController {
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
   public void preFillOperations(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -132,7 +128,6 @@ public class QualityControlController {
     response.setCanClose(true);
   }
 
-  @HandleExceptionResponse
   public void printQualityControl(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -149,37 +144,38 @@ public class QualityControlController {
   }
 
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
-  public void sendEmail(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
-    Context context = request.getContext();
+  public void sendEmail(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
 
-    QualityControlService qualityControlService = Beans.get(QualityControlService.class);
+      QualityControlService qualityControlService = Beans.get(QualityControlService.class);
 
-    if (!ObjectUtils.isEmpty(context.get("_ids"))) {
-      List<Long> idList =
-          Lists.transform(
-              (List) context.get("_ids"),
-              new Function<Object, Long>() {
-                @Nullable
-                @Override
-                public Long apply(@Nullable Object input) {
-                  return Long.parseLong(input.toString());
-                }
-              });
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> idList =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
 
-      QualityControlRepository qualityControlRepo = Beans.get(QualityControlRepository.class);
+        QualityControlRepository qualityControlRepo = Beans.get(QualityControlRepository.class);
 
-      for (Long id : idList) {
-        QualityControl qualityControl = qualityControlRepo.find(id);
-        if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
-          qualityControlService.sendEmail(qualityControl);
+        for (Long id : idList) {
+          QualityControl qualityControl = qualityControlRepo.find(id);
+          if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
+            qualityControlService.sendEmail(qualityControl);
+          }
         }
+      } else if (!ObjectUtils.isEmpty(context.get("id"))) {
+        QualityControl qualityControl = context.asType(QualityControl.class);
+        qualityControlService.sendEmail(qualityControl);
       }
-    } else if (!ObjectUtils.isEmpty(context.get("id"))) {
-      QualityControl qualityControl = context.asType(QualityControl.class);
-      qualityControlService.sendEmail(qualityControl);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

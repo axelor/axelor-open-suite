@@ -21,7 +21,7 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -81,7 +81,6 @@ public class ProjectPlanningTimeController {
     response.setCanClose(true);
   }
 
-  @HandleExceptionResponse
   public void addMultipleProjectPlanningTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -96,23 +95,28 @@ public class ProjectPlanningTimeController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
   @Transactional
   public void updateIsIncludeInTuronverForecast(ActionRequest request, ActionResponse response) {
 
-    ProjectPlanningTime projectPlanningTime =
-        request.getContext().asType(ProjectPlanningTime.class);
+    try {
+      ProjectPlanningTime projectPlanningTime =
+          request.getContext().asType(ProjectPlanningTime.class);
 
-    projectPlanningTime =
-        Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
+      projectPlanningTime =
+          Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
 
-    projectPlanningTime.setIsIncludeInTurnoverForecast(
-        !projectPlanningTime.getIsIncludeInTurnoverForecast());
+      projectPlanningTime.setIsIncludeInTurnoverForecast(
+          !projectPlanningTime.getIsIncludeInTurnoverForecast());
 
-    Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
+      Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
 
-    response.setValue(
-        "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
+      response.setValue(
+          "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {

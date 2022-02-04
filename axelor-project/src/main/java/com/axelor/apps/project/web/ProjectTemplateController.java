@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTemplateService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,20 +39,19 @@ import java.util.Map;
 @Singleton
 public class ProjectTemplateController {
 
-  @HandleExceptionResponse
-  public void createProjectFromTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
-    Map<String, Object> projectTemplateView =
-        Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
-    response.setView(projectTemplateView);
+  public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
+      Map<String, Object> projectTemplateView =
+          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+      response.setView(projectTemplateView);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
-  public void createProjectFromWizard(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createProjectFromWizard(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
@@ -73,20 +72,23 @@ public class ProjectTemplateController {
     }
 
     Project project;
+    try {
+      project =
+          Beans.get(ProjectService.class)
+              .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+      response.setCanClose(true);
 
-    project =
-        Beans.get(ProjectService.class)
-            .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
-    response.setCanClose(true);
-
-    response.setView(
-        ActionView.define(I18n.get("Project"))
-            .model(Project.class.getName())
-            .add("form", "project-form")
-            .add("grid", "project-grid")
-            .param("search-filters", "project-filters")
-            .context("_showRecord", project.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Project"))
+              .model(Project.class.getName())
+              .add("form", "project-form")
+              .add("grid", "project-grid")
+              .param("search-filters", "project-filters")
+              .context("_showRecord", project.getId())
+              .map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void addParentTaskTemplate(ActionRequest request, ActionResponse response) {

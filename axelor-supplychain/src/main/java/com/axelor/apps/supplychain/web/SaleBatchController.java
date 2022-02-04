@@ -23,7 +23,6 @@ import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SaleBatchService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -42,7 +41,6 @@ public class SaleBatchController {
    * @param response
    * @throws AxelorException
    */
-  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Batch batch = Beans.get(SaleBatchService.class).run((String) request.getContext().get("code"));
@@ -51,7 +49,6 @@ public class SaleBatchController {
     response.setData(mapData);
   }
 
-  @HandleExceptionResponse
   public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       SaleBatch saleBatch = request.getContext().asType(SaleBatch.class);

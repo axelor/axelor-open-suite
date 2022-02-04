@@ -30,7 +30,6 @@ import com.axelor.apps.base.service.currency.CurrencyConversionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -75,9 +74,8 @@ public class CurrencyConversionLineController {
   }
 
   @SuppressWarnings("unchecked")
-  @HandleExceptionResponse
   public void convert(ActionRequest request, ActionResponse response)
-      throws MalformedURLException, JSONException {
+      throws MalformedURLException, JSONException, AxelorException {
     Context context = request.getContext();
     Currency fromCurrency = null;
     Currency toCurrency = null;

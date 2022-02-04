@@ -29,7 +29,6 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.csv.script.ImportLeadConfiguration;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,6 +40,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,9 +55,9 @@ public class LeadController {
    * @param request
    * @param response
    * @return
-   * @throws AxelorException
+   * @throws BirtException
+   * @throws IOException
    */
-  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Lead lead = request.getContext().asType(Lead.class);
@@ -127,7 +127,6 @@ public class LeadController {
     }
   }
 
-  @HandleExceptionResponse
   public void setSocialNetworkUrl(ActionRequest request, ActionResponse response)
       throws IOException {
 
@@ -182,10 +181,13 @@ public class LeadController {
   }
 
   public void loseLead(ActionRequest request, ActionResponse response) {
-
-    Lead lead = request.getContext().asType(Lead.class);
-    Beans.get(LeadService.class)
-        .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
-    response.setCanClose(true);
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class)
+          .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

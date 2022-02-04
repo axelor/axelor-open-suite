@@ -24,7 +24,7 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -37,7 +37,6 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class MrpLineController {
 
-  @HandleExceptionResponse
   public void generateProposal(ActionRequest request, ActionResponse response)
       throws AxelorException {
     MrpLine mrpLine = request.getContext().asType(MrpLine.class);
@@ -60,36 +59,45 @@ public class MrpLineController {
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   private void toggle(ActionRequest request, ActionResponse response, boolean proposalToProcess) {
+    try {
+      List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
 
-    List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isNotEmpty(mrpLineIds)) {
+        Beans.get(MrpLineService.class).updateProposalToProcess(mrpLineIds, proposalToProcess);
+      }
 
-    if (CollectionUtils.isNotEmpty(mrpLineIds)) {
-      Beans.get(MrpLineService.class).updateProposalToProcess(mrpLineIds, proposalToProcess);
+      response.setAttr("mrpLinePanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    response.setAttr("mrpLinePanel", "refresh", true);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void toggleOne(ActionRequest request, ActionResponse response) {
+    try {
+      MrpLine mrpLine = request.getContext().asType(MrpLine.class);
+      mrpLine = Beans.get(MrpLineRepository.class).find(mrpLine.getId());
 
-    MrpLine mrpLine = request.getContext().asType(MrpLine.class);
-    mrpLine = Beans.get(MrpLineRepository.class).find(mrpLine.getId());
+      Beans.get(MrpLineService.class)
+          .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
 
-    Beans.get(MrpLineService.class)
-        .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
-
-    response.setAttr("mrpLinePanel", "refresh", true);
+      response.setAttr("mrpLinePanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void selectAll(ActionRequest request, ActionResponse response) {
+    try {
+      Mrp mrp = request.getContext().getParent().asType(Mrp.class);
+      mrp = Beans.get(MrpRepository.class).find(mrp.getId());
 
-    Mrp mrp = request.getContext().getParent().asType(Mrp.class);
-    mrp = Beans.get(MrpRepository.class).find(mrp.getId());
+      Beans.get(MrpService.class).massUpdateProposalToProcess(mrp, true);
 
-    Beans.get(MrpService.class).massUpdateProposalToProcess(mrp, true);
-
-    response.setAttr("mrpLinePanel", "refresh", true);
+      response.setAttr("mrpLinePanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

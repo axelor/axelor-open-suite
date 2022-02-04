@@ -25,7 +25,6 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -70,7 +69,6 @@ public class DuplicateObjectsController {
     response.setCanClose(true);
   }
 
-  @HandleExceptionResponse
   public void defaultObjects(ActionRequest request, ActionResponse response)
       throws SecurityException {
     List<Long> selectedIds = new ArrayList<>();
@@ -152,7 +150,6 @@ public class DuplicateObjectsController {
    * @param response
    * @throws AxelorException
    */
-  @HandleExceptionResponse
   public void showDuplicate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

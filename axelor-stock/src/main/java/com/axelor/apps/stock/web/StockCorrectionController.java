@@ -25,8 +25,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockCorrectionService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,64 +38,76 @@ import java.util.Map;
 public class StockCorrectionController {
 
   public void setDefaultDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Long stockLocaLocationLineId =
+          Long.valueOf(request.getContext().get("_stockLocationLineId").toString());
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineRepository.class).find(stockLocaLocationLineId);
+      Map<String, Object> stockCorrectionDetails;
 
-    Long stockLocaLocationLineId =
-        Long.valueOf(request.getContext().get("_stockLocationLineId").toString());
-    StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineRepository.class).find(stockLocaLocationLineId);
-    Map<String, Object> stockCorrectionDetails;
-
-    if (stockLocationLine != null) {
-      stockCorrectionDetails =
-          Beans.get(StockCorrectionService.class).fillDefaultValues(stockLocationLine);
-      response.setValues(stockCorrectionDetails);
+      if (stockLocationLine != null) {
+        stockCorrectionDetails =
+            Beans.get(StockCorrectionService.class).fillDefaultValues(stockLocationLine);
+        response.setValues(stockCorrectionDetails);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setDefaultQtys(ActionRequest request, ActionResponse response) {
+    try {
+      StockCorrection stockCorrection = request.getContext().asType(StockCorrection.class);
 
-    StockCorrection stockCorrection = request.getContext().asType(StockCorrection.class);
+      Map<String, Object> stockCorrectionQtys =
+          Beans.get(StockCorrectionService.class).fillDeafultQtys(stockCorrection);
+      response.setValues(stockCorrectionQtys);
 
-    Map<String, Object> stockCorrectionQtys =
-        Beans.get(StockCorrectionService.class).fillDeafultQtys(stockCorrection);
-    response.setValues(stockCorrectionQtys);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @HandleExceptionResponse
-  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Long id = request.getContext().asType(StockCorrection.class).getId();
-    StockCorrection stockCorrection = Beans.get(StockCorrectionRepository.class).find(id);
-    boolean success = Beans.get(StockCorrectionService.class).validate(stockCorrection);
-    if (success) {
-      response.setReload(true);
-    } else {
-      response.setError(I18n.get(IExceptionMessage.STOCK_CORRECTION_2));
+  public void validate(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = request.getContext().asType(StockCorrection.class).getId();
+      StockCorrection stockCorrection = Beans.get(StockCorrectionRepository.class).find(id);
+      boolean success = Beans.get(StockCorrectionService.class).validate(stockCorrection);
+      if (success) {
+        response.setReload(true);
+      } else {
+        response.setError(I18n.get(IExceptionMessage.STOCK_CORRECTION_2));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void showGeneratedStockMove(ActionRequest request, ActionResponse response) {
-
-    Long stockCorrectionId = request.getContext().asType(StockCorrection.class).getId();
-    StockMove stockMove =
-        Beans.get(StockMoveRepository.class)
-            .all()
-            .filter(
-                "self.originTypeSelect = ? AND self.originId = ?",
-                StockMoveRepository.ORIGIN_STOCK_CORRECTION,
-                stockCorrectionId)
-            .fetchOne();
-    if (stockMove != null) {
-      response.setView(
-          ActionView.define(I18n.get("Stock move"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form")
-              .param("search-filters", "internal-stock-move-filters")
-              .context("_showRecord", stockMove.getId().toString())
-              .map());
-    } else {
-      response.setFlash(I18n.get("No record found"));
+    try {
+      Long stockCorrectionId = request.getContext().asType(StockCorrection.class).getId();
+      StockMove stockMove =
+          Beans.get(StockMoveRepository.class)
+              .all()
+              .filter(
+                  "self.originTypeSelect = ? AND self.originId = ?",
+                  StockMoveRepository.ORIGIN_STOCK_CORRECTION,
+                  stockCorrectionId)
+              .fetchOne();
+      if (stockMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Stock move"))
+                .model(StockMove.class.getName())
+                .add("grid", "stock-move-grid")
+                .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
+                .context("_showRecord", stockMove.getId().toString())
+                .map());
+      } else {
+        response.setFlash(I18n.get("No record found"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

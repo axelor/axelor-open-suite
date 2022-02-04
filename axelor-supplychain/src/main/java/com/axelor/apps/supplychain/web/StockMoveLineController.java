@@ -25,7 +25,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -99,21 +99,22 @@ public class StockMoveLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void allocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
-    Product product = stockMoveLine.getProduct();
-    if (product == null || !product.getStockManaged()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+      Product product = stockMoveLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).allocateAll(stockMoveLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    Beans.get(ReservedQtyService.class).allocateAll(stockMoveLine);
-    response.setReload(true);
   }
 
   /**
@@ -122,15 +123,16 @@ public class StockMoveLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void deallocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
-    Beans.get(ReservedQtyService.class).updateReservedQty(stockMoveLine, BigDecimal.ZERO);
-    response.setReload(true);
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+      Beans.get(ReservedQtyService.class).updateReservedQty(stockMoveLine, BigDecimal.ZERO);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -139,21 +141,22 @@ public class StockMoveLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void requestQty(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
-    Product product = stockMoveLine.getProduct();
-    if (product == null || !product.getStockManaged()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+  public void requestQty(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+      Product product = stockMoveLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).requestQty(stockMoveLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    Beans.get(ReservedQtyService.class).requestQty(stockMoveLine);
-    response.setReload(true);
   }
 
   /**
@@ -162,22 +165,22 @@ public class StockMoveLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void cancelReservation(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
-    Product product = stockMoveLine.getProduct();
-    if (product == null || !product.getStockManaged()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+      Product product = stockMoveLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).cancelReservation(stockMoveLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    Beans.get(ReservedQtyService.class).cancelReservation(stockMoveLine);
-    response.setReload(true);
   }
 
   /**
@@ -186,23 +189,23 @@ public class StockMoveLineController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void changeReservedQty(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void changeReservedQty(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      BigDecimal newReservedQty = stockMoveLine.getReservedQty();
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
 
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    BigDecimal newReservedQty = stockMoveLine.getReservedQty();
-    stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
-
-    Product product = stockMoveLine.getProduct();
-    if (product == null || !product.getStockManaged()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      Product product = stockMoveLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).updateReservedQty(stockMoveLine, newReservedQty);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    Beans.get(ReservedQtyService.class).updateReservedQty(stockMoveLine, newReservedQty);
-    response.setReload(true);
   }
 }

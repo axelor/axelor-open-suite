@@ -24,7 +24,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -82,7 +81,6 @@ public class AccountingSituationController {
    * @param response
    * @throws AxelorException
    */
-  @HandleExceptionResponse
   public void setDefaultMail(ActionRequest request, ActionResponse response)
       throws AxelorException {
     AccountingSituation accountingSituation =

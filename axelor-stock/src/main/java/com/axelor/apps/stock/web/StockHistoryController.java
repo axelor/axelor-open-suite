@@ -21,14 +21,13 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.HandleExceptionResponse;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,13 +42,13 @@ public class StockHistoryController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  @HandleExceptionResponse
-  public void fillStockHistoryLineList(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    response.setValue("$stockHistoryLineList", getStockHistoryLineList(request));
+  public void fillStockHistoryLineList(ActionRequest request, ActionResponse response) {
+    try {
+      response.setValue("$stockHistoryLineList", getStockHistoryLineList(request));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -58,34 +57,33 @@ public class StockHistoryController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
-   * @throws IOException
    */
-  @HandleExceptionResponse
-  public void exportStockHistoryLineList(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+  public void exportStockHistoryLineList(ActionRequest request, ActionResponse response) {
+    try {
+      List<StockHistoryLine> stockHistoryLineList = getStockHistoryLineList(request);
+      String productName =
+          Beans.get(ProductRepository.class)
+              .find(new Long((Integer) ((Map) request.getContext().get("product")).get("id")))
+              .getCode();
+      String fileName =
+          Beans.get(StockHistoryService.class).getStockHistoryLineExportName(productName);
+      MetaFile csv =
+          Beans.get(StockHistoryService.class)
+              .exportStockHistoryLineList(stockHistoryLineList, fileName);
 
-    List<StockHistoryLine> stockHistoryLineList = getStockHistoryLineList(request);
-    String productName =
-        Beans.get(ProductRepository.class)
-            .find(new Long((Integer) ((Map) request.getContext().get("product")).get("id")))
-            .getCode();
-    String fileName =
-        Beans.get(StockHistoryService.class).getStockHistoryLineExportName(productName);
-    MetaFile csv =
-        Beans.get(StockHistoryService.class)
-            .exportStockHistoryLineList(stockHistoryLineList, fileName);
-
-    response.setView(
-        ActionView.define(fileName)
-            .add(
-                "html",
-                "ws/rest/com.axelor.meta.db.MetaFile/"
-                    + csv.getId()
-                    + "/content/download?v="
-                    + csv.getVersion())
-            .map());
-    response.setReload(true);
+      response.setView(
+          ActionView.define(fileName)
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + csv.getId()
+                      + "/content/download?v="
+                      + csv.getVersion())
+              .map());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   private List<StockHistoryLine> getStockHistoryLineList(ActionRequest request)
