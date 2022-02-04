@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionCancelService;
+import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.exception.service.TraceBackService;
@@ -53,6 +54,18 @@ public class PaymentSessionController {
     }
   }
 
+  public void computeTotal(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
+      response.setAttr("searchPanel", "refresh", true);
+      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void validateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
@@ -61,18 +74,6 @@ public class PaymentSessionController {
       if (Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeTotal(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
-      response.setAttr("searchPanel", "refresh", true);
-      response.setValue("sessionTotalAmount", paymentSession.getSessionTotalAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -101,6 +102,26 @@ public class PaymentSessionController {
       Beans.get(PaymentSessionCancelService.class).cancelPaymentSession(paymentSession);
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void sendEmails(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      int emailCount = Beans.get(PaymentSessionEmailService.class).sendEmails(paymentSession);
+
+      response.setReload(true);
+
+      if (emailCount == 0) {
+        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
+      } else {
+        response.setFlash(
+            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
