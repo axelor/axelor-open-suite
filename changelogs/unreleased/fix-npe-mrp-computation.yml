@@ -1,0 +1,3 @@
+---
+title: "MRP: fix NPE during computation when having multiple BOM levels."
+type: fix
