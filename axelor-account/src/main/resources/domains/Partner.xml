@@ -55,6 +55,13 @@
     <integer name="payNoticeSendingMethodSelect" title="Sending method of payment notices"
       selection="partner.payment.notice.sending.method.select" default="1"/>
 
+    <extra-code>
+      <![CDATA[
+		  public static final int PAYMENT_NOTICE_NONE = 0;
+		  public static final int PAYMENT_NOTICE_EMAIL = 1;
+	   ]]>
+    </extra-code>
+
     <track>
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>

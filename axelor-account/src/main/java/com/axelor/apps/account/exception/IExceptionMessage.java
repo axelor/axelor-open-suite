@@ -707,6 +707,8 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_SALEORDER = /*$$(*/
       "The sale order must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_PURCHASEORDER = /*$$(*/
+      "The purchase order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
@@ -1090,6 +1092,10 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  static final String PAYMENT_SESSION_NO_EMAIL_SENT = /*$$(*/ "No email have been sent." /*)*/;
+
+  static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d emails have been sent." /*)*/;
 
   static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;

@@ -218,6 +218,14 @@ public class PaymentVoucherController {
 
   public void reloadPaymentVoucher(ActionRequest request, ActionResponse response) {
     try {
+      PaymentVoucher contextPaymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      PaymentVoucher paymentVoucher =
+          Beans.get(PaymentVoucherRepository.class).find(contextPaymentVoucher.getId());
+      if (paymentVoucher != null) {
+
+        Beans.get(PaymentVoucherLoadService.class)
+            .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

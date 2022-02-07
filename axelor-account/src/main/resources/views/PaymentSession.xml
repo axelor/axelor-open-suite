@@ -78,7 +78,8 @@
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true" onClick=""/>
+        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
+        onClick="save,action-payment-session-method-send-emails"/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
     <panel name="bankOrderPanel" title="Bank order"
@@ -154,6 +155,10 @@
   <action-method name="action-payment-session-method-cancel">
     <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="cancelPaymentSession"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-send-emails">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="sendEmails"/>
   </action-method>
 
   <action-validate name="action-payment-session-validate-cancel">
