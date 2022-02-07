@@ -234,9 +234,12 @@ public class HumanResourceMobileController {
     try {
       User user = AuthUtils.getUser();
       Map<String, Object> requestData = request.getData();
-      Project project =
-          Beans.get(ProjectRepository.class)
-              .find(Long.valueOf(requestData.get("project").toString()));
+      Project project = null;
+      if (requestData.get("project") != null) {
+        project =
+            Beans.get(ProjectRepository.class)
+                .find(Long.valueOf(requestData.get("project").toString()));
+      }
       Product product =
           Beans.get(ProductRepository.class)
               .find(Long.valueOf(requestData.get("expenseType").toString()));
@@ -255,7 +258,9 @@ public class HumanResourceMobileController {
             LocalDate.parse(requestData.get("date").toString(), DateTimeFormatter.ISO_DATE));
         expenseLine.setComments(requestData.get("comments").toString());
         expenseLine.setExpenseProduct(product);
-        expenseLine.setProject(project);
+        if (project != null) {
+          expenseLine.setProject(project);
+        }
         expenseLine.setUser(user);
         expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
         expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
