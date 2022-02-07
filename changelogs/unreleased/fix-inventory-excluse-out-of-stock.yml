@@ -1,0 +1,3 @@
+---
+title: "Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true"
+type: fix

@@ -22,7 +22,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -33,6 +35,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
@@ -58,7 +61,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -77,10 +79,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected ProductCompanyService productCompanyService;
 
+  protected BillOfMaterialService billOfMaterialService;
+
+  protected AppProductionService appProductionService;
+
   @Inject
   public MrpServiceProductionImpl(
-      AppBaseService appBaseService,
-      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -93,13 +97,18 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       StockLocationService stockLocationService,
+      MailMessageService mailMessageService,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      AppPurchaseService appPurchaseService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       StockHistoryLineRepository stockHistoryLineRepository,
-      ProductCategoryService productCategoryService) {
+      ProductCategoryService productCategoryService,
+      BillOfMaterialService billOfMaterialService,
+      AppProductionService appProductionService) {
     super(
-        appBaseService,
-        appPurchaseService,
         mrpRepository,
         stockLocationRepository,
         productRepository,
@@ -111,11 +120,18 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         stockRulesService,
         mrpLineService,
         mrpForecastRepository,
+        productCategoryService,
         stockLocationService,
-        stockHistoryLineRepository,
-        productCategoryService);
+        mailMessageService,
+        unitConversionService,
+        appBaseService,
+        appSaleService,
+        appPurchaseService,
+        stockHistoryLineRepository);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
+    this.billOfMaterialService = billOfMaterialService;
+    this.appProductionService = appProductionService;
   }
 
   @Override
@@ -123,7 +139,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     super.completeMrp(mrp);
 
-    if (Beans.get(AppProductionService.class).isApp("production")) {
+    if (appProductionService.isApp("production")) {
       this.createManufOrderMrpLines();
       this.createMPSLines();
     }
@@ -392,10 +408,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineOriginList,
         relatedToSelectName);
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!appProductionService.isApp("production")) {
       return;
     }
-    BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
@@ -440,7 +457,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected MrpLineType getMrpLineTypeForProposal(
       StockRules stockRules, Product product, Company company) throws AxelorException {
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!appProductionService.isApp("production")) {
       return super.getMrpLineTypeForProposal(stockRules, product, company);
     }
 
@@ -467,7 +484,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Override
   protected boolean isProposalElement(MrpLineType mrpLineType) {
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!appProductionService.isApp("production")) {
       return super.isProposalElement(mrpLineType);
     }
 
@@ -488,16 +505,18 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Override
   protected void assignProductAndLevel(Product product) throws AxelorException {
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!appProductionService.isApp("production")) {
       super.assignProductAndLevel(product);
       return;
     }
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
-    log.debug("Add of the product : {}", product.getFullName());
-    this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
-
-    if (product.getDefaultBillOfMaterial() != null) {
-      this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
+    if (billOfMaterial != null && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
+      this.assignProductLevel(billOfMaterial, 0);
+    } else {
+      log.debug("Add product: {}", product.getFullName());
+      this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
     }
   }
 
@@ -533,19 +552,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+    Product product = billOfMaterial.getProduct();
 
-      Product subProduct = billOfMaterial.getProduct();
+    log.debug("Add product: {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
-      if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
-        log.debug(
-            "Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-        this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
-      }
-    } else {
-
-      level = level + 1;
+    level = level + 1;
+    if (billOfMaterial.getBillOfMaterialSet() != null
+        && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
 
       for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
 
@@ -554,8 +568,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         if (this.isMrpProduct(subProduct)) {
           this.assignProductLevel(subBillOfMaterial, level);
 
-          if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+          Company company = mrp.getStockLocation().getCompany();
+          BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
+          if (defaultBOM != null) {
+            this.assignProductLevel(defaultBOM, level);
           }
         }
       }

@@ -19,10 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.service.PeriodControlService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.ClosePeriodCallableService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.ResponseMessageType;
@@ -54,7 +55,11 @@ public class PeriodController {
                 .map());
       } else {
 
-        Beans.get(PeriodService.class).close(period);
+        ClosePeriodCallableService closePeriodCallableService =
+            Beans.get(ClosePeriodCallableService.class);
+        closePeriodCallableService.setPeriod(period);
+        ControllerCallableTool<Period> controllerCallableTool = new ControllerCallableTool<>();
+        controllerCallableTool.runInSeparateThread(closePeriodCallableService, response);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -66,7 +71,11 @@ public class PeriodController {
     try {
       Period period = request.getContext().asType(Period.class);
       period = Beans.get(PeriodRepository.class).find(period.getId());
-      Beans.get(PeriodService.class).close(period);
+      ClosePeriodCallableService closePeriodCallableService =
+          Beans.get(ClosePeriodCallableService.class);
+      closePeriodCallableService.setPeriod(period);
+      ControllerCallableTool<Period> controllerCallableTool = new ControllerCallableTool<>();
+      controllerCallableTool.runInSeparateThread(closePeriodCallableService, response);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
