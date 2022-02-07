@@ -49,7 +49,7 @@
   </chart>
 
   <chart name="chart.purchases.invoice.per.month.pie"
-    title="Supplier invoice by reason of refusal to pay" onInit="action.chart.set.active.company">
+    title="Supplier invoices by reason of refusal to pay" onInit="action.chart.set.active.company">
     <search-fields>
       <field name="_company" title="Company" type="reference"
         target="com.axelor.apps.base.db.Company"/>
