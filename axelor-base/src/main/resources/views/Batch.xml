@@ -5,6 +5,9 @@
 
   <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
+    <hilite color="red" if="_dashboard &amp;&amp; anomaly != 0"/>
+    <hilite color="green" if="_dashboard &amp;&amp; anomaly == 0 &amp;&amp; done != 0"/>
+    <hilite color="orange" if="_dashboard &amp;&amp; endDate == null"/>
     <field name="companyCode"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     <field name="duration" widget="duration" x-big="true"/>

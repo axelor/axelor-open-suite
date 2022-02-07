@@ -666,6 +666,13 @@
   <menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
     title="Batches" order="35"/>
 
+  <menuitem name="admin-root-batch-dashboard" parent="admin-root-batch"
+    title="Batches dashboard" action="admin.root.batch.dashboard" order="-1"/>
+
+  <action-view name="admin.root.batch.dashboard" title="Batches dashboard">
+    <view type="dashboard" name="base.batch.dashboard"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-base" parent="admin-root-batch" title="Base batches"
     action="admin.root.batch.base"/>
 
