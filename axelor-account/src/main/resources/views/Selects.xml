@@ -671,4 +671,9 @@
     <option value="10">10</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
+    <option value="200">Accounting batch</option>
+    <option value="201">Invoice batch</option>
+  </selection>
+
 </object-views>

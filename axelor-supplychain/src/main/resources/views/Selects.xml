@@ -165,4 +165,8 @@
     <option value="2">One-off sales only</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
+    <option value="900">Supplychain batch</option>
+  </selection>
+
 </object-views>
