@@ -32,8 +32,17 @@
       // Batch type select
 
 		public static final int BATCH_TYPE_BASE_BATCH = 100;
-		public static final int BATCH_TYPE_ALARM_ENGINE_BATCH = 100;
-		public static final int BATCH_TYPE_MAIL_BATCH = 100;
+		public static final int BATCH_TYPE_ALARM_ENGINE_BATCH = 101;
+		public static final int BATCH_TYPE_MAIL_BATCH = 102;
+		public static final int BATCH_TYPE_ACCOUNTING_BATCH = 200;
+		public static final int BATCH_TYPE_INVOICE_BATCH = 201;
+		public static final int BATCH_TYPE_BANK_PAYMENT_BATCH = 300;
+		public static final int BATCH_TYPE_CRM_BATCH = 400;
+		public static final int BATCH_TYPE_CONTRACT_BATCH = 500;
+		public static final int BATCH_TYPE_HR_BATCH = 600;
+		public static final int BATCH_TYPE_PRODUCTION_BATCH = 700;
+		public static final int BATCH_TYPE_SALE_BATCH = 800;
+		public static final int BATCH_TYPE_SUPPLYCHAIN_BATCH = 900;
 
 		// Action launch origin
 

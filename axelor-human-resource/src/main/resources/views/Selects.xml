@@ -223,7 +223,7 @@
   </selection>
 
   <selection name="batch.batch.type.select" id="hr.batch.batch.type.select">
-    <option value="600">HR batch</option>
+    <option value="600">HR Batch</option>
   </selection>
 
 </object-views>
