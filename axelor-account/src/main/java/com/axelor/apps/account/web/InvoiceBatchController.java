@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.invoice.InvoiceBatchService;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchWkf;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -41,6 +42,7 @@ public class InvoiceBatchController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void actionStatus(ActionRequest request, ActionResponse response) throws AxelorException {
 
     InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
@@ -60,6 +62,7 @@ public class InvoiceBatchController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -77,6 +80,7 @@ public class InvoiceBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void invoiceSetDomain(ActionRequest request, ActionResponse response) {
 
     InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);

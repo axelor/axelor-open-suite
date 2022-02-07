@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,6 +38,7 @@ import java.util.List;
 public class ABCAnalysisController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void runAnalysis(ActionRequest request, ActionResponse response) {
     ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
     try {
@@ -50,18 +52,21 @@ public class ABCAnalysisController {
     }
   }
 
+  @HandleExceptionResponse
   public void initABCClasses(ActionRequest request, ActionResponse response) {
     List<ABCAnalysisClass> abcAnalysisClassList =
         Beans.get(ABCAnalysisService.class).initABCClasses();
     response.setValue("abcAnalysisClassList", abcAnalysisClassList);
   }
 
+  @HandleExceptionResponse
   public void setSequence(ActionRequest request, ActionResponse response) {
     ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
     Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
     response.setValue("abcAnalysisSeq", abcAnalysis.getAbcAnalysisSeq());
   }
 
+  @HandleExceptionResponse
   public void printReport(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -81,6 +86,7 @@ public class ABCAnalysisController {
     response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public void checkClasses(ActionRequest request, ActionResponse response) {
     ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
 

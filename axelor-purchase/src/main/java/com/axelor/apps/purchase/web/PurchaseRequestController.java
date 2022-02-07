@@ -25,6 +25,7 @@ import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,11 +39,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class PurchaseRequestController {
 
+  @HandleExceptionResponse
   public void confirmCart(ActionRequest request, ActionResponse response) {
     Beans.get(PurchaseRequestService.class).confirmCart();
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void acceptRequest(ActionRequest request, ActionResponse response) {
 
     if (request.getContext().get("_ids") == null) {
@@ -64,6 +67,7 @@ public class PurchaseRequestController {
     }
   }
 
+  @HandleExceptionResponse
   public void generatePo(ActionRequest request, ActionResponse response) {
     @SuppressWarnings("unchecked")
     List<Long> requestIds = (List<Long>) request.getContext().get("_ids");

@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.crm.db.Catalog;
 import com.axelor.apps.crm.db.repo.CatalogRepository;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 
 public class CatalogController {
 
+  @HandleExceptionResponse
   public void showPdf(ActionRequest request, ActionResponse response) {
 
     try {

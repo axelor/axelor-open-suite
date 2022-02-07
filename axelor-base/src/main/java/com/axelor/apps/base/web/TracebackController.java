@@ -27,6 +27,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.VersionUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.TraceBack;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 
 public class TracebackController {
 
+  @HandleExceptionResponse
   public void printTraceback(ActionRequest request, ActionResponse response)
       throws AxelorException {
     TraceBack traceBack = request.getContext().asType(TraceBack.class);

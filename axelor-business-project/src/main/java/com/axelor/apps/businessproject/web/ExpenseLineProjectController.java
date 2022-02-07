@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +41,7 @@ public class ExpenseLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -83,6 +85,7 @@ public class ExpenseLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void unsetProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -99,16 +102,13 @@ public class ExpenseLineProjectController {
    * @param response
    */
   @Transactional
+  @HandleExceptionResponse
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
-    try {
-      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-      expenseLine = expenseLineRepository.find(expenseLine.getId());
-      expenseLine.setToInvoice(!expenseLine.getToInvoice());
-      expenseLineRepository.save(expenseLine);
-      response.setValue("toInvoice", expenseLine.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    expenseLine = expenseLineRepository.find(expenseLine.getId());
+    expenseLine.setToInvoice(!expenseLine.getToInvoice());
+    expenseLineRepository.save(expenseLine);
+    response.setValue("toInvoice", expenseLine.getToInvoice());
   }
 }

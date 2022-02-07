@@ -20,6 +20,7 @@ package com.axelor.apps.talent.web;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.service.TrainingSessionService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,6 +29,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TrainingSessionController {
 
+  @HandleExceptionResponse
   public void completeSession(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
@@ -38,6 +40,7 @@ public class TrainingSessionController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void updateAllRating(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
@@ -48,6 +51,7 @@ public class TrainingSessionController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void cancel(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
@@ -58,6 +62,7 @@ public class TrainingSessionController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void updateTraingRegisterTraining(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);

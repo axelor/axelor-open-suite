@@ -18,6 +18,7 @@
 package com.axelor.apps.businesssupport.service.web;
 
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 @Singleton
 public class ProjectActivityDashboardController {
 
+  @HandleExceptionResponse
   public void getData(ActionRequest request, ActionResponse response) {
     LocalDate annoucementDate =
         LocalDate.parse(

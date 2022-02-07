@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,6 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class MpsWeeklyScheduleController {
 
+  @HandleExceptionResponse
   public void countTotalHours(ActionRequest request, ActionResponse response) {
 
     MpsWeeklySchedule mpsWeeklySchedule = request.getContext().asType(MpsWeeklySchedule.class);

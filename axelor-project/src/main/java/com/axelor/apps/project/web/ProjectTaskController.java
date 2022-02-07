@@ -24,7 +24,8 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,84 +35,71 @@ public class ProjectTaskController {
 
   private static final String HIDDEN_ATTR = "hidden";
 
+  @HandleExceptionResponse
   public void manageTimerButtons(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask task = request.getContext().asType(ProjectTask.class);
-      TimerProjectTaskService service = Beans.get(TimerProjectTaskService.class);
-      if (task.getId() == null) {
-        return;
-      }
-      Timer timer = service.find(task);
 
-      boolean hideStart = false;
-      boolean hideCancel = true;
-      if (timer != null) {
-        hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
-        hideCancel = timer.getTimerHistoryList().isEmpty();
-      }
-
-      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
-      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
-      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    TimerProjectTaskService service = Beans.get(TimerProjectTaskService.class);
+    if (task.getId() == null) {
+      return;
     }
+    Timer timer = service.find(task);
+
+    boolean hideStart = false;
+    boolean hideCancel = true;
+    if (timer != null) {
+      hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
+      hideCancel = timer.getTimerHistoryList().isEmpty();
+    }
+
+    response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
+    response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
+    response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
   }
 
+  @HandleExceptionResponse
   public void computeTotalTimerDuration(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask task = request.getContext().asType(ProjectTask.class);
-      if (task.getId() == null) {
-        return;
-      }
-      Duration duration = Beans.get(TimerProjectTaskService.class).compute(task);
-      response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    if (task.getId() == null) {
+      return;
     }
+    Duration duration = Beans.get(TimerProjectTaskService.class).compute(task);
+    response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
   }
 
-  public void startTimer(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask task = request.getContext().asType(ProjectTask.class);
-      Beans.get(TimerProjectTaskService.class)
-          .start(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void startTimer(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    Beans.get(TimerProjectTaskService.class)
+        .start(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    response.setReload(true);
   }
 
-  public void stopTimer(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask task = request.getContext().asType(ProjectTask.class);
-      Beans.get(TimerProjectTaskService.class)
-          .stop(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void stopTimer(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    Beans.get(TimerProjectTaskService.class)
+        .stop(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    response.setReload(true);
   }
 
-  public void cancelTimer(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask task = request.getContext().asType(ProjectTask.class);
-      Beans.get(TimerProjectTaskService.class).cancel(task);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void cancelTimer(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    Beans.get(TimerProjectTaskService.class).cancel(task);
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void deleteProjectTask(ActionRequest request, ActionResponse response) {
-    try {
 
-      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-      projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
-      Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
+    Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
+    response.setReload(true);
   }
 }

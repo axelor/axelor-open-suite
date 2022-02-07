@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -32,7 +32,9 @@ import java.io.IOException;
 
 public class PrintTemplateLineController {
 
-  public void checkTemplateLineExpression(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void checkTemplateLineExpression(ActionRequest request, ActionResponse response)
+      throws NumberFormatException, ClassNotFoundException, AxelorException, IOException {
 
     Context context = request.getContext();
     PrintTemplateLine printTemplateLine =
@@ -43,16 +45,11 @@ public class PrintTemplateLineController {
             .all()
             .filter("self.fullName = ?", context.get("reference"))
             .fetchOne();
-    try {
-      String result =
-          Beans.get(PrintTemplateLineService.class)
-              .checkExpression(
-                  Long.valueOf(context.get("referenceId").toString()),
-                  metaModel,
-                  printTemplateLine);
-      response.setValue("$contentResult", result);
-    } catch (NumberFormatException | ClassNotFoundException | AxelorException | IOException e) {
-      TraceBackService.trace(response, e);
-    }
+
+    String result =
+        Beans.get(PrintTemplateLineService.class)
+            .checkExpression(
+                Long.valueOf(context.get("referenceId").toString()), metaModel, printTemplateLine);
+    response.setValue("$contentResult", result);
   }
 }

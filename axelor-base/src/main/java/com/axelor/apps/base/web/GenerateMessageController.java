@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,6 +30,7 @@ import java.util.Map;
 @Singleton
 public class GenerateMessageController {
 
+  @HandleExceptionResponse
   public void templateDomain(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 

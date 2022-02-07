@@ -6,6 +6,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryFetchService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -16,6 +17,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class BankStatementQueryController {
 
+  @HandleExceptionResponse
   public void checkSequenceUnicity(ActionRequest request, ActionResponse response) {
     try {
       BankStatementQuery bankStatementQuery = request.getContext().asType(BankStatementQuery.class);

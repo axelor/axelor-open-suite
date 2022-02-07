@@ -21,7 +21,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.suppliermanagement.exceptions.IExceptionMessage;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,33 +32,28 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderController {
 
-  public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    try {
-      Beans.get(PurchaseOrderSupplierService.class)
-          .generateSuppliersPurchaseOrder(
-              Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(PurchaseOrderSupplierService.class)
+        .generateSuppliersPurchaseOrder(
+            Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+    response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void generateSuppliersRequests(ActionRequest request, ActionResponse response) {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    try {
-      Beans.get(PurchaseOrderSupplierService.class)
-          .generateAllSuppliersRequests(
-              Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(PurchaseOrderSupplierService.class)
+        .generateAllSuppliersRequests(
+            Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+    response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
+    response.setReload(true);
   }
 }

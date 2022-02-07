@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
@@ -39,7 +40,7 @@ import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -47,7 +48,9 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -55,14 +58,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 @Singleton
 public class EventController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
     Event event = request.getContext().asType(Event.class);
@@ -86,6 +92,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
 
     Event event = request.getContext().asType(Event.class);
@@ -105,6 +112,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeFromDuration(ActionRequest request, ActionResponse response) {
 
     Event event = request.getContext().asType(Event.class);
@@ -122,6 +130,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeFromCalendar(ActionRequest request, ActionResponse response) {
 
     Event event = request.getContext().asType(Event.class);
@@ -135,6 +144,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -144,6 +154,7 @@ public class EventController {
     Beans.get(EventService.class).saveEvent(persistEvent);
   }
 
+  @HandleExceptionResponse
   public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -153,29 +164,28 @@ public class EventController {
     Beans.get(EventService.class).saveEvent(persistEvent);
   }
 
-  public void viewMap(ActionRequest request, ActionResponse response) {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      if (event.getLocation() != null) {
-        Map<String, Object> result = Beans.get(MapService.class).getMap(event.getLocation());
-        if (result != null) {
-          Map<String, Object> mapView = new HashMap<>();
-          mapView.put("title", "Map");
-          mapView.put("resource", result.get("url"));
-          mapView.put("viewType", "html");
-          response.setView(mapView);
-        } else
-          response.setFlash(
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),
-                  event.getLocation()));
-      } else response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void viewMap(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
+    Event event = request.getContext().asType(Event.class);
+    if (event.getLocation() != null) {
+      Map<String, Object> result = Beans.get(MapService.class).getMap(event.getLocation());
+      if (result != null) {
+        Map<String, Object> mapView = new HashMap<>();
+        mapView.put("title", "Map");
+        mapView.put("resource", result.get("url"));
+        mapView.put("viewType", "html");
+        response.setView(mapView);
+      } else
+        response.setFlash(
+            String.format(
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ADDRESS_5),
+                event.getLocation()));
+    } else response.setFlash(I18n.get(IExceptionMessage.EVENT_1));
   }
 
   @SuppressWarnings("rawtypes")
+  @HandleExceptionResponse
   public void assignToMeLead(ActionRequest request, ActionResponse response) {
 
     LeadService leadService = Beans.get(LeadService.class);
@@ -200,6 +210,7 @@ public class EventController {
   }
 
   @SuppressWarnings("rawtypes")
+  @HandleExceptionResponse
   public void assignToMeEvent(ActionRequest request, ActionResponse response) {
 
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -218,42 +229,36 @@ public class EventController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void manageFollowers(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      Beans.get(EventService.class).manageFollowers(event);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Event event = request.getContext().asType(Event.class);
+    event = Beans.get(EventRepository.class).find(event.getId());
+    Beans.get(EventService.class).manageFollowers(event);
   }
 
+  @HandleExceptionResponse
   @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      Long eventId = (Long) request.getContext().get("id");
-      if (eventId == null)
-        throw new AxelorException(
-            Event.class,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.EVENT_SAVED));
-      Event event = Beans.get(EventRepository.class).find(eventId);
+    Long eventId = (Long) request.getContext().get("id");
+    if (eventId == null)
+      throw new AxelorException(
+          Event.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EVENT_SAVED));
+    Event event = Beans.get(EventRepository.class).find(eventId);
 
-      RecurrenceConfigurationRepository confRepo =
-          Beans.get(RecurrenceConfigurationRepository.class);
-      RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
-      if (conf != null) {
-        conf = confRepo.save(conf);
-        Beans.get(EventService.class).generateRecurrentEvents(event, conf);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
+    RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
+    if (conf != null) {
+      conf = confRepo.save(conf);
+      Beans.get(EventService.class).generateRecurrentEvents(event, conf);
     }
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void deleteThis(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -269,6 +274,7 @@ public class EventController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void deleteNext(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -286,6 +292,7 @@ public class EventController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void deleteAll(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -309,6 +316,7 @@ public class EventController {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @HandleExceptionResponse
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -467,6 +475,7 @@ public class EventController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void applyChangesToAll(ActionRequest request, ActionResponse response) {
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event thisEvent =
@@ -478,12 +487,14 @@ public class EventController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void computeRecurrenceName(ActionRequest request, ActionResponse response) {
     RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
     response.setValue(
         "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
   }
 
+  @HandleExceptionResponse
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {
     User user = AuthUtils.getUser();
     List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
@@ -495,6 +506,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void checkRights(ActionRequest request, ActionResponse response) {
     Event event = request.getContext().asType(Event.class);
     User user = AuthUtils.getUser();
@@ -507,6 +519,7 @@ public class EventController {
     }
   }
 
+  @HandleExceptionResponse
   public void changeCreator(ActionRequest request, ActionResponse response) {
     User user = AuthUtils.getUser();
     response.setValue("organizer", Beans.get(CalendarService.class).findOrCreateUser(user));
@@ -517,31 +530,37 @@ public class EventController {
    *
    * @param request
    * @param response
+   * @throws ParseException
+   * @throws ICalendarException
+   * @throws IOException
+   * @throws MessagingException
+   * @throws AxelorException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   * @throws ClassNotFoundException
    */
-  public void addGuest(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void addGuest(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, MessagingException, IOException, ICalendarException, ParseException {
     Event event = request.getContext().asType(Event.class);
-    try {
-      EmailAddress emailAddress = Beans.get(EventService.class).getEmailAddress(event);
-      if (emailAddress != null) {
-        response.setValue(
-            "attendees", Beans.get(ICalendarEventService.class).addEmailGuest(emailAddress, event));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    EmailAddress emailAddress = Beans.get(EventService.class).getEmailAddress(event);
+    if (emailAddress != null) {
+      response.setValue(
+          "attendees", Beans.get(ICalendarEventService.class).addEmailGuest(emailAddress, event));
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @HandleExceptionResponse
   public void deleteReminder(ActionRequest request, ActionResponse response) {
-    try {
-      EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
 
-      EventReminder eventReminder =
-          eventReminderRepository.find((long) request.getContext().get("id"));
-      eventReminderRepository.remove(eventReminder);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
+
+    EventReminder eventReminder =
+        eventReminderRepository.find((long) request.getContext().get("id"));
+    eventReminderRepository.remove(eventReminder);
+    response.setCanClose(true);
   }
 }

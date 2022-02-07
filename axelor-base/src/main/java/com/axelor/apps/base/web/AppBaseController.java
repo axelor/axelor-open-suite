@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.base.service.currency.CurrencyConversionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,10 +36,12 @@ import com.axelor.quartz.JobRunner;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import wslite.json.JSONException;
 
 @Singleton
 public class AppBaseController {
 
+  @HandleExceptionResponse
   public void exportObjects(ActionRequest request, ActionResponse response) {
     MetaFile metaFile = Beans.get(ExportDbObjectService.class).exportObject();
     if (metaFile == null) {
@@ -55,20 +58,19 @@ public class AppBaseController {
     }
   }
 
-  public void checkMapApi(ActionRequest request, ActionResponse response) {
-    try {
-      AppBase appBase = request.getContext().asType(AppBase.class);
-      Integer apiType = appBase.getMapApiSelect();
+  @HandleExceptionResponse
+  public void checkMapApi(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException {
+    AppBase appBase = request.getContext().asType(AppBase.class);
+    Integer apiType = appBase.getMapApiSelect();
 
-      if (apiType == 1) {
-        Beans.get(MapService.class).testGMapService();
-        response.setFlash(IExceptionMessage.GENERAL_6);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (apiType == 1) {
+      Beans.get(MapService.class).testGMapService();
+      response.setFlash(IExceptionMessage.GENERAL_6);
     }
   }
 
+  @HandleExceptionResponse
   public void updateCurrencyConversion(ActionRequest request, ActionResponse response) {
     try {
       CurrencyConversionService currencyConversionService =
@@ -81,6 +83,7 @@ public class AppBaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
@@ -88,6 +91,7 @@ public class AppBaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void showCustomersOnMap(ActionRequest request, ActionResponse response) {
     try {
       response.setView(
@@ -99,6 +103,7 @@ public class AppBaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void showProspectsOnMap(ActionRequest request, ActionResponse response) {
     try {
       response.setView(
@@ -110,6 +115,7 @@ public class AppBaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void showSuppliersOnMap(ActionRequest request, ActionResponse response) {
     try {
       response.setView(
@@ -121,6 +127,7 @@ public class AppBaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void checkQuartzScheduler(ActionRequest request, ActionResponse response) {
     if (Beans.get(JobRunner.class).isEnabled()) {
       response.setFlash(I18n.get(IExceptionMessage.QUARTZ_SCHEDULER_ENABLED));

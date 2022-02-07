@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -30,6 +31,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class BatchController {
 
+  @HandleExceptionResponse
   public void createBankOrder(ActionRequest request, ActionResponse response) {
     try {
       Batch batch = request.getContext().asType(Batch.class);

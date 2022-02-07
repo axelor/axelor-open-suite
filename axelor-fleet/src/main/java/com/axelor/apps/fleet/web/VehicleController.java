@@ -19,6 +19,7 @@ package com.axelor.apps.fleet.web;
 
 import com.axelor.apps.fleet.db.Vehicle;
 import com.axelor.apps.fleet.service.VehicleService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,6 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class VehicleController {
 
+  @HandleExceptionResponse
   public void setVehicleName(ActionRequest request, ActionResponse response) {
     Vehicle vehicle = request.getContext().asType(Vehicle.class);
     String actualName = Beans.get(VehicleService.class).setVehicleName(vehicle);

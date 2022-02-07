@@ -37,6 +37,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -52,18 +53,16 @@ import javax.annotation.Nullable;
 @Singleton
 public class InvoicePaymentController {
 
-  public void cancelInvoicePayment(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void cancelInvoicePayment(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
-    try {
-      Move move = invoicePayment.getMove();
-      Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
-      if (ObjectUtils.notEmpty(move)) {
-        Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    Move move = invoicePayment.getMove();
+    Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
+    if (ObjectUtils.notEmpty(move)) {
+      Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
     }
     response.setReload(true);
   }
@@ -71,6 +70,7 @@ public class InvoicePaymentController {
   // filter the payment mode depending on the target invoice
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void filterPaymentMode(ActionRequest request, ActionResponse response) {
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
     Invoice invoice =
@@ -91,6 +91,7 @@ public class InvoicePaymentController {
    * @param response
    */
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void filterBankDetails(ActionRequest request, ActionResponse response) {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
@@ -118,6 +119,7 @@ public class InvoicePaymentController {
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void fillBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -148,34 +150,31 @@ public class InvoicePaymentController {
     response.setValue("bankDetails", defaultBankDetails);
   }
 
-  public void validateMassPayment(ActionRequest request, ActionResponse response) {
-    try {
+  @HandleExceptionResponse
+  public void validateMassPayment(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
-      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+    if (!ObjectUtils.isEmpty(request.getContext().get("_selectedInvoices"))) {
+      List<Long> invoiceIdList =
+          Lists.transform(
+              (List) request.getContext().get("_selectedInvoices"),
+              new Function<Object, Long>() {
+                @Nullable
+                @Override
+                public Long apply(@Nullable Object input) {
+                  return Long.parseLong(input.toString());
+                }
+              });
 
-      if (!ObjectUtils.isEmpty(request.getContext().get("_selectedInvoices"))) {
-        List<Long> invoiceIdList =
-            Lists.transform(
-                (List) request.getContext().get("_selectedInvoices"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
-
-        Beans.get(InvoicePaymentCreateService.class)
-            .createMassInvoicePayment(
-                invoiceIdList,
-                invoicePayment.getPaymentMode(),
-                invoicePayment.getCompanyBankDetails(),
-                invoicePayment.getPaymentDate(),
-                invoicePayment.getBankDepositDate(),
-                invoicePayment.getChequeNumber());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      Beans.get(InvoicePaymentCreateService.class)
+          .createMassInvoicePayment(
+              invoiceIdList,
+              invoicePayment.getPaymentMode(),
+              invoicePayment.getCompanyBankDetails(),
+              invoicePayment.getPaymentDate(),
+              invoicePayment.getBankDepositDate(),
+              invoicePayment.getChequeNumber());
     }
     response.setReload(true);
   }
@@ -187,6 +186,7 @@ public class InvoicePaymentController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void checkConditionBeforeSave(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -196,6 +196,7 @@ public class InvoicePaymentController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeDatasForFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -220,6 +221,7 @@ public class InvoicePaymentController {
     }
   }
 
+  @HandleExceptionResponse
   public void changeAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);

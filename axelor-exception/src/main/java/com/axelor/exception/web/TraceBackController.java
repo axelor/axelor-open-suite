@@ -20,6 +20,7 @@ package com.axelor.exception.web;
 import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.exception.db.TraceBack;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -41,6 +42,7 @@ public class TraceBackController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void showReference(ActionRequest request, ActionResponse response) {
     TraceBack traceBack = request.getContext().asType(TraceBack.class);
 

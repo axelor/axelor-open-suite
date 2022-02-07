@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,6 +37,7 @@ public class PartnerPriceListController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void checkDates(ActionRequest request, ActionResponse response) {
     PartnerPriceList partnerPriceList;
     Class partnerOrPriceLists = request.getContext().getContextClass();

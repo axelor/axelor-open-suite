@@ -26,6 +26,7 @@ import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -50,6 +51,7 @@ public class MpsChargeController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void getMpsWeeklyScheduleCustom(ActionRequest request, ActionResponse response) {
 
     LocalDate startMonthDate =
@@ -69,6 +71,7 @@ public class MpsChargeController {
     response.setData(dataMapList);
   }
 
+  @HandleExceptionResponse
   public void getMpsWeeklyScheduleChartFirstYear(ActionRequest request, ActionResponse response) {
 
     LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
@@ -88,6 +91,7 @@ public class MpsChargeController {
     response.setData(dataMapList);
   }
 
+  @HandleExceptionResponse
   public void getMpsWeeklyScheduleChartSecondYear(ActionRequest request, ActionResponse response) {
 
     LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
@@ -106,6 +110,7 @@ public class MpsChargeController {
     response.setData(dataMapList);
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     String name = I18n.get(ITranslation.MPS_CHARGE);

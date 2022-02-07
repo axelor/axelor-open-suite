@@ -23,6 +23,7 @@ import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -39,6 +40,7 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setCustomerInvoiceLineProject(ActionRequest request, ActionResponse response) {
     try {
       Project project = request.getContext().asType(Project.class);
@@ -82,6 +84,7 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void unsetCustomerInvoiceLineProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -97,6 +100,7 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setSupplierInvoiceLineProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -141,6 +145,7 @@ public class InvoiceLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void unsetSupplierInvoiceLineProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -150,18 +155,16 @@ public class InvoiceLineProjectController {
     }
   }
 
+  @HandleExceptionResponse
   public void setProjectToAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      List<AnalyticMoveLine> analyticMoveLines = invoiceLine.getAnalyticMoveLineList();
-      if (analyticMoveLines != null) {
-        response.setValue(
-            "analyticMoveLineList",
-            Beans.get(InvoiceLineProjectService.class)
-                .setProjectToAnalyticDistribution(invoiceLine, analyticMoveLines));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    List<AnalyticMoveLine> analyticMoveLines = invoiceLine.getAnalyticMoveLineList();
+    if (analyticMoveLines != null) {
+      response.setValue(
+          "analyticMoveLineList",
+          Beans.get(InvoiceLineProjectService.class)
+              .setProjectToAnalyticDistribution(invoiceLine, analyticMoveLines));
     }
   }
 }

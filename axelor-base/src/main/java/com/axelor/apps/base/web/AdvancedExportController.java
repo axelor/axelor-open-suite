@@ -25,7 +25,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -63,6 +63,7 @@ public class AdvancedExportController {
 
   private Inflector inflector;
 
+  @HandleExceptionResponse
   public void getModelAllFields(ActionRequest request, ActionResponse response)
       throws ClassNotFoundException {
 
@@ -108,6 +109,7 @@ public class AdvancedExportController {
     }
   }
 
+  @HandleExceptionResponse
   public void fillTitle(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     MetaField metaField = (MetaField) context.get("metaField");
@@ -127,6 +129,7 @@ public class AdvancedExportController {
     return inflector.humanize(fieldName);
   }
 
+  @HandleExceptionResponse
   public void fillTargetField(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     MetaField metaField = (MetaField) context.get("metaField");
@@ -153,28 +156,22 @@ public class AdvancedExportController {
     }
   }
 
-  public void advancedExportPDF(ActionRequest request, ActionResponse response) {
-    try {
-      advancedExport(request, response, AdvancedExportService.PDF);
-    } catch (IOException | AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void advancedExportPDF(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+    advancedExport(request, response, AdvancedExportService.PDF);
   }
 
-  public void advancedExportExcel(ActionRequest request, ActionResponse response) {
-    try {
-      advancedExport(request, response, AdvancedExportService.EXCEL);
-    } catch (IOException | AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void advancedExportExcel(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+    advancedExport(request, response, AdvancedExportService.EXCEL);
   }
 
-  public void advancedExportCSV(ActionRequest request, ActionResponse response) {
-    try {
-      advancedExport(request, response, AdvancedExportService.CSV);
-    } catch (IOException | AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void advancedExportCSV(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+    advancedExport(request, response, AdvancedExportService.CSV);
   }
 
   private void advancedExport(ActionRequest request, ActionResponse response, String fileType)
@@ -216,6 +213,7 @@ public class AdvancedExportController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   private List<Long> createCriteria(ActionRequest request, AdvancedExport advancedExport) {
 
     if (request.getContext().get("_criteria") != null) {
@@ -245,6 +243,7 @@ public class AdvancedExportController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void callAdvancedExportWizard(ActionRequest request, ActionResponse response)
       throws ClassNotFoundException {
 
@@ -297,25 +296,22 @@ public class AdvancedExportController {
   }
 
   @SuppressWarnings({"rawtypes"})
-  public void generateExportFile(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().get("_xAdvancedExport") == null
-          || request.getContext().get("exportFormatSelect") == null) {
-        response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_4));
-        return;
-      }
-      AdvancedExport advancedExport =
-          Beans.get(AdvancedExportRepository.class)
-              .find(
-                  Long.valueOf(
-                      ((Map) request.getContext().get("_xAdvancedExport")).get("id").toString()));
-      String fileType = request.getContext().get("exportFormatSelect").toString();
-
-      getAdvancedExportFile(request, response, advancedExport, fileType);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void generateExportFile(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
+    if (request.getContext().get("_xAdvancedExport") == null
+        || request.getContext().get("exportFormatSelect") == null) {
+      response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_4));
+      return;
     }
+    AdvancedExport advancedExport =
+        Beans.get(AdvancedExportRepository.class)
+            .find(
+                Long.valueOf(
+                    ((Map) request.getContext().get("_xAdvancedExport")).get("id").toString()));
+    String fileType = request.getContext().get("exportFormatSelect").toString();
+
+    getAdvancedExportFile(request, response, advancedExport, fileType);
   }
 
   private void downloadExportFile(ActionResponse response, MetaFile exportFile) {

@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -29,6 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class PriceListController {
 
+  @HandleExceptionResponse
   public void historizePriceList(ActionRequest request, ActionResponse response) {
     PriceList priceList = request.getContext().asType(PriceList.class);
     priceList = Beans.get(PriceListRepository.class).find(priceList.getId());
@@ -36,6 +38,7 @@ public class PriceListController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void checkPriceListLineList(ActionRequest request, ActionResponse response) {
     PriceList priceList = request.getContext().asType(PriceList.class);
     if (priceList.getPriceListLineList() != null
@@ -46,6 +49,7 @@ public class PriceListController {
     }
   }
 
+  @HandleExceptionResponse
   public void checkDates(ActionRequest request, ActionResponse response) {
     PriceList priceList = request.getContext().asType(PriceList.class);
     try {

@@ -28,6 +28,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 public class StockMoveLineController {
 
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     Optional<StockMove> stockMove = Optional.ofNullable(stockMoveLine.getStockMove());
@@ -70,6 +72,7 @@ public class StockMoveLineController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setProductInfo(ActionRequest request, ActionResponse response) {
     StockMoveLine stockMoveLine;
     try {

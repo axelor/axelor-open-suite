@@ -19,6 +19,7 @@ package com.axelor.apps.fleet.web;
 
 import com.axelor.apps.fleet.db.VehicleFuelLog;
 import com.axelor.apps.fleet.service.VehicleFuelLogService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 @Singleton
 public class VehicleFuelLogController {
 
+  @HandleExceptionResponse
   public void calculateTotalPrice(ActionRequest request, ActionResponse response) {
     VehicleFuelLog vehicleFuelLog = request.getContext().asType(VehicleFuelLog.class);
     BigDecimal totalPrice =

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -35,6 +36,7 @@ public class ProductionProjectedStockController {
   public static final String VIEW_MISSING_QTY_TITLE = /*$$(*/ "%s missing" /*)*/;
   public static final String VIEW_CONSUME_QTY_TITLE = /*$$(*/ "%s consume" /*)*/;
 
+  @HandleExceptionResponse
   public void showBuildingQuantityOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)
@@ -62,6 +64,7 @@ public class ProductionProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showConsumeQuantityOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)
@@ -90,6 +93,7 @@ public class ProductionProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showMissingQuantityOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)

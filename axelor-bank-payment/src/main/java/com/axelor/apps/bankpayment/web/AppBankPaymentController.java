@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,12 +27,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class AppBankPaymentController {
 
+  @HandleExceptionResponse
   public void generateBankPaymentConfigurations(ActionRequest request, ActionResponse response) {
-    try {
-      Beans.get(AppBankPaymentService.class).generateBankPaymentConfigurations();
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(AppBankPaymentService.class).generateBankPaymentConfigurations();
+    response.setReload(true);
   }
 }

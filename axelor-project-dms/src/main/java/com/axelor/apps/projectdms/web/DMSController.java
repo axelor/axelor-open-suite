@@ -20,21 +20,21 @@ package com.axelor.apps.projectdms.web;
 import com.axelor.apps.projectdms.service.DMSFileService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.mail.MessagingException;
 
 public class DMSController {
 
-  public void sendEmail(ActionRequest request, ActionResponse response) {
-    try {
-      DMSFile dmsFile = request.getContext().asType(DMSFile.class);
-      dmsFile = Beans.get(DMSFileRepository.class).find(dmsFile.getId());
+  @HandleExceptionResponse
+  public void sendEmail(ActionRequest request, ActionResponse response)
+      throws AxelorException, MessagingException {
+    DMSFile dmsFile = request.getContext().asType(DMSFile.class);
+    dmsFile = Beans.get(DMSFileRepository.class).find(dmsFile.getId());
 
-      Beans.get(DMSFileService.class).sendEmail(dmsFile);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(DMSFileService.class).sendEmail(dmsFile);
   }
 }

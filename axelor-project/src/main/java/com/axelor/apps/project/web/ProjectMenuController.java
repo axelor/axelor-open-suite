@@ -18,20 +18,24 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.service.ProjectMenuService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class ProjectMenuController {
 
+  @HandleExceptionResponse
   public void allOpenProjectTasks(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTasks());
   }
 
+  @HandleExceptionResponse
   public void allOpenProjectTickets(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllOpenProjectTickets());
   }
 
+  @HandleExceptionResponse
   public void allProjects(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
   }

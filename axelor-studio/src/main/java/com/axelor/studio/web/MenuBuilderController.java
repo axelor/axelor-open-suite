@@ -18,6 +18,7 @@
 package com.axelor.studio.web;
 
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
@@ -40,6 +41,7 @@ import java.util.Optional;
 public class MenuBuilderController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void fetchMenu(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -120,6 +122,7 @@ public class MenuBuilderController {
     return values;
   }
 
+  @HandleExceptionResponse
   public void showMenuBuilderRecords(ActionRequest request, ActionResponse response) {
 
     MenuBuilder menuBuilder = request.getContext().asType(MenuBuilder.class);

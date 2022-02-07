@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -38,6 +39,7 @@ import java.util.List;
 @Singleton
 public class SubrogationReleaseController {
 
+  @HandleExceptionResponse
   public void retrieveInvoices(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
@@ -51,6 +53,7 @@ public class SubrogationReleaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void transmitRelease(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
@@ -64,6 +67,7 @@ public class SubrogationReleaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void printToPDF(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
@@ -80,6 +84,7 @@ public class SubrogationReleaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void exportToCSV(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
@@ -91,6 +96,7 @@ public class SubrogationReleaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void enterReleaseInTheAccounts(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
@@ -104,6 +110,7 @@ public class SubrogationReleaseController {
     }
   }
 
+  @HandleExceptionResponse
   public void displayMoveLines(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);

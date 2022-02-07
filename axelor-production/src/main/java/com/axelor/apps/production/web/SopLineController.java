@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,6 +47,7 @@ public class SopLineController {
   @Inject MrpForecastRepository mrpForecastRepo;
   @Inject CurrencyRepository currencyRepo;
 
+  @HandleExceptionResponse
   public void fillMrpForecast(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();

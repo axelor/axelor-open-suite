@@ -19,24 +19,22 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class TimesheetLineBusinessController {
 
+  @HandleExceptionResponse
   public void setDefaultToInvoice(ActionRequest request, ActionResponse response) {
-    try {
-      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      timesheetLine =
-          Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
-      response.setValue("toInvoice", timesheetLine.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    timesheetLine =
+        Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
+    response.setValue("toInvoice", timesheetLine.getToInvoice());
   }
 
+  @HandleExceptionResponse
   public void setTimesheet(ActionRequest request, ActionResponse response) {
     TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
     timesheetLine = Beans.get(TimesheetLineBusinessService.class).setTimesheet(timesheetLine);

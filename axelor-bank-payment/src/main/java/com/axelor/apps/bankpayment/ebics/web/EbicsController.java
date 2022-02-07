@@ -39,6 +39,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -70,6 +71,7 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 public class EbicsController {
 
   @Transactional
+  @HandleExceptionResponse
   public void generateCertificate(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -93,6 +95,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void generateDn(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -102,6 +105,7 @@ public class EbicsController {
     response.setValue("dn", Beans.get(EbicsService.class).makeDN(ebicsUser));
   }
 
+  @HandleExceptionResponse
   public void sendINIRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -118,6 +122,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendHIARequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -134,6 +139,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendHPBRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -184,6 +190,7 @@ public class EbicsController {
     }
   }
 
+  @HandleExceptionResponse
   public void sendSPRRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -200,6 +207,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendFULRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -241,6 +249,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendFDLRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -271,6 +280,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendHTDRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -287,6 +297,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendPTKRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -303,6 +314,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sendHPDRequest(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser =
@@ -324,6 +336,7 @@ public class EbicsController {
     return msg.replace(AxelorException.class.getName() + ":", "");
   }
 
+  @HandleExceptionResponse
   public void addCertificates(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -358,6 +371,7 @@ public class EbicsController {
     response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public void loadCertificate(ActionRequest request, ActionResponse response)
       throws AxelorException, CertificateEncodingException, IOException {
 
@@ -386,6 +400,7 @@ public class EbicsController {
     }
   }
 
+  @HandleExceptionResponse
   public void updateEditionDate(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
@@ -396,6 +411,7 @@ public class EbicsController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void importEbicsUsers(ActionRequest request, ActionResponse response) {
 
     String config = "/data-import/import-ebics-user-config.xml";
@@ -431,6 +447,7 @@ public class EbicsController {
     }
   }
 
+  @HandleExceptionResponse
   public void printCertificates(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

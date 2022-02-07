@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -32,25 +32,22 @@ import com.google.inject.Singleton;
 @Singleton
 public class PartnerController {
 
+  @HandleExceptionResponse
   public void generateProject(ActionRequest request, ActionResponse response) {
-    try {
-      Partner partner = request.getContext().asType(Partner.class);
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-      Project project = Beans.get(ProjectService.class).generateProject(partner);
 
-      response.setView(
-          ActionView.define(I18n.get("Generated project"))
-              .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
-              .param("search-filters", "project-filters")
-              .param("forceTitle", "true")
-              .param("forceEdit", "true")
-              .context("_showRecord", project.getId())
-              .map());
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    Project project = Beans.get(ProjectService.class).generateProject(partner);
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(
+        ActionView.define(I18n.get("Generated project"))
+            .model(Project.class.getName())
+            .add("form", "project-form")
+            .add("grid", "project-grid")
+            .param("search-filters", "project-filters")
+            .param("forceTitle", "true")
+            .param("forceEdit", "true")
+            .context("_showRecord", project.getId())
+            .map());
   }
 }

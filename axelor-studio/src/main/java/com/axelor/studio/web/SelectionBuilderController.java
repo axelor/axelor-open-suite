@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.rpc.ActionRequest;
@@ -25,6 +26,7 @@ import com.axelor.studio.service.builder.SelectionBuilderService;
 
 public class SelectionBuilderController {
 
+  @HandleExceptionResponse
   public void fillSelectionText(ActionRequest request, ActionResponse response) {
 
     MetaSelect metaSelect = (MetaSelect) request.getContext().get("metaSelect");

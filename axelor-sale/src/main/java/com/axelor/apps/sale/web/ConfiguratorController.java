@@ -24,6 +24,8 @@ import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,6 +35,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
 
 @Singleton
 public class ConfiguratorController {
@@ -45,20 +48,20 @@ public class ConfiguratorController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void updateIndicators(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void updateIndicators(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Configurator configurator = request.getContext().asType(Configurator.class);
     JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
     JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
-    try {
-      Beans.get(ConfiguratorService.class)
-          .updateIndicators(
-              configurator, jsonAttributes, jsonIndicators, getSaleOrderId(request.getContext()));
-      response.setValue("indicators", request.getContext().get("indicators"));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(ConfiguratorService.class)
+        .updateIndicators(
+            configurator, jsonAttributes, jsonIndicators, getSaleOrderId(request.getContext()));
+    response.setValue("indicators", request.getContext().get("indicators"));
   }
 
   /**
@@ -68,6 +71,7 @@ public class ConfiguratorController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void generateProduct(ActionRequest request, ActionResponse response) {
     Configurator configurator = request.getContext().asType(Configurator.class);
     JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
@@ -100,8 +104,16 @@ public class ConfiguratorController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
+   * @throws InvocationTargetException
+   * @throws IllegalAccessException
+   * @throws NoSuchMethodException
+   * @throws ClassNotFoundException
    */
-  public void generateForSaleOrder(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void generateForSaleOrder(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, AxelorException {
     Configurator configurator = request.getContext().asType(Configurator.class);
     long saleOrderId = getSaleOrderId(request.getContext());
 
@@ -110,13 +122,10 @@ public class ConfiguratorController {
 
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
     SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
-    try {
-      Beans.get(ConfiguratorService.class)
-          .addLineToSaleOrder(configurator, saleOrder, jsonAttributes, jsonIndicators);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(ConfiguratorService.class)
+        .addLineToSaleOrder(configurator, saleOrder, jsonAttributes, jsonIndicators);
+    response.setCanClose(true);
   }
 
   /**
@@ -125,6 +134,7 @@ public class ConfiguratorController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void createDomainForCreator(ActionRequest request, ActionResponse response) {
     response.setAttr(
         "configuratorCreator",

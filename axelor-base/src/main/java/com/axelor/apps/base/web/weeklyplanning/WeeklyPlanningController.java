@@ -20,13 +20,14 @@ package com.axelor.apps.base.web.weeklyplanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class WeeklyPlanningController {
 
+  @HandleExceptionResponse
   public void initPlanning(ActionRequest request, ActionResponse response) {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
     planning = Beans.get(WeeklyPlanningService.class).initPlanning(planning);
@@ -36,12 +37,9 @@ public class WeeklyPlanningController {
     response.setValue("weekDays", planning.getWeekDays());
   }
 
-  public void checkPlanning(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void checkPlanning(ActionRequest request, ActionResponse response) throws AxelorException {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
-    try {
-      planning = Beans.get(WeeklyPlanningService.class).checkPlanning(planning);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+    planning = Beans.get(WeeklyPlanningService.class).checkPlanning(planning);
   }
 }

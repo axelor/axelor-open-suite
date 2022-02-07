@@ -23,7 +23,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrd
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -36,42 +36,37 @@ import java.util.List;
 @Singleton
 public class ProductionOrderSaleOrderController {
 
+  @HandleExceptionResponse
   public void createProductionOrders(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    try {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    List<Long> productionOrderIdList =
+        Beans.get(ProductionOrderSaleOrderService.class).generateProductionOrder(saleOrder);
 
-      List<Long> productionOrderIdList =
-          Beans.get(ProductionOrderSaleOrderService.class).generateProductionOrder(saleOrder);
-
-      if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
-        response.setView(
-            ActionView.define(I18n.get("Production order"))
-                .model(ProductionOrder.class.getName())
-                .add("form", "production-order-form")
-                .add("grid", "production-order-grid")
-                .param("search-filters", "production-order-filters")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
-                .map());
-      } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
-        response.setView(
-            ActionView.define(I18n.get("Production order"))
-                .model(ProductionOrder.class.getName())
-                .add("grid", "production-order-grid")
-                .add("form", "production-order-form")
-                .param("search-filters", "production-order-filters")
-                .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
-                .map());
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
+      response.setView(
+          ActionView.define(I18n.get("Production order"))
+              .model(ProductionOrder.class.getName())
+              .add("form", "production-order-form")
+              .add("grid", "production-order-grid")
+              .param("search-filters", "production-order-filters")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
+              .map());
+    } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
+      response.setView(
+          ActionView.define(I18n.get("Production order"))
+              .model(ProductionOrder.class.getName())
+              .add("grid", "production-order-grid")
+              .add("form", "production-order-form")
+              .param("search-filters", "production-order-filters")
+              .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
+              .map());
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
     }
   }
 }

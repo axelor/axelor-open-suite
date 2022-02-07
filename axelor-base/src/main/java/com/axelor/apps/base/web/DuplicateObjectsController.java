@@ -25,6 +25,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -50,6 +51,7 @@ public class DuplicateObjectsController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void removeDuplicate(ActionRequest request, ActionResponse response) {
 
     List<Long> selectedIds = new ArrayList<>();
@@ -69,6 +71,7 @@ public class DuplicateObjectsController {
     response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public void defaultObjects(ActionRequest request, ActionResponse response)
       throws SecurityException {
     List<Long> selectedIds = new ArrayList<>();
@@ -117,6 +120,7 @@ public class DuplicateObjectsController {
     response.setAttr("$duplicateObjects", "value", wizardDataList);
   }
 
+  @HandleExceptionResponse
   public void addOriginal(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     List<Map<String, Object>> duplicateObj =
@@ -150,6 +154,7 @@ public class DuplicateObjectsController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void showDuplicate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -233,6 +238,7 @@ public class DuplicateObjectsController {
    * @param response
    */
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void callCheckDuplicateWizard(ActionRequest request, ActionResponse response) {
 
     LOG.debug("Call check duplicate wizard for model : {} ", request.getModel());

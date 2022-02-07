@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -48,6 +49,7 @@ public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";
 
+  @HandleExceptionResponse
   public void generateProject(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -85,6 +87,7 @@ public class SaleOrderProjectController {
     }
   }
 
+  @HandleExceptionResponse
   public void fillProject(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -111,15 +114,13 @@ public class SaleOrderProjectController {
     }
   }
 
+  @HandleExceptionResponse
   public void updateLines(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
-      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
+    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   private LocalDateTime getElementStartDate(Context context) {

@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
 import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -35,35 +35,32 @@ public class GlobalTrackingLogLineController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void showGlobalTrackingLogLineReference(ActionRequest request, ActionResponse response) {
-    try {
 
-      GlobalTrackingLogLine globalTrackingLogLine =
-          request.getContext().asType(GlobalTrackingLogLine.class);
-      GlobalTrackingLog globalTrackingLog = globalTrackingLogLine.getGlobalTrackingLog();
+    GlobalTrackingLogLine globalTrackingLogLine =
+        request.getContext().asType(GlobalTrackingLogLine.class);
+    GlobalTrackingLog globalTrackingLog = globalTrackingLogLine.getGlobalTrackingLog();
 
-      if (globalTrackingLog == null) {
-        return;
-      }
-      Class<?> modelClass = JPA.model(globalTrackingLog.getMetaModel().getFullName());
-      final Inflector inflector = Inflector.getInstance();
-      String viewName = inflector.dasherize(modelClass.getSimpleName());
-
-      LOG.debug("Showing Tracking Log reference ::: {}", viewName);
-
-      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reference"));
-      actionViewBuilder.model(globalTrackingLog.getMetaModel().getFullName());
-
-      if (globalTrackingLog.getRelatedId() != null) {
-        actionViewBuilder.context("_showRecord", globalTrackingLog.getRelatedId());
-      } else {
-        actionViewBuilder.add("grid", String.format("%s-grid", viewName));
-      }
-
-      actionViewBuilder.add("form", String.format("%s-form", viewName));
-      response.setView(actionViewBuilder.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (globalTrackingLog == null) {
+      return;
     }
+    Class<?> modelClass = JPA.model(globalTrackingLog.getMetaModel().getFullName());
+    final Inflector inflector = Inflector.getInstance();
+    String viewName = inflector.dasherize(modelClass.getSimpleName());
+
+    LOG.debug("Showing Tracking Log reference ::: {}", viewName);
+
+    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reference"));
+    actionViewBuilder.model(globalTrackingLog.getMetaModel().getFullName());
+
+    if (globalTrackingLog.getRelatedId() != null) {
+      actionViewBuilder.context("_showRecord", globalTrackingLog.getRelatedId());
+    } else {
+      actionViewBuilder.add("grid", String.format("%s-grid", viewName));
+    }
+
+    actionViewBuilder.add("form", String.format("%s-form", viewName));
+    response.setView(actionViewBuilder.map());
   }
 }

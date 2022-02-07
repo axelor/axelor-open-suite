@@ -20,6 +20,7 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,6 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ContractLineController {
 
+  @HandleExceptionResponse
   public void computeTotal(ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
@@ -41,6 +43,7 @@ public class ContractLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);

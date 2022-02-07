@@ -23,6 +23,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,12 +36,14 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class InvoiceController {
 
+  @HandleExceptionResponse
   public void fillInLines(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
     response.setValues(invoice);
   }
 
+  @HandleExceptionResponse
   public void generateSubscriptionInvoices(ActionRequest request, ActionResponse response) {
 
     try {
@@ -67,18 +70,18 @@ public class InvoiceController {
     }
   }
 
-  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
         || !Beans.get(InvoiceLineService.class)
             .isStartOfPackTypeLineQtyChanged(invoice.getInvoiceLineList())) {
       return;
     }
-    try {
-      Beans.get(InvoiceServiceSupplychain.class).updateProductQtyWithPackHeaderQty(invoice);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(InvoiceServiceSupplychain.class).updateProductQtyWithPackHeaderQty(invoice);
+
     response.setReload(true);
   }
 }

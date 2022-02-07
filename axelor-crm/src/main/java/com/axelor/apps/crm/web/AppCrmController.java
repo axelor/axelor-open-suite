@@ -18,12 +18,14 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class AppCrmController {
 
+  @HandleExceptionResponse
   public void generateCrmConfigurations(ActionRequest request, ActionResponse response) {
 
     Beans.get(AppCrmService.class).generateCrmConfigurations();

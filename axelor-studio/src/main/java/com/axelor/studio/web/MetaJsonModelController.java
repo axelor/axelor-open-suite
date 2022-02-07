@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.rpc.ActionRequest;
@@ -30,6 +31,7 @@ import com.google.inject.persist.Transactional;
 public class MetaJsonModelController {
 
   @Transactional
+  @HandleExceptionResponse
   public void removeMenuBuilder(ActionRequest request, ActionResponse response) {
 
     MetaJsonModel metaJsonModel = request.getContext().asType(MetaJsonModel.class);

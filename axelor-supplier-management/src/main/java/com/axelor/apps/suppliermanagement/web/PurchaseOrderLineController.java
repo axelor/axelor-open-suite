@@ -21,7 +21,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,23 +30,20 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderLineController {
 
+  @HandleExceptionResponse
   public void generateSuppliersRequests(ActionRequest request, ActionResponse response) {
 
     PurchaseOrderLine purchaseOrderLine =
         Beans.get(PurchaseOrderLineRepository.class)
             .find(request.getContext().asType(PurchaseOrderLine.class).getId());
 
-    try {
-      if (purchaseOrderLine.getPurchaseOrder() == null) {
-        PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-        Beans.get(PurchaseOrderSupplierService.class)
-            .generateSuppliersRequests(purchaseOrderLine, purchaseOrder);
-      } else {
-        Beans.get(PurchaseOrderSupplierService.class).generateSuppliersRequests(purchaseOrderLine);
-      }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (purchaseOrderLine.getPurchaseOrder() == null) {
+      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      Beans.get(PurchaseOrderSupplierService.class)
+          .generateSuppliersRequests(purchaseOrderLine, purchaseOrder);
+    } else {
+      Beans.get(PurchaseOrderSupplierService.class).generateSuppliersRequests(purchaseOrderLine);
     }
+    response.setReload(true);
   }
 }

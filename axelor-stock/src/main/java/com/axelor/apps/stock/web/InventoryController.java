@@ -32,6 +32,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,7 +48,6 @@ import java.nio.file.Path;
 import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,168 +62,151 @@ public class InventoryController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
-  public void showInventory(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory = request.getContext().asType(Inventory.class);
+  @HandleExceptionResponse
+  public void showInventory(ActionRequest request, ActionResponse response) throws AxelorException {
+    Inventory inventory = request.getContext().asType(Inventory.class);
 
-      String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+    String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
 
-      String fileLink =
-          ReportFactory.createReport(
-                  IReport.INVENTORY,
-                  Beans.get(InventoryService.class).computeExportFileName(inventory))
-              .addParam("InventoryId", inventory.getId())
-              .addParam(
-                  "Timezone",
-                  inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "activateBarCodeGeneration",
-                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
-              .addFormat(inventory.getFormatSelect())
-              .generate()
-              .getFileLink();
+    String fileLink =
+        ReportFactory.createReport(
+                IReport.INVENTORY,
+                Beans.get(InventoryService.class).computeExportFileName(inventory))
+            .addParam("InventoryId", inventory.getId())
+            .addParam(
+                "Timezone",
+                inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "activateBarCodeGeneration",
+                Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
+            .addFormat(inventory.getFormatSelect())
+            .generate()
+            .getFileLink();
 
-      logger.debug("Printing " + name);
+    logger.debug("Printing " + name);
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  public void exportInventory(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
+  @HandleExceptionResponse
+  public void exportInventory(ActionRequest request, ActionResponse response) throws IOException {
 
-      String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-      MetaFile metaFile = Beans.get(InventoryService.class).exportInventoryAsCSV(inventory);
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
 
-      response.setView(
-          ActionView.define(name)
-              .add(
-                  "html",
-                  "ws/rest/com.axelor.meta.db.MetaFile/"
-                      + metaFile.getId()
-                      + "/content/download?v="
-                      + metaFile.getVersion())
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+    MetaFile metaFile = Beans.get(InventoryService.class).exportInventoryAsCSV(inventory);
+
+    response.setView(
+        ActionView.define(name)
+            .add(
+                "html",
+                "ws/rest/com.axelor.meta.db.MetaFile/"
+                    + metaFile.getId()
+                    + "/content/download?v="
+                    + metaFile.getVersion())
+            .map());
   }
 
-  public void importFile(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory =
-          Beans.get(InventoryRepository.class)
-              .find(request.getContext().asType(Inventory.class).getId());
+  @HandleExceptionResponse
+  public void importFile(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Path filePath = Beans.get(InventoryService.class).importFile(inventory);
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+    Inventory inventory =
+        Beans.get(InventoryRepository.class)
+            .find(request.getContext().asType(Inventory.class).getId());
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Path filePath = Beans.get(InventoryService.class).importFile(inventory);
+    response.setFlash(String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+
+    response.setReload(true);
   }
 
-  public void validateInventory(ActionRequest request, ActionResponse response) {
-    try {
-      Long id = request.getContext().asType(Inventory.class).getId();
-      Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-      Beans.get(InventoryService.class).validateInventory(inventory);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void validateInventory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Long id = request.getContext().asType(Inventory.class).getId();
+    Inventory inventory = Beans.get(InventoryRepository.class).find(id);
+    Beans.get(InventoryService.class).validateInventory(inventory);
+    response.setReload(true);
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
-      Beans.get(InventoryService.class).cancel(inventory);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
+    Beans.get(InventoryService.class).cancel(inventory);
+    response.setReload(true);
   }
 
-  public void fillInventoryLineList(ActionRequest request, ActionResponse response) {
-    try {
-      Long inventoryId = (Long) request.getContext().get("id");
-      if (inventoryId != null) {
-        Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
-        Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
-        if (succeed == null) {
-          response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+  @HandleExceptionResponse
+  public void fillInventoryLineList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Long inventoryId = (Long) request.getContext().get("id");
+    if (inventoryId != null) {
+      Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
+      Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
+      if (succeed == null) {
+        response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+      } else {
+        if (succeed) {
+          response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
         } else {
-          if (succeed) {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
-          } else {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
-          }
+          response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
         }
       }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
+    response.setReload(true);
   }
 
-  public void setInventorySequence(ActionRequest request, ActionResponse response) {
-    try {
-
-      Inventory inventory = request.getContext().asType(Inventory.class);
-      SequenceService sequenceService = Beans.get(SequenceService.class);
-
-      if (sequenceService.isEmptyOrDraftSequenceNumber(inventory.getInventorySeq())) {
-
-        StockLocation stockLocation = inventory.getStockLocation();
-
-        response.setValue(
-            "inventorySeq",
-            Beans.get(InventoryService.class).getInventorySequence(stockLocation.getCompany()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void showStockMoves(ActionRequest request, ActionResponse response) {
-    try {
-      Inventory inventory = request.getContext().asType(Inventory.class);
-      List<StockMove> stockMoveList = Beans.get(InventoryService.class).findStockMoves(inventory);
-      ActionViewBuilder builder =
-          ActionView.define(I18n.get("Internal Stock Moves"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form")
-              .param("search-filters", "internal-stock-move-filters");
-      if (stockMoveList.isEmpty()) {
-        response.setFlash(I18n.get("No stock moves found for this inventory."));
-      } else {
-        builder
-            .context("_showSingle", true)
-            .domain(
-                String.format(
-                    "self.originTypeSelect = '%s' AND self.originId = %s",
-                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
-        response.setView(builder.map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkDuplicateProduct(ActionRequest request, ActionResponse response)
+  @HandleExceptionResponse
+  public void setInventorySequence(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    SequenceService sequenceService = Beans.get(SequenceService.class);
+
+    if (sequenceService.isEmptyOrDraftSequenceNumber(inventory.getInventorySeq())) {
+
+      StockLocation stockLocation = inventory.getStockLocation();
+
+      response.setValue(
+          "inventorySeq",
+          Beans.get(InventoryService.class).getInventorySequence(stockLocation.getCompany()));
+    }
+  }
+
+  @HandleExceptionResponse
+  public void showStockMoves(ActionRequest request, ActionResponse response) {
+
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    List<StockMove> stockMoveList = Beans.get(InventoryService.class).findStockMoves(inventory);
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get("Internal Stock Moves"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-grid")
+            .add("form", "stock-move-form")
+            .param("search-filters", "internal-stock-move-filters");
+    if (stockMoveList.isEmpty()) {
+      response.setFlash(I18n.get("No stock moves found for this inventory."));
+    } else {
+      builder
+          .context("_showSingle", true)
+          .domain(
+              String.format(
+                  "self.originTypeSelect = '%s' AND self.originId = %s",
+                  StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
+      response.setView(builder.map());
+    }
+  }
+
+  @HandleExceptionResponse
+  public void checkDuplicateProduct(ActionRequest request, ActionResponse response) {
     Inventory inventory = request.getContext().asType(Inventory.class);
 
     Query query =
@@ -240,6 +223,8 @@ public class InventoryController {
 
     } catch (NoResultException e) {
       // if control came here means no duplicate product.
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -29,7 +29,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,8 +39,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,43 +52,40 @@ public class BankOrderController {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void confirm(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void confirm(ActionRequest request, ActionResponse response)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    try {
-      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      if (bankOrder != null) {
-        Beans.get(BankOrderService.class).confirm(bankOrder);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    if (bankOrder != null) {
+      Beans.get(BankOrderService.class).confirm(bankOrder);
     }
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void sign(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-    try {
-      ActionViewBuilder confirmView =
-          ActionView.define("Sign bank order")
-              .model(BankOrder.class.getName())
-              .add("form", "bank-order-sign-wizard-form")
-              .param("popup", "reload")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true")
-              .context("_showRecord", bankOrder.getId());
+    ActionViewBuilder confirmView =
+        ActionView.define("Sign bank order")
+            .model(BankOrder.class.getName())
+            .add("form", "bank-order-sign-wizard-form")
+            .param("popup", "reload")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .param("forceEdit", "true")
+            .context("_showRecord", bankOrder.getId());
 
-      response.setView(confirmView.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(confirmView.map());
   }
 
-  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
+  @HandleExceptionResponse
+  public void validate(ActionRequest request, ActionResponse response)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
     Context context = request.getContext();
     BankOrderService bankOrderService = Beans.get(BankOrderService.class);
@@ -93,51 +93,45 @@ public class BankOrderController {
     BankOrder bankOrder = context.asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
 
-    try {
+    EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
 
-      EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
-
-      if (ebicsUser == null) {
-        response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
+    if (ebicsUser == null) {
+      response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
+    } else {
+      if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
+          == EbicsPartnerRepository.EBICS_TYPE_TS) {
+        bankOrderService.validate(bankOrder);
       } else {
-        if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
-            == EbicsPartnerRepository.EBICS_TYPE_TS) {
-          bankOrderService.validate(bankOrder);
-        } else {
-          if (context.get("password") == null) {
-            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
-          }
-          if (context.get("password") != null) {
-            String password = (String) context.get("password");
-            if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
-              response.setValue("password", "");
-              response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
-            } else {
-              bankOrderService.validate(bankOrder);
-            }
-          }
-          response.setReload(true);
+        if (context.get("password") == null) {
+          response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
         }
+        if (context.get("password") != null) {
+          String password = (String) context.get("password");
+          if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
+            response.setValue("password", "");
+            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+          } else {
+            bankOrderService.validate(bankOrder);
+          }
+        }
+        response.setReload(true);
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
-  public void realize(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void realize(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
-      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      if (bankOrder != null) {
-        Beans.get(BankOrderService.class).realize(bankOrder);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    if (bankOrder != null) {
+      Beans.get(BankOrderService.class).realize(bankOrder);
     }
+
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
@@ -162,40 +156,36 @@ public class BankOrderController {
   }
 
   @SuppressWarnings("unchecked")
-  public void merge(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void merge(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    try {
+    List<Integer> listSelectedBankOrder = (List<Integer>) request.getContext().get("_ids");
+    BankOrderRepository bankOrderRepository = Beans.get(BankOrderRepository.class);
 
-      List<Integer> listSelectedBankOrder = (List<Integer>) request.getContext().get("_ids");
-      BankOrderRepository bankOrderRepository = Beans.get(BankOrderRepository.class);
+    List<BankOrder> bankOrderList = Lists.newArrayList();
+    if (listSelectedBankOrder != null) {
+      for (Integer bankOrderId : listSelectedBankOrder) {
 
-      List<BankOrder> bankOrderList = Lists.newArrayList();
-      if (listSelectedBankOrder != null) {
-        for (Integer bankOrderId : listSelectedBankOrder) {
+        BankOrder bankOrder = bankOrderRepository.find(bankOrderId.longValue());
 
-          BankOrder bankOrder = bankOrderRepository.find(bankOrderId.longValue());
-
-          if (bankOrder != null) {
-            bankOrderList.add(bankOrder);
-          }
+        if (bankOrder != null) {
+          bankOrderList.add(bankOrder);
         }
-
-        BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeBankOrders(bankOrderList);
-
-        response.setView(
-            ActionView.define(I18n.get("Bank Order"))
-                .model(BankOrder.class.getName())
-                .add("form", "bank-order-form")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(bankOrder.getId()))
-                .map());
       }
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeBankOrders(bankOrderList);
+
+      response.setView(
+          ActionView.define(I18n.get("Bank Order"))
+              .model(BankOrder.class.getName())
+              .add("form", "bank-order-form")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(bankOrder.getId()))
+              .map());
     }
   }
 
+  @HandleExceptionResponse
   public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     if (bankOrder.getSenderBankDetails() != null) {
@@ -207,6 +197,7 @@ public class BankOrderController {
     }
   }
 
+  @HandleExceptionResponse
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
@@ -218,59 +209,49 @@ public class BankOrderController {
     }
   }
 
+  @HandleExceptionResponse
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
+  @HandleExceptionResponse
   public void resetReceivers(ActionRequest request, ActionResponse response) {
-    try {
-      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      Beans.get(BankOrderService.class).resetReceivers(bankOrder);
-      response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    Beans.get(BankOrderService.class).resetReceivers(bankOrder);
+    response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
   }
 
+  @HandleExceptionResponse
   public void displayBankOrderLines(ActionRequest actionRequest, ActionResponse response) {
-    try {
-      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
-      response.setView(
-          Beans.get(BankOrderService.class)
-              .buildBankOrderLineView("bank-order-line-grid", "bank-order-line-form", linesDomain)
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+    response.setView(
+        Beans.get(BankOrderService.class)
+            .buildBankOrderLineView("bank-order-line-grid", "bank-order-line-form", linesDomain)
+            .map());
   }
 
+  @HandleExceptionResponse
   public void displayBankOrderLinesBankToBank(
       ActionRequest actionRequest, ActionResponse response) {
-    try {
-      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
-      response.setView(
-          Beans.get(BankOrderService.class)
-              .buildBankOrderLineView(
-                  "bank-order-line-bank-to-bank-grid", "bank-order-line-form", linesDomain)
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+    response.setView(
+        Beans.get(BankOrderService.class)
+            .buildBankOrderLineView(
+                "bank-order-line-bank-to-bank-grid", "bank-order-line-form", linesDomain)
+            .map());
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) {
-    try {
-      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void setStatusCorrect(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
@@ -278,6 +259,7 @@ public class BankOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void setStatusReject(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());

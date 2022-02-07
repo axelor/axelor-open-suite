@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.NotificationItem;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -36,6 +37,7 @@ import java.util.List;
 @Singleton
 public class NotificationController {
 
+  @HandleExceptionResponse
   public void populateNotificationItemList(ActionRequest request, ActionResponse response) {
     try {
       Notification notification = request.getContext().asType(Notification.class);
@@ -46,6 +48,7 @@ public class NotificationController {
     }
   }
 
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       Notification notification = request.getContext().asType(Notification.class);
@@ -57,6 +60,7 @@ public class NotificationController {
     }
   }
 
+  @HandleExceptionResponse
   public void displayMoveLines(ActionRequest request, ActionResponse response) {
     try {
       Notification notification = request.getContext().asType(Notification.class);

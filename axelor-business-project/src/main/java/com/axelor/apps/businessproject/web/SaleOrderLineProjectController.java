@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,6 +42,7 @@ public class SaleOrderLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -83,6 +85,7 @@ public class SaleOrderLineProjectController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void unsetProject(ActionRequest request, ActionResponse response) {
 
     try {
@@ -99,32 +102,27 @@ public class SaleOrderLineProjectController {
    * @param response
    */
   @Transactional
+  @HandleExceptionResponse
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = saleOrderLineRepository.find(saleOrderLine.getId());
-      saleOrderLine.setToInvoice(!saleOrderLine.getToInvoice());
-      saleOrderLineRepository.save(saleOrderLine);
-      response.setValue("toInvoice", saleOrderLine.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = saleOrderLineRepository.find(saleOrderLine.getId());
+    saleOrderLine.setToInvoice(!saleOrderLine.getToInvoice());
+    saleOrderLineRepository.save(saleOrderLine);
+    response.setValue("toInvoice", saleOrderLine.getToInvoice());
   }
 
+  @HandleExceptionResponse
   public void updateAnalyticDistributionWithProject(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      if (saleOrderLine.getAnalyticMoveLineList() == null) {
-        return;
-      }
-      saleOrderLine =
-          Beans.get(SaleOrderLineProjectService.class)
-              .updateAnalyticDistributionWithProject(saleOrderLine);
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    if (saleOrderLine.getAnalyticMoveLineList() == null) {
+      return;
     }
+    saleOrderLine =
+        Beans.get(SaleOrderLineProjectService.class)
+            .updateAnalyticDistributionWithProject(saleOrderLine);
+    response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 }

@@ -20,7 +20,7 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,38 +30,32 @@ import java.math.BigDecimal;
 @Singleton
 public class LogisticalFormLineController {
 
+  @HandleExceptionResponse
   public void setQty(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      if (logisticalFormLine.getQty() == null) {
-        BigDecimal qty =
-            Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
-        response.setValue("qty", qty);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    if (logisticalFormLine.getQty() == null) {
+      BigDecimal qty =
+          Beans.get(LogisticalFormLineService.class).getUnspreadQty(logisticalFormLine);
+      response.setValue("qty", qty);
     }
   }
 
+  @HandleExceptionResponse
   public void setStockMoveLineDomain(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      String domain =
-          Beans.get(LogisticalFormLineService.class).getStockMoveLineDomain(logisticalFormLine);
-      response.setAttr("stockMoveLine", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    String domain =
+        Beans.get(LogisticalFormLineService.class).getStockMoveLineDomain(logisticalFormLine);
+    response.setAttr("stockMoveLine", "domain", domain);
   }
 
+  @HandleExceptionResponse
   public void initParcelPallet(ActionRequest request, ActionResponse response) {
-    try {
-      LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
-      Beans.get(LogisticalFormLineService.class).initParcelPallet(logisticalFormLine);
-      response.setValue("parcelPalletNumber", logisticalFormLine.getParcelPalletNumber());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    LogisticalFormLine logisticalFormLine = getLogisticalFormLine(request);
+    Beans.get(LogisticalFormLineService.class).initParcelPallet(logisticalFormLine);
+    response.setValue("parcelPalletNumber", logisticalFormLine.getParcelPalletNumber());
   }
 
   private LogisticalFormLine getLogisticalFormLine(ActionRequest request) {

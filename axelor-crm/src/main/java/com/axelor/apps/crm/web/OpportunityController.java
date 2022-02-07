@@ -23,6 +23,7 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -34,6 +35,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class OpportunityController {
 
+  @HandleExceptionResponse
   public void assignToMe(ActionRequest request, ActionResponse response) {
 
     OpportunityService opportunityService = Beans.get(OpportunityService.class);
@@ -59,6 +61,7 @@ public class OpportunityController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) {
     try {
       response.setView(
@@ -70,6 +73,7 @@ public class OpportunityController {
     }
   }
 
+  @HandleExceptionResponse
   public void createClient(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);

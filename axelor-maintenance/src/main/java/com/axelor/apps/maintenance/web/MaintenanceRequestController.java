@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.web;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -30,6 +31,7 @@ public class MaintenanceRequestController {
 
   @Inject private MaintenanceRequestService maintenanceRequestService;
 
+  @HandleExceptionResponse
   public void start(ActionRequest request, ActionResponse response) {
 
     MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
@@ -41,6 +43,7 @@ public class MaintenanceRequestController {
     }
   }
 
+  @HandleExceptionResponse
   public void complete(ActionRequest request, ActionResponse response) {
 
     MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
@@ -52,6 +55,7 @@ public class MaintenanceRequestController {
     }
   }
 
+  @HandleExceptionResponse
   public void cancel(ActionRequest request, ActionResponse response) {
 
     MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
@@ -63,6 +67,7 @@ public class MaintenanceRequestController {
     }
   }
 
+  @HandleExceptionResponse
   public void replan(ActionRequest request, ActionResponse response) {
 
     MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);

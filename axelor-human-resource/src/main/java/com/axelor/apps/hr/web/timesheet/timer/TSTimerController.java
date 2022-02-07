@@ -20,7 +20,8 @@ package com.axelor.apps.hr.web.timesheet.timer;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -32,6 +33,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TSTimerController {
 
+  @HandleExceptionResponse
   public void editTimesheetTimer(ActionRequest request, ActionResponse response) {
     TSTimer tsTimer = Beans.get(TimesheetTimerService.class).getCurrentTSTimer();
     if (tsTimer == null) {
@@ -51,6 +53,7 @@ public class TSTimerController {
     }
   }
 
+  @HandleExceptionResponse
   public void editTimesheetTimerFromTimesheet(ActionRequest request, ActionResponse response) {
 
     ActionViewBuilder actionView =
@@ -72,29 +75,25 @@ public class TSTimerController {
     response.setView(actionView.map());
   }
 
+  @HandleExceptionResponse
   public void pause(ActionRequest request, ActionResponse response) {
-    try {
-      TSTimer timerView = request.getContext().asType(TSTimer.class);
-      TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      Beans.get(TimesheetTimerService.class).pause(timer);
+    TSTimer timerView = request.getContext().asType(TSTimer.class);
+    TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(TimesheetTimerService.class).pause(timer);
+
+    response.setReload(true);
   }
 
-  public void stop(ActionRequest request, ActionResponse response) {
-    try {
-      TSTimer timerView = request.getContext().asType(TSTimer.class);
-      TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
+  @HandleExceptionResponse
+  public void stop(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Beans.get(TimesheetTimerService.class).stop(timer);
+    TSTimer timerView = request.getContext().asType(TSTimer.class);
+    TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(TimesheetTimerService.class).stop(timer);
+
+    response.setReload(true);
   }
 }

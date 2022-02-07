@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -29,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class ReconcileGroupController {
 
+  @HandleExceptionResponse
   public void unletter(ActionRequest request, ActionResponse response) {
 
     ReconcileGroup reconcileGroup =

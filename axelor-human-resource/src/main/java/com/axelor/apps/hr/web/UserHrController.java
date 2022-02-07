@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,6 +37,7 @@ import java.util.List;
 public class UserHrController {
 
   @Transactional
+  @HandleExceptionResponse
   public void createEmployee(ActionRequest request, ActionResponse response) {
     User user =
         Beans.get(UserRepository.class).find(request.getContext().asType(User.class).getId());
@@ -45,6 +47,7 @@ public class UserHrController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void createUser(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     User user = context.asType(User.class);
