@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -265,7 +265,8 @@ public class BankReconciliationController {
               .generate()
               .getFileLink();
 
-      response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+      response.setView(
+          ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -277,7 +278,8 @@ public class BankReconciliationController {
       String fileLink =
           Beans.get(BankReconciliationService.class).printNewBankReconciliation(bankReconciliation);
       if (StringUtils.notEmpty(fileLink)) {
-        response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+        response.setView(
+            ActionView.define(I18n.get("Bank Reconciliation")).add("html", fileLink).map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -411,7 +413,11 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       BankReconciliationService bankReconciliationService =
           Beans.get(BankReconciliationService.class);
-      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(
+              I18n.get(
+                  com.axelor.apps.bankpayment.translation.ITranslation
+                      .BANK_RECONCILIATION_UNRECONCILED_MOVE_LINE_LIST_PANEL_TITLE));
       actionViewBuilder.model(MoveLine.class.getName());
       actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
       actionViewBuilder.add("form", "move-line-form");

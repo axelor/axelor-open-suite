@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -247,7 +247,7 @@ public interface ManufOrderService {
       throws AxelorException;
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial bom, ManufOrder mo, List<Product> productList);
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
 
   /**
    * Merge different manufacturing orders into a single one.
