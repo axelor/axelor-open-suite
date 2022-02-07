@@ -655,7 +655,7 @@
   </selection>
 
   <selection name="batch.action.launch.origin.select">
-    <option value="1">Manual</option>
+    <option value="1">batch.manual</option>
     <option value="2">Scheduled</option>
   </selection>
 
