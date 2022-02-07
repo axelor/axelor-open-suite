@@ -922,7 +922,7 @@ public interface IExceptionMessage {
 
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
-  
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 

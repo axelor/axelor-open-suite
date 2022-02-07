@@ -7,12 +7,11 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -112,7 +111,8 @@ public class AnalyticDistributionTemplateServiceImpl
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
     }
-    
+  }
+
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
     Company company = account.getCompany();
