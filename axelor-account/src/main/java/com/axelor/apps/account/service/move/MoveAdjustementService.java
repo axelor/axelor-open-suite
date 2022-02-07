@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,6 +86,7 @@ public class MoveAdjustementService {
             null,
             partner,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMove.getFunctionalOriginSelect(),
             null,
@@ -120,7 +121,7 @@ public class MoveAdjustementService {
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
 
-    moveValidateService.validate(adjustmentMove);
+    moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
   }
 
@@ -149,6 +150,7 @@ public class MoveAdjustementService {
             null,
             partner,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMove.getFunctionalOriginSelect(),
             null,
@@ -182,7 +184,7 @@ public class MoveAdjustementService {
 
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
-    moveValidateService.validate(adjustmentMove);
+    moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
 
     return creditAdjustmentMoveLine;
@@ -219,6 +221,7 @@ public class MoveAdjustementService {
             null,
             partnerDebit,
             null,
+            null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             debitMoveLineToReconcile.getMove().getFunctionalOriginSelect(),
             null,
@@ -251,7 +254,7 @@ public class MoveAdjustementService {
     move.addMoveLineListItem(debitMoveLine);
     move.addMoveLineListItem(creditMoveLine);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     return move;
   }

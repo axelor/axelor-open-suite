@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,12 +105,7 @@ public class TimetableServiceImpl implements TimetableService {
     for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
       Timetable timetable = new Timetable();
       timetable.setEstimatedDate(
-          InvoiceToolService.getDueDate(
-              templateLine.getTypeSelect(),
-              templateLine.getPaymentTime(),
-              templateLine.getPeriodTypeSelect(),
-              templateLine.getDaySelect(),
-              computationDate));
+          InvoiceToolService.getDueDate(templateLine.getPaymentCondition(), computationDate));
       timetable.setPercentage(templateLine.getPercentage());
       timetable.setAmount(
           exTaxTotal.multiply(templateLine.getPercentage()).divide(BigDecimal.valueOf(100)));

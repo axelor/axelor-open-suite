@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -544,7 +544,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
-  private void computeMasses(StockMove stockMove) throws AxelorException {
+  protected void computeMasses(StockMove stockMove) throws AxelorException {
     StockConfig stockConfig = stockMove.getCompany().getStockConfig();
     Unit endUnit = stockConfig != null ? stockConfig.getCustomsMassUnit() : null;
     boolean massesRequiredForStockMove = false;
@@ -567,28 +567,8 @@ public class StockMoveServiceImpl implements StockMoveService {
         continue;
       }
 
-      BigDecimal netMass = stockMoveLine.getNetMass();
-
-      if (netMass.signum() == 0) {
-        Unit startUnit = product.getMassUnit();
-
-        if (startUnit != null && endUnit != null) {
-          netMass =
-              unitConversionService.convert(
-                  startUnit, endUnit, product.getNetMass(), product.getNetMass().scale(), null);
-          stockMoveLine.setNetMass(netMass);
-        }
-      }
-
-      if (netMass.signum() != 0) {
-        BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
-        stockMoveLine.setTotalNetMass(totalNetMass);
-      } else if (massesRequiredForStockMoveLine) {
-        throw new AxelorException(
-            stockMove,
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.STOCK_MOVE_18));
-      }
+      computeNetMass(stockMoveLine, endUnit, unitConversionService);
+      computeTotalNetMass(stockMoveLine, massesRequiredForStockMoveLine);
 
       if (!massesRequiredForStockMove && massesRequiredForStockMoveLine) {
         massesRequiredForStockMove = true;
@@ -600,6 +580,36 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.STOCK_MOVE_17));
+    }
+  }
+
+  protected void computeNetMass(
+      StockMoveLine stockMoveLine, Unit endUnit, UnitConversionService unitConversionService)
+      throws AxelorException {
+    BigDecimal netMass = stockMoveLine.getNetMass();
+    Product product = stockMoveLine.getProduct();
+    if (netMass.signum() == 0) {
+      Unit startUnit = product.getMassUnit();
+      if (startUnit != null && endUnit != null) {
+        netMass =
+            unitConversionService.convert(
+                startUnit, endUnit, product.getNetMass(), product.getNetMass().scale(), null);
+        stockMoveLine.setNetMass(netMass);
+      }
+    }
+  }
+
+  protected void computeTotalNetMass(
+      StockMoveLine stockMoveLine, boolean massesRequiredForStockMoveLine) throws AxelorException {
+    BigDecimal netMass = stockMoveLine.getNetMass();
+    if (netMass.signum() != 0) {
+      BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
+      stockMoveLine.setTotalNetMass(totalNetMass);
+    } else if (massesRequiredForStockMoveLine) {
+      throw new AxelorException(
+          stockMoveLine.getStockMove(),
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STOCK_MOVE_18));
     }
   }
 

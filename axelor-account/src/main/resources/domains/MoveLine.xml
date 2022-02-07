@@ -15,6 +15,8 @@
       initParam="true"/>
     <date name="date" column="date_val" title="Date" initParam="true"/>
     <date name="dueDate" title="Due Date" initParam="true"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
@@ -52,7 +54,7 @@
     <!-- Fixed asset fields -->
     <many-to-one name="fixedAssetCategory"
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"
-      help="If this field is filled, once the move will change from Draft to Validated, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
+      help="If this field is filled, once the move will change from Draft to Accounted, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
     <!-- Field not displayed, used during the payment voucher input -->
     <decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
     <many-to-one name="paymentScheduleLine"
@@ -100,9 +102,6 @@
       ref="com.axelor.apps.account.db.ReconcileGroup"/>
 
     <date name="originDate" title="Origin date" initParam="true"/>
-
-    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
-      mappedBy="moveLine" title="Invoice terms"/>
 
     <!-- DAS2 -->
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"

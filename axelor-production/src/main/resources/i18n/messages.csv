@@ -794,6 +794,7 @@
 "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.",,,
 "Work center filters",,,
 "Work center group",,,
+"Work center group cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.",,,
 "Work center group model",,,
 "Work center group models",,,
 "Work center group selection",,,

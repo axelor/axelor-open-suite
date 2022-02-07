@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
@@ -30,34 +32,63 @@ import java.util.List;
 
 public interface AccountingCutOffService {
 
-  public List<StockMove> getStockMoves(
-      Company company,
-      int accountingCutOffTypeSelect,
-      LocalDate moveDate,
-      Integer limit,
-      Integer offset);
+  public Query<StockMove> getStockMoves(
+      Company company, int accountingCutOffTypeSelect, LocalDate moveDate);
+
+  Query<Move> getMoves(
+      Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Move> generateCutOffMoves(
-      StockMove stockMove,
+  List<Move> generateCutOffMovesFromMove(
+      Move move,
+      Journal journal,
       LocalDate moveDate,
       LocalDate reverseMoveDate,
-      int accountingCutOffTypeSelect,
-      boolean recoveredTax,
-      boolean ati,
       String moveDescription,
-      boolean includeNotStockManagedProduct)
+      int accountingCutOffTypeSelect,
+      int cutOffMoveStatusSelect,
+      boolean automaticReverse,
+      boolean automaticReconcile)
       throws AxelorException;
 
-  public Move generateCutOffMove(
+  Move generateCutOffMoveFromMove(
+      Move move,
+      Journal journal,
+      LocalDate moveDate,
+      LocalDate originMoveDate,
+      String moveDescription,
+      int accountingCutOffTypeSelect,
+      int cutOffMoveStatusSelect,
+      boolean isReverse)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Move> generateCutOffMovesFromStockMove(
+      StockMove stockMove,
+      Journal miscOpeJournal,
+      LocalDate moveDate,
+      LocalDate reverseMoveDate,
+      String moveDescription,
+      int accountingCutOffTypeSelect,
+      int cutOffMoveStatusSelect,
+      boolean recoveredTax,
+      boolean ati,
+      boolean includeNotStockManagedProduct,
+      boolean automaticReverse,
+      boolean automaticReconcile)
+      throws AxelorException;
+
+  public Move generateCutOffMoveFromStockMove(
       StockMove stockMove,
       List<StockMoveLine> sortedStockMoveLine,
+      Journal miscOpeJournal,
       LocalDate moveDate,
       LocalDate originDate,
+      String moveDescription,
+      int cutOffMoveStatusSelect,
       boolean isPurchase,
       boolean recoveredTax,
       boolean ati,
-      String moveDescription,
       boolean includeNotStockManagedProduct,
       boolean isReverse)
       throws AxelorException;

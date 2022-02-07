@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,6 +44,8 @@ public interface PeriodService {
 
   public void close(Period period) throws AxelorException;
 
+  public void closeTemporarily(Period period) throws AxelorException;
+
   @Transactional
   public void adjust(Period period);
 
@@ -71,4 +73,8 @@ public interface PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException;
+
+  public void validateTempClosure(Period period) throws AxelorException;
+
+  public void validateClosure(Period period) throws AxelorException;
 }

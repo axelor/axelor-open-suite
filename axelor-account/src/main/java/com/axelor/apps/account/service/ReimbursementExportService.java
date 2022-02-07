@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -198,6 +198,7 @@ public class ReimbursementExportService {
                     null,
                     partner,
                     null,
+                    partner != null ? partner.getFiscalPosition() : null,
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),
@@ -248,7 +249,7 @@ public class ReimbursementExportService {
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
-      moveValidateService.validate(newMove);
+      moveValidateService.accounting(newMove);
       moveRepo.save(newMove);
     }
   }
@@ -557,8 +558,8 @@ public class ReimbursementExportService {
             .filter(
                 "self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
-                MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_DAYBOOK,
                 partner,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();

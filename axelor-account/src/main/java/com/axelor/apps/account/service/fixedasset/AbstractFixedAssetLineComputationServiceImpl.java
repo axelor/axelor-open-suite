@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
@@ -10,12 +27,16 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
@@ -24,6 +45,8 @@ import java.util.List;
  */
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
@@ -39,6 +62,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset);
 
   protected abstract String getComputationMethodSelect(FixedAsset fixedAsset);
+
+  protected abstract Integer getDurationInMonth(FixedAsset fixedAsset);
 
   protected abstract BigDecimal getDegressiveCoef(FixedAsset fixedAsset);
 
@@ -83,8 +108,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+  public Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
+
+    if (isAlreadyDepreciated(fixedAsset)) {
+      return Optional.empty();
+    }
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
@@ -109,9 +138,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         line.setAccountingValue(
             line.getAccountingValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
       }
+      if (line.getDepreciationBase().equals(getAlreadyDepreciatedAmount(fixedAsset))) {
+        return Optional.empty();
+      }
     }
 
-    return line;
+    return Optional.ofNullable(line);
+  }
+
+  protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
+
+    return getNumberOfDepreciation(fixedAsset).equals(getNumberOfPastDepreciation(fixedAsset));
   }
 
   @Override
@@ -356,9 +393,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected LocalDate computeDepreciationDate(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
     LocalDate depreciationDate;
-    depreciationDate =
-        DateTool.plusMonths(
-            previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
+    // In prorataTemporis, the system will generate one additional line.
+    // This check if we are generating the additional line, and in this case, the depreciation date
+    // is different.
+    if (isProrataTemporis(fixedAsset)
+        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset)) {
+      depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
+    } else {
+      depreciationDate =
+          DateTool.plusMonths(
+              previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
+    }
 
     return depreciationDate;
   }
@@ -366,10 +411,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
-    if (getFixedAssetLineList(fixedAsset) != null
-        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
-      depreciation = previousFixedAssetLine.getAccountingValue();
-    } else if (getComputationMethodSelect(fixedAsset)
+
+    if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
 
@@ -392,5 +435,16 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       return previousFixedAssetLine.getAccountingValue();
     }
     return previousFixedAssetLine.getDepreciationBase();
+  }
+
+  protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
+
+    LocalDate d =
+        DateTool.plusMonths(fixedAsset.getFirstServiceDate(), getDurationInMonth(fixedAsset));
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        getComputationMethodSelect(fixedAsset))) {
+      d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+    }
+    return d;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,7 +63,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setExportNumber(null);
       copy.setExportDate(null);
       copy.setAccountingReport(null);
-      copy.setValidationDate(null);
+      copy.setAccountingDate(null);
       copy.setPeriod(period);
       copy.setAccountingOk(false);
       copy.setIgnoreInDebtRecoveryOk(false);
@@ -106,7 +106,7 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
@@ -128,6 +128,7 @@ public class MoveManagementRepository extends MoveRepository {
           moveLineControlService.controlAccountingAccount(moveLine);
         }
       }
+
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

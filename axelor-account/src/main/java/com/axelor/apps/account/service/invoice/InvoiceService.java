@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -32,11 +33,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +53,14 @@ public interface InvoiceService {
 
   /**
    * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice, and if holdback.
+   * type of invoice.
    *
    * @param invoice Invoice to fetch the partner account for
    * @return null if the invoice does not contains enough information to determine the partner
    *     account.
    * @throws AxelorException
    */
-  Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
+  Account getPartnerAccount(Invoice invoice) throws AxelorException;
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -159,7 +162,9 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
       throws AxelorException;
 
   public Invoice mergeInvoice(
@@ -170,7 +175,39 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
+      throws AxelorException;
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException;
+
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
       throws AxelorException;
 
   public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
@@ -287,6 +324,8 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
+
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
 
@@ -313,4 +352,10 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  boolean checkInvoiceLinesCutOffDates(Invoice invoice);
+
+  boolean checkManageCutOffDates(Invoice invoice);
+
+  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

@@ -84,6 +84,8 @@
     <option order="18" value="17">Summary of gross values and depreciation</option>
     <option order="19" value="19">Preparatory Process for fees declaration</option>
     <option order="20" value="20">Fees declaration supporting file</option>
+    <option order="21" value="21">Preparatory declaration DGI 2054</option>
+    <option order="22" value="22">Preparatory declaration DGI 2055</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1006">Export sale -> Acc. Soft.</option>
@@ -131,11 +133,11 @@
   </selection>
 
   <selection name='iaccount.move.status.select'>
-    <option value='1'>New</option>
-    <option value='2'>Accounted</option>
-    <option value='3'>Validated</option>
-    <option value='4'>Canceled</option>
-    <option value='5'>Simulated</option>
+    <option value='1' order="10">Move.New</option>
+    <option value='2' order="30">DayBook</option>
+    <option value='3' order="40">Move.Accounted</option>
+    <option value='4' order="50">Move.Canceled</option>
+    <option value='5' order="20">Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>
@@ -201,9 +203,9 @@
     <option value="18">Move export</option>
     <option value="19">Credit Transfer</option>
     <option value="20">Realize fixed asset lines</option>
-    <option value="21">Close the annual accounts of the past year</option>
-    <option value="22">Open the annual accounts of the next year</option>
+    <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
+    <option value="24">Exchanges</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -637,6 +639,35 @@
     <option value="2" order="20">Tangible asset</option>
     <option value="3" order="30">Intangible asset</option>
     <option value="4" order="40">Financial asset</option>
+  </selection>
+
+  <selection name='iaccount.status.select.selection'>
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </selection>
+
+  <selection name='ianalytic.journal.status.select'>
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </selection>
+
+  <selection name='ianalytic.account.status.select'>
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.bill.of.exchange.type.select">
+    <option value="1">Direct bank LCR</option>
+  </selection>
+
+  <selection name="account.account.chart.code.nbr.char.select">
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
   </selection>
 
 </object-views>

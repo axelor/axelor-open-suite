@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -65,10 +64,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService) {
+      BankOrderService bankOrderService,
+      AppAccountService appAccountService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -79,8 +77,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         invoicePaymentRepository,
         reconcileService,
         invoicePaymentToolService,
-        invoiceTermService,
         appAccountService);
+
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
   }
@@ -100,7 +98,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
         || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
-                && inOutSelect == PaymentModeRepository.OUT)
+            && inOutSelect == PaymentModeRepository.OUT)
+        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
+                && inOutSelect == PaymentModeRepository.IN)
             && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {

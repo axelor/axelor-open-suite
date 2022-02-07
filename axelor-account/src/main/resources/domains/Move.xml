@@ -29,6 +29,8 @@
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
@@ -39,11 +41,12 @@
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInDebtRecoveryOk" title="Ignore in debt recovery process"
       default="false"/>
-    <date name="validationDate" title="Validation date"/>
+    <date name="accountingDate" title="Accounting date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true"
       readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
+    <boolean name="cutOffMoveGenerated" title="Cut off move generated"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
       selection="iaccount.move.functional.origin.select"/>
@@ -55,14 +58,21 @@
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
+    <many-to-one name="cutOffOriginMove" title="Cut off origin move"
+      ref="com.axelor.apps.account.db.Move"/>
+
+    <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
+      title="FEC Import"/>
     <unique-constraint columns="reference,company"/>
+
+    <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
 
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
 		public static final int STATUS_NEW = 1;
-		public static final int STATUS_ACCOUNTED = 2;
-		public static final int STATUS_VALIDATED = 3;
+		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 3;
 		public static final int STATUS_CANCELED = 4;
 		public static final int STATUS_SIMULATED = 5;
 
@@ -94,6 +104,7 @@
       <field name="reference"/>
       <field name="period"/>
       <field name="partner"/>
+      <field name="fiscalPosition" on="UPDATE"/>
       <field name="currency"/>
       <field name="companyCurrency"/>
       <field name="ignoreInAccountingOk"/>
@@ -103,9 +114,10 @@
       <field name="description"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
-      <message if="statusSelect == 2" tag="info">Accounted move</message>
-      <message if="statusSelect == 3" tag="success">Move validated</message>
+      <message if="statusSelect == 2" tag="info">Daybook move</message>
+      <message if="statusSelect == 3" tag="success">Accounted move</message>
       <message if="statusSelect == 4" tag="warning">Move canceled</message>
+      <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 
   </entity>

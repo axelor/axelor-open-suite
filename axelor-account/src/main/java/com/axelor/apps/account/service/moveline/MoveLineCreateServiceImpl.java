@@ -1,30 +1,35 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -57,7 +62,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -70,8 +74,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      MoveLineConsolidateService moveLineConsolidateService,
-      InvoiceTermService invoiceTermService) {
+      MoveLineConsolidateService moveLineConsolidateService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -82,7 +85,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
-    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -190,7 +192,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         });
 
     if (partner != null) {
-      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
+      FiscalPosition fiscalPosition = null;
+      if (move.getInvoice() != null) {
+        fiscalPosition = move.getInvoice().getFiscalPosition();
+        if (fiscalPosition == null) {
+          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        }
+      } else {
+        fiscalPosition = partner.getFiscalPosition();
+      }
+
+      account = fiscalPositionAccountService.getAccount(fiscalPosition, account);
     }
 
     BigDecimal debit = BigDecimal.ZERO;
@@ -297,6 +309,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
+    int moveLineId = 1;
+
     if (partner == null) {
       throw new AxelorException(
           invoice,
@@ -318,9 +332,23 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    moveLines.addAll(
-        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
-    int moveLineId = moveLines.size() + 1;
+    // Creation of partner move line
+    MoveLine moveLine1 =
+        this.createMoveLine(
+            move,
+            partner,
+            partnerAccount,
+            invoice.getInTaxTotal(),
+            invoice.getCompanyInTaxTotal(),
+            null,
+            isDebitCustomer,
+            invoice.getInvoiceDate(),
+            invoice.getDueDate(),
+            invoice.getOriginDate(),
+            moveLineId++,
+            origin,
+            null);
+    moveLines.add(moveLine1);
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -402,6 +430,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(taxLine);
           moveLine.setTaxRate(taxLine.getValue());
           moveLine.setTaxCode(taxLine.getTax().getCode());
+        }
+
+        // Cut off
+        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
         }
 
         moveLines.add(moveLine);
@@ -496,97 +530,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return moveLines;
   }
 
-  protected List<MoveLine> addInvoiceTermMoveLines(
-      Invoice invoice,
-      Account partnerAccount,
-      Move move,
-      Partner partner,
-      boolean isDebitCustomer,
-      String origin)
-      throws AxelorException {
-    int moveLineId = 1;
-    List<MoveLine> moveLines = new ArrayList<MoveLine>();
-    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
-    MoveLine moveLine = null;
-    MoveLine holdBackMoveLine;
-    LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      Account account = partnerAccount;
-      if (invoiceTerm.getIsHoldBack()) {
-        account = invoiceService.getPartnerAccount(invoice, true);
-        holdBackMoveLine =
-            this.createMoveLine(
-                move,
-                partner,
-                account,
-                invoiceTerm.getAmount(),
-                currencyService
-                    .getAmountCurrencyConvertedAtDate(
-                        invoice.getCurrency(),
-                        companyCurrency,
-                        invoiceTerm.getAmount(),
-                        invoice.getInvoiceDate())
-                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                null,
-                isDebitCustomer,
-                invoice.getInvoiceDate(),
-                invoiceTerm.getDueDate(),
-                invoice.getOriginDate(),
-                moveLineId++,
-                origin,
-                null);
-        invoiceTerm.setMoveLine(holdBackMoveLine);
-        moveLines.add(holdBackMoveLine);
-      } else {
-        if (moveLine == null) {
-          moveLine =
-              this.createMoveLine(
-                  move,
-                  partner,
-                  account,
-                  invoiceTerm.getAmount(),
-                  currencyService
-                      .getAmountCurrencyConvertedAtDate(
-                          invoice.getCurrency(),
-                          companyCurrency,
-                          invoiceTerm.getAmount(),
-                          invoice.getInvoiceDate())
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-                  null,
-                  isDebitCustomer,
-                  invoice.getInvoiceDate(),
-                  latestDueDate,
-                  invoice.getOriginDate(),
-                  moveLineId++,
-                  origin,
-                  null);
-        } else {
-          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
-            // Debit
-            moveLine.setDebit(
-                moveLine
-                    .getDebit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
-          } else {
-            // Credit
-            moveLine.setCredit(
-                moveLine
-                    .getCredit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
-          }
-        }
-      }
-    }
-
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsHoldBack()) {
-        invoiceTerm.setMoveLine(moveLine);
-      }
-    }
-    moveLines.add(moveLine);
-    return moveLines;
-  }
-
   @Override
   public MoveLine createMoveLineForAutoTax(
       Move move,
@@ -619,8 +562,21 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (ObjectUtils.notEmpty(move.getPartner())
-        && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+
+    FiscalPosition fiscalPosition = null;
+    if (move.getInvoice() != null) {
+      fiscalPosition = move.getInvoice().getFiscalPosition();
+      if (fiscalPosition == null) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    } else {
+      if (ObjectUtils.notEmpty(move.getPartner())
+          && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
+        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+      }
+    }
+
+    if (fiscalPosition != null) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);

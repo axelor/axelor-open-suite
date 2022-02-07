@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,6 +67,12 @@ public class MoveExcessPaymentService {
     List<MoveLine> advancePaymentMoveLines =
         Beans.get(InvoiceService.class).getMoveLinesFromAdvancePayments(invoice);
 
+    MoveLine moveLine = getOrignalInvoiceMoveLine(invoice);
+
+    if (moveLine != null) {
+      advancePaymentMoveLines.add(moveLine);
+    }
+
     if (accountConfig.getAutoReconcileOnInvoice()) {
       List<MoveLine> creditMoveLines =
           moveLineRepository
@@ -76,8 +82,8 @@ public class MoveExcessPaymentService {
                       + " AND self.account.useForPartnerBalance = ?4 AND self.credit > 0 and self.amountRemaining > 0"
                       + " AND self.partner = ?5 ORDER BY self.date ASC",
                   company,
-                  MoveRepository.STATUS_VALIDATED,
                   MoveRepository.STATUS_ACCOUNTED,
+                  MoveRepository.STATUS_DAYBOOK,
                   true,
                   invoice.getPartner())
               .fetch();
@@ -90,6 +96,23 @@ public class MoveExcessPaymentService {
     advancePaymentMoveLines =
         advancePaymentMoveLines.stream().distinct().collect(Collectors.toList());
     return advancePaymentMoveLines;
+  }
+
+  protected MoveLine getOrignalInvoiceMoveLine(Invoice invoice) {
+
+    Invoice originalInvoice = invoice.getOriginalInvoice();
+
+    if (originalInvoice != null && originalInvoice.getMove() != null) {
+      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          return moveLine;
+        }
+      }
+    }
+
+    return null;
   }
 
   public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice) {

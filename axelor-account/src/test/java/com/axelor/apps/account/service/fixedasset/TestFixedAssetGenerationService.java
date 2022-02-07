@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -327,7 +327,7 @@ public class TestFixedAssetGenerationService {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
-            && fixedAsset.getFixedAssetLineList().size() == 5);
+            && fixedAsset.getFixedAssetLineList().size() == 6);
   }
 
   @Test
@@ -391,9 +391,9 @@ public class TestFixedAssetGenerationService {
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("176.11"),
-            new BigDecimal("500.00"),
-            new BigDecimal("0.00")),
+            new BigDecimal("100.00"),
+            new BigDecimal("423.89"),
+            new BigDecimal("76.11")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -425,7 +425,7 @@ public class TestFixedAssetGenerationService {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
-            && fixedAsset.getFixedAssetLineList().size() == 7);
+            && fixedAsset.getFixedAssetLineList().size() == 8);
   }
 
   @Test
@@ -519,10 +519,10 @@ public class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2026, 12, 31),
-            new BigDecimal("500.00"),
-            new BigDecimal("21993.94"),
             new BigDecimal("102638.35"),
-            new BigDecimal("0.00")),
+            new BigDecimal("14662.62"),
+            new BigDecimal("95307.03"),
+            new BigDecimal("7331.32")),
         fixedAsset.getFixedAssetLineList().get(6));
   }
 

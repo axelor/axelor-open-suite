@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,15 +23,20 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -52,6 +57,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppBaseService appBaseService;
+  protected AppAccountService appAccountService;
+  protected AccountConfigService accountConfigService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -61,12 +68,16 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
       AppBaseService appBaseService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
+    this.appAccountService = appAccountService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -269,5 +280,39 @@ public class MoveLineServiceImpl implements MoveLineService {
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public boolean checkManageAnalytic(Move move) throws AxelorException {
+    return move != null
+        && move.getCompany() != null
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(MoveLine moveLine) {
+    return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
+  }
+
+  @Override
+  public void applyCutOffDates(
+      MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (cutOffStartDate != null && cutOffEndDate != null) {
+      moveLine.setCutOffStartDate(cutOffStartDate);
+      moveLine.setCutOffEndDate(cutOffEndDate);
+    }
+  }
+
+  @Override
+  public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    BigDecimal daysProrata =
+        BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
+    BigDecimal daysTotal =
+        BigDecimal.valueOf(
+            ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+    BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+
+    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
 }

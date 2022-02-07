@@ -157,7 +157,6 @@
     <option value="category">Category</option>
   </selection>
 
-
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
@@ -257,8 +256,9 @@
 
   <selection name="base.period.status.select">
     <option value="1">Opened</option>
-    <option value="2">Closed</option>
+    <option value="2">Permanently Closed</option>
     <option value="3">Adjusting</option>
+    <option value="4">Temporarily Closed</option>
   </selection>
 
   <selection name="company.partner.category.select">
@@ -365,6 +365,7 @@
     <option value="7">Cheque</option>
     <option value="8">Web</option>
     <option value="9">Transfer</option>
+    <option value="10">Exchanges</option>
   </selection>
 
   <selection name="iaccount.payment.mode.in.out.select">
@@ -560,10 +561,6 @@
     <option value="2">Landscape</option>
   </selection>
 
-  <selection name="print.template.line.test.reference.select">
-    <option value="Default" order="0" hidden="true">Default</option>
-  </selection>
-
   <selection name="base.print.settings.footer.font.select">
     <option value="Courier">Courier</option>
     <option value="Courier-Bold">Courier-Bold</option>
@@ -650,6 +647,11 @@
     <option value="-1">&lt;</option>
     <option value="0">=</option>
     <option value="1">&gt;</option>
+  </selection>
+
+  <selection name="printing.setting.address.position">
+    <option value="0">Right</option>
+    <option value="1">Left</option>
   </selection>
 
   <selection name="base.trading.name.type.select">

@@ -131,7 +131,7 @@
               if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
               <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
-                            <span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+                            <span class="label label-success" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)" x-translate>Invoiced</span>
                             <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
                             <span class="label label-important" ng-show="record.amountInvoiced == 0" x-translate>Not invoiced</span>
                         </h4>
@@ -379,6 +379,8 @@
         <field name="standardDelay" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+        <field name="pricingScaleLogs" colSpan="12"
+          showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
@@ -500,6 +502,8 @@
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <field name="standardDelay" if-module="axelor-supplychain" hidden="true"
           showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
+        <field name="pricingScaleLogs" colSpan="12"
+          showIf="pricingScaleLogs &amp;&amp; product"/>
         <field name="supplierPartner" showIf="saleSupplySelect == 2"
           onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>

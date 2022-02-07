@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,21 +23,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import java.time.LocalDate;
 
-@Singleton
 public class InvoiceController {
 
-  public void computeEstimatedPaymentDates(ActionRequest request, ActionResponse response) {
+  public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
+
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getDueDate() == null) {
-        return;
-      }
-      invoice =
+      LocalDate estimatedPaymentDate =
           Beans.get(InvoiceEstimatedPaymentService.class).computeEstimatedPaymentDate(invoice);
-      response.setValues(invoice);
-
+      response.setValue("estimatedPaymentDate", estimatedPaymentDate);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

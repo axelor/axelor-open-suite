@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,6 +53,8 @@ public interface IExceptionMessage {
       "%s : Please, configure a sequence for the National Treasury Transfers and the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_SEQUENCE_11 = /*$$(*/
       "%s : Please, configure a sequence for the Other Bank Orders and the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_SEQUENCE_12 = /*$$(*/
+      "%s : Please, configure a sequence for the Bill of exchange and the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_EXTERNAL_BANK_TO_BANK_ACCOUNT = /*$$(*/
       "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s" /*)*/;
@@ -83,6 +85,10 @@ public interface IExceptionMessage {
       "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
   static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the detail record of the bank order line %s" /*)*/;
+  static final String BANK_ORDER_WRONG_ENDORSED_DETAIL_RECORD = /*$$(*/
+      "Anomaly has been detected during file generation for the endorsed detail record of the bank order line %s" /*)*/;
+  static final String BANK_ORDER_WRONG_ADDITIONAL_DETAIL_RECORD = /*$$(*/
+      "Anomaly has been detected during file generation for the additional detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_BENEFICIARY_BANK_DETAIL_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s" /*)*/;
   static final String BANK_ORDER_WRONG_FURTHER_INFORMATION_DETAIL_RECORD = /*$$(*/
@@ -110,9 +116,15 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_NO_SENDER_CURRENCY = /*$$(*/
       "Please set a currency in the sender bank details : %s." /*)*/;
 
-  String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
-  String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS = /*$$(*/
+      "Please fill the address in the partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP = /*$$(*/
+      "Please fill the zip in the partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY = /*$$(*/
+      "Please fill the city in the partner details." /*)*/;
+  static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
       "Please fill the bank in the receiver bank details." /*)*/;
 
   /** BankOrder lines */
@@ -212,7 +224,7 @@ public interface IExceptionMessage {
   static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
       "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
   static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
-      "Curernt bank statement doesn't contain an initial line" /*)*/;
+      "Current bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit
@@ -238,21 +250,26 @@ public interface IExceptionMessage {
 
   /** Bank reconciliation */
   static final String BANK_RECONCILIATION_MISSING_JOURNAL = /*$$(*/
-      "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled" /*)*/;
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries." /*)*/;
+
+  /** Bank reconciliation */
+  static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
+      "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
 
   static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
       "Please select a reconciliation line" /*)*/;
   static final String BANK_RECONCILIATION_INCOMPLETE_LINE = /*$$(*/
-      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Accounting account, Third party). This in order to generate automatically a move line on the accounting account and journal associated with the reconciliation session" /*)*/;
+      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session." /*)*/;
 
   static final String BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/
-      "Please select one bank reconciliation line and one move line";
+      "Please select one bank reconciliation line and one move line" /*)*/;
   static final String BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE = /*$$(*/
-      "Please select one bank reconciliation line";
-  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/ "Please select one move line";
+      "Please select one bank reconciliation line" /*)*/;
+  static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/
+      "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
-      "Can't load while another reconciliation is open";
+      "Can't load while another reconciliation is open" /*)*/;
 
   /** Bank Statement Query */
-  static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used";
+  static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
 }

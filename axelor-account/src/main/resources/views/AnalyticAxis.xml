@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="analytic-axis-grid" title="Analytic Axis"
+  <grid name="analytic-axis-grid" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
@@ -12,11 +12,12 @@
 
   <form name="analytic-axis-form" title="Analytic Axis"
     model="com.axelor.apps.account.db.AnalyticAxis"
-    onLoad="action-attrs-analytic-axis-hide-grouping">
+    onLoad="action-attrs-analytic-axis-hide-grouping,action-method-account-analytic-axis-readonly-if-in-analytic-move-line"
+    onSave="action-method-account-analytic-axis-control-unicity">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
-      <field name="nbrOfAnalyticGrouping"
+      <field name="nbrOfAnalyticGrouping" readonlyIf="!id"
         onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
       <field name="manageParentAccount"/>
       <field name="company" colSpan="12" onChange="action-method-axis-change-company"/>
@@ -245,6 +246,15 @@
 
   <action-method name="action-method-analytic-axis-set-grouping-domain">
     <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setGroupingDomain"/>
+  </action-method>
+
+  <action-method name="action-method-account-analytic-axis-control-unicity">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="controlUnicity"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-analytic-axis-readonly-if-in-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setReadOnly"/>
   </action-method>
 
 </object-views>

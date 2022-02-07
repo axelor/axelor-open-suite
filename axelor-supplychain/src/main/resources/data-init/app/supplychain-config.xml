@@ -10,7 +10,7 @@
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
+    search="self.importId = :importId" call="com.axelor.csv.script.SequenceScript:computeFullname">
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -22,5 +22,13 @@
   <input file="supplychain_stock_move_invoicing_blocking_reason.csv" separator=";"
     type="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason"
     search="self.name = :name"/>
+
+  <input file="supplychain_partner_supplychain_link_type.csv" separator=";"
+    type="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType"
+    search="self.importId = :importId">
+    <bind to="typeSelect" column="type"/>
+    <bind to="link1Name" column="relation1"/>
+    <bind to="link2Name" column="relation2"/>
+  </input>
 
 </csv-inputs>

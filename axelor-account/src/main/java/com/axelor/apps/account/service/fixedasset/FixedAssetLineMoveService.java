@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -87,4 +88,12 @@ public interface FixedAssetLineMoveService {
    * @throws AxelorException
    */
   boolean canSimulate(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  /**
+   * When calling service from a batch, it might be necessary to set batch to attach generated moves
+   * to batch
+   *
+   * @param batch
+   */
+  void setBatch(Batch batch);
 }

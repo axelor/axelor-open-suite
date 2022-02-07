@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -43,7 +44,9 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOff;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -54,6 +57,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RequestScoped
@@ -62,6 +66,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected AccountManagementService accountManagementService;
   protected PriceListService priceListService;
+  protected SupplychainBatchRepository supplychainBatchRepo;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -77,7 +82,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      SupplychainBatchRepository supplychainBatchRepo) {
     super(
         trackingNumberService,
         appBaseService,
@@ -92,6 +98,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
+    this.supplychainBatchRepo = supplychainBatchRepo;
   }
 
   @Override
@@ -481,5 +488,82 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
     return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
         || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  @Override
+  public BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine, boolean isPurchase, boolean ati, boolean recoveredTax)
+      throws AxelorException {
+    return this.getAmountNotInvoiced(
+        stockMoveLine,
+        stockMoveLine.getPurchaseOrderLine(),
+        stockMoveLine.getSaleOrderLine(),
+        isPurchase,
+        ati,
+        recoveredTax);
+  }
+
+  @Override
+  public BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine,
+      PurchaseOrderLine purchaseOrderLine,
+      SaleOrderLine saleOrderLine,
+      boolean isPurchase,
+      boolean ati,
+      boolean recoveredTax)
+      throws AxelorException {
+    BigDecimal amountInCurrency = null;
+    BigDecimal totalQty = null;
+    BigDecimal notInvoicedQty = null;
+
+    if (isPurchase && purchaseOrderLine != null) {
+      totalQty = purchaseOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              purchaseOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              purchaseOrderLine.getProduct());
+
+      if (ati && !recoveredTax) {
+        amountInCurrency = purchaseOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = purchaseOrderLine.getExTaxTotal();
+      }
+    } else if (!isPurchase && saleOrderLine != null) {
+      totalQty = saleOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              saleOrderLine.getProduct());
+      if (ati) {
+        amountInCurrency = saleOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = saleOrderLine.getExTaxTotal();
+      }
+    }
+
+    if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
+      return null;
+    }
+
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
+    return amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
+    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+
+    batchAccountingCutOff.recordIdList = recordIdList;
+    batchAccountingCutOff.run(supplychainBatchRepo.find(batchId));
+
+    return batchAccountingCutOff.getBatch();
   }
 }

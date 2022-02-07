@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -25,6 +42,15 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         if (map.containsKey(keys)) {
 
           MoveLine moveLineIt = map.get(keys);
+
+          // Check cut off dates
+          if (moveLine.getCutOffStartDate() != null
+              && moveLine.getCutOffEndDate() != null
+              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+            return null;
+          }
+
           int count = 0;
           if (moveLineIt.getAnalyticMoveLineList() == null
               && moveLine.getAnalyticMoveLineList() == null) {
@@ -93,6 +119,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
+      keys.add(moveLine.getCutOffStartDate());
+      keys.add(moveLine.getCutOffEndDate());
 
       consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
       if (consolidateMoveLine != null) {

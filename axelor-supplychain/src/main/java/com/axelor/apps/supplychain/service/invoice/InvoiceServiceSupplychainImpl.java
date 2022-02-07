@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -36,8 +35,11 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -63,6 +65,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
   protected InvoiceLineRepository invoiceLineRepo;
   protected IntercoService intercoService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -77,9 +80,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
-      IntercoService intercoService) {
+      IntercoService intercoService,
+      TaxService taxService,
+      StockMoveRepository stockMoveRepository) {
     super(
         validateFactory,
         ventilateFactory,
@@ -91,10 +95,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        invoiceTermService,
-        appBaseService);
+        appBaseService,
+        taxService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -287,5 +292,26 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       }
     }
     return invoice;
+  }
+
+  @Transactional
+  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
+    for (Invoice invoice : invoiceList) {
+      List<StockMove> stockMoveList =
+          stockMoveRepository
+              .all()
+              .filter(":invoiceId in self.invoiceSet.id")
+              .bind("invoiceId", invoice.getId())
+              .fetch();
+      for (StockMove stockMove : stockMoveList) {
+        stockMove.removeInvoiceSetItem(invoice);
+        stockMove.addInvoiceSetItem(newInvoice);
+        invoice.removeStockMoveSetItem(stockMove);
+        newInvoice.addStockMoveSetItem(stockMove);
+        invoiceRepo.save(invoice);
+        invoiceRepo.save(newInvoice);
+        stockMoveRepository.save(stockMove);
+      }
+    }
   }
 }
