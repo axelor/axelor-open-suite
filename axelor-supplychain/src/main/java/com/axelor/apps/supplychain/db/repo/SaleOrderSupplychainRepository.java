@@ -42,6 +42,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
     copy.setAmountInvoiced(null);
     copy.setStockMoveList(null);
+    copy.setInvoiceCount(null);
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {

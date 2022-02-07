@@ -59,6 +59,7 @@
       ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="deliveredPartner" title="Delivery partner"
       ref="com.axelor.apps.base.db.Partner"/>
+    <integer name="invoiceCount" title="Invoice Count"/>
     <extra-code>
             <![CDATA[
                 // INVOICE

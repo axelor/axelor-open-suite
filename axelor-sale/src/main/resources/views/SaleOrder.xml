@@ -321,13 +321,13 @@
         </field>
         <field name="$invoicingState" showTitle="false" readonly="true"
           showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
-          <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
+          <viewer depends="amountInvoiced,exTaxTotal,invoiceCount"><![CDATA[
 	        <div>
 	        <div class="span7">
 	          <h5>
-	          <span class="label label-important" ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+	          <span class="label label-important" ng-show="record.amountInvoiced == 0 && record.invoiceCount == 0"  x-translate>Not invoiced</span>
 	          <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)" x-translate>Invoiced</span>
+	          <span class="label label-success" ng-show="(record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)) || (record.exTaxTotal == 0 && record.invoiceCount > 0)" x-translate>Invoiced</span>
 	        </h5>
 	        </div>
 	      </div>
@@ -1183,6 +1183,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
+    <field name="invoiceCount"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1206,9 +1207,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+						<span class="label label-important"  ng-show="record.amountInvoiced == 0 && (record.invoiceCount == 0 || record.invoiceCount == null)"  x-translate>Not invoiced</span>
 						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-success" ng-show="(record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal) || (record.exTaxTotal == 0 && record.invoiceCount > 0)" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1260,6 +1261,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
+    <field name="invoiceCount"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1283,9 +1285,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+						<span class="label label-important"  ng-show="record.amountInvoiced == 0 && (record.invoiceCount == 0 || record.invoiceCount == null)"  x-translate>Not invoiced</span>
 						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-success" ng-show="(record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal) || (record.exTaxTotal == 0 && record.invoiceCount > 0)" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>

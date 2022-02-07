@@ -690,6 +690,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0) {
       saleOrderWorkflowServiceImpl.completeSaleOrder(saleOrder);
     }
+    saleOrder.setInvoiceCount(
+        (int)
+            invoiceRepo
+                .all()
+                .filter(
+                    "self.saleOrder = ?1 AND self.statusSelect = ?2",
+                    saleOrder.getId(),
+                    InvoiceRepository.STATUS_VENTILATED)
+                .count());
   }
 
   @Override
@@ -974,6 +983,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
@@ -984,7 +997,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
     BigDecimal sumInvoices = computeSumInvoices(invoices);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
+    if (sumInvoices.compareTo(exTaxTotal) >= 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
