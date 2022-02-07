@@ -53,7 +53,7 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
-        onClick="action-group-payment-session-search-eligible-terms"/>
+        onClick="action-group-payment-session-search-eligible-terms" readonlyIf="sessionTotalAmount > 0"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-method-payment-session-search-eligible-terms"/>
