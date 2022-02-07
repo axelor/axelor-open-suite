@@ -24,6 +24,7 @@
     <decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
+    <boolean name="customizable" title="Customizable" default="true"/>
     <boolean name="personalized" title="Personalized"/>
     <decimal name="wasteRate" title="Waste rate (%)"/>
     <integer name="statusSelect" title="Status" readonly="true"
