@@ -596,7 +596,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_F3),
-              this.partnerService.getSIRENNumber(this.senderBankDetails.getPartner()),
+              this.partnerService.getSIRENNumber(senderCompany.getPartner()),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               15));

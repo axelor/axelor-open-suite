@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
@@ -39,6 +40,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -52,18 +54,21 @@ public class PaymentVoucherLoadService {
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
 
   @Inject
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
       PayVoucherDueElementRepository payVoucherDueElementRepo,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
   }
 
   /**
@@ -117,10 +122,12 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
 
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+      payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
@@ -185,7 +192,11 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
@@ -397,5 +408,21 @@ public class PaymentVoucherLoadService {
         it.remove();
       }
     }
+  }
+
+  @Transactional
+  public void reloadElementToPayList(
+      PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) {
+
+    List<PayVoucherElementToPay> listToKeep = paymentVoucherContext.getPayVoucherElementToPayList();
+    paymentVoucher.clearPayVoucherElementToPayList();
+
+    listToKeep.forEach(
+        elementToPay -> {
+          paymentVoucher.addPayVoucherElementToPayListItem(
+              payVoucherElementToPayRepo.find(elementToPay.getId()));
+        });
+
+    paymentVoucherRepository.save(paymentVoucher);
   }
 }

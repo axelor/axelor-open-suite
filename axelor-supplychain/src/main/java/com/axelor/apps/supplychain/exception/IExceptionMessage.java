@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -285,6 +285,16 @@ public interface IExceptionMessage {
 
   static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
       "The customer account is blocked because he has late payments." /*)*/;
+
+  /*
+   * MRP Service
+   */
+
+  String MRP_ERROR_WHILE_COMPUTATION = /*$$(*/ "Error during the computation of MRP %s" /*)*/;
+
+  String MRP_FINISHED_MESSAGE_SUBJECT = /*$$(*/ "MRP n°%s is now finished" /*)*/;
+  String MRP_FINISHED_MESSAGE_BODY = /*$$(*/
+      "The execution of MRP n°%s is now finished, you can click above to see the results." /*)*/;
 
   static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
