@@ -401,4 +401,13 @@ public class PartnerController {
       TraceBackService.trace(e);
     }
   }
+
+  public void checkValidityRegistrationCode(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      Beans.get(PartnerService.class).checkValidityRegistrationCode(partner);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 }

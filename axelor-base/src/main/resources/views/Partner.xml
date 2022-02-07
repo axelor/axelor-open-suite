@@ -331,7 +331,7 @@
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-method-partner-registration-code-onChange"/>
+          onChange="action-method-partner-registration-code-check-validity,action-method-partner-registration-code-onChange"/>
         <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
         <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
@@ -1467,6 +1467,11 @@
 
   <action-method name="action-method-partner-registration-code-onChange">
     <call class="com.axelor.apps.base.web.PartnerController" method="modifyRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-method-partner-registration-code-check-validity">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkValidityRegistrationCode"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"

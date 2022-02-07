@@ -245,6 +245,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             moveLineToolService.determineDescriptionMoveLine(
                 move.getJournal(), origin, description)),
         origin,
+        move.getTradingName(),
         currencyRate.setScale(5, RoundingMode.HALF_UP),
         amountInSpecificMoveCurrency,
         originDate);

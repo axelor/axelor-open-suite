@@ -48,6 +48,8 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -724,6 +726,34 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return taxNbr;
+  }
+
+  @Override
+  public void checkValidityRegistrationCode(Partner partner) throws AxelorException {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
+      String regCode = partner.getRegistrationCode();
+      int checkKey = 0;
+
+      if (regCode != null) {
+        regCode = regCode.replaceAll(" ", "");
+        if (regCode.length() == 14) {
+          int positionChar = 0;
+
+          CharacterIterator it = new StringCharacterIterator(regCode);
+
+          while (it.current() != CharacterIterator.DONE) {
+            checkKey += positionChar % 2 != 0 ? 1 * it.current() : 2 * it.current();
+            it.next();
+          }
+        }
+        if (checkKey != 0 && checkKey % 10 != 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.PARTNER_REGISTRATION_CODE_INCORRECT));
+        }
+      }
+    }
   }
 
   protected String getTaxKeyFromSIREN(String sirenStr) {

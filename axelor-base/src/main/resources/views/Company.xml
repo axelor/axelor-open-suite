@@ -10,7 +10,7 @@
   </grid>
 
   <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
-    onSave="action-company-check-multi-banks" canNew="_canNew">
+    onSave="action-company-group-onsave" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
         <field name="logo" widget="Image" colSpan="12"
@@ -100,7 +100,7 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="supplierPaymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
-        <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
+        <field name="tradingNameSet" canNew="false" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
           if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="requireTradingName"

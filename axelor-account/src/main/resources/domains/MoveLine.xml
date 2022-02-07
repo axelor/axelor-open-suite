@@ -23,7 +23,7 @@
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="Origin" initParam="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading Name"/>
+      title="Trading name" initParam="true"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>

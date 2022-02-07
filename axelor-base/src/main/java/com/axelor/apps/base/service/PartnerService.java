@@ -99,6 +99,8 @@ public interface PartnerService {
    */
   boolean isThereDuplicatePartner(Partner partner);
 
+  void checkValidityRegistrationCode(Partner partner) throws AxelorException;
+
   /**
    * Check if the partner in view has an archived duplicate.
    *

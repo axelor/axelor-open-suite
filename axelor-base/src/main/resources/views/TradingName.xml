@@ -10,7 +10,7 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.TradingName" title="Trading name"
-    name="trading-name-form">
+    name="trading-name-form" onSave="action-trading-name-group-on-save">
     <panel name="mainPanel">
       <field name="code"/>
       <field name="name"/>
@@ -22,5 +22,22 @@
         form-view="company-form" grid-view="company-grid" colSpan="12" canNew="false"/>
     </panel>
   </form>
+
+  <action-group name="action-trading-name-group-on-save">
+    <action name="action-trading-name-validate-companies-selected"/>
+    <action name="action-trading-name-validate-partner-registration-code"/>
+  </action-group>
+
+  <action-validate name="action-trading-name-validate-companies-selected">
+    <error
+      message="Trading names are enabled in base module configuration. Thus you need to select at least one company if the trading name is of type Brand, or one and only company if the trading name is of type Facility or Agency."
+      if="!companySet || companySet.isEmpty() || ((typeSelect == 2 || typeSelect == 3) &amp;&amp; companySet.size() > 1)"/>
+  </action-validate>
+
+  <action-validate name="action-trading-name-validate-partner-registration-code">
+    <error
+      message="Registration code must be filled in associated partner when the trading name is of type Facility."
+      if="typeSelect == 2 &amp;&amp; partner.registrationCode == null"/>
+  </action-validate>
 
 </object-views>
