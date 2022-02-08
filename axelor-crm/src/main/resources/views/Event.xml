@@ -391,8 +391,8 @@
     <panel name="wizardPanel">
       <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
         colSpan="12"/>
-      <button name="applyToAllBtn" title="Apply changes to all recurrence's events"
-        onClick="action-event-method-apply-changes-to-all" colSpan="12"/>
+      <button name="applyToAllBtn" title="Apply changes to all recurring events"
+        onClick="action-event-method-apply-changes-to-all,close" colSpan="12"/>
     </panel>
   </form>
 

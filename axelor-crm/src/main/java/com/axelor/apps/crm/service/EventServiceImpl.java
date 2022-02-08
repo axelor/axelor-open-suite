@@ -35,6 +35,7 @@ import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -336,55 +337,37 @@ public class EventServiceImpl implements EventService {
   @Transactional
   public void applyChangesToAll(Event event) {
 
-    Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
-    Event parent = event.getParentEvent();
-    Event copyEvent = eventRepo.copy(event, false);
-    while (child != null) {
-      child.setSubject(event.getSubject());
-      child.setCalendar(event.getCalendar());
-      child.setStartDateTime(child.getStartDateTime().withHour(event.getStartDateTime().getHour()));
-      child.setStartDateTime(
-          child.getStartDateTime().withMinute(event.getStartDateTime().getMinute()));
-      child.setEndDateTime(child.getEndDateTime().withHour(event.getEndDateTime().getHour()));
-      child.setEndDateTime(child.getEndDateTime().withMinute(event.getEndDateTime().getMinute()));
-      child.setDuration(event.getDuration());
-      child.setUser(event.getUser());
-      child.setTeam(event.getTeam());
-      child.setDisponibilitySelect(event.getDisponibilitySelect());
-      child.setVisibilitySelect(event.getVisibilitySelect());
-      child.setDescription(event.getDescription());
-      child.setPartner(event.getPartner());
-      child.setContactPartner(event.getContactPartner());
-      child.setLead(event.getLead());
-      child.setTypeSelect(event.getTypeSelect());
-      child.setLocation(event.getLocation());
-      eventRepo.save(child);
-      copyEvent = child;
-      child = eventRepo.all().filter("self.parentEvent.id = ?1", copyEvent.getId()).fetchOne();
-    }
-    while (parent != null) {
-      Event nextParent = parent.getParentEvent();
-      parent.setSubject(event.getSubject());
-      parent.setCalendar(event.getCalendar());
-      parent.setStartDateTime(
-          parent.getStartDateTime().withHour(event.getStartDateTime().getHour()));
-      parent.setStartDateTime(
-          parent.getStartDateTime().withMinute(event.getStartDateTime().getMinute()));
-      parent.setEndDateTime(parent.getEndDateTime().withHour(event.getEndDateTime().getHour()));
-      parent.setEndDateTime(parent.getEndDateTime().withMinute(event.getEndDateTime().getMinute()));
-      parent.setDuration(event.getDuration());
-      parent.setUser(event.getUser());
-      parent.setTeam(event.getTeam());
-      parent.setDisponibilitySelect(event.getDisponibilitySelect());
-      parent.setVisibilitySelect(event.getVisibilitySelect());
-      parent.setDescription(event.getDescription());
-      parent.setPartner(event.getPartner());
-      parent.setContactPartner(event.getContactPartner());
-      parent.setLead(event.getLead());
-      parent.setTypeSelect(event.getTypeSelect());
-      parent.setLocation(event.getLocation());
-      eventRepo.save(parent);
-      parent = nextParent;
+    List<Event> relatedEventList =
+        eventRepo
+            .all()
+            .filter(
+                "self.recurrenceConfiguration.id = ?1", event.getRecurrenceConfiguration().getId())
+            .fetch();
+    if (ObjectUtils.notEmpty(relatedEventList)) {
+      for (Event relatedEvent : relatedEventList) {
+        relatedEvent.setSubject(event.getSubject());
+        relatedEvent.setCalendar(event.getCalendar());
+        relatedEvent.setStartDateTime(
+            relatedEvent.getStartDateTime().withHour(event.getStartDateTime().getHour()));
+        relatedEvent.setStartDateTime(
+            relatedEvent.getStartDateTime().withMinute(event.getStartDateTime().getMinute()));
+        relatedEvent.setEndDateTime(
+            relatedEvent.getEndDateTime().withHour(event.getEndDateTime().getHour()));
+        relatedEvent.setEndDateTime(
+            relatedEvent.getEndDateTime().withMinute(event.getEndDateTime().getMinute()));
+        relatedEvent.setDuration(event.getDuration());
+        relatedEvent.setUser(event.getUser());
+        relatedEvent.setTeam(event.getTeam());
+        relatedEvent.setDisponibilitySelect(event.getDisponibilitySelect());
+        relatedEvent.setVisibilitySelect(event.getVisibilitySelect());
+        relatedEvent.setDescription(event.getDescription());
+        relatedEvent.setPartner(event.getPartner());
+        relatedEvent.setContactPartner(event.getContactPartner());
+        relatedEvent.setLead(event.getLead());
+        relatedEvent.setTypeSelect(event.getTypeSelect());
+        relatedEvent.setLocation(event.getLocation());
+        eventRepo.save(relatedEvent);
+      }
     }
   }
 

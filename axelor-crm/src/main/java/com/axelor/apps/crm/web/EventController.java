@@ -474,7 +474,6 @@ public class EventController {
     Event event = eventRepository.find(thisEvent.getId());
 
     Beans.get(EventService.class).applyChangesToAll(event);
-    response.setCanClose(true);
     response.setReload(true);
   }
 

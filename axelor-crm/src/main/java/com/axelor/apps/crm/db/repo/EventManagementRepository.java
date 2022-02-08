@@ -50,6 +50,7 @@ public class EventManagementRepository extends EventRepository {
         entity.setStatusSelect(EventRepository.STATUS_NOT_STARTED);
         break;
     }
+    entity.setUid(null);
     return super.copy(entity, deep);
   }
 
