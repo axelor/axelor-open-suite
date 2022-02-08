@@ -148,7 +148,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
-    computePricingScale(saleOrder, saleOrderLine);
+    if (appSaleService.getAppSale().getEnablePricingScale()) {
+      computePricingScale(saleOrder, saleOrderLine);
+    }
 
     fillTaxInformation(saleOrderLine, saleOrder);
     saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));

@@ -694,7 +694,7 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
-        if="__config__.app.getApp('sale').getIsEnableCalculationEntireQuatationUsingPricing()"/>
+        if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuatationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
