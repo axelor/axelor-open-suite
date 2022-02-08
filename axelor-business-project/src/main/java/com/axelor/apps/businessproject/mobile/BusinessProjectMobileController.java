@@ -21,6 +21,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -48,6 +49,7 @@ public class BusinessProjectMobileController {
    * 		"action": "com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects"
    * } }
    */
+  @HandleExceptionResponse
   public void getProjects(ActionRequest request, ActionResponse response) {
 
     List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();

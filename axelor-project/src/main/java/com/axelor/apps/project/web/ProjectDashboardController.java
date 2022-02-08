@@ -20,6 +20,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,6 +29,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ProjectDashboardController {
 
+  @HandleExceptionResponse
   public void getData(ActionRequest request, ActionResponse response) {
     Project project = AuthUtils.getUser().getContextProject();
     if (project == null) {

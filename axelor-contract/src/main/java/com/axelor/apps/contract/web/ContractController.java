@@ -32,7 +32,9 @@ import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,52 +47,29 @@ import java.time.LocalDate;
 @Singleton
 public class ContractController {
 
-  public void waiting(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void waiting(ActionRequest request, ActionResponse response) throws AxelorException {
     Contract contract =
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
-    try {
-      Beans.get(ContractService.class)
-          .waitingCurrentVersion(contract, getTodayDate(contract.getCompany()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Beans.get(ContractService.class)
+        .waitingCurrentVersion(contract, getTodayDate(contract.getCompany()));
+    response.setReload(true);
   }
 
-  public void ongoing(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void ongoing(ActionRequest request, ActionResponse response) throws AxelorException {
     Contract contract =
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
-    try {
-      Invoice invoice =
-          Beans.get(ContractService.class)
-              .ongoingCurrentVersion(contract, getTodayDate(contract.getCompany()));
-      if (invoice == null) {
-        response.setReload(true);
-      } else {
-        response.setView(
-            ActionView.define(I18n.get("Invoice"))
-                .model(Invoice.class.getName())
-                .add("form", "invoice-form")
-                .add("grid", "invoice-grid")
-                .param("search-filters", "customer-invoices-filters")
-                .param("forceTitle", "true")
-                .context("_showRecord", invoice.getId().toString())
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
-  public void invoicing(ActionRequest request, ActionResponse response) {
-    Contract contract =
-        Beans.get(ContractRepository.class)
-            .find(request.getContext().asType(Contract.class).getId());
-    try {
-      Invoice invoice = Beans.get(ContractService.class).invoicingContract(contract);
+    Invoice invoice =
+        Beans.get(ContractService.class)
+            .ongoingCurrentVersion(contract, getTodayDate(contract.getCompany()));
+    if (invoice == null) {
       response.setReload(true);
+    } else {
       response.setView(
           ActionView.define(I18n.get("Invoice"))
               .model(Invoice.class.getName())
@@ -100,52 +79,62 @@ public class ContractController {
               .param("forceTitle", "true")
               .context("_showRecord", invoice.getId().toString())
               .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
-  public void terminated(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void invoicing(ActionRequest request, ActionResponse response) throws AxelorException {
     Contract contract =
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
-    try {
-      ContractService service = Beans.get(ContractService.class);
-      service.checkCanTerminateContract(contract);
-      service.terminateContract(contract, true, contract.getTerminatedDate());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Invoice invoice = Beans.get(ContractService.class).invoicingContract(contract);
+    response.setReload(true);
+    response.setView(
+        ActionView.define(I18n.get("Invoice"))
+            .model(Invoice.class.getName())
+            .add("form", "invoice-form")
+            .add("grid", "invoice-grid")
+            .param("search-filters", "customer-invoices-filters")
+            .param("forceTitle", "true")
+            .context("_showRecord", invoice.getId().toString())
+            .map());
   }
 
-  public void close(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void terminated(ActionRequest request, ActionResponse response) throws AxelorException {
     Contract contract =
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
 
     ContractService service = Beans.get(ContractService.class);
-    try {
-      service.checkCanTerminateContract(contract);
-      service.close(contract, contract.getTerminatedDate());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    service.checkCanTerminateContract(contract);
+    service.terminateContract(contract, true, contract.getTerminatedDate());
+    response.setReload(true);
   }
 
-  public void renew(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void close(ActionRequest request, ActionResponse response) throws AxelorException {
     Contract contract =
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
-    try {
-      Beans.get(ContractService.class).renewContract(contract, getTodayDate(contract.getCompany()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    ContractService service = Beans.get(ContractService.class);
+    service.checkCanTerminateContract(contract);
+    service.close(contract, contract.getTerminatedDate());
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
+  public void renew(ActionRequest request, ActionResponse response) throws AxelorException {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
+    Beans.get(ContractService.class).renewContract(contract, getTodayDate(contract.getCompany()));
+    response.setReload(true);
+  }
+
+  @HandleExceptionResponse
   public void deleteNextVersion(ActionRequest request, ActionResponse response) {
     final Contract contract =
         JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
@@ -166,6 +155,7 @@ public class ContractController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void saveNextVersion(ActionRequest request, ActionResponse response) {
     final ContractVersion version =
         JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
@@ -201,6 +191,7 @@ public class ContractController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
     try {
       ContractTemplate template =
@@ -218,6 +209,7 @@ public class ContractController {
     }
   }
 
+  @HandleExceptionResponse
   public void changeProduct(ActionRequest request, ActionResponse response) {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
     ContractLine contractLine = new ContractLine();
@@ -239,6 +231,7 @@ public class ContractController {
     return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 
+  @HandleExceptionResponse
   public void isValid(ActionRequest request, ActionResponse response) {
     Contract contract = request.getContext().asType(Contract.class);
 

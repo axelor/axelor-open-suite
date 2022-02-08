@@ -22,6 +22,7 @@ import com.axelor.apps.account.service.UserServiceAccountImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +33,7 @@ import java.util.Set;
 public class UserController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void changePfpValidator(ActionRequest request, ActionResponse response) {
 
     Integer pfpValidatorUserId = (Integer) request.getContext().get("_userId");
@@ -61,6 +63,7 @@ public class UserController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void comparePfpValidatorCompanySet(ActionRequest request, ActionResponse response) {
     Integer pfpValidatorUserId = (Integer) request.getContext().get("_userId");
     LinkedHashMap<String, Object> newPfpValidatorUserMap =

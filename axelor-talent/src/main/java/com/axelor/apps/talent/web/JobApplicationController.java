@@ -23,7 +23,7 @@ import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -35,6 +35,7 @@ import java.util.Map;
 @Singleton
 public class JobApplicationController {
 
+  @HandleExceptionResponse
   public void hire(ActionRequest request, ActionResponse response) {
 
     JobApplication jobApplication = request.getContext().asType(JobApplication.class);
@@ -55,6 +56,7 @@ public class JobApplicationController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     JobApplication application = request.getContext().asType(JobApplication.class);
@@ -64,38 +66,34 @@ public class JobApplicationController {
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 
+  @HandleExceptionResponse
   public void showResume(ActionRequest request, ActionResponse response) {
-    try {
-      JobApplication application = request.getContext().asType(JobApplication.class);
 
-      application = Beans.get(JobApplicationRepository.class).find(application.getId());
+    JobApplication application = request.getContext().asType(JobApplication.class);
 
-      if (application.getResumeId() != null) {
-        response.setView(
-            ActionView.define(I18n.get("JobApplication.resume"))
-                .model(DMSFile.class.getName())
-                .add("form", "dms-file-form")
-                .context("_showRecord", application.getResumeId().toString())
-                .map());
-      } else {
-        response.setAlert(I18n.get("No resume found"));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    application = Beans.get(JobApplicationRepository.class).find(application.getId());
+
+    if (application.getResumeId() != null) {
+      response.setView(
+          ActionView.define(I18n.get("JobApplication.resume"))
+              .model(DMSFile.class.getName())
+              .add("form", "dms-file-form")
+              .context("_showRecord", application.getResumeId().toString())
+              .map());
+    } else {
+      response.setAlert(I18n.get("No resume found"));
     }
   }
 
+  @HandleExceptionResponse
   public void setDMSFile(ActionRequest request, ActionResponse response) {
-    try {
-      JobApplication application = request.getContext().asType(JobApplication.class);
 
-      application = Beans.get(JobApplicationRepository.class).find(application.getId());
+    JobApplication application = request.getContext().asType(JobApplication.class);
 
-      Beans.get(JobApplicationService.class).setDMSFile(application);
+    application = Beans.get(JobApplicationRepository.class).find(application.getId());
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(JobApplicationService.class).setDMSFile(application);
+
+    response.setReload(true);
   }
 }

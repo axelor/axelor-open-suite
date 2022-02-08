@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -48,6 +49,7 @@ import java.util.Set;
 @Singleton
 public class AppController {
 
+  @HandleExceptionResponse
   public void importDataDemo(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -60,6 +62,7 @@ public class AppController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     App app = request.getContext().asType(App.class);
@@ -70,6 +73,7 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
+  @HandleExceptionResponse
   public void configure(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -102,6 +106,7 @@ public class AppController {
     }
   }
 
+  @HandleExceptionResponse
   public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     App app = request.getContext().asType(App.class);
@@ -112,6 +117,7 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
+  @HandleExceptionResponse
   public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
@@ -139,6 +145,7 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
+  @HandleExceptionResponse
   public void refreshApp(ActionRequest request, ActionResponse response) {
 
     try {
@@ -151,6 +158,7 @@ public class AppController {
     }
   }
 
+  @HandleExceptionResponse
   public void generateAccessTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -173,6 +181,7 @@ public class AppController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void importRoles(ActionRequest request, ActionResponse response) throws AxelorException {
 
     App app = request.getContext().asType(App.class);
@@ -184,6 +193,7 @@ public class AppController {
     response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
   }
 
+  @HandleExceptionResponse
   public void importAllRoles(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -193,6 +203,7 @@ public class AppController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void importAccessConfig(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

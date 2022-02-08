@@ -22,6 +22,7 @@ import com.axelor.apps.supplierportal.db.ProductSupplier;
 import com.axelor.apps.supplierportal.db.repo.ProductSupplierRepository;
 import com.axelor.apps.supplierportal.service.ProductSupplierService;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -31,6 +32,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class ProductSupplierController {
 
+  @HandleExceptionResponse
   public void addOnCatalog(ActionRequest request, ActionResponse response) {
     ProductSupplier productToAdd = request.getContext().asType(ProductSupplier.class);
     productToAdd = Beans.get(ProductSupplierRepository.class).find(productToAdd.getId());

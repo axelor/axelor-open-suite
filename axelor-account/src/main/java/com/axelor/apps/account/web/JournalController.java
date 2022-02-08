@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -31,6 +32,7 @@ public class JournalController {
 
   @Inject JournalService journalService;
 
+  @HandleExceptionResponse
   public void computeBalance(ActionRequest request, ActionResponse response) {
 
     Journal journal = request.getContext().asType(Journal.class);

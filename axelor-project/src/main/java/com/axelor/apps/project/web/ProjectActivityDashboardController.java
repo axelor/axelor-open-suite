@@ -18,6 +18,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 @Singleton
 public class ProjectActivityDashboardController {
 
+  @HandleExceptionResponse
   public void getData(ActionRequest request, ActionResponse response) {
     LocalDate todayDate = LocalDate.now();
     response.setValues(
@@ -34,11 +36,13 @@ public class ProjectActivityDashboardController {
             .getData(todayDate.minusDays(29), todayDate));
   }
 
+  @HandleExceptionResponse
   public void getPreviousData(ActionRequest request, ActionResponse response) {
     String fromDate = request.getContext().get("fromDate").toString();
     response.setValues(Beans.get(ProjectActivityDashboardService.class).getPreviousData(fromDate));
   }
 
+  @HandleExceptionResponse
   public void getNextData(ActionRequest request, ActionResponse response) {
     String toDate = request.getContext().get("toDate").toString();
     response.setValues(Beans.get(ProjectActivityDashboardService.class).getNextData(toDate));

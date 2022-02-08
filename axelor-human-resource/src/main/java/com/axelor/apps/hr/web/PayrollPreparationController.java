@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,6 +35,7 @@ import java.util.List;
 @Singleton
 public class PayrollPreparationController {
 
+  @HandleExceptionResponse
   public void generateFromEmploymentContract(ActionRequest request, ActionResponse response) {
 
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -46,6 +48,7 @@ public class PayrollPreparationController {
             .generateFromEmploymentContract(payrollPreparation, employmentContract));
   }
 
+  @HandleExceptionResponse
   public void fillInPayrollPreparation(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -71,6 +74,7 @@ public class PayrollPreparationController {
     response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
   }
 
+  @HandleExceptionResponse
   public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
@@ -81,6 +85,7 @@ public class PayrollPreparationController {
     response.setValue("$payrollLeavesList", payrollLeaveList);
   }
 
+  @HandleExceptionResponse
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 

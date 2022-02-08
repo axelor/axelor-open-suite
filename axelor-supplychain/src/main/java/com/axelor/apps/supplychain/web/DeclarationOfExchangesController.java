@@ -20,7 +20,8 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.supplychain.db.repo.DeclarationOfExchangesRepository;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -33,25 +34,23 @@ import org.apache.commons.lang3.tuple.Pair;
 @Singleton
 public class DeclarationOfExchangesController {
 
-  public void export(ActionRequest request, ActionResponse response) {
-    try {
-      DeclarationOfExchanges declarationOfExchanges =
-          request.getContext().asType(DeclarationOfExchanges.class);
-      declarationOfExchanges =
-          Beans.get(DeclarationOfExchangesRepository.class).find(declarationOfExchanges.getId());
-      Pair<Path, String> result =
-          Beans.get(DeclarationOfExchangesService.class).export(declarationOfExchanges);
-      String fileLink = result.getLeft().toString();
-      String name = result.getRight();
-      ActionViewBuilder actionViewBuilder = ActionView.define(name).add("html", fileLink);
+  @HandleExceptionResponse
+  public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      if (!"pdf".equalsIgnoreCase(declarationOfExchanges.getFormatSelect())) {
-        actionViewBuilder.param("download", "true");
-      }
+    DeclarationOfExchanges declarationOfExchanges =
+        request.getContext().asType(DeclarationOfExchanges.class);
+    declarationOfExchanges =
+        Beans.get(DeclarationOfExchangesRepository.class).find(declarationOfExchanges.getId());
+    Pair<Path, String> result =
+        Beans.get(DeclarationOfExchangesService.class).export(declarationOfExchanges);
+    String fileLink = result.getLeft().toString();
+    String name = result.getRight();
+    ActionViewBuilder actionViewBuilder = ActionView.define(name).add("html", fileLink);
 
-      response.setView(actionViewBuilder.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (!"pdf".equalsIgnoreCase(declarationOfExchanges.getFormatSelect())) {
+      actionViewBuilder.param("download", "true");
     }
+
+    response.setView(actionViewBuilder.map());
   }
 }

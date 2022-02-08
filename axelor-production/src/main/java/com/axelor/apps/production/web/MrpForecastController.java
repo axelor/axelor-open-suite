@@ -25,6 +25,7 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -40,6 +41,7 @@ public class MrpForecastController {
   @Inject ProductRepository productRepo;
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void generateMrpForecast(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -70,6 +72,7 @@ public class MrpForecastController {
     response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public void computeTotalForecast(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -100,6 +103,7 @@ public class MrpForecastController {
             .abs());
   }
 
+  @HandleExceptionResponse
   public void resetMrpForecasts(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.service.batch.HrBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,6 +39,7 @@ public class HrBatchController {
    * @param response
    * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void launchHrBatch(ActionRequest request, ActionResponse response) {
 
     try {

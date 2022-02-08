@@ -21,7 +21,8 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,6 +32,7 @@ import com.google.inject.Singleton;
 public class BankOrderLineController {
 
   // settings the domain for the bank details view.
+  @HandleExceptionResponse
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
     BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
@@ -44,6 +46,7 @@ public class BankOrderLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void fillBankDetail(ActionRequest request, ActionResponse response) {
     BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
     BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
@@ -53,20 +56,15 @@ public class BankOrderLineController {
     response.setValue("receiverBankDetails", bankDetails);
   }
 
-  public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
     BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
-
-    try {
-
-      response.setValue(
-          "companyCurrencyAmount",
-          Beans.get(BankOrderLineService.class)
-              .computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue(
+        "companyCurrencyAmount",
+        Beans.get(BankOrderLineService.class)
+            .computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
   }
 }

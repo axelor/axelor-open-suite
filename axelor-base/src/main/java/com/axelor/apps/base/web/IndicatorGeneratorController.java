@@ -21,7 +21,8 @@ import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,17 +32,14 @@ import com.google.inject.Singleton;
 @Singleton
 public class IndicatorGeneratorController {
 
-  public void run(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
 
-    try {
-      Beans.get(IndicatorGeneratorService.class)
-          .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
-      response.setReload(true);
-      response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(IndicatorGeneratorService.class)
+        .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
+    response.setReload(true);
+    response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
   }
 }

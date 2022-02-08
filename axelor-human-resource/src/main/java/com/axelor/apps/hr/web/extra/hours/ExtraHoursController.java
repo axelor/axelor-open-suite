@@ -33,6 +33,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -49,6 +50,7 @@ import java.util.Optional;
 @Singleton
 public class ExtraHoursController {
 
+  @HandleExceptionResponse
   public void editExtraHours(ActionRequest request, ActionResponse response) {
     List<ExtraHours> extraHoursList =
         Beans.get(ExtraHoursRepository.class)
@@ -87,6 +89,7 @@ public class ExtraHoursController {
     }
   }
 
+  @HandleExceptionResponse
   public void validateExtraHours(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -105,6 +108,7 @@ public class ExtraHoursController {
     response.setView(actionView.map());
   }
 
+  @HandleExceptionResponse
   public void editExtraHoursSelected(ActionRequest request, ActionResponse response) {
     Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
     ExtraHours extraHours =
@@ -119,6 +123,7 @@ public class ExtraHoursController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void historicExtraHours(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
@@ -145,6 +150,7 @@ public class ExtraHoursController {
     response.setView(actionView.map());
   }
 
+  @HandleExceptionResponse
   public void showSubordinateExtraHours(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
@@ -188,7 +194,8 @@ public class ExtraHoursController {
   }
 
   // confirming request and sending mail to manager
-  public void confirm(ActionRequest request, ActionResponse response) throws AxelorException {
+  @HandleExceptionResponse
+  public void confirm(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -215,9 +222,9 @@ public class ExtraHoursController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  @HandleExceptionResponse
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -242,7 +249,8 @@ public class ExtraHoursController {
   }
 
   // refusing request and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  @HandleExceptionResponse
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -265,7 +273,8 @@ public class ExtraHoursController {
   }
 
   // canceling request and sending mail to applicant
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  @HandleExceptionResponse
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
       extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
@@ -286,13 +295,11 @@ public class ExtraHoursController {
   }
 
   // counting total hours while computing extra hours lines
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) {
-    try {
-      ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      Beans.get(ExtraHoursService.class).compute(extraHours);
-      response.setValue("totalQty", extraHours.getTotalQty());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+    Beans.get(ExtraHoursService.class).compute(extraHours);
+    response.setValue("totalQty", extraHours.getTotalQty());
   }
 }

@@ -18,7 +18,7 @@
 package com.axelor.studio.web;
 
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,15 +29,14 @@ import java.util.Map;
 @Singleton
 public class ChartBuilderController {
 
-  public void viewRelatedRecord(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void viewRelatedRecord(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     String chartName = (String) request.getContext().get("_chart");
-    try {
-      Map<String, Object> context = request.getContext();
-      Map<String, Object> actionView =
-          Beans.get(ChartRecordViewService.class).getActionView(chartName, context);
-      response.setView(actionView);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
+
+    Map<String, Object> context = request.getContext();
+    Map<String, Object> actionView =
+        Beans.get(ChartRecordViewService.class).getActionView(chartName, context);
+    response.setView(actionView);
   }
 }

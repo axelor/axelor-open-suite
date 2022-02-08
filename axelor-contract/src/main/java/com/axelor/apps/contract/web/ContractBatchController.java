@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.contract.batch.service.BatchContractService;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,6 +32,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ContractBatchController {
 
+  @HandleExceptionResponse
   public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       ContractBatch contractBatch = request.getContext().asType(ContractBatch.class);

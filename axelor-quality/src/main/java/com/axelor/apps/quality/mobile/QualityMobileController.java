@@ -21,10 +21,14 @@ import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.app.AppQualityService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.io.IOException;
+import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public class QualityMobileController {
 
@@ -37,21 +41,27 @@ public class QualityMobileController {
    *     <p>payload : { "action":
    *     "com.axelor.apps.quality.mobile.QualityMobileController:sendEmail", "data": { "context":
    *     {"id": 1} } }
+   * @throws JSONException
+   * @throws AxelorException
+   * @throws IOException
+   * @throws MessagingException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   * @throws ClassNotFoundException
    */
-  public void sendEmail(ActionRequest request, ActionResponse response) {
-    try {
-      boolean automaticMail = Beans.get(AppQualityService.class).getAppQuality().getAutomaticMail();
+  @HandleExceptionResponse
+  public void sendEmail(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException, JSONException {
+    boolean automaticMail = Beans.get(AppQualityService.class).getAppQuality().getAutomaticMail();
 
-      if (request.getRawContext().get("id") == null || !automaticMail) {
-        return;
-      }
-      QualityControl qualityControl =
-          Beans.get(QualityControlRepository.class)
-              .find(Long.valueOf(request.getRawContext().get("id").toString()));
-
-      Beans.get(QualityControlService.class).sendEmail(qualityControl);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (request.getRawContext().get("id") == null || !automaticMail) {
+      return;
     }
+    QualityControl qualityControl =
+        Beans.get(QualityControlRepository.class)
+            .find(Long.valueOf(request.getRawContext().get("id").toString()));
+
+    Beans.get(QualityControlService.class).sendEmail(qualityControl);
   }
 }

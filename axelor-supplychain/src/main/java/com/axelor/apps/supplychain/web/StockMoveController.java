@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,6 +36,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class StockMoveController {
 
+  @HandleExceptionResponse
   public void verifyProductStock(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -59,6 +61,7 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void allocateAll(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -82,6 +85,7 @@ public class StockMoveController {
     }
   }
 
+  @HandleExceptionResponse
   public void isAllocatedStockMoveLineRemoved(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     if (stockMove.getId() != null
@@ -99,28 +103,24 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
-              .computePartnerFilter(
-                  stockMove.getPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
-      response.setAttr("invoicedPartner", "domain", strFilter);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    String strFilter =
+        Beans.get(PartnerSupplychainLinkService.class)
+            .computePartnerFilter(
+                stockMove.getPartner(),
+                PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+    response.setAttr("invoicedPartner", "domain", strFilter);
   }
 
+  @HandleExceptionResponse
   public void setDefaultInvoicedPartner(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
-      response.setValues(stockMove);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
+    response.setValues(stockMove);
   }
 }

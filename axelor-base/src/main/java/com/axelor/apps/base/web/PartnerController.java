@@ -42,6 +42,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -56,13 +57,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
@@ -74,6 +73,7 @@ public class PartnerController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void setPartnerSequence(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
@@ -95,9 +95,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void showEnvelope(ActionRequest request, ActionResponse response) throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
 
@@ -122,9 +122,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printContactPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -150,9 +150,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printCompanyPhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -177,7 +177,9 @@ public class PartnerController {
    * @param request
    * @param response
    * @return
+   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void printClientSituation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -224,6 +226,7 @@ public class PartnerController {
     return company;
   }
 
+  @HandleExceptionResponse
   public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     Map<String, String> urlMap =
@@ -237,6 +240,7 @@ public class PartnerController {
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
+  @HandleExceptionResponse
   public void findPartnerMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
@@ -252,25 +256,23 @@ public class PartnerController {
     response.setValue("$emailsList", emailsList);
   }
 
+  @HandleExceptionResponse
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
-    try {
-      final Context context = request.getContext();
-      final Partner contact = context.asType(Partner.class);
-      final Context parentContext = context.getParent();
+    final Context context = request.getContext();
+    final Partner contact = context.asType(Partner.class);
+    final Context parentContext = context.getParent();
 
-      if (parentContext != null
-          && Partner.class.isAssignableFrom(parentContext.getContextClass())
-          && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
-        return;
-      }
-
-      Beans.get(PartnerService.class)
-          .addContactToPartner(Beans.get(PartnerRepository.class).find(contact.getId()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (parentContext != null
+        && Partner.class.isAssignableFrom(parentContext.getContextClass())
+        && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
+      return;
     }
+
+    Beans.get(PartnerService.class)
+        .addContactToPartner(Beans.get(PartnerRepository.class).find(contact.getId()));
   }
 
+  @HandleExceptionResponse
   public void findContactMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
@@ -286,6 +288,7 @@ public class PartnerController {
     response.setValue("$emailsList", emailsList);
   }
 
+  @HandleExceptionResponse
   public void checkIbanValidity(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -327,6 +330,7 @@ public class PartnerController {
     }
   }
 
+  @HandleExceptionResponse
   public void convertToIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
@@ -345,49 +349,41 @@ public class PartnerController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void checkPartnerName(ActionRequest request, ActionResponse response) {
-    try {
-      Partner partner = request.getContext().asType(Partner.class);
-      response.setAttr(
-          "duplicatePartnerText",
-          "hidden",
-          !Beans.get(PartnerService.class).isThereDuplicatePartner(partner));
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "duplicatePartnerText",
+        "hidden",
+        !Beans.get(PartnerService.class).isThereDuplicatePartner(partner));
   }
 
+  @HandleExceptionResponse
   public void checkPartnerNameArchived(ActionRequest request, ActionResponse response) {
-    try {
-      Partner partner = request.getContext().asType(Partner.class);
-      Partner partnerArchived =
-          Beans.get(PartnerService.class).isThereDuplicatePartnerInArchive(partner);
-      if (partnerArchived != null) {
-        response.setValue("$duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
-        response.setAttr("$duplicatePartnerInArchiveText", "hidden", false);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
+    Partner partner = request.getContext().asType(Partner.class);
+    Partner partnerArchived =
+        Beans.get(PartnerService.class).isThereDuplicatePartnerInArchive(partner);
+    if (partnerArchived != null) {
+      response.setValue("$duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+      response.setAttr("$duplicatePartnerInArchiveText", "hidden", false);
     }
   }
 
+  @HandleExceptionResponse
   public void showPartnerOnMap(ActionRequest request, ActionResponse response) {
-    try {
-      Partner partner = request.getContext().asType(Partner.class);
-      response.setView(
-          ActionView.define(partner.getFullName())
-              .add(
-                  "html",
-                  Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
-                          == AppBaseRepository.MAP_API_GOOGLE
-                      ? Beans.get(MapService.class).getMapURI("partner", partner.getId())
-                      : Beans.get(MapService.class).getOsmMapURI("partner", partner.getId()))
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setView(
+        ActionView.define(partner.getFullName())
+            .add(
+                "html",
+                Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
+                        == AppBaseRepository.MAP_API_GOOGLE
+                    ? Beans.get(MapService.class).getMapURI("partner", partner.getId())
+                    : Beans.get(MapService.class).getOsmMapURI("partner", partner.getId()))
+            .map());
   }
 
+  @HandleExceptionResponse
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);

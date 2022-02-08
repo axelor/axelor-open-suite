@@ -18,6 +18,7 @@
 package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
@@ -35,6 +36,7 @@ public class ActionBuilderController {
 
   private Inflector inflector;
 
+  @HandleExceptionResponse
   public void setViews(ActionRequest request, ActionResponse response) {
 
     inflector = Inflector.getInstance();
@@ -79,6 +81,7 @@ public class ActionBuilderController {
     views.add(builderView);
   }
 
+  @HandleExceptionResponse
   public void createMapperScript(ActionRequest request, ActionResponse response) {
 
     Map<String, Object> ctx = (Map<String, Object>) request.getData().get("context");

@@ -21,6 +21,7 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -41,6 +42,7 @@ public class ConfiguratorCreatorController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void updateAndActivate(ActionRequest request, ActionResponse response) {
     try {
       ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
@@ -62,6 +64,7 @@ public class ConfiguratorCreatorController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
@@ -73,6 +76,7 @@ public class ConfiguratorCreatorController {
     }
   }
 
+  @HandleExceptionResponse
   public void updateAttributes(ActionRequest request, ActionResponse response) {
     try {
       ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);

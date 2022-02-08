@@ -23,7 +23,7 @@ import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessServ
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,6 +38,7 @@ public class ManufOrderBusinessController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @HandleExceptionResponse
   public void propagateIsToInvoice(ActionRequest request, ActionResponse response) {
 
     ManufOrderServiceBusinessImpl manufOrderService =
@@ -57,15 +58,12 @@ public class ManufOrderBusinessController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void alertNonValidatedTimesheet(ActionRequest request, ActionResponse response) {
-    try {
-      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
-          && Beans.get(ManufOrderValidateBusinessService.class).checkTimesheet(manufOrder) > 0) {
-        response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_TIMESHEET_WAITING_VALIDATION));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
+        && Beans.get(ManufOrderValidateBusinessService.class).checkTimesheet(manufOrder) > 0) {
+      response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_TIMESHEET_WAITING_VALIDATION));
     }
   }
 }

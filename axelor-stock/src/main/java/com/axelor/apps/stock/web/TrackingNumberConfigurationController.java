@@ -2,6 +2,7 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -10,6 +11,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TrackingNumberConfigurationController {
 
+  @HandleExceptionResponse
   public void checkSequenceAndBarcodeTypeConfigConsistency(
       ActionRequest request, ActionResponse response) {
     try {

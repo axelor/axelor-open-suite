@@ -33,6 +33,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -54,6 +55,7 @@ import java.util.TreeSet;
 @Singleton
 public class StockMoveLineController {
 
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     StockMove stockMove = stockMoveLine.getStockMove();
@@ -74,6 +76,7 @@ public class StockMoveLineController {
     response.setValue("companyUnitPriceUntaxed", stockMoveLine.getCompanyUnitPriceUntaxed());
   }
 
+  @HandleExceptionResponse
   public void setProductInfo(ActionRequest request, ActionResponse response) {
 
     StockMoveLine stockMoveLine;
@@ -102,6 +105,7 @@ public class StockMoveLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void emptyLine(ActionRequest request, ActionResponse response) {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
@@ -114,6 +118,7 @@ public class StockMoveLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
@@ -137,6 +142,7 @@ public class StockMoveLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void openTrackNumberWizard(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
@@ -177,6 +183,7 @@ public class StockMoveLineController {
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
+  @HandleExceptionResponse
   public void computeAvailableQty(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -214,6 +221,7 @@ public class StockMoveLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void setProductDomain(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
@@ -226,6 +234,7 @@ public class StockMoveLineController {
     response.setAttr("product", "domain", domain);
   }
 
+  @HandleExceptionResponse
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
@@ -233,6 +242,7 @@ public class StockMoveLineController {
     response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
   }
 
+  @HandleExceptionResponse
   public void displayAvailableTrackingNumber(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 

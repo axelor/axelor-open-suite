@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -26,6 +27,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class AppSaleController {
 
+  @HandleExceptionResponse
   public void generateSaleConfigurations(ActionRequest request, ActionResponse response) {
 
     Beans.get(AppSaleService.class).generateSaleConfigurations();

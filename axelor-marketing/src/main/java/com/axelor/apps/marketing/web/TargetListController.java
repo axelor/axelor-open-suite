@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.service.TargetListService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -37,50 +37,43 @@ import com.google.inject.Singleton;
 @Singleton
 public class TargetListController {
 
+  @HandleExceptionResponse
   public void openFilteredLeads(ActionRequest request, ActionResponse response) {
 
     TargetList targetList = request.getContext().asType(TargetList.class);
     String leadFilters = null;
 
-    try {
-      leadFilters = Beans.get(TargetListService.class).getLeadQuery(targetList);
+    leadFilters = Beans.get(TargetListService.class).getLeadQuery(targetList);
 
-      if (leadFilters != null) {
-        response.setView(
-            ActionView.define(I18n.get("Leads"))
-                .model(Lead.class.getName())
-                .add("grid", "lead-grid")
-                .add("form", "lead-form")
-                .param("search-filters", "lead-filters")
-                .domain(leadFilters)
-                .map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (leadFilters != null) {
+      response.setView(
+          ActionView.define(I18n.get("Leads"))
+              .model(Lead.class.getName())
+              .add("grid", "lead-grid")
+              .add("form", "lead-form")
+              .param("search-filters", "lead-filters")
+              .domain(leadFilters)
+              .map());
     }
   }
 
+  @HandleExceptionResponse
   public void openFilteredPartners(ActionRequest request, ActionResponse response) {
 
     TargetList targetList = request.getContext().asType(TargetList.class);
     String partnerFilters = null;
 
-    try {
-      partnerFilters = Beans.get(TargetListService.class).getPartnerQuery(targetList);
+    partnerFilters = Beans.get(TargetListService.class).getPartnerQuery(targetList);
 
-      if (partnerFilters != null) {
-        response.setView(
-            ActionView.define(I18n.get("Partners"))
-                .model(Partner.class.getName())
-                .add("grid", "partner-grid")
-                .add("form", "partner-form")
-                .param("search-filters", "partner-filters")
-                .domain(partnerFilters)
-                .map());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (partnerFilters != null) {
+      response.setView(
+          ActionView.define(I18n.get("Partners"))
+              .model(Partner.class.getName())
+              .add("grid", "partner-grid")
+              .add("form", "partner-form")
+              .param("search-filters", "partner-filters")
+              .domain(partnerFilters)
+              .map());
     }
   }
 }

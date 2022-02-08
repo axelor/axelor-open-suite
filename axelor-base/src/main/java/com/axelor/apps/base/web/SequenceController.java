@@ -19,6 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -29,6 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class SequenceController {
 
+  @HandleExceptionResponse
   public void getDefaultTitle(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
     if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
@@ -37,6 +39,7 @@ public class SequenceController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeFullName(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);

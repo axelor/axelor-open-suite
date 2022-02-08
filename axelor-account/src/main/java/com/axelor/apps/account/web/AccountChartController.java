@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.AccountChartService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,6 +39,7 @@ import java.util.List;
 @Singleton
 public class AccountChartController {
 
+  @HandleExceptionResponse
   public void installChart(ActionRequest request, ActionResponse response) throws AxelorException {
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
     AccountChart act =
@@ -49,7 +51,6 @@ public class AccountChartController {
             .all()
             .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
             .fetch();
-
     if (accountList.isEmpty()) {
       if (Beans.get(AccountChartService.class).installAccountChart(act, company, accountConfig))
         response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));

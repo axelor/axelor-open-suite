@@ -38,6 +38,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -57,6 +58,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class BankReconciliationController {
 
+  @HandleExceptionResponse
   public void unreconcile(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -78,6 +80,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void reconcileSelected(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -91,6 +94,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void automaticReconciliation(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliationService bankReconciliationService =
@@ -108,6 +112,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -154,6 +159,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void loadOtherBankStatement(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -168,6 +174,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -179,6 +186,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void computeBalances(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -191,6 +199,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -202,6 +211,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void validateMultipleReconcile(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -231,6 +241,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -247,6 +258,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void printBankReconciliation(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     try {
@@ -272,6 +284,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void printBankReconciliationDetailed(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     try {
@@ -286,6 +299,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setJournalDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -306,6 +320,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setJournal(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -320,6 +335,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setCashAccountDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -340,6 +356,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setCashAccount(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -354,6 +371,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void autoAccounting(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -368,6 +386,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void checkIncompleteBankReconciliationLine(
       ActionRequest request, ActionResponse response) {
     try {
@@ -382,6 +401,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void onChangeBankStatement(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -395,6 +415,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void setBankStatementIsFullyReconciled(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation =
@@ -408,6 +429,7 @@ public class BankReconciliationController {
     }
   }
 
+  @HandleExceptionResponse
   public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);

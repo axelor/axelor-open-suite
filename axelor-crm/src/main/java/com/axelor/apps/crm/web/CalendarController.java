@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -27,6 +28,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class CalendarController {
 
+  @HandleExceptionResponse
   public void showMyEvents(ActionRequest request, ActionResponse response) {
     User user = AuthUtils.getUser();
 

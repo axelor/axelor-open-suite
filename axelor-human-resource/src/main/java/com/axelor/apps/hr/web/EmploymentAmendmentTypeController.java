@@ -19,12 +19,14 @@ package com.axelor.apps.hr.web;
 
 import com.axelor.apps.hr.db.EmploymentAmendmentType;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class EmploymentAmendmentTypeController {
 
+  @HandleExceptionResponse
   public void setEmploymentContractSubTypeSetDomain(
       ActionRequest request, ActionResponse response) {
     EmploymentAmendmentType employmentAmendmentType =
@@ -40,6 +42,7 @@ public class EmploymentAmendmentTypeController {
         "self.id IN (" + employmentContractSubTypeIds + ")");
   }
 
+  @HandleExceptionResponse
   public void setEmploymentContractSubTypeSet(ActionRequest request, ActionResponse response) {
     EmploymentAmendmentType employmentAmendmentType =
         request.getContext().asType(EmploymentAmendmentType.class);

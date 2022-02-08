@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmEngineRepository;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -30,6 +31,7 @@ import com.google.inject.Singleton;
 public class AlarmEngineController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void validateQuery(ActionRequest request, ActionResponse response) {
 
     AlarmEngine alarmEngine = request.getContext().asType(AlarmEngine.class);

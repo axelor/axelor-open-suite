@@ -21,7 +21,8 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -41,93 +42,86 @@ import java.util.Map.Entry;
 public class PaymentScheduleLineController {
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void showRejectWizard(ActionRequest request, ActionResponse response) {
-    try {
-      List<? extends Number> idList;
-      Number id = (Number) request.getContext().get("id");
+    List<? extends Number> idList;
+    Number id = (Number) request.getContext().get("id");
 
-      if (id != null) {
-        idList = Lists.newArrayList(id);
-      } else {
-        idList =
-            MoreObjects.firstNonNull(
-                (List<? extends Number>) request.getContext().get("_ids"), Collections.emptyList());
-      }
-
-      if (idList.isEmpty()) {
-        response.setError(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
-        return;
-      }
-
-      ActionViewBuilder view =
-          ActionView.define(I18n.get("Payment schedule lines to reject"))
-              .model(Wizard.class.getName())
-              .add("form", "payment-schedule-line-reject-wizard-form")
-              .param("popup", "reload")
-              .param("show-toolbar", Boolean.FALSE.toString())
-              .param("show-confirm", Boolean.FALSE.toString())
-              .param("popup-save", Boolean.FALSE.toString())
-              .context("idList", idList);
-
-      response.setView(view.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (id != null) {
+      idList = Lists.newArrayList(id);
+    } else {
+      idList =
+          MoreObjects.firstNonNull(
+              (List<? extends Number>) request.getContext().get("_ids"), Collections.emptyList());
     }
+
+    if (idList.isEmpty()) {
+      response.setError(
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
+      return;
+    }
+
+    ActionViewBuilder view =
+        ActionView.define(I18n.get("Payment schedule lines to reject"))
+            .model(Wizard.class.getName())
+            .add("form", "payment-schedule-line-reject-wizard-form")
+            .param("popup", "reload")
+            .param("show-toolbar", Boolean.FALSE.toString())
+            .param("show-confirm", Boolean.FALSE.toString())
+            .param("popup-save", Boolean.FALSE.toString())
+            .context("idList", idList);
+
+    response.setView(view.map());
   }
 
-  public void reject(ActionRequest request, ActionResponse response) {
-    try {
-      @SuppressWarnings("unchecked")
-      List<? extends Number> idList =
-          MoreObjects.firstNonNull(
-              (List<? extends Number>) request.getContext().get("idList"), Collections.emptyList());
-      boolean represent = (boolean) request.getContext().get("represent");
+  @HandleExceptionResponse
+  public void reject(ActionRequest request, ActionResponse response) throws AxelorException {
+    @SuppressWarnings("unchecked")
+    List<? extends Number> idList =
+        MoreObjects.firstNonNull(
+            (List<? extends Number>) request.getContext().get("idList"), Collections.emptyList());
+    boolean represent = (boolean) request.getContext().get("represent");
 
-      // TODO: one rejection reason per payment schedule line
-      InterbankCodeLine interbankCodeLine;
-      @SuppressWarnings("unchecked")
-      Map<String, Object> interbankCodeLineMap =
-          (Map<String, Object>) request.getContext().get("interbankCodeLine");
+    // TODO: one rejection reason per payment schedule line
+    InterbankCodeLine interbankCodeLine;
+    @SuppressWarnings("unchecked")
+    Map<String, Object> interbankCodeLineMap =
+        (Map<String, Object>) request.getContext().get("interbankCodeLine");
 
-      if (interbankCodeLineMap != null) {
-        interbankCodeLine =
-            Beans.get(InterbankCodeLineRepository.class)
-                .find(((Number) interbankCodeLineMap.get("id")).longValue());
-      } else {
-        interbankCodeLine = null;
-      }
-
-      Map<Long, InterbankCodeLine> idMap = new LinkedHashMap<>();
-      idList.stream().map(Number::longValue).forEach(id -> idMap.put(id, interbankCodeLine));
-
-      PaymentScheduleLineBankPaymentService paymentScheduleLineBankPaymentService =
-          Beans.get(PaymentScheduleLineBankPaymentService.class);
-
-      if (idMap.size() == 1) {
-        Entry<Long, InterbankCodeLine> entry = idMap.entrySet().iterator().next();
-        long id = entry.getKey();
-        InterbankCodeLine rejectionReason = entry.getValue();
-        paymentScheduleLineBankPaymentService.reject(id, rejectionReason, represent);
-      } else {
-        int errorCount = paymentScheduleLineBankPaymentService.rejectFromIdMap(idMap, represent);
-
-        if (errorCount != 0) {
-          response.setError(
-              String.format(
-                  I18n.get("%d errors occurred. Please check tracebacks for details."),
-                  errorCount));
-          return;
-        }
-      }
-
-      response.setFlash(
-          String.format(
-              I18n.get(
-                  "%d line successfully rejected", "%d lines successfully rejected", idMap.size()),
-              idMap.size()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (interbankCodeLineMap != null) {
+      interbankCodeLine =
+          Beans.get(InterbankCodeLineRepository.class)
+              .find(((Number) interbankCodeLineMap.get("id")).longValue());
+    } else {
+      interbankCodeLine = null;
     }
+
+    Map<Long, InterbankCodeLine> idMap = new LinkedHashMap<>();
+    idList.stream().map(Number::longValue).forEach(id -> idMap.put(id, interbankCodeLine));
+
+    PaymentScheduleLineBankPaymentService paymentScheduleLineBankPaymentService =
+        Beans.get(PaymentScheduleLineBankPaymentService.class);
+
+    if (idMap.size() == 1) {
+      Entry<Long, InterbankCodeLine> entry = idMap.entrySet().iterator().next();
+      long id = entry.getKey();
+      InterbankCodeLine rejectionReason = entry.getValue();
+      paymentScheduleLineBankPaymentService.reject(id, rejectionReason, represent);
+    } else {
+      int errorCount = paymentScheduleLineBankPaymentService.rejectFromIdMap(idMap, represent);
+
+      if (errorCount != 0) {
+        response.setError(
+            String.format(
+                I18n.get("%d errors occurred. Please check tracebacks for details."), errorCount));
+        return;
+      }
+    }
+
+    response.setFlash(
+        String.format(
+            I18n.get(
+                "%d line successfully rejected", "%d lines successfully rejected", idMap.size()),
+            idMap.size()));
   }
 }

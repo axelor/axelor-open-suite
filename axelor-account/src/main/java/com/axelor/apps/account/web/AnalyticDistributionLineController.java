@@ -25,7 +25,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,65 +35,51 @@ import com.google.inject.Singleton;
 @Singleton
 public class AnalyticDistributionLineController {
 
-  public void computeAmount(ActionRequest request, ActionResponse response) {
-    try {
-      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      response.setValue(
-          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void computeAmount(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    response.setValue(
+        "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+  }
+
+  @HandleExceptionResponse
+  public void validateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        request.getContext().asType(AnalyticDistributionTemplate.class);
+    if (!Beans.get(AnalyticMoveLineService.class)
+        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      response.setError(
+          I18n.get(
+              "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%"));
     }
   }
 
-  public void validateLines(ActionRequest request, ActionResponse response) {
-    try {
-      AnalyticDistributionTemplate analyticDistributionTemplate =
-          request.getContext().asType(AnalyticDistributionTemplate.class);
-      if (!Beans.get(AnalyticMoveLineService.class)
-          .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
-        response.setError(
-            I18n.get(
-                "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%"));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
+  @HandleExceptionResponse
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (moveLine != null)
-        response.setValue(
-            "analyticJournal",
-            Beans.get(AccountConfigService.class)
-                .getAccountConfig(moveLine.getAccount().getCompany())
-                .getAnalyticJournal());
-      if (moveLine.getDate() != null) {
-        response.setValue("date", moveLine.getDate());
-      } else {
-        response.setValue(
-            "date",
-            Beans.get(AppBaseService.class).getTodayDate(moveLine.getAccount().getCompany()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+    if (moveLine != null)
+      response.setValue(
+          "analyticJournal",
+          Beans.get(AccountConfigService.class)
+              .getAccountConfig(moveLine.getAccount().getCompany())
+              .getAnalyticJournal());
+    if (moveLine.getDate() != null) {
+      response.setValue("date", moveLine.getDate());
+    } else {
+      response.setValue(
+          "date", Beans.get(AppBaseService.class).getTodayDate(moveLine.getAccount().getCompany()));
     }
   }
 
+  @HandleExceptionResponse
   public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    try {
-      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (analyticMoveLine != null && moveLine != null) {
-        response.setValue(
-            "amount",
-            Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+    if (analyticMoveLine != null && moveLine != null) {
+      response.setValue(
+          "amount", Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
     }
   }
 }

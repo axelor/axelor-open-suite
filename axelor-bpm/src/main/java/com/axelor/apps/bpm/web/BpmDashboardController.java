@@ -19,20 +19,24 @@ package com.axelor.apps.bpm.web;
 
 import com.axelor.apps.bpm.service.BpmDashboardService;
 import com.axelor.apps.bpm.service.BpmDashboardServiceImpl;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class BpmDashboardController {
 
+  @HandleExceptionResponse
   public void getBpmManagerData(ActionRequest request, ActionResponse response) {
     this.getData(0, response);
   }
 
+  @HandleExceptionResponse
   public void getPreManagerData(ActionRequest request, ActionResponse response) {
     this.getData(this.getOffset(request, false), response);
   }
 
+  @HandleExceptionResponse
   public void getNxtManagerData(ActionRequest request, ActionResponse response) {
     this.getData(this.getOffset(request, true), response);
   }

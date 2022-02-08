@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.service.BillOfMaterialService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -29,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class ProductController {
 
+  @HandleExceptionResponse
   public void openProductTree(ActionRequest request, ActionResponse response) {
 
     Product product = request.getContext().asType(Product.class);

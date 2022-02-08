@@ -19,12 +19,14 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class PurchaseRequestController {
 
+  @HandleExceptionResponse
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);

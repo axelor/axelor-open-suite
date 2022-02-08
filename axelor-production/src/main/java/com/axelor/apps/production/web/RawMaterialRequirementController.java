@@ -21,6 +21,7 @@ import com.axelor.apps.production.db.RawMaterialRequirement;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,6 +38,7 @@ public class RawMaterialRequirementController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void print(ActionRequest request, ActionResponse response) {
     try {
       RawMaterialRequirement rawMaterialRequirement =

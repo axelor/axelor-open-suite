@@ -35,7 +35,7 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
+  @HandleExceptionResponse
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -63,6 +64,7 @@ public class SaleOrderLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -72,6 +74,7 @@ public class SaleOrderLineController {
     response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 
+  @HandleExceptionResponse
   public void checkStocks(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     SaleOrder saleOrder =
@@ -100,6 +103,7 @@ public class SaleOrderLineController {
     }
   }
 
+  @HandleExceptionResponse
   public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl =
@@ -127,33 +131,32 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void changeReservedQty(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void changeReservedQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
-    try {
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Product product = saleOrderLine.getProduct();
-      if (product == null || !product.getStockManaged()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
-      }
-      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !product.getStockManaged()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
     }
+    Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
   }
 
-  public void changeRequestedReservedQty(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void changeRequestedReservedQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getRequestedReservedQty();
-    try {
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
   }
 
   /**
@@ -162,22 +165,21 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void requestQty(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Product product = saleOrderLine.getProduct();
-      if (product == null || !product.getStockManaged()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
-      }
-      Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void requestQty(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !product.getStockManaged()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
     }
+    Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
+    response.setReload(true);
   }
 
   /**
@@ -186,22 +188,22 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void cancelReservation(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Product product = saleOrderLine.getProduct();
-      if (product == null || !product.getStockManaged()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
-      }
-      Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void cancelReservation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !product.getStockManaged()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
     }
+    Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
+    response.setReload(true);
   }
 
   /**
@@ -210,6 +212,7 @@ public class SaleOrderLineController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     String domain = "self.isContact = false AND self.isSupplier = true";
@@ -263,6 +266,7 @@ public class SaleOrderLineController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void supplierPartnerDefault(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_PURCHASE) {
@@ -305,22 +309,21 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void allocateAll(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Product product = saleOrderLine.getProduct();
-      if (product == null || !product.getStockManaged()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
-      }
-      Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @HandleExceptionResponse
+  public void allocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !product.getStockManaged()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
     }
+    Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
+    response.setReload(true);
   }
 
   /**
@@ -329,18 +332,18 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void deallocateAll(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, BigDecimal.ZERO);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void deallocateAll(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, BigDecimal.ZERO);
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
@@ -361,16 +364,16 @@ public class SaleOrderLineController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void updateReservationDate(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Beans.get(SaleOrderLineServiceSupplyChain.class)
-          .updateStockMoveReservationDateTime(saleOrderLine);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @HandleExceptionResponse
+  public void updateReservationDate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+    Beans.get(SaleOrderLineServiceSupplyChain.class)
+        .updateStockMoveReservationDateTime(saleOrderLine);
+    response.setReload(true);
   }
 }

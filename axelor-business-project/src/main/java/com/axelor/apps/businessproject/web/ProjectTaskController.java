@@ -21,7 +21,8 @@ import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,6 +33,7 @@ public class ProjectTaskController {
 
   @Inject private ProjectTaskBusinessProjectService businessProjectService;
 
+  @HandleExceptionResponse
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
@@ -40,27 +42,20 @@ public class ProjectTaskController {
       return;
     }
 
-    try {
-      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).updateDiscount(projectTask);
+    projectTask = Beans.get(ProjectTaskBusinessProjectService.class).updateDiscount(projectTask);
 
-      response.setValue("discountTypeSelect", projectTask.getDiscountTypeSelect());
-      response.setValue("discountAmount", projectTask.getDiscountAmount());
-      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue("discountTypeSelect", projectTask.getDiscountTypeSelect());
+    response.setValue("discountAmount", projectTask.getDiscountAmount());
+    response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
   }
 
+  @HandleExceptionResponse
   public void compute(ActionRequest request, ActionResponse response) {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    try {
-      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
-      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
-      response.setValue("exTaxTotal", projectTask.getExTaxTotal());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
+    response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
+    response.setValue("exTaxTotal", projectTask.getExTaxTotal());
   }
 
   /**
@@ -70,34 +65,29 @@ public class ProjectTaskController {
    * @param response
    */
   @Transactional
+  @HandleExceptionResponse
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     ProjectTaskRepository projectTaskRepository = Beans.get(ProjectTaskRepository.class);
-    try {
-      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-      projectTask = projectTaskRepository.find(projectTask.getId());
-      projectTask.setToInvoice(!projectTask.getToInvoice());
-      projectTaskRepository.save(projectTask);
-      response.setValue("toInvoice", projectTask.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    projectTask = projectTaskRepository.find(projectTask.getId());
+    projectTask.setToInvoice(!projectTask.getToInvoice());
+    projectTaskRepository.save(projectTask);
+    response.setValue("toInvoice", projectTask.getToInvoice());
   }
 
-  public void onChangeCategory(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void onChangeCategory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     ProjectTask task = request.getContext().asType(ProjectTask.class);
     ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
-    try {
-      task = businessProjectService.resetProjectTaskValues(task);
-      if (projectTaskCategory != null) {
-        task = businessProjectService.updateTaskFinancialInfo(task);
-      }
-
-      if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-        task.setToInvoice(true);
-      }
-      response.setValues(task);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    task = businessProjectService.resetProjectTaskValues(task);
+    if (projectTaskCategory != null) {
+      task = businessProjectService.updateTaskFinancialInfo(task);
     }
+
+    if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      task.setToInvoice(true);
+    }
+    response.setValues(task);
   }
 }

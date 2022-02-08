@@ -28,6 +28,7 @@ import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,6 +52,7 @@ public class ProjectedStockController {
   public static final String VIEW_REQUESTED_RESERVED_QTY_TITLE = /*$$(*/
       "%s requested reserved" /*)*/;
 
+  @HandleExceptionResponse
   public void showStockAvailableProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)
@@ -81,6 +83,7 @@ public class ProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showSaleOrderOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)
@@ -109,6 +112,7 @@ public class ProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showPurchaseOrderOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
         Beans.get(ProjectedStockService.class)
@@ -137,6 +141,7 @@ public class ProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showStockRequestedReservedQuantityOfProduct(
       ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
@@ -166,40 +171,37 @@ public class ProjectedStockController {
             .map());
   }
 
+  @HandleExceptionResponse
   public void showProjectedStock(ActionRequest request, ActionResponse response) {
 
+    ProjectedStockService projectedStockService = Beans.get(ProjectedStockService.class);
+    Map<String, Long> mapId =
+        projectedStockService.getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+    if (mapId == null || mapId.get("productId") == 0L) {
+      return;
+    }
+    final List<MrpLine> mrpLineList = new ArrayList<>();
     try {
-      ProjectedStockService projectedStockService = Beans.get(ProjectedStockService.class);
-      Map<String, Long> mapId =
-          projectedStockService.getProductIdCompanyIdStockLocationIdFromContext(
-              request.getContext());
-      if (mapId == null || mapId.get("productId") == 0L) {
-        return;
-      }
-      final List<MrpLine> mrpLineList = new ArrayList<>();
-      try {
-        mrpLineList.addAll(
-            projectedStockService.createProjectedStock(
-                mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId")));
-        response.setView(
-            ActionView.define(I18n.get("Projected stock"))
-                .model(MrpLine.class.getName())
-                .add("form", "projected-stock-form")
-                .param("popup", "true")
-                .param("popup-save", "false")
-                .param("popup.maximized", "true")
-                .context("_mrpLineList", mrpLineList)
-                .map());
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
-      } finally {
-        projectedStockService.removeMrpAndMrpLine(mrpLineList);
-      }
+      mrpLineList.addAll(
+          projectedStockService.createProjectedStock(
+              mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId")));
+      response.setView(
+          ActionView.define(I18n.get("Projected stock"))
+              .model(MrpLine.class.getName())
+              .add("form", "projected-stock-form")
+              .param("popup", "true")
+              .param("popup-save", "false")
+              .param("popup.maximized", "true")
+              .context("_mrpLineList", mrpLineList)
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      projectedStockService.removeMrpAndMrpLine(mrpLineList);
     }
   }
 
+  @HandleExceptionResponse
   public void showChartProjectedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     List<Map<String, Object>> dataList = new ArrayList<>();

@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.ActionRequest;
@@ -26,6 +27,7 @@ import com.axelor.studio.service.StudioMetaService;
 
 public class MetaJsonFieldController {
 
+  @HandleExceptionResponse
   public void trackJsonField(ActionRequest request, ActionResponse response) {
     MetaJsonField metaJsonField = request.getContext().asType(MetaJsonField.class);
 

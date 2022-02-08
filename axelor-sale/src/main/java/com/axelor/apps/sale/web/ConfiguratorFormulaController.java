@@ -21,6 +21,7 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,6 +37,7 @@ public class ConfiguratorFormulaController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void checkGroovyFormula(ActionRequest request, ActionResponse response) {
     ConfiguratorFormula configuratorFormula =
         request.getContext().asType(ConfiguratorFormula.class);

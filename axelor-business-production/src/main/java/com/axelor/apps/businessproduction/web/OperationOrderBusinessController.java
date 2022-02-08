@@ -21,7 +21,7 @@ import com.axelor.apps.businessproduction.exception.IExceptionMessage;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,16 +36,13 @@ public class OperationOrderBusinessController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void alertNonValidatedTimesheet(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
-          && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder)
-              > 0) {
-        response.setAlert(I18n.get(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    if (Beans.get(AppProductionService.class).getAppProduction().getEnableTimesheetOnManufOrder()
+        && Beans.get(OperationOrderValidateBusinessService.class).checkTimesheet(operationOrder)
+            > 0) {
+      response.setAlert(I18n.get(IExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
     }
   }
 }

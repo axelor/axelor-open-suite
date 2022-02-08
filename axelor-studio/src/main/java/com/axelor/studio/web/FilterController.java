@@ -19,6 +19,7 @@ package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -31,6 +32,7 @@ import java.util.Map;
 
 public class FilterController {
 
+  @HandleExceptionResponse
   public void updateTargetField(ActionRequest request, ActionResponse response) {
 
     Filter filter = request.getContext().asType(Filter.class);
@@ -63,6 +65,7 @@ public class FilterController {
     response.setValue("operator", null);
   }
 
+  @HandleExceptionResponse
   public void updateTargetType(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -80,6 +83,7 @@ public class FilterController {
     response.setValue("filterOperator", null);
   }
 
+  @HandleExceptionResponse
   public void updateTargetMetaField(ActionRequest request, ActionResponse response) {
 
     Filter filter = request.getContext().asType(Filter.class);
@@ -108,6 +112,7 @@ public class FilterController {
     response.setValue("operator", null);
   }
 
+  @HandleExceptionResponse
   public void clearSelection(ActionRequest request, ActionResponse response) {
 
     Filter filter = request.getContext().asType(Filter.class);

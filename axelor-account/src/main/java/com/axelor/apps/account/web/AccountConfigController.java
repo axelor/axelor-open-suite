@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,6 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class AccountConfigController {
 
+  @HandleExceptionResponse
   public void deactivateSimulatedMoves(ActionRequest request, ActionResponse response) {
 
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);

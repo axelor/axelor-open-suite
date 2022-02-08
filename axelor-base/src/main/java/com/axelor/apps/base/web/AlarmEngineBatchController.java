@@ -23,6 +23,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.alarm.AlarmEngineBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,6 +36,7 @@ import java.util.Map;
 @Singleton
 public class AlarmEngineBatchController {
 
+  @HandleExceptionResponse
   public void launch(ActionRequest request, ActionResponse response) {
 
     AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
@@ -45,6 +47,7 @@ public class AlarmEngineBatchController {
   }
 
   // WS
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     AlarmEngineBatch alarmEngineBatch =

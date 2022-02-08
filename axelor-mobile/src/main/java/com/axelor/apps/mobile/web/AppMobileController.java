@@ -20,6 +20,7 @@ package com.axelor.apps.mobile.web;
 import com.axelor.apps.base.db.AppMobile;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 
 public class AppMobileController {
 
+  @HandleExceptionResponse
   public void getAppMobile(ActionRequest request, ActionResponse response) {
 
     Map<String, Object> data = new HashMap<>();

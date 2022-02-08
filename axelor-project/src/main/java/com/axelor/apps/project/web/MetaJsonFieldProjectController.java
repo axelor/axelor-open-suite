@@ -25,6 +25,7 @@ import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
@@ -38,6 +39,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class MetaJsonFieldProjectController {
 
+  @HandleExceptionResponse
   public void onNew(ActionRequest request, ActionResponse response) {
 
     String action = request.getAction();
@@ -83,6 +85,7 @@ public class MetaJsonFieldProjectController {
     response.setValue("contextFieldTitle", parentContext.get(targetName).toString());
   }
 
+  @HandleExceptionResponse
   public void setSelection(ActionRequest request, ActionResponse response) {
     MetaJsonField jsonField = request.getContext().getParent().asType(MetaJsonField.class);
 
@@ -94,6 +97,7 @@ public class MetaJsonFieldProjectController {
     response.setValue("select", jsonField.getSelectionRef());
   }
 
+  @HandleExceptionResponse
   public void computeFields(ActionRequest request, ActionResponse response) {
 
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);

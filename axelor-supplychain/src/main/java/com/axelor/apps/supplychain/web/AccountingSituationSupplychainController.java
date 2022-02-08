@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -28,6 +29,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class AccountingSituationSupplychainController {
 
+  @HandleExceptionResponse
   public void computeUsedCredit(ActionRequest request, ActionResponse response) {
     AccountingSituation accountingSituation =
         request.getContext().asType(AccountingSituation.class);

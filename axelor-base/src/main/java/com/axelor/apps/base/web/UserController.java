@@ -28,6 +28,7 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,6 +52,7 @@ public class UserController {
   protected static final Map<String, String> UNIQUE_MESSAGES =
       ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);
 
+  @HandleExceptionResponse
   public void setUserPartner(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -68,6 +70,7 @@ public class UserController {
     }
   }
 
+  @HandleExceptionResponse
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
@@ -75,6 +78,7 @@ public class UserController {
     }
   }
 
+  @HandleExceptionResponse
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -97,92 +101,77 @@ public class UserController {
     }
   }
 
+  @HandleExceptionResponse
   public void generateRandomPassword(ActionRequest request, ActionResponse response) {
-    try {
-      UserService userService = Beans.get(UserService.class);
-      CharSequence password = userService.generateRandomPassword();
+    UserService userService = Beans.get(UserService.class);
+    CharSequence password = userService.generateRandomPassword();
 
-      response.setValue("newPassword", password);
-      response.setValue("chkPassword", password);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue("newPassword", password);
+    response.setValue("chkPassword", password);
   }
 
+  @HandleExceptionResponse
   public void validatePassword(ActionRequest request, ActionResponse response) {
-    try {
-      UserService userService = Beans.get(UserService.class);
-      String newPassword =
-          MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
-      boolean valid = userService.matchPasswordPattern(newPassword);
+    UserService userService = Beans.get(UserService.class);
+    String newPassword =
+        MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
+    boolean valid = userService.matchPasswordPattern(newPassword);
 
-      response.setAttr("passwordPatternDescriptionLabel", "hidden", valid);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setAttr("passwordPatternDescriptionLabel", "hidden", valid);
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void openGenerateRandomPasswordsWizard(ActionRequest request, ActionResponse response) {
-    try {
-      List<Long> userIds = (List<Long>) request.getContext().get("_ids");
-      if (ObjectUtils.isEmpty(userIds)) {
-        response.setError(I18n.get(IExceptionMessage.RECORD_NONE_SELECTED));
-        return;
-      }
-
-      ActionViewBuilder view =
-          ActionView.define(I18n.get("Generate random passwords"))
-              .model(Wizard.class.getName())
-              .add("form", "generate-random-passwords-wizard")
-              .param("popup", "reload")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .context("_userIds", userIds);
-
-      response.setView(view.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    List<Long> userIds = (List<Long>) request.getContext().get("_ids");
+    if (ObjectUtils.isEmpty(userIds)) {
+      response.setError(I18n.get(IExceptionMessage.RECORD_NONE_SELECTED));
+      return;
     }
+
+    ActionViewBuilder view =
+        ActionView.define(I18n.get("Generate random passwords"))
+            .model(Wizard.class.getName())
+            .add("form", "generate-random-passwords-wizard")
+            .param("popup", "reload")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .context("_userIds", userIds);
+
+    response.setView(view.map());
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void generateRandomPasswords(ActionRequest request, ActionResponse response) {
-    try {
-      List<Long> ids =
-          Lists.transform(
-              (List) request.getContext().get("_userIds"),
-              new Function<Object, Long>() {
-                @Nullable
-                @Override
-                public Long apply(@Nullable Object input) {
-                  return Long.parseLong(input.toString());
-                }
-              });
+    List<Long> ids =
+        Lists.transform(
+            (List) request.getContext().get("_userIds"),
+            new Function<Object, Long>() {
+              @Nullable
+              @Override
+              public Long apply(@Nullable Object input) {
+                return Long.parseLong(input.toString());
+              }
+            });
 
-      String currentUserPassword = (String) request.getContext().get("currentUserPassword");
-      boolean isValidUser =
-          Beans.get(UserService.class).verifyCurrentUserPassword(currentUserPassword);
+    String currentUserPassword = (String) request.getContext().get("currentUserPassword");
+    boolean isValidUser =
+        Beans.get(UserService.class).verifyCurrentUserPassword(currentUserPassword);
 
-      if (!isValidUser) {
-        response.setError(I18n.get("Current user password is wrong."));
-        return;
-      }
-
-      Beans.get(UserService.class).generateRandomPasswordForUsers(ids);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (!isValidUser) {
+      response.setError(I18n.get("Current user password is wrong."));
+      return;
     }
+
+    Beans.get(UserService.class).generateRandomPasswordForUsers(ids);
+    response.setCanClose(true);
   }
 
+  @HandleExceptionResponse
   public void setDefaultUserMethod(ActionRequest request, ActionResponse response) {
-    try {
-      AppSettings appSettings = AppSettings.get();
-      response.setValue("language", appSettings.get("application.locale"));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    AppSettings appSettings = AppSettings.get();
+    response.setValue("language", appSettings.get("application.locale"));
   }
 }

@@ -23,7 +23,8 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -34,32 +35,27 @@ import com.google.inject.Singleton;
 @Singleton
 public class CostSheetController {
 
-  public void printCostSheetLineDetail(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void printCostSheetLineDetail(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-    try {
-      CostSheet costSheet = request.getContext().asType(CostSheet.class);
-      Long costSheetId = costSheet.getId();
-      String name = I18n.get("Cost sheet");
-      String fileLink =
-          ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("Timezone", getTimezone(costSheet))
-              .addParam("CostSheetId", costSheetId)
-              .addParam(
-                  "manageCostSheetGroup",
-                  Beans.get(AppProductionService.class)
-                      .getAppProduction()
-                      .getManageCostSheetGroup())
-              .addParam("BaseUrl", AppSettings.get().getBaseURL())
-              .generate()
-              .getFileLink();
+    CostSheet costSheet = request.getContext().asType(CostSheet.class);
+    Long costSheetId = costSheet.getId();
+    String name = I18n.get("Cost sheet");
+    String fileLink =
+        ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("Timezone", getTimezone(costSheet))
+            .addParam("CostSheetId", costSheetId)
+            .addParam(
+                "manageCostSheetGroup",
+                Beans.get(AppProductionService.class).getAppProduction().getManageCostSheetGroup())
+            .addParam("BaseUrl", AppSettings.get().getBaseURL())
+            .generate()
+            .getFileLink();
 
-      response.setCanClose(true);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setCanClose(true);
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   private String getTimezone(CostSheet costSheet) {

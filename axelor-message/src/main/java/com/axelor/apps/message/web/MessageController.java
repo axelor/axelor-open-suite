@@ -24,74 +24,71 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.List;
+import wslite.json.JSONException;
 
 @Singleton
 public class MessageController {
 
-  public void sendMessage(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void sendMessage(ActionRequest request, ActionResponse response)
+      throws AxelorException, JSONException, IOException {
     Message message = request.getContext().asType(Message.class);
 
-    try {
-      Beans.get(MessageService.class)
-          .sendMessage(Beans.get(MessageRepository.class).find(message.getId()));
-      response.setReload(true);
-      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(MessageService.class)
+        .sendMessage(Beans.get(MessageRepository.class).find(message.getId()));
+    response.setReload(true);
+    response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
   }
 
   @SuppressWarnings("unchecked")
-  public void sendMessages(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void sendMessages(ActionRequest request, ActionResponse response) throws AxelorException {
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-    try {
-      if (idList == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
-      }
-      ModelTool.apply(
-          Message.class,
-          idList,
-          model -> Beans.get(MessageService.class).sendMessage((Message) model));
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.MESSAGES_SEND_IN_PROGRESS), idList.size()));
-      response.setReload(true);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+    if (idList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
     }
+    ModelTool.apply(
+        Message.class,
+        idList,
+        model -> Beans.get(MessageService.class).sendMessage((Message) model));
+    response.setFlash(
+        String.format(I18n.get(IExceptionMessage.MESSAGES_SEND_IN_PROGRESS), idList.size()));
+    response.setReload(true);
   }
 
   @SuppressWarnings("unchecked")
-  public void regenerateMessages(ActionRequest request, ActionResponse response) {
+  @HandleExceptionResponse
+  public void regenerateMessages(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-    try {
-      if (idList == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
-      }
-      int error =
-          ModelTool.apply(
-              Message.class,
-              idList,
-              model -> Beans.get(MessageService.class).regenerateMessage((Message) model));
-      response.setFlash(
-          String.format(
-              I18n.get(IExceptionMessage.MESSAGES_REGENERATED), idList.size() - error, error));
-      response.setReload(true);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+
+    if (idList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
     }
+    int error =
+        ModelTool.apply(
+            Message.class,
+            idList,
+            model -> Beans.get(MessageService.class).regenerateMessage((Message) model));
+    response.setFlash(
+        String.format(
+            I18n.get(IExceptionMessage.MESSAGES_REGENERATED), idList.size() - error, error));
+    response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void setContextValues(ActionRequest request, ActionResponse response) {
     response.setValues(request.getContext().get("_message"));
   }

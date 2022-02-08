@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppLoader;
@@ -33,6 +34,7 @@ public class AppLoaderController {
 
   @Inject protected AppLoaderRepository appLoaderRepository;
 
+  @HandleExceptionResponse
   public void exportApps(ActionRequest request, ActionResponse response) {
 
     AppLoader appLoader = request.getContext().asType(AppLoader.class);
@@ -41,6 +43,7 @@ public class AppLoaderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void importApps(ActionRequest request, ActionResponse response) {
 
     AppLoader appLoader = request.getContext().asType(AppLoader.class);

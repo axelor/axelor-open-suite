@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.ImportService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -35,6 +36,7 @@ import org.apache.commons.io.FileUtils;
 @Singleton
 public class ImportConfigurationController {
 
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) {
 
     ImportConfiguration importConfiguration =

@@ -26,6 +26,7 @@ import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.exception.IExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -42,6 +43,7 @@ public class TrainingRegisterController {
 
   @Inject private EventRepository eventRepository;
 
+  @HandleExceptionResponse
   public void updateEventCalendar(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
@@ -49,6 +51,7 @@ public class TrainingRegisterController {
     Beans.get(TrainingRegisterService.class).updateEventCalendar(trainingRegister);
   }
 
+  @HandleExceptionResponse
   public void complete(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
@@ -59,6 +62,7 @@ public class TrainingRegisterController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void cancel(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
@@ -69,6 +73,7 @@ public class TrainingRegisterController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void updateOldRating(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
@@ -97,6 +102,7 @@ public class TrainingRegisterController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void EventUserUpdate(ActionRequest request, ActionResponse response) {
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
 
@@ -109,6 +115,7 @@ public class TrainingRegisterController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void EventFromDateUpdate(ActionRequest request, ActionResponse response) {
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
     if (trainingRegister.getEventList() != null) {
@@ -120,6 +127,7 @@ public class TrainingRegisterController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void EventToDateUpdate(ActionRequest request, ActionResponse response) {
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
     if (trainingRegister.getEventList() != null) {
@@ -131,6 +139,7 @@ public class TrainingRegisterController {
   }
 
   @Transactional
+  @HandleExceptionResponse
   public void EventCalenderUpdate(ActionRequest request, ActionResponse response) {
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
     if (trainingRegister.getEventList() != null) {
@@ -142,6 +151,7 @@ public class TrainingRegisterController {
   }
 
   @SuppressWarnings("unchecked")
+  @HandleExceptionResponse
   public void massTrainingRegisterCreation(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 

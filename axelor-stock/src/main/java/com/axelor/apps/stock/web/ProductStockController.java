@@ -25,7 +25,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,6 +41,7 @@ import java.util.Map;
 @Singleton
 public class ProductStockController {
 
+  @HandleExceptionResponse
   public void setStockPerDay(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -54,6 +56,7 @@ public class ProductStockController {
     response.setValue("$stockPerDayList", stocks);
   }
 
+  @HandleExceptionResponse
   public void displayStockMoveLine(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -79,24 +82,23 @@ public class ProductStockController {
     }
   }
 
-  public void updateStockLocation(ActionRequest request, ActionResponse response) {
-    try {
-      Product product = request.getContext().asType(Product.class);
-      StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
-      if (product.getId() == null) {
-        return;
-      }
-      product = Beans.get(ProductRepository.class).find(product.getId());
-      List<StockLocationLine> stockLocationLineList =
-          stockLocationLineService.getStockLocationLines(product);
+  @HandleExceptionResponse
+  public void updateStockLocation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-      for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
-      }
-      Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    Product product = request.getContext().asType(Product.class);
+    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
+    if (product.getId() == null) {
+      return;
     }
+    product = Beans.get(ProductRepository.class).find(product.getId());
+    List<StockLocationLine> stockLocationLineList =
+        stockLocationLineService.getStockLocationLines(product);
+
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
+      stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+    }
+    Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+    response.setReload(true);
   }
 }

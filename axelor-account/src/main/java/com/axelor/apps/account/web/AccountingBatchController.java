@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +41,7 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionDebtRecovery(ActionRequest request, ActionResponse response) {
 
     runBatch(AccountingBatchRepository.ACTION_DEBT_RECOVERY, request, response);
@@ -51,6 +53,7 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionDoubtfulCustomer(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER, request, response);
   }
@@ -61,6 +64,7 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionReimbursement(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_REIMBURSEMENT, request, response);
   }
@@ -71,6 +75,7 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionDirectDebit(ActionRequest request, ActionResponse response) {
     runBatch(null, request, response);
   }
@@ -81,6 +86,7 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionAccountingCustomer(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_ACCOUNT_CUSTOMER, request, response);
   }
@@ -91,22 +97,28 @@ public class AccountingBatchController {
    * @param request
    * @param response
    */
+  @HandleExceptionResponse
   public void actionMoveLineExport(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_MOVE_LINE_EXPORT, request, response);
   }
 
+  @HandleExceptionResponse
   public void actionCreditTransfer(ActionRequest request, ActionResponse response) {
+
     runBatch(AccountingBatchRepository.ACTION_CREDIT_TRANSFER, request, response);
   }
 
+  @HandleExceptionResponse
   public void actionRealizeFixedAssetLines(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES, request, response);
   }
 
+  @HandleExceptionResponse
   public void actionCloseAnnualAccounts(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS, request, response);
   }
 
+  @HandleExceptionResponse
   public void runBatch(Integer actionSelect, ActionRequest request, ActionResponse response) {
     try {
 
@@ -130,6 +142,7 @@ public class AccountingBatchController {
     }
   }
 
+  @HandleExceptionResponse
   public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
 
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
@@ -147,10 +160,9 @@ public class AccountingBatchController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
+  @HandleExceptionResponse
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
-
     Batch batch =
         Beans.get(AccountingBatchService.class).run((String) request.getContext().get("code"));
     Map<String, Object> mapData = new HashMap<String, Object>();

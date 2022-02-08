@@ -21,6 +21,7 @@ import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -28,6 +29,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class ResourceBookingController {
 
+  @HandleExceptionResponse
   public void checkIfResourceBooked(ActionRequest request, ActionResponse response) {
     if (Beans.get(AppProjectService.class).getAppProject().getCheckResourceAvailibility()) {
       ResourceBooking resourceBooking = request.getContext().asType(ResourceBooking.class);

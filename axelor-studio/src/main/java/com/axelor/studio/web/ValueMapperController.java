@@ -20,6 +20,7 @@ package com.axelor.studio.web;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.Model;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -34,6 +35,7 @@ import java.util.Map;
 
 public class ValueMapperController {
 
+  @HandleExceptionResponse
   public void execute(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
