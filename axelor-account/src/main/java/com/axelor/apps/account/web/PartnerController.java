@@ -72,21 +72,10 @@ public class PartnerController {
         return;
       }
 
-      boolean isRegistrationRequired =
-          partner.getPartnerAddressList().stream()
-                  .filter(
-                      partnerAddress ->
-                          partnerAddress.getIsInvoicingAddr()
-                              && partnerAddress.getAddress() != null
-                              && partnerAddress.getAddress().getAddressL7Country() != null
-                              && partnerAddress
-                                  .getAddress()
-                                  .getAddressL7Country()
-                                  .getAlpha2Code()
-                                  .equals("FR"))
-                  .count()
-              > 0;
-      response.setAttr("$isRegistrationCodeRequired", "value", isRegistrationRequired);
+      boolean isRegistrationCodeRequired =
+          Beans.get(PartnerAccountService.class).isRegistrationCodeRequired(partner);
+
+      response.setAttr("$isRegistrationCodeRequired", "value", isRegistrationCodeRequired);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

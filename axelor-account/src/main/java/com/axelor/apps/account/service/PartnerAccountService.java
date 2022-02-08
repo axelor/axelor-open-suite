@@ -31,4 +31,41 @@ public class PartnerAccountService {
 
     return fiscalPosition.getCustomerSpecificNoteText();
   }
+
+  public boolean isRegistrationCodeRequired(Partner partner) {
+    boolean hasFrenchAddress =
+        partner.getPartnerAddressList() != null
+            && partner.getPartnerAddressList().stream()
+                    .filter(
+                        partnerAddress ->
+                            partnerAddress.getIsInvoicingAddr()
+                                && partnerAddress.getAddress() != null
+                                && partnerAddress.getAddress().getAddressL7Country() != null
+                                && partnerAddress.getAddress().getAddressL7Country().getAlpha2Code()
+                                    != null
+                                && partnerAddress
+                                    .getAddress()
+                                    .getAddressL7Country()
+                                    .getAlpha2Code()
+                                    .equals("FR"))
+                    .count()
+                > 0;
+    boolean hasFrenchCompany =
+        partner.getCompanySet() != null
+            && partner.getCompanySet().stream()
+                    .filter(
+                        company ->
+                            company.getAddress() != null
+                                && company.getAddress().getAddressL7Country() != null
+                                && company.getAddress().getAddressL7Country().getAlpha2Code()
+                                    != null
+                                && company
+                                    .getAddress()
+                                    .getAddressL7Country()
+                                    .getAlpha2Code()
+                                    .equals("FR"))
+                    .count()
+                > 0;
+    return hasFrenchCompany && hasFrenchAddress;
+  }
 }
