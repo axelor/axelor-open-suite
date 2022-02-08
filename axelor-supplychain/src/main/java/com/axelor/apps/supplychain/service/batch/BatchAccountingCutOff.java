@@ -184,6 +184,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
       LocalDate reverseMoveDate = supplychainBatch.getReverseMoveDate();
       LocalDate moveDate = supplychainBatch.getMoveDate();
       String moveDescription = supplychainBatch.getMoveDescription();
+      String reverseMoveDescription = supplychainBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = supplychainBatch.getAccountingCutOffTypeSelect();
       int cutOffMoveStatusSelect = supplychainBatch.getCutOffMoveStatusSelect();
       boolean recoveredTax = supplychainBatch.getRecoveredTax();
@@ -199,6 +200,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
               moveDate,
               reverseMoveDate,
               moveDescription,
+              reverseMoveDescription,
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               recoveredTax,
@@ -243,6 +245,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
       LocalDate reverseMoveDate = supplychainBatch.getReverseMoveDate();
       LocalDate moveDate = supplychainBatch.getMoveDate();
       String moveDescription = supplychainBatch.getMoveDescription();
+      String reverseMoveDescription = supplychainBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = supplychainBatch.getAccountingCutOffTypeSelect();
       int cutOffMoveStatusSelect = supplychainBatch.getCutOffMoveStatusSelect();
       boolean automaticReverse = supplychainBatch.getAutomaticReverse();
@@ -255,6 +258,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
               moveDate,
               reverseMoveDate,
               moveDescription,
+              reverseMoveDescription,
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               automaticReverse,

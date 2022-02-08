@@ -389,10 +389,10 @@
       <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
         if="__config__.app.getApp('account').manageCutOffPeriod">
-        <field name="cutOffStartDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
-        <field name="cutOffEndDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -632,10 +632,10 @@
       <panel-include view="incl-analytic-distribution-move-line-form"/>
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
         if="__config__.app.getApp('account').manageCutOffPeriod">
-        <field name="cutOffStartDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
-        <field name="cutOffEndDate"
-          requiredIf="account.manageCutOffPeriod &amp;&amp; move.technicalOriginSelect != 2"/>
+        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
