@@ -68,22 +68,4 @@ public interface ProductCategoryService {
    * @return growth coefficient
    */
   BigDecimal getGrowthCoeff(ProductCategory productCategory);
-
-  /**
-   * Find parent of given category, and recursively parents of found parents.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  public List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
-      throws AxelorException;
-
-  /**
-   * Find child of given category, and recursively children of found children.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  public List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
-      throws AxelorException;
 }
