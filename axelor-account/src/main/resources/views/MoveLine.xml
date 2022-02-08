@@ -24,6 +24,9 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid"/>
     <field name="debit" aggregate="sum" width="100"/>
     <field name="credit" aggregate="sum" width="100"/>
     <field name="amountRemaining" aggregate="sum" width="100"/>

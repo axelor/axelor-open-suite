@@ -45,7 +45,9 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -886,6 +888,18 @@ public class InvoiceController {
           && !Beans.get(InvoiceService.class).checkInvoiceLinesCutOffDates(invoice)) {
         response.setError(I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTradingNameDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      User user = request.getUser();
+      String domain =
+          Beans.get(UserService.class).computeTradingNameFilter(user, invoice.getCompany());
+      response.setAttr("tradingName", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

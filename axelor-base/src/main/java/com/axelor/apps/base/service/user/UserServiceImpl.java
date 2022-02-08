@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,6 +40,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -48,12 +50,15 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
@@ -433,5 +438,42 @@ public class UserServiceImpl implements UserService {
     user.setPartner(partner);
     userRepo.save(user);
     return partner;
+  }
+
+  @Override
+  public String computeTradingNameFilter(User user) {
+    List<Long> tradingNamesId = new ArrayList<>();
+    // manage the case where nothing is found
+    tradingNamesId.add(0L);
+
+    if (user != null && CollectionUtils.isNotEmpty(user.getCompanySet())) {
+      tradingNamesId.addAll(
+          user.getCompanySet().stream()
+              .filter(company -> CollectionUtils.isNotEmpty(company.getTradingNameSet()))
+              .map(Company::getTradingNameSet)
+              .flatMap(tradingNames -> tradingNames.stream().map(TradingName::getId))
+              .collect(Collectors.toList()));
+    }
+
+    return "self.id IN (" + Joiner.on(",").join(tradingNamesId) + ")";
+  }
+
+  @Override
+  public String computeTradingNameFilter(User user, Company company) {
+    List<Long> tradingNamesId = new ArrayList<>();
+    // manage the case where nothing is found
+    tradingNamesId.add(0L);
+    if (user != null && CollectionUtils.isNotEmpty(user.getTradingNameSet())) {
+      tradingNamesId.addAll(
+          user.getTradingNameSet().stream().map(TradingName::getId).collect(Collectors.toList()));
+    }
+    if (company != null) {
+      tradingNamesId.addAll(
+          company.getTradingNameSet().stream()
+              .map(TradingName::getId)
+              .collect(Collectors.toList()));
+    }
+
+    return "self.id IN (" + Joiner.on(",").join(tradingNamesId) + ")";
   }
 }

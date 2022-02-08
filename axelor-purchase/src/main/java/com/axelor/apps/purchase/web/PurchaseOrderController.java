@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -44,6 +45,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -582,6 +584,24 @@ public class PurchaseOrderController {
         }
         response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Set filter on trading name list to only propose trading names linked to user companies
+   *
+   * @param request
+   * @param response
+   */
+  public void setTradingNameDomain(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      User user = request.getUser();
+      String domain =
+          Beans.get(UserService.class).computeTradingNameFilter(user, purchaseOrder.getCompany());
+      response.setAttr("tradingName", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

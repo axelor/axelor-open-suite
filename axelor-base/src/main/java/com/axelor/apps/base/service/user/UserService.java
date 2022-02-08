@@ -190,4 +190,8 @@ public interface UserService {
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);
+
+  public String computeTradingNameFilter(User user);
+
+  public String computeTradingNameFilter(User user, Company company);
 }

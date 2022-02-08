@@ -67,6 +67,8 @@
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"></many-to-one>
+    <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading names"/>
 
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>

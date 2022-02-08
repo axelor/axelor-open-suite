@@ -11,6 +11,9 @@
     <hilite if="typeSelect == 4" color="primary"/>
     <field name="id" title="ID" hidden="false" width="60"/>
     <field name="moveLine" width="160"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid"/>
     <field name="analyticJournal" form-view="analytic-journal-form"
       grid-view="analytic-journal-grid"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"

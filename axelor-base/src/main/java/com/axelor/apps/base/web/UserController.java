@@ -185,4 +185,14 @@ public class UserController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setTradingNameDomain(ActionRequest request, ActionResponse response) {
+    User user = request.getContext().asType(User.class);
+    try {
+      String domain = Beans.get(UserService.class).computeTradingNameFilter(user);
+      response.setAttr("tradingNameSet", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

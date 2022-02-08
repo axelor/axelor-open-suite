@@ -248,6 +248,11 @@
         field="companySet" showTitle="false" canNew="false"
         showIf="[2,5].indexOf(stepStatusSelect) > -1"
         onChange="action-user-attrs-set-pfp-validator-panel-show"/>
+      <panel-related name="tradingNameSetPanel" field="tradingNameSet"
+        showTitle="false" canNew="false"
+        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        form-view="trading-name-form" grid-view="trading-name-grid"
+        onSelect="action-user-method-set-trading-name-domain"/>
       <panel name="teamsPanel" title="Teams"
         if="__config__.app.getApp('base').getTeamManagement()"
         showIf="[2,5].indexOf(stepStatusSelect) > -1">
@@ -504,6 +509,10 @@
 
   <action-method name="action-user-method-generate-random-passwords">
     <call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
+  </action-method>
+
+  <action-method name="action-user-method-set-trading-name-domain">
+    <call class="com.axelor.apps.base.web.UserController" method="setTradingNameDomain"/>
   </action-method>
 
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
