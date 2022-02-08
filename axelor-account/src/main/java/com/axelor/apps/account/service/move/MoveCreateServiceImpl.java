@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;

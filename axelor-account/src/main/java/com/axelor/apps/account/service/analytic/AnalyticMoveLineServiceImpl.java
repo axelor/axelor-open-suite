@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -158,7 +158,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         }
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
-        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
+        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) != 0) {
           return false;
         }
       }
