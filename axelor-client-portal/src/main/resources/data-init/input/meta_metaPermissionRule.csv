@@ -5,6 +5,7 @@
 "statusSelect";"x";;;"metaperm.client.PortalQuotation";;
 "endOfValidity";"x";;;"metaperm.client.PortalQuotation";;
 "signature";"x";"x";;"metaperm.client.PortalQuotation";;
+"refusedByClient";;;;"metaperm.client.PortalQuotation";;
 "report";"x";;;"metaperm.client.PortalQuotation";;
 "partnerCategorySet";;;;"metaperm.client.GeneralAnnouncement";;
 "accepted";"x";;;"metaperm.client.Idea";;
@@ -25,3 +26,5 @@
 "doneBtn";;;;"metaperm.client.ProjectTask";;
 "createPartnerBtn";;;;"metaperm.client.User";;
 "createEmployeeBtn";;;;"metaperm.client.User";;
+"statusSelect";;;;"metaperm.client.Invoice";;
+"cancelBtn";;;;"metaperm.client.InvoicePayment";;

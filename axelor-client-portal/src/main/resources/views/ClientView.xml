@@ -15,7 +15,7 @@
           icon="fa-building-o" onClick="client.portal.portal.quatation" widget="info-button"/>
         <button name="$saleOrderBtn" title="Sale order" css="group-bg-lavendar"
           icon="fa-line-chart" onClick="client.portal.sale.order" widget="info-button"/>
-        <button name="$allQuotationBtn" title="All Quotation" css="group-bg-lavendar"
+        <button name="$allQuotationBtn" title="All quotations" css="group-bg-lavendar"
           icon="fa-file-o" onClick="client.portal.all.portal.quatation" widget="info-button"/>
         <button name="$eshopBtn" title="Eshop" css="group-bg-lavendar"
           icon="fa-shopping-cart" onClick="eshop.portal.root" widget="info-button"/>
@@ -27,8 +27,8 @@
           icon="fa-file-text-o" onClick="client.portal.invoices.to.be.paid" widget="info-button"/>
         <button name="$refundInvoiceBtn" title="Refunds" css="group-bg-blue"
           icon="fa-file-excel-o" onClick="client.portal.refunds" widget="info-button"/>
-        <spacer colSpan="12" css="group-bg-blue" widget="info-button"/>
-        <spacer colSpan="12" css="group-bg-blue" widget="info-button"/>
+        <button name="$oldInvoiceBtn" title="Old invoices" css="group-bg-blue"
+          icon="fa-file-text" onClick="client.portal.old.invoices" widget="info-button"/>
       </panel>
       <panel if-module="axelor-project" name="ticketPanel" title="Tickets"
         if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"

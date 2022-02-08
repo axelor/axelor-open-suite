@@ -16,7 +16,8 @@
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
+      title="Customer"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -40,9 +41,9 @@
       <field name="invoiceId"/>
       <field name="saleOrder.saleOrderSeq"/>
       <field name="partner" form-view="partner-contact-form" grid-view="partner-contact-grid"
-        readonly="true"/>
+        readonly="true" title="Customer" canView="false"/>
       <field name="contactPartner" form-view="partner-contact-form"
-        grid-view="partner-contact-grid" readonly="true"/>
+        grid-view="partner-contact-grid" readonly="true" canView="false"/>
       <field name="operationTypeSelect" hidden="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
@@ -138,11 +139,14 @@
     onLoad="action-client-portal-attrs-invoice-payment-onload">
     <panel name="manPanel">
       <field name="$card" title="Card" type="many-to-one" target-name="cardNumber"
-        target="com.axelor.apps.client.portal.db.Card" required="true" canNew="true"/>
+        domain="self.partner = :currentPartner" target="com.axelor.apps.client.portal.db.Card"
+        required="true" canNew="true"/>
       <spacer/>
-      <field name="inTaxTotal" title="Payment amount" colSpan="8"/>
+      <field name="amountRemaining" title="Total amount" colSpan="8"/>
       <button title="OK" onClick="action-client-portal-method-invoice-payment" name="payBtn"
         colSpan="4"/>
+      <field name="$currentPartner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" title="Partner" hidden="true"/>
     </panel>
   </form>
 
@@ -159,5 +163,9 @@
   <action-method name="action-client-portal-method-invoice-payment">
     <call class="com.axelor.apps.portal.web.InvoiceController" method="payInvoiceUsingStripe"/>
   </action-method>
+
+  <action-attrs name="action-client-portal-attrs-invoice-payment-onload">
+    <attribute name="value" for="$currentPartner" expr="eval: __user__.partner"/>
+  </action-attrs>
 
 </object-views>

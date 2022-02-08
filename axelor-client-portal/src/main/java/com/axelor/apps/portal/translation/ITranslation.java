@@ -20,6 +20,7 @@ package com.axelor.apps.portal.translation;
 public interface ITranslation {
 
   public static final String PORTAL_APP_NAME = /*$$(*/ "value:Portal"; /*)*/
+  public static final String INVOICE_WORKFLOW_VALIDATED = /*$$(*/ "Validated"; /*)*/
   public static final String CLIENT_PORTAL_NO_PARTNER = /*$$(*/
       "User is not linked with any partner. Please disconnect."; /*)*/
   public static final String PORTAL_QUATATION = /*$$(*/ "Portal quotation"; /*)*/

@@ -58,7 +58,7 @@ public class PayboxValidationService extends AbstractWebService {
     validateRequest(path, queryParameters);
 
     SaleOrder order = findOrder(path, queryParameters);
-    Beans.get(SaleOrderPortalService.class).completeOrder(order);
+    Beans.get(SaleOrderPortalService.class).completeOrder(order, null);
 
     PAYBOX_ORDER.invalidate(
         URLDecoder.decode(

@@ -8,3 +8,5 @@
 "metaperm.client.Card";"com.axelor.apps.client.portal.db.Card";"true"
 "metaperm.client.DiscussionGroup";"com.axelor.apps.client.portal.db.DiscussionGroup";"true"
 "metaperm.client.User";"com.axelor.auth.db.User";"true"
+"metaperm.client.Invoice";"com.axelor.apps.account.db.Invoice";"true"
+"metaperm.client.InvoicePayment";"com.axelor.apps.account.db.InvoicePayment";"true"

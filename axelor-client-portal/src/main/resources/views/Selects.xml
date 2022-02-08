@@ -9,4 +9,16 @@
     <option value='2'>External portal</option>
   </selection>
 
+  <selection name="portal.quotation.status.select">
+    <option value="1">Proposed quotation</option>
+    <option value="2">Order confirmed</option>
+    <option value="3">Canceled</option>
+  </selection>
+
+  <selection name="portal.quotation.type.select">
+    <option value="1">Proposed quotation</option>
+    <option value="2">Quotation requested</option>
+    <option value="3">Quotation refused</option>
+  </selection>
+
 </object-views>

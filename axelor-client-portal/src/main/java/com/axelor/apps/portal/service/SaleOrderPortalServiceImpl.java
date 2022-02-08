@@ -39,6 +39,8 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.client.portal.db.PortalQuotation;
+import com.axelor.apps.client.portal.db.repo.PortalQuotationRepository;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
@@ -73,6 +75,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import javax.mail.MessagingException;
 import javax.ws.rs.NotFoundException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -168,7 +171,7 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
           I18n.get("Paypal order amount is not same as SaleOrder amount"));
     }
     setAddresses(values, saleOrder);
-    completeOrder(saleOrder);
+    completeOrder(saleOrder, null);
     return saleOrder;
   }
 
@@ -183,8 +186,8 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
     Map<String, Object> orderData = (Map<String, Object>) values.get("orderData");
     Company company = userService.getUserActiveCompany();
     SaleOrder saleOrder = createOrder(company, (List<Map<String, Object>>) orderData.get("cart"));
-    createCharge(saleOrder, cardId);
-    completeOrder(saleOrder);
+    Charge charge = createCharge(saleOrder, cardId);
+    completeOrder(saleOrder, charge.getId());
     return saleOrder;
   }
 
@@ -212,6 +215,10 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
   public SaleOrder quotation(Map<String, Object> values) throws AxelorException {
     SaleOrder order = saleOrderRepo.save(createQuotation(values));
     try {
+      PortalQuotation portalQuotation =
+          Beans.get(PortalQuotationService.class).createPortalQuotation(order);
+      portalQuotation.setTypeSelect(PortalQuotationRepository.TYPE_REQUESTED_QUOTATION);
+      Beans.get(PortalQuotationRepository.class).save(portalQuotation);
       AppPortal app = appPortalRepo.all().fetchOne();
       if (app.getManageQuotations() && app.getIsNotifySeller()) {
         Template template = app.getSellerNotificationTemplate();
@@ -222,7 +229,8 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
         | InstantiationException
         | IllegalAccessException
         | IOException
-        | JSONException e) {
+        | JSONException
+        | MessagingException e) {
       throw new AxelorException(e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
 
@@ -248,7 +256,7 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void completeOrder(SaleOrder saleOrder) throws AxelorException {
+  public void completeOrder(SaleOrder saleOrder, String StripePaymentId) throws AxelorException {
     confirmOrder(saleOrder);
     Invoice invoice = saleOrderInvoiceService.createInvoice(saleOrder);
     invoiceService.validateAndVentilate(invoice);
@@ -260,6 +268,7 @@ public class SaleOrderPortalServiceImpl implements SaleOrderPortalService {
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_INVOICE);
+    invoicePayment.setStripeChargeId(StripePaymentId);
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentRepo.save(invoicePayment);
   }

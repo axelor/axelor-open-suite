@@ -19,14 +19,13 @@ package com.axelor.apps.portal.db.repo;
 
 import com.axelor.apps.client.portal.db.PortalQuotation;
 import com.axelor.apps.client.portal.db.repo.PortalQuotationRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 
 public class PortalQuotationManagementRepository extends PortalQuotationRepository {
 
   @Override
   public PortalQuotation copy(PortalQuotation portalQuotation, boolean deep) {
     portalQuotation = super.copy(portalQuotation, deep);
-    portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
+    portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_PROPOSED_QUOTATION);
     portalQuotation.setSignature(null);
     return portalQuotation;
   }

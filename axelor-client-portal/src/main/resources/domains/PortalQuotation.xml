@@ -9,11 +9,26 @@
 
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20"/>
-    <integer name="statusSelect" title="Status" selection="sale.order.status.select"
+    <integer name="statusSelect" title="Status" selection="portal.quotation.status.select"
       readonly="true"/>
+    <integer name="typeSelect" selection="portal.quotation.type.select"/>
     <date name="endOfValidity" title="Order end of validity"/>
     <many-to-one name="signature" ref="com.axelor.meta.db.MetaFile" title="Signature"/>
     <many-to-one name="report" ref="com.axelor.meta.db.MetaFile" title="Report"/>
+
+    <extra-code>
+   		<![CDATA[
+            // STATUS
+			public static final int STATUS_PROPOSED_QUOTATION = 1;
+			public static final int STATUS_ORDER_CONFIRMED = 2;
+			public static final int STATUS_CANCELED = 3;
+
+			// TYPE
+			public static final int TYPE_PROPOSED_QUOTATION = 1;
+			public static final int TYPE_REQUESTED_QUOTATION = 2;
+			public static final int TYPE_QUOTATION_REFUSED = 3;
+   		]]>
+    </extra-code>
 
   </entity>
 

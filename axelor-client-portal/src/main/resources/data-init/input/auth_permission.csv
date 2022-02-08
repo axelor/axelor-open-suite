@@ -7,7 +7,7 @@
 "perm.client.saleOrder.r";"com.axelor.apps.sale.db.SaleOrder";"x";;;;;"self.clientPartner = ? OR self.contactPartner = ? ";"__user__.partner,__user__.partner";"role.client"
 "perm.sale.saleOrderLine.r";"com.axelor.apps.sale.db.SaleOrderLine";"x";;;;;;;"role.client"
 "perm.sale.saleOrderLineTax.r";"com.axelor.apps.sale.db.SaleOrderLineTax";"x";;;;;;;"role.client"
-"perm.client.invoice.r";"com.axelor.apps.account.db.Invoice";"x";;;;;"self.partner = ? OR self.contactPartner = ?";"__user__.partner,__user__.partner";"role.client"
+"perm.client.invoice.r";"com.axelor.apps.account.db.Invoice";"x";;;;;"(self.partner = ? OR self.contactPartner = ?) AND self.statusSelect = ?";"__user__.partner,__user__.partner,InvoiceRepository.STATUS_VENTILATED";"role.client"
 "perm.account.invoiceLine.r";"com.axelor.apps.account.db.InvoiceLine";"x";;;;;;;"role.client"
 "perm.account.invoiceLineTax.r";"com.axelor.apps.account.db.InvoiceLineTax";"x";;;;;;;"role.client"
 "perm.client.Project.rw";"com.axelor.apps.project.db.Project";"x";"x";;;"x";"? MEMBER OF self.membersUserSet";"__user__";"role.client"
@@ -37,3 +37,4 @@
 "perm.base.MailFlags.rcw";"com.axelor.mail.db.MailFlags";"x";"x";"x";;;;;"role.client"
 "perm.client.wizard.r";"com.axelor.apps.base.db.Wizard";"x";"x";"x";;;;;"role.client"
 "perm.client.Card.all";"com.axelor.apps.client.portal.db.Card";"x";"x";"x";"x";;"self.partner = ?";"__user__.partner";"role.client"
+"perm.client.InvoicePayment";"com.axelor.apps.account.db.InvoicePayment";"x";;"x";;;"self.invoice.partner = ? OR self.invoice.contactPartner = ?";"__user__.partner,__user__.partner";"role.client"

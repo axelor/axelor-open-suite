@@ -43,5 +43,5 @@ public interface SaleOrderPortalService {
 
   public SaleOrder confirmOrder(SaleOrder order) throws AxelorException;
 
-  public void completeOrder(SaleOrder saleOrder) throws AxelorException;
+  public void completeOrder(SaleOrder saleOrder, String StripePaymentId) throws AxelorException;
 }

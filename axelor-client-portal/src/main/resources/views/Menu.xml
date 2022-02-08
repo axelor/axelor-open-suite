@@ -16,8 +16,9 @@
     <view type="form" name="portal-quotation-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
-      self.saleOrder.statusSelect &lt; :status GROUP BY portalQuotation.saleOrder)</domain>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+      self.statusSelect &lt;
+      :status GROUP BY portalQuotation.saleOrder)</domain>
+    <context name="status" expr="eval: PortalQuotationRepository.STATUS_ORDER_CONFIRMED"/>
   </action-view>
 
   <menuitem title="Sale orders" name="client-portal-sale-orders" icon="fa-line-chart"
@@ -29,8 +30,9 @@
     <view type="form" name="portal-quotation-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
-      self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)</domain>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+      self.statusSelect =
+      :status GROUP BY portalQuotation.saleOrder)</domain>
+    <context name="status" expr="eval: PortalQuotationRepository.STATUS_ORDER_CONFIRMED"/>
   </action-view>
 
   <menuitem title="Quotations history" name="client-portal-quotations-history"
@@ -43,9 +45,10 @@
     <view type="form" name="portal-quotation-form"/>
     <view-param name="forceTitle" value="true"/>
     <domain>(self.endOfValidity &lt; :today AND self.signature IS NULL) OR
-      (self.saleOrder.statusSelect >= :status)</domain>
+      (self.saleOrder.statusSelect >= :SOStatus OR self.statusSelect = :PQStatus)</domain>
     <context name="today" expr="eval: __date__"/>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_COMPLETED"/>
+    <context name="SOStatus" expr="eval: SaleOrderRepository.STATUS_ORDER_COMPLETED"/>
+    <context name="PQStatus" expr="eval: PortalQuotationRepository.STATUS_CANCELED"/>
     <context name="isHistory" expr="eval: true"/>
   </action-view>
 

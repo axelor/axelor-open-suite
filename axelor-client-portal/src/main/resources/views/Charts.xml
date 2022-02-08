@@ -8,7 +8,7 @@
     <dataset type="jpql"><![CDATA[
     		SELECT count(self.id) as total FROM PortalQuotation self WHERE self.id IN (SELECT MAX(portalQuotation.id) FROM PortalQuotation portalQuotation GROUP BY portalQuotation.saleOrder)
     		AND (self.saleOrder.clientPartner = (SELECT partner FROM User self WHERE self = :__user__) OR self.saleOrder.contactPartner = (SELECT partner FROM User self WHERE self = :__user__))
-    		AND self.saleOrder.statusSelect < 3
+    		AND self.statusSelect = 1
 		]]></dataset>
     <template><![CDATA[
 		    <a href="" ng-click="$root.openTabByName('client.portal.total.portal.quatation')">
@@ -111,10 +111,10 @@
       portalQuotation.saleOrder)
       AND (self.saleOrder.clientPartner = :partner OR
       self.saleOrder.contactPartner = :partner)
-      AND self.saleOrder.statusSelect &lt; :status</domain>
+      AND self.statusSelect = :status</domain>
     <context name="partner" expr="eval:__user__.partner"/>
     <context name="currentCode" expr="eval:__user__.code"/>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+    <context name="status" expr="eval: PortalQuotationRepository.STATUS_PROPOSED_QUOTATION"/>
   </action-view>
 
   <action-view name="client.portal.total.invoices" title="Invoices"

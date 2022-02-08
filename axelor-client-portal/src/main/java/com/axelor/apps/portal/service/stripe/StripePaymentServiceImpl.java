@@ -31,6 +31,7 @@ import com.axelor.apps.portal.exception.IExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -237,7 +238,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
       charge = Charge.create(params, requestOptions);
     } catch (StripeException e) {
       onStripeError(e);
-      throw e;
+      TraceBackService.trace(e);
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, e.getUserMessage());
     }
 
     return charge;
@@ -264,6 +266,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                   invoice.getCurrency(),
                   invoice.getPaymentMode(),
                   InvoicePaymentRepository.TYPE_INVOICE);
+      invoicePayment.setStripeChargeId(charge.getId());
       invoice.addInvoicePaymentListItem(invoicePayment);
       Beans.get(InvoicePaymentRepository.class).save(invoicePayment);
       return charge;

@@ -89,7 +89,8 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
     PortalQuotation portalQuotation = new PortalQuotation();
     portalQuotation.setSaleOrder(saleOrder);
     portalQuotation.setExTaxTotal(saleOrder.getExTaxTotal());
-    portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
+    portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_PROPOSED_QUOTATION);
+    portalQuotation.setTypeSelect(PortalQuotationRepository.TYPE_PROPOSED_QUOTATION);
     portalQuotationRepo.save(portalQuotation);
 
     List<MetaAttachment> attachments =
@@ -254,7 +255,7 @@ public class PortalQuotationServiceImpl implements PortalQuotationService {
     }
     saleOrderWorkflowService.confirmSaleOrder(saleOrder);
     portalQuotation = portalQuotationRepo.find(portalQuotation.getId());
-    portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_ORDER_CONFIRMED);
     portalQuotationRepo.save(portalQuotation);
     sendQuotationConfirmationMessage(portalQuotation, saleOrder, name, isFinalised);
   }

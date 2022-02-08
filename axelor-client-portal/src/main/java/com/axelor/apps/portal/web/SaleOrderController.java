@@ -46,7 +46,7 @@ public class SaleOrderController {
             .bind("status", SaleOrderRepository.STATUS_DRAFT_QUOTATION)
             .fetchOne();
     if (portalQuotation != null) {
-      portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_CANCELED);
+      portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_CANCELED);
       Beans.get(PortalQuotationRepository.class).save(portalQuotation);
     }
 

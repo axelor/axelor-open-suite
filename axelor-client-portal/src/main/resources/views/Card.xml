@@ -19,7 +19,7 @@
     <panel name="manPanel">
       <field name="name"/>
       <field name="isDefault" colSpan="2"/>
-      <field name="partner" colSpan="4" readonly="true"/>
+      <field name="partner" colSpan="4" readonly="true" canView="false"/>
       <field name="cardNumber" colSpan="8" pattern="^[0-9]{13,16}$" widget="string"
         readonlyIf="version > 0"/>
       <field name="brand" colSpan="4" readonly="true"/>

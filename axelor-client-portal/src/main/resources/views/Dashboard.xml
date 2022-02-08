@@ -34,11 +34,13 @@
     <view type="grid" name="portal-quotation-grid"/>
     <view type="form" name="portal-quotation-form"/>
     <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
-      self.saleOrder.statusSelect &lt; :status GROUP BY portalQuotation.saleOrder)
+      self.statusSelect &lt;
+      :status GROUP BY portalQuotation.saleOrder)
       AND
-      (self.saleOrder.clientPartner = :partner OR self.saleOrder.contactPartner = :partner)</domain>
+      (self.saleOrder.clientPartner = :partner OR
+      self.saleOrder.contactPartner = :partner)</domain>
     <context name="partner" expr="eval: __user__.partner"/>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+    <context name="status" expr="eval: PortalQuotationRepository.STATUS_ORDER_CONFIRMED"/>
   </action-view>
 
   <action-view name="action-client-portal-view-quotations-in-progress"
@@ -46,11 +48,13 @@
     <view type="grid" name="portal-quotation-grid"/>
     <view type="form" name="portal-quotation-form"/>
     <domain>self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE
-      self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)
+      self.statusSelect =
+      :status GROUP BY portalQuotation.saleOrder)
       AND
-      (self.saleOrder.clientPartner = :partner OR self.saleOrder.contactPartner = :partner)</domain>
+      (self.saleOrder.clientPartner = :partner OR
+      self.saleOrder.contactPartner = :partner)</domain>
     <context name="partner" expr="eval: __user__.partner"/>
-    <context name="status" expr="eval: SaleOrderRepository.STATUS_ORDER_CONFIRMED"/>
+    <context name="status" expr="eval: PortalQuotationRepository.STATUS_ORDER_CONFIRMED"/>
   </action-view>
 
   <action-view name="action-client-portal-view-invoices-to-pay"

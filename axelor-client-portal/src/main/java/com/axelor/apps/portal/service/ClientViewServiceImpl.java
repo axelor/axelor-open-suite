@@ -673,8 +673,8 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
-                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder.statusSelect < :status GROUP BY portalQuotation.saleOrder)")
-        .bind("status", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.statusSelect < :status GROUP BY portalQuotation.saleOrder)")
+        .bind("status", PortalQuotationRepository.STATUS_ORDER_CONFIRMED)
         .bind("clientPartner", getClientUser().getPartner())
         .count();
   }
@@ -685,8 +685,8 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
-                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.saleOrder.statusSelect = :status GROUP BY portalQuotation.saleOrder)")
-        .bind("status", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+                + "self IN (SELECT MAX(id) FROM PortalQuotation portalQuotation WHERE self.statusSelect = :status GROUP BY portalQuotation.saleOrder)")
+        .bind("status", PortalQuotationRepository.STATUS_ORDER_CONFIRMED)
         .bind("clientPartner", getClientUser().getPartner())
         .count();
   }
@@ -697,7 +697,7 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.saleOrder.clientPartner = :clientPartner OR self.saleOrder.contactPartner = :clientPartner) AND "
-                + "((self.endOfValidity < :today AND self.signature IS NULL) OR (self.saleOrder.statusSelect >= :status))")
+                + "((self.endOfValidity < :today AND self.signature IS NULL) OR (self.statusSelect >= :status))")
         .bind("today", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
         .bind("status", SaleOrderRepository.STATUS_ORDER_COMPLETED)
         .bind("clientPartner", getClientUser().getPartner())
@@ -720,8 +720,10 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "self.statusSelect = :statusSelect AND "
                 + "(self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining > 0)")
         .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
         .bind("clientPartner", getClientUser().getPartner())
         .count();
   }
@@ -732,8 +734,10 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "self.statusSelect = :statusSelect AND "
                 + "(self.operationTypeSelect = :operationTypeSelect AND self.amountRemaining = 0)")
         .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
         .bind("clientPartner", getClientUser().getPartner())
         .count();
   }
@@ -744,8 +748,10 @@ public class ClientViewServiceImpl implements ClientViewService {
         .all()
         .filter(
             "(self.partner = :clientPartner OR self.contactPartner = :clientPartner) AND "
+                + "self.statusSelect = :statusSelect AND "
                 + "(self.operationTypeSelect = :operationTypeSelect)")
         .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
         .bind("clientPartner", getClientUser().getPartner())
         .count();
   }

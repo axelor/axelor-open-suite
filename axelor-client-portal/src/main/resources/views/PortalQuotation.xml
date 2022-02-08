@@ -16,7 +16,29 @@
   <form name="portal-quotation-form" title="Quotation"
     model="com.axelor.apps.client.portal.db.PortalQuotation" width="large" readonlyIf="isHistory">
     <panel name="mainPanel">
-      <field name="statusSelect" colSpan="12" selection-in="[1,3,5]" widget="NavSelect"/>
+      <field name="statusSelect" colSpan="6" widget="NavSelect" hideIf="statusSelect == 5"/>
+      <field name="typeSelect" showTitle="false" readonly="true" css="label-bold bold"
+        colSpan="4">
+        <viewer depends="typeSelect"><![CDATA[
+	        <div class="span7">
+	          <h5>
+	            <span class="label label-info" ng-show="record.typeSelect == 1" x-translate>Quotation sent to the customer</span>
+	            <span class="label label-success" ng-show="record.typeSelect == 2" x-translate>Quotation requested</span>
+	            <span class="label label-important" ng-show="record.typeSelect == 3" x-translate>Quotation refused</span>
+	          </h5>
+	        </div>
+	      ]]></viewer>
+      </field>
+      <field name="statusSelect" showTitle="false" readonly="true" css="label-bold bold"
+        colSpan="2">
+        <viewer depends="statusSelect"><![CDATA[
+	        <div class="span7">
+	          <h5>
+	            <span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+	          </h5>
+	        </div>
+	      ]]></viewer>
+      </field>
       <field name="saleOrder.saleOrderSeq"/>
       <field name="exTaxTotal"/>
       <field name="endOfValidity"/>

@@ -19,6 +19,7 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.db.AppPortal;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.AppPortalRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -135,12 +136,37 @@ public class SaleOrderWorkflowServicePortalImpl
       try {
         PortalQuotation portalQuotation =
             Beans.get(PortalQuotationService.class).createPortalQuotation(saleOrder);
-        portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+        portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_ORDER_CONFIRMED);
         Beans.get(PortalQuotationRepository.class).save(portalQuotation);
       } catch (MessagingException | AxelorException e) {
         TraceBackService.trace(e);
       }
     }
     super.confirmSaleOrder(saleOrder);
+  }
+
+  @Override
+  @Transactional
+  public void cancelSaleOrder(
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+
+    super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
+    AppPortal appPortal = Beans.get(AppPortalRepository.class).all().fetchOne();
+    if (appPortal.getManageQuotations()) {
+
+      PortalQuotation portalQuotation =
+          Beans.get(PortalQuotationRepository.class)
+              .all()
+              .filter("self.saleOrder = :saleOrder AND self.statusSelect = :status")
+              .bind("saleOrder", saleOrder)
+              .bind("status", PortalQuotationRepository.STATUS_PROPOSED_QUOTATION)
+              .fetchOne();
+      if (portalQuotation == null) {
+        return;
+      }
+
+      portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_CANCELED);
+      Beans.get(PortalQuotationRepository.class).save(portalQuotation);
+    }
   }
 }

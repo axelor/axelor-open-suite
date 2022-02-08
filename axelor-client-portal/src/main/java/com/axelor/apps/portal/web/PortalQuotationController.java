@@ -21,7 +21,6 @@ import com.axelor.apps.client.portal.db.PortalQuotation;
 import com.axelor.apps.client.portal.db.repo.PortalQuotationRepository;
 import com.axelor.apps.portal.service.PortalQuotationService;
 import com.axelor.apps.portal.translation.ITranslation;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -81,7 +80,8 @@ public class PortalQuotationController {
 
     PortalQuotation portalQuotation = request.getContext().asType(PortalQuotation.class);
     portalQuotation = Beans.get(PortalQuotationRepository.class).find(portalQuotation.getId());
-    portalQuotation.setStatusSelect(SaleOrderRepository.STATUS_CANCELED);
+    portalQuotation.setStatusSelect(PortalQuotationRepository.STATUS_CANCELED);
+    portalQuotation.setTypeSelect(PortalQuotationRepository.TYPE_QUOTATION_REFUSED);
     Beans.get(PortalQuotationRepository.class).save(portalQuotation);
     response.setNotify(I18n.get(ITranslation.PORTAL_QUATATION_CANCEL));
     response.setReload(true);

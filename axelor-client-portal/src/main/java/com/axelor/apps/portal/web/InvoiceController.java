@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppPortal;
 import com.axelor.apps.base.db.repo.AppPortalRepository;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.client.portal.db.Card;
 import com.axelor.apps.client.portal.db.repo.CardRepository;
 import com.axelor.apps.portal.exception.IExceptionMessage;
@@ -57,9 +58,15 @@ public class InvoiceController {
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
     @SuppressWarnings("unchecked")
     Map<String, Object> cardObj = (Map<String, Object>) request.getContext().get("card");
+    if (cardObj == null) {
+      response.setError(I18n.get(IExceptionMessage.STRIPE_NO_CARD_SPECIFIED));
+      return;
+    }
+
     Card card = Beans.get(CardRepository.class).find(Long.parseLong(cardObj.get("id").toString()));
 
-    Customer customer = stripePaymentService.getOrCreateCustomer(invoice.getPartner());
+    Customer customer =
+        stripePaymentService.getOrCreateCustomer(Beans.get(UserService.class).getUserPartner());
     if (StringUtils.notBlank(card.getStripeCardId())) {
       Charge charge = stripePaymentService.checkout(invoice, customer, card.getStripeCardId());
       if (charge != null) {
