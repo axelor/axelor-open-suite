@@ -1,6 +1,0 @@
----
-title: "Manuf Order : Fix a regression that prevented purchase order to be generated on manuf orders."
-type: fix 
-description: |
- The regression prevented purchase order to be generated on manuf order planning when the 'Generate a purchase order on MO planning boolean' 
- on prod processes was true
