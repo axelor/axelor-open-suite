@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -99,7 +100,8 @@ public class PaymentVoucherLoadService {
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
             + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect)";
+            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
+            + "and (self.paymentSession IS NULL OR self.paymentSession.statusSelect = :statusClosed)";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -129,6 +131,7 @@ public class PaymentVoucherLoadService {
         .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
         .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
         .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+        .bind("statusClosed", PaymentSessionRepository.STATUS_CLOSED)
         .fetch();
   }
 

@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -415,7 +416,14 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected InvoiceTerm getInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
-    Stream<InvoiceTerm> invoiceTermStream = invoiceTermList.stream().filter(it -> !it.getIsPaid());
+    Stream<InvoiceTerm> invoiceTermStream =
+        invoiceTermList.stream()
+            .filter(
+                it ->
+                    (!it.getIsPaid() || it.getAmountRemaining().signum() > 0)
+                        && (it.getPaymentSession() == null
+                            || it.getPaymentSession().getStatusSelect()
+                                == PaymentSessionRepository.STATUS_CLOSED));
 
     if (amount != null) {
       invoiceTermStream =

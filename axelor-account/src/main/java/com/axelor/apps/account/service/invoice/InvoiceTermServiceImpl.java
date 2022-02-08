@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -341,7 +342,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) {
-    String queryStr = "self.invoice = :invoice AND self.isPaid IS NOT TRUE";
+    String queryStr =
+        "self.invoice = :invoice "
+            + "AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0) "
+            + "AND (self.paymentSession IS NULL OR self.paymentSession.statusSelect = :statusClosed)";
     boolean pfpCondition =
         appAccountService.getAppAccount().getActivatePassedForPayment()
             && invoiceVisibilityService.getManagePfpCondition(invoice)
@@ -353,7 +357,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo.all().filter(queryStr).bind("invoice", invoice);
+        invoiceTermRepo
+            .all()
+            .filter(queryStr)
+            .bind("invoice", invoice)
+            .bind("statusClosed", PaymentSessionRepository.STATUS_CLOSED);
 
     if (pfpCondition) {
       invoiceTermQuery
