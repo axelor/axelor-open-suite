@@ -636,15 +636,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     String pfpCondition =
         " AND (self.invoice.operationTypeSelect = 3"
             + " OR self.invoice.operationTypeSelect = 4"
-            + " OR self.moveLine.account.accountType.technicalTypeSelect = :receivable)"
+            + " OR self.moveLine.account.accountType.technicalTypeSelect = :receivable"
+            + " OR self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE"
             + " OR ((self.invoice.operationTypeSelect = 1"
             + " OR self.invoice.operationTypeSelect = 2"
             + " OR self.moveLine.account.accountType.technicalTypeSelect = :payable)"
-            + " AND ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
+            + " AND (self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
-            + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4))"
-            + " OR (self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE))";
+            + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"
