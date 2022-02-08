@@ -621,12 +621,13 @@ public class InventoryService {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         if (ObjectUtils.isEmpty(stockLocationLine.getTrackingNumber())) {
           long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
+              stockLocationLineList.stream()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
+                      sll ->
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
+                              && sll.getTrackingNumber() != null
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) {
@@ -802,11 +803,8 @@ public class InventoryService {
           }
         });
 
-    String todayDate =
-        appBaseService
-            .getTodayDate(inventory.getCompany())
-            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    String fileName = I18n.get("Inventory") + " " + inventory.getInventorySeq() + "-" + todayDate;
+    String fileName = computeExportFileName(inventory);
+
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
@@ -828,6 +826,16 @@ public class InventoryService {
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
     }
+  }
+
+  public String computeExportFileName(Inventory inventory) {
+    return I18n.get("Inventory")
+        + "_"
+        + inventory.getInventorySeq()
+        + "_"
+        + appBaseService
+            .getTodayDate(inventory.getCompany())
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {

@@ -167,6 +167,8 @@ import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceMergingService;
+import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -447,6 +449,8 @@ public class AccountModule extends AxelorModule {
     bind(FECImportService.class).to(FECImportServiceImpl.class);
 
     bind(AccountingSituationInitService.class).to(AccountingSituationInitServiceImpl.class);
+
+    bind(InvoiceMergingService.class).to(InvoiceMergingServiceImpl.class);
 
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
 

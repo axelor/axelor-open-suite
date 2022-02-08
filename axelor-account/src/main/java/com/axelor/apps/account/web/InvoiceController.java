@@ -36,11 +36,8 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
@@ -50,7 +47,6 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -59,17 +55,14 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -503,212 +496,6 @@ public class InvoiceController {
       massProcess(request, response, Beans.get(InvoiceService.class)::massVentilate);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  // Generate single invoice from several
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public void mergeInvoice(ActionRequest request, ActionResponse response) {
-    List<Invoice> invoiceList = new ArrayList<>();
-    List<Long> invoiceIdList = new ArrayList<>();
-    boolean fromPopup = false;
-
-    if (request.getContext().get("invoiceToMerge") != null) {
-
-      if (request.getContext().get("invoiceToMerge") instanceof List) {
-        // No confirmation popup, invoices are content in a parameter list
-        List<Map> invoiceMap = (List<Map>) request.getContext().get("invoiceToMerge");
-        for (Map map : invoiceMap) {
-          invoiceIdList.add(new Long((Integer) map.get("id")));
-        }
-      } else {
-        // After confirmation popup, invoice's id are in a string separated by ","
-        String invoiceIdListStr = (String) request.getContext().get("invoiceToMerge");
-        for (String invoiceId : invoiceIdListStr.split(",")) {
-          invoiceIdList.add(new Long(invoiceId));
-        }
-        fromPopup = true;
-      }
-    }
-
-    // Check if company, currency and partner are the same for all selected invoices
-    Company commonCompany = null;
-    Currency commonCurrency = null;
-    Partner commonPartner = null;
-    PaymentCondition commonPaymentCondition = null;
-    // Useful to determine if a difference exists between payment conditions of all invoices
-    boolean existPaymentConditionDiff = false;
-    Partner commonContactPartner = null;
-    // Useful to determine if a difference exists between contact partners of all purchase orders
-    boolean existContactPartnerDiff = false;
-    PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all purchase orders
-    boolean existPriceListDiff = false;
-    PaymentMode commonPaymentMode = null;
-    // Useful to determine if a difference exists between locations of all purchase orders
-    boolean existPaymentModeDiff = false;
-
-    Invoice invoiceTemp;
-    int count = 1;
-    for (Long invoiceId : invoiceIdList) {
-      invoiceTemp = Beans.get(InvoiceRepository.class).find(invoiceId);
-      invoiceList.add(invoiceTemp);
-      if (count == 1) {
-        commonCompany = invoiceTemp.getCompany();
-        commonCurrency = invoiceTemp.getCurrency();
-        commonPartner = invoiceTemp.getPartner();
-        commonPaymentCondition = invoiceTemp.getPaymentCondition();
-        commonContactPartner = invoiceTemp.getContactPartner();
-        commonPriceList = invoiceTemp.getPriceList();
-        commonPaymentMode = invoiceTemp.getPaymentMode();
-      } else {
-        if (commonCompany != null && !commonCompany.equals(invoiceTemp.getCompany())) {
-          commonCompany = null;
-        }
-        if (commonCurrency != null && !commonCurrency.equals(invoiceTemp.getCurrency())) {
-          commonCurrency = null;
-        }
-        if (commonPartner != null && !commonPartner.equals(invoiceTemp.getPartner())) {
-          commonPartner = null;
-        }
-        if (commonPaymentCondition != null
-            && !commonPaymentCondition.equals(invoiceTemp.getPaymentCondition())) {
-          commonPaymentCondition = null;
-          existPaymentConditionDiff = true;
-        }
-        if (commonContactPartner != null
-            && !commonContactPartner.equals(invoiceTemp.getContactPartner())) {
-          commonContactPartner = null;
-          existContactPartnerDiff = true;
-        }
-        if (commonPriceList != null && !commonPriceList.equals(invoiceTemp.getPriceList())) {
-          commonPriceList = null;
-          existPriceListDiff = true;
-        }
-        if (commonPaymentMode != null && !commonPaymentMode.equals(invoiceTemp.getPaymentMode())) {
-          commonPaymentMode = null;
-          existPaymentModeDiff = true;
-        }
-      }
-      count++;
-    }
-
-    StringBuilder fieldErrors = new StringBuilder();
-    if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
-    }
-    if (commonCompany == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
-    }
-    if (commonPartner == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
-    }
-
-    if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
-      return;
-    }
-
-    // Check if contactPartner or priceList or paymentMode or paymentCondition  or saleOrder are
-    // content in parameters
-    if (request.getContext().get("contactPartner") != null) {
-      commonContactPartner =
-          JPA.em()
-              .find(
-                  Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
-    }
-    if (request.getContext().get("priceList") != null) {
-      commonPriceList =
-          JPA.em()
-              .find(
-                  PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
-    }
-    if (request.getContext().get("paymentMode") != null) {
-      commonPaymentMode =
-          JPA.em()
-              .find(
-                  PaymentMode.class,
-                  new Long((Integer) ((Map) request.getContext().get("paymentMode")).get("id")));
-    }
-    if (request.getContext().get("paymentCondition") != null) {
-      commonPaymentCondition =
-          JPA.em()
-              .find(
-                  PaymentCondition.class,
-                  new Long(
-                      (Integer) ((Map) request.getContext().get("paymentCondition")).get("id")));
-    }
-
-    if (!fromPopup
-        && (existPaymentConditionDiff
-            || existContactPartnerDiff
-            || existPriceListDiff
-            || existPaymentModeDiff)) {
-      // Need to display intermediate screen to select some values
-      ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge invoice")
-              .model(Wizard.class.getName())
-              .add("form", "customer-invoices-merge-confirm-form")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true");
-
-      if (existContactPartnerDiff) {
-        confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonPartner.getId().toString());
-      }
-      if (existPriceListDiff) {
-        confirmView.context("contextPriceListToCheck", "true");
-      }
-      if (existPaymentModeDiff) {
-        confirmView.context("contextPaymentModeToCheck", "true");
-      }
-      if (existPaymentConditionDiff) {
-        confirmView.context("contextPaymentConditionToCheck", "true");
-      }
-      confirmView.context("invoiceToMerge", Joiner.on(",").join(invoiceIdList));
-
-      response.setView(confirmView.map());
-
-      return;
-    }
-    try {
-      Invoice invoice =
-          Beans.get(InvoiceService.class)
-              .mergeInvoiceProcess(
-                  invoiceList,
-                  commonCompany,
-                  commonCurrency,
-                  commonPartner,
-                  commonContactPartner,
-                  commonPriceList,
-                  commonPaymentMode,
-                  commonPaymentCondition);
-      if (invoice != null) {
-        // Open the generated invoice in a new tab
-        response.setView(
-            ActionView.define("Invoice")
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-form")
-                .param("search-filters", "customer-invoices-filters")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(invoice.getId()))
-                .map());
-        response.setCanClose(true);
-      }
-    } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
     }
   }
 

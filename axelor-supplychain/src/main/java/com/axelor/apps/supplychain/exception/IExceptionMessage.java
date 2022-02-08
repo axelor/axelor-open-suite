@@ -291,6 +291,16 @@ public interface IExceptionMessage {
   static final String BATCH_MOVE_DATE_ERROR = /*$$(*/
       "Please, enter only dates with the last day of month" /*)*/;
 
+  /*
+   * MRP Service
+   */
+
+  String MRP_ERROR_WHILE_COMPUTATION = /*$$(*/ "Error during the computation of MRP %s" /*)*/;
+
+  String MRP_FINISHED_MESSAGE_SUBJECT = /*$$(*/ "MRP n°%s is now finished" /*)*/;
+  String MRP_FINISHED_MESSAGE_BODY = /*$$(*/
+      "The execution of MRP n°%s is now finished, you can click above to see the results." /*)*/;
+
   static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
 
