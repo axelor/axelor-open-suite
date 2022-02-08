@@ -33,6 +33,7 @@
       title="Manage partner complementary product"/>
     <boolean name="isEnableCalculationEntireQuatationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
+    <boolean name="enablePricingScale" title="Enable pricing scale"/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
