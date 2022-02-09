@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
@@ -25,12 +26,18 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -41,6 +48,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveLineRepository moveLineRepository;
@@ -48,6 +56,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected AppBaseService appBaseService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepository;
+  protected AccountingSituationRepository accountingSituationRepository;
 
   @Inject
   public MoveLineTaxServiceImpl(
@@ -55,12 +64,14 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       TaxPaymentMoveLineService taxPaymentMoveLineService,
       AppBaseService appBaseService,
       MoveLineCreateService moveLineCreateService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      AccountingSituationRepository accountingSituationRepository) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
     this.appBaseService = appBaseService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveRepository = moveRepository;
+    this.accountingSituationRepository = accountingSituationRepository;
   }
 
   @Override
@@ -153,14 +164,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     Map<String, MoveLine> map = new HashMap<>();
     Map<String, MoveLine> newMap = new HashMap<>();
-
     while (moveLineItr.hasNext()) {
 
       MoveLine moveLine = moveLineItr.next();
 
       TaxLine taxLine = moveLine.getTaxLine();
       TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
-
       if (sourceTaxLine != null) {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
@@ -189,5 +198,88 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     moveLineList.addAll(newMap.values());
     moveRepository.save(move);
+  }
+
+  public void checkVatSystemPreconditions(Move move, MoveLine moveline) throws AxelorException {
+    if (move.getPartner() == null && moveline.getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MOVE_PARTNER_FOR_TAX_NOT_FOUND));
+    }
+    Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
+    AccountingSituation accountingSituation =
+        accountingSituationRepository.findByCompanyAndPartner(move.getCompany(), partner);
+    if (CollectionUtils.isEmpty(partner.getAccountingSituationList())
+        || accountingSituation == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.ACCOUNTING_SITUATION_NOT_FOUND),
+          move.getCompany().getName(),
+          partner.getFullName());
+    }
+    if (accountingSituation.getVatSystemSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND),
+          move.getCompany().getName(),
+          partner.getFullName());
+    }
+    if (move.getCompany().getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.COMPANY_PARTNER_NOT_FOUND),
+          move.getCompany().getName());
+    }
+    accountingSituation =
+        accountingSituationRepository.findByCompanyAndPartner(
+            move.getCompany(), move.getCompany().getPartner());
+    if (CollectionUtils.isEmpty(move.getCompany().getPartner().getAccountingSituationList())
+        || accountingSituation == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND),
+          move.getCompany().getName(),
+          partner.getFullName());
+    }
+    if (accountingSituation.getVatSystemSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND),
+          move.getCompany().getName(),
+          partner.getFullName());
+    }
+    if (moveline.getAccount().getVatSystemSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.ACCOUNT_VAT_SYSTEM_NOT_FOUND),
+          moveline.getAccount().getCode());
+    }
+  }
+
+  @Override
+  public Integer getVatSystem(Move move, MoveLine moveline) throws AxelorException {
+    checkVatSystemPreconditions(move, moveline);
+    Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
+    AccountingSituation accountingSituation = null;
+    if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(move.getCompany(), partner);
+    } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(
+              move.getCompany(), move.getCompany().getPartner());
+    }
+    if (accountingSituation != null) {
+      if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+        return moveline.getAccount().getVatSystemSelect();
+      } else if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_DELIVERY) {
+        return MoveLineRepository.VAT_COMMON_SYSTEM;
+      }
+    }
+    return MoveLineRepository.VAT_SYSTEM_DEFAULT;
   }
 }
