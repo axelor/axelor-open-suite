@@ -31,7 +31,7 @@
     <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="managePartnerComplementaryProduct"
       title="Manage partner complementary product"/>
-    <boolean name="isEnableCalculationEntireQuatationUsingPricing"
+    <boolean name="isEnableCalculationEntireQuotationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
     <boolean name="enablePricingScale" title="Enable pricing scale"/>
 
