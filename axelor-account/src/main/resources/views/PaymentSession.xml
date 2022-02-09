@@ -212,7 +212,7 @@
   </action-method>
 
   <action-group name="action-group-payment-session-search-eligible-terms">
-    <action name="save" if="!id"/>
+    <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
   </action-group>
 
