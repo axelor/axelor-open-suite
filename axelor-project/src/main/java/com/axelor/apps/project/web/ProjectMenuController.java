@@ -35,4 +35,8 @@ public class ProjectMenuController {
   public void allProjects(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
   }
+
+  public void allProjectTasks(ActionRequest request, ActionResponse response) {
+    response.setView(Beans.get(ProjectMenuService.class).getAllProjectTasks());
+  }
 }

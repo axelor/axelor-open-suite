@@ -213,6 +213,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       LocalDate moveDate,
       LocalDate reverseMoveDate,
       String moveDescription,
+      String reverseMoveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
       boolean recoveredTax,
@@ -256,7 +257,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               miscOpeJournal,
               reverseMoveDate,
               moveDate,
-              moveDescription,
+              reverseMoveDescription,
               cutOffMoveStatusSelect,
               accountingCutOffTypeSelect
                   == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
@@ -575,6 +576,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       LocalDate moveDate,
       LocalDate reverseMoveDate,
       String moveDescription,
+      String reverseMoveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
       boolean automaticReverse,
@@ -606,7 +608,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               journal,
               reverseMoveDate,
               moveDate,
-              moveDescription,
+              reverseMoveDescription,
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               true);
