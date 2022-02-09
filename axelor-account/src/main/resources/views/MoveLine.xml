@@ -187,6 +187,36 @@
     <field name="analyticMoveLineList" hidden="true"/>
   </grid>
 
+  <grid name="move-line-move-simplifiee-grid" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine" onNew="action-account-move-line-onnew-group"
+    canArchive="false" edit-icon="true">
+    <field name="partner" readonly="false" width="120" canEdit="false"
+      onSelect="action-account-move-line-partner-group" form-view="partner-form"
+      grid-view="partner-grid"/>
+    <field name="account" readonlyIf="amountPaid > 0" width="400" canEdit="false"
+      onChange="action-account-move-line-account-group-on-change"
+      onSelect="action-move-line-attrs-domain-account" form-view="account-form"
+      grid-view="account-grid"/>
+    <field name="currencyAmount" hidden="true" readonlyIf="!isOtherCurrency"
+      onChange="action-move-line-record-set-debitcredit"/>
+    <field name="currencyRate" hidden="true" readonlyIf="!isOtherCurrency"
+      onChange="action-move-line-record-set-debitcredit"/>
+    <field name="debit" readonlyIf="amountPaid > 0" width="120"
+      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange"/>
+    <field name="credit" readonlyIf="amountPaid > 0" width="120"
+      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange"/>
+    <field name="taxLine" hidden="true" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+      domain="self.endDate > :date OR self.endDate IS NULL"
+      requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"/>
+    <field name="description"
+      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
+    <field name="$isDescriptionRequired" hidden="true" type="boolean"/>
+    <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
+    <field name="isOtherCurrency" hidden="true"/>
+    <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
+    <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
+  </grid>
+
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
     onLoad="action-record-initialize-permission-validation-move-line">
