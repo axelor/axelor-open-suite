@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.tool.StringTool;
@@ -50,7 +51,11 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
    */
   @Override
   public String createCompanyBankDetailsDomain(
-      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      Partner partner,
+      Company company,
+      TradingName tradingName,
+      PaymentMode paymentMode,
+      Integer operationTypeSelect)
       throws AxelorException {
 
     AppAccountService appAccountService = Beans.get(AppAccountService.class);
@@ -58,7 +63,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
     if (!appAccountService.isApp("account")
         || !appAccountService.getAppBase().getManageMultiBanks()) {
       return super.createCompanyBankDetailsDomain(
-          partner, company, paymentMode, operationTypeSelect);
+          partner, company, tradingName, paymentMode, operationTypeSelect);
     } else {
 
       if (partner != null) {
@@ -85,7 +90,10 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
         authorizedBankDetails = new ArrayList<>();
 
         for (AccountManagement accountManagement : accountManagementList) {
-          if (accountManagement.getCompany() != null
+          if (accountManagement.getTradingName() != null
+              && accountManagement.getTradingName().equals(tradingName)) {
+            authorizedBankDetails.add(accountManagement.getBankDetails());
+          } else if (accountManagement.getCompany() != null
               && accountManagement.getCompany().equals(company)) {
             authorizedBankDetails.add(accountManagement.getBankDetails());
           }

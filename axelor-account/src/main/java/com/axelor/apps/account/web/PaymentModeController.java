@@ -20,7 +20,10 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PaymentModeControlService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -39,6 +42,17 @@ public class PaymentModeController {
         response.setAttr("code", "readonly", isInMove);
         response.setAttr("typeSelect", "readonly", isInMove);
         response.setAttr("inOutSelect", "readonly", isInMove);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkUniqueAccountConfiguration(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentMode paymentMode = request.getContext().asType(PaymentMode.class);
+      if (!Beans.get(PaymentModeService.class).isUniqueAccountConfiguration(paymentMode)) {
+        response.setError(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_4));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -2519,6 +2519,7 @@
 "Their is at least one invoice selected that it is not validated to pay","Parmi les factures sélectionnées, au moins une n'est pas bonne à payer",,
 "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export.","Il existe déjà un export N4DS exporté pour cette période. L'export comptable créé va générer un export N4DS complémentaire.",,
 "There is already N4DS export generated for this report.","Il existe déjà un export N4DS généré pour ce rapport.",,
+"There is already an accounting configuration using the same company and bank details for this payment mode.","Il existe déjà une configuration comptable avec le même RIB et société saisis pour ce mode de paiement.",,
 "There is already an ongoing accounting report of this type in draft status for this same period.","Il existe déjà un rapport comptable au statut brouillon pour le même type de rapport et incluant cette période",,
 "There is at least one advance payment or payment that can be imputed to this invoice.","Il existe au moins un acompte ou un paiement pouvant être imputé sur cette facture.",,
 "There is no configured sequence for final reconcile group","Il n'y a pas de séquence configurée pour les lettrages définitifs",,

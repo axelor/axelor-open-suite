@@ -20,6 +20,9 @@
     <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
       title="Accounting family"/>
 
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT

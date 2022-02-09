@@ -82,6 +82,9 @@ public interface IExceptionMessage {
   public static final String ACCOUNT_MANAGEMENT_3 = /*$$(*/
       "Tax configuration is missing for Product: %s (company: %s)" /*)*/;
 
+  public static final String ACCOUNT_MANAGEMENT_4 = /*$$(*/
+      "There is already an accounting configuration using the same company and bank details for this payment mode." /*)*/;
+
   /** Period service */
   public static final String PERIOD_1 = /*$$(*/
       "No period found or it has been closed for the company %s for the date %s" /*)*/;

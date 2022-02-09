@@ -26,7 +26,8 @@
       <panel-related name="accountManagementListPanel" field="accountManagementList"
         grid-view="account-management-payment-mode-grid" form-view="account-management-form"
         domain="self.typeSelect = 3" colSpan="12" if-module="axelor-account"
-        if="__config__.app.isApp('account')"/>
+        if="__config__.app.isApp('account')"
+        onChange="action-payment-mode-method-check-unique-account-configuration"/>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')" hidden="true"
         hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
@@ -69,6 +70,11 @@
 
   <action-method name="action-payment-mode-set-default">
     <call class="com.axelor.apps.base.web.PaymentModeController" method="setDefaults"/>
+  </action-method>
+
+  <action-method name="action-payment-mode-method-check-unique-account-configuration">
+    <call class="com.axelor.apps.account.web.PaymentModeController"
+      method="checkUniqueAccountConfiguration"/>
   </action-method>
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">

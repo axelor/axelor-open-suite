@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,5 +207,33 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         .bind("_paymentModeType", paymentMode.getTypeSelect())
         .bind("_inversedInOrOut", inversedInOrOut)
         .fetchOne();
+  }
+
+  public boolean isUniqueAccountConfiguration(PaymentMode paymentMode) {
+    if (paymentMode != null && CollectionUtils.isNotEmpty(paymentMode.getAccountManagementList())) {
+      for (AccountManagement accountManagement : paymentMode.getAccountManagementList()) {
+        if (accountManagement.getBankDetails() != null
+            && accountManagement.getPaymentMode() != null
+            && accountManagement.getCompany() != null) {
+          if (paymentMode.getAccountManagementList().stream()
+                  .filter(
+                      accountManagement1 ->
+                          accountManagement
+                                  .getPaymentMode()
+                                  .equals(accountManagement1.getPaymentMode())
+                              && accountManagement
+                                  .getBankDetails()
+                                  .equals(accountManagement1.getBankDetails())
+                              && accountManagement
+                                  .getCompany()
+                                  .equals(accountManagement1.getCompany()))
+                  .count()
+              > 0) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 }

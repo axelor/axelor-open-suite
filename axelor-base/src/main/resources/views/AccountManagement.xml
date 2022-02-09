@@ -53,10 +53,14 @@
     <panel name="mainAccountManagementPanel">
       <panel name="mainPanel" colSpan="12">
         <field name="typeSelect"
-          onChange="action-account-management-attrs-display-product-fields" hidden="true"/>
+          onChange="action-account-management-attrs-display-product-fields" hidden="true"
+          colSpan="4"/>
         <field name="company" widget="SuggestBox"
           onChange="action-group-account-account-management-onchange-common"
-          form-view="company-form" grid-view="company-grid" canEdit="false"/>
+          form-view="company-form" grid-view="company-grid" canEdit="false" colSpan="4"/>
+        <field name="tradingName"
+          if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+          form-view="trading-name-form" grid-view="trading-name-grid" colSpan="4"/>
         <field name="product" canEdit="false" hidden="true" form-view="product-form"
           grid-view="product-grid" domain="self.dtype = 'Product'"
           requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>

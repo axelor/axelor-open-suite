@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.exception.AxelorException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -76,7 +77,11 @@ public interface BankDetailsService {
    * @throws AxelorException
    */
   String createCompanyBankDetailsDomain(
-      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      Partner partner,
+      Company company,
+      TradingName tradingName,
+      PaymentMode paymentMode,
+      Integer operationTypeSelect)
       throws AxelorException;
 
   /**

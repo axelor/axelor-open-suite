@@ -10,6 +10,9 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid"/>
     <field name="cashAccount" form-view="account-form" grid-view="account-grid"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
       canEdit="false"/>
