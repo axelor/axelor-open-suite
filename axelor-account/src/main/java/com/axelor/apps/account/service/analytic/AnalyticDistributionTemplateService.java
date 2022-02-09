@@ -8,6 +8,9 @@ public interface AnalyticDistributionTemplateService {
 
   boolean validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate);
 
+  public void checkAnalyticDistributionTemplateCompany(
+      AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException;
+
   AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException;
 }
