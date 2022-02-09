@@ -52,7 +52,7 @@
 "091120","L'ID partenaire du fichier SE ne correspond pas à l'ID partenaire du remetteur.",,
 "091121","L'attribut d'ordre indiqué n'est pas compatible avec l'ordre dans le système de la banque",,
 "091209","Le certificat n'est pas valide car il n'est pas encore en vigueur",,
-"091301","La Vérification de l'ES a échoué. Dans le cas de commandes asynchrone, l'erreur peut se produire lors de la vérification préliminaire",,
+"091301","La Vérification de l'ES a échoué. Dans le cas de commandes asynchrones, l'erreur peut se produire lors de la vérification préliminaire",,
 "1","1",,
 "10 - Bank details IBAN","10 - Identifiant du compte",,
 "10 - Sender bank details type","10 - Type identifiant du compte",,
