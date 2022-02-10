@@ -280,7 +280,7 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   Partner.class,
-                  new Long(
+                  Long.valueOf(
                       (Integer)
                           ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
       values.put("supplierPartner", supplierPartner);
@@ -288,7 +288,7 @@ public class SaleOrderController {
           (String) request.getContext().get("saleOrderLineIdSelected");
 
       for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-        saleOrderLineIdSelected.add(new Long(saleOrderId));
+        saleOrderLineIdSelected.add(Long.valueOf(saleOrderId));
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
       values.put("isDirectOrderLocation", isDirectOrderLocation);
@@ -399,13 +399,13 @@ public class SaleOrderController {
         // No confirmation popup, sale orders are content in a parameter list
         List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
         for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
+          saleOrderIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, sale order's id are in a string separated by ","
         String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
         for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
+          saleOrderIdList.add(Long.valueOf(saleOrderId));
         }
         fromPopup = true;
       }
@@ -550,28 +550,28 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("contactPartner") != null) {
       commonContactPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("team") != null) {
       commonTeam =
           JPA.em()
               .find(
                   Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("team")).get("id")));
     }
     if (request.getContext().get("stockLocation") != null) {
       commonLocation =
           JPA.em()
               .find(
                   StockLocation.class,
-                  new Long((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
