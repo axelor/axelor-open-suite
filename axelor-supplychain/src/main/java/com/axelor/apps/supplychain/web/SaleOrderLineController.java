@@ -50,8 +50,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
-  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
@@ -63,8 +62,7 @@ public class SaleOrderLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChain.class)
