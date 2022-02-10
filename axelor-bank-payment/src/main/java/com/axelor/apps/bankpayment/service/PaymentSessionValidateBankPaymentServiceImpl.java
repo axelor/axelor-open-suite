@@ -15,6 +15,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Partner;
@@ -32,6 +33,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BankOrderService bankOrderService;
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderLineService bankOrderLineService;
+  protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderRepository bankOrderRepo;
 
   @Inject
@@ -48,6 +50,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
+      BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo) {
     super(
         appBaseService,
@@ -62,6 +65,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
+    this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderRepo = bankOrderRepo;
   }
 
@@ -129,12 +133,33 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
 
     if (paymentSession.getBankOrder() != null) {
-      this.generateBankOrderLineFromInvoiceTerm(
+      this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
-      bankOrderRepo.save(paymentSession.getBankOrder());
     }
 
     return paymentSession;
+  }
+
+  protected void createOrUpdateBankOrderLineFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
+      throws AxelorException {
+    BankOrderLine bankOrderLine = null;
+
+    if (paymentSession.getPaymentMode().getConsoBankOrderLinePerPartner()) {
+      bankOrderLine =
+          bankOrder.getBankOrderLineList().stream()
+              .filter(it -> it.getPartner().equals(invoiceTerm.getMoveLine().getPartner()))
+              .findFirst()
+              .orElse(null);
+    }
+
+    if (bankOrderLine == null) {
+      this.generateBankOrderLineFromInvoiceTerm(paymentSession, invoiceTerm, bankOrder);
+    } else {
+      this.updateBankOrderLine(invoiceTerm, bankOrderLine);
+    }
+
+    bankOrderRepo.save(paymentSession.getBankOrder());
   }
 
   protected void generateBankOrderLineFromInvoiceTerm(
@@ -154,5 +179,24 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTerm);
 
     bankOrder.addBankOrderLineListItem(bankOrderLine);
+  }
+
+  protected void updateBankOrderLine(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+    this.updateReference(invoiceTerm, bankOrderLine);
+
+    bankOrderLine.setBankOrderAmount(
+        bankOrderLine.getBankOrderAmount().add(invoiceTerm.getAmountPaid()));
+    bankOrderLine.setReceiverLabel(bankOrderLine.getReceiverReference());
+    bankOrderLine.addBankOrderLineOriginListItem(
+        bankOrderLineOriginService.createBankOrderLineOrigin(invoiceTerm));
+  }
+
+  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+    String origin = invoiceTerm.getMoveLine().getOrigin();
+
+    if (!bankOrderLine.getReceiverReference().contains(origin)) {
+      bankOrderLine.setReceiverReference(
+          String.format("%s/%s", bankOrderLine.getReceiverReference(), origin));
+    }
   }
 }
