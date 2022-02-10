@@ -138,10 +138,20 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
 
     this.processInvoiceTerms(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-    this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-    this.updateStatus(paymentSession, moveMap, paymentAmountMap);
+    this.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
 
     return this.getMoveCount(moveMap, isGlobal);
+  }
+
+  protected void postProcessPaymentSession(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.updateStatuses(paymentSession, moveMap, paymentAmountMap);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -455,7 +465,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.save(invoiceTerm);
   }
 
-  protected void updateStatus(
+  protected void updateStatuses(
       PaymentSession paymentSession,
       Map<Partner, List<Move>> moveMap,
       Map<Move, BigDecimal> paymentAmountMap)

@@ -87,6 +87,8 @@ public class PaymentSessionController {
       int moveCount =
           Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
 
+      response.setReload(true);
+
       response.setFlash(
           String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
     } catch (Exception e) {

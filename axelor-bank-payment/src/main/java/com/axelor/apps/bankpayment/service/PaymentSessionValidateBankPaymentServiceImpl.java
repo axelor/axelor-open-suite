@@ -1,0 +1,158 @@
+package com.axelor.apps.bankpayment.service;
+
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
+import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+public class PaymentSessionValidateBankPaymentServiceImpl
+    extends PaymentSessionValidateServiceImpl {
+  protected BankOrderService bankOrderService;
+  protected BankOrderCreateService bankOrderCreateService;
+  protected BankOrderLineService bankOrderLineService;
+  protected BankOrderRepository bankOrderRepo;
+
+  @Inject
+  public PaymentSessionValidateBankPaymentServiceImpl(
+      AppBaseService appBaseService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService,
+      ReconcileService reconcileService,
+      PaymentSessionRepository paymentSessionRepo,
+      InvoiceTermRepository invoiceTermRepo,
+      MoveRepository moveRepo,
+      PartnerRepository partnerRepo,
+      BankOrderService bankOrderService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderLineService bankOrderLineService,
+      BankOrderRepository bankOrderRepo) {
+    super(
+        appBaseService,
+        moveCreateService,
+        moveValidateService,
+        moveLineCreateService,
+        reconcileService,
+        paymentSessionRepo,
+        invoiceTermRepo,
+        moveRepo,
+        partnerRepo);
+    this.bankOrderService = bankOrderService;
+    this.bankOrderCreateService = bankOrderCreateService;
+    this.bankOrderLineService = bankOrderLineService;
+    this.bankOrderRepo = bankOrderRepo;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
+    if (paymentSession.getPaymentMode() != null
+        && paymentSession.getPaymentMode().getGenerateBankOrder()) {
+      this.generateBankOrderFromPaymentSession(paymentSession);
+    }
+
+    return super.processPaymentSession(paymentSession);
+  }
+
+  @Override
+  protected void postProcessPaymentSession(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    super.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+
+    BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
+    bankOrderService.updateTotalAmounts(bankOrder);
+    bankOrderRepo.save(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected BankOrder generateBankOrderFromPaymentSession(PaymentSession paymentSession)
+      throws AxelorException {
+    BankOrder bankOrder = this.createBankOrder(paymentSession);
+
+    paymentSession.setBankOrder(bankOrder);
+    bankOrderService.generateSequence(bankOrder);
+
+    return bankOrder;
+  }
+
+  protected BankOrder createBankOrder(PaymentSession paymentSession) throws AxelorException {
+    return bankOrderCreateService.createBankOrder(
+        paymentSession.getPaymentMode(),
+        paymentSession.getPartnerTypeSelect(),
+        paymentSession.getPaymentDate(),
+        paymentSession.getCompany(),
+        paymentSession.getBankDetails(),
+        paymentSession.getCurrency(),
+        paymentSession.getSequence(),
+        paymentSession.getName(),
+        BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected PaymentSession processInvoiceTerm(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    paymentSession =
+        super.processInvoiceTerm(
+            paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+
+    if (paymentSession.getBankOrder() != null) {
+      this.generateBankOrderLineFromInvoiceTerm(
+          paymentSession, invoiceTerm, paymentSession.getBankOrder());
+      bankOrderRepo.save(paymentSession.getBankOrder());
+    }
+
+    return paymentSession;
+  }
+
+  protected void generateBankOrderLineFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
+      throws AxelorException {
+    BankOrderLine bankOrderLine =
+        bankOrderLineService.createBankOrderLine(
+            bankOrder.getBankOrderFileFormat(),
+            paymentSession.getCompany(),
+            invoiceTerm.getMoveLine().getPartner(),
+            invoiceTerm.getBankDetails(),
+            invoiceTerm.getAmountPaid(),
+            paymentSession.getCurrency(),
+            paymentSession.getPaymentDate(),
+            invoiceTerm.getMoveLine().getOrigin(),
+            invoiceTerm.getMoveLine().getOrigin(),
+            invoiceTerm);
+
+    bankOrder.addBankOrderLineListItem(bankOrderLine);
+  }
+}
