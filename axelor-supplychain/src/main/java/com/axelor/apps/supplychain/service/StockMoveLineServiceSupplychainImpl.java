@@ -468,7 +468,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLine.getQtyInvoiced().compareTo(BigDecimal.ZERO) == 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Not invoiced"));
       stockMoveLine.setAvailableStatusSelect(3);
-    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == -1) {
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) < 0) {
       stockMoveLine.setAvailableStatus(I18n.get("Partially invoiced"));
       stockMoveLine.setAvailableStatusSelect(4);
     } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == 0) {
