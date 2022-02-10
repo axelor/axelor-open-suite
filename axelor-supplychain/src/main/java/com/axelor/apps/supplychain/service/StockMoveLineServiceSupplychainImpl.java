@@ -457,10 +457,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       availableQty = stockMoveLine.getAvailableQtyForProduct();
     }
     BigDecimal realQty = stockMoveLine.getRealQty();
-    if (availableQty.compareTo(realQty) < 0) {
-      return false;
-    }
-    return true;
+    return availableQty.compareTo(realQty) >= 0;
   }
 
   @Override
