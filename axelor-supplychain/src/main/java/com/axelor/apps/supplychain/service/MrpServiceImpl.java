@@ -759,57 +759,131 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleOrderMrpLines() throws AxelorException {
-
-    MrpLineType saleOrderMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
-    if (saleOrderMrpLineType == null) {
+    List<MrpLineType> saleOrderMrpLineTypeList =
+        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
+    if (saleOrderMrpLineTypeList == null || saleOrderMrpLineTypeList.isEmpty()) {
       return;
     }
 
-    String statusSelect = saleOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    mrp = mrpRepository.find(mrp.getId());
 
     List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
 
-    mrp = mrpRepository.find(mrp.getId());
-
+    // If the MRP's list of sale order lines is empty, treat the lines concerned by the mrpLineTypes
     if (mrp.getSaleOrderLineSet().isEmpty()) {
 
-      String filter =
-          "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
-              + "AND self.saleOrder.statusSelect IN (?4) ";
+      // For each MrpLineType found, fetch saleOrderLines and generate mrpLines
+      for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
+        saleOrderLineList = new ArrayList<>();
 
-      if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
-          == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
-        filter += "AND (self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE)";
-      } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
-          == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
-        filter += "AND self.saleOrder.oneoffSale IS TRUE";
+        List<Integer> statusList =
+            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+
+        String filter =
+            "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
+                + "AND self.saleOrder.statusSelect IN (?4) ";
+
+        // Checking the one off sales parameter
+        if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+            == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
+          filter += "AND (self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE)";
+        } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+            == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
+          filter += "AND self.saleOrder.oneoffSale IS TRUE";
+        }
+
+        // Checking the late sales parameter
+        if (saleOrderMrpLineType.getLateSalesSelect()
+            == MrpLineTypeRepository.LATE_SALES_EXCLUDED) {
+          filter +=
+              "AND (self.estimatedDelivDate IS NULL OR self.estimatedDelivDate >= :todayDate)";
+        } else if (saleOrderMrpLineType.getLateSalesSelect()
+            == MrpLineTypeRepository.LATE_SALES_ONLY) {
+          filter +=
+              "AND self.estimatedDelivDate IS NOT NULL AND self.estimatedDelivDate < :todayDate";
+        }
+
+        saleOrderLineList.addAll(
+            saleOrderLineRepository
+                .all()
+                .filter(
+                    filter,
+                    this.productMap.keySet(),
+                    this.stockLocationList,
+                    SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
+                    statusList)
+                .bind("todayDate", appBaseService.getTodayDate(mrp.getStockLocation().getCompany()))
+                .fetch());
+
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+          this.createSaleOrderMrpLines(
+              mrpRepository.find(mrp.getId()),
+              saleOrderLineRepository.find(saleOrderLine.getId()),
+              mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
+              statusList);
+          JPA.clear();
+        }
       }
-
-      saleOrderLineList.addAll(
-          saleOrderLineRepository
-              .all()
-              .filter(
-                  filter,
-                  this.productMap.keySet(),
-                  this.stockLocationList,
-                  SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
-                  statusList)
-              .fetch());
-
+      // If the MRP's list of saleOrderLines is not empty, treat all the selected lines instead
     } else {
       saleOrderLineList.addAll(mrp.getSaleOrderLineSet());
-    }
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
+        List<Integer> statusList =
+            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
-      this.createSaleOrderMrpLines(
-          mrpRepository.find(mrp.getId()),
-          saleOrderLineRepository.find(saleOrderLine.getId()),
-          mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
-          statusList);
-      JPA.clear();
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+          if (saleOrderLine.getSaleOrder() != null) {
+            saleOrderLine = saleOrderLineRepository.find(saleOrderLine.getId());
+            if (this.productMap.keySet().contains(saleOrderLine.getProduct().getId())
+                && this.stockLocationList.contains(saleOrderLine.getSaleOrder().getStockLocation())
+                && saleOrderLine.getDeliveryState()
+                    != SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+                && statusList.contains(saleOrderLine.getSaleOrder().getStatusSelect())) {
+
+              // Checking the one off sales parameter
+              if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+                      == MrpLineTypeRepository.ONE_OFF_SALES_INCLUDED
+                  || (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+                          == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED
+                      && (!Boolean.TRUE.equals(saleOrderLine.getSaleOrder().getOneoffSale())))
+                  || (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+                          == MrpLineTypeRepository.ONE_OFF_SALES_ONLY
+                      && Boolean.TRUE.equals(saleOrderLine.getSaleOrder().getOneoffSale()))) {
+
+                // Checking the late sales parameter
+                if (saleOrderMrpLineType.getLateSalesSelect()
+                        == MrpLineTypeRepository.LATE_SALES_INCLUDED
+                    || (saleOrderMrpLineType.getLateSalesSelect()
+                            == MrpLineTypeRepository.LATE_SALES_EXCLUDED
+                        && (saleOrderLine.getEstimatedDelivDate() == null
+                            || !saleOrderLine
+                                .getEstimatedDelivDate()
+                                .isBefore(
+                                    appBaseService.getTodayDate(
+                                        saleOrderLine.getSaleOrder().getCompany()))))
+                    || (saleOrderMrpLineType.getLateSalesSelect()
+                            == MrpLineTypeRepository.LATE_SALES_ONLY
+                        && saleOrderLine.getEstimatedDelivDate() != null
+                        && saleOrderLine
+                            .getEstimatedDelivDate()
+                            .isBefore(
+                                appBaseService.getTodayDate(
+                                    saleOrderLine.getSaleOrder().getCompany())))) {
+
+                  this.createSaleOrderMrpLines(
+                      mrpRepository.find(mrp.getId()),
+                      saleOrderLine,
+                      mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
+                      statusList);
+                  JPA.clear();
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1238,6 +1312,18 @@ public class MrpServiceImpl implements MrpService {
             elementSelect,
             "%" + applicationFieldSelect + "%")
         .fetchOne();
+  }
+
+  protected List<MrpLineType> getMrpLineTypeList(int elementSelect) {
+
+    int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
+    return mrpLineTypeRepository
+        .all()
+        .filter(
+            "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
+            elementSelect,
+            "%" + applicationFieldSelect + "%")
+        .fetch();
   }
 
   protected int getApplicationField(int mrpTypeSelect) {
