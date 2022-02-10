@@ -36,4 +36,6 @@ public interface MoveLineTaxService {
       MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException;
 
   Integer getVatSystem(Move move, MoveLine moveline) throws AxelorException;
+
+  void checkTaxMoveLines(Move move) throws AxelorException;
 }

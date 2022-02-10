@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineTaxServiceImpl implements MoveLineTaxService {
@@ -57,6 +58,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepository;
   protected AccountingSituationRepository accountingSituationRepository;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MoveLineTaxServiceImpl(
@@ -65,13 +67,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       AppBaseService appBaseService,
       MoveLineCreateService moveLineCreateService,
       MoveRepository moveRepository,
-      AccountingSituationRepository accountingSituationRepository) {
+      AccountingSituationRepository accountingSituationRepository,
+      MoveLineToolService moveLineToolService) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
     this.appBaseService = appBaseService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveRepository = moveRepository;
     this.accountingSituationRepository = accountingSituationRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -281,5 +285,23 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       }
     }
     return MoveLineRepository.VAT_SYSTEM_DEFAULT;
+  }
+
+  @Override
+  public void checkTaxMoveLines(Move move) throws AxelorException {
+    if (CollectionUtils.isEmpty(move.getMoveLineList()) || move.getMoveLineList().size() < 2) {
+      return;
+    }
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (!move.getMoveLineList().stream()
+          .filter(
+              moveLineToolService.isEqualTaxMoveLine(
+                  moveline.getTaxLine(), moveline.getVatSystemSelect(), moveline.getId()))
+          .collect(Collectors.<MoveLine>toList())
+          .isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.SAME_TAX_MOVE_LINES));
+      }
+    }
   }
 }
