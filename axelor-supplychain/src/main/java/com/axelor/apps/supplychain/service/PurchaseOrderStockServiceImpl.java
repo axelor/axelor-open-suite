@@ -357,11 +357,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Product product = purchaseOrderLine.getProduct();
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-    if (product.getControlOnReceipt()
-        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
-      return true;
-    }
-    return false;
+    return product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation();
   }
 
   protected StockMoveLine createProductStockMoveLine(
