@@ -38,6 +38,7 @@
     <boolean name="recoveredTax" title="Recovered tax"/>
     <boolean name="ati" title="A.T.I."/>
     <string name="moveDescription" title="Move description"/>
+    <string name="reverseMoveDescription" title="Reverse move description"/>
     <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
 
     <boolean name="automaticReverse" title="Automatic reverse"/>

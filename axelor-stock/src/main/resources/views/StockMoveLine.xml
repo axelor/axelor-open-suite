@@ -96,6 +96,8 @@
     </panel>
 
     <panel name="mainPanel" hideIf="lineTypeSelect == 1">
+      <field name="stockMove" form-view="stock-move-form" readonly="true"
+        showIf="_cutOffPreview" colSpan="12"/>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
       <field name="availableStatus" readonly="true" hidden="true" colSpan="2">
         <viewer><![CDATA[

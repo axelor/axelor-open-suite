@@ -106,11 +106,13 @@
         </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off" itemSpan="4"
           if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="$cutOffStartDate" type="date" title="From date"/>
-          <field name="$cutOffEndDate" type="date" title="To date"/>
+          <field name="$cutOffStartDate" type="date" title="From date"
+            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
+          <field name="$cutOffEndDate" type="date" title="To date"
+            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-move-method-apply-cut-off-dates"
-            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null"/>
+            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
         </panel>
       </panel>
 
