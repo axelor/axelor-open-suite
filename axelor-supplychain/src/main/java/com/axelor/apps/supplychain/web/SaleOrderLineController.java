@@ -62,7 +62,8 @@ public class SaleOrderLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) {
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChain.class)

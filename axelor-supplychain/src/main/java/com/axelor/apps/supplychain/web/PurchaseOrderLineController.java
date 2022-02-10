@@ -41,7 +41,8 @@ public class PurchaseOrderLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response) {
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
     purchaseOrderLine =

@@ -201,19 +201,20 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       TaxNumber taxNumber,
       FiscalPosition fiscalPosition)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (SaleOrder saleOrderLocal : saleOrderList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      numSeq.append(saleOrderLocal.getSaleOrderSeq());
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
+        externalRef.append(saleOrderLocal.getExternalReference());
       }
     }
 
@@ -224,8 +225,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             priceList,
             clientPartner,
