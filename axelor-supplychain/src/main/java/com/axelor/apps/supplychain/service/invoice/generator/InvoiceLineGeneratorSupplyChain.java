@@ -50,7 +50,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
-  protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
 
   @Inject
