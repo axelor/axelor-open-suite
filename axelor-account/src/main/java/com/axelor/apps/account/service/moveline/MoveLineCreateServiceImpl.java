@@ -584,8 +584,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
     }
-    String newSourceTaxLineKey =
-        newAccount.getCode() + taxLine.getId() + " " + moveLine.getVatSystemSelect();
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     MoveLine newOrUpdatedMoveLine = new MoveLine();
 
     newOrUpdatedMoveLine.setAccount(newAccount);
@@ -607,7 +607,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
     newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
-    newOrUpdatedMoveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+    newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
