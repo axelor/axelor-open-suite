@@ -1,5 +1,3 @@
 ---
-title: "GEONAMES: NPE is thrown during import"
+title: "GEONAMES: fix NPE while importing cities from geonames."
 type: fix
-description: |
-         fix NPE while importing the  geonames city.
