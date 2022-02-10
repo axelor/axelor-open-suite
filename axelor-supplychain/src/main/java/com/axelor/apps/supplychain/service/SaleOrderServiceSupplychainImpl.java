@@ -320,7 +320,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     if (saleOrderLines == null) {
       return null;
     }
-    List<SaleOrderLine> linesToRemove = new ArrayList<SaleOrderLine>();
+    List<SaleOrderLine> linesToRemove = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
       if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(saleOrderLine);

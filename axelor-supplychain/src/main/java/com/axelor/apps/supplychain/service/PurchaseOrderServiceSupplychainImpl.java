@@ -436,7 +436,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrderLines == null) {
       return null;
     }
-    List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
+    List<PurchaseOrderLine> linesToRemove = new ArrayList<>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
