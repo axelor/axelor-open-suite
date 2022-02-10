@@ -326,7 +326,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         linesToRemove.add(saleOrderLine);
       }
     }
-    if (linesToRemove.size() == 0) {
+    if (linesToRemove.isEmpty()) {
       return null;
     }
     for (SaleOrderLine lineToRemove : linesToRemove) {
@@ -409,7 +409,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
             partnerSupplychainLinkInvoicedByList.get(0);
         saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-      } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+      } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
         saleOrder.setInvoicedPartner(clientPartner);
       } else {
         saleOrder.setInvoicedPartner(null);
@@ -418,7 +418,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
             partnerSupplychainLinkDeliveredByList.get(0);
         saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());
-      } else if (partnerSupplychainLinkDeliveredByList.size() == 0) {
+      } else if (partnerSupplychainLinkDeliveredByList.isEmpty()) {
         saleOrder.setDeliveredPartner(clientPartner);
       } else {
         saleOrder.setDeliveredPartner(null);

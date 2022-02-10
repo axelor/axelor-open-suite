@@ -517,7 +517,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
                 partnerSupplychainLinkInvoicedByList.get(0);
             stockMove.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-          } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+          } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
             stockMove.setInvoicedPartner(partner);
           } else {
             stockMove.setInvoicedPartner(null);
