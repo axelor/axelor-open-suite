@@ -1,4 +1,0 @@
----
-title: "INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`)."
-type: fix
-
