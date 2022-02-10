@@ -442,7 +442,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         linesToRemove.add(purchaseOrderLine);
       }
     }
-    if (linesToRemove.size() == 0) {
+    if (linesToRemove.isEmpty()) {
       return null;
     }
     for (PurchaseOrderLine lineToRemove : linesToRemove) {
