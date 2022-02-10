@@ -557,7 +557,8 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   Partner.class,
-                  Long.valueOf((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("team") != null) {
       commonTeam =
@@ -571,7 +572,8 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   StockLocation.class,
-                  Long.valueOf((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {

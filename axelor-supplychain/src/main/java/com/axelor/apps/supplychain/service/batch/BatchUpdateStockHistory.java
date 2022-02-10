@@ -139,8 +139,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
     if (supplychainBatch.getProductCategorySet() != null
         && !supplychainBatch.getProductCategorySet().isEmpty()) {
 
-      productCategoryList =
-          new ArrayList<>(supplychainBatch.getProductCategorySet());
+      productCategoryList = new ArrayList<>(supplychainBatch.getProductCategorySet());
 
       List<ProductCategory> childProductCategoryList = new ArrayList<>();
       ProductCategoryService productCategoryService = Beans.get(ProductCategoryService.class);

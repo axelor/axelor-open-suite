@@ -50,7 +50,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
