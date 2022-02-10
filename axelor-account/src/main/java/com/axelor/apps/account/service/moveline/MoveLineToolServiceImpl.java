@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -36,6 +37,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
@@ -308,5 +310,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getManageCutOffPeriod()
         || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+  }
+
+  @Override
+  public Predicate<MoveLine> isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id) {
+    return ml ->
+        ml.getTaxLine() == taxLine
+            && ml.getVatSystemSelect() == vatSystem
+            && ml.getId() != id
+            && ml.getAccount().getAccountType() != null
+            && AccountTypeRepository.TYPE_TAX.equals(
+                ml.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 }

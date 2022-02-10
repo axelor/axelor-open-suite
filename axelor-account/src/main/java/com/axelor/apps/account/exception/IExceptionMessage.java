@@ -1074,4 +1074,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  static final String SAME_TAX_MOVE_LINES = /*$$(*/
+      "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 }

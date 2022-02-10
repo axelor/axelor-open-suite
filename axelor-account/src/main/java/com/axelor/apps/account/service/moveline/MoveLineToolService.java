@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.exception.AxelorException;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface MoveLineToolService {
 
@@ -54,4 +55,6 @@ public interface MoveLineToolService {
   MoveLine setCurrencyAmount(MoveLine moveLine);
 
   boolean checkCutOffDates(MoveLine moveLine);
+
+  Predicate<MoveLine> isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id);
 }
