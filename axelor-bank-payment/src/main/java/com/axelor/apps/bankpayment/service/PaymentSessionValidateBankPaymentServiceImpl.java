@@ -22,11 +22,15 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
@@ -93,6 +97,15 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
     bankOrderService.updateTotalAmounts(bankOrder);
     bankOrderRepo.save(bankOrder);
+
+    if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
+      try {
+        bankOrderService.confirm(bankOrder);
+      } catch (JAXBException | IOException | DatatypeConfigurationException e) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+      }
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -148,7 +161,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (paymentSession.getPaymentMode().getConsoBankOrderLinePerPartner()) {
       bankOrderLine =
           bankOrder.getBankOrderLineList().stream()
-              .filter(it -> it.getPartner().equals(invoiceTerm.getMoveLine().getPartner()))
+              .filter(
+                  it ->
+                      it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
+                          && it.getReceiverBankDetails().equals(invoiceTerm.getBankDetails()))
               .findFirst()
               .orElse(null);
     }
@@ -174,8 +190,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTerm.getAmountPaid(),
             paymentSession.getCurrency(),
             paymentSession.getPaymentDate(),
-            invoiceTerm.getMoveLine().getOrigin(),
-            invoiceTerm.getMoveLine().getOrigin(),
+            this.getReference(invoiceTerm),
+            this.getLabel(paymentSession),
             invoiceTerm);
 
     bankOrder.addBankOrderLineListItem(bankOrderLine);
@@ -183,20 +199,30 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   protected void updateBankOrderLine(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
     this.updateReference(invoiceTerm, bankOrderLine);
-
     bankOrderLine.setBankOrderAmount(
         bankOrderLine.getBankOrderAmount().add(invoiceTerm.getAmountPaid()));
-    bankOrderLine.setReceiverLabel(bankOrderLine.getReceiverReference());
     bankOrderLine.addBankOrderLineOriginListItem(
         bankOrderLineOriginService.createBankOrderLineOrigin(invoiceTerm));
   }
 
-  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
-    String origin = invoiceTerm.getMoveLine().getOrigin();
+  protected String getLabel(PaymentSession paymentSession) {
+    return String.format(
+        "%s - %s",
+        paymentSession.getPaymentMode().getName(), paymentSession.getCompany().getName());
+  }
 
-    if (!bankOrderLine.getReceiverReference().contains(origin)) {
-      bankOrderLine.setReceiverReference(
-          String.format("%s/%s", bankOrderLine.getReceiverReference(), origin));
+  protected String getReference(InvoiceTerm invoiceTerm) {
+    return String.format(
+        "%s (%s)", invoiceTerm.getMoveLine().getOrigin(), invoiceTerm.getDueDate());
+  }
+
+  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+    String newReference =
+        String.format(
+            "%s/%s", bankOrderLine.getReceiverReference(), this.getReference(invoiceTerm));
+
+    if (newReference.length() < 256) {
+      bankOrderLine.setReceiverReference(newReference);
     }
   }
 }
