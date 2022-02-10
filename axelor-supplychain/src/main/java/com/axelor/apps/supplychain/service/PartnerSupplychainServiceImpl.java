@@ -36,7 +36,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void updateBlockedAccount(Partner partner) throws AxelorException {
-    List<Invoice> partnerInvoice = new ArrayList<Invoice>();
+    List<Invoice> partnerInvoice;
     int FETCH_LIMIT = 10;
     int offset = 0;
     Query<Invoice> query =

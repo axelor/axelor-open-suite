@@ -181,7 +181,7 @@ public class SaleOrderController {
       if (saleOrder.getId() != null) {
 
         Partner supplierPartner = null;
-        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        List<Long> saleOrderLineIdSelected;
         Boolean isDirectOrderLocation = false;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
         supplierPartner = (Partner) values.get("supplierPartner");
@@ -254,7 +254,7 @@ public class SaleOrderController {
       ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
     Partner supplierPartner = null;
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     Boolean isDirectOrderLocation = false;
 
     if (saleOrder.getDirectOrderLocation()
@@ -895,7 +895,7 @@ public class SaleOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<String> productList = new ArrayList<String>();
+      List<String> productList = new ArrayList<>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
           productList.add(saleOrderLine.getProductName());

@@ -57,7 +57,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
 
     try {
-      List<Product> productList = new ArrayList<>();
+      List<Product> productList;
       List<ProductCategory> productCategoryList = getProductCategoryList(supplychainBatch);
       List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
       Query<Product> productQuery;
@@ -140,9 +140,9 @@ public class BatchUpdateStockHistory extends BatchStrategy {
         && !supplychainBatch.getProductCategorySet().isEmpty()) {
 
       productCategoryList =
-          new ArrayList<ProductCategory>(supplychainBatch.getProductCategorySet());
+          new ArrayList<>(supplychainBatch.getProductCategorySet());
 
-      List<ProductCategory> childProductCategoryList = new ArrayList<ProductCategory>();
+      List<ProductCategory> childProductCategoryList = new ArrayList<>();
       ProductCategoryService productCategoryService = Beans.get(ProductCategoryService.class);
       for (ProductCategory productCategory : productCategoryList) {
         childProductCategoryList.addAll(
