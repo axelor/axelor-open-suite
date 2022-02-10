@@ -13,7 +13,7 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
