@@ -17,7 +17,15 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -36,7 +44,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -432,9 +439,8 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
-    Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
-      FiscalPosition fiscalPosition = invoiceLine.getInvoice().getFiscalPosition();
+      FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
 
       Account account =
           accountManagementAccountService.getProductAccount(
@@ -449,15 +455,9 @@ public class IntercoServiceImpl implements IntercoService {
       invoiceLine.setTaxLine(taxLine);
       invoiceLine.setTaxRate(taxLine.getValue());
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
-
-      FiscalPosition intercoFiscalPosition = intercoInvoice.getFiscalPosition();
-
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class).getTaxEquiv(intercoFiscalPosition, tax);
-
+          accountManagementAccountService.getProductTaxEquiv(
+              invoiceLine.getProduct(), intercoInvoice.getCompany(), fiscalPosition, isPurchase);
       invoiceLine.setTaxEquiv(taxEquiv);
       invoiceLine.setCompanyExTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
