@@ -71,7 +71,7 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
-      if (Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
+      if (!Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
       }
     } catch (Exception e) {
@@ -87,8 +87,11 @@ public class PaymentSessionController {
       int moveCount =
           Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
       response.setReload(true);
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+
+      if (moveCount > 0) {
+        response.setFlash(
+            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
