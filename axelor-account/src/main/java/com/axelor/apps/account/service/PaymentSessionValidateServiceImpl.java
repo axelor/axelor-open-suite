@@ -204,6 +204,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
     } else {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+      paymentSessionRepo.save(paymentSession);
     }
 
     return paymentSession;
