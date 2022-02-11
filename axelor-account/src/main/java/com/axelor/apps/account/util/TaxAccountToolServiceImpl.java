@@ -2,9 +2,7 @@ package com.axelor.apps.account.util;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
@@ -26,14 +24,13 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
 
   @Override
   public Integer calculateVatSystem(
-      Journal journal, Partner partner, Company company, Account account) throws AxelorException {
+      Partner partner, Company company, Account account, boolean isExpense, boolean isSale)
+      throws AxelorException {
     AccountingSituation accountingSituation = null;
-    if (journal.getJournalType().getTechnicalTypeSelect()
-        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+    if (isExpense) {
       checkExpenseVatSystemPreconditions(partner, company, account);
       accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
-    } else if (journal.getJournalType().getTechnicalTypeSelect()
-        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+    } else if (isSale) {
       checkSaleVatSystemPreconditions(partner, company, account);
       accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());

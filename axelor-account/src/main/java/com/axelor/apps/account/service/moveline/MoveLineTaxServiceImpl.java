@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
@@ -198,6 +199,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   public Integer getVatSystem(Move move, MoveLine moveline) throws AxelorException {
     Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
     return taxAccountToolService.calculateVatSystem(
-        move.getJournal(), partner, move.getCompany(), moveline.getAccount());
+        partner,
+        move.getCompany(),
+        moveline.getAccount(),
+        (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
+        (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
   }
 }
