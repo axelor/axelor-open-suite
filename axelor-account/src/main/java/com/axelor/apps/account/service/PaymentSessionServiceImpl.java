@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.auth.db.User;
@@ -104,5 +105,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                 .getSingleResult();
     paymentSession.setSessionTotalAmount(sessionTotalAmount);
     Beans.get(PaymentSessionRepository.class).save(paymentSession);
+  }
+
+  @Override
+  public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
+    return Beans.get(InvoiceTermRepository.class)
+            .all()
+            .filter(
+                "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS FALSE")
+            .bind("paymentSession", paymentSession.getId())
+            .count()
+        > 0;
   }
 }
