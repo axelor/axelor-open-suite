@@ -18,8 +18,12 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.base.db.Company;
+import java.util.List;
 
 public interface AnalyticAccountService {
 
   void toggleStatusSelect(AnalyticAccount analyticAccount);
+
+  boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList);
 }

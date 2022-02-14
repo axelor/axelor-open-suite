@@ -409,17 +409,22 @@ public class MoveLineController {
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
           } else {
-            String idList =
-                analyticAccountList.stream()
-                    .map(id -> id.toString())
-                    .collect(Collectors.joining(","));
-            response.setAttr(
-                "axis" + i + "AnalyticAccount",
-                "domain",
-                "self.id IN ("
-                    + idList
-                    + ") AND self.statusSelect = "
-                    + AnalyticAccountRepository.STATUS_ACTIVE);
+            if (moveLine.getMove().getCompany() != null) {
+              String idList =
+                  analyticAccountList.stream()
+                      .map(id -> id.toString())
+                      .collect(Collectors.joining(","));
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "domain",
+                  "self.id IN ("
+                      + idList
+                      + ") AND self.statusSelect = "
+                      + AnalyticAccountRepository.STATUS_ACTIVE
+                      + " AND (self.company is null OR self.company.id = "
+                      + moveLine.getMove().getCompany().getId()
+                      + ")");
+            }
           }
         }
       }

@@ -19,8 +19,11 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.db.Company;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
@@ -52,5 +55,17 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
   protected AnalyticAccount desactivate(AnalyticAccount analyticAccount) {
     analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_INACTIVE);
     return analyticAccount;
+  }
+
+  @Override
+  public boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList) {
+    if (!CollectionUtils.isEmpty(childrenList)) {
+      for (AnalyticAccount children : childrenList) {
+        if (children.getCompany() != null && children.getCompany() != company) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
