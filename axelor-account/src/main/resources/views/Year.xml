@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-  
+
   <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year"
     orderBy="-fromDate">
     <field name="name"/>
@@ -29,7 +29,8 @@
         <field name="reportedBalanceDate" required="true" colSpan="3"/>
       </panel>
     </panel>
-    <panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-form" grid-view="period-grid"/>
+    <panel-related name="periodListPanel" field="periodList" colSpan="12"
+      readonlyIf="statusSelect == 2" form-view="period-form" grid-view="period-grid"/>
     <panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
     <panel name="actionsPanel" sidebar="true">
