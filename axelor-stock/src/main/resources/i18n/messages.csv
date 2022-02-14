@@ -74,6 +74,7 @@
 "Cancellation confirmation",,,
 "Cancelled Arrivals",,,
 "Cannot go back to draft status.",,,
+"Cannot realize a stock move that is not planned.",,,
 "Carriage (Sea/Air) to port of import",,,
 "Carriage to place of destination",,,
 "Carriage to port of export",,,

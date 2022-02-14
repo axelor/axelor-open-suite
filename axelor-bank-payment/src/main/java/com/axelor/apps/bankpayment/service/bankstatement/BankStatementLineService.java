@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,8 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.db.JPA;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -62,5 +64,14 @@ public class BankStatementLineService {
         bankStatementLine.getDebit().add(bankStatementLine.getCredit()));
 
     return bankStatementLine;
+  }
+
+  @Transactional
+  public void removeBankReconciliationLines(BankStatement bankStatement) {
+    JPA.em()
+        .createQuery(
+            "delete from BankStatementLineAFB120 self where self.bankStatement.id = "
+                + bankStatement.getId())
+        .executeUpdate();
   }
 }

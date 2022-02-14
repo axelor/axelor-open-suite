@@ -31,7 +31,7 @@
       AND (self.currentQty != 0 OR self.futureQty != 0 OR
       self.reservedQty != 0 OR self.requestedReservedQty != 0)</domain>
     <context name="productId" expr="eval: product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
+    <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
   </action-view>
 
