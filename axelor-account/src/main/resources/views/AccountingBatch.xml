@@ -58,9 +58,11 @@
       </panel>
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
-        <field name="billOfExchangeStepBatchSelect" widget="NavSelect"/>
+        <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
         <field name="billOfExchangeDataTypeSelect" showIf="billOfExchangeStepBatchSelect == 1"
-          requiredIf="actionSelect == 24"/>
+          requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
+        <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
+          requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 2"/>
         <field name="billOfExchangeTypeSelect" requiredIf="actionSelect == 24"/>
         <field name="billOfExchangeJournal" requiredIf="actionSelect == 24"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"

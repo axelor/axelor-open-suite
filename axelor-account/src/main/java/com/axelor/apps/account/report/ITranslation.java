@@ -827,4 +827,17 @@ public interface ITranslation {
       /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
   public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
       /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+
+  public static final String NOTE_BILLS_DATE_TO = /*$$(*/ "NoteBills.date_to"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CURRENCY = /*$$(*/ "NoteBills.currency"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_DEBIT = /*$$(*/ "NoteBills.total_debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DEBIT = /*$$(*/ "NoteBills.debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_NB = /*$$(*/ "NoteBills.invoice_nb"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DATE = /*$$(*/ "NoteBills.invoice_date"; /*)*/
+  public static final String NOTE_BILLS_GENERATION_DATE = /*$$(*/ "NoteBills.generation_date"; /*)*/
+  public static final String NOTE_BILLS_PARTNER_SEQ = /*$$(*/ "NoteBills.partner_seq"; /*)*/
+  public static final String NOTE_BILLS_REFERENCE_TO_REMEMBER =
+      /*$$(*/ "NoteBills.reference_to_remember"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS = /*$$(*/ "NoteBills.note_bills"; /*)*/
+  public static final String NOTE_BILLS_PAYABLE_BY = /*$$(*/ "NoteBills.payable_by"; /*)*/
 }
