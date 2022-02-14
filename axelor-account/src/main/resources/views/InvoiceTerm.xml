@@ -122,7 +122,8 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
@@ -266,7 +267,8 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
+          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
+          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
@@ -573,4 +575,10 @@
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
 
+  <action-attrs name="action-invoice-term-attrs-bank-details-from-partner-domain">
+    <attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
+    <attribute name="domain" for="bankDetails"
+      expr="eval: &quot; (self.id IN (${invoice?.partner?.bankDetailsList?.collect{it.id}?.join(',')}) OR self.id IN (${moveLine?.partner?.bankDetailsList?.collect{it.id}?.join(',')})) AND self.active = true &quot;"
+      if="(invoice?.partner?.bankDetailsList &amp;&amp; !invoice?.partner.bankDetailsList.isEmpty()) || (moveLine?.partner?.bankDetailsList &amp;&amp; !moveLine?.partner.bankDetailsList.isEmpty())"/>
+  </action-attrs>
 </object-views>
