@@ -121,11 +121,6 @@ public class SequenceService {
     return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public Sequence getSequence(String code, Company company) {
 
     if (code == null) {
@@ -138,21 +133,11 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code) {
 
     return this.getSequenceNumber(code, null);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code, Company company) {
 
     Sequence sequence = getSequence(code, company);
@@ -164,11 +149,6 @@ public class SequenceService {
     return this.getSequenceNumber(sequence, appBaseService.getTodayDate(company));
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
