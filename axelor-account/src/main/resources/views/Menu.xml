@@ -9,17 +9,6 @@
   <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="5"
     title="Cust. Invoices" action="invoice.root.custinvoices"/>
 
-  <menuitem title="Notes bills" name="invoice-root-note-bills" parent="invoice-root"
-    order="99" action="invoice.root.notebills"/>
-
-  <action-view name="invoice.root.notebills" title="Note Bills"
-    model="com.axelor.apps.account.db.NoteBills">
-    <view type="grid" name="note-bills-grid"/>
-    <view type="form" name="note-bills-form"/>
-  </action-view>
-
-
-
   <action-view name="invoice.root.custinvoices" title="Cust. Invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>

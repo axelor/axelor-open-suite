@@ -3,7 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid model="com.axelor.apps.account.db.NoteBills" title="Notes bills" name="note-bills-grid">
+  <grid model="com.axelor.apps.account.db.NoteBills" title="Notes bills" name="note-bills-grid"
+    canNew="false">
     <field name="createdOn"/>
     <field name="noteBillsSeq"/>
     <field name="batch"/>
