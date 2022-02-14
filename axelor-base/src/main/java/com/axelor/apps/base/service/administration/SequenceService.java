@@ -115,8 +115,8 @@ public class SequenceService {
   }
 
   public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replace("%", "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replace("%", "");
 
     return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
   }
@@ -218,12 +218,12 @@ public class SequenceService {
     }
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
-            .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
-            .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
-            .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
-            .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
-            .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
-            .replaceAll(
+            .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+            .replace(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+            .replace(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+            .replace(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replace(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+            .replace(
                 PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
     log.debug("nextSeq : : : : {}", nextSeq);
