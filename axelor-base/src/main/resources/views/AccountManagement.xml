@@ -41,7 +41,8 @@
       canEdit="false"/>
     <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
-      if="__config__.app.isApp('account')" canNew="true"/>
+      if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form" canNew="true"/>
   </grid>
 
 

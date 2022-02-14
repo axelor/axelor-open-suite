@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,6 +51,9 @@ public class SupplychainBatchService extends AbstractBatchService {
       case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
         batch = invoiceOrders(supplychainBatch);
         break;
+      case SupplychainBatchRepository.ACTION_UPDATE_STOCK_HISTORY:
+        batch = updateStockHistory(supplychainBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -81,5 +84,9 @@ public class SupplychainBatchService extends AbstractBatchService {
             String.format(
                 "Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
     }
+  }
+
+  public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
   }
 }

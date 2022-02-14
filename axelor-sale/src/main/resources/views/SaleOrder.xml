@@ -420,15 +420,14 @@
 
         <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()"
           name="versionNumber" colSpan="3"/>
-        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
-          colSpan="3" name="directOrderLocation"
-          onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
-        <field if="__config__.app.isApp('account')" name="taxNumber" colSpan="3"
-          canNew="false" canEdit="false"
+        <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
+          readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
-          onChange="action-sale-order-record-check-fiscal-position"/>
-        <field if="__config__.app.isApp('account')" name="fiscalPosition" colSpan="3"
-          canNew="false" canEdit="false" domain=":taxNumber MEMBER OF self.taxNumberSet"/>
+          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+        <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
+          readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
+          onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
+          onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <panel name="otherInfoPanel" colSpan="3">
           <field name="inAti" hidden="true"
             readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2"
@@ -695,7 +694,7 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
-        if="__config__.app.getApp('sale').getIsEnableCalculationEntireQuatationUsingPricing()"/>
+        if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -1339,9 +1338,17 @@
     <attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
   </action-attrs>
 
+  <action-attrs name="action-sale-order-supplychain-attrs-fiscal-position-domain">
+    <attribute name="domain" for="fiscalPosition" if="taxNumber"
+      expr="eval: &quot;:taxNumber MEMBER OF self.taxNumberSet&quot;"/>
+    <attribute name="domain" for="fiscalPosition" if="!taxNumber"
+      expr="eval: &quot;'${clientPartner?.fiscalPosition?.code}' = self.code&quot;"/>
+  </action-attrs>
+
   <action-group name="action-group-partner-saleorder-onnew">
     <action name="action-sale-order-record-from-partner"/>
     <action name="action-sale-order-record-partner"/>
+
     <action name="action-sale-order-record-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
@@ -1352,6 +1359,8 @@
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
       if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+    <action name="action-sale-order-method-empty-fiscal-position-if-not-compatible"
+      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-group-sale-order-merge-action">
@@ -1619,6 +1628,17 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
   </action-method>
 
+  <action-method
+    name="action-sale-order-method-empty-fiscal-position-if-not-compatible">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="emptyFiscalPositionIfNotCompatible"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-fiscal-position-on-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateLinesAfterFiscalPositionChange"/>
+  </action-method>
+
   <action-record name="action-sale-record-newVersion"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="statusSelect" expr="eval: 1"/>
@@ -1710,6 +1730,7 @@
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition != null"/>
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
+    <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"/>
     <field name="currency" expr="eval: clientPartner?.currency" if="!template"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
@@ -1750,12 +1771,6 @@
   <action-record name="action-record-so-contact-partner-change"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-check-fiscal-position"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="fiscalPosition" expr="eval: null"
-      if="fiscalPosition != null &amp;&amp; !taxNumber?.fiscalPositionSet?.contains(fiscalPosition)"/>
   </action-record>
 
   <action-method name="action-sale-order-record-compute-end-of-validity-date">

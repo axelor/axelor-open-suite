@@ -61,12 +61,9 @@
     <field name="typeSelect" expr="7"/>
   </action-record>
 
-  <action-record name="action-payment-mode-set-default"
-    model="com.axelor.apps.account.db.PaymentMode">
-    <field name="accountManagementList"
-      expr="eval:__repo__(Company).all().fetch().collect{__repo__(AccountManagement).create([company:it])}"
-      if="__config__.app.isApp('account')"/>
-  </action-record>
+  <action-method name="action-payment-mode-set-default">
+    <call class="com.axelor.apps.base.web.PaymentModeController" method="setDefaults"/>
+  </action-method>
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
     <attribute name="value" for="bankOrderFileFormat" expr=""/>

@@ -563,7 +563,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional
   public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId) {
 
     MultiRelated multiRelated =
@@ -583,6 +582,5 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     multiRelated.setRelatedToSelect(relatedToSelect);
     multiRelated.setRelatedToSelectId(relatedToSelectId);
     message.addMultiRelatedListItem(multiRelated);
-    Beans.get(MultiRelatedRepository.class).save(multiRelated);
   }
 }

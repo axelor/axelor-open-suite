@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,6 +76,8 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
+import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
@@ -134,6 +136,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceMergingService;
+import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -391,5 +395,9 @@ public class AccountModule extends AxelorModule {
     bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
 
     bind(FECImportService.class).to(FECImportServiceImpl.class);
+
+    bind(AccountingSituationInitService.class).to(AccountingSituationInitServiceImpl.class);
+
+    bind(InvoiceMergingService.class).to(InvoiceMergingServiceImpl.class);
   }
 }

@@ -327,8 +327,6 @@
       <panel-include view="incl-analytic-distribution-move-line-form"/>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
-      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
-        colSpan="6"/>
       <field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
         <viewer depends="move.statusSelect">
 					<![CDATA[
@@ -342,6 +340,23 @@
 					]]>
         </viewer>
       </field>
+      <field name="$functionalOriginTags" showTitle="false" colSpan="6" readonly="true">
+        <viewer depends="move.functionalOriginSelect">
+          <![CDATA[
+                      <h4>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 1" x-translate>Opening</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 2" x-translate>Closure</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 3" x-translate>Sale</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 4" x-translate>Purchase</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 5" x-translate>Payment</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 6" x-translate>Cut Off</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+                      </h4>
+                    ]]>
+        </viewer>
+      </field>
+      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
+        colSpan="6"/>
       <field name="move.company" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
@@ -695,7 +710,6 @@
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
     <field name="description" expr="eval: __parent__?.description"/>
-    <field name="move" expr="eval:__parent__?"/>
   </action-record>
 
   <action-record name="action-move-line-record-update-due-date"
