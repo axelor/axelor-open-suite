@@ -56,13 +56,13 @@ public class SequenceService {
 
   private static final String DRAFT_PREFIX = "#";
 
-  private static final String PATTERN_FULL_YEAR = "%YYYY",
-      PATTERN_YEAR = "%YY",
-      PATTERN_MONTH = "%M",
-      PATTERN_FULL_MONTH = "%FM",
-      PATTERN_DAY = "%D",
-      PATTERN_WEEK = "%WY",
-      PADDING_STRING = "0";
+  private static final String PATTERN_FULL_YEAR = "%YYYY";
+  private static final String PATTERN_YEAR = "%YY";
+  private static final String PATTERN_MONTH = "%M";
+  private static final String PATTERN_FULL_MONTH = "%FM";
+  private static final String PATTERN_DAY = "%D";
+  private static final String PATTERN_WEEK = "%WY";
+  private static final String PADDING_STRING = "0";
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -91,9 +91,9 @@ public class SequenceService {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
     return seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR);
   }
@@ -106,9 +106,9 @@ public class SequenceService {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
     return (seq.contains(PATTERN_MONTH) || seq.contains(PATTERN_FULL_MONTH))
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
@@ -205,9 +205,9 @@ public class SequenceService {
   private String computeNextSeq(
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        sequenceValue;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String sequenceValue;
 
     if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
       sequenceValue =
