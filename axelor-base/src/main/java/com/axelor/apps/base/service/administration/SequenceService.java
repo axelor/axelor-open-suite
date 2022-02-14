@@ -54,23 +54,23 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SequenceService {
 
-  private static final String DRAFT_PREFIX = "#";
+  protected static final String DRAFT_PREFIX = "#";
 
-  private static final String PATTERN_FULL_YEAR = "%YYYY";
-  private static final String PATTERN_YEAR = "%YY";
-  private static final String PATTERN_MONTH = "%M";
-  private static final String PATTERN_FULL_MONTH = "%FM";
-  private static final String PATTERN_DAY = "%D";
-  private static final String PATTERN_WEEK = "%WY";
-  private static final String PADDING_STRING = "0";
+  protected static final String PATTERN_FULL_YEAR = "%YYYY";
+  protected static final String PATTERN_YEAR = "%YY";
+  protected static final String PATTERN_MONTH = "%M";
+  protected static final String PATTERN_FULL_MONTH = "%FM";
+  protected static final String PATTERN_DAY = "%D";
+  protected static final String PATTERN_WEEK = "%WY";
+  protected static final String PADDING_STRING = "0";
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final SequenceVersionRepository sequenceVersionRepository;
+  protected final SequenceVersionRepository sequenceVersionRepository;
 
-  private final AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
 
-  private final SequenceRepository sequenceRepo;
+  protected final SequenceRepository sequenceRepo;
 
   @Inject
   public SequenceService(
@@ -202,7 +202,7 @@ public class SequenceService {
     return nextSeq;
   }
 
-  private String computeNextSeq(
+  protected String computeNextSeq(
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
 
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
@@ -231,7 +231,7 @@ public class SequenceService {
     return nextSeq;
   }
 
-  private String findNextLetterSequence(SequenceVersion sequenceVersion) {
+  protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
     long n = sequenceVersion.getNextNum();
     char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
     for (int i = buf.length - 1; i >= 0; i--) {
