@@ -53,7 +53,8 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
-        onClick="action-group-payment-session-search-eligible-terms" readonlyIf="sessionTotalAmount > 0"/>
+        onClick="action-group-payment-session-search-eligible-terms"
+        readonlyIf="sessionTotalAmount > 0"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-method-payment-session-search-eligible-terms"/>
@@ -192,6 +193,8 @@
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
+    <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
   </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">
