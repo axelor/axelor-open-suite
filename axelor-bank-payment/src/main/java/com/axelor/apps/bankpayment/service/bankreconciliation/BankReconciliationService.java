@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -43,6 +44,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationService {
 
@@ -231,5 +234,46 @@ public class BankReconciliationService {
       cashAccount = Beans.get(AccountRepository.class).find(Long.parseLong(cashAccountIds));
     }
     return cashAccount;
+  }
+
+  public String getAccountDomain(BankReconciliation bankReconciliation) {
+    if (bankReconciliation != null) {
+      String domain = "self.id != 0";
+      if (bankReconciliation.getCompany() != null) {
+        domain = domain.concat(" AND self.company.id = " + bankReconciliation.getCompany().getId());
+      }
+      if (bankReconciliation.getCashAccount() != null) {
+        domain = domain.concat(" AND self.id != " + bankReconciliation.getCashAccount().getId());
+      }
+      if (bankReconciliation.getJournal() != null
+          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountTypeSet())) {
+        domain =
+            domain.concat(
+                " AND (self.accountType.id IN "
+                    + bankReconciliation.getJournal().getValidAccountTypeSet().stream()
+                        .map(AccountType::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
+                        .toString());
+      } else {
+        domain = domain.concat(" AND (self.accountType.id = 0");
+      }
+      if (bankReconciliation.getJournal() != null
+          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountSet())) {
+        domain =
+            domain.concat(
+                " OR self.id IN "
+                    + bankReconciliation.getJournal().getValidAccountSet().stream()
+                        .map(Account::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
+                        .toString()
+                    + ")");
+      } else {
+        domain = domain.concat(" OR self.id = 0)");
+      }
+      return domain;
+    }
+    return "self.id = 0";
   }
 }
