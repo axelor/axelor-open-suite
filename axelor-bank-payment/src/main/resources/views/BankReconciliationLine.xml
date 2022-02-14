@@ -14,7 +14,7 @@
     <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
-      onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form"
+      onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
       grid-view="account-grid"/>
     <field name="partner" canEdit="false"
       onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
@@ -41,7 +41,7 @@
     <panel name="accountingPanel" title="Accounting details">
       <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
       <field name="account" canEdit="false"
-        onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form"
+        onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
         grid-view="account-grid"/>
       <field name="partner" canEdit="false"
         onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
@@ -66,14 +66,10 @@
     <field name="credit" expr="eval: bankStatementLine?.credit"/>
   </action-record>
 
-  <action-attrs name="action-bank-reconciliation-line-attrs-account-domain">
-    <attribute name="domain" for="account"
-      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND self.id != ${__parent__?.cashAccount?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;"
-      if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
-    <attribute name="domain" for="account"
-      expr="eval: &quot;self.company.id = ${bankReconciliation?.company?.id} AND self.id != ${bankReconciliation?.cashAccount?.id} AND (self.accountType.id IN (${(bankReconciliation?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(bankReconciliation?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;"
-      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
-  </action-attrs>
+  <action-method name="action-bank-reconciliation-line-method-account-domain">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setAccountDomain"/>
+  </action-method>
 
   <action-attrs name="action-bank-reconciliation-line-attrs-move-line-domain">
     <attribute name="domain" for="moveLine"
@@ -89,8 +85,8 @@
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"
       if="__parent__ != null"/>
-    <attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false"
-      if="__parent__ == null"/>
+    <attribute name="domain" for="partner"
+      expr="eval: &quot;self.isContact = false &quot;" if="__parent__ == null"/>
   </action-attrs>
 
   <action-record name="action-bank-reconciliation-line-record-set-account"
