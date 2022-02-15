@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.bankpayment.db.repo;
 
-import java.util.Map;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 
-public interface ProjectMenuService {
+public class PaymentSessionBankPaymentRepository extends PaymentSessionAccountRepository {
 
-  public Map<String, Object> getAllOpenProjectTasks();
+  @Override
+  public PaymentSession copy(PaymentSession entity, boolean deep) {
 
-  public Map<String, Object> getAllOpenProjectTickets();
-
-  public Map<String, Object> getAllProjects();
-
-  public Map<String, Object> getAllProjectTasks();
+    PaymentSession copy = super.copy(entity, deep);
+    copy.setBankOrder(null);
+    return copy;
+  }
 }

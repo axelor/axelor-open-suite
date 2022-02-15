@@ -137,7 +137,7 @@
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        readonlyIf="!isPaid || paymentSession"
+        readonlyIf="isPaid || paymentSession"
         showIf="invoice.company.accountConfig.isManagePassedForPayment &amp;&amp; (invoice.operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; invoice.operationTypeSelect == 2 )) &amp;&amp; [2,3].includes(invoice.statusSelect) "
         colSpan="12">
         <panel name="pfpStatus" hidden="true" showIf="pfpValidateStatusSelect == 1"
@@ -216,7 +216,7 @@
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
-          onClick="save,action-invoice-term-view-show-payment-session"/>
+          onClick="save,action-invoice-term-view-show-payment-session,close"/>
         <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
@@ -283,7 +283,7 @@
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
-        readonlyIf="!isPaid || paymentSession"
+        readonlyIf="isPaid || paymentSession"
         showIf="move.company.accountConfig.isManagePassedForPayment &amp;&amp; (moveLine.account.journalType.technicalTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp;moveLine.account.journalType.technicalTypeSelect == 3)) &amp;&amp; [2,3].includes(moveLine.move.statusSelect)"
         colSpan="12">
         <panel name="pfpStatus" hidden="true"

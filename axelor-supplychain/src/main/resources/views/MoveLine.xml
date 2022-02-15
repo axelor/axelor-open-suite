@@ -11,11 +11,16 @@
     </toolbar>
     <hilite color="danger" if="$get('move.cutOffMoveGenerated')"/>
     <field name="move.reference"/>
+    <field name="name"/>
     <field name="move.date"/>
+    <field name="partner"/>
     <field name="move.journal"/>
+    <field name="account"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
     <field name="$cutOffProrataAmount" title="Prorata amount" type="decimal" x-scale="2"/>
+    <field name="cutOffStartDate"/>
+    <field name="cutOffEndDate"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
     <field name="id" hidden="true"/>
