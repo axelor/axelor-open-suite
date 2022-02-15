@@ -143,74 +143,74 @@
 142;187000;180;"Biens et prestations de services échangés entre établissements (produits)";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";0
 143;188000;180;"Comptes de liaison des sociétés en participation";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";0
 144;200;"CL2";"Immobilisations incorporelles";"view";;1;;;;;2;"NDAS";;;1;"false";"true";0
-145;201000;200;"Frais d'établissement";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";2
+145;201000;200;"Frais d'établissement";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";2
 146;201100;201000;"Frais de constitution";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 147;201200;201000;"Frais de premier établissement";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 148;201210;201200;"Frais de prospection";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 149;201220;201200;"Frais de publicité";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 150;201300;201000;"Frais d'augmentation de capital et d'opérations diverses (fusions, scissions, transformations)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-151;203000;200;"Frais de recherche et de développement";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";2
-152;205000;200;"Concessions et droits similaires, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"immobilisation";;1;;;;;2;"DAUT";;;1;"false";"false";2
-153;206000;200;"Droit au bail";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";2
-154;207000;200;"Fonds commercial";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";2
+151;203000;200;"Frais de recherche et de développement";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";2
+152;205000;200;"Concessions et droits similaires, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"immobilisation";;1;;;"true";;2;"DAUT";;;1;"false";"false";2
+153;206000;200;"Droit au bail";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";2
+154;207000;200;"Fonds commercial";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";2
 155;208000;200;"Autres immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 156;210;"CL2";"Immobilisations corporelles";"view";;1;;;;;2;"NDAS";;;1;"false";"true";0
 157;211000;210;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-158;211100;211000;"Terrains nus";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-159;211200;211000;"Terrains aménagés";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-160;211300;211000;"Sous-sols et sur-sols";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-161;211400;211000;"Terrains de gisement";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+158;211100;211000;"Terrains nus";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+159;211200;211000;"Terrains aménagés";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+160;211300;211000;"Sous-sols et sur-sols";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+161;211400;211000;"Terrains de gisement";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 162;211410;211400;"Carrières";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-163;211500;211000;"Terrains bâtis";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";1
+163;211500;211000;"Terrains bâtis";"immobilisation";;1;;;"true";;0;"NDAS";;;1;"false";"false";1
 164;211510;211500;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";0
 165;211550;211500;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";0
 166;211580;211500;"Autres ensembles immobiliers";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";0
 167;211581;211580;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";0
 168;211588;211580;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";0
-169;211600;211000;"Compte d'ordre sur immobilisations";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";1
-170;212000;210;"Agencements et aménagements de terrains (même ventilation que celle du compte 211)";"immobilisation";;1;;;;;0;"NDAS";;;1;"false";"false";1
+169;211600;211000;"Compte d'ordre sur immobilisations";"immobilisation";;1;;;"true";;0;"NDAS";;;1;"false";"false";1
+170;212000;210;"Agencements et aménagements de terrains (même ventilation que celle du compte 211)";"immobilisation";;1;;;"true";;0;"NDAS";;;1;"false";"false";1
 171;213000;210;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-172;213100;213000;"Bâtiments";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+172;213100;213000;"Bâtiments";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 173;213110;213100;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 174;213150;213100;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 175;213180;213100;"Autres ensembles immobiliers";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 176;213181;213180;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 177;213188;213180;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-178;213500;213000;"Installations générales agencements aménagements des constructions (même ventilation que celle du compte 2131)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-179;213800;213000;"Ouvrages d'infrastructure";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+178;213500;213000;"Installations générales agencements aménagements des constructions (même ventilation que celle du compte 2131)";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+179;213800;213000;"Ouvrages d'infrastructure";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 180;213810;213800;"Voies de terre";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 181;213820;213800;"Voies de fer";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 182;213830;213800;"Voies d'eau";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 183;213840;213800;"Barrages";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 184;213850;213800;"Pistes d'aérodromes";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-185;214000;210;"Constructions sur sol d'autrui (même ventilation que celle du compte 213)";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+185;214000;210;"Constructions sur sol d'autrui (même ventilation que celle du compte 213)";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 186;215000;210;"Installations techniques matériels et outillages industriels";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-187;215100;215000;"Installations complexes spécialisées";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+187;215100;215000;"Installations complexes spécialisées";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 188;215110;215100;"Sur sol propre";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 189;215140;215100;"Sur sol d'autrui";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-190;215300;215000;"Installations à caractère spécifique";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+190;215300;215000;"Installations à caractère spécifique";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 191;215310;215300;"Sur sol propre";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 192;215340;215300;"Sur sol d'autrui";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-193;215400;215000;"Matériel industriel";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-194;215500;215000;"Outillage industriel";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-195;215700;215000;"Agencements et aménagements du matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+193;215400;215000;"Matériel industriel";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+194;215500;215000;"Outillage industriel";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+195;215700;215000;"Agencements et aménagements du matériel et outillage industriels";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 196;218000;210;"Autres immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-197;218100;218000;"Installations générales agencements aménagements divers";"immobilisation";;1;;;;;2;"HONO";;;1;"false";"false";1
-198;218200;218000;"Matériel de transport";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-199;218300;218000;"Matériel de bureau et matériel informatique ";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-200;218400;218000;"Mobilier";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-201;218500;218000;"Cheptel";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-202;218600;218000;"Emballages récupérables";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;;;2;"NDAS";;;1;"false";"true";1
+197;218100;218000;"Installations générales agencements aménagements divers";"immobilisation";;1;;;"true";;2;"HONO";;;1;"false";"false";1
+198;218200;218000;"Matériel de transport";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+199;218300;218000;"Matériel de bureau et matériel informatique ";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+200;218400;218000;"Mobilier";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+201;218500;218000;"Cheptel";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+202;218600;218000;"Emballages récupérables";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;"true";;2;"NDAS";;;1;"false";"true";1
 204;230;"CL2";"Immobilisations en cours";"view";;1;;;;;2;"NDAS";;;1;"false";"true";0
-205;231000;230;"Immobilisations corporelles en cours";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+205;231000;230;"Immobilisations corporelles en cours";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 206;231200;231000;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 207;231300;231000;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 208;231500;231000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 209;231800;231000;"Autres immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
-210;232000;230;"Immobilisations incorporelles en cours ";"immobilisation";;1;;;;;2;"HONO";;;1;"false";"false";1
-211;237000;230;"Avances et acomptes versés sur commandes d'immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
-212;238000;230;"Avances et acomptes versés sur commandes d'immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";1
+210;232000;230;"Immobilisations incorporelles en cours ";"immobilisation";;1;;;"true";;2;"HONO";;;1;"false";"false";1
+211;237000;230;"Avances et acomptes versés sur commandes d'immobilisations incorporelles";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
+212;238000;230;"Avances et acomptes versés sur commandes d'immobilisations corporelles";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 213;238200;238000;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 214;238300;238000;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
 215;238500;238000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;;1;"false";"false";0
