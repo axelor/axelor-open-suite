@@ -1403,4 +1403,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     invoiceTerm.setBankDetails(invoice.getBankDetails());
   }
+
+  @Override
+  public boolean checkInvoiceTerms(Invoice invoice) {
+    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice));
+  }
 }

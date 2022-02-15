@@ -3,11 +3,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <action-group name="action-invoice-group-add-invoice-payment"
-    id="action-invoice-group-bank-payment-add-invoice-payment">
+  <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="bank-payment-invoice-form" extension="true">
+    <extend target="//button[@name='addPaymentBtn']">
+      <attribute name="onClick"
+        value="action-invoice-group-bank-payment-add-invoice-payment"/>
+    </extend>
+  </form>
+
+  <action-group name="action-invoice-group-bank-payment-add-invoice-payment">
     <action name="save"/>
     <action name="action-invoice-method-check-bank-order-already-exist"/>
-    <action name="action-invoice-view-register-payment"/>
+    <action name="action-invoice-group-add-invoice-payment"/>
   </action-group>
 
   <action-method name="action-invoice-method-check-bank-order-already-exist"

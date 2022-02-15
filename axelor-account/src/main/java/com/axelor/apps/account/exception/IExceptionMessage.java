@@ -339,6 +339,10 @@ public interface IExceptionMessage {
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
   static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
+  static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/
+      "The remaining amount of the available invoice term(s) for payment is lower than the amount to reconcile. The reconciliation process couldn't succeed." /*)*/;
+  static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
+      "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already linked to an ongoing payment session or maybe, if activated, they didn't pass the PFP process." /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/

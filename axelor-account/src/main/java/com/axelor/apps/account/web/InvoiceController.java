@@ -1059,4 +1059,20 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (!Beans.get(InvoiceService.class).checkInvoiceTerms(invoice)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.RECONCILE_NO_AVAILABLE_INVOICE_TERM));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getLocalizedMessage());
+    }
+  }
 }

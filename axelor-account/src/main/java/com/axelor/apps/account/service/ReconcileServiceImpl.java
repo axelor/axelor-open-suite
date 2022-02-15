@@ -384,6 +384,12 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      if (!this.checkAvailableTotalAmount(moveLine.getInvoiceTermList(), amount)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
+      }
+
       InvoiceTerm invoiceTermToPay =
           this.getInvoiceTermToPay(moveLine.getInvoiceTermList(), amount);
 
@@ -405,6 +411,16 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  protected boolean checkAvailableTotalAmount(
+      List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
+    return this.getInvoiceTermListFiltered(invoiceTermList)
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .compareTo(amount)
+        >= 0;
+  }
+
   protected InvoiceTerm getInvoiceTermToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
     InvoiceTerm invoiceTerm = this.getInvoiceTerm(invoiceTermList, amount);
 
@@ -416,14 +432,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected InvoiceTerm getInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
-    Stream<InvoiceTerm> invoiceTermStream =
-        invoiceTermList.stream()
-            .filter(
-                it ->
-                    (!it.getIsPaid() || it.getAmountRemaining().signum() > 0)
-                        && (it.getPaymentSession() == null
-                            || it.getPaymentSession().getStatusSelect()
-                                == PaymentSessionRepository.STATUS_CLOSED));
+    Stream<InvoiceTerm> invoiceTermStream = this.getInvoiceTermListFiltered(invoiceTermList);
 
     if (amount != null) {
       invoiceTermStream =
@@ -432,6 +441,16 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return invoiceTermStream.reduce(this::getOlderInvoiceTerm).orElse(null);
+  }
+
+  protected Stream<InvoiceTerm> getInvoiceTermListFiltered(List<InvoiceTerm> invoiceTermList) {
+    return invoiceTermList.stream()
+        .filter(
+            it ->
+                (!it.getIsPaid() || it.getAmountRemaining().signum() > 0)
+                    && (it.getPaymentSession() == null
+                        || it.getPaymentSession().getStatusSelect()
+                            == PaymentSessionRepository.STATUS_CLOSED));
   }
 
   protected InvoiceTerm getOlderInvoiceTerm(InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
