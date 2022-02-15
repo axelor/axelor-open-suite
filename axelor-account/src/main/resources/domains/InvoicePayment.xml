@@ -7,7 +7,7 @@
 
   <entity name="InvoicePayment" lang="java">
 
-    <decimal name="amount" title="Amount" required="true" default="0" min="0"
+    <decimal name="amount" title="Paid amount" required="true" default="0" min="0"
       initParam="true"/>
 
     <date name="paymentDate" title="Date" required="true" initParam="true"/>
@@ -47,6 +47,7 @@
     <decimal name="financialDiscountAmount" title="Fin. Discount Amount"/>
     <decimal name="financialDiscountTaxAmount" title="Fin. Discount Tax"/>
     <decimal name="financialDiscountTotalAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="remainingAmountAfterFinDiscount" title="Remaining amount after Fin. discount"/>
 
     <one-to-many name="invoiceTermPaymentList"
       ref="com.axelor.apps.account.db.InvoiceTermPayment" mappedBy="invoicePayment"

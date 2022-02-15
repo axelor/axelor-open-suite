@@ -66,12 +66,13 @@
         title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null"
         readonly="true"/>
-      <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
-      <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"
-        readonly="true"/>
-      <field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
-      <field name="financialDiscountTaxAmount"
-        showIf="applyFinancialDiscount &amp;&amp; financialDiscountTaxAmount &gt; 0" readonly="true"/>
+      <panel name="financialDiscountAmountPanel" showIf="applyFinancialDiscount" readonly="true">
+        <field name="financialDiscount"/>
+        <field name="financialDiscountDeadlineDate"/>
+        <field name="financialDiscountAmount"/>
+        <field name="remainingAmountAfterFinDiscount"/>
+        <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount &gt; 0"/>
+      </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">
       <field name="move" form-view="move-form" grid-view="move-grid"/>

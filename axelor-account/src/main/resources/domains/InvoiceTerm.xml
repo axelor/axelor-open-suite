@@ -26,6 +26,7 @@
     <many-to-one name="pfpPartialReason"
       ref="com.axelor.apps.account.db.PfpPartialReason" title="PFP Partial Reason"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="remainingAmountAfterFinDiscount" title="Remaining amount after Fin. discount"/>
     <!-- <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/> -->
     <!-- <decimal name="discountRate" title="Discount rate" /> -->
     <!-- <date name="finDiscountDeadlineDate" title="Financial discount deadline date"/> -->
