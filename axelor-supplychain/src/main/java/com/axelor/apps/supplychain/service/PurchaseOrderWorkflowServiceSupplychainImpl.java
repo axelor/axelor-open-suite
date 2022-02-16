@@ -90,12 +90,17 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
     super.cancelPurchaseOrder(purchaseOrder);
 
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")
+        && appAccountService.isApp("budget")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
         purchaseOrder.getPurchaseOrderLineList().stream()
-            .forEach(poLine -> poLine.clearBudgetDistributionList());
+            .forEach(
+                poLine -> {
+                  poLine.clearBudgetDistributionList();
+                  poLine.setBudget(null);
+                });
       }
     }
   }
