@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -45,8 +46,15 @@ public class CompanyController {
    */
   public void handleTradingNames(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Company company = request.getContext().asType(Company.class);
-    Beans.get(CompanyService.class).handleTradingNames(company);
-    response.setValue("mainTradingName", company.getMainTradingName());
+    try {
+      Company company = request.getContext().asType(Company.class);
+      Beans.get(CompanyService.class).handleTradingNames(company);
+      response.setValue("mainTradingName", company.getMainTradingName());
+    } catch (AxelorException e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(e);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 }

@@ -55,6 +55,9 @@ public class TradingNameServiceImpl implements TradingNameService {
 
   @Override
   public PrintingSettings getDefaultPrintingSettings(TradingName tradingName, Company company) {
+    if (company == null) {
+      return null;
+    }
     List<PrintingSettings> printingSettingsList = getPrintingSettingsList(tradingName, company);
     return printingSettingsList.isEmpty()
         ? company.getPrintingSettings()

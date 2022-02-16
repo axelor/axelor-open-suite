@@ -427,6 +427,7 @@
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
           onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+        <field name="company.requireTradingName" hidden="true"/>
         <panel name="otherInfoPanel" colSpan="3">
           <field name="inAti" hidden="true"
             readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2"
@@ -1715,7 +1716,7 @@
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"
       if="__user__?.tradingName != null"/>
-    <field name="tradingName" expr="eval: company?.mainTradingName"
+    <field name="tradingName" expr="eval: __user__.activeCompany?.mainTradingName"
       if="__user__?.tradingName == null"/>
     <field name="stockLocation"
       expr="eval: __user__?.tradingName?.shippingDefaultStockLocation"/>

@@ -97,6 +97,7 @@
             readonlyIf="period.statusSelect == 2 || $validatePeriod"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
+          <field name="company.requireTradingName" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
@@ -447,7 +448,7 @@
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"
       if="__user__?.tradingName != null"/>
-    <field name="tradingName" expr="eval: company?.mainTradingName"
+    <field name="tradingName" expr="eval: __user__.activeCompany?.mainTradingName"
       if="__user__?.tradingName == null"/>
   </action-record>
 

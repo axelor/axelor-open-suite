@@ -738,16 +738,26 @@ public class PartnerServiceImpl implements PartnerService {
       if (regCode != null) {
         regCode = regCode.replaceAll(" ", "");
         if (regCode.length() == 14) {
-          int positionChar = 0;
+          int positionChar = 1;
 
-          CharacterIterator it = new StringCharacterIterator(regCode);
+          CharacterIterator it = new StringCharacterIterator(regCode, regCode.length() - 1);
 
-          while (it.current() != CharacterIterator.DONE) {
-            checkKey += positionChar % 2 != 0 ? 1 * it.current() : 2 * it.current();
-            it.next();
+          while (positionChar <= regCode.length()) {
+            int currentCharValue =
+                positionChar % 2 != 0
+                    ? 1 * Character.getNumericValue(it.current())
+                    : 2 * Character.getNumericValue(it.current());
+            if (currentCharValue >= 10) {
+              currentCharValue =
+                  Character.getNumericValue(String.valueOf(currentCharValue).charAt(0))
+                      + Character.getNumericValue(String.valueOf(currentCharValue).charAt(1));
+            }
+            checkKey += currentCharValue;
+            it.previous();
+            positionChar++;
           }
         }
-        if (checkKey != 0 && checkKey % 10 != 0) {
+        if (checkKey == 0 || checkKey % 10 != 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.PARTNER_REGISTRATION_CODE_INCORRECT));

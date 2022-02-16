@@ -43,10 +43,12 @@
         <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
         <spacer colSpan="6"/>
         <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false"
-          form-view="company-form" grid-view="company-grid"/>
+          form-view="company-form" grid-view="company-grid"
+          onChange="action-fixed-asset-record-on-company-change"/>
         <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form"
           grid-view="currency-grid"/>
-        <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
+        <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+          requiredIf="company.requireTradingName"/>
         <field name="fixedAssetCategory" domain="self.company = :company"
           readonlyIf="statusSelect > 1" canEdit="false"
           onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date"
@@ -65,6 +67,7 @@
           canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
         <field name="fixedAssetCategory.fixedAssetType" hidden="true"/>
         <field name="fixedAssetCategory.fixedAssetType.technicalTypeSelect" hidden="true"/>
+        <field name="company.requireTradingName" hidden="true"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel">
@@ -365,11 +368,23 @@
     <field name="firstServiceDate" expr="eval: __config__.date"/>
     <field name="firstDepreciationDate" expr="eval: __config__.date"/>
     <field name="originSelect" expr="eval:'1'"/>
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: __user__.activeCompany?.mainTradingName"
+      if="__user__?.tradingName == null"/>
   </action-record>
 
   <action-record name="action-fixed-asset-record-set-residual-value"
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
+  </action-record>
+
+  <action-record name="action-fixed-asset-record-on-company-change"
+    model="com.axelor.apps.account.db.FixedAsset">
+    <field name="tradingName" expr="eval: __user__?.tradingName"
+      if="__user__?.tradingName != null"/>
+    <field name="tradingName" expr="eval: company?.mainTradingName"
+      if="__user__?.tradingName == null"/>
   </action-record>
 
   <action-method name="action-method-account-fixed-asset-validate">

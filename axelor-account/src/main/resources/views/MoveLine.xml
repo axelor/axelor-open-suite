@@ -279,8 +279,8 @@
         <field name="dueDate" showIf="dueDate"/>
         <field name="originDate"/>
       </panel>
-      <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
-        grid-view="trading-name-grid"/>
+      <field name="tradingName" colSpan="3" readonlyIf="amountPaid &gt; 0"
+        form-view="trading-name-form" grid-view="trading-name-grid"/>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
         grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         colSpan="3"/>
@@ -454,8 +454,8 @@
         <field name="dueDate" showIf="dueDate"/>
         <field name="originDate"/>
       </panel>
-      <field name="tradingName" colSpan="3" readonly="true" form-view="trading-name-form"
-        grid-view="trading-name-grid"/>
+      <field name="tradingName" colSpan="3" readonlyIf="amountPaid &gt; 0"
+        form-view="trading-name-form" grid-view="trading-name-grid"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0" colSpan="3"/>

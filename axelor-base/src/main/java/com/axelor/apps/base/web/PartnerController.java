@@ -406,6 +406,9 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       Beans.get(PartnerService.class).checkValidityRegistrationCode(partner);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

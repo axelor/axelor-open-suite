@@ -1828,6 +1828,7 @@
 "Total sequence length must be less than 15 characters.","La longueur de la séquence doit être inférieure à 15 caractères.",,
 "Total variants","Total des variantes",,
 "Tracebacks","Tracebacks",,
+"TradingName.Brand","Marque",,
 "Trading names are enabled in base module configuration. Thus you need to select at least one company if the trading name is of type Brand, or one and only company if the trading name is of type Facility or Agency.","La gestion des enseignes commerciales est activée dans la configuration du module Base. Veuillez renseigner par conséquent au moins une société si l'enseigne est de type Marque, ou une seule société si l'enseigne est de type Établissement ou Agence.",,
 "Track creation","Tracer la création",,
 "Track deletion","Tracer la suppression",,

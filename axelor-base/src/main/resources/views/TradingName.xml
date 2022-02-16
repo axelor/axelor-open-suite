@@ -10,14 +10,15 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.TradingName" title="Trading name"
-    name="trading-name-form" onSave="action-trading-name-group-on-save">
+    name="trading-name-form" onSave="action-trading-name-group-on-save"
+    onNew="action-trading-name-record-set-type-select">
     <panel name="mainPanel">
       <field name="code"/>
       <field name="name"/>
       <field name="typeSelect"/>
       <field name="logo" widget="Image"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        requiredIf="typeSelect == 2"/>
+        requiredIf="typeSelect == 2" domain="self.partnerTypeSelect = 1"/>
       <panel-related name="companySetPanel" field="companySet"
         form-view="company-form" grid-view="company-grid" colSpan="12" canNew="false"/>
     </panel>
@@ -39,5 +40,10 @@
       message="Registration code must be filled in associated partner when the trading name is of type Facility."
       if="typeSelect == 2 &amp;&amp; partner.registrationCode == null"/>
   </action-validate>
+
+  <action-record name="action-trading-name-record-set-type-select"
+    model="com.axelor.apps.base.db.TradingName">
+    <field name="typeSelect" expr="eval: 1"/>
+  </action-record>
 
 </object-views>
