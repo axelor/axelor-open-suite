@@ -401,10 +401,8 @@
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
                   <field name="address" canEdit="!$canSelect" canNew="true"
-                    onChange="action-partner-method-set-registration-code-required"
                     form-view="address-form" grid-view="address-grid" canSelect="$canSelect"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
-                    onChange="action-partner-method-set-registration-code-required"
                     x-icon="fa-list-alt"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-shopping-cart"/>

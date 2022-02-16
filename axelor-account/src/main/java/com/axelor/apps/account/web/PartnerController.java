@@ -58,19 +58,7 @@ public class PartnerController {
   public void setRegistrationCodeRequired(ActionRequest request, ActionResponse response) {
     try {
       Partner partner;
-      if (request.getModel().contains("Address")
-          && request
-              .getContext()
-              .getParent()
-              .get("_model")
-              .toString()
-              .equals(Partner.class.getName())) {
-        partner = request.getContext().getParent().asType(Partner.class);
-      } else if (request.getModel().equals(Partner.class.getName())) {
-        partner = request.getContext().asType(Partner.class);
-      } else {
-        return;
-      }
+      partner = request.getContext().asType(Partner.class);
 
       boolean isRegistrationCodeRequired =
           Beans.get(PartnerAccountService.class).isRegistrationCodeRequired(partner);
