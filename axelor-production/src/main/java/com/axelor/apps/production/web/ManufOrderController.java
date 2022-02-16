@@ -237,6 +237,10 @@ public class ManufOrderController {
           message = manufOrder.getMoCommentFromSaleOrder();
         }
 
+        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
+          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
+        }
+
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
           message =
               message
