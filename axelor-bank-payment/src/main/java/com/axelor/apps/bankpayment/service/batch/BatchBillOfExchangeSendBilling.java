@@ -14,7 +14,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -48,6 +50,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   protected CompanyRepository companyRepository;
   protected PartnerRepository partnerRepository;
   protected MessageService messageService;
+  protected SequenceService sequenceService;
 
   @Inject
   public BatchBillOfExchangeSendBilling(
@@ -58,7 +61,8 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       NoteBillsRepository noteBillsRepository,
       CompanyRepository companyRepository,
       PartnerRepository partnerRepository,
-      MessageService messageService) {
+      MessageService messageService,
+      SequenceService sequenceService) {
     this.appAccountService = appAccountService;
     this.invoiceRepository = invoiceRepository;
     this.templateMessageService = templateMessageService;
@@ -67,6 +71,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     this.companyRepository = companyRepository;
     this.partnerRepository = partnerRepository;
     this.messageService = messageService;
+    this.sequenceService = sequenceService;
   }
 
   @Override
@@ -86,6 +91,15 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
 
     try {
+      if (!sequenceService.hasSequence(
+          SequenceRepository.NOTE_BILLS, accountingBatch.getCompany())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                com.axelor.apps.account.exception.IExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            accountingBatch.getCompany().getName());
+      }
       mapPartnerInvoices
           .entrySet()
           .forEach(
@@ -99,7 +113,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry) {
     Objects.requireNonNull(entry);
     Company company = null;
@@ -160,7 +174,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     ;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void addBatchSet(Batch batch, Invoice invoice) {
     Objects.requireNonNull(batch);
     Objects.requireNonNull(invoice);

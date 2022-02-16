@@ -119,11 +119,11 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS = /*$$(*/
-      "Please fill the address in the partner details." /*)*/;
+      "Please fill the address in %s's partner details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP = /*$$(*/
-      "Please fill the zip in the partner details." /*)*/;
+      "Please fill the zip in %s's partner details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY = /*$$(*/
-      "Please fill the city in the partner details." /*)*/;
+      "Please fill the city in %s's partner details." /*)*/;
   static final String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK = /*$$(*/
       "Please fill the bank in the receiver bank details." /*)*/;
 

@@ -29,7 +29,7 @@ public class NoteBillsCreateServiceImpl implements NoteBillsCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public NoteBills createNoteBills(Company company, Partner partner, Batch batch)
       throws AxelorException {
     Objects.requireNonNull(company);

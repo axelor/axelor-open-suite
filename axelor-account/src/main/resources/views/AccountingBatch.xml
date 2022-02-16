@@ -59,10 +59,12 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect" showIf="billOfExchangeStepBatchSelect == 1"
+        <field name="billOfExchangeDataTypeSelect"
+          readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
-          requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 2"/>
+          requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 2"
+          domain="self.metaModel.name = 'NoteBills'"/>
         <field name="billOfExchangeTypeSelect" requiredIf="actionSelect == 24"/>
         <field name="billOfExchangeJournal" requiredIf="actionSelect == 24"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -177,7 +179,7 @@
         colSpan="12"/>
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
-        showIf="actionSelect == 24" colSpan="12"/>
+        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
     </panel>
   </form>
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">

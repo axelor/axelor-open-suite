@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -56,6 +57,7 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected ReconcileService reconcileService;
   protected MoveLineService moveLineService;
   protected MoveValidateService moveValidateService;
+  protected AccountingBatchRepository accountingBatchRepository;
 
   @Inject
   public BatchBillOfExchange(
@@ -69,7 +71,8 @@ public class BatchBillOfExchange extends AbstractBatch {
       AccountRepository accountRepository,
       ReconcileService reconcileService,
       MoveLineService moveLineService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      AccountingBatchRepository accountingBatchRepository) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.appAccountService = appAccountService;
@@ -82,6 +85,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     this.reconcileService = reconcileService;
     this.moveLineService = moveLineService;
     this.moveValidateService = moveValidateService;
+    this.accountingBatchRepository = accountingBatchRepository;
   }
 
   @Override
@@ -120,12 +124,12 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void createMoveAndUpdateInvoice(AccountingBatch accountingBatch, Invoice invoice)
       throws AxelorException {
     AccountConfig accountConfig =
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
-    Move move = createLCRAccountMove(invoice, accountConfig);
+    Move move = createLCRAccountMove(invoice, accountConfig, accountingBatch);
     moveValidateService.accounting(move);
     reconcilesMoves(move, invoice.getMove(), invoice);
     updateInvoice(invoice, move, accountConfig);
@@ -138,7 +142,7 @@ public class BatchBillOfExchange extends AbstractBatch {
    * @param invoiceMove
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void reconcilesMoves(Move move, Move invoiceMove, Invoice invoice)
       throws AxelorException {
     Objects.requireNonNull(move);
@@ -181,7 +185,7 @@ public class BatchBillOfExchange extends AbstractBatch {
    * @param move
    * @param accountConfig
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateInvoice(Invoice invoice, Move move, AccountConfig accountConfig) {
 
     Invoice invoiceToSave = invoiceRepository.find(invoice.getId());
@@ -193,8 +197,9 @@ public class BatchBillOfExchange extends AbstractBatch {
     invoice.addBatchSetItem(batchRepo.find(batch.getId()));
   }
 
-  @Transactional
-  protected Move createLCRAccountMove(Invoice invoice, AccountConfig accountConfig)
+  @Transactional(rollbackOn = {Exception.class})
+  protected Move createLCRAccountMove(
+      Invoice invoice, AccountConfig accountConfig, AccountingBatch accountingBatch)
       throws AxelorException {
     log.debug("Creating lcr account move for invoice {}", invoice);
     if (accountConfig.getBillOfExchReceivAccount() == null) {
@@ -205,7 +210,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
     Move move =
         moveCreateService.createMove(
-            journalRepository.find(batch.getAccountingBatch().getBillOfExchangeJournal().getId()),
+            journalRepository.find(accountingBatch.getBillOfExchangeJournal().getId()),
             invoice.getCompany(),
             invoice.getCurrency(),
             invoice.getPartner(),

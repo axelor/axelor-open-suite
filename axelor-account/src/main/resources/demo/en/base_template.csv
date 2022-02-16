@@ -19,3 +19,15 @@ L'équipe Axelor</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2
+"Releve facture";"NoteBills";2;;"34";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
+
+<p>Vous trouverez ci-joint votre relevé de facture</p>
+
+<p>Nous vous remercions pour votre fidélité et nous espérons que vous avez été pleinement satisfait.</p>
+
+<p>En espérant que vous nous renouvellerez votre confiance, </p>
+
+<p>Cordialement<br/>
+L'équipe Axelor</p>
+
+";"$NoteBills.emailAddress.address$";;;2
