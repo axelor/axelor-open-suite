@@ -497,4 +497,16 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
         + (isGlobal ? 1 : 0);
   }
+
+  @Override
+  public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
+    StringBuilder flashMessage = new StringBuilder();
+
+    if (moveCount > 0) {
+      flashMessage.append(
+          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+    }
+
+    return flashMessage;
+  }
 }

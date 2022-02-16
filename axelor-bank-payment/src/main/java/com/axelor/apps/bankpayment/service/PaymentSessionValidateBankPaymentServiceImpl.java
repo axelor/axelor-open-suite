@@ -14,6 +14,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
@@ -23,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -128,7 +130,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSession.getBankDetails(),
         paymentSession.getCurrency(),
         paymentSession.getSequence(),
-        paymentSession.getName(),
+        this.getLabel(paymentSession),
         BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
   }
 
@@ -184,7 +186,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     BankOrderLine bankOrderLine =
         bankOrderLineService.createBankOrderLine(
             bankOrder.getBankOrderFileFormat(),
-            paymentSession.getCompany(),
+            null,
             invoiceTerm.getMoveLine().getPartner(),
             invoiceTerm.getBankDetails(),
             invoiceTerm.getAmountPaid(),
@@ -224,5 +226,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (newReference.length() < 256) {
       bankOrderLine.setReceiverReference(newReference);
     }
+  }
+
+  public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
+    StringBuilder flashMessage = super.generateFlashMessage(paymentSession, moveCount);
+
+    if (paymentSession.getBankOrder() != null) {
+      flashMessage.append(
+          String.format(
+              I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_BANK_ORDER),
+              paymentSession.getBankOrder().getBankOrderSeq()));
+    }
+
+    return flashMessage;
   }
 }

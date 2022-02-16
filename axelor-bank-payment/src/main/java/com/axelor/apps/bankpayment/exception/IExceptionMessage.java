@@ -272,4 +272,7 @@ public interface IExceptionMessage {
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
+
+  static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
 }
