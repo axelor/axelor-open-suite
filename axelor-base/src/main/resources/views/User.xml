@@ -115,8 +115,7 @@
       <panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
           grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-          canView="false" if="__config__.app.isApp('employee')"
-          readonlyIf="employee.contactPartner.id == partner.id"/>
+          canView="false" if="__config__.app.isApp('employee')"/>
         <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
           title="Create employee" if-module="axelor-human-resource"
           showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
@@ -143,8 +142,7 @@
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
       <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
         grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-        canView="false" if="__config__.app.isApp('employee')"
-        readonlyIf="employee.contactPartner.id == partner.id"/>
+        canView="false" if="__config__.app.isApp('employee')"/>
       <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
         title="Create employee" if-module="axelor-human-resource"
         showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"

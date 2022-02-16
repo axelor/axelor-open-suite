@@ -29,20 +29,39 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class UserHrServiceImpl implements UserHrService {
 
-  @Inject UserRepository userRepo;
+  protected UserRepository userRepo;
+  protected AppHumanResourceService appHumanResourceService;
+  protected UserService userService;
+  protected EmployeeRepository employeeRepository;
 
-  @Inject private AppHumanResourceService appHumanResourceService;
+  @Inject
+  public UserHrServiceImpl(
+      UserRepository userRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserService userService,
+      EmployeeRepository employeeRepository) {
+    this.userRepo = userRepo;
+    this.appHumanResourceService = appHumanResourceService;
+    this.userService = userService;
+    this.employeeRepository = employeeRepository;
+  }
 
   @Transactional
   public void createEmployee(User user) {
+
+    if (user.getPartner() != null && user.getPartner().getEmployee() != null) {
+      // must generate a new partner if the employee is filled, to avoid an issue with the
+      // one-to-one relationship between contact and employee
+      user.setPartner(null);
+    }
+
     if (user.getPartner() == null) {
-      Beans.get(UserService.class).createPartner(user);
+      userService.createPartner(user);
     }
 
     AppBase appBase = appHumanResourceService.getAppBase();
@@ -65,7 +84,7 @@ public class UserHrServiceImpl implements UserHrService {
     employee.setPublicHolidayEventsPlanning(planning);
 
     employee.setUser(user);
-    Beans.get(EmployeeRepository.class).save(employee);
+    employeeRepository.save(employee);
 
     user.setEmployee(employee);
     userRepo.save(user);
