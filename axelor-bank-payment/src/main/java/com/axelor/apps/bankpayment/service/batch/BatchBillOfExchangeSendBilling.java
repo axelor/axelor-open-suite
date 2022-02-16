@@ -51,6 +51,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   protected PartnerRepository partnerRepository;
   protected MessageService messageService;
   protected SequenceService sequenceService;
+  private boolean end = false;
 
   @Inject
   public BatchBillOfExchangeSendBilling(
@@ -75,7 +76,29 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   }
 
   @Override
+  protected void start() throws IllegalAccessException {
+    super.start();
+    if (!sequenceService.hasSequence(
+        SequenceRepository.NOTE_BILLS, batch.getAccountingBatch().getCompany())) {
+      TraceBackService.trace(
+          new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  com.axelor.apps.account.exception.IExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
+              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              batch.getAccountingBatch().getCompany().getName()),
+          "Batch bill of exchange send billing",
+          batch.getId());
+      incrementAnomaly();
+      end = true;
+    }
+  }
+
+  @Override
   protected void process() {
+    if (end) {
+      return;
+    }
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     Map<Partner, List<Invoice>> mapPartnerInvoices = new HashMap<>();
     List<Invoice> invoicesList = null;
@@ -91,15 +114,6 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
 
     try {
-      if (!sequenceService.hasSequence(
-          SequenceRepository.NOTE_BILLS, accountingBatch.getCompany())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(
-                com.axelor.apps.account.exception.IExceptionMessage.NOTE_BILLS_CONFIG_SEQUENCE),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            accountingBatch.getCompany().getName());
-      }
       mapPartnerInvoices
           .entrySet()
           .forEach(

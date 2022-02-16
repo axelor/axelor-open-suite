@@ -46,6 +46,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected MoveValidateService moveValidateService;
   protected BankPaymentConfigService bankPaymentConfigService;
+  private boolean end = false;
 
   @Inject
   public BatchBankOrderGenerationBillOfExchange(
@@ -69,7 +70,31 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
   }
 
   @Override
+  protected void start() throws IllegalAccessException {
+    super.start();
+    try {
+      BankPaymentConfig bankPaymentConfig =
+          bankPaymentConfigService.getBankPaymentConfig(batch.getAccountingBatch().getCompany());
+      if (bankPaymentConfig.getBillOfExchangeSequence() == null) {
+        throw new AxelorException(
+            bankPaymentConfig,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            bankPaymentConfig.getCompany().getName());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e, "Batch bill of exchange bank order generation", batch.getId());
+      incrementAnomaly();
+      end = true;
+    }
+  }
+
+  @Override
   protected void process() {
+    if (end) {
+      return;
+    }
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (accountingBatch.getPaymentMode() == null
@@ -80,17 +105,6 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
     Query<Invoice> query = buildOrderedQueryFetchLcrAccountedInvoices(accountingBatch, anomalyList);
     try {
-      BankPaymentConfig bankPaymentConfig =
-          bankPaymentConfigService.getBankPaymentConfig(accountingBatch.getCompany());
-      if (bankPaymentConfig.getBillOfExchangeSequence() == null) {
-        throw new AxelorException(
-            bankPaymentConfig,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            bankPaymentConfig.getCompany().getName());
-      }
-
       List<Long> invoicePaymentIdList = createInvoicePayments(query, anomalyList);
       if (invoicePaymentIdList != null && !invoicePaymentIdList.isEmpty()) {
 
