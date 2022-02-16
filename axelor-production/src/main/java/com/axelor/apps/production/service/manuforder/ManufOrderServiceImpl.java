@@ -301,12 +301,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    if (!manufOrder.getIsConsProOnOperation()) {
-      this.createToConsumeProdProductList(manufOrder);
-    }
-
-    this.createToProduceProdProductList(manufOrder);
-
     return manufOrder;
   }
 
