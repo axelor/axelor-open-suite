@@ -93,10 +93,15 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
+            purchaseOrder,
+            saleOrderLine.getProduct(),
+            saleOrderLine.getProductName(),
+            null,
+            qty,
+            unit);
 
     purchaseOrderLine.setIsTitleLine(
-        saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
+        !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
     this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
     return purchaseOrderLine;
   }
