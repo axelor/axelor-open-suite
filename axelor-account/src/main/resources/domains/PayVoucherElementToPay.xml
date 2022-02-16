@@ -36,6 +36,7 @@
     <decimal name="financialDiscountTotalAmount" title="Fin. discount total amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining amount after Fin. discount"/>
+    <decimal name="remainingTotalAmountAfterFinDiscount" title="Remaining total amount after Fin. discount"/>
   </entity>
 
 </domain-models>

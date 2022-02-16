@@ -2498,6 +2498,8 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: financialDiscountRate * inTaxTotal"
+           if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
@@ -2510,11 +2512,15 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp;  financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+    <field name="financialDiscountTotalAmount" expr="eval: financialDiscountRate * inTaxTotal"
+           if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
     <field name="legalNotice" expr="eval: null"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
+           if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>

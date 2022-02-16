@@ -32,6 +32,7 @@
       <field name="totalAmount"/>
       <field name="remainingAmount"/>
       <field name="remainingAmountAfterPayment"/>
+      <field name="remainingTotalAmountAfterFinDiscount"/>
       <field name="applyFinancialDiscount"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"
         showIf="remainingAmount > 0.00"/>
