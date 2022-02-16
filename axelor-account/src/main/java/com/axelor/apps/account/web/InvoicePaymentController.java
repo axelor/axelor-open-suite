@@ -54,6 +54,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -249,8 +250,10 @@ public class InvoicePaymentController {
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+        List<Long> invoiceTermIdList =
+            invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
-          response.setValue("$invoiceTerms", invoiceTerms);
+          response.setValue("$invoiceTerms", invoiceTermIdList);
 
           if (totalAmountToPay.compareTo(BigDecimal.ZERO) > 0) {
             invoicePayment =
@@ -293,9 +296,12 @@ public class InvoicePaymentController {
               invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
       invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
 
+      List<Long> invoiceTermIdList =
+          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
+
       response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
       response.setValue("amount", invoicePayment.getAmount());
-      response.setValue("$invoiceTerms", invoiceTerms);
+      response.setValue("$invoiceTerms", invoiceTermIdList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
