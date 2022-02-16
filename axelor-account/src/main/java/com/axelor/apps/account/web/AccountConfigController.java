@@ -18,11 +18,16 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class AccountConfigController {
@@ -31,5 +36,19 @@ public class AccountConfigController {
 
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
     Beans.get(AccountConfigService.class).deactivateSimulatedMoves(accountConfig.getCompany());
+  }
+
+  public void checkChangesInAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
+      List<AnalyticAxisByCompany> initialList =
+          Beans.get(AccountConfigRepository.class)
+              .find(accountConfig.getId())
+              .getAnalyticAxisByCompanyList();
+      List<AnalyticAxisByCompany> modifiedList = accountConfig.getAnalyticAxisByCompanyList();
+      Beans.get(AccountConfigService.class).checkChangesInAnalytic(initialList, modifiedList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
   }
 }
