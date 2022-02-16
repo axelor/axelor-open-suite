@@ -1704,6 +1704,7 @@
 "Missing deposit slip sequence for company %s",,,
 "Missing direct debit payment mode in the company's account configuration",,,
 "Missing subrogation release sequence for company %s",,,
+"Model Accounting Report",,,
 "Month",,,
 "Monthly direct debit(s) treated",,,
 "Monthly payments",,,

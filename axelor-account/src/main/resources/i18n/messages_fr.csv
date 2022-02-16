@@ -1704,6 +1704,7 @@
 "Missing deposit slip sequence for company %s","Séquence de bordereau de remise manquante pour la société %s",,
 "Missing direct debit payment mode in the company's account configuration","Mode de paiement pour les virements manquant dans la configuration comptable de la société",,
 "Missing subrogation release sequence for company %s","Séquence de quittance de subrogation manquante pour la société %s",,
+"Model Accounting Report","Modèle de rapport comptable",,
 "Month","Mois",,
 "Monthly direct debit(s) treated","Prélèvements(s) mensualité(s) traité(s)",,
 "Monthly payments","Mensualisation de paiements",,
