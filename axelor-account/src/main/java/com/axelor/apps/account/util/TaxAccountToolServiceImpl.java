@@ -3,6 +3,7 @@ package com.axelor.apps.account.util;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -67,14 +68,17 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           company.getName(),
           partner.getFullName());
     }
-    if (accountingSituation.getVatSystemSelect() == null) {
+    if (accountingSituation.getVatSystemSelect() == null
+        || accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND),
           company.getName(),
           partner.getFullName());
     }
-    if (account.getVatSystemSelect() == null) {
+    if (account.getVatSystemSelect() == null
+        || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.ACCOUNT_VAT_SYSTEM_NOT_FOUND),
@@ -105,14 +109,17 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           company.getName(),
           partner.getFullName());
     }
-    if (accountingSituation.getVatSystemSelect() == null) {
+    if (accountingSituation.getVatSystemSelect() == null
+        || accountingSituation.getVatSystemSelect()
+            == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND),
           company.getName(),
           partner.getFullName());
     }
-    if (account.getVatSystemSelect() == null) {
+    if (account.getVatSystemSelect() == null
+        || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.ACCOUNT_VAT_SYSTEM_NOT_FOUND),
