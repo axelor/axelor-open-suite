@@ -131,11 +131,11 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
   protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry) {
     Objects.requireNonNull(entry);
     Company company = null;
-    Batch batch = batchRepo.find(this.batch.getId());
     Partner partner = partnerRepository.find(entry.getKey().getId());
     int counter = 0;
 
     for (Invoice invoice : entry.getValue()) {
+      batch = batchRepo.find(this.batch.getId());
       if (company == null) {
         company = companyRepository.find(batch.getAccountingBatch().getCompany().getId());
       }
@@ -147,6 +147,9 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
 
     try {
+      batch = batchRepo.find(this.batch.getId());
+      company = companyRepository.find(batch.getAccountingBatch().getCompany().getId());
+      partner = partnerRepository.find(entry.getKey().getId());
       if (partner.getEmailAddress() == null
           || StringUtils.isEmpty(partner.getEmailAddress().getAddress())) {
         throw new AxelorException(
@@ -154,7 +157,9 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
             IExceptionMessage.BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING,
             partner.getName());
       }
-      NoteBills noteBills = noteBillsCreateService.createNoteBills(company, partner, batch);
+      NoteBills noteBills =
+          noteBillsCreateService.createNoteBills(
+              company, partner, batchRepo.find(this.batch.getId()));
       Message message =
           templateMessageService.generateAndSendMessage(
               noteBills, batch.getAccountingBatch().getBillOfExhangeMailTemplate());
@@ -162,7 +167,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       noteBills.setMetaFiles(messageService.getMetaAttachments(message));
       incrementDoneForInvoices(entry.getValue(), batch);
     } catch (Exception e) {
-      incrementAnomaliesForInvoices(entry.getValue(), batch);
+      incrementAnomaliesForInvoices(e, entry.getValue(), batch);
       TraceBackService.trace(
           e,
           String.format("Generation and send of message failed for %s", partner.getName()),
@@ -170,11 +175,13 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
   }
 
-  protected void incrementAnomaliesForInvoices(List<Invoice> invoicesList, Batch batch) {
+  protected void incrementAnomaliesForInvoices(
+      Exception e, List<Invoice> invoicesList, Batch batch) {
     invoicesList.stream()
         .forEach(
             invoice -> {
               incrementAnomaly();
+              TraceBackService.trace(e, "Generation and send of message failed", batch.getId());
             });
     ;
   }

@@ -831,7 +831,10 @@ public interface ITranslation {
   public static final String NOTE_BILLS_DATE_TO = /*$$(*/ "NoteBills.date_to"; /*)*/
   public static final String NOTE_BILLS_INVOICE_CURRENCY = /*$$(*/ "NoteBills.currency"; /*)*/
   public static final String NOTE_BILLS_INVOICE_TOTAL_DEBIT = /*$$(*/ "NoteBills.total_debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_AMOUNT = /*$$(*/
+      "NoteBills.total_amount"; /*)*/
   public static final String NOTE_BILLS_INVOICE_DEBIT = /*$$(*/ "NoteBills.debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CREDIT = /*$$(*/ "NoteBills.credit"; /*)*/
   public static final String NOTE_BILLS_INVOICE_NB = /*$$(*/ "NoteBills.invoice_nb"; /*)*/
   public static final String NOTE_BILLS_INVOICE_DATE = /*$$(*/ "NoteBills.invoice_date"; /*)*/
   public static final String NOTE_BILLS_GENERATION_DATE = /*$$(*/ "NoteBills.generation_date"; /*)*/
@@ -841,4 +844,5 @@ public interface ITranslation {
   public static final String NOTE_BILLS_NOTE_BILLS = /*$$(*/ "NoteBills.note_bills"; /*)*/
   public static final String NOTE_BILLS_PAYABLE_BY = /*$$(*/ "NoteBills.payable_by"; /*)*/
   public static final String NOTE_BILLS_DIRECT_BOE = /*$$(*/ "NoteBills.direct_boe"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS_NB = /*$$(*/ "NoteBills.note_bills_nb"; /*)*/
 }
