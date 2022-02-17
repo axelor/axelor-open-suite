@@ -45,7 +45,7 @@
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     <integer name="opportunityRating" title="Opportunity score"
-      selection="yellow.rating.icon.select"/>
+      selection="orange.rating.icon.select"/>
 
     <extra-code>
 		<![CDATA[
