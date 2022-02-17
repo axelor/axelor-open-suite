@@ -590,7 +590,7 @@
 "Hash X002","Hash X002",,
 "Host ID","Host ID",,
 "Host Id","Host Id",,
-"ICS Number","ICS Number",,
+"ICS Number","Identifiant Créancier SEPA (ICS)",,
 "If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed","Si activé, sur le formulaire de rapprochement, lorsque le bouton Charger le relevé est cliqué, la comptabilisation automatique sera exécutée",,
 "Import","Importer",,
 "Import Ebics user","Importer un utilisateur Ebics",,

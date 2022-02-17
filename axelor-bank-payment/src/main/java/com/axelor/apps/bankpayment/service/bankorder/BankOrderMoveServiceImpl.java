@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -95,7 +96,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     paymentMode = bankOrder.getPaymentMode();
 
-    if (paymentMode == null || !paymentMode.getGenerateMoveAutoFromBankOrder()) {
+    if (paymentMode == null
+        || paymentMode.getBankOrderMoveGenTriggerSelect()
+            == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_NONE) {
       return;
     }
 
@@ -112,12 +115,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     isMultiDate = bankOrder.getIsMultiDate();
     isMultiCurrency = bankOrder.getIsMultiCurrency();
 
-    if (orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
-        || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER) {
-      isDebit = true;
-    } else {
-      isDebit = false;
-    }
+    isDebit = orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER;
 
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
       if (ObjectUtils.isEmpty(bankOrderLine.getBankOrderLineOriginList())) {

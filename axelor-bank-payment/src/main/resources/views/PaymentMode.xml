@@ -13,4 +13,12 @@
       if="__config__.app.isApp('account')"/>
   </action-record>
 
+  <action-record name="action-payment-mode-record-set-accounting-trigger-select"
+    model="com.axelor.apps.account.db.PaymentMode">
+    <field name="accountingTriggerSelect" expr="eval: 1"
+      if="bankOrderMoveGenTriggerSelect == 1"/>
+    <field name="accountingTriggerSelect" expr="eval: 2"
+      if="bankOrderMoveGenTriggerSelect > 1"/>
+  </action-record>
+
 </object-views>

@@ -687,7 +687,13 @@
   </selection>
 
   <selection name="paymentMode.accounting.trigger.select">
-    <option value="0"></option>
+    <option value="0"/>
+    <option value="1">Session validation</option>
+    <option value="2">Bank order</option>
+  </selection>
+
+  <selection name="payment.session.accounting.trigger.select">
+    <option value="0"/>
     <option value="1">Immediate</option>
     <option value="2">Bank order confirmation</option>
     <option value="3">Bank order validation</option>

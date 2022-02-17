@@ -31,7 +31,7 @@
     <integer name="accountingMethodSelect" title="Accounting method for payment move"
       selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
-      selection="paymentMode.accounting.trigger.select" default="1"/>
+      selection="payment.session.accounting.trigger.select" default="1"/>
     <integer name="daysMarginOnPaySession" title="Days margin on pay session"
       required="true"/>
     <integer name="partnerTypeSelect" title="Recipient type"

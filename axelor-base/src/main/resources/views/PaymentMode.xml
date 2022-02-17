@@ -38,7 +38,7 @@
           requiredIf="canSelectInPaymentSession"/>
         <field name="accountingTriggerSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"
-          readonlyIf="!generateBankOrder &amp;&amp; canSelectInPaymentSession"/>
+          readonlyIf="(!generateBankOrder &amp;&amp; canSelectInPaymentSession) || bankOrderMoveGenTriggerSelect == 1"/>
       </panel>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')" hidden="true"
@@ -47,27 +47,29 @@
           showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
           onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
         <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
-        <field name="automaticTransmission" showIf="generateBankOrder"/>
-        <field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
-        <field name="consoBankOrderLinePerPartner" showIf="generateBankOrder"/>
-        <field name="orderTypeSelect" selection-in="[2,4]" hidden="true"
-          showIf="generateBankOrder &amp;&amp; typeSelect == 2"
-          requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"
-          onChange="action-payment-mode-attrs-on-order-type-change"/>
-        <field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true"
-          showIf="generateBankOrder &amp;&amp; typeSelect == 9"
-          requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"
-          onChange="action-payment-mode-attrs-on-order-type-change"/>
-        <field name="orderTypeSelect" selection-in="[1, 2, 3, 4, 5, 6, 8]" hidden="true"
-          showIf="generateBankOrder &amp;&amp; typeSelect == 10"
-          requiredIf="generateBankOrder &amp;&amp; typeSelect == 10"
-          onChange="action-payment-mode-attrs-on-order-type-change"/>
-        <field name="bankOrderExportFolderPath" showIf="generateBankOrder"
-          requiredIf="generateBankOrder"/>
-        <field name="bankOrderFileFormat"
-          domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-          canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder"
-          form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid"/>
+        <panel name="generateBankOrderPanel" showIf="generateBankOrder" colSpan="12">
+          <field name="automaticTransmission"
+            if="__config__.app.getApp('bank-payment')?.enableEbicsModule"/>
+          <field name="consoBankOrderLinePerPartner"/>
+          <field name="bankOrderMoveGenTriggerSelect"
+            onChange="action-payment-mode-record-set-accounting-trigger-select"/>
+          <panel stacked="true">
+            <field name="orderTypeSelect" selection-in="[2,4]" hidden="true"
+              showIf="typeSelect == 2" requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"
+              onChange="action-payment-mode-attrs-on-order-type-change"/>
+            <field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true"
+              showIf="typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"
+              onChange="action-payment-mode-attrs-on-order-type-change"/>
+            <field name="orderTypeSelect" selection-in="[1, 2, 3, 4, 5, 6, 8]" hidden="true"
+              showIf="typeSelect == 10" requiredIf="generateBankOrder &amp;&amp; typeSelect == 10"
+              onChange="action-payment-mode-attrs-on-order-type-change"/>
+          </panel>
+          <field name="bankOrderExportFolderPath" requiredIf="generateBankOrder"/>
+          <field name="bankOrderFileFormat"
+            domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
+            canEdit="false" requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
+            grid-view="bank-order-file-format-grid"/>
+        </panel>
       </panel>
     </panel-tabs>
   </form>
@@ -106,7 +108,7 @@
       if="!__config__.app.isApp('bank-payment')"/>
     <field name="automaticTransmission" hidden="true"
       if="!__config__.app.isApp('bank-payment')"/>
-    <field name="generateMoveAutoFromBankOrder" hidden="true"
+    <field name="bankOrderMoveGenTriggerSelect" hidden="true"
       if="!__config__.app.isApp('bank-payment')"/>
     <field name="consoBankOrderLinePerPartner" hidden="true"
       if="!__config__.app.isApp('bank-payment')"/>

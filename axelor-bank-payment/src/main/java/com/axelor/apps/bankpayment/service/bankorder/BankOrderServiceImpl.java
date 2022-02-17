@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -345,9 +346,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
+    if (bankOrder.getPaymentMode().getBankOrderMoveGenTriggerSelect()
+        == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_VALIDATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
@@ -400,9 +400,8 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (!bankPaymentConfigService
-        .getBankPaymentConfig(bankOrder.getSenderCompany())
-        .getGenerateMoveOnBankOrderValidation()) {
+    if (bankOrder.getPaymentMode().getBankOrderMoveGenTriggerSelect()
+        == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_REALIZATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
