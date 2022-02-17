@@ -186,13 +186,13 @@
     <option value="400">CRM batch</option>
   </selection>
 
-  <selection name="yellow.rating.icon.select">
-    <option value="0" icon="img/rating/yellow-rating-0.png">0</option>
-    <option value="1" icon="img/rating/yellow-rating-1.png">1</option>
-    <option value="2" icon="img/rating/yellow-rating-2.png">2</option>
-    <option value="3" icon="img/rating/yellow-rating-3.png">3</option>
-    <option value="4" icon="img/rating/yellow-rating-4.png">4</option>
-    <option value="5" icon="img/rating/yellow-rating-5.png">5</option>
+  <selection name="orange.rating.icon.select">
+    <option value="0" icon="img/rating/orange-rating-0.png">0</option>
+    <option value="1" icon="img/rating/orange-rating-1.png">1</option>
+    <option value="2" icon="img/rating/orange-rating-2.png">2</option>
+    <option value="3" icon="img/rating/orange-rating-3.png">3</option>
+    <option value="4" icon="img/rating/orange-rating-4.png">4</option>
+    <option value="5" icon="img/rating/orange-rating-5.png">5</option>
   </selection>
 
 </object-views>
