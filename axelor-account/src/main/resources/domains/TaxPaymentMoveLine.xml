@@ -23,6 +23,16 @@
     <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
     <integer name="vatSystemSelect" title="VAT System" selection="iaccount.tax.payment.move.vat.system.select"/>
 
+	   <extra-code><![CDATA[
+
+	   	static final int NONE = 0;
+
+		// VAT SYSTEM SELECT
+		public static final int VAT_SYSTEM_DELIVERY = 1;
+		public static final int VAT_SYSTEM_PAYMENT = 2;
+
+	]]></extra-code>
+
   </entity>
 
 </domain-models>
