@@ -21,7 +21,8 @@
       initParam="true"/>
     <date name="date" column="date_val" title="Date" readonly="true" initParam="true"/>
     <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
-    <integer name="vatSystemSelect" title="VAT System" selection="iaccount.tax.payment.move.vat.system.select"/>
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.tax.payment.move.vat.system.select"/>
 
     <extra-code><![CDATA[
 
