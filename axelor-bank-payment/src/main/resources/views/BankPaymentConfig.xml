@@ -18,7 +18,7 @@
     </panel>
     <panel name="bankOrderDetailsPanel" title="Bank Order">
       <panel colSpan="12" name="detailsPanel">
-        <panel name="accountingSettingsPanel" title="Configurations comptables" colSpan="8">
+        <panel name="accountingSettingsPanel" title="Accounting settings" colSpan="8">
           <field name="internalBankToBankAccount"
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
             form-view="account-form"/>

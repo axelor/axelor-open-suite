@@ -2450,6 +2450,7 @@
 "Service types","Types de service (DAS2)",,
 "Session name","Nom de session",,
 "Session total amount","Montant total de la session",,
+"Session validation","Validation session",,
 "Set Active","Rendre actif",,
 "Set Inactive","Rendre inactif",,
 "Shift Reason (long term debt)","Motif de passage (créance + 6 mois)",,
