@@ -23,7 +23,7 @@
     <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
     <integer name="vatSystemSelect" title="VAT System" selection="iaccount.tax.payment.move.vat.system.select"/>
 
-	   <extra-code><![CDATA[
+	<extra-code><![CDATA[
 
 	   	static final int NONE = 0;
 
