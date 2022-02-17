@@ -245,11 +245,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrderLineList == null) {
       saleOrderLineList = new ArrayList<>();
     }
-    Integer sequence = -1;
-
-    if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
-      sequence = saleOrderLineList.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
-    }
 
     SaleOrderLine originSoLine = null;
     for (SaleOrderLine soLine : saleOrderLineList) {
@@ -302,8 +297,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
             newSoLine.setParentId(originSoLine.getManualId());
 
-            saleOrderLineList.add(newSoLine);
-            newSoLine.setSequence(++sequence);
+            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
+            saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
           newSoLine.setQty(
@@ -317,6 +312,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
+    }
+
+    for (int i = 0; i < saleOrderLineList.size(); i++) {
+      saleOrderLineList.get(i).setSequence(i);
     }
 
     return saleOrderLineList;
