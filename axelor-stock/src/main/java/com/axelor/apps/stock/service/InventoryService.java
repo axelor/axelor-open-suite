@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,9 +206,10 @@ public class InventoryService {
       String rack = line[headers.indexOf(RACK)].replace("\"", "");
       String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
 
-      BigDecimal realQty;
+      BigDecimal realQty = null;
       try {
-        realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)].replace("\"", ""));
+        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
+          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
       } catch (NumberFormatException e) {
         throw new AxelorException(
             new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
@@ -224,7 +225,8 @@ public class InventoryService {
 
       if (inventoryLineMap.containsKey(key)) {
         InventoryLine inventoryLine = inventoryLineMap.get(key);
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
 
         if (inventoryLine.getTrackingNumber() != null) {
@@ -268,7 +270,8 @@ public class InventoryService {
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
         inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(
             this.getTrackingNumber(trackingNumberSeq, product, realQty));
@@ -573,12 +576,13 @@ public class InventoryService {
             == null) { // if no tracking number on stockLocationLine, check if there is a tracking
           // number on the product
           long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
+              stockLocationLineList.stream()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
+                      sll ->
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
+                              && sll.getTrackingNumber() != null
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
@@ -714,7 +718,7 @@ public class InventoryService {
           }
         });
 
-    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq();
+    String fileName = computeExportFileName(inventory);
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
@@ -733,8 +737,18 @@ public class InventoryService {
     CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, file.getName());
+      return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
     }
+  }
+
+  public String computeExportFileName(Inventory inventory) {
+    return I18n.get("Inventory")
+        + "_"
+        + inventory.getInventorySeq()
+        + "_"
+        + appBaseService
+            .getTodayDate(inventory.getCompany())
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {

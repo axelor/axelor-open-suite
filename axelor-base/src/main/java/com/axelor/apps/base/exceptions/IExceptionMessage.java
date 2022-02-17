@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -438,4 +438,6 @@ public interface IExceptionMessage {
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
       "Please upload csv or txt or zip files only." /*)*/;
   public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
+  public static final String CITIES_IMPORT_FAILED = /*$$(*/
+      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }

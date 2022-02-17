@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.invoice.generator;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -42,7 +41,6 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -210,11 +208,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (product != null) {
-      Tax tax =
-          Beans.get(AccountManagementService.class)
-              .getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class).getTaxEquiv(partner.getFiscalPosition(), tax);
+          Beans.get(AccountManagementService.class)
+              .getProductTaxEquiv(product, company, partner.getFiscalPosition(), isPurchase);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }

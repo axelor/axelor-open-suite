@@ -1,3 +1,62 @@
+## [6.1.5] (2022-02-10)
+
+#### Changes
+
+* Move / Move lines: add functional origin tag in header.
+
+#### Fixed
+
+* ADDRESS: fix zip code not filled in demo data.
+* AdvancedExport: filter out transient fields in AdvancedExportLine form.
+* GEONAMES: fix NPE while importing cities from geonames.
+* PaymentVoucher: Fixed element to pay that was imputed to 0 when changing amount to pay and reloading due element.
+* Fiscal Position: fix issue where reverse charge tax lines on purchase order were not correctly generated.
+* Stock move: add server side check on status before realizing a stock move.
+* Budget: Fix budget lines update on cancelling a purchase order.
+* Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true.
+* Sale Order: Fix transaction issue when generating production order from sale order.
+* AppLoader: fix dashletbuilder import with json field of real model.
+* INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`).
+* MRP: fix NPE during computation when having multiple BOM levels.
+* BPM: Fix terminate and redeploy.
+
+Fix unique process id error on redeployment of bpm diagram.
+
+
+#### Removed
+
+* PrintingSettings: remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+
+## [6.1.4] (2022-01-14)
+
+#### Changes
+
+* BPM: Add new property `compulsory` for DMN
+
+The DMN node sometimes require a compulsory result, if no result are returned it should generate an error.
+Add compulsory boolean property to make DMN complosory and it's value will be true by default.
+
+* Chart Builder: Add support to open records on click.
+* Geonames: Addition of error log while importing geonames.
+
+#### Fixed
+
+* BPM: Fix logo on bpm studio.
+* INVENTORY: Fix exception when importing from a csv file with null values in quantity columns.
+* Sequence: fixed issue where the sequence count would increment after an exception cancelled the process.
+* Product: Remove blank space in purchase/costs tab in product form view.
+* Fixed assets: Fix typo in french translation.
+* PaymentVoucher: Fixed a bug where amount to pay in elements to pay were not correctly imputed.
+* STOCK: Fix filters of stock forecast menu entries.
+* Stock reservation: fix german translation of error message.
+* Sequence: Fix full name and prefix or suffix issue on data init.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* Meta Translation: Add missing english translation.
+* Event: fix NPE happening on start date update.
+* Advance import: Correctly apply 'find new' option when it is activated.
+* SaleOrder: fix details lines generation when adding a complementary product so the generated lines are displayed inside the title line.
+* HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract.
+
 ## [6.1.3] (2021-12-16)
 
 #### Fixed
@@ -326,6 +385,8 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5
+[6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4
 [6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
 [6.1.2]: https://github.com/axelor/axelor-open-suite/compare/v6.1.1...v6.1.2
 [6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1
