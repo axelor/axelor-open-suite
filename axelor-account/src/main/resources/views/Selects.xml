@@ -669,5 +669,10 @@
     <option value="9">9</option>
     <option value="10">10</option>
   </selection>
+  
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
+  </selection>
 
 </object-views>
