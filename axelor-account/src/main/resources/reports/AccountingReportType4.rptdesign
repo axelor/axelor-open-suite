@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -161,7 +161,7 @@ row["invoice_reconciled_date"]
 
 }
 else  {
-row["MoveLineDate"]
+row["due_date"]
 }</expression>
                     <property name="dataType">date</property>
                 </structure>
@@ -279,6 +279,12 @@ row["MoveLineDate"]
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">due_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">due_date</text-property>
+                    <text-property name="heading">due_date</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -377,21 +383,26 @@ row["MoveLineDate"]
                     </structure>
                     <structure>
                         <property name="position">17</property>
+                        <property name="name">due_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">date</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -512,13 +523,20 @@ row["MoveLineDate"]
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">due_date</property>
+                    <property name="nativeName">due_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineID", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
 AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
-AccountingReport.date_to as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, count(Reconcile.id) as countMoveLine,    
-MoveLine.date_val as "MoveLineDate"  
+COALESCE(AccountingReport.date_to, AccountingReport.date_val) as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, count(Reconcile.id) as countMoveLine,    
+MoveLine.date_val as "MoveLineDate", Invoice.due_date
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -540,24 +558,23 @@ left outer join public.account_move_line as MoveLineReconciled on (Reconcile.deb
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
 left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
-MoveLine.date_val <= AccountingReport.date_val and 
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-Account.reconcile_ok = true  
-AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+Account.reconcile_ok is true  
+AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-group by MoveLine.name,MoveLine.partner_full_name,partner_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,
-Invoice.invoice_id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
-AccountingReport.date_to,Reconcile.amount,MoveLine.amount_remaining,MoveLine.date_val]]></xml-property>
+group by MoveLine.name,MoveLine.partner_full_name,partner_name,MoveLine.partner_seq,AccountingReport.id,MoveLine.credit,MoveLine.debit,
+Invoice.id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
+Reconcile.amount,MoveLine.amount_remaining,MoveLine.date_val]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1715,8 +1732,8 @@ row["amount_remaining"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt; 30){
-row["amount_remaining"]
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) >= 0){
+row["amount_remaining"] 
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2192,8 +2209,8 @@ row["30&lt;days&lt;60"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 30){
-row["amount_remaining"]
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) >= 0){
+row["amount_remaining"] 
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2225,6 +2242,39 @@ row["amount_remaining"]
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">nonDue</property>
+                                <text-property name="displayName">nonDue</text-property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 0){
+row["amount_remaining"]
+}</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totNonDue</property>
+                                <text-property name="displayName">totNonDue</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 0){
+row["amount_remaining"] 
+}</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
@@ -2239,27 +2289,14 @@ row["amount_remaining"]
                         <column id="1170">
                             <property name="width">1.375in</property>
                         </column>
-                        <column id="6280">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="6288">
-                            <property name="width">1in</property>
-                        </column>
-                        <column id="1172">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="1173">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1174">
-                            <property name="width">0.8958333333333334in</property>
-                        </column>
-                        <column id="1551">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1559">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
+                        <column id="6329"/>
+                        <column id="6280"/>
+                        <column id="6288"/>
+                        <column id="1172"/>
+                        <column id="1173"/>
+                        <column id="1174"/>
+                        <column id="1551"/>
+                        <column id="1559"/>
                         <header>
                             <row id="1144">
                                 <cell id="1145">
@@ -2359,8 +2396,8 @@ row["amount_remaining"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="6275">
-                                    <property name="colSpan">7</property>
+                                <cell id="6324">
+                                    <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -2501,6 +2538,54 @@ row["amount_remaining"]
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6325">
+                                    <property name="backgroundColor">#E6E6FA</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">bottom</property>
+                                    <text id="6330">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType4.nonDue'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -2916,6 +3001,25 @@ row["amount_remaining"]
                                             <property name="resultSetColumn">SoldeClient</property>
                                         </data>
                                     </cell>
+                                    <cell id="6326">
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">#9C9C9C</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="6332">
+                                            <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">nonDue</property>
+                                        </data>
+                                    </cell>
                                     <cell id="6277">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3142,6 +3246,30 @@ row["amount_remaining"]
                                         <property name="resultSetColumn">SumClient</property>
                                     </data>
                                 </cell>
+                                <cell id="6327">
+                                    <property name="backgroundColor">#FFFFFF</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="6333">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">totNonDue</property>
+                                    </data>
+                                </cell>
                                 <cell id="6278">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -3342,8 +3470,8 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6279">
-                                    <property name="colSpan">4</property>
+                                <cell id="6328">
+                                    <property name="colSpan">5</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -3951,7 +4079,7 @@ row["amount_remaining"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 30){
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) >= 0){
 row["amount_remaining"]
 }</expression>
                                     </structure>
@@ -4006,7 +4134,7 @@ row["amount_remaining"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 30){
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) >= 0){
 row["amount_remaining"] 
 }</expression>
                                     </structure>
@@ -4022,6 +4150,39 @@ row["amount_remaining"]
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 30 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 60 ){
 row["amount_remaining"]
+}</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation</property>
+                                <text-property name="displayName">nonDue</text-property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 0){
+row["amount_remaining"]
+}</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totNonDue</property>
+                                <text-property name="displayName">totNonDue</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 0){
+row["amount_remaining"] 
 }</expression>
                                     </structure>
                                 </list-property>
@@ -4054,27 +4215,14 @@ row["amount_remaining"]
                         <column id="1771">
                             <property name="width">1.3229166666666667in</property>
                         </column>
-                        <column id="6305">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="6298">
-                            <property name="width">1in</property>
-                        </column>
-                        <column id="1721">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="1722">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1723">
-                            <property name="width">0.8958333333333334in</property>
-                        </column>
-                        <column id="1724">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1725">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
+                        <column id="6320"/>
+                        <column id="6305"/>
+                        <column id="6298"/>
+                        <column id="1721"/>
+                        <column id="1722"/>
+                        <column id="1723"/>
+                        <column id="1724"/>
+                        <column id="1725"/>
                         <header>
                             <row id="1616">
                                 <cell id="1617">
@@ -4223,8 +4371,8 @@ row["amount_remaining"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="6299">
-                                    <property name="colSpan">7</property>
+                                <cell id="6314">
+                                    <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4365,6 +4513,54 @@ row["amount_remaining"]
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6315">
+                                    <property name="backgroundColor">#E6E6FA</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">bottom</property>
+                                    <text id="6321">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType4TKMF.nonDue'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4791,6 +4987,17 @@ row["amount_remaining"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
+                                    <cell id="6316">
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">#9C9C9C</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                    </cell>
                                     <cell id="6301">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -4927,6 +5134,23 @@ row["amount_remaining"]
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_name"]</VALUE-OF>]]></text-property>
                                         </text>
+                                    </cell>
+                                    <cell id="6317">
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <data id="6322">
+                                            <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">Aggregation</property>
+                                        </data>
                                     </cell>
                                     <cell id="6302">
                                         <property name="borderLeftColor">#000000</property>
@@ -5148,6 +5372,31 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
+                                <cell id="6318">
+                                    <property name="backgroundColor">#FFFFFF</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="6323">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">totNonDue</property>
+                                    </data>
+                                </cell>
                                 <cell id="6303">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -5349,8 +5598,8 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6304">
-                                    <property name="colSpan">4</property>
+                                <cell id="6319">
+                                    <property name="colSpan">5</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>

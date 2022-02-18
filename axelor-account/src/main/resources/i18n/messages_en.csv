@@ -536,6 +536,7 @@
 "AccountingReportType4.from","FROM :",,
 "AccountingReportType4.fullName","Full name",,
 "AccountingReportType4.invoice","Invoice",,
+"AccountingReportType4.nonDue","Undue",,
 "AccountingReportType4.period","PERIOD :",,
 "AccountingReportType4.periodTotal","PERIOD TOTAL",,
 "AccountingReportType4.reference","Reference",,
