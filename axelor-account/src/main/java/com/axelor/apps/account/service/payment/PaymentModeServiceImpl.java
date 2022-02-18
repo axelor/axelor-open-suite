@@ -212,15 +212,11 @@ public class PaymentModeServiceImpl implements PaymentModeService {
   public boolean isUniqueAccountConfiguration(PaymentMode paymentMode) {
     if (paymentMode != null && CollectionUtils.isNotEmpty(paymentMode.getAccountManagementList())) {
       for (AccountManagement accountManagement : paymentMode.getAccountManagementList()) {
-        if (accountManagement.getBankDetails() != null
-            && accountManagement.getPaymentMode() != null
-            && accountManagement.getCompany() != null) {
+        if (accountManagement.getBankDetails() != null && accountManagement.getCompany() != null) {
           if (paymentMode.getAccountManagementList().stream()
                   .filter(
                       accountManagement1 ->
-                          accountManagement
-                                  .getPaymentMode()
-                                  .equals(accountManagement1.getPaymentMode())
+                          !accountManagement.equals(accountManagement1)
                               && accountManagement
                                   .getBankDetails()
                                   .equals(accountManagement1.getBankDetails())

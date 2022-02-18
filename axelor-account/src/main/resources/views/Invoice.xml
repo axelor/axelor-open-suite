@@ -473,7 +473,7 @@
         if="__config__.app.getApp('base').enableTradingNamesManagement"
         requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"
         readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet"
-        onChange="action-invoice-method-printing-settings-default-values"/>
+        onChange="action-invoice-group-trading-name-on-change"/>
       <field name="companyBankDetails" canEdit="false"
         onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -1571,6 +1571,11 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-trading-name-on-change">
+    <action name="action-invoice-method-printing-settings-default-values"/>
+    <action name="action-invoice-method-fill-company-bank-details"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">

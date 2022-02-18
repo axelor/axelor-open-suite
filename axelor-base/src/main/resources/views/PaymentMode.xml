@@ -11,7 +11,8 @@
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"
-    onLoad="action-method-account-set-read-only-if-in-move" width="large">
+    onLoad="action-method-account-set-read-only-if-in-move"
+    onSave="action-payment-mode-method-check-unique-account-configuration" width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -26,8 +27,7 @@
       <panel-related name="accountManagementListPanel" field="accountManagementList"
         grid-view="account-management-payment-mode-grid" form-view="account-management-form"
         domain="self.typeSelect = 3" colSpan="12" if-module="axelor-account"
-        if="__config__.app.isApp('account')"
-        onChange="action-payment-mode-method-check-unique-account-configuration"/>
+        if="__config__.app.isApp('account')"/>
       <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
         if="__config__.app.isApp('bank-payment')" hidden="true"
         hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">

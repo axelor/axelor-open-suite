@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -89,10 +90,13 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
         authorizedBankDetails = new ArrayList<>();
 
+        AppBaseService AppBaseService = Beans.get(AppBaseService.class);
         for (AccountManagement accountManagement : accountManagementList) {
-          if (accountManagement.getTradingName() != null
-              && accountManagement.getTradingName().equals(tradingName)) {
-            authorizedBankDetails.add(accountManagement.getBankDetails());
+          if (AppBaseService.getAppBase().getEnableTradingNamesManagement()) {
+            if (accountManagement.getTradingName() != null
+                && accountManagement.getTradingName().equals(tradingName)) {
+              authorizedBankDetails.add(accountManagement.getBankDetails());
+            }
           } else if (accountManagement.getCompany() != null
               && accountManagement.getCompany().equals(company)) {
             authorizedBankDetails.add(accountManagement.getBankDetails());
