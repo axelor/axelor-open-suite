@@ -232,12 +232,16 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       return;
     }
     for (MoveLine moveline : move.getMoveLineList()) {
-      if (!move.getMoveLineList().stream()
-          .filter(
-              moveLineToolService.isEqualTaxMoveLine(
-                  moveline.getTaxLine(), moveline.getVatSystemSelect(), moveline.getId()))
-          .collect(Collectors.<MoveLine>toList())
-          .isEmpty()) {
+      if (moveline.getAccount() != null
+          && moveline.getAccount().getAccountType() != null
+          && AccountTypeRepository.TYPE_TAX.equals(
+              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && !move.getMoveLineList().stream()
+              .filter(
+                  moveLineToolService.isEqualTaxMoveLine(
+                      moveline.getTaxLine(), moveline.getVatSystemSelect(), moveline.getId()))
+              .collect(Collectors.<MoveLine>toList())
+              .isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.SAME_TAX_MOVE_LINES));
       }
