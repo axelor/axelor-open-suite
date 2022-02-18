@@ -701,6 +701,8 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_SALEORDER = /*$$(*/
       "The sale order must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_PURCHASEORDER = /*$$(*/
+      "The purchase order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/

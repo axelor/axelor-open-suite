@@ -183,19 +183,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PriceList priceList,
       TradingName tradingName)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
     for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
       }
-      numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+      numSeq.append(purchaseOrderLocal.getPurchaseOrderSeq());
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (purchaseOrderLocal.getExternalReference() != null) {
-        externalRef += purchaseOrderLocal.getExternalReference();
+        externalRef.append(purchaseOrderLocal.getExternalReference());
       }
     }
 
@@ -206,8 +206,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             appBaseService.getTodayDate(company),
             priceList,
@@ -436,13 +436,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrderLines == null) {
       return null;
     }
-    List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
+    List<PurchaseOrderLine> linesToRemove = new ArrayList<>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
     }
-    if (linesToRemove.size() == 0) {
+    if (linesToRemove.isEmpty()) {
       return null;
     }
     for (PurchaseOrderLine lineToRemove : linesToRemove) {

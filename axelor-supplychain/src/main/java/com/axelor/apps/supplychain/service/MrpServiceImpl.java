@@ -25,12 +25,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -40,6 +40,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -62,12 +63,14 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -75,6 +78,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoper;
+import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -83,6 +88,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,11 +118,13 @@ public class MrpServiceImpl implements MrpService {
   protected MrpLineService mrpLineService;
   protected MrpForecastRepository mrpForecastRepository;
   protected StockLocationService stockLocationService;
-  protected ProductCategoryRepository productCategoryRepository;
-  protected StockHistoryLineRepository stockHistoryLineRepository;
+  protected MailMessageService mailMessageService;
+  protected UnitConversionService unitConversionService;
   protected ProductCategoryService productCategoryService;
+  protected StockHistoryLineRepository stockHistoryLineRepository;
 
   protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
   protected AppPurchaseService appPurchaseService;
 
   protected List<StockLocation> stockLocationList;
@@ -126,8 +134,6 @@ public class MrpServiceImpl implements MrpService {
 
   @Inject
   public MrpServiceImpl(
-      AppBaseService appBaseService,
-      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -139,10 +145,14 @@ public class MrpServiceImpl implements MrpService {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
+      ProductCategoryService productCategoryService,
       StockLocationService stockLocationService,
-      ProductCategoryRepository productCategoryRepository,
-      StockHistoryLineRepository stockHistoryLineRepository,
-      ProductCategoryService productCategoryService) {
+      MailMessageService mailMessageService,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      AppPurchaseService appPurchaseService,
+      StockHistoryLineRepository stockHistoryLineRepository) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -155,23 +165,29 @@ public class MrpServiceImpl implements MrpService {
     this.stockRulesService = stockRulesService;
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
-    this.productCategoryRepository = productCategoryRepository;
-
-    this.appBaseService = appBaseService;
-    this.appPurchaseService = appPurchaseService;
-    this.stockLocationService = stockLocationService;
-    this.stockHistoryLineRepository = stockHistoryLineRepository;
     this.productCategoryService = productCategoryService;
+    this.stockLocationService = stockLocationService;
+    this.mailMessageService = mailMessageService;
+    this.unitConversionService = unitConversionService;
+    this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
+    this.appPurchaseService = appPurchaseService;
+    this.stockHistoryLineRepository = stockHistoryLineRepository;
+  }
+
+  @Override
+  public void setMrp(Mrp mrp) {
+    this.mrp = mrp;
   }
 
   @Override
   public void runCalculation(Mrp mrp) throws AxelorException {
 
-    this.reset(mrp);
+    this.reset(mrpRepository.find(mrp.getId()));
 
     this.startMrp(mrpRepository.find(mrp.getId()));
     this.completeMrp(mrpRepository.find(mrp.getId()));
-    this.doCalulation(mrpRepository.find(mrp.getId()));
+    this.doCalculation(mrpRepository.find(mrp.getId()));
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
@@ -243,7 +259,7 @@ public class MrpServiceImpl implements MrpService {
     this.createStockHistoryMrpLines();
   }
 
-  protected void doCalulation(Mrp mrp) throws AxelorException {
+  protected void doCalculation(Mrp mrp) throws AxelorException {
 
     log.debug("Do calculation");
 
@@ -630,13 +646,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected boolean isProposalElement(MrpLineType mrpLineType) {
-
-    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-
-      return true;
-    }
-
-    return false;
+    return mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL;
   }
 
   protected void computeCumulativeQty() {
@@ -737,13 +747,12 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());
       if (!unit.equals(purchaseOrderLine.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    purchaseOrderLine.getUnit(),
-                    unit,
-                    qty,
-                    qty.scale(),
-                    purchaseOrderLine.getProduct());
+            unitConversionService.convert(
+                purchaseOrderLine.getUnit(),
+                unit,
+                qty,
+                qty.scale(),
+                purchaseOrderLine.getProduct());
       }
       MrpLine mrpLine =
           this.createMrpLine(
@@ -851,13 +860,12 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
       if (!unit.equals(saleOrderLine.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    saleOrderLine.getUnit(),
-                    unit,
-                    qty,
-                    saleOrderLine.getQty().scale(),
-                    saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(),
+                unit,
+                qty,
+                saleOrderLine.getQty().scale(),
+                saleOrderLine.getProduct());
       }
 
       MrpLine mrpLine =
@@ -1115,8 +1123,8 @@ public class MrpServiceImpl implements MrpService {
       BigDecimal qty = mrpForecast.getQty();
       if (!unit.equals(mrpForecast.getUnit())) {
         qty =
-            Beans.get(UnitConversionService.class)
-                .convert(mrpForecast.getUnit(), unit, qty, qty.scale(), mrpForecast.getProduct());
+            unitConversionService.convert(
+                mrpForecast.getUnit(), unit, qty, qty.scale(), mrpForecast.getProduct());
       }
       MrpLine mrpLine =
           this.createMrpLine(
@@ -1143,14 +1151,8 @@ public class MrpServiceImpl implements MrpService {
   }
 
   public boolean isBeforeEndDate(LocalDate maturityDate) {
-
-    if (maturityDate != null
-        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()))) {
-
-      return true;
-    }
-
-    return false;
+    return maturityDate != null
+        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()));
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {
@@ -1281,12 +1283,10 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
-        Set<ProductCategory> childProductCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          childProductCategorySet.addAll(
-              this.getProductCategories(productCategory, new HashSet<>(), 0));
+          productCategorySet.addAll(
+              productCategoryService.fetchChildrenCategoryList(productCategory));
         }
-        productCategorySet.addAll(childProductCategorySet);
       }
 
       productSet.addAll(
@@ -1347,15 +1347,9 @@ public class MrpServiceImpl implements MrpService {
   }
 
   public boolean isMrpProduct(Product product) {
-
-    if (product != null
+    return product != null
         && !product.getExcludeFromMrp()
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
-      return true;
-    }
-
-    return false;
+        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE);
   }
 
   protected void assignProductAndLevel(Set<Product> productList) throws AxelorException {
@@ -1516,9 +1510,39 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
+  public Mrp call() throws AxelorException {
+    final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+    try (RequestScoper.CloseableScope ignored = scope.open()) {
+      this.runCalculation(mrp);
+      mailMessageService.sendNotification(
+          AuthUtils.getUser(),
+          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
+          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
+          mrp.getId(),
+          mrp.getClass());
+    } catch (Exception e) {
+      onRunnerException(e);
+      throw e;
+    }
+    return mrp;
+  }
+
   @Transactional
-  public void onError(Mrp mrp, Exception e) {
-    reset(mrp);
+  protected void onRunnerException(Exception e) {
+    TraceBackService.trace(e);
+    mailMessageService.sendNotification(
+        AuthUtils.getUser(),
+        String.format(I18n.get(IExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
+        e.getMessage(),
+        mrp.getId(),
+        mrp.getClass());
+    this.reset(mrpRepository.find(mrp.getId()));
+    this.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
+  }
+
+  @Override
+  @Transactional
+  public void saveErrorInMrp(Mrp mrp, Exception e) {
     mrp.setErrorLog(e.getMessage());
   }
 
@@ -1547,32 +1571,5 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
-  }
-
-  protected Set<ProductCategory> getProductCategories(
-      ProductCategory productCategory, Set<ProductCategory> productCategorySet, int count) {
-
-    if (count > ITERATIONS) {
-      return productCategorySet;
-    }
-
-    List<ProductCategory> childProductCategoryList =
-        productCategoryRepository
-            .all()
-            .filter("self.parentProductCategory = ?1", productCategory)
-            .fetch();
-
-    productCategorySet.add(productCategory);
-    count++;
-
-    if (childProductCategoryList.isEmpty()) {
-      return productCategorySet;
-    }
-
-    for (ProductCategory category : childProductCategoryList) {
-      this.getProductCategories(category, productCategorySet, count);
-    }
-
-    return productCategorySet;
   }
 }

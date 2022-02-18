@@ -37,10 +37,10 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="updateTaskBtn" title="Update tasks"
-        onClick="save,action-project-invoicing-assistant-batch-method-update-task"
+        onClick="save,action-project-invoicing-assistant-batch-method-run-batch"
         showIf="actionSelect == 1"/>
       <button name="generateInvoicingProjectBtn" title="Generate invoicing projects"
-        onClick="save,action-project-invoicing-assistant-batch-method-generate-inv-project"
+        onClick="save,action-project-invoicing-assistant-batch-method-run-batch"
         showIf="actionSelect == 2"/>
     </panel>
   </form>
@@ -66,9 +66,9 @@
     <field name="deadlineDate" expr="eval: null" if="actionSelect == 1"/>
   </action-record>
 
-  <action-method name="action-project-invoicing-assistant-batch-method-update-task">
+  <action-method name="action-project-invoicing-assistant-batch-method-run-batch">
     <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
-      method="actionUpdateTask"/>
+      method="runBatch"/>
   </action-method>
 
   <action-method name="action-project-invoicing-assistant-batch-method-show-task">
@@ -80,12 +80,6 @@
     name="action-project-invoicing-assistant-batch-method-show-timesheet-line">
     <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
       method="showUpdatedTimesheetLine"/>
-  </action-method>
-
-  <action-method
-    name="action-project-invoicing-assistant-batch-method-generate-inv-project">
-    <call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController"
-      method="actionGenerateInvoicingProject"/>
   </action-method>
 
   <action-method
