@@ -88,11 +88,6 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
 
   public void checkSaleVatSystemPreconditions(Partner partner, Company company, Account account)
       throws AxelorException {
-    if (partner == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.MOVE_PARTNER_FOR_TAX_NOT_FOUND));
-    }
     if (company.getPartner() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -107,7 +102,7 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND),
           company.getName(),
-          partner.getFullName());
+          company.getPartner().getFullName());
     }
     if (accountingSituation.getVatSystemSelect() == null
         || accountingSituation.getVatSystemSelect()
@@ -116,7 +111,7 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND),
           company.getName(),
-          partner.getFullName());
+          company.getPartner().getFullName());
     }
     if (account.getVatSystemSelect() == null
         || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
