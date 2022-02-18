@@ -393,6 +393,7 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-method-generate-invoice-terms"/>
     <action name="save"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -601,6 +602,10 @@
 
   <action-method name="action-move-method-apply-cut-off-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
+  </action-method>
+
+  <action-method name="action-move-method-generate-invoice-terms">
+    <call class="com.axelor.apps.account.web.MoveController" method="generateInvoiceTerms"/>
   </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move"
