@@ -628,6 +628,7 @@
 "AccountingReportType4.fullName","Nom complet",,
 "AccountingReportType4.invoice","Facture",,
 "AccountingReportType4.invoiceRemainingAmount","Montant restant facture",,
+"AccountingReportType4.nonDue","Non échue",,
 "AccountingReportType4.period","PERIODE :",,
 "AccountingReportType4.periodTotal","TOTAL PERIODE",,
 "AccountingReportType4.reference","Référence",,
