@@ -805,17 +805,6 @@ public class MrpServiceImpl implements MrpService {
           filter += "AND self.saleOrder.oneoffSale IS TRUE";
         }
 
-        // Checking the late sales parameter
-        if (saleOrderMrpLineType.getLateSalesSelect()
-            == MrpLineTypeRepository.LATE_SALES_EXCLUDED) {
-          filter +=
-              "AND (self.estimatedDelivDate IS NULL OR self.estimatedDelivDate >= :todayDate)";
-        } else if (saleOrderMrpLineType.getLateSalesSelect()
-            == MrpLineTypeRepository.LATE_SALES_ONLY) {
-          filter +=
-              "AND self.estimatedDelivDate IS NOT NULL AND self.estimatedDelivDate < :todayDate";
-        }
-
         saleOrderLineList.addAll(
             saleOrderLineRepository
                 .all()
@@ -825,17 +814,21 @@ public class MrpServiceImpl implements MrpService {
                     this.stockLocationList,
                     SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
                     statusList)
-                .bind("todayDate", appBaseService.getTodayDate(mrp.getStockLocation().getCompany()))
                 .fetch());
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-          this.createSaleOrderMrpLines(
-              mrpRepository.find(mrp.getId()),
-              saleOrderLineRepository.find(saleOrderLine.getId()),
-              mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
-              statusList);
-          JPA.clear();
+          if (saleOrderLine.getSaleOrder() != null) {
+            // Checking the late sales parameter
+            if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
+              this.createSaleOrderMrpLines(
+                  mrpRepository.find(mrp.getId()),
+                  saleOrderLineRepository.find(saleOrderLine.getId()),
+                  mrpLineTypeRepository.find(saleOrderMrpLineType.getId()),
+                  statusList);
+              JPA.clear();
+            }
+          }
         }
       }
       // If the MRP's list of saleOrderLines is not empty, treat all the selected lines instead
@@ -866,25 +859,7 @@ public class MrpServiceImpl implements MrpService {
                       && Boolean.TRUE.equals(saleOrderLine.getSaleOrder().getOneoffSale()))) {
 
                 // Checking the late sales parameter
-                if (saleOrderMrpLineType.getLateSalesSelect()
-                        == MrpLineTypeRepository.LATE_SALES_INCLUDED
-                    || (saleOrderMrpLineType.getLateSalesSelect()
-                            == MrpLineTypeRepository.LATE_SALES_EXCLUDED
-                        && (saleOrderLine.getEstimatedDelivDate() == null
-                            || !saleOrderLine
-                                .getEstimatedDelivDate()
-                                .isBefore(
-                                    appBaseService.getTodayDate(
-                                        saleOrderLine.getSaleOrder().getCompany()))))
-                    || (saleOrderMrpLineType.getLateSalesSelect()
-                            == MrpLineTypeRepository.LATE_SALES_ONLY
-                        && saleOrderLine.getEstimatedDelivDate() != null
-                        && saleOrderLine
-                            .getEstimatedDelivDate()
-                            .isBefore(
-                                appBaseService.getTodayDate(
-                                    saleOrderLine.getSaleOrder().getCompany())))) {
-
+                if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
                   this.createSaleOrderMrpLines(
                       mrpRepository.find(mrp.getId()),
                       saleOrderLine,
@@ -898,6 +873,41 @@ public class MrpServiceImpl implements MrpService {
         }
       }
     }
+  }
+
+  /**
+   * Determine if the saleOrderLine should generate a SaleOrderMrpLine with regard to the late sales
+   * parameter of the mrpLineType
+   *
+   * @param saleOrderLine
+   * @param mrpLineType
+   * @return a boolean indicating if a line should be created
+   */
+  protected boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType) {
+    boolean createLine = true;
+
+    // Determine deliveryDate
+    LocalDate deliveryDate = saleOrderLine.getEstimatedDelivDate();
+    if (deliveryDate == null) {
+      deliveryDate = saleOrderLine.getSaleOrder().getDeliveryDate();
+    }
+    if (deliveryDate == null) {
+      deliveryDate = saleOrderLine.getDesiredDelivDate();
+    }
+
+    // Determine if a line should be created
+    LocalDate todayDate = appBaseService.getTodayDate(saleOrderLine.getSaleOrder().getCompany());
+    if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_EXCLUDED) {
+      if (deliveryDate != null && deliveryDate.isBefore(todayDate)) {
+        createLine = false;
+      }
+    } else if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_ONLY) {
+      if (deliveryDate == null || !deliveryDate.isBefore(todayDate)) {
+        createLine = false;
+      }
+    }
+
+    return createLine;
   }
 
   @Transactional(rollbackOn = {Exception.class})
