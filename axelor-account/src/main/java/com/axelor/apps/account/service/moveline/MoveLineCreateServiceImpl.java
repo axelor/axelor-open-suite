@@ -62,6 +62,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -74,7 +75,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      MoveLineConsolidateService moveLineConsolidateService,
+      MoveLineTaxService moveLineTaxService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -85,6 +87,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -581,7 +584,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
     }
-    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     MoveLine newOrUpdatedMoveLine = new MoveLine();
 
     newOrUpdatedMoveLine.setAccount(newAccount);
@@ -603,6 +607,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
     newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+    newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());

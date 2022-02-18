@@ -1044,4 +1044,25 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
+
+  static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing partner." /*)*/;
+
+  static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
+
+  static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
+
+  static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+
+  static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  static final String COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
 }

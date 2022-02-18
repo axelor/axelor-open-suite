@@ -104,10 +104,13 @@
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
-            onChange="action-account-record-uncheck-tax-required"/>
+            onChange="action-group-account-is-tax-authorized-onchange"/>
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+          <field name="vatSystemSelect" colSpan="4"
+            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"
+            requiredIf="accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income'"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
@@ -224,6 +227,11 @@
     <action name="action-account-account-method-new-analytic-dist-template"/>
   </action-group>
 
+  <action-group name="action-group-account-is-tax-authorized-onchange">
+    <action name="action-account-record-uncheck-tax-required"/>
+    <action name="action-record-account-tax-system-value"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -285,6 +293,12 @@
   <action-record name="action-account-record-uncheck-tax-required"
     model="com.axelor.apps.account.db.Account">
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
+  </action-record>
+
+  <action-record name="action-record-account-tax-system-value"
+    model="com.axelor.apps.account.db.Account">
+    <field name="vatSystemSelect" expr="eval: 0" if="!isTaxAuthorizedOnMoveLine"/>
+    <field name="vatSystemSelect" expr="eval: 1" if="isTaxAuthorizedOnMoveLine"/>
   </action-record>
 
   <action-method name="action-account-method-compute-balance">

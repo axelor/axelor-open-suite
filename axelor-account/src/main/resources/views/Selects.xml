@@ -459,10 +459,6 @@
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>
   </selection>
-  <selection name="account.tax.type.select">
-    <option value="1">Collection</option>
-    <option value="2">Debit</option>
-  </selection>
 
   <selection name="account.budget.status.select">
     <option value="1">Draft</option>
@@ -673,6 +669,24 @@
   <selection name="iaccount.tax.payment.move.vat.system.select">
     <option value="1">taxPaymentMove.Delivery</option>
     <option value="2">taxPaymentMove.Payment</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.select'>
+    <option value="0"></option>
+    <option value="1">Goods - Vat on deliveries</option>
+    <option value="2">Service - Vat on cash payments</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.partner.select'>
+    <option value="0"></option>
+    <option value="1">Common system</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.moveline.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
   </selection>
 
 </object-views>
