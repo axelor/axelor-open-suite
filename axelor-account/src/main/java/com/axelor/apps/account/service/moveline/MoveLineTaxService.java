@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -33,7 +32,8 @@ public interface MoveLineTaxService {
       throws AxelorException;
 
   MoveLine generateTaxPaymentMoveLineList(
-      MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException;
+      MoveLine customerPaymentMoveLine, MoveLine invoiceMoveLine, Reconcile reconcile)
+      throws AxelorException;
 
   Integer getVatSystem(Move move, MoveLine moveline) throws AxelorException;
 }
