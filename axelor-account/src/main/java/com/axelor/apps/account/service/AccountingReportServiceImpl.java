@@ -739,6 +739,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
+    this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_DELIVERY);
+
     this.addParams(
         "(self.moveLine.move.statusSelect = "
             + MoveRepository.STATUS_DAYBOOK
