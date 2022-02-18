@@ -34,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -71,15 +72,25 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       MoveLine customerPaymentMoveLine, MoveLine invoiceCustomerMoveLine, Reconcile reconcile)
       throws AxelorException {
     Move invoiceMove = invoiceCustomerMoveLine.getMove();
+    BigDecimal paymentAmount = reconcile.getAmount();
+    BigDecimal invoiceTotalAmount =
+        invoiceCustomerMoveLine.getCredit().add(invoiceCustomerMoveLine.getDebit());
     for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
       if (AccountTypeRepository.TYPE_TAX.equals(
           invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
 
         TaxLine taxLine = invoiceMoveLine.getTaxLine();
         BigDecimal vatRate = taxLine.getValue();
-        BigDecimal detailPaymentAmount =
+
+        BigDecimal baseAmount =
             (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
                 .divide(vatRate, 2, BigDecimal.ROUND_HALF_UP);
+
+        BigDecimal detailPaymentAmount =
+            baseAmount
+                .multiply(paymentAmount)
+                .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP);
 
         TaxPaymentMoveLine taxPaymentMoveLine =
             new TaxPaymentMoveLine(
