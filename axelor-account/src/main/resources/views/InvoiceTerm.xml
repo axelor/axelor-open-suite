@@ -18,6 +18,7 @@
     <field name="sequence"/>
     <field name="name"/>
     <field name="invoice"/>
+    <field name="tradingName" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="dueDate"/>
     <field name="amount"/>
     <field name="amountRemaining"/>
