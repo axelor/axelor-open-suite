@@ -384,7 +384,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      if (!this.checkAvailableTotalAmount(moveLine.getInvoiceTermList(), amount)) {
+      if (this.checkAvailableTotalAmount(moveLine.getInvoiceTermList(), amount)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
