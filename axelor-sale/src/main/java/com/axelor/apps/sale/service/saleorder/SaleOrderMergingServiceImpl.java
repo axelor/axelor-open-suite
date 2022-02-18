@@ -307,7 +307,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     if (saleOrdersToMerge.isEmpty()) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, "List of sale orders to merge is empty");
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          IExceptionMessage.SALE_ORDER_MERGE_LIST_EMPTY);
     }
 
     SaleOrder firstSaleOrder = saleOrdersToMerge.get(0);
@@ -329,12 +330,9 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
   protected boolean isConfirmationNeeded(SaleOrderMergingResult result) {
 
-    if (getChecks(result).isExistContactPartnerDiff()
+    return getChecks(result).isExistContactPartnerDiff()
         || getChecks(result).isExistPriceListDiff()
-        || getChecks(result).isExistTeamDiff()) {
-      return true;
-    }
-    return false;
+        || getChecks(result).isExistTeamDiff();
   }
 
   protected SaleOrder mergeSaleOrders(
