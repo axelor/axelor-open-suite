@@ -21,7 +21,21 @@ public class MoveComputeServiceImpl implements MoveComputeService {
         move.getMoveLineList().stream()
             .map(MoveLine::getCurrencyAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    values.put("$totalCurrency", totalCurrency.divide(BigDecimal.ONE.add(BigDecimal.ONE)));
+
+    if (totalCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      totalCurrency =
+          move.getMoveLineList().stream()
+              .map(
+                  moveLine -> {
+                    if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) < 0) {
+                      return moveLine.getCurrencyAmount().multiply(new BigDecimal(-1));
+                    }
+                    return moveLine.getCurrencyAmount();
+                  })
+              .reduce(BigDecimal.ZERO, BigDecimal::add)
+              .divide(BigDecimal.ONE.add(BigDecimal.ONE));
+    }
+    values.put("$totalCurrency", totalCurrency);
 
     BigDecimal totalDebit =
         move.getMoveLineList().stream()
