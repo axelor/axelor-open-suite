@@ -646,10 +646,16 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">legal_notice</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">vatSystemSelect</property>
+                    <property name="columnName">supplierVatSystemSelect</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">vatSystemSelect</text-property>
-                    <text-property name="heading">vatSystemSelect</text-property>
+                    <text-property name="displayName">supplierVatSystemSelect</text-property>
+                    <text-property name="heading">supplierVatSystemSelect</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">companyVatSystemSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">companyVatSystemSelect</text-property>
+                    <text-property name="heading">companyVatSystemSelect</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -974,7 +980,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">62</property>
-                        <property name="name">vatSystemSelect</property>
+                        <property name="name">supplierVatSystemSelect</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">63</property>
+                        <property name="name">companyVatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1410,8 +1421,15 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">62</property>
-                    <property name="name">vatSystemSelect</property>
-                    <property name="nativeName">vatSystemSelect</property>
+                    <property name="name">supplierVatSystemSelect</property>
+                    <property name="nativeName">supplierVatSystemSelect</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">63</property>
+                    <property name="name">companyVatSystemSelect</property>
+                    <property name="nativeName">companyVatSystemSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
@@ -1477,13 +1495,15 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	AccountingSituation.vat_system_select as "vatSystemSelect"
+	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
+	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
 left outer join base_app as AppSupplychain on AppSupplychain.code = 'supplychain'
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
+left outer join base_partner as CompanyPartner on (Company.partner = CompanyPartner.id)
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
@@ -1497,9 +1517,10 @@ left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
 left outer join stock_stock_move as StockMove on (StockMove.id = InvoiceStockMove.stock_move_set)
-left outer join account_accounting_situation as AccountingSituation on  Partner.id = AccountingSituation.partner
+left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
+left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
 where Invoice.id = ?
-and Invoice.company = AccountingSituation.company]]></xml-property>
+and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>
@@ -7253,9 +7274,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">vatSystemSelect</property>
-                    <text-property name="displayName">vatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
+                    <property name="name">supplierVatSystemSelect</property>
+                    <text-property name="displayName">supplierVatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">companyVatSystemSelect</property>
+                    <text-property name="displayName">companyVatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -7939,7 +7966,8 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["vatSystemSelect"] != 2</expression>
+                                                <expression name="valueExpr" type="javascript">((row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2) &amp;&amp; row._outer["supplierVatSystemSelect"] != 2)
+|| ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
