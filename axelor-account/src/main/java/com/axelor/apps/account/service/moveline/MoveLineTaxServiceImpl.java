@@ -28,6 +28,8 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -48,6 +50,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected AppBaseService appBaseService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepository;
+  protected TaxAccountToolService taxAccountToolService;
 
   @Inject
   public MoveLineTaxServiceImpl(
@@ -55,12 +58,14 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       TaxPaymentMoveLineService taxPaymentMoveLineService,
       AppBaseService appBaseService,
       MoveLineCreateService moveLineCreateService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      TaxAccountToolService taxAccountToolService) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
     this.appBaseService = appBaseService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveRepository = moveRepository;
+    this.taxAccountToolService = taxAccountToolService;
   }
 
   @Override
@@ -153,14 +158,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     Map<String, MoveLine> map = new HashMap<>();
     Map<String, MoveLine> newMap = new HashMap<>();
-
     while (moveLineItr.hasNext()) {
 
       MoveLine moveLine = moveLineItr.next();
 
       TaxLine taxLine = moveLine.getTaxLine();
       TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
-
       if (sourceTaxLine != null) {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
@@ -189,5 +192,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     moveLineList.addAll(newMap.values());
     moveRepository.save(move);
+  }
+
+  @Override
+  public int getVatSystem(Move move, MoveLine moveline) throws AxelorException {
+    Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
+    return taxAccountToolService.calculateVatSystem(
+        move.getJournal(), partner, move.getCompany(), moveline.getAccount());
   }
 }
