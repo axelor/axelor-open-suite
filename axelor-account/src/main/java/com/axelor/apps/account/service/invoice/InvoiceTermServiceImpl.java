@@ -669,6 +669,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     invoiceTerm.setPaymentSession(paymentSession);
+    invoiceTerm.setIsSelectedOnPaymentSession(true);
+
     if (nextSessionDate != null
         && (financialDiscountDeadlineDate != null
                 && (financialDiscountDeadlineDate.isAfter(nextSessionDate)
@@ -687,7 +689,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 && discountDelay != null
                 && (dueDate.minusDays(discountDelay).isAfter(paymentDate)
                     || dueDate.minusDays(discountDelay).isEqual(paymentDate)))) {
-      invoiceTerm.setIsSelectedOnPaymentSession(true);
       invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setPaymentAmount(
           invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
