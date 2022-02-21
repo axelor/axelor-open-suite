@@ -608,7 +608,7 @@
 "Invalid bank url. It must be start with http:// or https://","Url de la banque invalide. L'Url doit commencer par http:// ou https://",,
 "Invalid order id \""%s\""","Order id invalide \""%s\""",,
 "Invoice","Facture",,
-"Invoices to be processed",,,
+"Invoices to be processed","Factures traitables",,
 "Is posted","Est comptabilisé",,
 "Is selected bank reconciliation","Réconciliation sélectionnée",,
 "Issuer","Emetteur",,
