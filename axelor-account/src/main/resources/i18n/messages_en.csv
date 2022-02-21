@@ -1577,6 +1577,7 @@
 "Invoice.invoiceNo","INVOICE N°",,
 "Invoice.note","Note",,
 "Invoice.of","of",,
+"Invoice.optionOnDeliveries","VAT paid on debit notes",,
 "Invoice.originalInvoice","Original invoice",,
 "Invoice.paymentTerms","Payment terms",,
 "Invoice.priceExclTax","Price excl. Tax",,

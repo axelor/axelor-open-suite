@@ -1577,6 +1577,7 @@
 "Invoice.invoiceNo","FACTURE N°",,
 "Invoice.note","Remarques",,
 "Invoice.of","de",,
+"Invoice.optionOnDeliveries","TVA acquittée sur les débits",,
 "Invoice.originalInvoice","Facture d'origine",,
 "Invoice.paymentTerms","Conditions de paiement",,
 "Invoice.priceExclTax","Prix HT",,

@@ -803,6 +803,8 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
   public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
       "Invoice.headOfficeAddress"; /*)*/
+  public static final String INVOICE_REPORT_OPTION_ON_DELIVERIES = /*$$(*/
+      "Invoice.optionOnDeliveries"; /*)*/
 
   public static final String PAYMENT_REMINDER_PAYMENT_REMINDER =
       /*$$(*/ "PaymentReminder.payment_reminder"; /*)*/
