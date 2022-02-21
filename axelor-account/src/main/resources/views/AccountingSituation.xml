@@ -72,8 +72,7 @@
     <panel name="vatSystemPanel" title="VAT System"
       showIf="partner.isCustomer == true || partner.isSupplier == true">
       <field name="vatSystemSelect"
-        showIf="partner.isCustomer == true || partner.isSupplier == true"
-        requiredIf="partner.isCustomer == true || partner.isSupplier == true"/>
+        showIf="partner.isCustomer == true || partner.isSupplier == true"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>

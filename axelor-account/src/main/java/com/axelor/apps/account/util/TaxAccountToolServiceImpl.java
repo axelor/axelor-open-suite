@@ -26,8 +26,8 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
   }
 
   @Override
-  public Integer calculateVatSystem(
-      Journal journal, Partner partner, Company company, Account account) throws AxelorException {
+  public int calculateVatSystem(Journal journal, Partner partner, Company company, Account account)
+      throws AxelorException {
     AccountingSituation accountingSituation = null;
     if (journal.getJournalType().getTechnicalTypeSelect()
         == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
@@ -42,7 +42,7 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
     if (accountingSituation != null) {
       if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-        return account.getVatSystemSelect();
+        return account.getVatSystemSelect().intValue();
       } else if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_DELIVERY) {
         return MoveLineRepository.VAT_COMMON_SYSTEM;

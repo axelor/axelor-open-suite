@@ -109,8 +109,7 @@
             widget="boolean-switch"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
           <field name="vatSystemSelect" colSpan="4"
-            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"
-            requiredIf="accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income'"/>
+            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">

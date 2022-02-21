@@ -8,6 +8,6 @@ import com.axelor.exception.AxelorException;
 
 public interface TaxAccountToolService {
 
-  Integer calculateVatSystem(Journal journal, Partner partner, Company company, Account account)
+  int calculateVatSystem(Journal journal, Partner partner, Company company, Account account)
       throws AxelorException;
 }
