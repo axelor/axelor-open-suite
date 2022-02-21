@@ -1126,6 +1126,7 @@
 "Default income account","Compte de produit par défaut",,
 "Default service type","Type de service (DAS2) par défaut",,
 "Default tax","Taxe par défaut",,
+"Default value for generated move validation","Valeur par défaut pour la validation des écritures générées",,
 "Deferred incomes account","Compte de produit constaté d'avance",,
 "Degressive","Dégressif",,
 "Degressive coef","Coefficient de dégressivité",,

@@ -1126,6 +1126,7 @@
 "Default income account",,,
 "Default service type",,,
 "Default tax",,,
+"Default value for generated move validation",,,
 "Deferred incomes account",,,
 "Degressive",,,
 "Degressive coef",,,
