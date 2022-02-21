@@ -30,7 +30,6 @@
       <panel name="paymentSessionPanel" title="Payment session" if-module="axelor-account"
         if="__config__.app.isApp('account')">
         <field name="canSelectInPaymentSession"
-          readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"
           onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
         <field name="daysMarginOnPaySession" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession" min="0"/>
