@@ -132,7 +132,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
             .domain("self.typeSelect = :_typeSelect")
-            .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)
+            .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
             .param("search-filters", "project-task-filters")
             .param(
                 "kanban-hide-columns",

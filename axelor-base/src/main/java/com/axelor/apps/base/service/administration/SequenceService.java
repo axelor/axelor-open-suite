@@ -54,23 +54,23 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SequenceService {
 
-  private static final String DRAFT_PREFIX = "#";
+  protected static final String DRAFT_PREFIX = "#";
 
-  private static final String PATTERN_FULL_YEAR = "%YYYY",
-      PATTERN_YEAR = "%YY",
-      PATTERN_MONTH = "%M",
-      PATTERN_FULL_MONTH = "%FM",
-      PATTERN_DAY = "%D",
-      PATTERN_WEEK = "%WY",
-      PADDING_STRING = "0";
+  protected static final String PATTERN_FULL_YEAR = "%YYYY";
+  protected static final String PATTERN_YEAR = "%YY";
+  protected static final String PATTERN_MONTH = "%M";
+  protected static final String PATTERN_FULL_MONTH = "%FM";
+  protected static final String PATTERN_DAY = "%D";
+  protected static final String PATTERN_WEEK = "%WY";
+  protected static final String PADDING_STRING = "0";
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final SequenceVersionRepository sequenceVersionRepository;
+  protected final SequenceVersionRepository sequenceVersionRepository;
 
-  private final AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
 
-  private final SequenceRepository sequenceRepo;
+  protected final SequenceRepository sequenceRepo;
 
   @Inject
   public SequenceService(
@@ -91,9 +91,9 @@ public class SequenceService {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
     return seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR);
   }
@@ -106,26 +106,21 @@ public class SequenceService {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
     return (seq.contains(PATTERN_MONTH) || seq.contains(PATTERN_FULL_MONTH))
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
   public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replace("%", "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replace("%", "");
 
     return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public Sequence getSequence(String code, Company company) {
 
     if (code == null) {
@@ -138,21 +133,11 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code) {
 
     return this.getSequenceNumber(code, null);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code, Company company) {
 
     Sequence sequence = getSequence(code, company);
@@ -164,11 +149,6 @@ public class SequenceService {
     return this.getSequenceNumber(sequence, appBaseService.getTodayDate(company));
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
@@ -202,12 +182,12 @@ public class SequenceService {
     return nextSeq;
   }
 
-  private String computeNextSeq(
+  protected String computeNextSeq(
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        sequenceValue;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String sequenceValue;
 
     if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
       sequenceValue =
@@ -218,12 +198,12 @@ public class SequenceService {
     }
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
-            .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
-            .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
-            .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
-            .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
-            .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
-            .replaceAll(
+            .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+            .replace(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+            .replace(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+            .replace(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replace(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+            .replace(
                 PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
     log.debug("nextSeq : : : : {}", nextSeq);
@@ -244,7 +224,7 @@ public class SequenceService {
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  private String findNextLetterSequence(SequenceVersion sequenceVersion) {
+  protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
     long n = sequenceVersion.getNextNum();
     char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
     for (int i = buf.length - 1; i >= 0; i--) {
