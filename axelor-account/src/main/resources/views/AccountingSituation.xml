@@ -72,6 +72,11 @@
       <field name="partner.isCustomer" hidden="true"/>
       <field name="partner.isSupplier" hidden="true"/>
     </panel>
+    <panel name="vatSystemPanel" title="VAT System"
+      showIf="partner.isCustomer == true || partner.isSupplier == true">
+      <field name="vatSystemSelect"
+        showIf="partner.isCustomer == true || partner.isSupplier == true"/>
+    </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
       <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>
