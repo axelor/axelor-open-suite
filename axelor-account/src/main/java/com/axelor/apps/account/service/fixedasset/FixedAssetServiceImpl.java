@@ -47,6 +47,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,6 +344,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Transactional
   public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
+
+    if (fixedAsset.getCorrectedAccountingValue().signum() == 0) {
+      Optional<FixedAssetLine> optFixedAssetLine =
+          fixedAssetLineService.findOldestFixedAssetLine(
+              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED, 0);
+      if (optFixedAssetLine.isPresent()) {
+        fixedAsset.setCorrectedAccountingValue(optFixedAssetLine.get().getAccountingValue());
+      }
+    }
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (correctedAccountingValue != null
         && correctedAccountingValue.signum() != 0
