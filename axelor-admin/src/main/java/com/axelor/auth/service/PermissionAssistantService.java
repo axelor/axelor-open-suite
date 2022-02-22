@@ -184,13 +184,7 @@ public class PermissionAssistantService {
   }
 
   public Comparator<Object> compareField() {
-
-    return new Comparator<Object>() {
-      @Override
-      public int compare(Object field1, Object field2) {
-        return ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
-      }
-    };
+    return (field1, field2) -> ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
   }
 
   private void writeObject(
