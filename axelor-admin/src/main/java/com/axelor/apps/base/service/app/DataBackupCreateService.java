@@ -89,7 +89,8 @@ public class DataBackupCreateService {
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
-  protected boolean notNullReferenceFlag, referenceFlag;
+  protected boolean notNullReferenceFlag;
+  protected boolean referenceFlag;
   protected boolean byteArrFieldFlag = false;
 
   protected static Set<String> exceptColumnNameList =
