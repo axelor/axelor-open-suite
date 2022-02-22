@@ -95,9 +95,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (property == null || property.isRequired()) {
       return;
     }
-    for (Model record : data) {
-      mapper.set(record, path, null);
-      JPA.save(record);
+    for (Model model : data) {
+      mapper.set(model, path, null);
+      JPA.save(model);
     }
   }
 
@@ -121,9 +121,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           I18n.get(IExceptionMessages.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
-    for (Model record : data) {
-      mapper.set(record, path, object);
-      JPA.save(record);
+    for (Model model : data) {
+      mapper.set(model, path, object);
+      JPA.save(model);
     }
   }
 

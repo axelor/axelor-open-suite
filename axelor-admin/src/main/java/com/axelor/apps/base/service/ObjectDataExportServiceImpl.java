@@ -190,12 +190,12 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     List<Map> records = query.select(fieldsData[0]).fetch(0, 0);
 
-    for (Map<String, Object> record : records) {
+    for (Map<String, Object> recordMap : records) {
 
       List<String> datas = new ArrayList<>();
 
       for (String field : fieldsData[0]) {
-        Object object = record.get(field);
+        Object object = recordMap.get(field);
         if (object == null) {
           datas.add("");
           continue;
@@ -252,10 +252,10 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
       XSSFSheet sheet = workBook.createSheet(modelEntry.getKey());
       int count = 0;
-      for (String[] record : modelEntry.getValue()) {
+      for (String[] recordArray : modelEntry.getValue()) {
         XSSFRow row = sheet.createRow(count);
         int cellCount = 0;
-        for (String val : record) {
+        for (String val : recordArray) {
           XSSFCell cell = row.createCell(cellCount);
           cell.setCellValue(val);
           cellCount++;
