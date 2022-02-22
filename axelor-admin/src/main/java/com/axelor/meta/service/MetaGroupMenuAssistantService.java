@@ -62,15 +62,25 @@ import org.slf4j.LoggerFactory;
 
 public class MetaGroupMenuAssistantService {
 
-  @Inject private MetaGroupMenuAssistantRepository menuAssistantRepository;
+  protected MetaGroupMenuAssistantRepository menuAssistantRepository;
+  protected GroupRepository groupRepository;
+  protected MetaMenuRepository menuRepository;
+  protected RoleRepository roleRepository;
+  protected MetaFiles metaFiles;
 
-  @Inject private GroupRepository groupRepository;
-
-  @Inject private MetaMenuRepository menuRepository;
-
-  @Inject private RoleRepository roleRepository;
-
-  @Inject private MetaFiles metaFiles;
+  @Inject
+  public MetaGroupMenuAssistantService(
+      MetaGroupMenuAssistantRepository menuAssistantRepository,
+      GroupRepository groupRepository,
+      MetaMenuRepository menuRepository,
+      RoleRepository roleRepository,
+      MetaFiles metaFiles) {
+    this.menuAssistantRepository = menuAssistantRepository;
+    this.groupRepository = groupRepository;
+    this.menuRepository = menuRepository;
+    this.roleRepository = roleRepository;
+    this.metaFiles = metaFiles;
+  }
 
   private List<String> badGroups = new ArrayList<>();
 
@@ -213,9 +223,7 @@ public class MetaGroupMenuAssistantService {
       rows.add(menu);
     }
 
-    Collections.sort(
-        rows,
-        (first, second) -> first[0].compareTo(second[0]));
+    Collections.sort(rows, (first, second) -> first[0].compareTo(second[0]));
 
     rows.add(0, groupRow);
   }

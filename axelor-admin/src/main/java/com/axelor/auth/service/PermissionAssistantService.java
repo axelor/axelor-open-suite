@@ -46,7 +46,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -68,7 +67,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +182,8 @@ public class PermissionAssistantService {
   }
 
   public Comparator<Object> compareField() {
-    return (field1, field2) -> ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
+    return (field1, field2) ->
+        ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
   }
 
   private void writeObject(
