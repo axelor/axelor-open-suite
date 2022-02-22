@@ -165,8 +165,7 @@ public class MetaGroupMenuAssistantService {
     return rows;
   }
 
-  private String[] getGroupRow(String[] row, MetaGroupMenuAssistant groupMenuAssistant)
-      throws IOException {
+  private String[] getGroupRow(String[] row, MetaGroupMenuAssistant groupMenuAssistant) {
 
     List<String> groupList = new ArrayList<>();
     if (row != null) {
@@ -345,8 +344,7 @@ public class MetaGroupMenuAssistantService {
   }
 
   private void importMenus(
-      String[] row, String[] groupRow, Map<String, Object> groupMap, Group admin)
-      throws IOException {
+      String[] row, String[] groupRow, Map<String, Object> groupMap, Group admin) {
 
     List<MetaMenu> menus =
         menuRepository.all().filter("self.name = ?1", row[0]).order("-priority").fetch();
