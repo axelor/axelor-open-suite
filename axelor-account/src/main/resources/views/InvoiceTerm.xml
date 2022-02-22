@@ -132,7 +132,7 @@
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountAmount" readonly="true"/>
-        <field name="remainingAmountAfterFinDiscount"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
         <field name="invoice.financialDiscountDeadlineDate"/>
         <field name="invoice.company" hidden="true"/>
       </panel>

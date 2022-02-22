@@ -782,9 +782,9 @@ InvoiceSet.length > 0))"
                  showIf="financialDiscount"/>
           <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
             <field name="financialDiscountRate"/>
-            <field name="financialDiscountAmount"/>
-            <field name="financialDiscountTotalAmount"/>
-            <field name="remainingAmountAfterFinDiscount"/>
+            <field name="financialDiscountAmount" readonly="true"/>
+            <field name="financialDiscountTotalAmount" readonly="true"/>
+            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
           </panel>
         </panel>
 
