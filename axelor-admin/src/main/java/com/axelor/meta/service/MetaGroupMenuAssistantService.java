@@ -48,7 +48,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -218,13 +217,7 @@ public class MetaGroupMenuAssistantService {
 
     Collections.sort(
         rows,
-        new Comparator<String[]>() {
-
-          @Override
-          public int compare(String[] first, String[] second) {
-            return first[0].compareTo(second[0]);
-          }
-        });
+        (first, second) -> first[0].compareTo(second[0]));
 
     rows.add(0, groupRow);
   }
