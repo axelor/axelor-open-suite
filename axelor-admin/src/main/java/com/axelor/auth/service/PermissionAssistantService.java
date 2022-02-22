@@ -282,11 +282,11 @@ public class PermissionAssistantService {
                 field.getName())
             .fetchOne();
     if (rule != null) {
-      row[colIndex++] = rule.getCanRead() == false ? "" : "x";
-      row[colIndex++] = rule.getCanWrite() == false ? "" : "x";
+      row[colIndex++] = !rule.getCanRead() ? "" : "x";
+      row[colIndex++] = !rule.getCanWrite() ? "" : "x";
       row[colIndex++] = "";
       row[colIndex++] = "";
-      row[colIndex++] = rule.getCanExport() == false ? "" : "x";
+      row[colIndex++] = !rule.getCanExport() ? "" : "x";
       row[colIndex++] = "";
       row[colIndex++] = "";
       row[colIndex++] =
@@ -303,11 +303,11 @@ public class PermissionAssistantService {
     Permission perm = permissionRepository.findByName(permName);
 
     if (perm != null && perm.getObject().equals(object.getFullName())) {
-      row[colIndex++] = perm.getCanRead() == false ? "" : "x";
-      row[colIndex++] = perm.getCanWrite() == false ? "" : "x";
-      row[colIndex++] = perm.getCanCreate() == false ? "" : "x";
-      row[colIndex++] = perm.getCanRemove() == false ? "" : "x";
-      row[colIndex++] = perm.getCanExport() == false ? "" : "x";
+      row[colIndex++] = !perm.getCanRead() ? "" : "x";
+      row[colIndex++] = !perm.getCanWrite() ? "" : "x";
+      row[colIndex++] = !perm.getCanCreate() ? "" : "x";
+      row[colIndex++] = !perm.getCanRemove() ? "" : "x";
+      row[colIndex++] = !perm.getCanExport() ? "" : "x";
       row[colIndex++] = Strings.isNullOrEmpty(perm.getCondition()) ? "" : perm.getCondition();
       row[colIndex++] =
           Strings.isNullOrEmpty(perm.getConditionParams()) ? "" : perm.getConditionParams();
