@@ -157,7 +157,7 @@ public class PermissionAssistantService {
     Integer count = header.size();
     ResourceBundle bundle = I18n.getBundle(new Locale(assistant.getLanguage()));
 
-    List<String> headerRow = new ArrayList<String>();
+    List<String> headerRow = new ArrayList<>();
     headerRow.addAll(getTranslatedStrings(header, bundle));
     if (assistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
       groupRow = new String[header.size() + (assistant.getGroupSet().size() * groupHeader.size())];
@@ -478,8 +478,8 @@ public class PermissionAssistantService {
 
   private Map<String, Group> checkBadGroups(String[] groupRow) {
 
-    List<String> badGroups = new ArrayList<String>();
-    Map<String, Group> groupMap = new HashMap<String, Group>();
+    List<String> badGroups = new ArrayList<>();
+    Map<String, Group> groupMap = new HashMap<>();
 
     for (Integer glen = header.size() + 1; glen < groupRow.length; glen += groupHeader.size()) {
 
@@ -501,8 +501,8 @@ public class PermissionAssistantService {
 
   private Map<String, Role> checkBadRoles(String[] roleRow) {
 
-    List<String> badroles = new ArrayList<String>();
-    Map<String, Role> roleMap = new HashMap<String, Role>();
+    List<String> badroles = new ArrayList<>();
+    Map<String, Role> roleMap = new HashMap<>();
 
     for (Integer len = header.size() + 1; len < roleRow.length; len += groupHeader.size()) {
 
@@ -542,7 +542,7 @@ public class PermissionAssistantService {
       Boolean fieldBoolean)
       throws IOException {
 
-    Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+    Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
     String[] row = csvReader.readNext();
@@ -584,7 +584,7 @@ public class PermissionAssistantService {
       Boolean fieldPermission)
       throws IOException {
 
-    Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
+    Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
     String[] row = csvReader.readNext();

@@ -137,7 +137,7 @@ public class MetaGroupMenuAssistantService {
       throws IOException {
 
     MetaFile metaFile = groupMenuAssistant.getMetaFile();
-    List<String[]> rows = new ArrayList<String[]>();
+    List<String[]> rows = new ArrayList<>();
     if (metaFile != null) {
       File csvFile = MetaFiles.getPath(metaFile).toFile();
       logger.debug("File name: {}", csvFile.getAbsolutePath());
@@ -161,7 +161,7 @@ public class MetaGroupMenuAssistantService {
   private String[] getGroupRow(String[] row, MetaGroupMenuAssistant groupMenuAssistant)
       throws IOException {
 
-    List<String> groupList = new ArrayList<String>();
+    List<String> groupList = new ArrayList<>();
     if (row != null) {
       groupList.addAll(Arrays.asList(row));
     } else {
@@ -262,7 +262,7 @@ public class MetaGroupMenuAssistantService {
 
   private Map<String, Object> checkGroups(String[] groupRow) {
 
-    Map<String, Object> groupMap = new HashMap<String, Object>();
+    Map<String, Object> groupMap = new HashMap<>();
 
     for (Integer glen = 2; glen < groupRow.length; glen++) {
 
@@ -280,7 +280,7 @@ public class MetaGroupMenuAssistantService {
 
   private Map<String, Role> checkRoles(String[] roleRow) {
 
-    Map<String, Role> roleMap = new HashMap<String, Role>();
+    Map<String, Role> roleMap = new HashMap<>();
 
     for (Integer rlen = 2; rlen < roleRow.length; rlen++) {
 
