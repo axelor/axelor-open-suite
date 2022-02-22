@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -229,15 +230,16 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
     try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
-      for (String model : data.keySet()) {
-        File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
+      for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+        File modelFile = MetaFiles.createTempFile(modelEntry.getKey(), ".csv").toFile();
         CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-        writer.writeAll(data.get(model));
+        writer.writeAll(modelEntry.getValue());
         writer.close();
-        zout.putNextEntry(new ZipEntry(model + ".csv"));
+        zout.putNextEntry(new ZipEntry(modelEntry.getKey() + ".csv"));
         zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
         zout.closeEntry();
       }
+
       zout.close();
     }
     return metaFiles.upload(zipFile);
@@ -247,10 +249,10 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
-    for (String model : data.keySet()) {
-      XSSFSheet sheet = workBook.createSheet(model);
+    for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+      XSSFSheet sheet = workBook.createSheet(modelEntry.getKey());
       int count = 0;
-      for (String[] record : data.get(model)) {
+      for (String[] record : modelEntry.getValue()) {
         XSSFRow row = sheet.createRow(count);
         int cellCount = 0;
         for (String val : record) {

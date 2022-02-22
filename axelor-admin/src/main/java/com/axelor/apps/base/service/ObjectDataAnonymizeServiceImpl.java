@@ -42,6 +42,7 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
@@ -135,18 +136,17 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
     Map<String, Object> defaultValues = getDefaultValues(mapper, fields);
 
-    for (Model record : data) {
-      for (String field : defaultValues.keySet()) {
-        Object object = defaultValues.get(field);
-        mapper.set(record, field, object);
+    for (Model model : data) {
+      for (Entry<String, Object> fieldEntry : defaultValues.entrySet()) {
+        mapper.set(model, fieldEntry.getKey(), fieldEntry.getValue());
       }
-      JPA.save(record);
+      JPA.save(model);
 
       mailMessageRepo
           .all()
           .filter(
               "self.relatedId = ?1 AND self.relatedModel = ?2",
-              record.getId(),
+              model.getId(),
               mapper.getBeanClass().getName())
           .delete();
     }
