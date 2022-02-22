@@ -686,8 +686,8 @@
 
   <selection name='iaccount.vat.system.invoice.line.tax.select'>
     <option value="0"></option>
-    <option value="1">Common system</option>
-    <option value="2">Option on deliveries</option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
   </selection>
 
 </object-views>
