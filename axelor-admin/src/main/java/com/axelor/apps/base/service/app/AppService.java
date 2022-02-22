@@ -30,24 +30,24 @@ import java.util.Collection;
 
 public interface AppService {
 
-  public App importDataDemo(App app) throws AxelorException;
+  public App importDataDemo(App app) throws AxelorException, IOException;
 
   public Model getApp(String type);
 
   public boolean isApp(String type);
 
-  public App installApp(App app, String language) throws AxelorException;
+  public App installApp(App app, String language) throws AxelorException, IOException;
 
   public App unInstallApp(App app) throws AxelorException;
 
   public void refreshApp() throws IOException, ClassNotFoundException;
 
   public void bulkInstall(Collection<App> apps, Boolean importDeomo, String language)
-      throws AxelorException;
+      throws AxelorException, IOException;
 
-  public App importRoles(App app) throws AxelorException;
+  public App importRoles(App app) throws AxelorException, IOException;
 
-  public void importRoles() throws AxelorException;
+  public void importRoles() throws AxelorException, IOException;
 
   public String getDataExportDir() throws AxelorException;
 

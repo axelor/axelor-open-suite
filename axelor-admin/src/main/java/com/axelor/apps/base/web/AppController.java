@@ -49,7 +49,7 @@ import java.util.Set;
 public class AppController {
 
   public void importDataDemo(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
@@ -60,7 +60,8 @@ public class AppController {
     response.setReload(true);
   }
 
-  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void installApp(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
@@ -112,7 +113,8 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
-  public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void bulkInstall(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     Context context = request.getContext();
 
@@ -173,7 +175,8 @@ public class AppController {
             .map());
   }
 
-  public void importRoles(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void importRoles(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
 
@@ -185,7 +188,7 @@ public class AppController {
   }
 
   public void importAllRoles(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     Beans.get(AppService.class).importRoles();
 
