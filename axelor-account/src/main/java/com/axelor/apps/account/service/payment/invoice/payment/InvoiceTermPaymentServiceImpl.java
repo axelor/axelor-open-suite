@@ -111,25 +111,48 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount) {
+    int invoiceTermCount = invoiceTermsToPay.size();
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    InvoiceTerm invoiceTermToPay;
 
-    for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
-      if (availableAmount.compareTo(BigDecimal.ZERO) > 0) {
-        BigDecimal invoiceTermAmount = invoiceTerm.getAmountRemaining();
+    int i = 0;
+    while (i < invoiceTermCount && availableAmount.signum() > 0) {
+      invoiceTermToPay =
+          this.getInvoiceTermToPay(
+              invoicePayment, invoiceTermsToPay, availableAmount, i, invoiceTermCount);
+      BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
 
-        if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
-          invoiceTermPaymentList.add(
-              createInvoiceTermPayment(invoicePayment, invoiceTerm, availableAmount));
-          availableAmount = BigDecimal.ZERO;
-        } else {
-          invoiceTermPaymentList.add(
-              createInvoiceTermPayment(invoicePayment, invoiceTerm, invoiceTermAmount));
-          availableAmount = availableAmount.subtract(invoiceTermAmount);
-        }
+      if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
+        invoiceTermPaymentList.add(
+            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, availableAmount));
+        availableAmount = BigDecimal.ZERO;
+      } else {
+        invoiceTermPaymentList.add(
+            createInvoiceTermPayment(invoicePayment, invoiceTermToPay, invoiceTermAmount));
+        availableAmount = availableAmount.subtract(invoiceTermAmount);
       }
     }
 
     return invoiceTermPaymentList;
+  }
+
+  protected InvoiceTerm getInvoiceTermToPay(
+      InvoicePayment invoicePayment,
+      List<InvoiceTerm> invoiceTermsToPay,
+      BigDecimal amount,
+      int counter,
+      int size) {
+    if (invoicePayment != null) {
+      return invoiceTermsToPay.get(counter);
+    } else {
+      return invoiceTermsToPay.subList(counter, size).stream()
+          .filter(
+              it ->
+                  it.getAmount().compareTo(amount) == 0
+                      || it.getAmountRemaining().compareTo(amount) == 0)
+          .findAny()
+          .orElse(invoiceTermsToPay.get(counter));
+    }
   }
 
   @Override

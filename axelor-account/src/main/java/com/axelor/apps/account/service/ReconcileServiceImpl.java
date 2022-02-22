@@ -421,42 +421,14 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  // TODO remove when checked
-  /*@Transactional(rollbackOn = {Exception.class})
-  protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
-      throws AxelorException {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      InvoiceTerm invoiceTermToPay =
-          this.getInvoiceTermToPay(moveLine.getInvoiceTermList(), amount);
-
-      while (invoiceTermToPay != null && amount.signum() > 0) {
-        InvoiceTermPayment invoiceTermPayment =
-            invoiceTermPaymentService.createInvoiceTermPayment(invoiceTermToPay, amount);
-
-        if (invoiceTermPayment != null) {
-          invoiceTermService.updateInvoiceTermsPaidAmount(invoiceTermToPay, invoiceTermPayment);
-
-          invoiceTermPayment.addReconcileListItem(reconcile);
-          invoiceTermPaymentRepo.save(invoiceTermPayment);
-
-          amount = amount.subtract(invoiceTermPayment.getPaidAmount());
-        }
-
-        invoiceTermToPay = this.getInvoiceTermToPay(moveLine.getInvoiceTermList(), amount);
-      }
-    }
-  }*/
-
-  protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(
-      List<InvoiceTerm> invoiceTermList) {
+  protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList) {
     return invoiceTermList.stream()
         .filter(it -> !it.getIsPaid())
         .sorted(this::compareInvoiceTerm)
         .collect(Collectors.toList());
   }
 
-  protected int compareInvoiceTerm(
-      InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
+  protected int compareInvoiceTerm(InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
     LocalDate date1, date2;
 
     if (invoiceTerm1.getEstimatedPaymentDate() != null
