@@ -25,7 +25,8 @@
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
         colSpan="9"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="" colSpan="3"/>
+        widget="info-button" onClick="" colSpan="3"
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -67,7 +68,9 @@
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
         colSpan="8" canSearch="true" height="380"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="" colSpan="4"/>
+        widget="info-button" onClick="" colSpan="4"
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"/>
+      <field name="sessionTotalAmount" hidden="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
       <button name="validateBtn" title="Validate" css="btn-success"
