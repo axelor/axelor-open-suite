@@ -146,11 +146,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       return false;
     }
 
-    if (model.equals(MetaJsonRecord.class.getName())) {
-      return false;
-    }
-
-    return true;
+    return !model.equals(MetaJsonRecord.class.getName());
   }
 
   private String getObjMenu(MetaMenu menu) {
