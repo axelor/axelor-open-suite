@@ -1,9 +1,7 @@
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
-
 import java.math.BigDecimal;
 
 public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermService {
@@ -11,7 +9,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void generateDefaultInvoiceTerm(MoveLine moveLine) {
     InvoiceTerm invoiceTerm = new InvoiceTerm();
 
-    BigDecimal amount = moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
+    BigDecimal amount =
+        moveLine.getCredit().signum() == 0 ? moveLine.getDebit() : moveLine.getCredit();
 
     invoiceTerm.setSequence(1);
     invoiceTerm.setIsPaid(false);

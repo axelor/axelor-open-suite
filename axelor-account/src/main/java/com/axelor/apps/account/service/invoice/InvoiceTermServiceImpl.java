@@ -418,13 +418,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public void updateInvoiceTermsPaidAmount(
-      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException {
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      InvoiceTermPayment invoiceTermPayment)
+      throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
         Collections.singletonList(invoiceTermPayment),
         invoiceTermToPay.getPaymentMode(),
-        null,
-        null,
-        false);
+        invoicePayment != null ? invoicePayment.getFinancialDiscount() : null,
+        invoicePayment != null ? invoicePayment.getFinancialDiscountTotalAmount() : null,
+        invoicePayment != null ? invoicePayment.getApplyFinancialDiscount() : false);
   }
 
   protected void updateInvoiceTermsPaidAmount(

@@ -141,8 +141,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
     computeAdvancePaymentImputation(invoicePayment, paymentMove);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);

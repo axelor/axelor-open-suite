@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -53,8 +54,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -360,26 +363,65 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = creditMove.getInvoice();
     BigDecimal amount = reconcile.getAmount();
 
-    if (debitMoveLine.getAccount().getUseForPartnerBalance()
-        && creditMoveLine.getAccount().getUseForPartnerBalance()) {
-      // When there is no invoice link we cannot use an InvoicePayment
-      if (debitInvoice == null && creditInvoice == null) {
-        this.updateInvoiceTermPayments(reconcile, debitMoveLine, creditMoveLine, amount);
-      } else {
-        this.updateInvoicePayments(
-            reconcile, debitInvoice, creditInvoice, debitMove, creditMove, amount);
-      }
-    }
-  }
-
-  protected void updateInvoiceTermPayments(
-      Reconcile reconcile, MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount)
-      throws AxelorException {
-    this.updateInvoiceTermPayment(reconcile, debitMoveLine, amount);
-    this.updateInvoiceTermPayment(reconcile, creditMoveLine, amount);
+    this.updatePayment(reconcile, debitMoveLine, debitInvoice, debitMove, amount);
+    this.updatePayment(reconcile, creditMoveLine, creditInvoice, creditMove, amount);
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  protected void updatePayment(
+      Reconcile reconcile, MoveLine moveLine, Invoice invoice, Move move, BigDecimal amount)
+      throws AxelorException {
+    InvoicePayment invoicePayment = null;
+    if (invoice != null) {
+      invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+      invoicePayment.addReconcileListItem(reconcile);
+    }
+
+    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    if (moveLine.getAccount().getHasInvoiceTerm()) {
+      List<InvoiceTerm> invoiceTermList =
+          this.getInvoiceTermsToPay(invoice, move, moveLine, amount);
+
+      invoiceTermPaymentList =
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment, invoiceTermList, amount);
+
+      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+        invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+      }
+    }
+
+    if (invoicePayment != null) {
+      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+        invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
+      }
+
+      invoicePaymentRepo.save(invoicePayment);
+    } else {
+      invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
+    }
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermsToPay(
+      Invoice invoice, Move move, MoveLine moveLine, BigDecimal amount) {
+    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      if (move != null
+          && move.getPaymentVoucher() != null
+          && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+        return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+            .map(PayVoucherElementToPay::getInvoiceTerm)
+            .collect(Collectors.toList());
+      } else {
+        return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+      }
+    } else {
+      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList(), amount);
+    }
+  }
+
+  //TODO remove when checked
+  /*@Transactional(rollbackOn = {Exception.class})
   protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
@@ -402,31 +444,31 @@ public class ReconcileServiceImpl implements ReconcileService {
         invoiceTermToPay = this.getInvoiceTermToPay(moveLine.getInvoiceTermList(), amount);
       }
     }
+  }*/
+
+  protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(
+      List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
+    return invoiceTermList.stream()
+        .filter(it -> !it.getIsPaid())
+        .sorted((it1, it2) -> this.compareInvoiceTerm(it1, it2, amount))
+        .collect(Collectors.toList());
   }
 
-  protected InvoiceTerm getInvoiceTermToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
-    InvoiceTerm invoiceTerm = this.getInvoiceTerm(invoiceTermList, amount);
-
-    if (invoiceTerm == null) {
-      invoiceTerm = this.getInvoiceTerm(invoiceTermList, null);
+  protected int compareInvoiceTerm(
+      InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2, BigDecimal amount) {
+    // Start by looking for exact invoice terms
+    if (invoiceTerm1.getAmount().compareTo(amount) == 0
+        || invoiceTerm1.getAmountRemaining().compareTo(amount) == 0) {
+      if (invoiceTerm2.getAmount().compareTo(amount) != 0
+          || invoiceTerm1.getAmountRemaining().compareTo(amount) != 0) {
+        return -1;
+      }
+    } else if (invoiceTerm1.getAmount().compareTo(amount) == 0
+        || invoiceTerm1.getAmountRemaining().compareTo(amount) == 0) {
+      return 1;
     }
 
-    return invoiceTerm;
-  }
-
-  protected InvoiceTerm getInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
-    Stream<InvoiceTerm> invoiceTermStream = invoiceTermList.stream().filter(it -> !it.getIsPaid());
-
-    if (amount != null) {
-      invoiceTermStream =
-          invoiceTermStream.filter(
-              it -> it.getAmount().equals(amount) || it.getAmountRemaining().equals(amount));
-    }
-
-    return invoiceTermStream.reduce(this::getOlderInvoiceTerm).orElse(null);
-  }
-
-  protected InvoiceTerm getOlderInvoiceTerm(InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
+    // If same then compare dates
     LocalDate date1, date2;
 
     if (invoiceTerm1.getEstimatedPaymentDate() != null
@@ -438,28 +480,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       date2 = invoiceTerm2.getDueDate();
     }
 
-    return date1.isAfter(date2) ? invoiceTerm2 : invoiceTerm1;
-  }
-
-  protected void updateInvoicePayments(
-      Reconcile reconcile,
-      Invoice debitInvoice,
-      Invoice creditInvoice,
-      Move creditMove,
-      Move debitMove,
-      BigDecimal amount)
-      throws AxelorException {
-    this.updateInvoicePayment(reconcile, debitInvoice, debitMove, amount);
-    this.updateInvoicePayment(reconcile, creditInvoice, creditMove, amount);
-  }
-
-  protected void updateInvoicePayment(
-      Reconcile reconcile, Invoice invoice, Move move, BigDecimal amount) throws AxelorException {
-    if (invoice != null) {
-      InvoicePayment invoicePayment =
-          invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
-      invoicePayment.addReconcileListItem(reconcile);
-    }
+    return date1.compareTo(date2);
   }
 
   protected void updatePaymentTax(Reconcile reconcile) throws AxelorException {
