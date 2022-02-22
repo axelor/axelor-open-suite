@@ -115,9 +115,7 @@ public class PermissionAssistantService {
 
     String userCode = assistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-    String fileName = userCode + "-" + dateString + ".csv";
-
-    return fileName;
+    return userCode + "-" + dateString + ".csv";
   }
 
   public void createFile(PermissionAssistant assistant) throws IOException {
