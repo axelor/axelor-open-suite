@@ -43,7 +43,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
@@ -54,6 +53,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -124,8 +124,8 @@ public class DataBackupCreateService {
   StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public DataBackup create(DataBackup dataBackup) throws InterruptedException {
-    File tempDir = Files.createTempDir();
+  public DataBackup create(DataBackup dataBackup) throws InterruptedException, IOException {
+    File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
     int errorsCount = 0;
