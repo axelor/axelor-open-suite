@@ -139,7 +139,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value) || invalidValue(value)) {
+      if (Strings.isNullOrEmpty(value) || invalidValue(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
@@ -246,7 +246,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value)) {
+      if (Strings.isNullOrEmpty(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
