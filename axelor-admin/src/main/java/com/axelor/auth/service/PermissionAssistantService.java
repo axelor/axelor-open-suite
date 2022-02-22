@@ -42,17 +42,18 @@ import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,9 +120,9 @@ public class PermissionAssistantService {
     return fileName;
   }
 
-  public void createFile(PermissionAssistant assistant) {
+  public void createFile(PermissionAssistant assistant) throws IOException {
 
-    File permFile = new File(Files.createTempDir(), getFileName(assistant));
+    File permFile = new File(Files.createTempDirectory(null).toFile(), getFileName(assistant));
 
     try {
 
