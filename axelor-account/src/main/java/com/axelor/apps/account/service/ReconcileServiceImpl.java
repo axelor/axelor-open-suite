@@ -417,7 +417,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
       }
     } else {
-      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList(), amount);
+      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
     }
   }
 
@@ -448,28 +448,15 @@ public class ReconcileServiceImpl implements ReconcileService {
   }*/
 
   protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(
-      List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
+      List<InvoiceTerm> invoiceTermList) {
     return invoiceTermList.stream()
         .filter(it -> !it.getIsPaid())
-        .sorted((it1, it2) -> this.compareInvoiceTerm(it1, it2, amount))
+        .sorted(this::compareInvoiceTerm)
         .collect(Collectors.toList());
   }
 
   protected int compareInvoiceTerm(
-      InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2, BigDecimal amount) {
-    // Start by looking for exact invoice terms
-    if (invoiceTerm1.getAmount().compareTo(amount) == 0
-        || invoiceTerm1.getAmountRemaining().compareTo(amount) == 0) {
-      if (invoiceTerm2.getAmount().compareTo(amount) != 0
-          || invoiceTerm1.getAmountRemaining().compareTo(amount) != 0) {
-        return -1;
-      }
-    } else if (invoiceTerm1.getAmount().compareTo(amount) == 0
-        || invoiceTerm1.getAmountRemaining().compareTo(amount) == 0) {
-      return 1;
-    }
-
-    // If same then compare dates
+      InvoiceTerm invoiceTerm1, InvoiceTerm invoiceTerm2) {
     LocalDate date1, date2;
 
     if (invoiceTerm1.getEstimatedPaymentDate() != null
