@@ -421,7 +421,7 @@ public class DataBackupCreateService {
 
         dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
-        if (dataList != null && dataList.size() > 0) {
+        if (dataList != null && !dataList.isEmpty()) {
           for (Object dataObject : dataList) {
             dataArr = new ArrayList<>();
 
@@ -740,13 +740,11 @@ public class DataBackupCreateService {
             bin.read(data, 0, data.length);
             out.write(data, 0, data.length);
           }
-          bin.close();
           out.closeEntry();
 
           file.delete();
         }
       }
-      out.close();
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
