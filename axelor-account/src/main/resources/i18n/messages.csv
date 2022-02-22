@@ -1579,6 +1579,7 @@
 "Invoice.invoiceNo",,,
 "Invoice.note",,,
 "Invoice.of",,,
+"Invoice.optionOnDeliveries",,,
 "Invoice.originalInvoice",,,
 "Invoice.paymentTerms",,,
 "Invoice.priceExclTax",,,
