@@ -232,7 +232,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
       for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
         String key = modelEntry.getKey();
-		File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
+        File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
         CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
         writer.writeAll(modelEntry.getValue());
         writer.close();
@@ -240,9 +240,8 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
         zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
         zout.closeEntry();
       }
-
-      zout.close();
     }
+
     return metaFiles.upload(zipFile);
   }
 
