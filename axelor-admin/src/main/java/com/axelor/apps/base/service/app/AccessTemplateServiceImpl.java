@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -318,18 +319,19 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
   private boolean addObject(MetaModel model) {
 
-    for (String key : objMenu.keySet()) {
-      if (model.getFullName().contains(key)) {
-        objMenu.put(model.getFullName(), objMenu.get(key));
+    for (Entry<String, String> entry : objMenu.entrySet()) {
+      if (model.getFullName().contains(entry.getKey())) {
+        objMenu.put(model.getFullName(), entry.getValue());
         return true;
       }
     }
 
     String pkgName = model.getPackageName();
-    for (String key : objMenu.keySet()) {
+    for (Entry<String, String> entry : objMenu.entrySet()) {
+      String key = entry.getKey();
       String objPkg = key.substring(0, key.lastIndexOf("."));
       if (pkgName.equals(objPkg)) {
-        objMenu.put(model.getFullName(), objMenu.get(key));
+        objMenu.put(model.getFullName(), entry.getValue());
         return true;
       }
     }
