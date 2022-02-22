@@ -15,6 +15,7 @@
 
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
+    onLoad="action-payment-session-method-set-has-invoice-term-selected"
     model="com.axelor.apps.account.db.PaymentSession" width="large">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
@@ -70,8 +71,9 @@
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-payment-session-group-validate"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; (sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm))"
         onClick="action-payment-session-group-cancel"/>
+      <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
       <field name="validatedByUser" readonly="true"/>
@@ -160,6 +162,11 @@
 
   <action-method name="action-payment-session-method-send-emails">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="sendEmails"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-set-has-invoice-term-selected">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setHasInvoiceTermSelected"/>
   </action-method>
 
   <action-validate name="action-payment-session-validate-cancel">

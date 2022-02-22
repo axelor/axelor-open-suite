@@ -129,4 +129,15 @@ public class PaymentSessionController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setHasInvoiceTermSelected(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      boolean hasUnselectedInvoiceTerm =
+          Beans.get(PaymentSessionService.class).hasUnselectedInvoiceTerm(paymentSession);
+      response.setValue("$hasUnselectedInvoiceTerm", hasUnselectedInvoiceTerm);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
