@@ -69,8 +69,6 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected InvoicePaymentRepository invoicePaymentRepository;
 
-  @Inject protected AdvancePaymentRepository advancePaymentRepository;
-
   @Inject protected MoveCancelService moveCancelService;
 
   @Inject protected AppSupplychainService appSupplychainService;
@@ -102,7 +100,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     advancePaymentRepository.save(advancePayment);
   }
 
-  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) throws AxelorException {
+  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) {
     if (saleOrder.getAdvancePaymentList() == null || saleOrder.getAdvancePaymentList().isEmpty()) {
       return;
     }
@@ -216,7 +214,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
-      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
+      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) {
 
     log.debug("Creating InvoicePayment from SaleOrder AdvancePayment");
     InvoicePayment invoicePayment = new InvoicePayment();

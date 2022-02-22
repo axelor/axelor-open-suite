@@ -140,7 +140,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException {
 
-    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
       processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
@@ -180,7 +180,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
 
-            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
 
             return invoiceLines;

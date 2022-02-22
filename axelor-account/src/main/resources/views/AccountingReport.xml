@@ -285,6 +285,8 @@
     <action name="action-accounting-report-method-get-journal-type"/>
     <action name="action-accounting-report-record-default-global"/>
     <action name="action-accounting-report-method-get-account"/>
+    <action
+      name="action-accounting-report-method-get-values-from-report-type-accounting-report"/>
   </action-group>
 
   <action-group name="action-group-account-accounting-report-export-click">
@@ -475,6 +477,12 @@
   </action-record>
 
   <!-- ACTION METHOD -->
+
+  <action-method
+    name="action-accounting-report-method-get-values-from-report-type-accounting-report">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="setFieldsFromReportTypeModelAccountingReport"/>
+  </action-method>
 
   <action-method name="action-accounting-report-method-get-account">
     <call class="com.axelor.apps.account.web.AccountingReportController" method="getAccount"/>
