@@ -124,7 +124,7 @@ public class DataBackupCreateService {
   StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public DataBackup create(DataBackup dataBackup) throws InterruptedException, IOException {
+  public DataBackup create(DataBackup dataBackup) throws IOException {
     File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
@@ -199,7 +199,7 @@ public class DataBackupCreateService {
 
             fileNameList.add(metaModel.getName() + ".csv");
           }
-        } catch (ClassNotFoundException | IOException | InterruptedException e) {
+        } catch (ClassNotFoundException | IOException e) {
           TraceBackService.trace(e, DataBackupService.class.getName());
         } catch (Exception e) {
           JPA.em().getTransaction().rollback();
@@ -321,7 +321,7 @@ public class DataBackupCreateService {
   }
 
   protected long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
-      throws InterruptedException, ClassNotFoundException {
+      throws ClassNotFoundException {
     Query<Model> query = getQuery(metaModel, subClasses);
     long count = 0;
     if (query != null) {
