@@ -89,9 +89,7 @@ public class MetaGroupMenuAssistantService {
 
     String userCode = groupMenuAssistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-    String fileName = "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
-
-    return fileName;
+    return "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
   }
 
   private void setBundle(Locale locale) {
