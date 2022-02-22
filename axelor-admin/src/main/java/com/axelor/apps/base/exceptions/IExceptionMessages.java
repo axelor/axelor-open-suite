@@ -51,4 +51,6 @@ public interface IExceptionMessages {
       "The 'Relational field' of the line '%s' cannot be empty." /*)*/;
   public static final String EMPTY_QUERY_IN_DATA_CONFIG_LINE = /*$$(*/
       "The 'Query' of the line '%s' cannot be empty." /*)*/;
+  public static final String EMPTY_PATH_FIELD = /*$$(*/
+      "The 'Path Field' of the line '%s' should not be empty." /*)*/;
 }

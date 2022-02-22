@@ -60,6 +60,32 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
       String rootModel = objectDataConfig.getModelSelect();
 
       for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
+
+        String path;
+        Integer lineType = line.getTypeSelect();
+
+        switch (lineType) {
+          case DataConfigLineRepository.TYPE_PATH:
+            MetaField metaFieldPath = line.getMetaFieldPath();
+            if (metaFieldPath == null) {
+              throw new AxelorException(
+                  line,
+                  TraceBackRepository.CATEGORY_NO_VALUE,
+                  I18n.get(IExceptionMessages.EMPTY_PATH_FIELD),
+                  line.getTabName());
+            }
+            path = metaFieldPath.getName();
+            break;
+
+          case DataConfigLineRepository.TYPE_QUERY:
+            path = line.getPath();
+            break;
+
+          default:
+            throw new AxelorException(
+                line, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "Unknown case");
+        }
+
         Class<? extends Model> modelClass =
             ObjectDataCommonService.findModelClass(line.getMetaModel());
         Query<? extends Model> query =
@@ -69,10 +95,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
         int reset = line.getResetPathSelect();
         if (reset != DataConfigLineRepository.RESET_NONE
-            && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
-
-          String path = getPath(line);
-
+            && lineType == DataConfigLineRepository.TYPE_PATH) {
           if (reset == DataConfigLineRepository.RESET_DELETE) {
             deleteLink(mapper, path, data);
           } else {

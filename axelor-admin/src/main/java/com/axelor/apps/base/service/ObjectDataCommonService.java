@@ -77,26 +77,19 @@ public class ObjectDataCommonService {
     String filter;
     switch (line.getTypeSelect()) {
       case DataConfigLineRepository.TYPE_PATH:
-        MetaField relationalField = line.getMetaFieldPath();
-        if (relationalField == null) {
+        MetaField metaFieldPath = line.getMetaFieldPath();
+        if (metaFieldPath == null) {
           throw new AxelorException(
               line,
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
-              line.getMetaModel().getName());
+              I18n.get(IExceptionMessages.EMPTY_PATH_FIELD),
+              line.getTabName());
         }
-        filter = createFilter(relationalField.getName());
+        filter = createFilter(metaFieldPath.getName());
         break;
 
       case DataConfigLineRepository.TYPE_QUERY:
         filter = line.getPath();
-        if (filter == null) {
-          throw new AxelorException(
-              line,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
-              line.getMetaModel().getName());
-        }
         break;
 
       default:
