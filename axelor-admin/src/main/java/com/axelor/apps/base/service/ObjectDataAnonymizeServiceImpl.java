@@ -184,7 +184,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           }
         case "Integer":
           {
-            defaultValues.put(name, new Integer(0));
+            defaultValues.put(name, Integer.valueOf(0));
             break;
           }
         case "Boolean":
@@ -194,7 +194,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           }
         case "Long":
           {
-            defaultValues.put(name, new Long(0));
+            defaultValues.put(name, Long.valueOf(0));
             break;
           }
         case "LocalTime":
