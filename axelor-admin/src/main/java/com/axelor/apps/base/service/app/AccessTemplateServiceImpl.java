@@ -65,13 +65,17 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
   private String defaultApp = null;
 
-  @Inject private MetaMenuRepository metaMenuRepo;
+  protected MetaMenuRepository metaMenuRepo;
+  protected MetaFiles metaFiles;
+  protected MetaModelRepository metaModelRepo;
 
-  @Inject private AppService appService;
-
-  @Inject private MetaFiles metaFiles;
-
-  @Inject private MetaModelRepository metaModelRepo;
+  @Inject
+  public AccessTemplateServiceImpl(
+      MetaMenuRepository metaMenuRepo, MetaFiles metaFiles, MetaModelRepository metaModelRepo) {
+    this.metaMenuRepo = metaMenuRepo;
+    this.metaFiles = metaFiles;
+    this.metaModelRepo = metaModelRepo;
+  }
 
   @Override
   public MetaFile generateTemplate() throws AxelorException {

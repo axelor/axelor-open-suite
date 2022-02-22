@@ -49,15 +49,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class AccessConfigImportServiceImpl implements AccessConfigImportService {
 
-  @Inject private AppService appService;
+  protected AccessConfigRepository accessConfigRepo;
+  protected PermissionRepository permissionRepo;
+  protected RoleRepository roleRepo;
+  protected MetaMenuRepository metaMenuRepo;
 
-  @Inject private AccessConfigRepository accessConfigRepo;
-
-  @Inject private PermissionRepository permissionRepo;
-
-  @Inject private RoleRepository roleRepo;
-
-  @Inject private MetaMenuRepository metaMenuRepo;
+  @Inject
+  public AccessConfigImportServiceImpl(
+      AccessConfigRepository accessConfigRepo,
+      PermissionRepository permissionRepo,
+      RoleRepository roleRepo,
+      MetaMenuRepository metaMenuRepo) {
+    this.accessConfigRepo = accessConfigRepo;
+    this.permissionRepo = permissionRepo;
+    this.roleRepo = roleRepo;
+    this.metaMenuRepo = metaMenuRepo;
+  }
 
   @Override
   public void importAccessConfig(MetaFile metaFile) throws AxelorException {
