@@ -387,7 +387,8 @@ public class ReconcileServiceImpl implements ReconcileService {
               invoicePayment, invoiceTermList, amount);
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-        invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+        invoiceTermService.updateInvoiceTermsPaidAmount(
+            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
       }
     }
 
@@ -420,7 +421,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  //TODO remove when checked
+  // TODO remove when checked
   /*@Transactional(rollbackOn = {Exception.class})
   protected void updateInvoiceTermPayment(Reconcile reconcile, MoveLine moveLine, BigDecimal amount)
       throws AxelorException {

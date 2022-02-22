@@ -256,10 +256,9 @@ public class InvoicePaymentController {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
           if (totalAmountToPay.compareTo(BigDecimal.ZERO) > 0) {
-            invoicePayment =
-                Beans.get(InvoiceTermPaymentService.class)
-                    .initInvoiceTermPaymentsWithAmount(
-                        invoicePayment, invoiceTerms, totalAmountToPay);
+            Beans.get(InvoiceTermPaymentService.class)
+                .generateInvoiceTermPaymentsWithAmount(
+                    invoicePayment, invoiceTerms, totalAmountToPay);
           }
         }
         response.setAttr(

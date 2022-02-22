@@ -66,6 +66,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
+  public void generateInvoiceTermPaymentsWithAmount(
+      InvoicePayment invoicePayment,
+      List<InvoiceTerm> invoiceTermsToPay,
+      BigDecimal availableAmount) {
+    List<InvoiceTermPayment> invoiceTermPaymentList =
+        initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTermsToPay, availableAmount);
+    for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+      invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
+    }
+  }
+
+  @Override
   public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -89,12 +101,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     }
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
-      List<InvoiceTermPayment> invoiceTermPaymentList =
-          initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTerms, invoicePayment.getAmount());
-      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-        invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
-      }
+      this.generateInvoiceTermPaymentsWithAmount(
+          invoicePayment, invoiceTerms, invoicePayment.getAmount());
     }
   }
 
