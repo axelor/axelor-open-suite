@@ -182,7 +182,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     return message;
   }
 
-  private Message generateMessage(
+  protected Message generateMessage(
       String model,
       Long objectId,
       Template template,

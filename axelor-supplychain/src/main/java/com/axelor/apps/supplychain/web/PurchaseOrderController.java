@@ -409,7 +409,7 @@ public class PurchaseOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      List<String> productList = new ArrayList<String>();
+      List<String> productList = new ArrayList<>();
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
           productList.add(purchaseOrderLine.getProduct().getFullName());
