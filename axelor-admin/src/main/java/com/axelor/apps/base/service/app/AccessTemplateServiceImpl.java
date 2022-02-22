@@ -33,7 +33,6 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -221,7 +220,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return appCode;
   }
 
-  private MetaFile createExcel() throws FileNotFoundException, IOException {
+  private MetaFile createExcel() throws IOException {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
@@ -252,7 +251,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return createMetaFile(workBook);
   }
 
-  public MetaFile createMetaFile(XSSFWorkbook workBook) throws IOException, FileNotFoundException {
+  public MetaFile createMetaFile(XSSFWorkbook workBook) throws IOException {
 
     Path path = MetaFiles.createTempFile("AccessConfigTemplate", ".xlsx");
 
