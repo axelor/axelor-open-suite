@@ -231,11 +231,12 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
       for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
-        File modelFile = MetaFiles.createTempFile(modelEntry.getKey(), ".csv").toFile();
+        String key = modelEntry.getKey();
+		File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
         CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
         writer.writeAll(modelEntry.getValue());
         writer.close();
-        zout.putNextEntry(new ZipEntry(modelEntry.getKey() + ".csv"));
+        zout.putNextEntry(new ZipEntry(key + ".csv"));
         zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
         zout.closeEntry();
       }
