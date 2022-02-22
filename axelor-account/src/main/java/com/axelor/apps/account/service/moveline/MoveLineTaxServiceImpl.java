@@ -238,8 +238,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               moveline.getAccount().getAccountType().getTechnicalTypeSelect())
           && !move.getMoveLineList().stream()
               .filter(
-                  moveLineToolService.isEqualTaxMoveLine(
-                      moveline.getTaxLine(), moveline.getVatSystemSelect(), moveline.getId()))
+                  ml ->
+                      moveLineToolService.isEqualTaxMoveLine(
+                          moveline.getTaxLine(),
+                          moveline.getVatSystemSelect(),
+                          moveline.getId(),
+                          ml))
               .collect(Collectors.<MoveLine>toList())
               .isEmpty()) {
         throw new AxelorException(

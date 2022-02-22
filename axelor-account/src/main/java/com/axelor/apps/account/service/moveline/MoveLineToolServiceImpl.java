@@ -37,7 +37,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
@@ -313,13 +312,12 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  public Predicate<MoveLine> isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id) {
-    return ml ->
-        ml.getTaxLine() == taxLine
-            && ml.getVatSystemSelect() == vatSystem
-            && ml.getId() != id
-            && ml.getAccount().getAccountType() != null
-            && AccountTypeRepository.TYPE_TAX.equals(
-                ml.getAccount().getAccountType().getTechnicalTypeSelect());
+  public boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
+    return ml.getTaxLine() == taxLine
+        && ml.getVatSystemSelect() == vatSystem
+        && ml.getId() != id
+        && ml.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            ml.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 }
