@@ -333,7 +333,7 @@ public class DataBackupCreateService {
   protected Query<Model> getQuery(MetaModel metaModel, List<String> subClasses)
       throws ClassNotFoundException {
     StringBuilder whereStr = new StringBuilder();
-    if (subClasses != null && subClasses.size() > 0) {
+    if (subClasses != null && !subClasses.isEmpty()) {
       for (String subClassName : subClasses) {
         whereStr.append(whereStr.length() > 0 ? " AND " : "");
         whereStr.append("id NOT IN (select id from ").append(subClassName).append(")");
