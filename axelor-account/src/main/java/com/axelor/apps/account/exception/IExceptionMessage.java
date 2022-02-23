@@ -836,4 +836,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
+
+  public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "Gross value must be greater than 0 to validate" /*)*/;
 }

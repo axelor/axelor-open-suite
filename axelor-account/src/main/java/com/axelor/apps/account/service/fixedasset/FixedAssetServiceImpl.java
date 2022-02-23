@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -301,7 +302,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(FixedAsset fixedAsset) {
+  public void validate(FixedAsset fixedAsset) throws AxelorException {
+    if (fixedAsset.getGrossValue() == null || fixedAsset.getGrossValue().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0));
+    }
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
       if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
@@ -322,9 +328,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);
       if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-        validate(fixedAsset);
+        try {
+          validate(fixedAsset);
+          count++;
+        } catch (AxelorException e) {
+          TraceBackService.trace(e);
+        }
+
         JPA.clear();
-        count++;
       }
     }
     return count;
