@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -28,6 +29,7 @@ public class AccountingBatchController {
       sb.append(
           "self.operationTypeSelect = :operationTypeSelectSale "
               + "AND self.amountRemaining > 0 "
+              + "AND self.statusSelect = :statusSelect "
               + "AND self.company = :company "
               + "AND self.hasPendingPayments = false "
               + "AND self.paymentMode = :paymentMode "
@@ -49,6 +51,7 @@ public class AccountingBatchController {
         }
         sb.append(" AND self.companyBankDetails IN (" + Joiner.on(",").join(bankDetailsIds) + ") ");
       }
+      actionViewBuilder.context("statusSelect", InvoiceRepository.STATUS_VENTILATED);
       actionViewBuilder.context(
           "operationTypeSelectSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
       actionViewBuilder.context("company", accountingBatch.getCompany());
@@ -58,9 +61,12 @@ public class AccountingBatchController {
       actionViewBuilder.context(
           "operationTypeSelectRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
       actionViewBuilder.context(
-          "invoiceSaleIdList", getInvoiceSaleList(sb.toString(), accountingBatch));
+          "partnersIdList", getPartnersIdList(sb.toString(), accountingBatch));
       sb.append(
-          " OR (self.operationTypeSelect = :operationTypeSelectRefund AND self.originalInvoice.id IN (:invoiceSaleIdList)) ");
+          " OR (self.operationTypeSelect = :operationTypeSelectRefund"
+              + " AND self.partner.id IN (:partnersIdList)"
+              + " AND self.amountRemaining > 0"
+              + " AND self.statusSelect = :statusSelect) ");
 
       actionViewBuilder.model(Invoice.class.getName());
       actionViewBuilder.add("grid", "invoice-bill-of-exchange-batch-grid");
@@ -75,7 +81,7 @@ public class AccountingBatchController {
     }
   }
 
-  protected List<Long> getInvoiceSaleList(String query, AccountingBatch accountingBatch) {
+  protected List<Long> getPartnersIdList(String query, AccountingBatch accountingBatch) {
     return Beans.get(InvoiceRepository.class)
         .all()
         .filter(query)
@@ -83,8 +89,10 @@ public class AccountingBatchController {
         .bind("operationTypeSelectSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
         .bind("company", accountingBatch.getCompany())
         .bind("paymentMode", accountingBatch.getPaymentMode())
+        .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
         .fetchStream()
-        .map(Invoice::getId)
+        .map(Invoice::getPartner)
+        .map(Partner::getId)
         .collect(Collectors.toList());
   }
 }
