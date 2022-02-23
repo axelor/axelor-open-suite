@@ -202,6 +202,8 @@
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
+    <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect" if="paymentMode?.generateBankOrder"/>
     <field name="accountingTriggerSelect" expr="eval: 1" if="!paymentMode?.generateBankOrder"/>
   </action-record>
 

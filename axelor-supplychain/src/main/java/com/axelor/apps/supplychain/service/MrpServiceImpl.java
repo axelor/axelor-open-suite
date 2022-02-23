@@ -646,13 +646,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected boolean isProposalElement(MrpLineType mrpLineType) {
-
-    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-
-      return true;
-    }
-
-    return false;
+    return mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL;
   }
 
   protected void computeCumulativeQty() {
@@ -1157,14 +1151,8 @@ public class MrpServiceImpl implements MrpService {
   }
 
   public boolean isBeforeEndDate(LocalDate maturityDate) {
-
-    if (maturityDate != null
-        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()))) {
-
-      return true;
-    }
-
-    return false;
+    return maturityDate != null
+        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()));
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {
@@ -1359,15 +1347,9 @@ public class MrpServiceImpl implements MrpService {
   }
 
   public boolean isMrpProduct(Product product) {
-
-    if (product != null
+    return product != null
         && !product.getExcludeFromMrp()
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
-      return true;
-    }
-
-    return false;
+        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE);
   }
 
   protected void assignProductAndLevel(Set<Product> productList) throws AxelorException {
