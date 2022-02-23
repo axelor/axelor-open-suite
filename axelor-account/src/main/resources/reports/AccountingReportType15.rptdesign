@@ -133,9 +133,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -438,37 +435,17 @@ Account.code as accountCode,
 Account.name as accountName, 
 Tax.code as taxCode,
 FiscalPosition.code as fiscalPositionCode,
-Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
-			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
-			end
-		end
-	end
+Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount
+else 0
 end as baseCredit,
-Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
-			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 0
-			end
-		end
-	end
+Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount
+else 0
 end as taxCredit,
-Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else
-			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
-			end
-		end
-	end
+Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount
+else 0
 end as baseDebit,
-Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
-			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else 0
-			end
-		end
-	end
+Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount
+else 0
 end as taxDebit
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
@@ -489,7 +466,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
-AND TaxPaymentMoveLine.vat_system_select = 1	
+AND TaxPaymentMoveLine.vat_system_select = 2
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
@@ -749,12 +726,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">taxpaymentmovelinetaxrate</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">functionalorigin</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">functionalorigin</text-property>
-                    <text-property name="heading">functionalorigin</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">basecredit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">basecredit</text-property>
@@ -817,26 +788,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">functionalorigin</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">basecredit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">taxcredit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">basedebit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">taxdebit</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -875,34 +841,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">functionalorigin</property>
-                    <property name="nativeName">functionalorigin</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">basecredit</property>
                     <property name="nativeName">basecredit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">taxcredit</property>
                     <property name="nativeName">taxcredit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">basedebit</property>
                     <property name="nativeName">basedebit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">taxdebit</property>
                     <property name="nativeName">taxdebit</property>
                     <property name="dataType">decimal</property>
@@ -913,39 +872,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 Tax.name as taxName, 
 FiscalPosition.code as fiscalPositionCode,
 TaxPaymentMoveLine.tax_rate as taxPaymentMoveLineTaxRate,
-SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
-			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
-			end
-		end
-	end
+SUM(Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount
+else 0
 end) as baseCredit,
-SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
-			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount  else 0
-			end
-		end
-	end
+SUM(Case  when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount
+else 0
 end) as taxCredit,
-SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
-			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount  else 0
-			end
-		end
-	end
+SUM(Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount
+else 0
 end) as baseDebit,
-SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
-			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount  else 0
-			end
-		end
-	end
+SUM(Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount
+else 0
 end) as taxDebit
-
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
@@ -965,7 +903,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
-AND TaxPaymentMoveLine.vat_system_select = 1
+AND TaxPaymentMoveLine.vat_system_select = 2
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
@@ -1170,8 +1108,8 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
 LEFT JOIN public.account_payment_mode as PaymentMode on Move.payment_mode = PaymentMode.id
-FULL JOIN public.account_invoice_payment as Payment on Move.id = Payment.move
-FULL JOIN public.account_invoice as Invoice on Payment.invoice = Invoice.id
+LEFT JOIN public.account_invoice_payment as Payment on Move.id = Payment.move
+LEFT JOIN public.account_invoice as Invoice on Payment.invoice = Invoice.id
 
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
@@ -1182,7 +1120,7 @@ AND  Move.ignore_in_accounting_ok = false
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val <= AccountingReport.date_to
-and Invoice.operation_sub_type_select != 2
+and (Invoice.operation_sub_type_select != 2 or Move.functional_origin_select = 5)
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))

@@ -746,7 +746,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
-    this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_DELIVERY);
+    this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
     List<Integer> statusSelects = new ArrayList<>();
     statusSelects.add(MoveRepository.STATUS_DAYBOOK);
@@ -833,6 +833,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.moveLineList.amountRemaining != 0");
 
     this.addParams("self.move.paymentMode.inOutSelect = ?%d", PaymentModeRepository.IN);
+    
+    this.addParams("self.move.functionalOriginSelect = ?%d",MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     log.debug("Query : {}", this.query);
     return this.query;
