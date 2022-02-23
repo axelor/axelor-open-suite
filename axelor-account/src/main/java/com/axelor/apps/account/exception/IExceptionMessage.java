@@ -983,6 +983,15 @@ public interface IExceptionMessage {
   static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
       "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves" /*)*/;
 
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL = /*$$(*/
+      "Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS = /*$$(*/
+      "Selected AnalyticAxis doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
+      "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
@@ -1065,4 +1074,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  static final String SAME_TAX_MOVE_LINES = /*$$(*/
+      "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 }

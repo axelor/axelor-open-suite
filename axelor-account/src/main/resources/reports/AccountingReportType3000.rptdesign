@@ -460,7 +460,7 @@ WHERE Report.id = ?
 	AND (Report.date_to      IS NULL OR MoveLine.date_val <= Report.date_to)
 	AND (Report.journal      IS NULL OR Move.journal = Report.journal)
 	AND (Report.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
-	AND (PartnerSet.account_accounting_report IS NULL OR Move.partner = PartnerSet.partner_set)
+	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner = PartnerSet.partner_set)
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company

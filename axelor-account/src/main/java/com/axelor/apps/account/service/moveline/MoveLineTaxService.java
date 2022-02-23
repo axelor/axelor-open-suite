@@ -36,4 +36,6 @@ public interface MoveLineTaxService {
       throws AxelorException;
 
   int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
+
+  void checkTaxMoveLines(Move move) throws AxelorException;
 }
