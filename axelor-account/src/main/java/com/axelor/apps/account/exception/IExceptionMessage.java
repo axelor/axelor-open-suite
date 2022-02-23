@@ -1043,6 +1043,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+  static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
+      "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
