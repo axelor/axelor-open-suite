@@ -7,6 +7,7 @@
     model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line list">
     <field name="moveLine" width="135" readonly="true" hidden="true"/>
     <field name="originTaxLine" readonly="true"/>
+    <field name="moveLine.vatSystemSelect" readonly="true"/>
     <field name="detailPaymentAmount" readonly="true" title="Base"/>
     <field name="taxRate" readonly="true"/>
     <field name="taxAmount" readonly="true"/>

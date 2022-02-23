@@ -386,7 +386,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     for (Address address : deliveryAddressSet) {
       deliveryAddressStr.append(
-          addressService.computeAddressStr(address).replaceAll("\n", ", ") + "\n");
+          addressService.computeAddressStr(address).replace("\n", ", ") + "\n");
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());

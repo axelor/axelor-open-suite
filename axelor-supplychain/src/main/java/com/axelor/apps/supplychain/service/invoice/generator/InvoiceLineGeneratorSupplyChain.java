@@ -17,8 +17,15 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
-import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -29,7 +36,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -50,7 +56,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
-  protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
 
   @Inject
@@ -290,10 +295,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     // Determine and set the taxEquiv for the line
     if (product != null) {
-      Tax tax =
+      TaxEquiv taxEquiv =
           Beans.get(AccountManagementService.class)
-              .getProductTax(product, invoice.getCompany(), null, isPurchase);
-      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+              .getProductTaxEquiv(product, invoice.getCompany(), fiscalPosition, isPurchase);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }
@@ -336,7 +340,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       AnalyticMoveLine analyticMoveLine =
           Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
 
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
