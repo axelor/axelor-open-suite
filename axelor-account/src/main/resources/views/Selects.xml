@@ -398,6 +398,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
     <option value="paymentSession">Payment session</option>
   </selection>
 
