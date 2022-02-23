@@ -88,7 +88,7 @@
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
-    onLoad="action-invoice-term-group-check-pfp-validator-user">
+    onLoad="action-invoice-term-group-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
@@ -125,15 +125,16 @@
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null" readonlyIf="paymentSession">
+        showIf="financialDiscount != null &amp;&amp; $showFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
+        <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"/>
         <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-        <field name="invoice.financialDiscountDeadlineDate"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
@@ -406,6 +407,7 @@
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
     <action name="action-invoice-term-record-update-customized-true"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -422,6 +424,11 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-invoice-term-group-onload">
+    <action name="action-invoice-term-group-check-pfp-validator-user"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"/>
+  </action-group>
+
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$isPaymentConditionFree"
@@ -432,6 +439,10 @@
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="isCustomized" expr="true"/>
+  </action-record>
+
+  <action-record name="action-invoice-term-record-set-show-financial-discount" model="com.axelor.apps.account.db.InvoiceTerm">
+    <field name="$showFinancialDiscount" expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
   </action-record>
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">

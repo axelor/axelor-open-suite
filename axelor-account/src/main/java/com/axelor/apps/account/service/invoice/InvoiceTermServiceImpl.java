@@ -43,7 +43,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -190,9 +189,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
-    }
+
+    this.computeFinancialDiscount(invoiceTerm, invoice);
+
     if (getPfpValidatorUserCondition(invoice)) {
       invoiceTerm.setPfpValidatorUser(invoiceService.getPfpValidatorUser(invoice));
     }
@@ -200,6 +199,34 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     invoiceTerm.setBankDetails(invoice.getBankDetails());
     return invoiceTerm;
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        invoice.getFinancialDiscount(),
+        invoice.getFinancialDiscountTotalAmount(),
+        invoice.getRemainingAmountAfterFinDiscount(),
+        invoice.getFinancialDiscountDeadlineDate());
+  }
+
+  protected void computeFinancialDiscount(
+      InvoiceTerm invoiceTerm,
+      FinancialDiscount financialDiscount,
+      BigDecimal financialDiscountAmount,
+      BigDecimal remainingAmountAfterFinDiscount,
+      LocalDate financialDiscountDate) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      BigDecimal percentage =
+          invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+
+      invoiceTerm.setFinancialDiscount(financialDiscount);
+      invoiceTerm.setFinancialDiscountAmount(
+          financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+      invoiceTerm.setRemainingAmountAfterFinDiscount(
+          remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+      invoiceTerm.setFinancialDiscountDeadlineDate(financialDiscountDate);
+    }
   }
 
   protected boolean getPfpValidatorUserCondition(Invoice invoice) {
@@ -220,9 +247,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
-    }
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(invoice);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
@@ -239,6 +263,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
+    this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
 
@@ -438,14 +463,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
 
-      if (appAccountService.getAppAccount().getManageFinancialDiscount()
-          && applyFinancialDiscount) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
-        invoiceTerm.setFinancialDiscountAmount(financialDiscountTotalAmount);
-      } else {
-        invoiceTerm.setFinancialDiscount(null);
-      }
-
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       invoiceTerm.setPaymentMode(paymentMode);
 
@@ -490,15 +507,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
-    FinancialDiscount financialDiscount = invoice.getFinancialDiscount();
-    List<InvoiceTerm> invoiceTerms = Lists.newArrayList();
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getAmount()) == 0) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
-      }
-      invoiceTerms.add(invoiceTerm);
-    }
-    return invoiceTerms;
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+        .forEach(it -> this.computeFinancialDiscount(it, invoice));
+
+    return invoice.getInvoiceTermList();
   }
 
   @Override
