@@ -48,9 +48,9 @@
       showIf="applyFinancialDiscount">
       <field name="financialDiscount"/>
       <field name="financialDiscountDeadlineDate"/>
-      <field name="financialDiscountAmount"/>
+      <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
       <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
-      <field name="financialDiscountTotalAmount"/>
+      <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
     </panel>
   </form>
 
