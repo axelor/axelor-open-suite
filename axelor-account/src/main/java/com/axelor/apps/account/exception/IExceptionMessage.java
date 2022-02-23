@@ -1080,5 +1080,4 @@ public interface IExceptionMessage {
 
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
-
 }
