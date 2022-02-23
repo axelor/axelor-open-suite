@@ -888,7 +888,6 @@ InvoiceSet.length > 0))"
 		         </dl>]]>
         </viewer>
       </field>
-      <field name="amountRemaining"></field>
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
