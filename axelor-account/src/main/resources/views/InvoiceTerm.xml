@@ -129,7 +129,8 @@
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null &amp;&amp; $showFinancialDiscount" readonlyIf="paymentSession">
+        showIf="financialDiscount != null &amp;&amp; $showFinancialDiscount"
+        readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
@@ -441,8 +442,10 @@
     <field name="isCustomized" expr="true"/>
   </action-record>
 
-  <action-record name="action-invoice-term-record-set-show-financial-discount" model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$showFinancialDiscount" expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
+  <action-record name="action-invoice-term-record-set-show-financial-discount"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <field name="$showFinancialDiscount"
+      expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
   </action-record>
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">

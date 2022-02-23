@@ -206,16 +206,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm,
         invoice.getFinancialDiscount(),
         invoice.getFinancialDiscountTotalAmount(),
-        invoice.getRemainingAmountAfterFinDiscount(),
-        invoice.getFinancialDiscountDeadlineDate());
+        invoice.getRemainingAmountAfterFinDiscount());
   }
 
   protected void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
-      BigDecimal remainingAmountAfterFinDiscount,
-      LocalDate financialDiscountDate) {
+      BigDecimal remainingAmountAfterFinDiscount) {
     if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
@@ -225,7 +223,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
-      invoiceTerm.setFinancialDiscountDeadlineDate(financialDiscountDate);
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          invoiceTerm.getDueDate().minusDays(financialDiscount.getDiscountDelay()));
     }
   }
 
