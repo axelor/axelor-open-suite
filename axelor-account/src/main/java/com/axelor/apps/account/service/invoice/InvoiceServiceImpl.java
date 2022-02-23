@@ -225,7 +225,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           public Invoice generate() throws AxelorException {
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.addAll(invoice.getInvoiceLineList());
+            if (invoice.getInvoiceLineList() != null) {
+              invoiceLines.addAll(invoice.getInvoiceLineList());
+            }
 
             populate(invoice, invoiceLines);
 
