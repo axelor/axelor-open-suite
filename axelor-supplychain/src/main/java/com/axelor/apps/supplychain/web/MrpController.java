@@ -32,6 +32,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MrpController {
@@ -148,6 +151,21 @@ public class MrpController {
 
       response.setView(ActionView.define(name).add("html", fileLink).map());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSaleOrderLineSetDomain(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+
+    try {
+      List<Long> idList = new ArrayList<Long>();
+      idList = Beans.get(MrpService.class).getSaleOrderLinesComplyingToMrpLineTypes(mrp);
+
+      String idListStr = idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
+
+      response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
