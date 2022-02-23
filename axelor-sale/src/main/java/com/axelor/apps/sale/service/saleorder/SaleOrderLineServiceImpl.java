@@ -1172,7 +1172,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             classPricingRule -> {
               if (classPricingRule != null) {
                 Object computedFormula = scriptHelper.eval(classPricingRule.getFormula());
-                classificationsList.add(computedFormula);
+                if (classPricingRule.getFieldTypeSelect()
+                    == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+                  classificationsList.add(
+                      ((BigDecimal) computedFormula)
+                          .setScale(classPricingRule.getScale(), RoundingMode.HALF_UP));
+                } else {
+                  classificationsList.add(computedFormula);
+                }
                 if (computedFormula != null)
                   logs.add(
                       "\n"
@@ -1457,11 +1464,18 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             resultPricingRule -> {
               Object result = scriptHelper.eval(resultPricingRule.getFormula());
               String fieldToPopulate = "";
+
               if (resultPricingRule.getFieldToPopulate() != null) {
                 fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
 
                 if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
                   scriptContext.put(resultPricingRule.getTempVarName(), result);
+                }
+                String typeName = resultPricingRule.getFieldToPopulate().getTypeName();
+
+                int scale = resultPricingRule.getScale();
+                if (typeName.equals("BigDecimal")) {
+                  result = ((BigDecimal) result).setScale(scale, RoundingMode.HALF_UP);
                 }
                 Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
               }
