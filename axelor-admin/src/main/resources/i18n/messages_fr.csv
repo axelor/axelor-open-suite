@@ -27,6 +27,7 @@
 "CSV",,,
 "CSV Backup Fetch Limit","Limite de récupération des sauvegardes CSV",,
 "Cancelled","Annulé",,
+"Choose a name for the tab in the spreadsheet containing the exported fields listed below.","Choisissez un nom pour l'onglet du tableur contenant les champs exportés listés ci-dessous.",,
 "Code",,,
 "Comment","Commentaire",,
 "Condition",,,
