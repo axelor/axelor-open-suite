@@ -629,17 +629,40 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void validateVatSystem(Move move) throws AxelorException {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
-      for (MoveLine moveline : move.getMoveLineList()) {
-        if (moveline.getAccount() != null
-            && moveline.getAccount().getAccountType() != null
-            && AccountTypeRepository.TYPE_TAX.equals(
-                moveline.getAccount().getAccountType().getTechnicalTypeSelect())
-            && moveline.getVatSystemSelect() == MoveLineRepository.VAT_SYSTEM_DEFAULT) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT));
-        }
+      if (isConfiguredVatSystem(move) && isConfigurationIssueOnVatSystem(move)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT));
       }
     }
+  }
+
+  protected boolean isConfiguredVatSystem(Move move) {
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (moveline.getTaxLine() != null
+          && moveline.getAccount() != null
+          && moveline.getAccount().getAccountType() != null
+          && !AccountTypeRepository.TYPE_TAX.equals(
+              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveline.getAccount().getIsTaxAuthorizedOnMoveLine()
+          && moveline.getAccount().getVatSystemSelect() != null
+          && moveline.getAccount().getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected boolean isConfigurationIssueOnVatSystem(Move move) {
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (moveline.getAccount() != null
+          && moveline.getAccount().getAccountType() != null
+          && AccountTypeRepository.TYPE_TAX.equals(
+              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveline.getVatSystemSelect() == MoveLineRepository.VAT_SYSTEM_DEFAULT) {
+        return true;
+      }
+    }
+    return false;
   }
 }
