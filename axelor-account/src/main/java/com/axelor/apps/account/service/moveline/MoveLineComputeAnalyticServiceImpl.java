@@ -12,6 +12,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -186,7 +187,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
-  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException {
+  public MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException {
     if (moveLine != null) {
 
       if (moveLine.getAnalyticMoveLineList() == null) {
@@ -200,31 +201,31 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       if (moveLine.getAxis1AnalyticAccount() != null) {
         analyticMoveLine =
             analyticMoveLineService.computeAnalyticMoveLine(
-                moveLine, moveLine.getAxis1AnalyticAccount());
+                moveLine, company, moveLine.getAxis1AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis2AnalyticAccount() != null) {
         analyticMoveLine =
             analyticMoveLineService.computeAnalyticMoveLine(
-                moveLine, moveLine.getAxis2AnalyticAccount());
+                moveLine, company, moveLine.getAxis2AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis3AnalyticAccount() != null) {
         analyticMoveLine =
             analyticMoveLineService.computeAnalyticMoveLine(
-                moveLine, moveLine.getAxis3AnalyticAccount());
+                moveLine, company, moveLine.getAxis3AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis4AnalyticAccount() != null) {
         analyticMoveLine =
             analyticMoveLineService.computeAnalyticMoveLine(
-                moveLine, moveLine.getAxis4AnalyticAccount());
+                moveLine, company, moveLine.getAxis4AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis5AnalyticAccount() != null) {
         analyticMoveLine =
             analyticMoveLineService.computeAnalyticMoveLine(
-                moveLine, moveLine.getAxis5AnalyticAccount());
+                moveLine, company, moveLine.getAxis5AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
     }
