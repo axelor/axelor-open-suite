@@ -833,8 +833,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.moveLineList.amountRemaining != 0");
 
     this.addParams("self.move.paymentMode.inOutSelect = ?%d", PaymentModeRepository.IN);
-    
-    this.addParams("self.move.functionalOriginSelect = ?%d",MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+
+    this.addParams(
+        "self.move.functionalOriginSelect = ?%d", MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     log.debug("Query : {}", this.query);
     return this.query;
