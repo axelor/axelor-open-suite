@@ -113,7 +113,7 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   @Override
   public void restoreBackUp(DataBackup dataBackup) {
-    DataBackup obj = setStatus(dataBackup);
+    setStatus(dataBackup);
 
     try {
       executor.submit(
@@ -187,7 +187,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     for (MetaModel metaModel : metaModelList) {
       try {
         Class.forName(metaModel.getFullName());
-        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
+        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter) + "'";
         String query =
             "Update "
                 + metaModel.getName()

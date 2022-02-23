@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -189,12 +190,12 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     List<Map> records = query.select(fieldsData[0]).fetch(0, 0);
 
-    for (Map<String, Object> record : records) {
+    for (Map<String, Object> recordMap : records) {
 
       List<String> datas = new ArrayList<>();
 
       for (String field : fieldsData[0]) {
-        Object object = record.get(field);
+        Object object = recordMap.get(field);
         if (object == null) {
           datas.add("");
           continue;
@@ -229,17 +230,18 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
     try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
-      for (String model : data.keySet()) {
-        File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
+      for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+        String key = modelEntry.getKey();
+        File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
         CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-        writer.writeAll(data.get(model));
+        writer.writeAll(modelEntry.getValue());
         writer.close();
-        zout.putNextEntry(new ZipEntry(model + ".csv"));
+        zout.putNextEntry(new ZipEntry(key + ".csv"));
         zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
         zout.closeEntry();
       }
-      zout.close();
     }
+
     return metaFiles.upload(zipFile);
   }
 
@@ -247,13 +249,13 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
-    for (String model : data.keySet()) {
-      XSSFSheet sheet = workBook.createSheet(model);
+    for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+      XSSFSheet sheet = workBook.createSheet(modelEntry.getKey());
       int count = 0;
-      for (String[] record : data.get(model)) {
+      for (String[] recordArray : modelEntry.getValue()) {
         XSSFRow row = sheet.createRow(count);
         int cellCount = 0;
-        for (String val : record) {
+        for (String val : recordArray) {
           XSSFCell cell = row.createCell(cellCount);
           cell.setCellValue(val);
           cellCount++;
