@@ -819,7 +819,7 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createSaleOrderMrpLines() throws AxelorException {
     List<MrpLineType> saleOrderMrpLineTypeList =
-        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
+        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp);
     if (saleOrderMrpLineTypeList == null || saleOrderMrpLineTypeList.isEmpty()) {
       return;
     }
@@ -930,8 +930,6 @@ public class MrpServiceImpl implements MrpService {
    * @return a boolean indicating if a line should be created
    */
   protected boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType) {
-    boolean createLine = true;
-
     // Determine deliveryDate
     LocalDate deliveryDate = saleOrderLine.getEstimatedDelivDate();
     if (deliveryDate == null) {
@@ -942,18 +940,107 @@ public class MrpServiceImpl implements MrpService {
     }
 
     // Determine if a line should be created
+    if (deliveryDate == null && !mrpLineType.getIncludeElementWithoutDate()) {
+      return false;
+    }
     LocalDate todayDate = appBaseService.getTodayDate(saleOrderLine.getSaleOrder().getCompany());
     if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_EXCLUDED) {
       if (deliveryDate != null && deliveryDate.isBefore(todayDate)) {
-        createLine = false;
+        return false;
       }
     } else if (mrpLineType.getLateSalesSelect() == MrpLineTypeRepository.LATE_SALES_ONLY) {
       if (deliveryDate == null || !deliveryDate.isBefore(todayDate)) {
-        createLine = false;
+        return false;
       }
     }
 
-    return createLine;
+    return true;
+  }
+
+  /**
+   * A method that returns all the saleOrderLines that should be selectable in the MRP. That is, all
+   * the sale order lines that comply with the existing mrp line types.
+   *
+   * @return a list of ids of the sale order lines
+   */
+  public List<Long> getSaleOrderLinesComplyingToMrpLineTypes(Mrp mrp) {
+
+    List<Long> idList = new ArrayList<Long>();
+    idList.add(new Long(-1));
+
+    List<MrpLineType> saleOrderMrpLineTypeList =
+        this.getMrpLineTypeList(MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp);
+
+    if ((saleOrderMrpLineTypeList != null || !saleOrderMrpLineTypeList.isEmpty())
+        && mrp.getStockLocation() != null) {
+      MrpRepository mrpRepository = Beans.get(MrpRepository.class);
+      SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
+      ProductRepository productRepository = Beans.get(ProductRepository.class);
+
+      for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
+        List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
+
+        List<Integer> statusList =
+            StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+
+        List<StockLocation> stockLocationList =
+            stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false)
+                .stream()
+                .filter(x -> !x.getIsNotInMrp())
+                .collect(Collectors.toList());
+
+        String filter =
+            "self.product.productTypeSelect = 'storable'"
+                + " AND self.product.excludeFromMrp = false"
+                + " AND self.product.stockManaged = true"
+                + " AND self.deliveryState != ?1"
+                + " AND self.saleOrder.company.id = ?2"
+                + " AND self.saleOrder.stockLocation IN (?3)"
+                + " AND (?4 = ?5 OR self.product.productSubTypeSelect = ?6)"
+                + " AND self.saleOrder.statusSelect IN (?7)"
+                + " AND self.deliveredQty < self.qty"
+                + " AND (self.saleOrder.archived = false OR self.saleOrder.archived is null)"
+                + " AND self.id NOT IN (?8) ";
+
+        // Checking the one off sales parameter
+        if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+            == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
+          filter += "AND (self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE)";
+        } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+            == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
+          filter += "AND self.saleOrder.oneoffSale IS TRUE";
+        }
+
+        saleOrderLineList.addAll(
+            saleOrderLineRepository
+                .all()
+                .filter(
+                    filter,
+                    saleOrderLineRepository.DELIVERY_STATE_DELIVERED,
+                    mrp.getStockLocation() != null
+                        ? mrp.getStockLocation().getCompany().getId()
+                        : -1,
+                    stockLocationList,
+                    mrp.getMrpTypeSelect(),
+                    mrpRepository.MRP_TYPE_MRP,
+                    productRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT,
+                    statusList,
+                    idList)
+                .fetch());
+
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+          if (saleOrderLine.getSaleOrder() != null) {
+            // Checking the late sales parameter
+            if (checkLateSalesParameter(saleOrderLine, saleOrderMrpLineType)) {
+              idList.add(saleOrderLine.getId());
+            }
+          }
+        }
+      }
+    }
+
+    return idList;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1376,7 +1463,7 @@ public class MrpServiceImpl implements MrpService {
         .fetchOne();
   }
 
-  protected List<MrpLineType> getMrpLineTypeList(int elementSelect) {
+  protected List<MrpLineType> getMrpLineTypeList(int elementSelect, Mrp mrp) {
 
     int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
     return mrpLineTypeRepository
