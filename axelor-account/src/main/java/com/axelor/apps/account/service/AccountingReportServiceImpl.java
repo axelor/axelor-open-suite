@@ -275,11 +275,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
 
-      this.addParams(
-          "self.vatSystemSelect = "
-              + MoveLineRepository.VAT_COMMON_SYSTEM
-              + " or self.account.commonPosition = "
-              + AccountRepository.COMMON_POSITION_DEBIT);
+      this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
