@@ -6,7 +6,7 @@
   <grid name="data-config-line-grid" title="Data config line"
     model="com.axelor.apps.base.db.DataConfigLine">
     <field name="metaModel"/>
-    <field name="path" required="true"/>
+    <field name="query" required="true"/>
     <field name="metaFieldPath"/>
   </grid>
 
@@ -19,7 +19,7 @@
       <field name="typeSelect"/>
       <field name="metaFieldPath" hidden="true" showIf="typeSelect == 0"
         requiredIf="typeSelect == 0" onSelect="action-object-attrs-metaFieldPath-onselect"/>
-      <field name="path" hidden="true" showIf="typeSelect == 1" requiredIf="typeSelect == 1"
+      <field name="query" hidden="true" showIf="typeSelect == 1" requiredIf="typeSelect == 1"
         colSpan="12"/>
       <panel-related name="toExportMetaFieldSetPanel" field="toExportMetaFieldSet"
         canNew="false" canEdit="false" colSpan="12"
