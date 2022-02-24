@@ -217,6 +217,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
+  public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList) {
+    return invoiceTermList.stream()
+        .map(InvoiceTerm::getAmountRemaining)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
+  }
+
+  @Override
   public void computeFinancialDiscount(InvoicePayment invoicePayment) {
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       return;

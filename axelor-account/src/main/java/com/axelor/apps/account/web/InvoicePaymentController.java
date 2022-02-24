@@ -50,6 +50,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,6 +223,8 @@ public class InvoicePaymentController {
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      boolean amountError = false;
+
       if (invoiceId > 0) {
         Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
         InvoiceService invoiceService = Beans.get(InvoiceService.class);
@@ -231,6 +234,14 @@ public class InvoicePaymentController {
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+        BigDecimal payableAmount =
+            Beans.get(InvoicePaymentToolService.class).getPayableAmount(invoiceTerms);
+
+        if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
+          invoicePayment.setAmount(payableAmount);
+          amountError = true;
+        }
+
         List<Long> invoiceTermIdList =
             invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
@@ -244,6 +255,10 @@ public class InvoicePaymentController {
           }
         }
         response.setValues(invoicePayment);
+
+        if (amountError) {
+          response.setFlash(I18n.get(IExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
