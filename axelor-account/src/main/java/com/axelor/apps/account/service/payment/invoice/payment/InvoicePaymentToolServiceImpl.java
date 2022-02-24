@@ -230,23 +230,23 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       return;
     }
 
-    List<InvoiceTerm> invoiceTermList =
+    List<InvoiceTermPayment> invoiceTermPaymentList =
         invoicePayment.getInvoiceTermPaymentList().stream()
-            .map(InvoiceTermPayment::getInvoiceTerm)
-            .filter(InvoiceTerm::getApplyFinancialDiscount)
+            .filter(it -> it.getInvoiceTerm().getApplyFinancialDiscount())
             .collect(Collectors.toList());
 
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
+    if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {
       invoicePayment.setApplyFinancialDiscount(false);
       return;
     }
 
     invoicePayment.setApplyFinancialDiscount(true);
-    invoicePayment.setFinancialDiscount(invoiceTermList.get(0).getFinancialDiscount());
+    invoicePayment.setFinancialDiscount(
+        invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
     invoicePayment.setFinancialDiscountTotalAmount(
-        this.getFinancialDiscountTotalAmount(invoiceTermList, invoicePayment.getAmount()));
+        this.getFinancialDiscountTotalAmount(invoiceTermPaymentList, invoicePayment.getAmount()));
     invoicePayment.setFinancialDiscountTaxAmount(
-        this.getFinancialDiscountTaxAmount(invoiceTermList));
+        this.getFinancialDiscountTaxAmount(invoiceTermPaymentList));
     invoicePayment.setFinancialDiscountAmount(
         invoicePayment
             .getFinancialDiscountTotalAmount()
@@ -256,21 +256,28 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(
-      List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
-    return invoiceTermList.stream()
+      List<InvoiceTermPayment> invoiceTermPaymentList, BigDecimal amount) {
+    return invoiceTermPaymentList.stream()
         .map(
             it ->
-                it.getFinancialDiscountAmount()
-                    .divide(it.getAmountRemaining(), 10, RoundingMode.HALF_UP))
+                it.getInvoiceTerm()
+                    .getFinancialDiscountAmount()
+                    .multiply(it.getPaidAmount())
+                    .divide(it.getInvoiceTerm().getAmountRemaining(), 10, RoundingMode.HALF_UP))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .multiply(amount)
         .setScale(2, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal getFinancialDiscountTaxAmount(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
-        .map(invoiceTermService::getFinancialDiscountTaxAmount)
+  protected BigDecimal getFinancialDiscountTaxAmount(
+      List<InvoiceTermPayment> invoiceTermPaymentList) {
+    return invoiceTermPaymentList.stream()
+        .map(
+            it ->
+                invoiceTermService
+                    .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
+                    .multiply(it.getPaidAmount())
+                    .divide(it.getInvoiceTerm().getAmountRemaining(), 2, RoundingMode.HALF_UP))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
