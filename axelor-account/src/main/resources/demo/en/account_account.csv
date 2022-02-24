@@ -394,7 +394,7 @@
 393;411;41;"Customer";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false"
 394;411100;411;"Customers - Sales of goods or services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false"
 395;411700;411;"Customer - Holdbacks";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false"
-396;413000;41;"Customers - Accounts Receivable";"receivable";;1;;;;;2;"NDAS";;1;"false";"false"
+396;413000;41;"Customers - Accounts Receivable";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false"
 397;416000;41;"Doubtful or disputed";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;1;"false";"false"
 398;418000;41;"Customers - unbilled";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false"
 399;418100;418000;"Customer - Unbilled";"receivable";"true";1;;;;;1;"NDAS";;1;"false";"false"

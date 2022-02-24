@@ -394,7 +394,7 @@
 393;411;410;"Clients";"receivable";"true";1;;"true";;;2;"NDAS";;"true";1;"false";"false"
 394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;"true";1;"false";"false"
 395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;"true""";1;"false";"false"
-396;413000;410;"Clients - Effets à recevoir";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false"
+396;413000;410;"Clients - Effets à recevoir";"receivable";"true";1;;"true";;;2;"NDAS";;;1;"false";"false"
 397;416000;410;"Clients douteux ou litigieux";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;"true""";1;"false";"false"
 398;418000;410;"Clients - Produits non encore facturés";"receivable";"true";1;;;;;2;"NDAS";;;1;"false";"false"
 399;418100;418000;"Clients - Factures à établir ";"receivable";"true";1;;;;;1;"NDAS";;;1;"false";"false"
