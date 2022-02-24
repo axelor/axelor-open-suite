@@ -48,4 +48,6 @@ public interface InvoicePaymentToolService {
   List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+
+  void computeFinancialDiscount(InvoicePayment invoicePayment);
 }

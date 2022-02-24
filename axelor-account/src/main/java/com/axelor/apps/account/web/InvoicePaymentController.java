@@ -50,7 +50,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,22 +207,10 @@ public class InvoicePaymentController {
   public void computeDatasForFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-      Long invoiceId =
-          Long.valueOf(
-              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
-      if (invoiceId > 0) {
-        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        InvoiceService invoiceService = Beans.get(InvoiceService.class);
-        Boolean applyDiscount = invoiceService.applyFinancialDiscount(invoice);
-        invoicePayment =
-            invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, applyDiscount);
 
-        invoicePayment.setApplyFinancialDiscount(applyDiscount);
+      Beans.get(InvoicePaymentToolService.class).computeFinancialDiscount(invoicePayment);
 
-        response.setValues(invoicePayment);
-        response.setAttr("amount", "title", invoiceService.setAmountTitle(applyDiscount));
-      }
-
+      response.setValues(invoicePayment);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -241,12 +228,6 @@ public class InvoicePaymentController {
 
         invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
 
-        BigDecimal totalAmountToPay = invoicePayment.getAmount();
-
-        if (invoicePayment.getApplyFinancialDiscount()) {
-          totalAmountToPay =
-              invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
-        }
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
@@ -255,17 +236,13 @@ public class InvoicePaymentController {
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
-          if (totalAmountToPay.compareTo(BigDecimal.ZERO) > 0) {
+          if (invoicePayment.getAmount().signum() > 0) {
             invoicePayment =
                 Beans.get(InvoiceTermPaymentService.class)
                     .initInvoiceTermPaymentsWithAmount(
-                        invoicePayment, invoiceTerms, totalAmountToPay);
+                        invoicePayment, invoiceTerms, invoicePayment.getAmount());
           }
         }
-        response.setAttr(
-            "$totalAmountWithFinancialDiscount",
-            "value",
-            invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
         response.setValues(invoicePayment);
       }
     } catch (Exception e) {
@@ -281,28 +258,39 @@ public class InvoicePaymentController {
    */
   public void loadInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
-      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-      List<InvoiceTerm> invoiceTerms =
-          Beans.get(InvoiceTermService.class)
-              .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-      if (CollectionUtils.isEmpty(invoiceTerms)) {
-        return;
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+
+      if (invoiceId > 0) {
+        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+        InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+        invoicePayment.setInvoice(invoice);
+
+        List<InvoiceTerm> invoiceTerms =
+            Beans.get(InvoiceTermService.class)
+                .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+
+        if (CollectionUtils.isEmpty(invoiceTerms)) {
+          return;
+        }
+
+        InvoiceTermPaymentService invoiceTermPaymentService =
+            Beans.get(InvoiceTermPaymentService.class);
+
+        invoicePayment =
+            invoiceTermPaymentService.initInvoiceTermPayments(
+                invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
+        invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
+
+        List<Long> invoiceTermIdList =
+            invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
+
+        response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
+        response.setValue("amount", invoicePayment.getAmount());
+        response.setValue("$invoiceTerms", invoiceTermIdList);
       }
-      InvoiceTermPaymentService invoiceTermPaymentService =
-          Beans.get(InvoiceTermPaymentService.class);
-
-      invoicePayment =
-          invoiceTermPaymentService.initInvoiceTermPayments(
-              invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
-      invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
-
-      List<Long> invoiceTermIdList =
-          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-
-      response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
-      response.setValue("amount", invoicePayment.getAmount());
-      response.setValue("$invoiceTerms", invoiceTermIdList);
-
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -345,10 +333,6 @@ public class InvoicePaymentController {
 
             invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
           }
-          response.setAttr(
-              "$totalAmountWithFinancialDiscount",
-              "value",
-              invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
           response.setValues(invoicePayment);
         }
       }

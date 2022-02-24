@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
@@ -214,17 +215,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && financialDiscount != null) {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
+      invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
-      invoiceTerm.setFinancialDiscountDeadlineDate(
-          invoiceTerm.getDueDate().minusDays(financialDiscount.getDiscountDelay()));
     }
   }
 
@@ -335,6 +336,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         LocalDate dueDate =
             InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
         invoiceTerm.setDueDate(dueDate);
+
+        if (appAccountService.getAppAccount().getManageFinancialDiscount()
+            && invoiceTerm.getApplyFinancialDiscount()
+            && invoiceTerm.getFinancialDiscount() != null) {
+          invoiceTerm.setFinancialDiscountDeadlineDate(
+              invoiceTerm
+                  .getDueDate()
+                  .minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay()));
+        }
       }
     }
 
@@ -771,6 +781,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return updatedRecords;
+  }
+
+  @Override
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null
+        && invoiceTerm.getFinancialDiscount() != null
+        && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return invoiceTerm
+          .getInvoice()
+          .getTaxTotal()
+          .multiply(invoiceTerm.getPercentage())
+          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
+          .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {

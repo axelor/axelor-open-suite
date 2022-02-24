@@ -66,7 +66,7 @@
                else {
                  return invoice.getInvoiceId() + "_" + amount;
                }
-            } else {
+            } else if (moveLine != null) {
                if (dueDate != null) {
             	 return moveLine.getName() + "_" + dueDate + "_" + amount;
                }
@@ -74,6 +74,8 @@
                  return moveLine.getName() + "_" + amount;
                }
             }
+
+            return "";
 	    ]]>
     </string>
 

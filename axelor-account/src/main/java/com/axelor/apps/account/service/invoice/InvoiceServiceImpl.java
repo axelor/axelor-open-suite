@@ -1266,13 +1266,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             >= 0);
   }
 
-  public String setAmountTitle(boolean applyFinancialDiscount) {
-    if (applyFinancialDiscount) {
-      return I18n.get("Financial discount deducted");
-    }
-    return I18n.get("Amount");
-  }
-
   @Override
   public InvoicePayment computeDatasForFinancialDiscount(
       InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount)

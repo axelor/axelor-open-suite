@@ -35,7 +35,7 @@
       showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2"/>
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
-      <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
+      <field name="amount" onChange="action-invoice-payment-group-change-amounts"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="paymentMode" canEdit="false"
@@ -61,18 +61,14 @@
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
-        onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
-      <field name="$totalAmountWithFinancialDiscount" type="decimal"
-        title="Total amount with Fin. Discount"
-        showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null"
-        readonly="true"/>
+        onChange="action-invoice-payment-group-change-amounts"/>
       <panel name="financialDiscountAmountPanel" showIf="applyFinancialDiscount"
-        readonly="true">
+        readonly="true" colSpan="12">
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount"/>
-        <field name="remainingAmountAfterFinDiscount"/>
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount &gt; 0"/>
+        <field name="remainingAmountAfterFinDiscount"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">
@@ -126,10 +122,14 @@
   <action-group name="action-invoice-payment-group-new">
     <action name="action-invoice-payment-record-new"/>
     <action name="action-invoice-payment-attrs-new"/>
-    <action name="action-invoice-payment-method-new"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
+    <action name="action-invoice-payment-group-change-amounts"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
   <action-record name="action-invoice-payment-record-new"
@@ -167,7 +167,7 @@
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
   </action-attrs>
 
-  <action-method name="action-invoice-payment-method-new">
+  <action-method name="action-invoice-payment-method-filter-payment-mode">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="filterPaymentMode"/>
   </action-method>
@@ -222,12 +222,6 @@
       expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)"
       if="invoice"/>
   </action-record>
-
-  <action-attrs name="action-attrs-on-change-invoice-payment-financial-discount">
-    <attribute name="title" for="amount"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:setAmountTitle(applyFinancialDiscount)"/>
-  </action-attrs>
-
 
 </object-views>
 

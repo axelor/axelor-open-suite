@@ -138,4 +138,6 @@ public class PayVoucherElementToPayService {
     }
     return payVoucherElementToPay;
   }
+
+  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {}
 }

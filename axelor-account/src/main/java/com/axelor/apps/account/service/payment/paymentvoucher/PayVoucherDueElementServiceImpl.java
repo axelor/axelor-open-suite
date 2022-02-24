@@ -6,10 +6,10 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import javax.inject.Inject;
 
 public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementService {
@@ -18,17 +18,20 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public PayVoucherDueElementServiceImpl(
       PayVoucherDueElementRepository payVoucherDueElementRepository,
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoiceTermService invoiceTermService) {
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -46,7 +49,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
       payVoucherDueElement.setFinancialDiscountTotalAmount(
           invoiceTerm.getFinancialDiscountAmount());
-      this.computeDueElementFinancialDiscountTax(payVoucherDueElement, invoiceTerm);
+      payVoucherDueElement.setFinancialDiscountTaxAmount(
+          invoiceTermService.getFinancialDiscountTaxAmount(invoiceTerm));
       payVoucherDueElement.setFinancialDiscountAmount(
           payVoucherDueElement
               .getFinancialDiscountTotalAmount()
@@ -58,23 +62,6 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     }
 
     return payVoucherDueElement;
-  }
-
-  protected void computeDueElementFinancialDiscountTax(
-      PayVoucherDueElement payVoucherDueElement, InvoiceTerm invoiceTerm) {
-    BigDecimal taxAmount = BigDecimal.ZERO;
-
-    if (invoiceTerm.getInvoice() != null) {
-      taxAmount =
-          invoiceTerm
-              .getInvoice()
-              .getTaxTotal()
-              .multiply(invoiceTerm.getPercentage())
-              .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
-              .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
-    }
-
-    payVoucherDueElement.setFinancialDiscountTaxAmount(taxAmount);
   }
 
   @Override
