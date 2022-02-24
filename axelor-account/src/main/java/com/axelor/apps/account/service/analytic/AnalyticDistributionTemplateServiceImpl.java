@@ -165,22 +165,31 @@ public class AnalyticDistributionTemplateServiceImpl
     }
   }
 
+  @Override
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
     Company company = account.getCompany();
+    if (company == null) {
+      return null;
+    }
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    AnalyticJournal analyticJournal = accountConfig.getAnalyticJournal();
     AnalyticDistributionTemplate analyticDistributionTemplate = new AnalyticDistributionTemplate();
     analyticDistributionTemplate.setName(account.getName());
     analyticDistributionTemplate.setCompany(account.getCompany());
-    analyticDistributionTemplate.setArchived(true);
+    analyticDistributionTemplate.setIsSpecific(true);
     analyticDistributionTemplate.setAnalyticDistributionLineList(
         new ArrayList<AnalyticDistributionLine>());
     for (AnalyticAxisByCompany analyticAxisByCompany :
         accountConfig.getAnalyticAxisByCompanyList()) {
       analyticDistributionTemplate.addAnalyticDistributionLineListItem(
           analyticDistributionLineService.createAnalyticDistributionLine(
-              analyticAxisByCompany.getAnalyticAxis(), null, null, BigDecimal.valueOf(100)));
+              analyticAxisByCompany.getAnalyticAxis(),
+              null,
+              analyticJournal,
+              BigDecimal.valueOf(100)));
     }
+    analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
     return analyticDistributionTemplate;
   }
 

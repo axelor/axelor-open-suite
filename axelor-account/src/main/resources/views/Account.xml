@@ -127,8 +127,7 @@
             grid-view="analytic-distribution-template-grid" showIf="analyticDistributionAuthorized"
             colSpan="3"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
-            hideIf="analyticDistributionTemplate" colSpan="3"
-            showIf="analyticDistributionAuthorized"
+            colSpan="3" showIf="analyticDistributionAuthorized"
             onClick="action-account-account-method-new-analytic-dist-template"/>
           <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
         </panel>
@@ -223,7 +222,6 @@
 
   <action-group name="action-account-group-on-change-analytic-distribution-authorized">
     <action name="action-account-record-uncheck-analytic-distribution-required"/>
-    <action name="action-account-account-method-new-analytic-dist-template"/>
   </action-group>
 
   <action-group name="action-group-account-is-tax-authorized-onchange">

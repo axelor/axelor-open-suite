@@ -32,6 +32,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -123,12 +124,36 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
-          && account.getAnalyticDistributionAuthorized()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate = null;
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          account.getAnalyticDistributionTemplate();
+      if (analyticDistributionTemplate == null && account.getAnalyticDistributionAuthorized()) {
+        specificAnalyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
                 .createDistributionTemplateFromAccount(account);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+      } else if (account.getAnalyticDistributionAuthorized()
+          && analyticDistributionTemplate != null) {
+        specificAnalyticDistributionTemplate =
+            Beans.get(AnalyticDistributionTemplateService.class)
+                .personalizeAnalyticDistributionTemplate(
+                    analyticDistributionTemplate, account.getCompany());
+      }
+      if ((analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific())
+          && specificAnalyticDistributionTemplate != null) {
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+        response.setView(
+            ActionView.define("Specific Analytic Distribution Template")
+                .model(AnalyticDistributionTemplate.class.getName())
+                .add("form", "analytic-distribution-template-fixed-asset-form")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", specificAnalyticDistributionTemplate.getId())
+                .context("fixedAsset", account.getId())
+                .map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
