@@ -38,6 +38,7 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -185,6 +186,7 @@ public class SequenceService {
    * @param refDate
    * @return
    */
+  @Transactional
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
     Sequence seq =
         JPA.em()
