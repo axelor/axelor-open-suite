@@ -26,7 +26,8 @@
         colSpan="9"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
         widget="info-button" onClick="" colSpan="3"
-        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"/>
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
+        x-currency="company.currency.symbol"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -69,7 +70,8 @@
         colSpan="8" canSearch="true" height="380"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
         widget="info-button" onClick="" colSpan="4"
-        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"/>
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
+        x-currency="company.currency.symbol"/>
       <field name="sessionTotalAmount" hidden="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
@@ -129,7 +131,7 @@
 
   <action-group name="action-group-payment-session-on-load">
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
-    <action name="action-payment-session-method-set-session-total-amount-btn"/>
+    <action name="action-payment-session-record-set-session-total-amount-btn"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
@@ -214,10 +216,11 @@
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
   </action-record>
-  <action-method name="action-payment-session-method-set-session-total-amount-btn">
-    <call class="com.axelor.apps.account.web.PaymentSessionController"
-      method="setSessionTotalAmountBtn"/>
-  </action-method>
+
+  <action-record name="action-payment-session-record-set-session-total-amount-btn"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="$sessionTotalAmountBtn" expr="eval: sessionTotalAmount"/>
+  </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setBankDetails"/>

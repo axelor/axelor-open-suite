@@ -30,7 +30,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.text.NumberFormat;
 
 @Singleton
 public class PaymentSessionController {
@@ -137,19 +136,6 @@ public class PaymentSessionController {
       boolean hasUnselectedInvoiceTerm =
           Beans.get(PaymentSessionService.class).hasUnselectedInvoiceTerm(paymentSession);
       response.setValue("$hasUnselectedInvoiceTerm", hasUnselectedInvoiceTerm);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSessionTotalAmountBtn(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      response.setValue(
-          "$sessionTotalAmountBtn",
-          NumberFormat.getNumberInstance().format(paymentSession.getSessionTotalAmount())
-              + " "
-              + paymentSession.getCurrency().getSymbol());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
