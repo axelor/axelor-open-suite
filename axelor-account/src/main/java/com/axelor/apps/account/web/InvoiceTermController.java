@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
-import com.axelor.apps.account.db.repo.AccountInvoiceTermRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -301,12 +301,12 @@ public class InvoiceTermController {
   public void selectPartnerTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      if (invoiceTerm.getInvoice().getPartner() != null
+      if (invoiceTerm.getMoveLine().getPartner() != null
           && invoiceTerm.getPaymentSession() != null) {
         List<InvoiceTerm> invoiceTermList =
-            Beans.get(AccountInvoiceTermRepository.class)
+            Beans.get(InvoiceTermAccountRepository.class)
                 .findByPaymentSessionAndPartner(
-                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getMoveLine().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
           InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
@@ -337,12 +337,12 @@ public class InvoiceTermController {
   public void unselectPartnerTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      if (invoiceTerm.getInvoice().getPartner() != null
+      if (invoiceTerm.getMoveLine().getPartner() != null
           && invoiceTerm.getPaymentSession() != null) {
         List<InvoiceTerm> invoiceTermList =
-            Beans.get(AccountInvoiceTermRepository.class)
+            Beans.get(InvoiceTermAccountRepository.class)
                 .findByPaymentSessionAndPartner(
-                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getMoveLine().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
           InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
