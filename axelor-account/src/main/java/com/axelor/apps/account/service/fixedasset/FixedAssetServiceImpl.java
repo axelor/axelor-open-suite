@@ -36,7 +36,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -304,12 +303,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);
       if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-        try {
-          validate(fixedAsset);
-          count++;
-        } catch (AxelorException e) {
-          TraceBackService.trace(e);
-        }
+        validate(fixedAsset);
+        count++;
         JPA.clear();
       }
     }
