@@ -166,6 +166,7 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
+  @Transactional
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
     Company company = account.getCompany();
@@ -176,7 +177,7 @@ public class AnalyticDistributionTemplateServiceImpl
     AnalyticJournal analyticJournal = accountConfig.getAnalyticJournal();
     AnalyticDistributionTemplate analyticDistributionTemplate = new AnalyticDistributionTemplate();
     analyticDistributionTemplate.setName(account.getName());
-    analyticDistributionTemplate.setCompany(account.getCompany());
+    analyticDistributionTemplate.setCompany(company);
     analyticDistributionTemplate.setIsSpecific(true);
     analyticDistributionTemplate.setAnalyticDistributionLineList(
         new ArrayList<AnalyticDistributionLine>());

@@ -122,13 +122,15 @@
           <field
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             name="analyticDistributionTemplate"
+            onChange="action-attrs-account-account-template-show-title"
             domain="self.company = :company AND self.isSpecific = false"
             form-view="analytic-distribution-template-form"
             grid-view="analytic-distribution-template-grid" showIf="analyticDistributionAuthorized"
             colSpan="3"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
-            colSpan="3" showIf="analyticDistributionAuthorized"
-            onClick="action-account-account-method-new-analytic-dist-template"/>
+            colSpan="3"
+            showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate.isSpecific"
+            onClick="action-account-account-method-new-analytic-dist-template,action-attrs-account-account-template-show-title"/>
           <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
@@ -203,6 +205,7 @@
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-attrs-account-account-template-show-title"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -331,6 +334,15 @@
       expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
     <attribute name="title" for="activeStatusBtn"
       expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-account-account-template-show-title">
+    <attribute name="title" for="personalizeBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Create personalized analytic template')"
+      if="!analyticDistributionTemplate"/>
+    <attribute name="title" for="personalizeBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Personalize analytic template')"
+      if="analyticDistributionTemplate"/>
   </action-attrs>
 
   <action-method name="action-method-account-hide-analytic">
