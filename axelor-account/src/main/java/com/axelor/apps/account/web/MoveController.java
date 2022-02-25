@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
-import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -591,17 +590,6 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveInvoiceTermService.class).generateInvoiceTerms(move);
-      response.setValue("moveLineList", move.getMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getLocalizedMessage());
     }
   }
 }

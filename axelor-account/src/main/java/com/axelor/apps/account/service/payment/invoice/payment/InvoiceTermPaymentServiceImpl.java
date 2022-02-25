@@ -72,6 +72,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       BigDecimal availableAmount) {
     List<InvoiceTermPayment> invoiceTermPaymentList =
         initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTermsToPay, availableAmount);
+
+    invoicePayment.clearInvoiceTermPaymentList();
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
     }
@@ -119,7 +121,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     while (i < invoiceTermCount && availableAmount.signum() > 0) {
       invoiceTermToPay =
           this.getInvoiceTermToPay(
-              invoicePayment, invoiceTermsToPay, availableAmount, i, invoiceTermCount);
+              invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
       BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
