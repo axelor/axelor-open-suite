@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -344,10 +343,8 @@ public abstract class InvoiceGenerator {
         "Peupler une facture => lignes de factures: {} ", new Object[] {invoiceLines.size()});
 
     initCollections(invoice);
-    TaxAccountToolService taxAccountToolService = Beans.get(TaxAccountToolService.class);
     // Create tax lines.
-    List<InvoiceLineTax> invoiceTaxLines =
-        (new TaxInvoiceLine(invoice, invoiceLines, taxAccountToolService)).creates();
+    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
