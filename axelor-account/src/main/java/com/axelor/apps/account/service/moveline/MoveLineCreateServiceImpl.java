@@ -549,14 +549,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else {
       if (ObjectUtils.notEmpty(move.getPartner())
           && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
-        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        fiscalPosition = move.getPartner().getFiscalPosition();
       }
     }
 
     if (fiscalPosition != null) {
-      newAccount =
-          fiscalPositionAccountService.getAccount(
-              move.getPartner().getFiscalPosition(), newAccount);
+      newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
     }
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
     MoveLine newOrUpdatedMoveLine = new MoveLine();
