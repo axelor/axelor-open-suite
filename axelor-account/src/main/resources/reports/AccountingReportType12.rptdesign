@@ -440,7 +440,8 @@ Account.code as accountCode,
 Account.name as accountName,
 Tax.code as taxCode,
 FiscalPosition.code as fiscalPositionCode,
-AccountType.technical_type_select,Case  when AccountType.technical_type_select != 'tax' then 
+AccountType.technical_type_select,
+Case  when AccountType.technical_type_select != 'tax' then 
 	Case when Move.functional_origin_select = 3 then null else 
 		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
 		end

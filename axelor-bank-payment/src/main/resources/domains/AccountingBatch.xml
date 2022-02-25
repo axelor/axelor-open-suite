@@ -15,6 +15,8 @@
       selection="bankpayment.account.batch.bill.of.exchange.step.batch.select"/>
     <integer name="billOfExchangeDataTypeSelect" title="Bill of exchange data type"
       selection="bankpayment.account.batch.bill.of.exchange.data.type.select"/>
+    <many-to-one ref="com.axelor.apps.message.db.Template"
+      name="billOfExhangeMailTemplate" title="Template"/>
 
     <extra-code><![CDATA[
 		   	// ACTION TYPE
@@ -33,7 +35,8 @@
 
 			//BILL OF EXCHANGE BATCH STATUS
 			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION = 1;
-			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION = 2;
+			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_SEND_BILLING = 2;
+			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION = 3;
 		]]></extra-code>
 
   </entity>

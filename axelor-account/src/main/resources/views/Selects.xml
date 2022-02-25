@@ -395,6 +395,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
   </selection>
 
   <selection name="account.notification.item.type.select">
@@ -666,6 +667,11 @@
     <option value="10">10</option>
   </selection>
 
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
+  </selection>
+
   <selection name='iaccount.vat.system.select'>
     <option value="0"></option>
     <option value="1">Goods - Vat on deliveries</option>
@@ -679,6 +685,12 @@
   </selection>
 
   <selection name='iaccount.vat.system.moveline.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.invoice.line.tax.select'>
     <option value="0"></option>
     <option value="1">vat.Delivery</option>
     <option value="2">vat.Payment</option>

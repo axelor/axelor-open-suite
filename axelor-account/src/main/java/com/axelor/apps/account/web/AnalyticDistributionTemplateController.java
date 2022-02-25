@@ -46,6 +46,17 @@ public class AnalyticDistributionTemplateController {
     }
   }
 
+  public void checkTemplateCompany(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .checkAnalyticDistributionTemplateCompany(analyticDistributionTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void calculateAnalyticFixedAsset(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().get("fixedAsset") != null) {

@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
@@ -95,7 +96,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
         purchaseOrder.getPurchaseOrderLineList().stream()
-            .forEach(poLine -> poLine.clearBudgetDistributionList());
+            .forEach(PurchaseOrderLine::clearBudgetDistributionList);
       }
     }
   }

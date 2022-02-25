@@ -44,7 +44,7 @@ public class SaleBatchController {
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Batch batch = Beans.get(SaleBatchService.class).run((String) request.getContext().get("code"));
-    Map<String, Object> mapData = new HashMap<String, Object>();
+    Map<String, Object> mapData = new HashMap<>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
   }
