@@ -34,6 +34,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -77,6 +78,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -90,7 +92,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
       AppAccountService appAccountService,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      MoveLineTaxService moveLineTaxService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
@@ -103,6 +106,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -237,6 +241,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
         moveLineControlService.validateMoveLine(moveLine);
       }
+
+      moveLineTaxService.checkTaxMoveLines(move);
+
       this.validateWellBalancedMove(move);
     }
   }

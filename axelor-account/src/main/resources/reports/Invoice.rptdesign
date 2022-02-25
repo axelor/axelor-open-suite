@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202111181832</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -55,6 +55,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -653,6 +656,18 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="displayName">legal_notice</text-property>
                     <text-property name="heading">legal_notice</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">supplierVatSystemSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">supplierVatSystemSelect</text-property>
+                    <text-property name="heading">supplierVatSystemSelect</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">companyVatSystemSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">companyVatSystemSelect</text-property>
+                    <text-property name="heading">companyVatSystemSelect</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -978,6 +993,16 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="position">62</property>
                         <property name="name">legal_notice</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">62</property>
+                        <property name="name">supplierVatSystemSelect</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">63</property>
+                        <property name="name">companyVatSystemSelect</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1355,6 +1380,20 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="nativeName">legal_notice</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">62</property>
+                    <property name="name">supplierVatSystemSelect</property>
+                    <property name="nativeName">supplierVatSystemSelect</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">63</property>
+                    <property name="name">companyVatSystemSelect</property>
+                    <property name="nativeName">companyVatSystemSelect</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
@@ -1417,7 +1456,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
     AppSupplychain.active as "isAppSupplyChainActive",
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
-	Invoice.legal_notice as "legal_notice"
+	Invoice.legal_notice as "legal_notice",
+	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
+	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
@@ -1425,6 +1466,7 @@ left outer join base_app_account as AppAccount on true
 left outer join base_app as AppSupplychain on AppSupplychain.code = 'supplychain'
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
+left outer join base_partner as CompanyPartner on (Company.partner = CompanyPartner.id)
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join base_bank_details as BankDetail on (Invoice.company_bank_details = BankDetail.id)
@@ -1438,7 +1480,10 @@ left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
 left outer join stock_stock_move as StockMove on (StockMove.id = InvoiceStockMove.stock_move_set)
-where Invoice.id = ?]]></xml-property>
+left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
+left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
+where Invoice.id = ?
+and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>
@@ -7400,11 +7445,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                 </structure>
                 <structure>
                     <property name="name">delivery_address_str</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
                     <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">enablePackMangement</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
                     <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
@@ -7415,48 +7462,69 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                 </structure>
                 <structure>
                     <property name="name">contactPartnerTitleSelect</property>
+                    <text-property name="displayName">contactPartnerTitleSelect</text-property>
                     <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">originalInvoice</property>
+                    <text-property name="displayName">originalInvoice</text-property>
                     <expression name="expression" type="javascript">dataSetRow["originalInvoice"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">originalInvoiceId</property>
+                    <text-property name="displayName">originalInvoiceId</text-property>
                     <expression name="expression" type="javascript">dataSetRow["originalInvoiceId"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">StockMoveRealDate</property>
+                    <text-property name="displayName">StockMoveRealDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="name">StockMoveSeq</property>
+                    <text-property name="displayName">StockMoveSeq</text-property>
                     <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">isAppSupplyChainActive</property>
+                    <text-property name="displayName">isAppSupplyChainActive</text-property>
                     <expression name="expression" type="javascript">dataSetRow["isAppSupplyChainActive"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">isStockMoveEmpty</property>
+                    <text-property name="displayName">isStockMoveEmpty</text-property>
                     <expression name="expression" type="javascript">dataSetRow["isStockMoveEmpty"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">displayStockMoveOnInvoicePrinting</property>
+                    <text-property name="displayName">displayStockMoveOnInvoicePrinting</text-property>
                     <expression name="expression" type="javascript">dataSetRow["displayStockMoveOnInvoicePrinting"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">legal_notice</property>
+                    <text-property name="displayName">legal_notice</text-property>
                     <expression name="expression" type="javascript">dataSetRow["legal_notice"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">supplierVatSystemSelect</property>
+                    <text-property name="displayName">supplierVatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">companyVatSystemSelect</property>
+                    <text-property name="displayName">companyVatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <structure name="toc"/>
@@ -8133,6 +8201,41 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                             </row>
                                         </detail>
                                     </table>
+                                    <text id="5848">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">((row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2) &amp;&amp; row._outer["supplierVatSystemSelect"] != 2)
+|| ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.optionOnDeliveries'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5256">
                                     <property name="colSpan">1</property>

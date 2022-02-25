@@ -1088,6 +1088,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+  static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
+      "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
@@ -1119,6 +1121,9 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
       "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  static final String SAME_TAX_MOVE_LINES = /*$$(*/
+      "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
