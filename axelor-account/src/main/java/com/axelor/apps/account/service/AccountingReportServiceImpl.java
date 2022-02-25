@@ -81,6 +81,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected MoveLineExportService moveLineExportService;
 
+  protected InvoicePaymentRepository invoicePaymentRepository;
+
   protected String query = "";
 
   protected AccountRepository accountRepo;
@@ -100,7 +102,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AccountingReportDas2Service accountingReportDas2Service,
       AccountingReportPrintService accountingReportPrintService,
       MoveLineExportService moveLineExportService,
-      AccountRepository accountRepo) {
+      AccountRepository accountRepo,
+      InvoicePaymentRepository invoicePaymentRepository) {
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
@@ -110,6 +113,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.accountingReportPrintService = accountingReportPrintService;
     this.moveLineExportService = moveLineExportService;
     this.accountRepo = accountRepo;
+    this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
   @Override
@@ -600,7 +604,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
                 .filter(this.getTaxPaymentMoveLineList(accountingReport))
                 .count();
         count +=
-            Beans.get(InvoicePaymentRepository.class)
+            invoicePaymentRepository
                 .all()
                 .filter(this.getPaymentNotLetteredMoveLineList(accountingReport))
                 .count();
