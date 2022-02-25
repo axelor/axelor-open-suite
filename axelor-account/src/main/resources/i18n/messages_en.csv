@@ -2242,6 +2242,7 @@
 "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%",,,
 "The currency is missing on the account move %s",,,
 "The currency is required and must be the same for all invoices",,,
+"The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move. Both informations must be coherents.",,,
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.",,,
 "The deposit slip has already been published.",,,
 "The from date is incorrect",,,
