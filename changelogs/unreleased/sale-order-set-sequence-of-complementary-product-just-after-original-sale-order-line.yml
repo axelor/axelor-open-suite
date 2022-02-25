@@ -1,3 +1,3 @@
 ---
-title: "SaleOrder: set sequence of complementary product just after original sale order line."
+title: "SaleOrder: lines generated from complementary products are now correctly sorted directly after original sale order line."
 type: fix

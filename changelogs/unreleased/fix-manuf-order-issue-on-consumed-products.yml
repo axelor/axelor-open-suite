@@ -1,3 +1,3 @@
 ---
-title: "Manuf Order : Fix issue on consumed products on generated manuf order from SaleOrder "
+title: "Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list."
 type: fix
