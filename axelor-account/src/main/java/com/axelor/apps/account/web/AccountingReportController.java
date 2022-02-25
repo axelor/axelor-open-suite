@@ -64,22 +64,24 @@ public class AccountingReportController {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
     try {
-      AccountingReportType accountingReportType =
-          Beans.get(AccountingReportTypeRepository.class)
-              .find(accountingReport.getReportType().getId());
-      logger.debug("accountingReportType : {}", accountingReportType);
-      if (accountingReportType.getModelAccountingReport() != null) {
-        AccountingReport accountingReport1 =
-            JPA.copy(accountingReportType.getModelAccountingReport(), false);
-        accountingReport1.setRef(null);
-        accountingReport1.setPublicationDateTime(null);
-        accountingReport1.setTotalCredit(null);
-        accountingReport1.setTotalDebit(null);
-        accountingReport1.setBalance(null);
-        accountingReport1.setDate(accountingReport.getDate());
-        accountingReport1.setStatusSelect(accountingReport.getStatusSelect());
-        Map<String, Object> map = Mapper.toMap(accountingReport1);
-        response.setValues(map);
+      if (accountingReport.getReportType() != null) {
+        AccountingReportType accountingReportType =
+            Beans.get(AccountingReportTypeRepository.class)
+                .find(accountingReport.getReportType().getId());
+        logger.debug("accountingReportType : {}", accountingReportType);
+        if (accountingReportType.getModelAccountingReport() != null) {
+          AccountingReport accountingReport1 =
+              JPA.copy(accountingReportType.getModelAccountingReport(), false);
+          accountingReport1.setRef(null);
+          accountingReport1.setPublicationDateTime(null);
+          accountingReport1.setTotalCredit(null);
+          accountingReport1.setTotalDebit(null);
+          accountingReport1.setBalance(null);
+          accountingReport1.setDate(accountingReport.getDate());
+          accountingReport1.setStatusSelect(accountingReport.getStatusSelect());
+          Map<String, Object> map = Mapper.toMap(accountingReport1);
+          response.setValues(map);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
