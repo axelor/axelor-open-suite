@@ -820,28 +820,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder)
       throws AxelorException {
     if (saleOrder != null) {
-      String numSeq = "";
-      String externalRef = "";
+      StringBuilder numSeq = new StringBuilder();
+      StringBuilder externalRef = new StringBuilder();
 
       for (Invoice invoiceLocal : invoiceList) {
-        if (!numSeq.isEmpty()) {
-          numSeq += "-";
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
         }
         if (invoiceLocal.getInternalReference() != null) {
-          numSeq += invoiceLocal.getInternalReference();
+          numSeq.append(invoiceLocal.getInternalReference());
         }
 
-        if (!externalRef.isEmpty()) {
-          externalRef += "|";
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
         }
         if (invoiceLocal.getExternalReference() != null) {
-          externalRef += invoiceLocal.getExternalReference();
+          externalRef.append(invoiceLocal.getExternalReference());
         }
       }
       InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
       Invoice invoiceMerged = invoiceGenerator.generate();
-      invoiceMerged.setExternalReference(externalRef);
-      invoiceMerged.setInternalReference(numSeq);
+      invoiceMerged.setExternalReference(externalRef.toString());
+      invoiceMerged.setInternalReference(numSeq.toString());
 
       if (paymentMode != null) {
         invoiceMerged.setPaymentMode(paymentMode);

@@ -141,6 +141,9 @@
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.moveline.select" default="0"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
@@ -157,6 +160,11 @@
 		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
 		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
 
+		// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_COMMON_SYSTEM = 1;
+      	public static final int VAT_CASH_PAYMENTS = 2;
+
 	]]></extra-code>
 
     <track>
@@ -167,6 +175,7 @@
       <field name="credit"/>
       <field name="origin"/>
       <field name="description"/>
+      <field name="vatSystemSelect"/>
       <message if="true" on="CREATE">Move line created</message>
     </track>
 
