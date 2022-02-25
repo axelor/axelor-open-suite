@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -37,12 +38,13 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
 
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
-      InvoiceRepository invoiceRepo,
-      MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo,
-      InvoiceTermService invoiceTermService,
-      PartnerSupplychainService partnerSupplychainService) {
-    super(invoiceRepo, moveToolService, invoicePaymentRepo, invoiceTermService);
+          InvoiceRepository invoiceRepo,
+          MoveToolService moveToolService,
+          InvoicePaymentRepository invoicePaymentRepo,
+          InvoiceTermService invoiceTermService,
+          PartnerSupplychainService partnerSupplychainService,
+          InvoiceTermPaymentService invoiceTermPaymentService) {
+    super(invoiceRepo, moveToolService, invoicePaymentRepo, invoiceTermService, invoiceTermPaymentService);
     this.partnerSupplychainService = partnerSupplychainService;
   }
 

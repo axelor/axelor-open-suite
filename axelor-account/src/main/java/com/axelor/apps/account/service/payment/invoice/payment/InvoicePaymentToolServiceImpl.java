@@ -60,6 +60,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigRepository accountConfigRepository;
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermPaymentService invoiceTermPaymentService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -68,11 +69,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      InvoiceTermPaymentService invoiceTermPaymentService) {
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermPaymentService = invoiceTermPaymentService;
   }
 
   @Override
@@ -253,6 +256,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
     invoicePayment.setRemainingAmountAfterFinDiscount(
         invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+
+    invoiceTermPaymentList.forEach(
+        it ->
+            invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
+                it,
+                invoicePayment.getAmount(),
+                invoicePayment.getFinancialDiscountTotalAmount(),
+                it.getInvoiceTerm().getAmountRemaining(),
+                it.getInvoiceTerm().getApplyFinancialDiscount()));
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(

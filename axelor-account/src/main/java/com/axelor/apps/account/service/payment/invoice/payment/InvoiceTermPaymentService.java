@@ -97,4 +97,11 @@ public interface InvoiceTermPaymentService {
    */
   public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
       throws AxelorException;
+
+  public void manageInvoiceTermFinancialDiscount(
+      InvoiceTermPayment invoiceTermPayment,
+      BigDecimal amount,
+      BigDecimal financialDiscountTotalAmount,
+      BigDecimal paidAmount,
+      boolean applyFinancialDiscount);
 }
