@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -31,16 +29,13 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -87,47 +82,52 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine generateTaxPaymentMoveLineList(
-      MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException {
-    int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
-    if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
-    } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
-      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
-    } else {
-      functionalOrigin = 0;
-    }
-
+      MoveLine customerPaymentMoveLine, MoveLine invoiceCustomerMoveLine, Reconcile reconcile)
+      throws AxelorException {
+    Move invoiceMove = invoiceCustomerMoveLine.getMove();
     BigDecimal paymentAmount = reconcile.getAmount();
-    BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+    BigDecimal invoiceTotalAmount =
+        invoiceCustomerMoveLine.getCredit().add(invoiceCustomerMoveLine.getDebit());
+    for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
+      if (AccountTypeRepository.TYPE_TAX.equals(
+          invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
 
-      TaxLine taxLine = invoiceLineTax.getTaxLine();
-      BigDecimal vatRate = taxLine.getValue();
-      BigDecimal baseAmount = invoiceLineTax.getCompanyExTaxBase();
-      BigDecimal detailPaymentAmount =
-          baseAmount
-              .multiply(paymentAmount)
-              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
-              .setScale(2, RoundingMode.HALF_UP);
+        TaxLine taxLine = invoiceMoveLine.getTaxLine();
+        BigDecimal vatRate = taxLine.getValue();
 
-      TaxPaymentMoveLine taxPaymentMoveLine =
-          new TaxPaymentMoveLine(
-              customerMoveLine,
-              taxLine,
-              reconcile,
-              vatRate,
-              detailPaymentAmount,
-              appBaseService.getTodayDate(reconcile.getCompany()));
+        BigDecimal baseAmount =
+            (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
+                .divide(vatRate, 2, BigDecimal.ROUND_HALF_UP);
 
-      taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
-      taxPaymentMoveLine.setFunctionalOriginSelect(functionalOrigin);
+        BigDecimal detailPaymentAmount =
+            baseAmount
+                .multiply(paymentAmount)
+                .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
+                .setScale(2, RoundingMode.HALF_UP);
 
-      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+        TaxPaymentMoveLine taxPaymentMoveLine =
+            new TaxPaymentMoveLine(
+                customerPaymentMoveLine,
+                taxLine,
+                reconcile,
+                vatRate,
+                detailPaymentAmount,
+                appBaseService.getTodayDate(reconcile.getCompany()));
 
-      customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+        taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
+
+        taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+
+        taxPaymentMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
+
+        taxPaymentMoveLine.setFunctionalOriginSelect(
+            invoiceCustomerMoveLine.getMove().getFunctionalOriginSelect());
+
+        customerPaymentMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+      }
     }
-    this.computeTaxAmount(customerMoveLine);
-    return moveLineRepository.save(customerMoveLine);
+    this.computeTaxAmount(customerPaymentMoveLine);
+    return moveLineRepository.save(customerPaymentMoveLine);
   }
 
   @Override

@@ -667,6 +667,11 @@
     <option value="10">10</option>
   </selection>
 
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
+  </selection>
+
   <selection name='iaccount.vat.system.select'>
     <option value="0"></option>
     <option value="1">Goods - Vat on deliveries</option>

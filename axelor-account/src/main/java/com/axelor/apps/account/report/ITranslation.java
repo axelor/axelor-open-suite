@@ -351,6 +351,18 @@ public interface ITranslation {
       "AccountingReportType15.taxRate"; /*)*/
   public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
       "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.paymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PARTNER = /*$$(*/
+      "AccountingReportType15.partner"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ORIGIN = /*$$(*/
+      "AccountingReportType15.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_RECONCILED_AMOUNT = /*$$(*/
+      "AccountingReportType15.reconciledAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_AMOUNT_TO_RECONCILE = /*$$(*/
+      "AccountingReportType15.amountToReconcile"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.advancePaymentNotLettered"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/
