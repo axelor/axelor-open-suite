@@ -323,7 +323,7 @@
 "AccountingReportType12.reportDateEdition","Edition date",,
 "AccountingReportType12.taxCode","Tax code",,
 "AccountingReportType12.taxRate","Tax Rate",,
-"AccountingReportType12.title","VAT statement on amount received",,
+"AccountingReportType12.title","VAT STATEMENT ON AMOUNT INVOICED",,
 "AccountingReportType12.to","To",,
 "AccountingReportType12.total","Total",,
 "AccountingReportType12.vatOnDebit","VAT on debit",,

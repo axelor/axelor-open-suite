@@ -323,7 +323,7 @@
 "AccountingReportType12.reportDateEdition","Date d'édition",,
 "AccountingReportType12.taxCode","Code TVA",,
 "AccountingReportType12.taxRate","Taux",,
-"AccountingReportType12.title","ETAT D'AIDE A LA DECLARATION DE TVA",,
+"AccountingReportType12.title","ETAT D'AIDE A LA DECLARATION DE TVA SUR FACTURATION",,
 "AccountingReportType12.to","Au",,
 "AccountingReportType12.total","Totaux",,
 "AccountingReportType12.vatOnDebit","TVA sur débits",,
