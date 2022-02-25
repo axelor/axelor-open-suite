@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -106,12 +107,20 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
           && invoiceMoveLine.getTaxLine() != null
           && invoiceMoveLine.getTaxLine().getValue().compareTo(BigDecimal.ZERO) == 0) {
 
+        boolean isSale = false;
+
+        if (invoiceMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+          isSale = true;
+        }
+
         int vatSystemSelect =
             taxAccountToolService.calculateVatSystem(
-                invoiceMove.getJournal(),
                 invoiceMoveLine.getPartner(),
                 invoiceMove.getCompany(),
-                invoiceMoveLine.getAccount());
+                invoiceMoveLine.getAccount(),
+                false,
+                isSale);
+
         customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
             this.generateTaxPaymentMoveLine(
                 customerPaymentMoveLine,
@@ -272,7 +281,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   public int getVatSystem(Move move, MoveLine moveline) throws AxelorException {
     Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
     return taxAccountToolService.calculateVatSystem(
-        move.getJournal(), partner, move.getCompany(), moveline.getAccount());
+        partner,
+        move.getCompany(),
+        moveline.getAccount(),
+        (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
+        (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
   }
 
   @Override
