@@ -1,3 +1,0 @@
----
-title: "SaleOrder: lines generated from complementary products are now correctly sorted directly after original sale order line."
-type: fix

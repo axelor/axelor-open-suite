@@ -1,3 +1,0 @@
----
-title: "Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list."
-type: fix
