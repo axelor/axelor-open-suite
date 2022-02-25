@@ -233,6 +233,8 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -503,6 +505,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticAccountService.class).to(AnalyticAccountServiceImpl.class);
 
     bind(TaxAccountToolService.class).to(TaxAccountToolServiceImpl.class);
+
+    bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
 
     bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
 

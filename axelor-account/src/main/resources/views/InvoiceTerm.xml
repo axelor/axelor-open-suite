@@ -61,6 +61,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate" groupBy="moveLine.partner"
     edit-icon="true">
     <field name="paymentSession.name" hidden="true"/>
+    <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
@@ -72,18 +73,20 @@
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select"
       onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      icon="fa-plus-circle" readonlyIf="isSelectedOnPaymentSession"/>
+      icon="fa-plus-circle"
+      readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectBtn" title="Unselect"
       onClick="action-invoice-term-method-unselect-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      icon="fa-minus-circle" readonlyIf="!isSelectedOnPaymentSession"/>
+      icon="fa-minus-circle"
+      readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
       icon="fa-user-plus"
       onClick="action-invoice-term-method-select-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      readonlyIf="isSelectedOnPaymentSession"/>
+      readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
       icon="fa-user-times"
       onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      readonlyIf="!isSelectedOnPaymentSession"/>
+      readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
   </grid>
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
