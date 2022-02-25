@@ -277,9 +277,10 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
-                    .divide(it.getInvoiceTerm().getAmountRemaining(), 2, RoundingMode.HALF_UP))
+                    .divide(it.getInvoiceTerm().getAmountRemaining(), 10, RoundingMode.HALF_UP))
         .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+        .orElse(BigDecimal.ZERO)
+        .setScale(2, RoundingMode.HALF_UP);
   }
 
   @Override

@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,5 +140,29 @@ public class PayVoucherElementToPayService {
     return payVoucherElementToPay;
   }
 
-  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {}
+  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {
+    if (!payVoucherElementToPay.getApplyFinancialDiscount()
+        || payVoucherElementToPay.getFinancialDiscount() == null) {
+      return;
+    }
+
+    BigDecimal percentagePaid =
+        payVoucherElementToPay
+            .getAmountToPay()
+            .divide(
+                payVoucherElementToPay.getInvoiceTerm().getAmountRemaining(),
+                10,
+                RoundingMode.HALF_UP);
+
+    payVoucherElementToPay.setFinancialDiscountAmount(
+        payVoucherElementToPay.getFinancialDiscountAmount().multiply(percentagePaid));
+    payVoucherElementToPay.setFinancialDiscountTotalAmount(
+        payVoucherElementToPay.getFinancialDiscountTotalAmount().multiply(percentagePaid));
+    payVoucherElementToPay.setFinancialDiscountTaxAmount(
+        payVoucherElementToPay.getFinancialDiscountTaxAmount().multiply(percentagePaid));
+    payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
+        payVoucherElementToPay
+            .getAmountToPay()
+            .subtract(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
+  }
 }

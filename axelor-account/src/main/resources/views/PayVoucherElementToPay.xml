@@ -36,11 +36,11 @@
       <field name="applyFinancialDiscount"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"
         showIf="remainingAmount > 0.00"/>
+      <field name="amountToPay"
+             onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
       <field name="remainingAmountAfterFinDiscount" readonly="true"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"
         showIf="applyFinancialDiscount"/>
-      <field name="amountToPay"
-        onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
@@ -56,7 +56,8 @@
 
   <action-group name="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange">
     <action name="action-method-account-payment-voucher-element-pay-amount"/>
-    <action name="action-pay-voucher-element-to-pay-method-update-financial-discount"/>
+    <action name="action-pay-voucher-element-to-pay-method-update-financial-discount"
+      if="applyFinancialDiscount"/>
   </action-group>
 
   <action-method name="action-method-account-payment-voucher-element-pay-amount">
