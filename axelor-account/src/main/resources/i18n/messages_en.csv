@@ -727,6 +727,7 @@
 "Associated Fixed Assets",,,
 "Associated Fixed Assets Set",,,
 "Associated account not configured",,,
+"At least a record is linked to this analytic configuration, are you sure you want to proceed ?",,,
 "Attachments",,,
 "Authorize auto reconcile",,,
 "Authorize auto reconcile on invoice",,,

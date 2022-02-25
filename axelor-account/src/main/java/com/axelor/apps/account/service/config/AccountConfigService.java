@@ -711,11 +711,11 @@ public class AccountConfigService {
   public AnalyticAxis axisChangedInConfig(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
     List<AnalyticAxis> analyticAxisList = new ArrayList<AnalyticAxis>();
-    modifiedList.forEach((axis) -> analyticAxisList.add(axis.getAnalyticAxis()));
+    initialList.forEach((axis) -> analyticAxisList.add(axis.getAnalyticAxis()));
     boolean isIn = false;
     for (AnalyticAxis analyticAxis : analyticAxisList) {
       isIn = false;
-      for (AnalyticAxisByCompany analyticAxisByCompany : initialList) {
+      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
         if (analyticAxisByCompany.getAnalyticAxis().equals(analyticAxis)) {
           isIn = true;
         }
@@ -729,9 +729,14 @@ public class AccountConfigService {
 
   public boolean orderChangedInConfig(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
-    for (int i = 0; i < initialList.size(); i++) {
-      if (!initialList.get(i).equals(modifiedList.get(i))) {
-        return true;
+    for (AnalyticAxisByCompany analyticAxisByCompanyInit : initialList) {
+      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
+        if (analyticAxisByCompanyInit.getOrderSelect() == analyticAxisByCompany.getOrderSelect()
+            && !analyticAxisByCompanyInit
+                .getAnalyticAxis()
+                .equals(analyticAxisByCompany.getAnalyticAxis())) {
+          return true;
+        }
       }
     }
     return false;

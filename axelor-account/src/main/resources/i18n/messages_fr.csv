@@ -727,6 +727,7 @@
 "Associated Fixed Assets","Fiches immobilisation associées",,
 "Associated Fixed Assets Set","Fiches immobilisation associées",,
 "Associated account not configured","Compte comptable associé non configuré",,
+"At least a record is linked to this analytic configuration, are you sure you want to proceed ?","Il existe au moins un enregistrement en base en lien avec la configuration analytique, souhaitez-vous continuer ?",,
 "Attachments",,,
 "Authorize auto reconcile","Lettrage auto",,
 "Authorize auto reconcile on invoice","Autoriser emploi auto sur les factures",,
