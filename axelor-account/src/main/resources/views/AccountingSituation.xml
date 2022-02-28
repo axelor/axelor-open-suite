@@ -58,6 +58,9 @@
       <field name="employeeAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
         canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
+      <field name="vatSystemSelect"
+        showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"
+        requiredIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()"
         name="pfpValidatorUser" showIf="company.accountConfig.isManagePassedForPayment"
         canEdit="false" domain=":company member of self.companySet and self.isPfpValidator = true"
@@ -72,6 +75,13 @@
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
         grid-view="account-grid" canNew="true"
         domain="self.statusSelect = 1 AND self.company = :company"/>
+      <field name="partner.isCustomer" hidden="true"/>
+      <field name="partner.isSupplier" hidden="true"/>
+    </panel>
+    <panel name="vatSystemPanel" title="VAT System"
+      showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
+      <field name="vatSystemSelect"
+        showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -193,6 +203,7 @@
     <action name="action-account-accounting-situation-default-set"/>
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-record-manage-vat-system-onnew"/>
   </action-group>
 
   <action-group name="action-accounting-situation-group-form-onload">
@@ -262,6 +273,12 @@
     <field name="holdBackSupplierAccount"
       expr="eval:__repo__(Company).all().fetchOne()?.accountConfig?.holdBackSupplierAccount"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-record name="action-record-manage-vat-system-onnew"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="vatSystemSelect" expr="eval: 1"
+      if="partner != null &amp;&amp; (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">

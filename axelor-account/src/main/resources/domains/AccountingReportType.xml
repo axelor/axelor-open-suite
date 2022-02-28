@@ -22,6 +22,8 @@
       selection="accounting.report.type.comparison.select"/>
     <integer name="noOfPeriods" title="Number of periods" default="1"
       selection="accounting.report.type.no.of.periods.select"/>
+    <many-to-one name="modelAccountingReport"
+      ref="com.axelor.apps.account.db.AccountingReport" title="Model Accounting Report"/>
 
     <extra-code><![CDATA[
 

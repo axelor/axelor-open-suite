@@ -28,11 +28,11 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
-import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -81,6 +81,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected MoveLineExportService moveLineExportService;
 
+  protected InvoicePaymentRepository invoicePaymentRepository;
+
   protected String query = "";
 
   protected AccountRepository accountRepo;
@@ -100,7 +102,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AccountingReportDas2Service accountingReportDas2Service,
       AccountingReportPrintService accountingReportPrintService,
       MoveLineExportService moveLineExportService,
-      AccountRepository accountRepo) {
+      AccountRepository accountRepo,
+      InvoicePaymentRepository invoicePaymentRepository) {
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
@@ -110,6 +113,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.accountingReportPrintService = accountingReportPrintService;
     this.moveLineExportService = moveLineExportService;
     this.accountRepo = accountRepo;
+    this.invoicePaymentRepository = invoicePaymentRepository;
   }
 
   @Override
@@ -275,7 +279,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
-      this.addParams("self.taxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_DEBIT);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
@@ -600,6 +603,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
                 .all()
                 .filter(this.getTaxPaymentMoveLineList(accountingReport))
                 .count();
+        count +=
+            invoicePaymentRepository
+                .all()
+                .filter(this.getPaymentNotLetteredMoveLineList(accountingReport))
+                .count();
 
       } else if (typeSelect == AccountingReportRepository.REPORT_ACQUISITIONS) {
         count =
@@ -714,13 +722,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     log.debug("Query : {}", this.query);
   }
 
-  protected String getTaxPaymentMoveLineList(AccountingReport accountingReport) {
+  protected String getTaxPaymentMoveLineList(AccountingReport accountingReport)
+      throws AxelorException {
     this.buildTaxPaymentQuery(accountingReport);
 
     return this.buildDomainFromQuery();
   }
 
-  protected String buildTaxPaymentQuery(AccountingReport accountingReport) {
+  protected String buildTaxPaymentQuery(AccountingReport accountingReport) throws AxelorException {
     this.initQuery();
 
     if (accountingReport.getCompany() != null) {
@@ -741,14 +750,96 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
-    this.addParams(
-        "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_DAYBOOK
-            + " OR self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_ACCOUNTED
-            + ")");
+    this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
-    this.addParams("self.originTaxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_COLLECTION);
+    List<Integer> statusSelects = new ArrayList<>();
+    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
+    if (accountConfigService
+            .getAccountConfig(accountingReport.getCompany())
+            .getIsActivateSimulatedMove()
+        && accountingReport.getDisplaySimulatedMove()) {
+      statusSelects.add(MoveRepository.STATUS_SIMULATED);
+    }
+
+    this.addParams(
+        String.format(
+            "self.moveLine.move.statusSelect in (%s)",
+            statusSelects.stream().map(String::valueOf).collect(Collectors.joining(","))));
+
+    if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
+      this.addParams(
+          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
+              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          accountingReport.getAccountSet());
+    }
+
+    log.debug("Query : {}", this.query);
+    return this.query;
+  }
+
+  public String getPaymentNotLetteredMoveLineList(AccountingReport accountingReport)
+      throws AxelorException {
+
+    this.buildPaymentNotLetteredMoveLineQuery(accountingReport);
+
+    return this.buildDomainFromQuery();
+  }
+
+  protected String buildPaymentNotLetteredMoveLineQuery(AccountingReport accountingReport)
+      throws AxelorException {
+    this.initQuery();
+
+    if (accountingReport.getCompany() != null) {
+      this.addParams("self.move.company = ?%d", accountingReport.getCompany());
+    }
+
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      this.addParams("self.move.moveLineList.date <= ?%d", accountingReport.getDateTo());
+    }
+
+    this.addParams("self.move.ignoreInAccountingOk = 'false'");
+
+    List<Integer> statusSelects = new ArrayList<>();
+    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
+    if (accountConfigService
+            .getAccountConfig(accountingReport.getCompany())
+            .getIsActivateSimulatedMove()
+        && accountingReport.getDisplaySimulatedMove()) {
+      statusSelects.add(MoveRepository.STATUS_SIMULATED);
+    }
+
+    this.addParams(
+        String.format(
+            "self.move.statusSelect in (%s)",
+            statusSelects.stream().map(String::valueOf).collect(Collectors.joining(","))));
+
+    if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
+      this.addParams(
+          "(self.move.moveLineList.account in (?%d) or self.move.moveLineList.account.parentAccount in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          accountingReport.getAccountSet());
+    }
+
+    if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
+      this.addParams("self.move.partner in (?%d)", accountingReport.getPartnerSet());
+    }
+
+    this.addParams("self.move.moveLineList.amountRemaining != 0");
+
+    this.addParams("self.move.paymentMode.inOutSelect = ?%d", PaymentModeRepository.IN);
+
+    this.addParams(
+        "self.move.functionalOriginSelect = ?%d", MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     log.debug("Query : {}", this.query);
     return this.query;
