@@ -351,6 +351,18 @@ public interface ITranslation {
       "AccountingReportType15.taxRate"; /*)*/
   public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
       "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.paymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PARTNER = /*$$(*/
+      "AccountingReportType15.partner"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ORIGIN = /*$$(*/
+      "AccountingReportType15.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_RECONCILED_AMOUNT = /*$$(*/
+      "AccountingReportType15.reconciledAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_AMOUNT_TO_RECONCILE = /*$$(*/
+      "AccountingReportType15.amountToReconcile"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.advancePaymentNotLettered"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/
@@ -829,4 +841,22 @@ public interface ITranslation {
       /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
   public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
       /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+
+  public static final String NOTE_BILLS_DATE_TO = /*$$(*/ "NoteBills.date_to"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CURRENCY = /*$$(*/ "NoteBills.currency"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_DEBIT = /*$$(*/ "NoteBills.total_debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_TOTAL_AMOUNT = /*$$(*/
+      "NoteBills.total_amount"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DEBIT = /*$$(*/ "NoteBills.debit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_CREDIT = /*$$(*/ "NoteBills.credit"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_NB = /*$$(*/ "NoteBills.invoice_nb"; /*)*/
+  public static final String NOTE_BILLS_INVOICE_DATE = /*$$(*/ "NoteBills.invoice_date"; /*)*/
+  public static final String NOTE_BILLS_GENERATION_DATE = /*$$(*/ "NoteBills.generation_date"; /*)*/
+  public static final String NOTE_BILLS_PARTNER_SEQ = /*$$(*/ "NoteBills.partner_seq"; /*)*/
+  public static final String NOTE_BILLS_REFERENCE_TO_REMEMBER =
+      /*$$(*/ "NoteBills.reference_to_remember"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS = /*$$(*/ "NoteBills.note_bills"; /*)*/
+  public static final String NOTE_BILLS_PAYABLE_BY = /*$$(*/ "NoteBills.payable_by"; /*)*/
+  public static final String NOTE_BILLS_DIRECT_BOE = /*$$(*/ "NoteBills.direct_boe"; /*)*/
+  public static final String NOTE_BILLS_NOTE_BILLS_NB = /*$$(*/ "NoteBills.note_bills_nb"; /*)*/
 }

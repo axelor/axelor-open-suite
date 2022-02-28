@@ -1043,6 +1043,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+  static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
+      "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
@@ -1055,25 +1057,25 @@ public interface IExceptionMessage {
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing partner." /*)*/;
+      "Tax lines can't be computed due to missing partner." /*)*/;
 
   static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
 
   static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
 
   static final String COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
 
   static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
 
   static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
       "At least one tax accounting move line associated to this move is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
