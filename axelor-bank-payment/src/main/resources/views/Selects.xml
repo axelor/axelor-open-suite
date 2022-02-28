@@ -303,8 +303,8 @@
   </selection>
 
   <selection name="payment.mode.bank.order.move.gen.trigger.select">
-    <option value=""/>
-    <option value="1">None</option>
+    <option value="0">None</option>
+    <option value="1">Immediate</option>
     <option value="2">Bank order confirmation</option>
     <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>

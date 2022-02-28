@@ -30,46 +30,11 @@
       <panel name="paymentSessionPanel" title="Payment session" if-module="axelor-account"
         if="__config__.app.isApp('account')">
         <field name="canSelectInPaymentSession"
-          readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"
-          onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
+          readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"/>
         <field name="daysMarginOnPaySession" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession" min="0"/>
         <field name="accountingMethodSelect" showIf="canSelectInPaymentSession"
           requiredIf="canSelectInPaymentSession"/>
-        <field name="accountingTriggerSelect" showIf="canSelectInPaymentSession"
-          requiredIf="canSelectInPaymentSession"
-          readonlyIf="(!generateBankOrder &amp;&amp; canSelectInPaymentSession) || bankOrderMoveGenTriggerSelect == 1"/>
-      </panel>
-      <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment"
-        if="__config__.app.isApp('bank-payment')" hidden="true"
-        hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
-        <field name="generateBankOrder"
-          showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
-          onChange="action-payment-mode-record-set-can-select-in-payment-session-value"/>
-        <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
-        <panel name="generateBankOrderPanel" showIf="generateBankOrder" colSpan="12">
-          <field name="automaticTransmission"
-            if="__config__.app.getApp('bank-payment')?.enableEbicsModule"/>
-          <field name="consoBankOrderLinePerPartner"/>
-          <field name="bankOrderMoveGenTriggerSelect"
-            onChange="action-payment-mode-record-set-accounting-trigger-select"/>
-          <panel stacked="true">
-            <field name="orderTypeSelect" selection-in="[2,4]" hidden="true"
-              showIf="typeSelect == 2" requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"
-              onChange="action-payment-mode-attrs-on-order-type-change"/>
-            <field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true"
-              showIf="typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"
-              onChange="action-payment-mode-attrs-on-order-type-change"/>
-            <field name="orderTypeSelect" selection-in="[1, 2, 3, 4, 5, 6, 8]" hidden="true"
-              showIf="typeSelect == 10" requiredIf="generateBankOrder &amp;&amp; typeSelect == 10"
-              onChange="action-payment-mode-attrs-on-order-type-change"/>
-          </panel>
-          <field name="bankOrderExportFolderPath" requiredIf="generateBankOrder"/>
-          <field name="bankOrderFileFormat"
-            domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-            canEdit="false" requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
-            grid-view="bank-order-file-format-grid"/>
-        </panel>
       </panel>
     </panel-tabs>
   </form>
@@ -83,20 +48,9 @@
     <field name="typeSelect" expr="7"/>
   </action-record>
 
-  <action-record
-    name="action-payment-mode-record-set-can-select-in-payment-session-value"
-    model="com.axelor.apps.account.db.PaymentMode">
-    <field name="accountingTriggerSelect" expr="1"
-      if="!generateBankOrder &amp;&amp; canSelectInPaymentSession"/>
-  </action-record>
-
   <action-method name="action-payment-mode-set-default">
     <call class="com.axelor.apps.base.web.PaymentModeController" method="setDefaults"/>
   </action-method>
-
-  <action-attrs name="action-payment-mode-attrs-on-order-type-change">
-    <attribute name="value" for="bankOrderFileFormat" expr=""/>
-  </action-attrs>
 
   <search-filters name="payment-mode-filters"
     model="com.axelor.apps.account.db.PaymentMode" title="Payment mode filters">
