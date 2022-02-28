@@ -241,8 +241,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmountRemaining(amount);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-
-      invoiceTerm.setMoveLine(getExistingInvoiceTermMoveLine(invoice));
+      MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
+      moveLine.addInvoiceTermListItem(invoiceTerm);
     }
 
     return invoiceTerm;
@@ -251,7 +251,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm) {
 
-    invoiceTerm.setMoveLine(moveLine);
+    moveLine.addInvoiceTermListItem(invoiceTerm);
     invoiceTerm.setInvoice(moveLine.getMove().getInvoice());
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
@@ -847,7 +847,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setInvoice(invoice);
     newInvoiceTerm.setIsCustomized(true);
     newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setMoveLine(originalInvoiceTerm.getMoveLine());
+    originalInvoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
     newInvoiceTerm.setDueDate(originalInvoiceTerm.getDueDate());
     newInvoiceTerm.setIsHoldBack(originalInvoiceTerm.getIsHoldBack());
     newInvoiceTerm.setEstimatedPaymentDate(originalInvoiceTerm.getEstimatedPaymentDate());
