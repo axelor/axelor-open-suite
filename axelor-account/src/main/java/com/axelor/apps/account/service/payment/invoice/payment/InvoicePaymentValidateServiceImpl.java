@@ -261,7 +261,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       for (MoveLine invoiceMoveLine : invoiceMoveLines) {
         invoicePayment.addReconcileListItem(
-            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false));
+            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, true));
       }
     }
     invoicePayment.setMove(move);
