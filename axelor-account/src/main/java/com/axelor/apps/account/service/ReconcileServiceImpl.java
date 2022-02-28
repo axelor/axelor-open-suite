@@ -381,15 +381,17 @@ public class ReconcileServiceImpl implements ReconcileService {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (moveLine.getAccount().getHasInvoiceTerm()) {
       List<InvoiceTerm> invoiceTermList =
-          this.getInvoiceTermsToPay(invoice, move, moveLine, amount);
+          this.getInvoiceTermsToPay(invoice, move, moveLine);
 
-      invoiceTermPaymentList =
-          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTermList, amount);
+      if (invoiceTermList != null) {
+        invoiceTermPaymentList =
+                invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+                        invoicePayment, invoiceTermList, amount);
 
-      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-        invoiceTermService.updateInvoiceTermsPaidAmount(
-            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+        for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+          invoiceTermService.updateInvoiceTermsPaidAmount(
+                  invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+        }
       }
     }
 
@@ -405,7 +407,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(
-      Invoice invoice, Move move, MoveLine moveLine, BigDecimal amount) {
+      Invoice invoice, Move move, MoveLine moveLine) {
     if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       if (move != null
           && move.getPaymentVoucher() != null
@@ -417,8 +419,10 @@ public class ReconcileServiceImpl implements ReconcileService {
       } else {
         return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
       }
-    } else {
+    } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+    } else {
+      return null;
     }
   }
 
