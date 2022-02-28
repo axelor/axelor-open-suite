@@ -114,8 +114,9 @@ public class AnalyticDistributionLineController {
           response.setAttr(
               "analyticAccount",
               "domain",
-              "(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL) AND self.company.id = "
-                  + company.getId());
+              "((:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL) AND ((:company IS NOT NULL AND self.company.id = "
+                  + company.getId()
+                  + ") OR :company IS NULL)");
         }
       }
     } catch (Exception e) {
