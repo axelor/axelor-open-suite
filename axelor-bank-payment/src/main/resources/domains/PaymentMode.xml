@@ -28,10 +28,8 @@
         public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
         public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 
-        public static final int ACCOUNTING_TRIGGER_SESSION_VALIDATION = 1;
-        public static final int ACCOUNTING_TRIGGER_BANK_ORDER = 2;
-
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_NONE = 1;
+        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_NONE = 0;
+        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_IMMEDIATE = 1;
         public static final int BANK_ORDER_MOVE_GEN_TRIGGER_CONFIRMATION = 2;
         public static final int BANK_ORDER_MOVE_GEN_TRIGGER_VALIDATION = 3;
         public static final int BANK_ORDER_MOVE_GEN_TRIGGER_REALIZATION = 4;
