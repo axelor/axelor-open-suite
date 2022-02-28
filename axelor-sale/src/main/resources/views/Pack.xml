@@ -36,7 +36,8 @@
         target="com.axelor.apps.sale.db.Pack" form-view="pack-form" grid-view="pack-grid"
         canNew="true" canEdit="true"/>
       <field name="$qty" type="decimal" title="Qty" min="1"/>
-      <button name="addPackBtn" title="Add Pack" onClick="action-sale-order-method-add-pack"/>
+      <button name="addPackBtn" title="Add Pack" readonlyIf="!$pack"
+        onClick="action-sale-order-method-add-pack"/>
       <field name="_id" title="Sale order id" hidden="true"/>
     </panel>
   </form>
