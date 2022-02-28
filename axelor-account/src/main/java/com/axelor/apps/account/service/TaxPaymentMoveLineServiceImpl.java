@@ -49,6 +49,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
                 .getTodayDate(taxPaymentMoveLine.getReconcile().getCompany()));
     reversetaxPaymentMoveLine = this.computeTaxAmount(reversetaxPaymentMoveLine);
     reversetaxPaymentMoveLine.setIsAlreadyReverse(true);
+    reversetaxPaymentMoveLine.setVatSystemSelect(taxPaymentMoveLine.getVatSystemSelect());
     taxPaymentMoveLine.setIsAlreadyReverse(true);
     return reversetaxPaymentMoveLine;
   }

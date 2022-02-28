@@ -18,7 +18,11 @@
 package com.axelor.apps.account.service.invoice.generator.tax;
 
 import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
+import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,11 +49,12 @@ public class TaxInvoiceLine extends TaxGenerator {
    * factures
    *
    * @return La liste des lignes de TVA de la facture.
+   * @throws AxelorException
    */
   @Override
-  public List<InvoiceLineTax> creates() {
+  public List<InvoiceLineTax> creates() throws AxelorException {
 
-    Map<TaxLine, InvoiceLineTax> map = new HashMap<>();
+    Map<Map<Integer, TaxLine>, InvoiceLineTax> map = new HashMap<>();
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -80,35 +85,55 @@ public class TaxInvoiceLine extends TaxGenerator {
     return finalizeInvoiceLineTaxes(map);
   }
 
-  protected void createInvoiceLineTaxes(InvoiceLine invoiceLine, Map<TaxLine, InvoiceLineTax> map) {
+  protected void createInvoiceLineTaxes(
+      InvoiceLine invoiceLine, Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
+      throws AxelorException {
     TaxLine taxLine = invoiceLine.getTaxLine();
     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
     TaxLine taxLineRC =
         (taxEquiv != null && taxEquiv.getReverseCharge() && taxEquiv.getReverseChargeTax() != null)
             ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
             : null;
+    int vatSystem =
+        Beans.get(TaxAccountToolService.class)
+            .calculateVatSystem(
+                invoice.getPartner(),
+                invoice.getCompany(),
+                invoiceLine.getAccount(),
+                (invoice.getOperationTypeSelect()
+                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                    || invoice.getOperationTypeSelect()
+                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                    || invoice.getOperationTypeSelect()
+                        == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
 
     if (taxLine != null) {
-      createOrUpdateInvoiceLineTax(invoiceLine, taxLine, map);
+      createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
     }
-
     if (taxLineRC != null) {
-      createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, map);
+      createOrUpdateInvoiceLineTaxRc(invoiceLine, taxLineRC, taxEquiv, vatSystem, map);
     }
   }
 
   protected void createOrUpdateInvoiceLineTax(
-      InvoiceLine invoiceLine, TaxLine taxLine, Map<TaxLine, InvoiceLineTax> map) {
+      InvoiceLine invoiceLine,
+      TaxLine taxLine,
+      int vatSystem,
+      Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
+      throws AxelorException {
     LOG.debug("TVA {}", taxLine);
-    InvoiceLineTax invoiceLineTax = map.get(taxLine);
+
+    Map<Integer, TaxLine> keys = new HashMap<>();
+    keys.put(vatSystem, taxLine);
+    InvoiceLineTax invoiceLineTax = map.get(keys);
     if (invoiceLineTax != null) {
-      updateInvoiceLineTax(invoiceLine, invoiceLineTax);
+      updateInvoiceLineTax(invoiceLine, invoiceLineTax, vatSystem);
       invoiceLineTax.setReverseCharged(false);
     } else {
-
-      invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine);
+      invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine, vatSystem);
       invoiceLineTax.setReverseCharged(false);
-      map.put(taxLine, invoiceLineTax);
+      map.put(keys, invoiceLineTax);
     }
   }
 
@@ -116,19 +141,27 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLineRC,
       TaxEquiv taxEquiv,
-      Map<TaxLine, InvoiceLineTax> map) {
-    if (map.containsKey(taxLineRC)) {
-      InvoiceLineTax invoiceLineTaxRC = map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
-      updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC);
+      int vatSystem,
+      Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
+      throws AxelorException {
+    Map<Integer, TaxLine> keys = new HashMap<>();
+    keys.put(vatSystem, taxLineRC);
+    if (map.containsKey(keys)) {
+      Map<Integer, TaxLine> keysEquiv = new HashMap<>();
+      keysEquiv.put(vatSystem, taxEquiv.getReverseChargeTax().getActiveTaxLine());
+      InvoiceLineTax invoiceLineTaxRC = map.get(keysEquiv);
+      updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
     } else {
-      InvoiceLineTax invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC);
+      InvoiceLineTax invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
-      map.put(taxLineRC, invoiceLineTaxRC);
+      map.put(keys, invoiceLineTaxRC);
     }
   }
 
-  protected void updateInvoiceLineTax(InvoiceLine invoiceLine, InvoiceLineTax invoiceLineTax) {
+  protected void updateInvoiceLineTax(
+      InvoiceLine invoiceLine, InvoiceLineTax invoiceLineTax, int vatSystem)
+      throws AxelorException {
 
     // Dans la devise de la facture
     invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
@@ -151,9 +184,11 @@ public class TaxInvoiceLine extends TaxGenerator {
               .add(invoiceLine.getCompanyExTaxTotal())
               .setScale(2, RoundingMode.HALF_UP));
     }
+    invoiceLineTax.setVatSystemSelect(vatSystem);
   }
 
-  protected InvoiceLineTax createInvoiceLineTax(InvoiceLine invoiceLine, TaxLine taxLine) {
+  protected InvoiceLineTax createInvoiceLineTax(
+      InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem) throws AxelorException {
     InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
     invoiceLineTax.setInvoice(invoice);
 
@@ -172,12 +207,13 @@ public class TaxInvoiceLine extends TaxGenerator {
               .add(invoiceLine.getCompanyExTaxTotal())
               .setScale(2, RoundingMode.HALF_UP));
     }
-
+    invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
     return invoiceLineTax;
   }
 
-  protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(Map<TaxLine, InvoiceLineTax> map) {
+  protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
+      Map<Map<Integer, TaxLine>, InvoiceLineTax> map) {
 
     List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
 
