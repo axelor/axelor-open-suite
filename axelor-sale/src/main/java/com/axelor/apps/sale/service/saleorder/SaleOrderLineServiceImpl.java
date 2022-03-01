@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.MetaJsonAttrsService.MetaJsonAttrsBuilder;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.PricingService;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -77,7 +78,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -1441,7 +1441,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   public void computeResultFormulaAndApply(
-      Context scriptContext, Pricing pricing, SaleOrderLine orderLine, List<String> logs) {
+      Context scriptContext, Pricing pricing, SaleOrderLine orderLine, List<String> logs)
+      throws AxelorException {
 
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
@@ -1451,31 +1452,71 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     resultPricingRuleList.add(pricing.getResult3PricingRule());
     resultPricingRuleList.add(pricing.getResult4PricingRule());
 
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              Object result = scriptHelper.eval(resultPricingRule.getFormula());
-              String fieldToPopulate = "";
-              if (resultPricingRule.getFieldToPopulate() != null) {
-                fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
+    for (PricingRule resultPricingRule : resultPricingRuleList) {
+      if (resultPricingRule != null) {
+        Object result = scriptHelper.eval(resultPricingRule.getFormula());
+        String fieldToPopulate = "";
+        if (resultPricingRule.getFieldToPopulate() != null) {
+          if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+            scriptContext.put(resultPricingRule.getTempVarName(), result);
+          }
+          Mapper saleOrderLineMapper = Mapper.of(SaleOrderLine.class);
+          if (resultPricingRule.getFieldToPopulate().getJson()
+              && resultPricingRule.getMetaJsonField() != null) {
+            try {
+              String newMetaJsonAttrs =
+                  buildMetaJsonAttrs(orderLine, resultPricingRule, result, saleOrderLineMapper);
+              saleOrderLineMapper.set(
+                  orderLine, resultPricingRule.getFieldToPopulate().getName(), newMetaJsonAttrs);
+            } catch (Exception e) {
+              throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+            }
 
-                if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
-                  scriptContext.put(resultPricingRule.getTempVarName(), result);
-                }
-                Mapper.of(SaleOrderLine.class).set(orderLine, fieldToPopulate, result);
-              }
-              logs.add(
-                  "\n"
-                      + I18n.get("Result rule used: ")
-                      + resultPricingRule.getName()
-                      + "\n"
-                      + I18n.get("Evaluation of the result rule: ")
-                      + result.toString()
-                      + "\n"
-                      + I18n.get("Populated field: ")
-                      + fieldToPopulate);
-            });
+            fieldToPopulate = resultPricingRule.getMetaJsonField().getName();
+
+          } else {
+            fieldToPopulate = resultPricingRule.getFieldToPopulate().getName();
+
+            saleOrderLineMapper.set(orderLine, fieldToPopulate, result);
+          }
+        }
+        logs.add(
+            "\n"
+                + I18n.get("Result rule used: ")
+                + resultPricingRule.getName()
+                + "\n"
+                + I18n.get("Evaluation of the result rule: ")
+                + result.toString()
+                + "\n"
+                + I18n.get("Populated field: ")
+                + fieldToPopulate);
+      }
+    }
+  }
+
+  protected String buildMetaJsonAttrs(
+      SaleOrderLine orderLine,
+      PricingRule resultPricingRule,
+      Object result,
+      Mapper saleOrderLineMapper)
+      throws Exception {
+    logger.debug(
+        "Populating {} of {} with {}", resultPricingRule.getFieldToPopulate(), orderLine, result);
+    String metaJsonAttrs;
+    Object attrsObject =
+        saleOrderLineMapper.get(orderLine, resultPricingRule.getFieldToPopulate().getName());
+
+    if (attrsObject == null) {
+      metaJsonAttrs = "";
+    } else {
+      metaJsonAttrs = attrsObject.toString();
+    }
+    String newMetaJsonAttrs;
+    newMetaJsonAttrs =
+        new MetaJsonAttrsBuilder(metaJsonAttrs)
+            .putValue(resultPricingRule.getMetaJsonField(), result)
+            .build();
+    return newMetaJsonAttrs;
   }
 
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)

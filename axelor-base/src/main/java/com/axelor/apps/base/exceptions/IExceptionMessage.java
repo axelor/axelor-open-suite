@@ -471,4 +471,8 @@ public interface IExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+  public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
+      "Error: The type of the field %s does not match the type of the value %s" /*)*/;
+  public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
+      "Error: The type of the field %s is not managed by the adapter" /*)*/;
 }
