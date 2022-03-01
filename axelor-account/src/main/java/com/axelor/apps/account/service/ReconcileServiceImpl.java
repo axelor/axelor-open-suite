@@ -380,17 +380,16 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (moveLine.getAccount().getHasInvoiceTerm()) {
-      List<InvoiceTerm> invoiceTermList =
-          this.getInvoiceTermsToPay(invoice, move, moveLine);
+      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, move, moveLine);
 
       if (invoiceTermList != null) {
         invoiceTermPaymentList =
-                invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-                        invoicePayment, invoiceTermList, amount);
+            invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+                invoicePayment, invoiceTermList, amount);
 
         for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
           invoiceTermService.updateInvoiceTermsPaidAmount(
-                  invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+              invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
         }
       }
     }
@@ -406,8 +405,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(
-      Invoice invoice, Move move, MoveLine moveLine) {
+  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
     if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       if (move != null
           && move.getPaymentVoucher() != null
