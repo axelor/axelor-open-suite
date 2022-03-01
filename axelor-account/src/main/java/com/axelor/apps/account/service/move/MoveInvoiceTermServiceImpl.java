@@ -19,7 +19,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
           .filter(
               it ->
                   it.getAccount() != null
-                      && it.getAccount().getHasInvoiceTerm()
+                      && it.getAccount().getUseForPartnerBalance()
                       && CollectionUtils.isEmpty(it.getInvoiceTermList()))
           .forEach(moveLineInvoiceTermService::generateDefaultInvoiceTerm);
     }
