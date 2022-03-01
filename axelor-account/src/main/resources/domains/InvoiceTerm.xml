@@ -26,6 +26,9 @@
     <many-to-one name="pfpPartialReason"
       ref="com.axelor.apps.account.db.PfpPartialReason" title="PFP Partial Reason"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+    <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
     <!-- <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/> -->
     <!-- <decimal name="discountRate" title="Discount rate" /> -->
     <!-- <date name="finDiscountDeadlineDate" title="Financial discount deadline date"/> -->
@@ -63,7 +66,7 @@
                else {
                  return invoice.getInvoiceId() + "_" + amount;
                }
-            } else {
+            } else if (moveLine != null) {
                if (dueDate != null) {
             	 return moveLine.getName() + "_" + dueDate + "_" + amount;
                }
@@ -71,6 +74,8 @@
                  return moveLine.getName() + "_" + amount;
                }
             }
+
+            return "";
 	    ]]>
     </string>
 

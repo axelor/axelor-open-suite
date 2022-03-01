@@ -180,6 +180,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     return invoiceTermPayment;
   }
 
+  @Override
   public void manageInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
       BigDecimal amount,

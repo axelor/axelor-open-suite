@@ -145,7 +145,8 @@ public class PaymentVoucherLoadService {
 
     int sequence = 0;
     for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
-      PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(invoiceTerm);
+      PayVoucherDueElement payVoucherDueElement =
+          this.createPayVoucherDueElement(paymentVoucher, invoiceTerm);
       if (payVoucherDueElement != null) {
         payVoucherDueElement.setSequence(sequence++);
         paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
@@ -155,8 +156,8 @@ public class PaymentVoucherLoadService {
     return paymentVoucher.getPayVoucherDueElementList();
   }
 
-  public PayVoucherDueElement createPayVoucherDueElement(InvoiceTerm invoiceTerm)
-      throws AxelorException {
+  public PayVoucherDueElement createPayVoucherDueElement(
+      PaymentVoucher paymentVoucher, InvoiceTerm invoiceTerm) throws AxelorException {
 
     if (invoiceTerm.getMoveLine() == null || invoiceTerm.getMoveLine().getMove() == null) {
       return null;
@@ -189,6 +190,9 @@ public class PaymentVoucherLoadService {
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
             ? invoiceTerm.getMoveLine().getMove().getCurrency()
             : invoiceTerm.getInvoice().getCurrency());
+
+    payVoucherDueElementService.updateDueElementWithFinancialDiscount(
+        payVoucherDueElement, paymentVoucher);
 
     return payVoucherDueElement;
   }
@@ -262,6 +266,7 @@ public class PaymentVoucherLoadService {
 
     PayVoucherElementToPay payVoucherElementToPay = new PayVoucherElementToPay();
 
+    payVoucherElementToPay.setPaymentVoucher(paymentVoucher);
     payVoucherElementToPay.setSequence(sequence);
     payVoucherElementToPay.setInvoiceTerm(payVoucherDueElement.getInvoiceTerm());
     payVoucherElementToPay.setMoveLine(payVoucherDueElement.getMoveLine());
@@ -410,7 +415,8 @@ public class PaymentVoucherLoadService {
     List<InvoiceTerm> invoiceTermList = getInvoiceTerms(paymentVoucher);
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      PayVoucherDueElement payVoucherDueElement = createPayVoucherDueElement(invoiceTerm);
+      PayVoucherDueElement payVoucherDueElement =
+          createPayVoucherDueElement(paymentVoucher, invoiceTerm);
       paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
 
       if (invoice.equals(payVoucherDueElement.getMoveLine().getMove().getInvoice())) {
@@ -422,7 +428,8 @@ public class PaymentVoucherLoadService {
     paymentVoucher.clearPayVoucherDueElementList();
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      paymentVoucher.addPayVoucherDueElementListItem(createPayVoucherDueElement(invoiceTerm));
+      paymentVoucher.addPayVoucherDueElementListItem(
+          createPayVoucherDueElement(paymentVoucher, invoiceTerm));
     }
 
     if (paymentVoucher.getPayVoucherDueElementList() == null) {

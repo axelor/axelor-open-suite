@@ -766,6 +766,9 @@ public interface IExceptionMessage {
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
+  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
+      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
+
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;

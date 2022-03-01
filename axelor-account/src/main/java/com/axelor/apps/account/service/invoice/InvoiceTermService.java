@@ -229,4 +229,6 @@ public interface InvoiceTermService {
 
   public Integer massRefusePfp(
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 }
