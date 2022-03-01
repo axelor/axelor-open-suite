@@ -79,9 +79,9 @@ public class StockMoveInvoiceController {
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
+                  .add("grid", "invoice-supplier-grid")
                   .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
+                  .param("search-filters", "supplier-invoices-filters")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
