@@ -363,6 +363,10 @@ public interface ITranslation {
       "AccountingReportType15.amountToReconcile"; /*)*/
   public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
       "AccountingReportType15.advancePaymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_NO_ADVANCE_PAYMENT_FOUND = /*$$(*/
+	      "AccountingReportType15.noAdvancePaymentFound"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_NO_PAYMENT_FOUND = /*$$(*/
+	      "AccountingReportType15.noPaymentFound"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/

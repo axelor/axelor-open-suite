@@ -333,6 +333,8 @@
 "AccountingReportType15.paymentNotLettered","Payment not lettered",,
 "AccountingReportType15.partner","Partner",,
 "AccountingReportType15.origin","Origin",,
+"AccountingReportType15.noAdvancePaymentFound","No advance payment not lettered found",,
+"AccountingReportType15.noPaymentFound","No payment not lettered found",,
 "AccountingReportType15.reconciledAmount","Reconciled amount",,
 "AccountingReportType15.amountToReconcile","Amount to reconcile",,
 "AccountingReportType15.advancePaymentNotLettered","Advance payment not lettered",,
