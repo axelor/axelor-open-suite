@@ -581,9 +581,8 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-        Beans.get(AppBaseService.class)
-            .getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -625,7 +624,7 @@ public class PartnerServiceImpl implements PartnerService {
       return locale;
     }
 
-    return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLanguageCode();
   }
 
   /**

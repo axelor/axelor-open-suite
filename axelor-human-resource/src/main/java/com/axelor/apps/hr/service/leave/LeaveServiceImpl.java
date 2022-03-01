@@ -45,7 +45,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -785,7 +784,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
+        leaveLineRepo
             .all()
             .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
             .bind("leaveReason", leaveRequest.getLeaveReason())
@@ -857,7 +856,7 @@ public class LeaveServiceImpl implements LeaveService {
             + beginDate.getMonthValue()
             - todayDate.getMonthValue();
     LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
+        leaveLineRepo
             .all()
             .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
             .bind("leaveReason", leaveRequest.getLeaveReason())

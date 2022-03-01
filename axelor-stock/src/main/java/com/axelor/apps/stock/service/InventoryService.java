@@ -220,7 +220,7 @@ public class InventoryService {
 
       String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
 
-      int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
+      int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
       String key = code + trackingNumberSeq;
 
       if (inventoryLineMap.containsKey(key)) {

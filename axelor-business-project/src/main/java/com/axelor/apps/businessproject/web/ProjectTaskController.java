@@ -25,12 +25,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectTaskController {
-
-  @Inject private ProjectTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -87,9 +84,9 @@ public class ProjectTaskController {
     ProjectTask task = request.getContext().asType(ProjectTask.class);
     ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      task = businessProjectService.resetProjectTaskValues(task);
+      task = Beans.get(ProjectTaskBusinessProjectService.class).resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = businessProjectService.computeDefaultInformation(task);
+        task = Beans.get(ProjectTaskBusinessProjectService.class).computeDefaultInformation(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

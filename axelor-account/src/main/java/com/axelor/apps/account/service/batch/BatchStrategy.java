@@ -49,7 +49,6 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -182,7 +181,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
   protected void updateAccountMove(Move move, boolean incrementDone) {
 
-    move.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
+    move.addBatchSetItem(batchRepo.find(batch.getId()));
 
     if (incrementDone) {
       incrementDone();
