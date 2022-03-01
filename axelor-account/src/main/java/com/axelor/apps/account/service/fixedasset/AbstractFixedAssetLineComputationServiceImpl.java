@@ -3,13 +3,6 @@ package com.axelor.apps.account.service.fixedasset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,8 +11,18 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.date.DateTool;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
@@ -31,6 +34,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected AppBaseService appBaseService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
 
@@ -59,6 +63,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract Integer getTypeSelect();
 
   protected abstract Boolean isProrataTemporis(FixedAsset fixedAsset);
+  
+  protected abstract BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset);
+  
+  protected abstract LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset);
 
   @Inject
   public AbstractFixedAssetLineComputationServiceImpl(
@@ -114,6 +122,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             getTypeSelect());
 
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      if((isAlreadyDepreciated(fixedAsset) || line.getDepreciationBase().equals(getAlreadyDepreciatedAmount(fixedAsset)))
+    		  && appBaseService.getTodayDate(fixedAsset.getCompany()).getYear() == getFailOverDepreciationEndDate(fixedAsset).getYear()) {
+    		return Optional.ofNullable(createPlannedFixedAssetLine(
+    				fixedAsset,
+    				getFailOverDepreciationEndDate(fixedAsset),
+    				getDepreciatedAmountCurrentYear(fixedAsset),
+    				getDepreciatedAmountCurrentYear(fixedAsset),
+    				BigDecimal.ZERO,
+    				depreciationBase,
+    				getTypeSelect())); 
+      }
       line.setCumulativeDepreciation(
           line.getCumulativeDepreciation().add(getAlreadyDepreciatedAmount(fixedAsset)));
       if (getComputationMethodSelect(fixedAsset)

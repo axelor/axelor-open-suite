@@ -1,14 +1,15 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 @RequestScoped
 public class FixedAssetLineFiscalComputationServiceImpl
@@ -116,4 +117,14 @@ public class FixedAssetLineFiscalComputationServiceImpl
   protected Integer getDurationInMonth(FixedAsset fixedAsset) {
     return fixedAsset.getFiscalDurationInMonth();
   }
+
+@Override
+protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
+	return fixedAsset.getFiscalDepreciatedAmountCurrentYear();
+}
+
+@Override
+protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
+	return fixedAsset.getFiscalFailOverDepreciationEndDate();
+}
 }
