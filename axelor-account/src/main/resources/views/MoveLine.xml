@@ -330,6 +330,17 @@
       <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="invoiceTermPanel" title="Term(s)"
+             showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
+               grid-view="invoice-term-move-line-grid"/>
+      </panel>
+      <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
+             showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
+        <field name="invoiceTermList" colSpan="12"
+               form-view="invoice-term-move-line-invoice-form"
+               grid-view="invoice-term-move-line-invoice-grid"/>
+      </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
@@ -338,17 +349,6 @@
         <field name="account.hasInvoiceTerm" hidden="true"/>
         <field name="move.invoice" hidden="true"/>
         <field name="move.period.statusSelect" hidden="true"/>
-      </panel>
-      <panel name="invoiceTermPanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
-          grid-view="invoice-term-move-line-grid"/>
-      </panel>
-      <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
@@ -566,6 +566,17 @@
         onChange="action-group-analytic-axis-onchange"/>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="invoiceTermPanel" title="Term(s)"
+             showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
+               grid-view="invoice-term-move-line-grid"/>
+      </panel>
+      <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
+             showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
+        <field name="invoiceTermList" colSpan="12"
+               form-view="invoice-term-move-line-invoice-form"
+               grid-view="invoice-term-move-line-invoice-grid"/>
+      </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
           hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
@@ -574,17 +585,6 @@
         <field name="account.hasInvoiceTerm" hidden="true"/>
         <field name="move.invoice" hidden="true"/>
         <field name="move.period.statusSelect" hidden="true"/>
-      </panel>
-      <panel name="invoiceTermPanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
-          grid-view="invoice-term-move-line-grid"/>
-      </panel>
-      <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
-        <field name="invoiceTermList" colSpan="12"
-          form-view="invoice-term-move-line-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
