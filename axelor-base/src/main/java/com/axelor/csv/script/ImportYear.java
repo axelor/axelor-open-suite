@@ -15,11 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.translation;
+package com.axelor.csv.script;
 
-public interface ITranslation {
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.YearService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import java.util.Map;
 
-  public static final String JOB_COSTING_APP_NAME = /*$$(*/ "value:Job costing"; /*)*/
+public class ImportYear {
 
-  public static final String PROJECT_STATUS_CANCELED = /*$$(*/ "value:Canceled"; /*)*/
+  @Inject protected YearService yearService;
+
+  public Object importYear(Object bean, Map<String, Object> values) throws AxelorException {
+    Year year = (Year) bean;
+    year.getPeriodList().addAll(yearService.generatePeriods(year));
+    return year;
+  }
 }
