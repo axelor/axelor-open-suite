@@ -41,4 +41,11 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
         && company != null
         && accountConfigService.getAccountConfig(company).getManageAnalyticAccounting();
   }
+
+  @Override
+  public boolean compareNbrOfAnalyticAxisSelect(Company company, int position)
+      throws AxelorException {
+    return company != null
+        && position <= accountConfigService.getAccountConfig(company).getNbrOfAnalyticAxisSelect();
+  }
 }

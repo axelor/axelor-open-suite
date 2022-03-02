@@ -20,10 +20,13 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
@@ -37,6 +40,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -49,8 +53,7 @@ import java.util.Map;
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   protected PurchaseProductService purchaseProductService;
-
-  @Inject protected SupplierCatalogService supplierCatalogService;
+  protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public InvoiceLineSupplychainService(
@@ -63,7 +66,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      ListToolService listToolService,
+      AnalyticToolService analyticToolService,
+      SupplierCatalogService supplierCatalogService) {
     super(
         currencyService,
         priceListService,
@@ -73,8 +81,13 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        analyticAccountRepository,
+        accountAnalyticRulesRepository,
+        listToolService,
+        analyticToolService);
     this.purchaseProductService = purchaseProductService;
+    this.supplierCatalogService = supplierCatalogService;
   }
 
   @Override

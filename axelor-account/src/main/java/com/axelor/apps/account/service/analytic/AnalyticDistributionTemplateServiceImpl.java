@@ -77,8 +77,8 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  public boolean validateTemplatePercentages(
-      AnalyticDistributionTemplate analyticDistributionTemplate) {
+  public void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     List<AnalyticDistributionLine> analyticDistributionLineList =
         analyticDistributionTemplate.getAnalyticDistributionLineList();
     List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
@@ -89,10 +89,11 @@ public class AnalyticDistributionTemplateServiceImpl
         sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
       }
       if (sum.intValue() != 100) {
-        return false;
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
       }
     }
-    return true;
   }
 
   @Override
