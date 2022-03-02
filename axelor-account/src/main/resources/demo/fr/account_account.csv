@@ -201,7 +201,7 @@
 200;218400;218000;"Mobilier";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 201;218500;218000;"Cheptel";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 202;218600;218000;"Emballages récupérables";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
-203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;"true";;2;"NDAS";;;1;"false";"true";1
+203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;;;2;"NDAS";;;1;"false";"true";0
 204;230;"CL2";"Immobilisations en cours";"view";;1;;;;;2;"NDAS";;;1;"false";"true";0
 205;231000;230;"Immobilisations corporelles en cours";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
 206;231200;231000;"Terrains";"immobilisation";;1;;;"true";;2;"NDAS";;;1;"false";"false";1
