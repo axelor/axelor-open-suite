@@ -107,20 +107,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
           && invoiceMoveLine.getTaxLine() != null
           && invoiceMoveLine.getTaxLine().getValue().compareTo(BigDecimal.ZERO) == 0) {
 
-        boolean isSale = false;
-
-        if (invoiceMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
-          isSale = true;
-        }
-
-        int vatSystemSelect =
-            taxAccountToolService.calculateVatSystem(
-                invoiceMoveLine.getPartner(),
-                invoiceMove.getCompany(),
-                invoiceMoveLine.getAccount(),
-                false,
-                isSale);
-
+        int test = invoiceMoveLine.getAccount().getVatSystemSelect();
         customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
             this.generateTaxPaymentMoveLine(
                 customerPaymentMoveLine,
@@ -130,7 +117,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
                 reconcile,
                 paymentAmount,
                 invoiceTotalAmount,
-                vatSystemSelect));
+                invoiceMoveLine.getAccount().getVatSystemSelect()));
       }
     }
     this.computeTaxAmount(customerPaymentMoveLine);
@@ -179,7 +166,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
-    taxPaymentMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
+    taxPaymentMoveLine.setVatSystemSelect(vatSystemSelect);
 
     taxPaymentMoveLine.setFunctionalOriginSelect(
         invoiceCustomerMoveLine.getMove().getFunctionalOriginSelect());
