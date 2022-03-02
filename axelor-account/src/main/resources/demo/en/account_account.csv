@@ -201,7 +201,7 @@
 200;218400;218000;"Furniture";"immobilisation";;1;;;"true";;2;"NDAS";;1;"false";"false";1
 201;218500;218000;"Livestock";"immobilisation";;1;;;"true";;2;"NDAS";;1;"false";"false";1
 202;218600;218000;"Returnable packaging";"immobilisation";;1;;;"true";;2;"NDAS";;1;"false";"false";1
-203;22;"CL2";"Assets in concession";"view";;1;;;"true";;2;"NDAS";;1;"false";"true";1
+203;22;"CL2";"Assets in concession";"view";;1;;;;;2;"NDAS";;1;"false";"true";0
 204;23;"CL2";"Assets under construction";"view";;1;;;;;2;"NDAS";;1;"false";"true";0
 205;231000;23;"Assets under construction";"immobilisation";;1;;;"true";;2;"NDAS";;1;"false";"false";1
 206;231200;231000;"Land";"immobilisation";;1;;;"true";;2;"NDAS";;1;"false";"false";1
