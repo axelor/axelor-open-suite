@@ -34,6 +34,36 @@
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
   </grid>
 
+  <grid name="invoice-term-invoice-payment-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+        onClick="action-invoiceterm-view-refusal-to-pay"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    </toolbar>
+    <hilite color="danger"
+      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="dueDate"/>
+    <field name="remainingAmountAfterFinDiscount" title="Amount"/>
+    <field name="amountRemainingAfterFinDiscount" title="Remaining amount"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="paymentMode"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="invoice.financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="pfpValidateStatusSelect"
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+  </grid>
+
   <grid name="invoice-term-move-line-invoice-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate">
     <field name="sequence"/>
@@ -139,6 +169,7 @@
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"/>
         <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
