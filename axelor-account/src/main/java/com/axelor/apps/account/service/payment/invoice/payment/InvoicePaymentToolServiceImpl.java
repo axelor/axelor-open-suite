@@ -243,6 +243,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       return;
     }
 
+    invoiceTermPaymentList.forEach(
+        it ->
+            invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
+                it,
+                it.getInvoiceTerm().getRemainingAmountAfterFinDiscount(),
+                it.getInvoiceTerm().getFinancialDiscountAmount(),
+                invoicePayment.getAmount(),
+                it.getInvoiceTerm().getApplyFinancialDiscount()));
+
     invoicePayment.setApplyFinancialDiscount(true);
     invoicePayment.setFinancialDiscount(
         invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
@@ -254,28 +263,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoicePayment
             .getFinancialDiscountTotalAmount()
             .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
-    invoicePayment.setRemainingAmountAfterFinDiscount(
-        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-
-    invoiceTermPaymentList.forEach(
-        it ->
-            invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
-                it,
-                invoicePayment.getAmount(),
-                invoicePayment.getFinancialDiscountTotalAmount(),
-                it.getInvoiceTerm().getAmountRemaining(),
-                it.getInvoiceTerm().getApplyFinancialDiscount()));
+    invoicePayment.setTotalAmountWithFinancialDiscount(
+        invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(
       List<InvoiceTermPayment> invoiceTermPaymentList, BigDecimal amount) {
     return invoiceTermPaymentList.stream()
-        .map(
-            it ->
-                it.getInvoiceTerm()
-                    .getFinancialDiscountAmount()
-                    .multiply(it.getPaidAmount())
-                    .divide(it.getInvoiceTerm().getAmountRemaining(), 10, RoundingMode.HALF_UP))
+        .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);

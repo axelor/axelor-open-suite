@@ -38,13 +38,18 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
 
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
-          InvoiceRepository invoiceRepo,
-          MoveToolService moveToolService,
-          InvoicePaymentRepository invoicePaymentRepo,
-          InvoiceTermService invoiceTermService,
-          PartnerSupplychainService partnerSupplychainService,
-          InvoiceTermPaymentService invoiceTermPaymentService) {
-    super(invoiceRepo, moveToolService, invoicePaymentRepo, invoiceTermService, invoiceTermPaymentService);
+      InvoiceRepository invoiceRepo,
+      MoveToolService moveToolService,
+      InvoicePaymentRepository invoicePaymentRepo,
+      InvoiceTermService invoiceTermService,
+      PartnerSupplychainService partnerSupplychainService,
+      InvoiceTermPaymentService invoiceTermPaymentService) {
+    super(
+        invoiceRepo,
+        moveToolService,
+        invoicePaymentRepo,
+        invoiceTermService,
+        invoiceTermPaymentService);
     this.partnerSupplychainService = partnerSupplychainService;
   }
 

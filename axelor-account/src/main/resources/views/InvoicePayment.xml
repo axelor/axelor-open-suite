@@ -62,7 +62,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
         onChange="action-invoice-payment-group-change-amounts"/>
-      <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+      <field name="totalAmountWithFinancialDiscount" readonly="true"/>
       <panel name="financialDiscountAmountPanel" showIf="applyFinancialDiscount"
         readonly="true" colSpan="12">
         <field name="financialDiscount"/>

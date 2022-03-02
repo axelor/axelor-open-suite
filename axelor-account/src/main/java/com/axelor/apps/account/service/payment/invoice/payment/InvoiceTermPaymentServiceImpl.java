@@ -58,7 +58,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoicePayment.clearInvoiceTermPaymentList();
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
-          createInvoiceTermPayment(invoicePayment, invoiceTerm, invoiceTerm.getAmountRemaining()));
+          createInvoiceTermPayment(
+              invoicePayment, invoiceTerm, invoiceTerm.getRemainingAmountAfterFinDiscount()));
     }
 
     return invoicePayment;
@@ -146,7 +147,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     return this.initInvoiceTermPayment(
         invoicePayment,
         invoiceTermToPay,
-        invoicePayment.getAmount(),
+        invoicePayment.getTotalAmountWithFinancialDiscount(),
         invoicePayment.getFinancialDiscountTotalAmount(),
         paidAmount,
         invoicePayment.getApplyFinancialDiscount());
