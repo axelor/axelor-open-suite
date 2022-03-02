@@ -1087,4 +1087,14 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
       "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED = /*$$(*/
+      "Invalid Analytic moveLines, some axes percentage values are not equal to 100%." /*)*/;
+
 }

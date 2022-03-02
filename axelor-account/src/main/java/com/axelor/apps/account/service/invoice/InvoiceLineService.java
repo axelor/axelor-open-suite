@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -125,4 +126,15 @@ public interface InvoiceLineService {
 
   void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine);
+
+  InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine);
+
+  InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
+
+  InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine, Company company) throws AxelorException;
+
+  List<Long> setAxisDomains(InvoiceLine invoiceLine, Invoice invoice, int position)
+      throws AxelorException;
 }

@@ -23,4 +23,6 @@ import com.axelor.exception.AxelorException;
 public interface AnalyticToolService {
 
   boolean isManageAnalytic(Company company) throws AxelorException;
+
+  boolean compareNbrOfAnalyticAxisSelect(Company company, int position) throws AxelorException;
 }
