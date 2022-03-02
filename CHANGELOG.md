@@ -1,3 +1,20 @@
+## [6.1.6] (2022-02-25)
+
+#### Fixed
+
+* Studio: add missing french translations.
+* Production process: Fix french help message in data-init.
+* Bank Reconciliation Line: Fix errors an account or a partner in a bank reconciliation line.
+* Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list.
+* SaleOrder: lines generated from complementary products are now correctly sorted directly after original sale order line.
+* INVOICE LINE: Fix product selection in supplier invoice line when the product does not have a catalog supplier for the selected partner.
+* Partner category: fix french translation.
+* BPM: Add french translations.
+* Analytic distribution required on sale order line: Fix french translation.
+* Analytic distribution required on purchase order line: fix french translation.
+* Lead: fix 'no transaction is in progress' error when trying to convert a lead.
+* YEAR: changed demo data for period on civil year.
+
 ## [6.1.5] (2022-02-10)
 
 #### Changes
@@ -385,6 +402,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6
 [6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5
 [6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4
 [6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
