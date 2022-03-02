@@ -54,7 +54,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   @Override
   public List<InvoiceLineTax> creates() throws AxelorException {
 
-    Map<Map<Integer, TaxLine>, InvoiceLineTax> map = new HashMap<>();
+    Map<TaxLineByVatSystem, InvoiceLineTax> map = new HashMap<>();
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -86,8 +86,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected void createInvoiceLineTaxes(
-      InvoiceLine invoiceLine, Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
-      throws AxelorException {
+      InvoiceLine invoiceLine, Map<TaxLineByVatSystem, InvoiceLineTax> map) throws AxelorException {
     TaxLine taxLine = invoiceLine.getTaxLine();
     TaxEquiv taxEquiv = invoiceLine.getTaxEquiv();
     TaxLine taxLineRC =
@@ -120,20 +119,19 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLine,
       int vatSystem,
-      Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
+      Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
     LOG.debug("TVA {}", taxLine);
 
-    Map<Integer, TaxLine> keys = new HashMap<>();
-    keys.put(vatSystem, taxLine);
-    InvoiceLineTax invoiceLineTax = map.get(keys);
+    TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
+    InvoiceLineTax invoiceLineTax = map.get(taxLineByVatSystem);
     if (invoiceLineTax != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTax, vatSystem);
       invoiceLineTax.setReverseCharged(false);
     } else {
       invoiceLineTax = createInvoiceLineTax(invoiceLine, taxLine, vatSystem);
       invoiceLineTax.setReverseCharged(false);
-      map.put(keys, invoiceLineTax);
+      map.put(taxLineByVatSystem, invoiceLineTax);
     }
   }
 
@@ -142,20 +140,19 @@ public class TaxInvoiceLine extends TaxGenerator {
       TaxLine taxLineRC,
       TaxEquiv taxEquiv,
       int vatSystem,
-      Map<Map<Integer, TaxLine>, InvoiceLineTax> map)
+      Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
-    Map<Integer, TaxLine> keys = new HashMap<>();
-    keys.put(vatSystem, taxLineRC);
-    if (map.containsKey(keys)) {
-      Map<Integer, TaxLine> keysEquiv = new HashMap<>();
-      keysEquiv.put(vatSystem, taxEquiv.getReverseChargeTax().getActiveTaxLine());
-      InvoiceLineTax invoiceLineTaxRC = map.get(keysEquiv);
+    TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLineRC, vatSystem);
+    if (map.containsKey(taxLineByVatSystem)) {
+      TaxLineByVatSystem taxLineByVatSystemEquiv =
+          new TaxLineByVatSystem(taxEquiv.getReverseChargeTax().getActiveTaxLine(), vatSystem);
+      InvoiceLineTax invoiceLineTaxRC = map.get(taxLineByVatSystemEquiv);
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
     } else {
       InvoiceLineTax invoiceLineTaxRC = createInvoiceLineTax(invoiceLine, taxLineRC, vatSystem);
       invoiceLineTaxRC.setReverseCharged(true);
-      map.put(keys, invoiceLineTaxRC);
+      map.put(taxLineByVatSystem, invoiceLineTaxRC);
     }
   }
 
@@ -213,7 +210,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
-      Map<Map<Integer, TaxLine>, InvoiceLineTax> map) {
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
 
     List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
 
@@ -272,5 +269,30 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     return invoiceLineTaxList;
+  }
+
+  class TaxLineByVatSystem {
+    protected TaxLine taxline;
+    protected int vatSystem;
+
+    public TaxLineByVatSystem(TaxLine taxline, int vatSystem) {
+      this.taxline = taxline;
+      this.vatSystem = vatSystem;
+    }
+
+    public int hashCode() {
+      return (int) (this.taxline.getId() * 10 + this.vatSystem);
+    }
+
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (!(o instanceof TaxLineByVatSystem)) {
+        return false;
+      }
+      TaxLineByVatSystem other = (TaxLineByVatSystem) o;
+      return this.vatSystem == other.vatSystem && this.taxline.equals(other.taxline);
+    }
   }
 }
