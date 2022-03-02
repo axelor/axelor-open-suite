@@ -107,7 +107,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
           && invoiceMoveLine.getTaxLine() != null
           && invoiceMoveLine.getTaxLine().getValue().compareTo(BigDecimal.ZERO) == 0) {
 
-        int test = invoiceMoveLine.getAccount().getVatSystemSelect();
         customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
             this.generateTaxPaymentMoveLine(
                 customerPaymentMoveLine,
