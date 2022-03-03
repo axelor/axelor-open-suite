@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class FixedAssetLineEconomicComputationServiceImpl
@@ -38,8 +38,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Inject
   public FixedAssetLineEconomicComputationServiceImpl(
       AnalyticFixedAssetService analyticFixedAssetService,
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
-    super(fixedAssetFailOverControlService);
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      AppBaseService appBaseService) {
+    super(fixedAssetFailOverControlService, appBaseService);
     this.analyticFixedAssetService = analyticFixedAssetService;
   }
 
@@ -156,13 +157,13 @@ public class FixedAssetLineEconomicComputationServiceImpl
     return fixedAsset.getDurationInMonth();
   }
 
-@Override
-protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
-	return fixedAsset.getDepreciatedAmountCurrentYear();
-}
+  @Override
+  protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
+    return fixedAsset.getDepreciatedAmountCurrentYear();
+  }
 
-@Override
-protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
-	return fixedAsset.getFailOverDepreciationEndDate();
-}
+  @Override
+  protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
+    return fixedAsset.getFailOverDepreciationEndDate();
+  }
 }
