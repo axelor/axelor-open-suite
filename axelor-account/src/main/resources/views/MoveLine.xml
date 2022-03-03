@@ -113,9 +113,9 @@
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
-      onChange="action-move-line-method-create-analytic-distribution"
+      onChange="action-group-move-line-analytic-distribution-template-onchange"
       onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
-      readonlyIf="!account || !account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
@@ -146,7 +146,8 @@
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
-      form-view="analytic-move-line-move-line-form"/>
+      form-view="analytic-move-line-move-line-form"
+      onChange="action-method-check-analytic-account-on-move-line"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
@@ -516,13 +517,14 @@
       <field name="move.period.statusSelect" hidden="true"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     </panel>
-    <panel name="analyticDistributionPanel">
+    <panel name="analyticDistributionPanel"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
-        onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts"
+        onChange="action-group-move-line-analytic-distribution-template-onchange"
         onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
-        readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+        readonlyIf="!account.analyticDistributionAuthorized"
         requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
       <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
@@ -549,6 +551,9 @@
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
+      <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
+        form-view="analytic-move-line-move-line-form" colSpan="12"
+        onChange="action-method-check-analytic-account-on-move-line"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
@@ -728,6 +733,7 @@
     <action name="action-method-move-line-hide-axis-analytic-account"/>
     <action name="action-method-change-account-set-default-distribution-template"/>
     <action name="action-method-move-line-set-required-analytic-accounts"/>
+    <action name="action-group-move-line-analytic-distribution-template-onchange"/>
   </action-group>
 
   <action-group name="action-account-move-line-move-form-account-group-on-change">
@@ -735,6 +741,8 @@
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-method-move-line-set-required-analytic-accounts"/>
+    <action name="action-group-move-line-analytic-distribution-template-onchange"/>
   </action-group>
 
   <action-group name="action-group-analytic-axis-onchange">
@@ -763,6 +771,13 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
+  </action-group>
+
+  <action-group name="action-group-move-line-analytic-distribution-template-onchange">
+    <action name="action-method-clear-analytic-move-line"/>
+    <action name="action-method-check-analytic-on-move-line"/>
+    <action name="action-move-line-method-create-analytic-distribution"/>
+    <action name="action-method-print-analytic-account-on-move-line"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -1040,6 +1055,24 @@
 
   <action-method name="action-method-move-line-hide-axis-analytic-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-method-clear-analytic-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="clearAnalytic"/>
+  </action-method>
+
+  <action-method name="action-method-check-analytic-on-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="checkAnalyticByTemplate"/>
+  </action-method>
+
+  <action-method name="action-method-print-analytic-account-on-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method name="action-method-check-analytic-account-on-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="checkAnalyticMoveLineForAxis"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
