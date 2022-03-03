@@ -49,9 +49,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       return "";
     }
     List<ProductCategory> parentCategories =
-            fetchParentCategoryListWithMaxDiscount(productCategory);
+        fetchParentCategoryListWithMaxDiscount(productCategory);
     List<ProductCategory> childrenCategories =
-            fetchChildrenCategoryListWithMaxDiscount(productCategory);
+        fetchChildrenCategoryListWithMaxDiscount(productCategory);
 
     StringBuilder discountMessage = new StringBuilder();
     if (!parentCategories.isEmpty() || !childrenCategories.isEmpty()) {
@@ -153,17 +153,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
   }
 
   /**
-   * Find child of given category, and recursively parents of found parent that have a max
-   * discount.
+   * Find child of given category, and recursively parents of found parent that have a max discount.
    *
    * @param productCategory a product category
    * @return filtered parents of the category
    */
   protected List<ProductCategory> fetchParentCategoryListWithMaxDiscount(
-          ProductCategory productCategory) throws AxelorException {
+      ProductCategory productCategory) throws AxelorException {
     return fetchParentCategoryList(productCategory).stream()
-            .filter(pc -> pc.getMaxDiscount().signum() > 0)
-            .collect(Collectors.toList());
+        .filter(pc -> pc.getMaxDiscount().signum() > 0)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -174,10 +173,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    * @return filtered children of the category
    */
   protected List<ProductCategory> fetchChildrenCategoryListWithMaxDiscount(
-          ProductCategory productCategory) throws AxelorException {
+      ProductCategory productCategory) throws AxelorException {
     return fetchChildrenCategoryList(productCategory).stream()
-            .filter(pc -> pc.getMaxDiscount().signum() > 0)
-            .collect(Collectors.toList());
+        .filter(pc -> pc.getMaxDiscount().signum() > 0)
+        .collect(Collectors.toList());
   }
 
   protected List<ProductCategory> fetchChildren(ProductCategory productCategory) {

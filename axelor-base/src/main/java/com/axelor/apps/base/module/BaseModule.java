@@ -187,6 +187,7 @@ public class BaseModule extends AxelorModule {
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
-    bind(ProductCategoryDomainCreatorService.class).to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(ProductCategoryDomainCreatorService.class)
+        .to(ProductCategoryDomainCreatorServiceImpl.class);
   }
 }
