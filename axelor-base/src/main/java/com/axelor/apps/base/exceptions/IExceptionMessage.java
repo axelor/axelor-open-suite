@@ -465,4 +465,7 @@ public interface IExceptionMessage {
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
+
+  public static final String PRICING_SCALE = /*$$(*/
+      "The scale %s can't be applied to this product and that the scale is not applied" /*)*/;
 }

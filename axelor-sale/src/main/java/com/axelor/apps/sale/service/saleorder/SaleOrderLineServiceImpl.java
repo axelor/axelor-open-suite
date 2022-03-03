@@ -145,9 +145,28 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
+    Pricing pricing =
+        pricingRepository
+            .all()
+            .filter(
+                "self.product=?1 or self.productCategory = ?2",
+                saleOrderLine.getProduct(),
+                saleOrderLine.getProduct().getProductCategory())
+            .fetchOne();
+
     // Populate fields from pricing scale before starting process of fillPrice
-    if (appSaleService.getAppSale().getEnablePricingScale()) {
+    if (appSaleService.getAppSale().getEnablePricingScale()
+        && pricing != null
+        && (saleOrderLine.getProduct() == pricing.getProduct()
+            || saleOrderLine.getProduct().getProductCategory() == pricing.getProductCategory())) {
       computePricingScale(saleOrder, saleOrderLine);
+    } else {
+
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.PRICING_SCALE),
+              pricing != null ? pricing.getName() : null));
     }
 
     fillTaxInformation(saleOrderLine, saleOrder);
