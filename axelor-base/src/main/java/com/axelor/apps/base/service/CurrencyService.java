@@ -111,7 +111,7 @@ public class CurrencyService {
       }
 
       return isInverse
-          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_EVEN)
+          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_UP)
           : exchangeRate;
     }
 
@@ -193,7 +193,7 @@ public class CurrencyService {
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_EVEN);
+      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
     }
 
     return amount;

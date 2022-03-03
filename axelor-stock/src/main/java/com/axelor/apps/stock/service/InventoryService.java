@@ -211,7 +211,7 @@ public class InventoryService {
       int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
 
       if (inventoryLineMap.containsKey(code)) {
-        inventoryLineMap.get(code).setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLineMap.get(code).setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLineMap.get(code).setDescription(description);
       } else {
         BigDecimal currentQty;
@@ -250,8 +250,8 @@ public class InventoryService {
         inventoryLine.setProduct(product);
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
-        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
         inventoryLineList.add(inventoryLine);

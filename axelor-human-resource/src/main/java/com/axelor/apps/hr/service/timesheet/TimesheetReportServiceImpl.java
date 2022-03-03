@@ -319,7 +319,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                   ? employee
                       .getWeeklyWorkHours()
                       .multiply(BigDecimal.valueOf(daysInWeek / 5.00))
-                      .setScale(2, RoundingMode.HALF_EVEN)
+                      .setScale(2, RoundingMode.HALF_UP)
                   : employee.getWeeklyWorkHours();
           Map<String, Object> map = getTimesheetMap(user, date, dailyWorkingHours);
           map.put("weeklyWorkHours", weeklyWorkHours);
@@ -364,7 +364,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         employeeService
             .getDaysWorksInPeriod(employee, date, date)
             .multiply(employee.getDailyWorkHours())
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
     if (isPublicHoliday) {
       worksHour = worksHour.add(dailyWorkingHours);
     }
@@ -381,7 +381,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .mapToDouble(ehl -> Double.parseDouble(ehl.getQty().toString()))
             .sum();
     worksHour = worksHour.add(new BigDecimal(extraHours));
-    return worksHour.setScale(2, RoundingMode.HALF_EVEN);
+    return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
   private BigDecimal getTotalWeekWorksHours(
@@ -392,7 +392,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         employeeService
             .getDaysWorksInPeriod(employee, fromDate, toDate)
             .multiply(employee.getDailyWorkHours())
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
     worksHour = worksHour.add(publicHolidays.multiply(employee.getDailyWorkHours()));
     double extraHours =
         extraHoursLineRepository
@@ -408,7 +408,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .mapToDouble(ehl -> Double.parseDouble(ehl.getQty().toString()))
             .sum();
     worksHour = worksHour.add(new BigDecimal(extraHours));
-    return worksHour.setScale(2, RoundingMode.HALF_EVEN);
+    return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
   private BigDecimal getTotalWorkedHours(
@@ -431,7 +431,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     totalHours =
         new BigDecimal(totalDuration.getSeconds())
             .divide(BigDecimal.valueOf(3600))
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
@@ -439,7 +439,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       totalHours = totalHours.add(getLeaveHours(user, date, dailyWorkingHours));
     }
 
-    return totalHours.setScale(2, RoundingMode.HALF_EVEN);
+    return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
   private BigDecimal getTotalWeekWorkedHours(
@@ -464,12 +464,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     totalHours =
         new BigDecimal(totalDuration.getSeconds())
             .divide(BigDecimal.valueOf(3600))
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
     totalHours = totalHours.add(publicHolidays.multiply(employee.getDailyWorkHours()));
     totalHours =
         totalHours.add(getWeekLeaveHours(user, fromDate, toDate, employee.getDailyWorkHours()));
 
-    return totalHours.setScale(2, RoundingMode.HALF_EVEN);
+    return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
   private BigDecimal getLeaveHours(User user, LocalDate date, BigDecimal dailyWorkingHours)

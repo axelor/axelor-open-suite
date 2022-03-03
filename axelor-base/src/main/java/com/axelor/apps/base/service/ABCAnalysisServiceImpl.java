@@ -279,7 +279,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
           abcAnalysisLine
               .getDecimalQty()
               .multiply(BigDecimal.valueOf(100))
-              .divide(totalQty, 3, RoundingMode.HALF_EVEN);
+              .divide(totalQty, 3, RoundingMode.HALF_UP);
     }
 
     BigDecimal worth = BigDecimal.ZERO;
@@ -288,7 +288,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
           abcAnalysisLine
               .getDecimalWorth()
               .multiply(BigDecimal.valueOf(100))
-              .divide(totalWorth, 3, RoundingMode.HALF_EVEN);
+              .divide(totalWorth, 3, RoundingMode.HALF_UP);
     }
 
     incCumulatedQty(qty);
@@ -304,9 +304,9 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     BigDecimal maxQty = BigDecimal.ZERO;
     BigDecimal maxWorth = BigDecimal.ZERO;
     BigDecimal lineCumulatedQty =
-        abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_EVEN);
+        abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_UP);
     BigDecimal lineCumulatedWorth =
-        abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_EVEN);
+        abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_UP);
 
     for (ABCAnalysisClass abcAnalysisClass : abcAnalysisClassList) {
       maxQty = maxQty.add(abcAnalysisClass.getQty());

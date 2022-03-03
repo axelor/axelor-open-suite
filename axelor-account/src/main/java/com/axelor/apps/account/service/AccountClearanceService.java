@@ -198,8 +198,8 @@ public class AccountClearanceService {
     BigDecimal divid = taxRate.add(BigDecimal.ONE);
     BigDecimal profitAmount =
         amount
-            .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     MoveLine creditMoveLine1 =
         moveLineService.createMoveLine(
             move,

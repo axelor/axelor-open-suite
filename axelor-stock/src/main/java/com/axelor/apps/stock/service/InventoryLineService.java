@@ -97,13 +97,13 @@ public class InventoryLineService {
               ? inventoryLine
                   .getCurrentQty()
                   .subtract(inventoryLine.getRealQty())
-                  .setScale(2, RoundingMode.HALF_EVEN)
+                  .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
 
       if (stockLocationLine != null) {
         inventoryLine.setGapValue(
-            stockLocationLine.getAvgPrice().multiply(gap).setScale(2, RoundingMode.HALF_EVEN));
+            stockLocationLine.getAvgPrice().multiply(gap).setScale(2, RoundingMode.HALF_UP));
       }
     }
 

@@ -274,7 +274,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal amount =
         quantity
             .multiply(price)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     logger.debug(
         "Calcul du montant HT avec une quantité de {} pour {} : {}",
@@ -522,14 +522,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       subMarginRate =
           subTotalGrossProfit
               .multiply(new BigDecimal(100))
-              .divide(totalWT, 2, RoundingMode.HALF_EVEN);
+              .divide(totalWT, 2, RoundingMode.HALF_UP);
       logger.debug("Subtotal gross margin rate: {}", subMarginRate);
 
       if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
         subTotalMarkup =
             subTotalGrossProfit
                 .multiply(new BigDecimal(100))
-                .divide(subTotalCostPrice, 2, RoundingMode.HALF_EVEN);
+                .divide(subTotalCostPrice, 2, RoundingMode.HALF_UP);
         logger.debug("Subtotal markup: {}", subTotalMarkup);
       }
     }
@@ -590,7 +590,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             packLine
                 .getQuantity()
                 .multiply(packQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
       }
       soLine.setUnit(packLine.getUnit());
       soLine.setTypeSelect(packLine.getTypeSelect());

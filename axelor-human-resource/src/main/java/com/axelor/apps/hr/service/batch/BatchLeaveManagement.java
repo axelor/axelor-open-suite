@@ -205,8 +205,8 @@ public class BatchLeaveManagement extends BatchStrategy {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
 
-      leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_EVEN));
-      leaveLine.setTotalQuantity(totalQty.setScale(4, RoundingMode.HALF_EVEN));
+      leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_UP));
+      leaveLine.setTotalQuantity(totalQty.setScale(4, RoundingMode.HALF_UP));
 
       leaveManagementRepository.save(leaveManagement);
       leaveLineRepository.save(leaveLine);

@@ -376,7 +376,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .divide(
                   purchaseOrderLine.getQty(),
                   appBaseService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_EVEN);
+                  RoundingMode.HALF_UP);
     }
 
     if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {

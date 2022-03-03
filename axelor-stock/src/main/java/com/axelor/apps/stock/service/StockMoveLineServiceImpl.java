@@ -360,7 +360,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine
             .getRealQty()
             .multiply(stockMoveLine.getNetMass())
-            .setScale(2, RoundingMode.HALF_EVEN));
+            .setScale(2, RoundingMode.HALF_UP));
 
     if (product != null) {
       stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());

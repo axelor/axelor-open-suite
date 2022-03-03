@@ -66,7 +66,7 @@ public class LeaveManagementService {
     }
     leaveManagement.setFromDate(fromDate);
     leaveManagement.setToDate(toDate);
-    leaveManagement.setValue(value.setScale(4, RoundingMode.HALF_EVEN));
+    leaveManagement.setValue(value.setScale(4, RoundingMode.HALF_UP));
 
     return leaveManagement;
   }

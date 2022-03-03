@@ -316,7 +316,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           purchaseOrderLine
               .getQty()
               .multiply(percentSum)
-              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN);
+              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
       qtyToInvoiceMap.put(purchaseOrderLine.getId(), realQty);
 
       if (qtyToInvoiceMap.get(purchaseOrderLine.getId()).compareTo(purchaseOrderLine.getQty())
