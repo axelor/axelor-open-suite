@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServi
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -175,7 +176,7 @@ public class FixedAssetController {
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
         }
-        Beans.get(FixedAssetService.class).validate(fixedAsset);
+        Beans.get(FixedAssetValidateService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
@@ -207,7 +208,7 @@ public class FixedAssetController {
                         .filter(ObjectUtils::notEmpty)
                         .map(input -> Long.parseLong(input.toString()))
                         .collect(Collectors.toList()));
-        int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+        int validatedFixedAssets = Beans.get(FixedAssetValidateService.class).massValidation(ids);
         response.setFlash(
             validatedFixedAssets
                 + " "
