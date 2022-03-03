@@ -148,10 +148,10 @@ public class CurrencyConversionService {
                   Optional.ofNullable(AuthUtils.getUser())
                       .map(User::getActiveCompany)
                       .orElse(null)));
-      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
+      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_UP);
       //	        Float rt =
       // Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
-      //	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
+      //	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_UP);
 
     } else LOG.trace("Currency from and to must be filled to get rate");
     LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
@@ -261,9 +261,9 @@ public class CurrencyConversionService {
         && previousRate.compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal diffRate = currentRate.subtract(previousRate);
       BigDecimal variation =
-          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_EVEN);
+          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_UP);
       variation =
-          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       variations = variation.toString() + "%";
     }
 

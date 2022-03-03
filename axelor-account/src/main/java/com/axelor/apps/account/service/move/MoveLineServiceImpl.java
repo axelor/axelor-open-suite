@@ -330,7 +330,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
-            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_EVEN);
+            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_UP);
       }
     }
 
@@ -350,7 +350,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         StringTool.cutTooLongString(
             this.determineDescriptionMoveLine(move.getJournal(), origin, description)),
         origin,
-        currencyRate.setScale(5, RoundingMode.HALF_EVEN),
+        currencyRate.setScale(5, RoundingMode.HALF_UP),
         amountInSpecificMoveCurrency,
         originDate);
   }
@@ -1258,7 +1258,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       BigDecimal detailPaymentAmount =
           baseAmount
               .multiply(paymentAmount)
-              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
               .setScale(2, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =

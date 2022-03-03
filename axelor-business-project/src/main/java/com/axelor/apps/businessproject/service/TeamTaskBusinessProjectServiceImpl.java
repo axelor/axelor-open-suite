@@ -193,7 +193,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     BigDecimal amount =
         price
             .multiply(quantity)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     return amount;
   }

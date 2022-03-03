@@ -283,7 +283,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     List<?> result = query.getResultList();
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
-        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
   }
 
   @Override

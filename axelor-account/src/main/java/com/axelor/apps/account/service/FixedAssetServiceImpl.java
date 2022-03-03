@@ -136,7 +136,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             depreciationValue =
                 fixedAssetLine
                     .getResidualValue()
-                    .divide(new BigDecimal(remainingYear), RoundingMode.HALF_EVEN);
+                    .divide(new BigDecimal(remainingYear), RoundingMode.HALF_UP);
           }
         } else {
           depreciationValue =
@@ -151,9 +151,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
         depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
       }
-      depreciationValue = depreciationValue.setScale(scale, RoundingMode.HALF_EVEN);
+      depreciationValue = depreciationValue.setScale(scale, RoundingMode.HALF_UP);
       cumulativeValue =
-          cumulativeValue.add(depreciationValue).setScale(scale, RoundingMode.HALF_EVEN);
+          cumulativeValue.add(depreciationValue).setScale(scale, RoundingMode.HALF_UP);
       counter++;
     }
     return fixedAsset;
@@ -239,7 +239,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth() * 30).setScale(calculationScale);
       prorataTemporis =
           nbDaysBetweenAcqAndFirstDepDate
-              .divide(nbDaysOfPeriod, BigDecimal.ROUND_HALF_EVEN)
+              .divide(nbDaysOfPeriod, BigDecimal.ROUND_HALF_UP)
               .setScale(calculationScale);
     }
     return prorataTemporis;
@@ -260,7 +260,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 .divide(
                     BigDecimal.valueOf(numberOfDepreciation),
                     calculationScale,
-                    BigDecimal.ROUND_HALF_EVEN);
+                    BigDecimal.ROUND_HALF_UP);
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset
@@ -272,7 +272,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .multiply(depreciationRate)
         .multiply(ddRate)
         .multiply(prorataTemporis)
-        .divide(new BigDecimal(100), scale, BigDecimal.ROUND_HALF_EVEN);
+        .divide(new BigDecimal(100), scale, BigDecimal.ROUND_HALF_UP);
   }
 
   @Override
@@ -412,7 +412,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
-                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()), BigDecimal.ROUND_HALF_EVEN)
+                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()), BigDecimal.ROUND_HALF_UP)
             .setScale(calculationScale);
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
@@ -425,7 +425,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .divide(
                 BigDecimal.valueOf(numberOfDepreciation),
                 calculationScale,
-                BigDecimal.ROUND_HALF_EVEN);
+                BigDecimal.ROUND_HALF_UP);
     BigDecimal ddRate = BigDecimal.ONE;
     if (fixedAsset
         .getComputationMethodSelect()
@@ -438,7 +438,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .multiply(depreciationRate)
             .multiply(ddRate)
             .multiply(prorataTemporis)
-            .divide(new BigDecimal(100), scale, BigDecimal.ROUND_HALF_EVEN);
+            .divide(new BigDecimal(100), scale, BigDecimal.ROUND_HALF_UP);
 
     fixedAssetLine.setDepreciation(deprecationValue);
     BigDecimal cumulativeValue =
