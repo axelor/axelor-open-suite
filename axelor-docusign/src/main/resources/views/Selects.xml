@@ -4,16 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <selection name="docusign.envelope.status.select">
-    <option value="any">Any</option>
-    <option value="created">Created</option>
-    <option value="sent">Sent</option>
-    <option value="delivered">Delivered</option>
-    <option value="signed">Signed</option>
-    <option value="completed">Completed</option>
-    <option value="declined">Declined</option>
-    <option value="timedout">Timedout</option>
-    <option value="voided">Voided</option>
-    <option value="deleted">Deleted</option>
+    <option value="draft">DocuSignEnvelope.Draft</option>
+    <option value="sent">DocuSignEnvelope.Sent</option>
+    <option value="delivered">DocuSignEnvelope.Delivered</option>
+    <option value="completed">DocuSignEnvelope.Completed</option>
+    <option value="declined">DocuSignEnvelope.Declined</option>
+    <option value="voided">DocuSignEnvelope.Voided</option>
   </selection>
 
   <selection name="docusign.field.setting.type.select">
