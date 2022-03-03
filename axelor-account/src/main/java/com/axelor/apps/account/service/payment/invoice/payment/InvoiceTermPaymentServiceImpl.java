@@ -59,7 +59,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
           createInvoiceTermPayment(
-              invoicePayment, invoiceTerm, invoiceTerm.getAmountRemainingAfterFinDiscount()));
+              invoicePayment, invoiceTerm, invoiceTermService.getAmountRemaining(invoiceTerm)));
     }
 
     return invoicePayment;
@@ -113,7 +113,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       if (availableAmount.compareTo(BigDecimal.ZERO) > 0) {
-        BigDecimal invoiceTermAmount = invoiceTerm.getAmountRemainingAfterFinDiscount();
+        BigDecimal invoiceTermAmount = invoiceTermService.getAmountRemaining(invoiceTerm);
         if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
           invoicePayment.addInvoiceTermPaymentListItem(
               createInvoiceTermPayment(invoicePayment, invoiceTerm, availableAmount));

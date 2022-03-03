@@ -55,8 +55,9 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
           payVoucherDueElement
               .getFinancialDiscountTotalAmount()
               .subtract(payVoucherDueElement.getFinancialDiscountTaxAmount()));
-      payVoucherDueElement.setAmountRemainingFinDiscountDeducted(
-          invoiceTerm.getRemainingAmountAfterFinDiscount());
+      payVoucherDueElement.setTotalAmountWithFinancialDiscount(invoiceTerm.getAmount());
+      payVoucherDueElement.setTotalRemainingAmountWithFinancialDiscount(
+          invoiceTerm.getAmountRemaining());
       payVoucherDueElement.setFinancialDiscountDeadlineDate(
           invoiceTerm.getFinancialDiscountDeadlineDate());
     }
@@ -67,7 +68,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   @Override
   public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement) {
     if (payVoucherDueElement != null && !payVoucherDueElement.getApplyFinancialDiscount()) {
-      payVoucherDueElement.setAmountRemainingFinDiscountDeducted(
+      payVoucherDueElement.setTotalAmountWithFinancialDiscount(
           payVoucherDueElement.getDueAmount().subtract(payVoucherDueElement.getPaidAmount()));
       payVoucherDueElement.setFinancialDiscountAmount(BigDecimal.ZERO);
       payVoucherDueElement.setFinancialDiscountTaxAmount(BigDecimal.ZERO);

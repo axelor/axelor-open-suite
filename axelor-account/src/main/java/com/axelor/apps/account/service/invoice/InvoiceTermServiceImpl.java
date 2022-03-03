@@ -814,6 +814,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
+  @Override
+  public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getApplyFinancialDiscount()
+        ? invoiceTerm.getAmountRemainingAfterFinDiscount()
+        : invoiceTerm.getAmountRemaining();
+  }
+
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
     boolean isValidUser =
         currentUser.getIsSuperPfpUser()

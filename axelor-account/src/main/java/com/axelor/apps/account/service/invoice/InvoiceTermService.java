@@ -231,4 +231,6 @@ public interface InvoiceTermService {
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
+
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm);
 }

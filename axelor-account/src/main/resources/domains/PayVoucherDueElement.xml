@@ -27,8 +27,10 @@
     <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
     <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
     <decimal name="financialDiscountTotalAmount" title="Fin. discount total amount"/>
-    <decimal name="amountRemainingFinDiscountDeducted"
-      title="Amount remaining after Fin. discount"/>
+    <decimal name="totalRemainingAmountWithFinancialDiscount"
+      title="Remaining total amount after Fin. discount"/>
+    <decimal name="totalAmountWithFinancialDiscount"
+      title="Total amount with financial discount"/>
 
   </entity>
 
