@@ -81,17 +81,19 @@ public class AnalyticDistributionTemplateServiceImpl
       throws AxelorException {
     List<AnalyticDistributionLine> analyticDistributionLineList =
         analyticDistributionTemplate.getAnalyticDistributionLineList();
-    List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
-    BigDecimal sum;
-    for (AnalyticAxis analyticAxis : axisList) {
-      sum = BigDecimal.ZERO;
-      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
-      }
-      if (sum.intValue() != 100) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+    if (!CollectionUtils.isEmpty(analyticDistributionLineList)) {
+      List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
+      BigDecimal sum;
+      for (AnalyticAxis analyticAxis : axisList) {
+        sum = BigDecimal.ZERO;
+        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+          sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
+        }
+        if (sum.intValue() != 100) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+        }
       }
     }
   }
@@ -126,9 +128,10 @@ public class AnalyticDistributionTemplateServiceImpl
   @Override
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
-    if (analyticDistributionTemplate.getCompany() != null) {
-      List<AnalyticDistributionLine> analyticDistributionLineList =
-          analyticDistributionTemplate.getAnalyticDistributionLineList();
+    List<AnalyticDistributionLine> analyticDistributionLineList =
+        analyticDistributionTemplate.getAnalyticDistributionLineList();
+    if (analyticDistributionTemplate.getCompany() != null
+        && !CollectionUtils.isEmpty(analyticDistributionLineList)) {
       boolean checkAxis = false;
       boolean checkJournal = false;
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {

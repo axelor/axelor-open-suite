@@ -1095,6 +1095,5 @@ public interface IExceptionMessage {
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
 
   static final String ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are not equal to 100%." /*)*/;
-
+      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
 }

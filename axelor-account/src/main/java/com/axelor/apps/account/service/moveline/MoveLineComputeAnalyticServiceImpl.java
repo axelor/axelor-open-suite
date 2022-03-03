@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.service.ListToolService;
@@ -46,6 +47,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected ListToolService listToolService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
@@ -53,12 +55,14 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
       AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      ListToolService listToolService) {
+      ListToolService listToolService,
+      AnalyticToolService analyticToolService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.listToolService = listToolService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
@@ -156,16 +160,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
-  public boolean compareNbrOfAnalyticAxisSelect(int position, Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && position
-            <= accountConfigService
-                .getAccountConfig(move.getCompany())
-                .getNbrOfAnalyticAxisSelect();
-  }
-
-  @Override
   public List<Long> setAxisDomains(MoveLine moveLine, Move move, int position)
       throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<Long>();
@@ -173,7 +167,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
 
     AnalyticAxis analyticAxis = new AnalyticAxis();
 
-    if (compareNbrOfAnalyticAxisSelect(position, move)) {
+    if (analyticToolService.compareNbrOfAnalyticAxisSelect(move.getCompany(), position)) {
 
       for (AnalyticAxisByCompany axis :
           accountConfigService.getAccountConfig(move.getCompany()).getAnalyticAxisByCompanyList()) {
