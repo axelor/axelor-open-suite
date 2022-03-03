@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
@@ -28,6 +29,7 @@ public class MoveLineServiceSupplychainImpl extends MoveLineServiceImpl
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
+      AnalyticToolService analyticToolService,
       SupplychainBatchRepository supplychainBatchRepo) {
     super(
         moveLineRepository,
@@ -36,7 +38,8 @@ public class MoveLineServiceSupplychainImpl extends MoveLineServiceImpl
         appBaseService,
         moveLineToolService,
         appAccountService,
-        accountConfigService);
+        accountConfigService,
+        analyticToolService);
     this.supplychainBatchRepo = supplychainBatchRepo;
   }
 

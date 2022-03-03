@@ -31,6 +31,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
@@ -398,18 +399,16 @@ public class MoveLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
-
       List<Long> analyticAccountList = new ArrayList<Long>();
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
-          Beans.get(MoveLineComputeAnalyticService.class);
 
       for (int i = 1; i <= 5; i++) {
-
-        if (moveLineComputeAnalyticService.compareNbrOfAnalyticAxisSelect(i, move)) {
-          analyticAccountList = moveLineComputeAnalyticService.setAxisDomains(moveLine, move, i);
+        if (move != null
+            && Beans.get(AnalyticToolService.class)
+                .compareNbrOfAnalyticAxisSelect(move.getCompany(), i)) {
+          analyticAccountList =
+              Beans.get(MoveLineComputeAnalyticService.class).setAxisDomains(moveLine, move, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
           } else {
@@ -427,7 +426,6 @@ public class MoveLineController {
           }
         }
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

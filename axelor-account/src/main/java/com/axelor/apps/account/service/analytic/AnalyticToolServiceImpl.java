@@ -17,11 +17,16 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticToolServiceImpl implements AnalyticToolService {
 
@@ -47,5 +52,23 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
       throws AxelorException {
     return company != null
         && position <= accountConfigService.getAccountConfig(company).getNbrOfAnalyticAxisSelect();
+  }
+
+  @Override
+  public boolean checkAxisAccount(
+      List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis) {
+    if (!CollectionUtils.isEmpty(analyticMoveLineList)) {
+      BigDecimal sum = BigDecimal.ZERO;
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        if (analyticMoveLine.getAnalyticAxis() == analyticAxis) {
+          sum = sum.add(analyticMoveLine.getPercentage());
+        }
+      }
+
+      if (sum.compareTo(new BigDecimal(100)) != 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }

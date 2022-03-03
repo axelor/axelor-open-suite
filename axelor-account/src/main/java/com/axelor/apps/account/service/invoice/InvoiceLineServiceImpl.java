@@ -853,44 +853,40 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return invoiceLine;
   }
 
-  public boolean checkAxisAccount(InvoiceLine invoiceLine, AnalyticAxis analyticAxis) {
-    BigDecimal sum = BigDecimal.ZERO;
-    for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-      if (analyticMoveLine.getAnalyticAxis() == analyticAxis) {
-        sum = sum.add(analyticMoveLine.getPercentage());
-      }
-    }
-
-    if (sum.compareTo(new BigDecimal(100)) != 0) {
-      return false;
-    }
-    return true;
-  }
-
   @Override
   public InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine) {
     if (invoiceLine.getAxis1AnalyticAccount() != null) {
-      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
         invoiceLine.setAxis1AnalyticAccount(null);
       }
     }
     if (invoiceLine.getAxis2AnalyticAccount() != null) {
-      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
         invoiceLine.setAxis2AnalyticAccount(null);
       }
     }
     if (invoiceLine.getAxis3AnalyticAccount() != null) {
-      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
         invoiceLine.setAxis3AnalyticAccount(null);
       }
     }
     if (invoiceLine.getAxis4AnalyticAccount() != null) {
-      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
         invoiceLine.setAxis4AnalyticAccount(null);
       }
     }
     if (invoiceLine.getAxis5AnalyticAccount() != null) {
-      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
         invoiceLine.setAxis5AnalyticAccount(null);
       }
     }

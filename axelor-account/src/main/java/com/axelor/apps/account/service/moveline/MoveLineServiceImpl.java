@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -25,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -62,6 +62,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
+  protected AnalyticToolService analyticToolService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -73,7 +74,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticToolService analyticToolService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -81,6 +83,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
@@ -374,44 +377,40 @@ public class MoveLineServiceImpl implements MoveLineService {
     return moveLine;
   }
 
-  public boolean checkAxisAccount(MoveLine moveLine, AnalyticAxis analyticAxis) {
-    BigDecimal sum = BigDecimal.ZERO;
-    for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-      if (analyticMoveLine.getAnalyticAxis() == analyticAxis) {
-        sum = sum.add(analyticMoveLine.getPercentage());
-      }
-    }
-
-    if (sum.compareTo(new BigDecimal(100)) != 0) {
-      return false;
-    }
-    return true;
-  }
-
   @Override
   public MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine) {
     if (moveLine.getAxis1AnalyticAccount() != null) {
-      if (!checkAxisAccount(moveLine, moveLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
         moveLine.setAxis1AnalyticAccount(null);
       }
     }
     if (moveLine.getAxis2AnalyticAccount() != null) {
-      if (!checkAxisAccount(moveLine, moveLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
         moveLine.setAxis2AnalyticAccount(null);
       }
     }
     if (moveLine.getAxis3AnalyticAccount() != null) {
-      if (!checkAxisAccount(moveLine, moveLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
         moveLine.setAxis3AnalyticAccount(null);
       }
     }
     if (moveLine.getAxis4AnalyticAccount() != null) {
-      if (!checkAxisAccount(moveLine, moveLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
         moveLine.setAxis4AnalyticAccount(null);
       }
     }
     if (moveLine.getAxis5AnalyticAccount() != null) {
-      if (!checkAxisAccount(moveLine, moveLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
+      if (!analyticToolService.checkAxisAccount(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
         moveLine.setAxis5AnalyticAccount(null);
       }
     }

@@ -36,8 +36,6 @@ public interface MoveLineComputeAnalyticService {
 
   MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
 
-  boolean compareNbrOfAnalyticAxisSelect(int position, Move move) throws AxelorException;
-
   List<Long> setAxisDomains(MoveLine moveLine, Move move, int position) throws AxelorException;
 
   MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
