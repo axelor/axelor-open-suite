@@ -918,7 +918,7 @@ public interface IExceptionMessage {
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
   static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
-      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move. Both informations must be coherents." /*)*/;
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
 
   static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
       "The selected date is out of the accounting period." /*)*/;
