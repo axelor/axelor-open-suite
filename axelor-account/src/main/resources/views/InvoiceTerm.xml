@@ -50,7 +50,7 @@
     <field name="name"/>
     <field name="dueDate"/>
     <!-- TODO -->
-    <field name="remainingAmountAfterFinDiscount" title="Amount"/>
+    <field name="amount"/>
     <field name="amountRemainingAfterFinDiscount" title="Remaining amount"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
