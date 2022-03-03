@@ -141,11 +141,11 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+    	employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
-        employee = employeeRepository.find(employee.getId());
         hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
         if (hrBatch.getCompany() != null) {
           company = companyRepository.find(hrBatch.getCompany().getId());
