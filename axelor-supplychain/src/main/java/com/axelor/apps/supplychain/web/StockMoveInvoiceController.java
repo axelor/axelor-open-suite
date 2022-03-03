@@ -76,12 +76,29 @@ public class StockMoveInvoiceController {
 
         if (invoice != null) {
           // Open the generated invoice in a new tab
+          String invoiceGrid = "";
+          String invoiceFilter = "";
+          if (invoice.getOperationTypeSelect().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+              || invoice
+                  .getOperationTypeSelect()
+                  .equals(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+            invoiceGrid = "invoice-grid";
+            invoiceFilter = "customer-invoices-filters";
+          } else if (invoice
+                  .getOperationTypeSelect()
+                  .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+              || invoice
+                  .getOperationTypeSelect()
+                  .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
+            invoiceGrid = "invoice-supplier-grid";
+            invoiceFilter = "supplier-invoices-filters";
+          }
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-supplier-grid")
+                  .add("grid", invoiceGrid)
                   .add("form", "invoice-form")
-                  .param("search-filters", "supplier-invoices-filters")
+                  .param("search-filters", invoiceFilter)
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
