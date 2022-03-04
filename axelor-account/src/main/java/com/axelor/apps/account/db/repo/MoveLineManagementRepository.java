@@ -40,7 +40,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);
@@ -60,7 +60,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       Beans.get(MoveLineService.class).validateMoveLine(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(entity);
   }

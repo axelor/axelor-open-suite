@@ -96,7 +96,7 @@ public class ProjectManagementRepository extends ProjectRepository {
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     setAllProjectFullName(project);
 
