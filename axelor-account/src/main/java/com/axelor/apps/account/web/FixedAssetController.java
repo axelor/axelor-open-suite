@@ -51,6 +51,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -82,13 +83,17 @@ public class FixedAssetController {
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     if (context.get("disposalDate") == null
-        || context.get("disposalAmount") == null
         || context.get("disposalTypeSelect") == null
         || context.get("disposalQtySelect") == null) {
       return;
     }
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
-    BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
+    BigDecimal disposalAmount =
+        new BigDecimal(
+            Optional.ofNullable(context.get("disposalAmount"))
+                .map(Object::toString)
+                .orElse(BigDecimal.ZERO.toString()));
+
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
