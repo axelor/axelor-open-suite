@@ -187,14 +187,6 @@ public class PaymentVoucherLoadService {
     return payVoucherDueElement;
   }
 
-  protected BigDecimal getAmountPaid(InvoiceTerm invoiceTerm) {
-    return invoiceTerm.getApplyFinancialDiscount()
-        ? invoiceTerm
-            .getRemainingAmountAfterFinDiscount()
-            .subtract(invoiceTerm.getAmountRemainingAfterFinDiscount())
-        : invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
-  }
-
   public void loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {
 
     if (paymentVoucher.getPayVoucherElementToPayList() != null) {

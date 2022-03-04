@@ -246,11 +246,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoiceTermPaymentList.forEach(
         it ->
             invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
-                it,
-                it.getInvoiceTerm().getRemainingAmountAfterFinDiscount(),
-                it.getInvoiceTerm().getFinancialDiscountAmount(),
-                invoicePayment.getAmount(),
-                it.getInvoiceTerm().getApplyFinancialDiscount()));
+                it, it.getInvoiceTerm(), it.getInvoiceTerm().getApplyFinancialDiscount()));
 
     invoicePayment.setApplyFinancialDiscount(true);
     invoicePayment.setFinancialDiscount(
