@@ -70,7 +70,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       return super.save(partner);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

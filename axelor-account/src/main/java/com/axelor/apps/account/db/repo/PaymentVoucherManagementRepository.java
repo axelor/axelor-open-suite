@@ -59,7 +59,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
       return super.save(paymentVoucher);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

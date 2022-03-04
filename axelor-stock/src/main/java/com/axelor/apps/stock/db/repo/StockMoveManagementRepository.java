@@ -72,7 +72,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       return stockMove;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

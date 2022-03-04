@@ -55,7 +55,7 @@ public class ProductBaseRepository extends ProductRepository {
       }
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
@@ -112,7 +112,7 @@ public class ProductBaseRepository extends ProductRepository {
       }
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     return copy;
   }

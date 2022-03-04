@@ -41,7 +41,7 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
       return super.save(accountingReport);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
