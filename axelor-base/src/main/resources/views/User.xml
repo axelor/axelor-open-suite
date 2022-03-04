@@ -23,8 +23,8 @@
 	    	<panel name="stepStatusPanel" colSpan="12">
 	    		<field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
 	    		<panel name="buttonPanel" colSpan="12">
-		    		<button name="previousBtn" icon="fa-caret-left" onClick="validate,action-user-record-step-status-previous" readonlyIf="stepStatusSelect &lt; 1" colSpan="1"/>
-		    		<button name="nextBtn" icon="fa-caret-right" onClick="validate,action-user-record-step-status-next" readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
+		    		<button name="previousBtn" icon="fa-caret-left" onClick="action-user-group-previous-button" readonlyIf="stepStatusSelect &lt; 1" colSpan="1"/>
+		    		<button name="nextBtn" icon="fa-caret-right" onClick="action-user-group-next-button" readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
 		    		<button name="validateBtn" title="Validate" onClick="action-user-record-step-status-next,save" showIf="stepStatusSelect == 4"/>
 	    		</panel>
 	    	</panel>
@@ -335,13 +335,25 @@
     <action-method name="action-user-method-generate-random-passwords">
     	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
     </action-method>
-    
+
     <action-view name="action-user-view-show-all-permissions" title="All permissions" model="com.axelor.auth.db.Permission">
    		<view name="permission-grid" type="grid"/>
    		<view name="permission-form" type="form"/>
    		<domain>self IN (SELECT p FROM User u join u.permissions p WHERE u.id = :userId) OR self IN (SELECT p FROM User u join u.group g join g.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.roles r join r.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.group g join g.roles r join r.permissions p WHERE u.id = :userId)</domain>
    		<context name="userId" expr="eval: id"/>
     </action-view>
+
+	<action-group name="action-user-group-previous-button">
+		<action name="validate"/>
+		<action name="action-user-record-step-status-previous"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-user-group-next-button">
+		<action name="validate"/>
+		<action name="action-user-record-step-status-next"/>
+		<action name="save"/>
+	</action-group>
 
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
     	<field name="workshopStockLocation" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
