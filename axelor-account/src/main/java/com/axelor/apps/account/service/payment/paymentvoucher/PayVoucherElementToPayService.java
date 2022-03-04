@@ -19,12 +19,14 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -42,18 +44,18 @@ public class PayVoucherElementToPayService {
   protected CurrencyService currencyService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected AccountConfigService accountConfigService;
-
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public PayVoucherElementToPayService(
       CurrencyService currencyService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceTermService invoiceTermService) {
     this.currencyService = currencyService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.accountConfigService = accountConfigService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -132,11 +134,10 @@ public class PayVoucherElementToPayService {
           payVoucherDueElement.getFinancialDiscountTaxAmount());
       payVoucherElementToPay.setFinancialDiscountTotalAmount(
           payVoucherDueElement.getFinancialDiscountTotalAmount());
-      payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
-          payVoucherElementToPay
-              .getAmountToPay()
-              .subtract(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
+
+      this.updateFinancialDiscount(payVoucherElementToPay);
     }
+
     return payVoucherElementToPay;
   }
 
@@ -146,23 +147,30 @@ public class PayVoucherElementToPayService {
       return;
     }
 
+    InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
+
     BigDecimal percentagePaid =
         payVoucherElementToPay
             .getAmountToPay()
-            .divide(
-                payVoucherElementToPay.getInvoiceTerm().getAmountRemaining(),
-                10,
-                RoundingMode.HALF_UP);
+            .divide(invoiceTerm.getRemainingAmountAfterFinDiscount(), 10, RoundingMode.HALF_UP);
 
-    payVoucherElementToPay.setFinancialDiscountAmount(
-        payVoucherElementToPay.getFinancialDiscountAmount().multiply(percentagePaid));
     payVoucherElementToPay.setFinancialDiscountTotalAmount(
-        payVoucherElementToPay.getFinancialDiscountTotalAmount().multiply(percentagePaid));
+        invoiceTerm
+            .getFinancialDiscountAmount()
+            .multiply(percentagePaid)
+            .setScale(2, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountTaxAmount(
-        payVoucherElementToPay.getFinancialDiscountTaxAmount().multiply(percentagePaid));
-    payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
+        invoiceTermService
+            .getFinancialDiscountTaxAmount(payVoucherElementToPay.getInvoiceTerm())
+            .multiply(percentagePaid)
+            .setScale(2, RoundingMode.HALF_UP));
+    payVoucherElementToPay.setFinancialDiscountAmount(
+        payVoucherElementToPay
+            .getFinancialDiscountTotalAmount()
+            .subtract(payVoucherElementToPay.getFinancialDiscountTaxAmount()));
+    payVoucherElementToPay.setTotalAmountWithFinancialDiscount(
         payVoucherElementToPay
             .getAmountToPay()
-            .subtract(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
+            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
   }
 }

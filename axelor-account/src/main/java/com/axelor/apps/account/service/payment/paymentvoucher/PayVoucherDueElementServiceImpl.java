@@ -10,6 +10,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import javax.inject.Inject;
 
 public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementService {
@@ -47,16 +48,27 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
             >= 0) {
       payVoucherDueElement.setApplyFinancialDiscount(true);
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
+
+      BigDecimal ratioPaid =
+          payVoucherDueElement
+              .getInvoiceTerm()
+              .getAmountRemaining()
+              .divide(payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
+
       payVoucherDueElement.setFinancialDiscountTotalAmount(
-          invoiceTerm.getFinancialDiscountAmount());
+          invoiceTerm
+              .getFinancialDiscountAmount()
+              .multiply(ratioPaid)
+              .setScale(2, RoundingMode.HALF_UP));
       payVoucherDueElement.setFinancialDiscountTaxAmount(
-          invoiceTermService.getFinancialDiscountTaxAmount(invoiceTerm));
+          invoiceTermService
+              .getFinancialDiscountTaxAmount(invoiceTerm)
+              .multiply(ratioPaid)
+              .setScale(2, RoundingMode.HALF_UP));
       payVoucherDueElement.setFinancialDiscountAmount(
           payVoucherDueElement
               .getFinancialDiscountTotalAmount()
               .subtract(payVoucherDueElement.getFinancialDiscountTaxAmount()));
-      payVoucherDueElement.setAmountRemainingFinDiscountDeducted(
-          invoiceTerm.getRemainingAmountAfterFinDiscount());
       payVoucherDueElement.setFinancialDiscountDeadlineDate(
           invoiceTerm.getFinancialDiscountDeadlineDate());
     }
@@ -67,8 +79,6 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   @Override
   public PayVoucherDueElement updateAmounts(PayVoucherDueElement payVoucherDueElement) {
     if (payVoucherDueElement != null && !payVoucherDueElement.getApplyFinancialDiscount()) {
-      payVoucherDueElement.setAmountRemainingFinDiscountDeducted(
-          payVoucherDueElement.getDueAmount().subtract(payVoucherDueElement.getPaidAmount()));
       payVoucherDueElement.setFinancialDiscountAmount(BigDecimal.ZERO);
       payVoucherDueElement.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
       payVoucherDueElement.setFinancialDiscountTotalAmount(BigDecimal.ZERO);

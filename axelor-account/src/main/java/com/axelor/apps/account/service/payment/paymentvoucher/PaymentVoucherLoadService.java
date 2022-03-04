@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -33,6 +32,7 @@ import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -60,6 +60,7 @@ public class PaymentVoucherLoadService {
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -69,7 +70,8 @@ public class PaymentVoucherLoadService {
       PaymentVoucherRepository paymentVoucherRepository,
       PayVoucherDueElementService payVoucherDueElementService,
       PayVoucherElementToPayService payVoucherElementToPayService,
-      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo,
+      InvoiceTermService invoiceTermService) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
@@ -78,6 +80,7 @@ public class PaymentVoucherLoadService {
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -163,8 +166,6 @@ public class PaymentVoucherLoadService {
       return null;
     }
 
-    Move move = invoiceTerm.getMoveLine().getMove();
-
     PayVoucherDueElement payVoucherDueElement = new PayVoucherDueElement();
 
     payVoucherDueElement.setInvoiceTerm(invoiceTerm);
@@ -173,18 +174,7 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
-    BigDecimal paidAmountInElementCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
-                move.getCompanyCurrency(),
-                move.getCurrency(),
-                invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()),
-                invoiceTerm.getMoveLine().getDate())
-            .setScale(2, RoundingMode.HALF_UP);
-
-    payVoucherDueElement.setPaidAmount(paidAmountInElementCurrency);
-
-    payVoucherDueElement.setAmountRemaining(invoiceTerm.getAmountRemaining());
+    payVoucherDueElement.setAmountRemaining(invoiceTermService.getAmountRemaining(invoiceTerm));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
@@ -361,7 +351,7 @@ public class PaymentVoucherLoadService {
 
   /**
    * @param moveLineInvoiceToPay Les lignes de factures récupérées depuis l'échéance
-   * @param payVoucherElementToPay La Ligne de saisie paiement
+   * @param amountToPay Le montant du paiement
    * @return
    */
   public List<MoveLine> assignMaxAmountToReconcile(

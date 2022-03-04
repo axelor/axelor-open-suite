@@ -11,11 +11,9 @@
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="dueAmount" aggregate="sum"/>
-    <field name="paidAmount" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
-    <field name="amountRemainingFinDiscountDeducted"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </grid>
+
   <form name="pay-voucher-due-element-form" title="Invoices to pay"
     model="com.axelor.apps.account.db.PayVoucherDueElement">
     <panel name="mainPanel">
@@ -28,11 +26,7 @@
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="dueAmount"/>
-      <field name="paidAmount"/>
       <field name="amountRemaining"/>
-      <field name="amountRemainingFinDiscountDeducted" readonly="true"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()"
-        showIf="applyFinancialDiscount &amp;&amp; amountRemainingFinDiscountDeducted != null"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount">

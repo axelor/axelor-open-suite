@@ -14,14 +14,13 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="totalAmount" aggregate="sum"/>
     <field name="remainingAmount" aggregate="sum"/>
-    <field name="remainingAmountAfterFinDiscount" readonly="true"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="remainingAmountAfterPayment" aggregate="sum"/>
     <field name="amountToPay" aggregate="sum"/>
   </grid>
 
   <form name="pay-voucher-element-to-pay-form" title="Payment voucher invoices to pay"
-    model="com.axelor.apps.account.db.PayVoucherElementToPay">
+    model="com.axelor.apps.account.db.PayVoucherElementToPay"
+    onLoad="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay">
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
@@ -32,22 +31,19 @@
       <field name="totalAmount"/>
       <field name="remainingAmount"/>
       <field name="remainingAmountAfterPayment"/>
-      <field name="remainingTotalAmountAfterFinDiscount" readonly="true"/>
-      <field name="applyFinancialDiscount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()"
-        showIf="remainingAmount > 0.00"/>
-      <field name="amountToPay"
+      <field name="amountToPay" validIf="$number(amountToPay) &lt;= $number($maxAmountToPay)"
         onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
-      <field name="remainingAmountAfterFinDiscount" readonly="true"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()"
-        showIf="applyFinancialDiscount"/>
-      <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
+        showIf="moveLineGenerated"/>
+      <field name="$maxAmountToPay" type="decimal" hidden="true"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount" readonly="true"
       showIf="applyFinancialDiscount">
+      <field name="applyFinancialDiscount"/>
       <field name="financialDiscount"/>
       <field name="financialDiscountDeadlineDate"/>
+      <field name="totalAmountWithFinancialDiscount"/>
       <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
       <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
       <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
@@ -70,4 +66,11 @@
     <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
       method="updateFinancialDiscount"/>
   </action-method>
+
+  <action-attrs name="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay">
+    <attribute name="value" for="$maxAmountToPay" expr="eval: invoiceTerm.amountRemaining"
+      if="!applyFinancialDiscount"/>
+    <attribute name="value" for="$maxAmountToPay"
+      expr="eval: invoiceTerm.amountRemainingAfterFinDiscount" if="applyFinancialDiscount"/>
+  </action-attrs>
 </object-views>

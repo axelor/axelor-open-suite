@@ -100,8 +100,6 @@ public interface InvoiceTermPaymentService {
 
   public void manageInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
-      BigDecimal amount,
-      BigDecimal financialDiscountTotalAmount,
-      BigDecimal paidAmount,
+      InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount);
 }
