@@ -172,7 +172,9 @@ public class ManufOrderWorkflowService {
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      if (manufOrder.getPlannedEndDateT() == null) {
+      if (manufOrder.getPlannedEndDateT() == null
+          || manufOrder.getPlannedEndDateT().equals(manufOrder.getPlannedStartDateT())
+          || manufOrder.getPlannedEndDateT().isBefore(manufOrder.getPlannedStartDateT())) {
         manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
       }
 
