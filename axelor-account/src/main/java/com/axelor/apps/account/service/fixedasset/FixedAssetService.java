@@ -58,13 +58,6 @@ public interface FixedAssetService {
 
   int massValidation(List<Long> fixedAssetIds) throws AxelorException;
 
-  /**
-   * Compute first depreciation date of fixedAsset
-   *
-   * @param fixedAsset
-   */
-  void computeFirstDepreciationDate(FixedAsset fixedAsset);
-
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**

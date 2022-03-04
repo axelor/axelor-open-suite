@@ -43,12 +43,14 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetDateService fixedAssetDateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
+      FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
@@ -56,6 +58,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService) {
+    this.fixedAssetDateService = fixedAssetDateService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
@@ -289,6 +292,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
+      fixedAsset.setResidualValue(BigDecimal.ZERO);
       if (invoiceLine.getQty() != null) {
         fixedAsset.setName(
             invoiceLine.getProductName()
@@ -307,6 +311,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
 
+      fixedAssetDateService.computeFirstDepreciationDate(fixedAsset);
       this.generateAndComputeLines(fixedAsset);
 
       fixedAssetList.add(fixedAssetRepo.save(fixedAsset));

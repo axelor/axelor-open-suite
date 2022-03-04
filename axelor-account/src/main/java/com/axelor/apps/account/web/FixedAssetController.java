@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
@@ -256,7 +257,7 @@ public class FixedAssetController {
 
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-      Beans.get(FixedAssetService.class).computeFirstDepreciationDate(fixedAsset);
+      Beans.get(FixedAssetDateService.class).computeFirstDepreciationDate(fixedAsset);
 
       response.setValue("firstDepreciationDate", fixedAsset.getFirstDepreciationDate());
 
