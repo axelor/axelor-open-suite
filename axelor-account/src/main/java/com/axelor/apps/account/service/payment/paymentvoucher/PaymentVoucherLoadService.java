@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
@@ -167,26 +166,13 @@ public class PaymentVoucherLoadService {
       return null;
     }
 
-    Move move = invoiceTerm.getMoveLine().getMove();
-
     PayVoucherDueElement payVoucherDueElement = new PayVoucherDueElement();
 
     payVoucherDueElement.setInvoiceTerm(invoiceTerm);
 
     payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
-    payVoucherDueElement.setDueAmount(this.getAmount(invoiceTerm));
-
-    BigDecimal paidAmountInElementCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
-                move.getCompanyCurrency(),
-                move.getCurrency(),
-                this.getAmountPaid(invoiceTerm),
-                invoiceTerm.getMoveLine().getDate())
-            .setScale(2, RoundingMode.HALF_UP);
-
-    payVoucherDueElement.setPaidAmount(paidAmountInElementCurrency);
+    payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
     payVoucherDueElement.setAmountRemaining(invoiceTermService.getAmountRemaining(invoiceTerm));
 
@@ -199,12 +185,6 @@ public class PaymentVoucherLoadService {
         payVoucherDueElement, paymentVoucher);
 
     return payVoucherDueElement;
-  }
-
-  protected BigDecimal getAmount(InvoiceTerm invoiceTerm) {
-    return invoiceTerm.getApplyFinancialDiscount()
-        ? invoiceTerm.getRemainingAmountAfterFinDiscount()
-        : invoiceTerm.getAmount();
   }
 
   protected BigDecimal getAmountPaid(InvoiceTerm invoiceTerm) {

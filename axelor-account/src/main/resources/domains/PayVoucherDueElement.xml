@@ -13,7 +13,6 @@
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move Line" readonly="true"/>
     <decimal name="dueAmount" title="Due amount" readonly="true"/>
-    <decimal name="paidAmount" title="Amount already paid" readonly="true"/>
     <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
     <many-to-one name="invoiceTerm" title="Invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
@@ -26,11 +25,7 @@
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
     <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
     <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
-    <decimal name="financialDiscountTotalAmount" title="Fin. discount total amount"/>
-    <decimal name="totalRemainingAmountWithFinancialDiscount"
-      title="Remaining total amount after Fin. discount"/>
-    <decimal name="totalAmountWithFinancialDiscount"
-      title="Total amount with financial discount"/>
+    <decimal name="financialDiscountTotalAmount" title="Fin. discount amount"/>
 
   </entity>
 

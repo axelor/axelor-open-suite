@@ -455,25 +455,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.updateInvoiceTermsPaidAmount(
-        invoicePayment.getInvoiceTermPaymentList(),
-        invoicePayment.getPaymentMode());
+        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode());
   }
 
   @Override
   public void updateInvoiceTermsPaidAmount(
       InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
-        Collections.singletonList(invoiceTermPayment),
-        invoiceTermToPay.getPaymentMode());
+        Collections.singletonList(invoiceTermPayment), invoiceTermToPay.getPaymentMode());
   }
 
   protected void updateInvoiceTermsPaidAmount(
-      List<InvoiceTermPayment> invoiceTermPaymentList,
-      PaymentMode paymentMode)
+      List<InvoiceTermPayment> invoiceTermPaymentList, PaymentMode paymentMode)
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      BigDecimal paidAmount =
+          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       invoiceTerm.setPaymentMode(paymentMode);
@@ -505,7 +503,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      BigDecimal paidAmount =
+          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       if (invoiceTerm.getAmountRemaining().signum() > 0) {

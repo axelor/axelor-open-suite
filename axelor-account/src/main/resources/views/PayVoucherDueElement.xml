@@ -11,7 +11,6 @@
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="dueAmount" aggregate="sum"/>
-    <field name="paidAmount" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
   </grid>
 
@@ -27,7 +26,6 @@
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="dueAmount"/>
-      <field name="paidAmount"/>
       <field name="amountRemaining"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
@@ -40,8 +38,6 @@
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
         <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
-        <field name="totalRemainingAmountWithFinancialDiscount"/>
-        <field name="totalAmountWithFinancialDiscount"/>
       </panel>
     </panel>
   </form>
