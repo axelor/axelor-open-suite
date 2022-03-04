@@ -436,8 +436,7 @@
   </action-record>
 
   <action-validate name="action-user-check-company">
-    <notify message="Please select active company"
-      if="__repo__(Company).all().count() != 1"/>
+    <notify message="Please select active company" if="__repo__(Company).all().count() != 1"/>
   </action-validate>
 
   <action-group name="action-user-group-employee">
