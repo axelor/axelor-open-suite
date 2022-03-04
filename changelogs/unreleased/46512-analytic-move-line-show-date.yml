@@ -1,0 +1,3 @@
+---
+title: "AnalyticMoveLine: date is not hidden anymore if we modify/create a analytic move line from a invoice line,sale order line, purchase order line"
+type: fix
