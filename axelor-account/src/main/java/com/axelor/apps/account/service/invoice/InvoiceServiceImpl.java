@@ -1295,7 +1295,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoicePayment
             .getAmount()
             .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
-            .compareTo(invoice.getAmountRemaining()) > 0) {
+            .compareTo(invoice.getAmountRemaining())
+        > 0) {
       invoicePayment.setAmount(
           calculateAmountRemainingInPayment(
               invoice, invoicePayment.getApplyFinancialDiscount(), BigDecimal.ZERO));

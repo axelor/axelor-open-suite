@@ -49,9 +49,8 @@
     <field name="sequence"/>
     <field name="name"/>
     <field name="dueDate"/>
-    <!-- TODO -->
     <field name="amount"/>
-    <field name="amountRemainingAfterFinDiscount" title="Remaining amount"/>
+    <field name="$amountRemaining" type="decimal" title="Remaining amount"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
@@ -63,6 +62,9 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="applyFinancialDiscount" hidden="true"/>
+    <field name="amountRemaining" hidden="true"/>
+    <field name="amountRemainingAfterFinDiscount" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-move-line-invoice-grid" title="Invoice terms"
