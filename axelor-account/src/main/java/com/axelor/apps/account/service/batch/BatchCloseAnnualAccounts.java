@@ -82,7 +82,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
   protected void testCloseAnnualBatchFields() throws AxelorException {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
-    if (CollectionUtils.isEmpty(accountingBatch.getAccountSet())) {
+    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
@@ -111,7 +111,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       String moveDescription = accountingBatch.getMoveDescription();
 
       List<Long> accountIdList =
-          accountingCloseAnnualService.getAllAccountOfYear(accountingBatch.getAccountSet(), year);
+          accountingCloseAnnualService.getAllAccountOfYear(
+              accountingBatch.getClosureAccountSet(), year);
 
       List<Pair<Long, Long>> accountAndPartnerPairList =
           accountingCloseAnnualService.assignPartner(accountIdList, year, allocatePerPartner);

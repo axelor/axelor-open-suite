@@ -142,6 +142,10 @@
               domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
               form-view="account-form"/>
           </panel>
+          <panel name="financialResultPanel" title="Financial result" colSpan="12">
+            <field name="profitAccount" colSpan="6"/>
+            <field name="lossAccount" colSpan="6"/>
+          </panel>
 
 
         </panel>

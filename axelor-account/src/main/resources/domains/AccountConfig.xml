@@ -298,6 +298,11 @@
     <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
       ref="com.axelor.apps.account.db.Account"/>
 
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="profitAccount"
+      title="Profit account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="lossAccount"
+      title="Loss account"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
