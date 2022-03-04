@@ -1,4 +1,4 @@
-"importId";"name";"ruleType";"query";"confidenceIndex";"sequence"
+"importId";"name";"ruleTypeSelect";"query";"confidenceIndex";"sequence"
 10;"Description contenant & Code 01 (Chèque émis)";0;"description?.contains(%s) && operationInterbankCodeLine?.code.equals('01')";;
 11;"Description contenant";0;"description?.contains(%s)";;
 12;"Description commencant par";0;"description?.startsWith(%s)";;

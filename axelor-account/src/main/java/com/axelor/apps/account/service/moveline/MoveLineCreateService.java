@@ -20,6 +20,23 @@ public interface MoveLineCreateService {
       Move move,
       Partner partner,
       Account account,
+      BigDecimal currencyAmount,
+      TaxLine taxLine,
+      BigDecimal amount,
+      BigDecimal currencyRate,
+      boolean isDebit,
+      LocalDate date,
+      LocalDate dueDate,
+      LocalDate originDate,
+      Integer counter,
+      String origin,
+      String description)
+      throws AxelorException;
+
+  MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
       BigDecimal amountInSpecificMoveCurrency,
       boolean isDebit,
       LocalDate date,

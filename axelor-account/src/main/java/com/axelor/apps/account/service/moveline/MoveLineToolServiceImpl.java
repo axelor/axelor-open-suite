@@ -5,19 +5,23 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
+  protected static final int RETURNED_SCALE = 2;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -248,7 +252,10 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     TaxLine taxLine = null;
     LocalDate date = moveLine.getDate();
     if (date == null) {
-      date = moveLine.getDueDate();
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
     }
     if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
       taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
@@ -263,17 +270,17 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       try {
         moveLine.setCurrencyRate(
             currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompany().getCurrency()));
+                move.getCurrency(), move.getCompanyCurrency()));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
-    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
+    if (!move.getCurrency().equals(move.getCompanyCurrency())) {
       BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
       moveLine.setCurrencyAmount(
-          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+          unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
     }
     return moveLine;
   }

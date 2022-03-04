@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,16 +18,23 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
@@ -51,6 +58,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -241,7 +249,7 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-      if (!moveIds.isEmpty()) {
+      if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
@@ -420,10 +428,63 @@ public class MoveController {
     }
   }
 
+  public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        if (accountConfig != null
+            && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+            && accountConfig.getManageAnalyticAccounting()) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr(
+                "moveLineList.axis" + i + "AnalyticAccount",
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getOrderSelect() == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
+              response.setAttr(
+                  "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+              analyticAxis = null;
+            }
+          }
+        } else {
+          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
+          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
     try {
       Move move =
           Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      if (move.getPaymentMode() == null
+          && (move.getJournal()
+                  .getJournalType()
+                  .getTechnicalTypeSelect()
+                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+              || move.getJournal()
+                  .getJournalType()
+                  .getTechnicalTypeSelect()
+                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
+        response.setError(I18n.get("Please select a payment mode to generate the counterpart"));
+        return;
+      }
       Beans.get(MoveCounterPartService.class).generateCounterpartMoveLine(move);
       response.setReload(true);
     } catch (Exception e) {
@@ -433,8 +494,7 @@ public class MoveController {
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
@@ -442,11 +502,23 @@ public class MoveController {
     }
   }
 
-  public void checkPreconditions(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setSimulate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move =
+          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Beans.get(MoveSimulateService.class).simulate(move);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveValidateService.class).checkPreconditions(move);
+      if (move.getOrigin() == null && move.getDescription() == null) {
+        response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

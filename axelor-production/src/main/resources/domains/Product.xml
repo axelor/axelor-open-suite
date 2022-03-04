@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
- 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
   <module name="base" package="com.axelor.apps.base.db"/>
- 
+
   <entity name="Product" lang="java">
-  
-	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="10"/>
-	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
-  	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
-    <integer name="realOrEstimatedPriceSelect" title="MO's valuation method" selection="production.product.price.method.select" default="1"/>
-    <integer name="manufOrderCompValuMethodSelect" title="Components valuation method for manuf. order" selection="production.product.components.valuation.select" default="1"/>
-    <integer name="bomCompValuMethodSelect" title="Components valuation method for BOM" selection="production.product.components.valuation.select" default="2"/>
-    
+
+    <decimal name="lastProductionPrice" title="Last production price" precision="20"
+      scale="10"/>
+    <many-to-one name="defaultBillOfMaterial"
+      ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
+    <many-to-one name="costSheetGroup"
+      ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+    <integer name="realOrEstimatedPriceSelect" title="MO's valuation method"
+      selection="production.product.price.method.select" default="1"/>
+    <integer name="manufOrderCompValuMethodSelect"
+      title="Components valuation method for manuf. order"
+      selection="production.product.components.valuation.select" default="1"/>
+    <integer name="bomCompValuMethodSelect" title="Components valuation method for BOM"
+      selection="production.product.components.valuation.select" default="2"/>
+
     <string name="productStandard" title="Production.productStandard"/>
-    <many-to-one name="productApproval" ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
-		<extra-code>
+    <many-to-one name="productApproval"
+      ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
+    <extra-code>
 	   		<![CDATA[
 				// PRICE METHOD SELECT
 				public static final int PRICE_METHOD_FORECAST = 1;
 				public static final int PRICE_METHOD_REAL = 2;
-				
+
 				// COMPONENTS VALUATION METHOD SELECt
-				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE = 1; 
+				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE = 1;
 				public static final int COMPONENTS_VALUATION_METHOD_COST = 2;
 	   		]]>
-	   	</extra-code>
+    </extra-code>
 
   </entity>
 

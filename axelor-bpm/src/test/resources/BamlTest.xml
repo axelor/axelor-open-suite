@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<process-actions xmlns="http://www.example.org/baml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.example.org/baml xsd/baml.xsd">
+
+  <process-action id="newInvoice" name="Create new invoice" sourceModel="SaleOrder"
+    targetModel="Invoice">
+
+    <new-record target="invoice" expression="Invoice" id="new1"/>
+    <assignation id="assign1">
+      <assign target="invoice.partner" expression="saleOrder.clientPartner"/>
+      <assign target="invoice.operationTypeSelect" expression="3"/>
+      <assign target="invoice.operationSubTypeSelect" expression="1"/>
+      <assign target="invoice.company" expression="saleOrder.company"/>
+      <assign target="invoice.currency" expression="saleOrder.currency"/>
+    </assignation>
+    <loop target="saleOrderLine" expression="saleOrder.saleOrderLineList" id="loop1">
+      <new-record target="invoiceLine" expression="InvoiceLine" id="new2"/>
+      <assignation id="assign2">
+        <assign target="invoiceLine.product" expression="saleOrderLine.product"
+          if="saleOrderLine.product != null"/>
+        <assign target="invoiceLine.productName" expression="saleOrderLine.productName"/>
+        <assign target="invoiceLine.price" expression="saleOrderLine.price"/>
+        <assign target="invoiceLine.exTaxTotal" expression="saleOrderLine.exTaxTotal"/>
+        <assign target="invoice.invoiceLineList" expression="invoiceLine" add="true"/>
+      </assignation>
+    </loop>
+    <query returnType="MULTIPLE" model="Product" isJson="false" target="products"
+      expression="self.productCategory.name = 'Serveur'" id="query1"></query>
+    <loop target="product" expression="products" id="loop2">
+      <new-record target="invoiceLine" expression="InvoiceLine" id="new3"/>
+      <assignation id="assign3">
+        <assign target="invoiceLine.name" expression="product.name"/>
+        <assign target="invoiceLine.product" expression="product"/>
+        <assign target="invoiceLine.price" expression="product.salePrice"/>
+        <assign target="invoice.invoiceLineList" expression="invoiceLine" add="true"/>
+      </assignation>
+    </loop>
+  </process-action>
+
+</process-actions>

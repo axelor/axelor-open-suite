@@ -6,10 +6,11 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrderLine" lang="java">
-  
-  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
-  	
-  	
+
+    <many-to-one name="billOfMaterial"
+      ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
+
+
   </entity>
 
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.exception.service;
 
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -110,7 +111,7 @@ public class TraceBackService {
    * @param response
    * @param e L'exception cible.
    */
-  private static void _response(
+  protected static void _response(
       ActionResponse response, Throwable e, ResponseMessageType responseMessageType) {
 
     String message = e.getMessage() != null ? e.getMessage() : e.toString();
@@ -272,7 +273,18 @@ public class TraceBackService {
    * @return the tracebacks count
    */
   public long countMessageTraceBack(Model model) {
-    return createTraceBackQuery(model).count();
+    return createTraceBackQuery(model, "com.axelor.apps.message.exception.AxelorMessageException")
+        .count();
+  }
+
+  /**
+   * Find the traceback of the AxelorAlertException caused by the linked model.
+   *
+   * @param model any model with an id
+   * @return empty if no tracebacks were found, else the found traceback
+   */
+  public Optional<TraceBack> findLastAlertTraceBack(Model model) {
+    return getLastTraceBack(model, "com.axelor.exception.AxelorAlertException");
   }
 
   /**
@@ -282,16 +294,22 @@ public class TraceBackService {
    * @return empty if no tracebacks were found, else the found traceback
    */
   public Optional<TraceBack> findLastMessageTraceBack(Model model) {
-    return Optional.ofNullable(createTraceBackQuery(model).order("-date").fetchOne());
+    return getLastTraceBack(model, "com.axelor.apps.message.exception.AxelorMessageException");
   }
 
-  protected Query<TraceBack> createTraceBackQuery(Model model) {
+  protected Optional<TraceBack> getLastTraceBack(Model model, String className) {
+    return Optional.ofNullable(createTraceBackQuery(model, className).order("-date").fetchOne());
+  }
+
+  protected Query<TraceBack> createTraceBackQuery(Model model, String className) {
     return Beans.get(TraceBackRepository.class)
         .all()
         .filter(
             "self.ref = :modelClass AND self.refId = :modelId "
-                + "AND self.exception LIKE 'com.axelor.apps.message.exception.AxelorMessageException%'")
-        .bind("modelClass", model.getClass().getCanonicalName())
+                + "AND self.exception LIKE '"
+                + className
+                + "%'")
+        .bind("modelClass", EntityHelper.getEntityClass(model).getCanonicalName())
         .bind("modelId", model.getId());
   }
 }

@@ -6,8 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="EventsPlanning" cacheable="true">
-  	  <string name="name" required="true" namecolumn="true"/>
-      <one-to-many name="eventsPlanningLineList" title="Public holidays list" ref="com.axelor.apps.base.db.EventsPlanningLine" mappedBy="eventsPlanning"/>
+    <string name="name" required="true" namecolumn="true"/>
+    <one-to-many name="eventsPlanningLineList" title="Public holidays list"
+      ref="com.axelor.apps.base.db.EventsPlanningLine" mappedBy="eventsPlanning"/>
   </entity>
-  
+
 </domain-models>

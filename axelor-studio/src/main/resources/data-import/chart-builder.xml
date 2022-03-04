@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+
+  <input file="chart-builder.xml" root="chart-builders">
+
+    <bind node="chart-builder" type="com.axelor.studio.db.ChartBuilder"
+      search="self.name = :_chartName"
+      call="com.axelor.studio.service.ImportService:importChartBuilder" update="true">
+      <bind node="name" to="name" alias="_chartName"/>
+      <bind node="title" to="title"/>
+      <bind node="chartType" to="chartType"/>
+      <bind node="isJson" to="isJson"/>
+      <bind node="model" to="model" alias="_model"/>
+      <bind node="isJsonGroupOn" to="isJsonGroupOn"/>
+      <bind node="groupOn" to="groupOn"
+        search="self.name = :groupOn and self.metaModel.fullName = :_model"/>
+      <bind node="groupOnJson" to="groupOnJson"
+        search="self.name = :groupOnJson and (self.jsonModel.name = :_model OR self.model = :_model)"/>
+      <bind node="groupDateType" to="groupDateType"/>
+      <bind node="groupOnTarget" to="groupOnTarget"/>
+      <bind node="groupOnTargetType" to="groupOnTargetType"/>
+      <bind node="isJsonAggregateOn" to="isJsonAggregateOn"/>
+      <bind node="isJsonDisplayField" to="isJsonDisplayField"/>
+      <bind node="aggregateOnJson" to="aggregateOnJson"
+        search="self.name = :aggregateOnJson and (self.jsonModel.name = :_model OR self.model = :_model)"
+        create="false"/>
+      <bind node="aggregateOn" to="aggregateOn"
+        search="self.name = :aggregateOn and self.metaModel.fullName = :_model" create="false"/>
+      <bind node="aggregateOnTarget" to="aggregateOnTarget"/>
+      <bind node="aggregateDateType" to="aggregateDateType"/>
+      <bind node="aggregateOnTargetType" to="aggregateOnTargetType"/>
+      <bind node="displayField" to="displayField"
+        search="self.name = :displayField and self.metaModel.fullName = :_model" create="false"/>
+      <bind node="displayFieldJson" to="displayFieldJson"
+        search="self.name = :displayFieldJson and (self.jsonModel.name = :_model OR self.model = :_model)"
+        create="false"/>
+      <bind node="displayType" to="displayType"/>
+      <bind node="filters/filter" to="filterList"
+        search="self.chartBuilder.name = :_chartName and (self.metaField is not null and self.metaField.
+name = :metaField OR self.metaJsonField is not null and self.metaJsonField.name = :metaJsonField)">
+
+        <bind node="metaField" to="metaField"
+          search="self.name = :metaField and self.metaModel.fullName = :_model" create="false"/>
+        <bind node="metaJsonField" to="metaJsonField"
+          search="self.name = :metaJsonField and self.jsonModel.name = :_model" create="false"/>
+        <bind node="operator" to="operator"/>
+        <bind node="targetField" to="targetField"/>
+        <bind node="targetType" to="targetType"/>
+        <bind node="value" to="value"/>
+        <bind node="defaultValue" to="defaultValue"/>
+        <bind node="isParameter" to="isParameter"/>
+        <bind node="isJson" to="isJson"/>
+        <bind node="isTargetJson" to="isTargetJson"/>
+        <bind node="logicOp" to="logicOp"/>
+      </bind>
+      <bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+    </bind>
+
+  </input>
+
+</xml-inputs>

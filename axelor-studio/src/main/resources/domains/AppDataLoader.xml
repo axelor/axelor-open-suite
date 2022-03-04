@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppDataLoader" cacheable="true">
+    <many-to-one name="appLoader" ref="AppLoader"/>
+    <boolean name="isJson" title="Custom"/>
+    <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
+    <many-to-one name="jsonModel" title="Model" ref="com.axelor.meta.db.MetaJsonModel"/>
+    <many-to-many name="metaFieldSet" title="Fields" ref="com.axelor.meta.db.MetaField"/>
+    <many-to-many name="searchMetaFieldSet" title="Search Fields"
+      ref="com.axelor.meta.db.MetaField"/>
+    <many-to-many name="jsonFieldSet" title="Fields"
+      ref="com.axelor.meta.db.MetaJsonField"/>
+    <many-to-many name="searchJsonFieldSet" title="Search Fields"
+      ref="com.axelor.meta.db.MetaJsonField"/>
+    <string name="filterQuery" title="Filter Query" large="true"/>
+    <integer name="sequence"/>
+    <string name="modelName" title="Model"/>
+  </entity>
+
+</domain-models>

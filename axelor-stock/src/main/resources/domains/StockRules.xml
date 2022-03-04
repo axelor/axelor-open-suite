@@ -6,32 +6,40 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockRules" lang="java">
-  
-  	<string name="name" title="Name"/>
-	
-	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" massUpdate="true" required="true"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" massUpdate="true" required="true"/>
-  	<decimal name="minQty" title="Min. Qty" precision="20" scale="10" massUpdate="true" required="true"/>
-  	<decimal name="idealQty" title="Ideal Qty" precision="20" scale="10" required="false" />
-  	<decimal name="maxQty" title="Max. Qty" precision="20" scale="10" required="false"/>
-  	<decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10" required="true"/>
-  	<boolean name="useIdealQty" title="Define ideal Qty" default="false"/>
-  	<boolean name="useMaxQty" title="Define max Qty" default="false"/>
-	<integer name="useCaseSelect" title="Use Case" selection="stock.stock.rules.use.case.select" required="true"/>
-  	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" nullable="true" />
-  	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" massUpdate="true" required="true"/>
-  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User to alert"/>
-  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team to alert"/>
-	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
-		<boolean name="alert" title="Alert" default="false"/>
-	<string name="comments" title="Comments" large="true"/>
+
+    <string name="name" title="Name"/>
+
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location" massUpdate="true" required="true"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      massUpdate="true" required="true"/>
+    <decimal name="minQty" title="Min. Qty" precision="20" scale="10" massUpdate="true"
+      required="true"/>
+    <decimal name="idealQty" title="Ideal Qty" precision="20" scale="10" required="false"/>
+    <decimal name="maxQty" title="Max. Qty" precision="20" scale="10" required="false"/>
+    <decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10" required="true"/>
+    <boolean name="useIdealQty" title="Define ideal Qty" default="false"/>
+    <boolean name="useMaxQty" title="Define max Qty" default="false"/>
+    <integer name="useCaseSelect" title="Use Case"
+      selection="stock.stock.rules.use.case.select" required="true"/>
+    <integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select"
+      nullable="true"/>
+    <integer name="orderAlertSelect" title="Refill type"
+      selection="stock.stock.rules.order.alert.select" massUpdate="true" required="true"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
+      title="User to alert"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team to alert"/>
+    <many-to-one name="stockRuleMessageTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+    <boolean name="alert" title="Alert" default="false"/>
+    <string name="comments" title="Comments" large="true"/>
 
 
-  	 <extra-code><![CDATA[
+    <extra-code><![CDATA[
 	   	// USE CASE SELECT
 	   	public static final int USE_CASE_USED_FOR_MRP = 1;
 	   	public static final int USE_CASE_STOCK_CONTROL = 2;
-	
+
 	   	// TYPE SELECT
 		public static final int TYPE_CURRENT = 1;
 		public static final int TYPE_FUTURE = 2;
@@ -40,25 +48,25 @@
 		public static final int ORDER_ALERT_ALERT = 1;
 		public static final int ORDER_ALERT_PURCHASE_ORDER = 2;
 		public static final int ORDER_ALERT_PRODUCTION_ORDER = 3;
-	
+
 	]]></extra-code>
-	
-	<track>
-		<field name="stockLocation"/>
-		<field name="product"/>
-		<field name="useCaseSelect"/>
-		<field name="typeSelect" if="useCaseSelect == 2"/>
-		<field name="orderAlertSelect"/>
-		<field name="minQty"/>
-		<field name="useIdealQty"/>
-		<field name="idealQty" if="useIdealQty"/>
-		<field name="useMaxQty"/>
-		<field name="maxQty" if="useMaxQty"/>
-		<field name="reOrderQty"/>
-		<field name="user" if="orderAlertSelect == 1"/>
-		<field name="team" if="orderAlertSelect == 1"/>
-		<message if="true" on="CREATE">Stock rules created</message>
-	</track>
-	
+
+    <track>
+      <field name="stockLocation"/>
+      <field name="product"/>
+      <field name="useCaseSelect"/>
+      <field name="typeSelect" if="useCaseSelect == 2"/>
+      <field name="orderAlertSelect"/>
+      <field name="minQty"/>
+      <field name="useIdealQty"/>
+      <field name="idealQty" if="useIdealQty"/>
+      <field name="useMaxQty"/>
+      <field name="maxQty" if="useMaxQty"/>
+      <field name="reOrderQty"/>
+      <field name="user" if="orderAlertSelect == 1"/>
+      <field name="team" if="orderAlertSelect == 1"/>
+      <message if="true" on="CREATE">Stock rules created</message>
+    </track>
+
   </entity>
 </domain-models>

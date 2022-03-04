@@ -1,13 +1,16 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -17,20 +20,32 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
+  protected MoveLineCreateService moveLineCreateService;
+  protected AccountingSituationService accountingSituationService;
+  protected AccountConfigService accountConfigService;
+  protected AccountManagementService accountManagementService;
   protected PaymentModeService paymentModeService;
 
   @Inject
   public MoveCounterPartServiceImpl(
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
+      MoveLineCreateService moveLineCreateService,
+      AccountingSituationService accountingSituationService,
+      AccountConfigService accountConfigService,
+      AccountManagementService accountManagementService,
       PaymentModeService paymentModeService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
+    this.moveLineCreateService = moveLineCreateService;
+    this.accountingSituationService = accountingSituationService;
+    this.accountConfigService = accountConfigService;
+    this.accountManagementService = accountManagementService;
     this.paymentModeService = paymentModeService;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
@@ -38,28 +53,28 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   @Override
   public MoveLine createCounterpartMoveLine(Move move) throws AxelorException {
-    MoveLine moveLine = new MoveLine();
-    moveLine.setMove(moveRepository.find(move.getId()));
-    moveLine.setDate(move.getDate());
-    moveLine.setOrigin(move.getOrigin());
-    moveLine.setOriginDate(move.getOriginDate());
-    moveLine.setDescription(move.getDescription());
-    moveLine.setPartner(move.getPartner());
-    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
-
     Account accountingAccount = getAccountingAccountFromJournal(move);
-
-    if (accountingAccount != null) moveLine.setAccount(accountingAccount);
-
+    boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
-    if (amount.compareTo(BigDecimal.ZERO) == -1) {
-      moveLine.setCredit(amount.abs());
-    } else {
-      moveLine.setDebit(amount.abs());
-    }
-
+    isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
+    MoveLine moveLine =
+        moveLineCreateService.createMoveLine(
+            move,
+            move.getPartner(),
+            accountingAccount,
+            BigDecimal.ZERO,
+            amount.abs(),
+            BigDecimal.ZERO,
+            isDebit,
+            move.getDate(),
+            move.getDate(),
+            move.getOriginDate(),
+            move.getMoveLineList().size() + 1,
+            move.getOrigin(),
+            move.getDescription());
+    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
-
+    moveLine.setDescription(move.getDescription());
     return moveLine;
   }
 
@@ -74,50 +89,17 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
     Account accountingAccount = null;
-    if (move.getJournal()
-            .getJournalType()
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
-        || move.getJournal()
-            .getJournalType()
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-
-      for (AccountingSituation accountingSituation :
-          move.getPartner().getAccountingSituationList()) {
-        if (accountingSituation.getCompany().equals(move.getCompany())) {
-          if (move.getJournal()
-              .getJournalType()
-              .getTechnicalTypeSelect()
-              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)) {
-            accountingAccount = accountingSituation.getSupplierAccount();
-          } else if (move.getJournal()
-              .getJournalType()
-              .getTechnicalTypeSelect()
-              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-            accountingAccount = accountingSituation.getCustomerAccount();
-          }
-        }
-      }
-    } else if (move.getJournal()
-            .getJournalType()
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+    int technicalTypeSelect = move.getJournal().getJournalType().getTechnicalTypeSelect();
+    if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      accountingAccount =
+          accountingSituationService.getSupplierAccount(move.getPartner(), move.getCompany());
+    } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      accountingAccount =
+          accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
+    } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
         && move.getPaymentMode() != null) {
       accountingAccount =
           paymentModeService.getPaymentModeAccount(move.getPaymentMode(), move.getCompany());
-    }
-    if (accountingAccount == null) {
-      if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
-        accountingAccount = move.getCompany().getAccountConfig().getSupplierAccount();
-      else if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
-        accountingAccount = move.getCompany().getAccountConfig().getCustomerAccount();
     }
     return accountingAccount;
   }

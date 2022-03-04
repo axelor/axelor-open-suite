@@ -6,8 +6,8 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="FixedAssetType" lang="java" cacheable="true">
-  	<string name="name" title="Name" required="true"/>
-  	<string name="code" title="Code" />
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code"/>
   </entity>
- 
+
 </domain-models>

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="WkfModel" cacheable="true">
+
+    <string name="code" title="Code" unique="true" required="true"/>
+    <string name="name" title="Name"/>
+    <many-to-many name="dmnFileSet" ref="com.axelor.meta.db.MetaFile"
+      title="DMN Diagrams"/>
+    <string name="diagramXml" title="Diagram xml" large="true"/>
+    <one-to-many name="wkfTaskConfigList" ref="WkfTaskConfig" title="Task configs"
+      mappedBy="wkfModel"/>
+    <one-to-many name="wkfProcessList" title="Process list" ref="WkfProcess"
+      mappedBy="wkfModel"/>
+    <string name="deploymentId" title="Deployment id"/>
+    <string name="description" title="Description" large="true"/>
+    <integer name="statusSelect" title="Status" default="1"
+      selection="bpm.model.status.select"/>
+    <string name="versionTag" title="Version tag"/>
+    <many-to-one name="previousVersion" title="Previous version" ref="WkfModel"/>
+    <string name="oldNodes" large="true"/>
+    <boolean name="isActive" default="true"/>
+    <boolean name="generatedFromCallActivity" title="Generated from call activity"/>
+    <string name="wkfStatusColor" title="Wkf status color" selection="color.name.selection"/>
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
+      title="App builder"/>
+
+    <many-to-many name="adminUserSet" title="Users" ref="com.axelor.auth.db.User"/>
+    <many-to-many name="adminRoleSet" title="Roles" ref="com.axelor.auth.db.Role"/>
+
+    <many-to-many name="managerUserSet" title="Users" ref="com.axelor.auth.db.User"/>
+    <many-to-many name="managerRoleSet" title="Roles" ref="com.axelor.auth.db.Role"/>
+
+    <many-to-many name="userSet" title="Users" ref="com.axelor.auth.db.User"/>
+    <many-to-many name="roleSet" title="Roles" ref="com.axelor.auth.db.Role"/>
+
+    <extra-code><![CDATA[
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_ON_GOING = 2;
+		public static final int STATUS_TERMINATED = 3;
+        ]]></extra-code>
+
+  </entity>
+
+</domain-models>
