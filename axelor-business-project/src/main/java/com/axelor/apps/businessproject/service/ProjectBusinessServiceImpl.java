@@ -31,6 +31,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskSectionRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
@@ -65,10 +66,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectStatusRepository projectStatusRepository,
       ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
+      ProjectTaskSectionRepository projectTaskSectionRepository,
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService) {
-    super(projectRepository, projectStatusRepository, appProjectService);
+    super(
+        projectRepository,
+        projectStatusRepository,
+        appProjectService,
+        projectTaskSectionRepository);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;

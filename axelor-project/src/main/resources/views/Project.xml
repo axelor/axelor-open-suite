@@ -70,7 +70,7 @@
           action="save,action-project-view-per-status-calendar"
           showIf="id &amp;&amp; isShowCalendarPerStatus"/>
         <item name="perSectionKanban" title="Per section kanban"
-          action="save,action-project-view-per-section-kanban"
+          action="save,action-project-method-view-per-section-kanban"
           showIf="id &amp;&amp; isShowKanbanPerSection"/>
         <item name="perSectionCalendar" title="Per section calendar"
           action="save,action-project-view-per-section-calendar"
@@ -486,21 +486,24 @@
             onChange="action-project-record-category-reset-values"/>
           <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"
             showIf="isShowTaskCategory"/>
+          <field name="isShowSection" colSpan="4" widget="inline-checkbox"
+            onChange="action-project-record-section-reset-values"/>
+          <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
+          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
+            showIf="isShowSection"/>
+          <field name="projectTaskSectionSet" colSpan="12" widget="TagSelect"
+            showIf="isShowSection"/>
           <field name="isShowProgress" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-is-show-timespent-reset-values"/>
-          <field name="isShowSection" colSpan="4" widget="inline-checkbox"
-            onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
             showIf="isShowStatus"/>
-          <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
-            showIf="isShowSection"/>
           <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
-          <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
         </panel>
       </panel>
@@ -1033,6 +1036,10 @@
     <call class="com.axelor.apps.project.web.ProjectController" method="checkIfResourceBooked"/>
   </action-method>
 
+  <action-method name="action-project-method-view-per-section-kanban">
+    <call class="com.axelor.apps.project.web.ProjectController" method="perSectionKanban"/>
+  </action-method>
+
   <action-record name="action-project-record-status-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowKanbanPerStatus,isShowCalendarPerStatus, isShowCalendarPerSection"
@@ -1053,6 +1060,8 @@
   <action-record name="action-project-record-section-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowKanbanPerSection" expr="eval: false" if="!isShowSection"/>
+    <field name="isShowCalendarPerSection" expr="eval: false" if="!isShowSection"/>
+    <field name="projectTaskSectionSet" expr="eval: null" if="!isShowSection"/>
   </action-record>
 
   <action-record name="action-project-record-is-show-timespent-reset-values"

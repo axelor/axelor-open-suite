@@ -18,6 +18,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
@@ -25,6 +26,8 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -120,5 +123,23 @@ public class ProjectController {
         response.setError(I18n.get(IExceptionMessage.RESOURCE_ALREADY_BOOKED_ERROR_MSG));
       }
     }
+  }
+
+  public void perSectionKanban(ActionRequest request, ActionResponse response) {
+    Project project =
+        Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
+
+    String excludedIds = Beans.get(ProjectService.class).getSectionColumnsTobeExcluded(project);
+
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get("Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("kanban", "task-per-section-kanban")
+            .add("form", "project-task-form")
+            .domain("self.project = :_project")
+            .context("_project", project)
+            .param("kanban-hide-columns", excludedIds);
+
+    response.setView(builder.map());
   }
 }
