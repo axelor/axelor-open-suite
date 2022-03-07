@@ -93,6 +93,8 @@ import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.apps.base.service.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
+import com.axelor.apps.base.service.ProductCategoryDomainCreatorServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -236,5 +238,7 @@ public class BaseModule extends AxelorModule {
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
+    bind(ProductCategoryDomainCreatorService.class)
+        .to(ProductCategoryDomainCreatorServiceImpl.class);
   }
 }

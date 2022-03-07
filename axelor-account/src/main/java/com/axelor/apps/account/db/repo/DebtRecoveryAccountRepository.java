@@ -34,7 +34,7 @@ public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
       return super.save(debtRecovery);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }
