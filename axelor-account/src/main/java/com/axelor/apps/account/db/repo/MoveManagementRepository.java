@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
@@ -51,9 +52,10 @@ public class MoveManagementRepository extends MoveRepository {
           Beans.get(PeriodService.class)
               .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
     } catch (AxelorException e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     copy.setStatusSelect(STATUS_NEW);
+    copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     copy.setReference(null);
     copy.setExportNumber(null);
     copy.setExportDate(null);
@@ -80,6 +82,12 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
     moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+    moveLine.setReconcileGroup(null);
+    moveLine.setDebitReconcileList(null);
+    moveLine.setCreditReconcileList(null);
+    moveLine.setAmountPaid(BigDecimal.ZERO);
+    moveLine.setTaxPaymentMoveLineList(null);
+    moveLine.setTaxAmount(BigDecimal.ZERO);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
@@ -111,7 +119,7 @@ public class MoveManagementRepository extends MoveRepository {
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -125,7 +133,7 @@ public class MoveManagementRepository extends MoveRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);

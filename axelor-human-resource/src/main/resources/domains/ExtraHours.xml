@@ -6,23 +6,28 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="ExtraHours" cacheable="true">
-      
-      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
-      <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
-      <date name="sentDate" title="Sent Date" readonly="true"/>
-	  
-	  <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by" readonly="true"/>
-      <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By" readonly="true"/>
-      <date name="validationDate" title="Validation Date" readonly="true"/>
-      <date name="refusalDate" title="Refusal Date" readonly="true"  />
-      <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
-      
-      <decimal name="totalQty" title="Total (h)" readonly="true"/>
-      
-      <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra Hours" mappedBy="extraHours"/>
-      
-      <string name="fullName" namecolumn="true" readonly="true">
+
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
+      column="user_id"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
+    <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select"
+      default="1" readonly="true"/>
+    <date name="sentDate" title="Sent Date" readonly="true"/>
+
+    <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
+      readonly="true"/>
+    <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
+      readonly="true"/>
+    <date name="validationDate" title="Validation Date" readonly="true"/>
+    <date name="refusalDate" title="Refusal Date" readonly="true"/>
+    <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
+
+    <decimal name="totalQty" title="Total (h)" readonly="true"/>
+
+    <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine"
+      title="Extra Hours" mappedBy="extraHours"/>
+
+    <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
    	  String fullName = "";
       if(this.getUser() != null)  {
@@ -33,9 +38,9 @@
       }
       return fullName;
 	  ]]>
-      </string>
-      
-      <extra-code>
+    </string>
+
+    <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_DRAFT = 1;
 	  		public static final Integer STATUS_CONFIRMED = 2;
@@ -43,8 +48,8 @@
 	  		public static final Integer STATUS_REFUSED = 4;
 	  		public static final Integer STATUS_CANCELED = 5;
 	  ]]>
-      </extra-code>
-      
+    </extra-code>
+
   </entity>
-  
+
 </domain-models>

@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-    <grid name="product-variant-attr-grid" title="Product variant attributes" model="com.axelor.apps.base.db.ProductVariantAttr">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="productVariantValueList" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-    </grid>
-    
-    <form name="product-variant-attr-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttr" width="large">
-    	<panel name="mainPanel" >
-        	<field name="name" />
-        	<field name="code" x-bind="{{code|unaccent|uppercase}}"  />
-        </panel>
-        <panel-related name="productVariantValueListPanel" field="productVariantValueList" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-    </form>   
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="product-variant-attr-grid" title="Product variant attributes"
+    model="com.axelor.apps.base.db.ProductVariantAttr">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="productVariantValueList" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+  </grid>
+
+  <form name="product-variant-attr-form" title="Product variant attribute"
+    model="com.axelor.apps.base.db.ProductVariantAttr" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </panel>
+    <panel-related name="productVariantValueListPanel" field="productVariantValueList"
+      colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+  </form>
 
 </object-views>

@@ -7,11 +7,11 @@
 
   <entity name="Sequence" lang="java">
 
-        <extra-code><![CDATA[
-        
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
 		public static final String JOB_POSITION = "jobPosition";
-        
+
         ]]></extra-code>
   </entity>
 

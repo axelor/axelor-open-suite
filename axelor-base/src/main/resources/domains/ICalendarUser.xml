@@ -2,25 +2,25 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db"/>
-	
-	 <entity name="ICalendarUser" table="ICAL_USER" sequential="true">
-	   <string name="name" title="Name" initParam="false" namecolumn="true"/>
-	   <string name="email" title="Email" required="true" initParam="true" />
-	   <integer name="statusSelect" selection="i.calendar.user.status.select"/>
-	   <many-to-one name="event" ref="com.axelor.apps.base.db.ICalendarEvent"/>
-	   <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"/>
-	   
-	   <finder-method name="findByEmail" using="email" />
-	   
-	   <extra-code>
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ICalendarUser" table="ICAL_USER" sequential="true">
+    <string name="name" title="Name" initParam="false" namecolumn="true"/>
+    <string name="email" title="Email" required="true" initParam="true"/>
+    <integer name="statusSelect" selection="i.calendar.user.status.select"/>
+    <many-to-one name="event" ref="com.axelor.apps.base.db.ICalendarEvent"/>
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"/>
+
+    <finder-method name="findByEmail" using="email"/>
+
+    <extra-code>
       	<![CDATA[
 	  		public static final Integer STATUS_YES = 1;
 	  		public static final Integer STATUS_NO = 2;
 	  		public static final Integer STATUS_MAYBE = 3;
 	  ]]>
-      </extra-code>
-	 </entity>
-  
+    </extra-code>
+  </entity>
+
 </domain-models>

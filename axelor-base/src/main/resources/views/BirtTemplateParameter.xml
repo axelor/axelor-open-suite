@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="birt-template-parameter-grid" title="Birt Template parameters" model="com.axelor.apps.base.db.BirtTemplateParameter">
-        <field name="name"/>
-        <field name="value"/>
-    </grid>
-    
-    <form name="birt-template-parameter-form" title="Birt Template parameter" model="com.axelor.apps.base.db.BirtTemplateParameter"  >
-    	<panel name="mainPanel">
-	        <field name="name"/>
-	        <field name="value"/>
-	        <field name="type"/>
-        </panel>
-    </form>
-    
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="birt-template-parameter-grid" title="Birt Template parameters"
+    model="com.axelor.apps.base.db.BirtTemplateParameter">
+    <field name="name"/>
+    <field name="value"/>
+  </grid>
+
+  <form name="birt-template-parameter-form" title="Birt Template parameter"
+    model="com.axelor.apps.base.db.BirtTemplateParameter">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="value"/>
+      <field name="type"/>
+    </panel>
+  </form>
+
+
 </object-views>

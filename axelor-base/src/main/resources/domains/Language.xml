@@ -9,7 +9,7 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
-    
+
   </entity>
 
 </domain-models>

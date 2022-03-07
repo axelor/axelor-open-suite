@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <grid name="fiscal-position-grid" title="Fiscal positions" model="com.axelor.apps.account.db.FiscalPosition">
-        <field name="name"/>
-        <field name="code"/>
-    </grid>
+  <grid name="fiscal-position-grid" title="Fiscal positions"
+    model="com.axelor.apps.account.db.FiscalPosition">
+    <field name="name"/>
+    <field name="code"/>
+  </grid>
 
-    <form name="fiscal-position-form" title="Fiscal position" model="com.axelor.apps.account.db.FiscalPosition"  width="large">
-        <panel name="mainPanel" >
-	        <field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="customerSpecificNote" colSpan="4" if-module="axelor-account" />
-            <field name="customerSpecificNoteText" colSpan="12" showIf="customerSpecificNote" showTitle="false" if-module="axelor-account"/>
-	        <panel-related name="accountEquivListPanel" field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12" if-module="axelor-account" />
-	        <panel-related name="taxEquivListPanel" field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12" />
-        </panel>
-    </form>
+  <form name="fiscal-position-form" title="Fiscal position"
+    model="com.axelor.apps.account.db.FiscalPosition" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="customerSpecificNote" colSpan="4" if-module="axelor-account"/>
+      <field name="customerSpecificNoteText" colSpan="12" showIf="customerSpecificNote"
+        showTitle="false" if-module="axelor-account"/>
+      <panel-related name="accountEquivListPanel" field="accountEquivList"
+        form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12"
+        if-module="axelor-account"/>
+      <panel-related name="taxEquivListPanel" field="taxEquivList"
+        form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12"/>
+    </panel>
+  </form>
 
 </object-views>

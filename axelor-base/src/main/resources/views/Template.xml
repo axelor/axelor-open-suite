@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="template-grid" id="template-grid-base" title="Templates" model="com.axelor.apps.message.db.Template">
-        <field name="name"/>
-        <field name="subject"/>
-        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
-		<field name="mediaTypeSelect"/>
-    </grid>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<form id="template-form-base" name="template-form" title="Template"
-		model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
-		onNew="action-template-record-new">
-		<panel name="mainPanel" colSpan="12">
-			<field name="name" showTitle="false" colSpan="12">
-				<viewer depends="name"><![CDATA[
+  <grid name="template-grid" id="template-grid-base" title="Templates"
+    model="com.axelor.apps.message.db.Template">
+    <field name="name"/>
+    <field name="subject"/>
+    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+    <field name="mediaTypeSelect"/>
+  </grid>
+
+  <form id="template-form-base" name="template-form" title="Template"
+    model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
+    onNew="action-template-record-new">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" showTitle="false" colSpan="12">
+        <viewer depends="name"><![CDATA[
 					<h3>
 						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
 					</h3>
 				]]></viewer>
-				<editor>
-					<field name="name" showTitle="true" />
-				</editor>
-			</field>
-			<field name="mediaTypeSelect" />
-			<field name="language" canEdit="false" form-view="language-form" grid-view="language-grid" />
-			<field name="templateEngineSelect"/>
-			<field name="isJson" onChange="action-template-record-is-json-change"/>
-			<panel itemSpan="12">
-				<field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form" grid-view="meta-model-grid" />
-				<field name="metaJsonModel" showIf="isJson" canEdit="false" form-view="json-model-form" grid-view="json-model-grid" />			
-			</panel>
-			<field name="target" hidden="true" />
-			<field name="templateContext" canEdit="false" form-view="template-context-form" grid-view="template-context-grid" hidden="true" />
-		</panel>
-		<panel-tabs name="mainPanelTab">
-			<panel name="contentPanel" title="Contenu">
-				<panel name="recipientAddressPanel" title="Recipient address"
-					showIf="mediaTypeSelect == 1">
-					<field name="addressBlock" showTitle="false" colSpan="12"
-						height="5" widget="html" x-lite="false" />
-				</panel>
-				<panel name="senderPanel" title="Sender" colSpan="12"
-					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
-					<field name="replyToRecipients" height="2" />
-				</panel>
-				<panel name="recipientsPanel" title="Recipients"
-					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
-					<field name="toRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
-					<field name="ccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
-					<field name="bccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
-				</panel>
-				<panel name="subjectContentPanel" title="Content" colSpan="12">
-					<field name="subject" colSpan="12" height="2" />
-					<field name="content" showTitle="false" colSpan="12" widget="html" />
-				</panel>
-				<panel name="signature-panel" title="Signature"
-					showIf="mediaTypeSelect != 3" colSpan="12">
-					<field name="addSignature" widget="inline-checkbox" colSpan="3"/>
-					<field name="signature" colSpan="9" showIf="addSignature" help="If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$"/>
-				</panel>
-				<panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
-				<panel name="attachedFilesPanel" title="Attached files" colSpan="12">
-					<field name="birtTemplate" colSpan="12" canEdit="false"
-						form-view="birt-template-form" grid-view="birt-template-grid" />
-				</panel>
-			</panel>
-			<panel title="Configuration" name="configurationPanel">
-				<field name="isDefault" widget="boolean-switch" />
-				<field name="isSystem" widget="boolean-switch" />
-			</panel>
-		</panel-tabs>
-	</form>
+        <editor>
+          <field name="name" showTitle="true"/>
+        </editor>
+      </field>
+      <field name="mediaTypeSelect"/>
+      <field name="language" canEdit="false" form-view="language-form"
+        grid-view="language-grid"/>
+      <field name="templateEngineSelect"/>
+      <field name="isJson" onChange="action-template-record-is-json-change"/>
+      <panel itemSpan="12">
+        <field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form"
+          grid-view="meta-model-grid"/>
+        <field name="metaJsonModel" showIf="isJson" canEdit="false"
+          form-view="json-model-form" grid-view="json-model-grid"/>
+      </panel>
+      <field name="target" hidden="true"/>
+      <field name="templateContext" canEdit="false" form-view="template-context-form"
+        grid-view="template-context-grid" hidden="true"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="contentPanel" title="Contenu">
+        <panel name="recipientAddressPanel" title="Recipient address"
+          showIf="mediaTypeSelect == 1">
+          <field name="addressBlock" showTitle="false" colSpan="12" height="5" widget="html"
+            x-lite="false"/>
+        </panel>
+        <panel name="senderPanel" title="Sender" colSpan="12"
+          showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+          <field name="replyToRecipients" height="2"/>
+        </panel>
+        <panel name="recipientsPanel" title="Recipients"
+          showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
+          <field name="toRecipients" colSpan="12" height="2"
+            help="Please use ',' ';' or '|' as separator between two email addresses."/>
+          <field name="ccRecipients" colSpan="12" height="2"
+            help="Please use ',' ';' or '|' as separator between two email addresses."/>
+          <field name="bccRecipients" colSpan="12" height="2"
+            help="Please use ',' ';' or '|' as separator between two email addresses."/>
+        </panel>
+        <panel name="subjectContentPanel" title="Content" colSpan="12">
+          <field name="subject" colSpan="12" height="2"/>
+          <field name="content" showTitle="false" colSpan="12" widget="html"/>
+        </panel>
+        <panel name="signature-panel" title="Signature" showIf="mediaTypeSelect != 3"
+          colSpan="12">
+          <field name="addSignature" widget="inline-checkbox" colSpan="3"/>
+          <field name="signature" colSpan="9" showIf="addSignature"
+            help="If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$"/>
+        </panel>
+        <panel-related name="templateContextPanel" field="templateContextList"
+          colSpan="12"/>
+        <panel name="attachedFilesPanel" title="Attached files" colSpan="12">
+          <field name="birtTemplate" colSpan="12" canEdit="false"
+            form-view="birt-template-form" grid-view="birt-template-grid"/>
+        </panel>
+      </panel>
+      <panel title="Configuration" name="configurationPanel">
+        <field name="isDefault" widget="boolean-switch"/>
+        <field name="isSystem" widget="boolean-switch"/>
+      </panel>
+    </panel-tabs>
+  </form>
 
-	<action-method name="action-template-check-receptor">
-    	<call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
-    </action-method>
-    
+  <action-method name="action-template-check-receptor">
+    <call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
+  </action-method>
+
 </object-views>

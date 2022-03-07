@@ -7,20 +7,31 @@
 
   <entity name="Partner" lang="java" cacheable="true">
     <integer name="deliveryDelay" title="Delivery delay (days)" min="0"/>
-    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
-    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
-    <many-to-one name="carrierPartner" title="Carrier" ref="com.axelor.apps.base.db.Partner" index="false"/>
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"
+      index="false"/>
+    <many-to-one name="freightCarrierMode"
+      ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
+    <many-to-one name="carrierPartner" title="Carrier"
+      ref="com.axelor.apps.base.db.Partner" index="false"/>
     <decimal name="supplierQualityRating" title="Supplier quality rating"/>
-    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
+    <decimal name="supplierQualityRatingSelect" title="Supplier quality rating"
+      selection="rating.icon.select"/>
     <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty" min="0"/>
     <boolean name="isCarrier" title="Carrier"/>
-    <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
-    <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"/>
+    <one-to-many name="partnerProductQualityRatingList"
+      ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner"
+      title="Partner product quality rating"/>
+    <one-to-many name="freightCarrierModeList"
+      ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"/>
 
     <boolean name="isIspmRequired" title="Is ISPM15 required"/>
-    <boolean name="isNeedingConformityCertificate" title="Is certificate of conformity required"/>
-    <one-to-many name="partnerStockSettingsList" title="Partner stock settings" ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
-    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="partner"/>
+    <boolean name="isNeedingConformityCertificate"
+      title="Is certificate of conformity required"/>
+    <one-to-many name="partnerStockSettingsList" title="Partner stock settings"
+      ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList"
+      ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
+      title="Customer account numbers to carriers" mappedBy="partner"/>
   </entity>
 
 </domain-models>

@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="routing-action-create-grid" title="Creations" model="com.axelor.apps.base.db.RoutingActionCreate">
-		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
-	</grid>
-	
-	<form name="routing-action-create-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreate" width="large">
-		<panel name="mainPanel">
-			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
-			<panel-related name="routingActionCreateLineListPanel" field="routingActionCreateLineList" colSpan="12" form-view="routing-action-create-line-form" grid-view="routing-action-create-line-grid"/>
-		</panel>
-	</form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="routing-action-create-grid" title="Creations"
+    model="com.axelor.apps.base.db.RoutingActionCreate">
+    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+  </grid>
+
+  <form name="routing-action-create-form" title="Creation"
+    model="com.axelor.apps.base.db.RoutingActionCreate" width="large">
+    <panel name="mainPanel">
+      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+      <panel-related name="routingActionCreateLineListPanel"
+        field="routingActionCreateLineList" colSpan="12" form-view="routing-action-create-line-form"
+        grid-view="routing-action-create-line-grid"/>
+    </panel>
+  </form>
 
 </object-views>

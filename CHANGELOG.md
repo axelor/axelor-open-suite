@@ -1,3 +1,96 @@
+## [6.0.18] (2022-01-28)
+
+#### Fixed
+
+* GEONAMES: fix NPE while importing cities from geonames.
+* Stock move: add server side check on status before realizing a stock move.
+* Sequence: fixed issue where the sequence count would increment after an exception cancelling the process.
+* HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract.
+* Budget: Fix budget lines update on cancelling a purchase order.
+* Studio: Fix widget attrs width default on custom field
+
+Removed default value of width from widget attrs of custom field, when created from studio.
+
+* STOCK: Fix filters of stock forecast menu entries.
+* Stock reservation: fix german translation of error message.
+* INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`).
+* Sequence: fix data init by adding missing full name and activating yearly reset configuration on some sequences.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* PrintingSettings: remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+* Event: fix NPE when updating start date on an unsaved event.
+
+## [6.0.17] (2021-12-16)
+
+#### Fixed
+
+* STOCKMOVE/INVOICING: Correctly apply unit conversion when updating invoiced quantity in stock move lines.
+* Move: fix wrong currency amount and rate computation in VAT move line.
+* SALE ORDER: Blocking invoice generation when the full amount of the order has already been invoiced.
+* SaleOrderLine: Fix invoiced quantities computation when having refunds.
+* PERIODS: Removed overlapping periods in demo data.
+* STOCK DETAILS: Fixed issue where stock locations were sometimes not properly filtered.
+* Expense Line: Prevent negative and inconsistent amounts in Expense lines.
+* Budget: Fix budget lines update on cancelling an invoice.
+
+## [6.0.16] (2021-11-17)
+
+#### Changes
+
+* ACCOUNTING SITUATION: Add filters on customer account and supplier account.
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* Forecast Recap: fix display of bank details last update balance date in form view.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* BatchLeaveManagement: Leave lines created by batch will now correctly have their name set.
+* LeaveLine: Fixed demo data where leave lines did not have a name.
+* AbstractBatch: Fixed duration which was computed in minutes instead of seconds.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when setting last purchase price as product cost price.
+* Sale Order: correctly hide availability request label when stock module is not included.
+* Product: fix stock details never showing any stock location line.
+* Human resources: restored chart view for leave per employee.
+* Accounting Move: fix NPE when we click on delete move without any moves selected.
+* PRINTING SETTINGS: Fix display error when pdfHeader is not filled.
+* Fix french translation "Personnalisé" to "Personnaliser".
+* PRODUCTION/STOCK: Add missing / fix wrong translations.
+* INTERCO: Fix analytical distribution model of generated interco invoice.
+* Product Category: change wrong grid view of parentProductCategory.
+
+## [6.0.15] (2021-10-14)
+
+#### Fixed
+
+* MRP: In MRP computation, the procurement method selection configured per company in the product is now chosen instead of always selecting the value in the base product.
+* Extra Hours: extra hours quantity can no longer be negative on the view.
+* Contract: display "supposed end date" field in default grid view.
+* Invoice: fix estimated payment date computation.
+* Invoice: add default bank details from partner when the invoice is generated.
+* Extra hours: fix typo in french translation.
+
+## [6.0.14] (2021-10-01)
+
+#### Fixed
+
+* Contract Version: Fix NPE on contract version when we push a new version to waiting status and to ongoing status.
+* Quotation template: Resolved NPE while generating quotation from template that had title lines.
+* FixedAsset: add filter on company on fixed asset category.
+* INVOICE LINE: fixed issue where "Filter on supplier" option was set to false on invoice line modification.
+* IMPORT CONFIGURATION: reset fields on copy.
+* PURCHASEORDER: initialize correctly receipt state on generating stock move.
+* Contract line: linked generated invoice line to contract line.
+* PRODUCT: Fix barcode display for Code_39 and code_128.
+* Invoice: Fix missing file type on printedPdf metafile field.
+* TimesheetLine: Fix issue in working hours computation causing rounding errors.
+* ManufOrder: Reset Operation orders on Production process change.
+* Printings: fix printing issues when using an external birt runtime.
+* Invoice: display proper error on trying to do a payment with a wrong accounting configuration.
+* Print/PrintTemplate: Fix spelling for selection of footer font color.
+
 ## [6.0.13] (2021-07-28)
 
 #### Fixed
@@ -573,6 +666,11 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.18]: https://github.com/axelor/axelor-open-suite/compare/v6.0.17...v6.0.18
+[6.0.17]: https://github.com/axelor/axelor-open-suite/compare/v6.0.16...v6.0.17
+[6.0.16]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.0.16
+[6.0.15]: https://github.com/axelor/axelor-open-suite/compare/v6.0.14...v6.0.15
+[6.0.14]: https://github.com/axelor/axelor-open-suite/compare/v6.0.13...v6.0.14
 [6.0.13]: https://github.com/axelor/axelor-open-suite/compare/v6.0.12...v6.0.13
 [6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
 [6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11

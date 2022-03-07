@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    <grid name="canton-grid" title="Cantons" model="com.axelor.apps.base.db.Canton">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    	<field name="inhabitantsNbr" />
-        <field name="artmin"/>
-        <field name="department" grid-view="department-grid" form-view="department-form"/>
-    </grid>
-    <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton"  >
-    	<panel name="mainPanel">
-	        <field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="artmin"/>
-	        <field name="department" grid-view="department-grid" form-view="department-form"/>
-	    	<field name="inhabitantsNbr" />
-    	</panel>
-    </form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  <grid name="canton-grid" title="Cantons" model="com.axelor.apps.base.db.Canton">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="inhabitantsNbr"/>
+    <field name="artmin"/>
+    <field name="department" grid-view="department-grid" form-view="department-form"/>
+  </grid>
+  <form name="canton-form" title="Canton" model="com.axelor.apps.base.db.Canton">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="artmin"/>
+      <field name="department" grid-view="department-grid" form-view="department-form"/>
+      <field name="inhabitantsNbr"/>
+    </panel>
+  </form>
 </object-views>

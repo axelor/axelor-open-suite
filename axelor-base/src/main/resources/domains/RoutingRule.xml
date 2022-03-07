@@ -6,13 +6,13 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="RoutingRule" lang="java">
-  
-  	<many-to-one name="routing" ref="com.axelor.apps.base.db.Routing" title="Routing"/>
-  
+
+    <many-to-one name="routing" ref="com.axelor.apps.base.db.Routing" title="Routing"/>
+
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field"/>
     <integer name="ruleTypeSelect" title="Rule" selection="base.routing.rule.type.select"/>
     <string name="value" title="Value"/>
-    
+
   </entity>
 
 </domain-models>

@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="stock" package="com.axelor.apps.stock.db" />
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
-	<entity name="StockMoveLine" lang="java">
+  <entity name="StockMoveLine" lang="java">
 
-		<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
-			title="Sales order line" />
-		<many-to-one name="purchaseOrderLine"
-			ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line" />
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sales order line"/>
+    <many-to-one name="purchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
 
-		<decimal name="reservedQty" title="Allocated Qty" precision="20" scale="10"/>
-		<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10"/>
-		
-		<decimal name="qtyInvoiced" title="Invoiced Qty" precision="20" scale="10"/>
+    <decimal name="reservedQty" title="Allocated Qty" precision="20" scale="10"/>
+    <decimal name="requestedReservedQty" title="Requested reserved qty" precision="20"
+      scale="10"/>
 
-		<boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
+    <decimal name="qtyInvoiced" title="Invoiced Qty" precision="20" scale="10"/>
 
-		<!-- Is not used in view but needed for java service -->
-		<boolean name="isMergedStockMoveLine" transient="true"/>
+    <boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
 
-		<datetime name="reservationDateTime" readonly="true"/>
+    <!-- Is not used in view but needed for java service -->
+    <boolean name="isMergedStockMoveLine" transient="true"/>
 
-		<finder-method name="findAllBySaleOrder"
-			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id" />
+    <datetime name="reservationDateTime" readonly="true"/>
 
-		<finder-method name="findAllBySaleOrderAndStatusSelect"
-			using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect"
-			all="true"
-			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect" />
+    <finder-method name="findAllBySaleOrder"
+      using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
+      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id"/>
+
+    <finder-method name="findAllBySaleOrderAndStatusSelect"
+      using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
+      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
 
 
-		<finder-method name="findForDeclarationOfExchanges"
-	      using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "
-	      filter="
+    <finder-method name="findForDeclarationOfExchanges"
+      using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "
+      filter="
 	        self.stockMove.realDate BETWEEN :fromDate AND :toDate
-	        AND self.product.usedInDEB is true 
+	        AND self.product.usedInDEB is true
 	        AND self.product.productTypeSelect = :productTypeSelect
 	        AND self.stockMove.typeSelect = :stockMoveTypeSelect
-	        AND self.stockMove.statusSelect = 3 
-	        AND self.stockMove.company = :company 
+	        AND self.stockMove.statusSelect = 3
+	        AND self.stockMove.company = :company
 	        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
 	        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
 	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
-	      orderBy="stockMove.realDate,id" all="true"/>
-		
-		<track on="UPDATE">
-			<field name="requestedReservedQty"/>
-			<field name="reservedQty"/>
-		</track>
+      orderBy="stockMove.realDate,id" all="true"/>
 
-	</entity>
+    <track on="UPDATE">
+      <field name="requestedReservedQty"/>
+      <field name="reservedQty"/>
+    </track>
+
+  </entity>
 </domain-models>

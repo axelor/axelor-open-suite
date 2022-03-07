@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
   <entity name="BankStatementLine" lang="java" persistable="true" strategy="CLASS">
-  
-  	<date name="operationDate" title="Operation date"/>
-  	<date name="valueDate" title="Value date"/>
-	
-	<decimal name="debit" title="Debit"/>
-	<decimal name="credit" title="Credit"/>
 
-	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
-	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details" index="false"/>
+    <date name="operationDate" title="Operation date"/>
+    <date name="valueDate" title="Value date"/>
 
-    <many-to-one name="operationInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code" index="false"/>
-    <many-to-one name="rejectInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code" index="false"/>
+    <decimal name="debit" title="Debit"/>
+    <decimal name="credit" title="Credit"/>
 
-	<string name="description" title="Description" large="true" multiline="true"/>
-	<string name="reference" title="Reference"/>
-	<string name="origin" title="Origin"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
+      index="false"/>
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Bank details" index="false"/>
 
-	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement" index="false"/>
+    <many-to-one name="operationInterbankCodeLine"
+      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code"
+      index="false"/>
+    <many-to-one name="rejectInterbankCodeLine"
+      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code" index="false"/>
 
-	<integer name="sequence" title="Sequence"/>
-	
-<!-- 	Used for Bank reconcile process -->
-	<decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <string name="reference" title="Reference"/>
+    <string name="origin" title="Origin"/>
+
+    <many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement"
+      title="Bank statement" index="false"/>
+
+    <integer name="sequence" title="Sequence"/>
+
+    <!-- Used for Bank reconcile process -->
+    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
 
   </entity>
-  
+
 </domain-models>

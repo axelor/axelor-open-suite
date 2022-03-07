@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db"/>
-  
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
   <entity name="ImportConfiguration" lang="java">
-  
-  	<string name="name" namecolumn="true"/>
-    <string name="typeSelect" title="Import type" default="csv" required="true" selection="iimport.type.select"/>
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
-    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" />
-    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" />
-    <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
-    <string name="description" large="true" title="Description" />
-    <integer name="statusSelect" title="Status" selection="base.import.configuration.status.select" readonly="true" default="0"/>
+
+    <string name="name" namecolumn="true"/>
+    <string name="typeSelect" title="Import type" default="csv" required="true"
+      selection="iimport.type.select"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
+      column="user_id"/>
+    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile"
+      title="Binding file" required="true"/>
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file"
+      required="true"/>
+    <one-to-many name="importHistoryList" ref="ImportHistory"
+      mappedBy="importConfiguration" title="Historical"/>
+    <string name="description" large="true" title="Description"/>
+    <integer name="statusSelect" title="Status"
+      selection="base.import.configuration.status.select" readonly="true" default="0"/>
     <datetime name="startDateTime" title="Start Date"/>
     <datetime name="endDateTime" title="End Date"/>
-    
+
     <extra-code><![CDATA[
-    	
+
     	//TYPE SELECT
 		public static final String TYPE_CSV = "csv";
 		public static final String TYPE_XML = "xml";
-		
+
 		//STATUS SELECT
 		public static final int STATUS_DRAFT = 0;
 		public static final int STATUS_IN_PROGRESS = 1;
 		public static final int STATUS_COMPLETED = 2;
 		public static final int STATUS_ERROR = 3;
-		
+
 
 	]]></extra-code>
-    
+
   </entity>
 
 </domain-models>

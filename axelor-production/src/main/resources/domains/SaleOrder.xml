@@ -6,9 +6,9 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrder" lang="java">
-  
-	<string name="productionNote" title="Production note" large="true"/>  	
-  	
+
+    <string name="productionNote" title="Production note" large="true"/>
+
   </entity>
 
 </domain-models>

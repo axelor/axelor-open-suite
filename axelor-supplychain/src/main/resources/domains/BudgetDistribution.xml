@@ -6,10 +6,11 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="BudgetDistribution" lang="java" cacheable="true">
-  
-    <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
+
+    <many-to-one name="purchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
     <decimal name="budgetAmountAvailable"/>
-  	
+
   </entity>
 
 </domain-models>

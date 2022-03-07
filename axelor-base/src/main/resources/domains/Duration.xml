@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="Duration" lang="java">
-		
-		<integer name="typeSelect" title="Month/days" selection="base.duration.type.select" initParam="true"/>
-		<integer name="value" title="Value" initParam="true" min="0"/>
-		<string name="name" title="Name"/>
-		<integer name="applicationTypeSelect" selection="base.duration.application.type.select"/>
+  <entity name="Duration" lang="java">
 
-		<extra-code><![CDATA[
-		
+    <integer name="typeSelect" title="Month/days" selection="base.duration.type.select"
+      initParam="true"/>
+    <integer name="value" title="Value" initParam="true" min="0"/>
+    <string name="name" title="Name"/>
+    <integer name="applicationTypeSelect" selection="base.duration.application.type.select"/>
+
+    <extra-code><![CDATA[
+
 		   	// TYPE SELECT
 			public static final int TYPE_MONTH = 1;
 			public static final int TYPE_DAY = 2;
-		
-		]]></extra-code>
-    
 
-	</entity>
-	
+		]]></extra-code>
+
+
+  </entity>
+
 
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -413,6 +413,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
     }
+    if (purchaseOrderLine.getReceiptState() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
+    }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
@@ -592,7 +595,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)

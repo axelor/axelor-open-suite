@@ -2,22 +2,23 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db"/>
-	
-	<entity name="SharingSetting" sequential="true">
-		<many-to-one name="sharedWith" ref="com.axelor.auth.db.User" title="Shared with"/>
-		<many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar"/>
-		<boolean name="visible" title="Visible"/>
-		<integer name="rightsSelect" title="Rights" default="1" selection="base.sharing.setting.rights.select"/>
 
-		<extra-code>
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="SharingSetting" sequential="true">
+    <many-to-one name="sharedWith" ref="com.axelor.auth.db.User" title="Shared with"/>
+    <many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar"/>
+    <boolean name="visible" title="Visible"/>
+    <integer name="rightsSelect" title="Rights" default="1"
+      selection="base.sharing.setting.rights.select"/>
+
+    <extra-code>
 		<![CDATA[
 			// Rights select
 			public static final int CALENDAR_READ_ONLY = 1;
 			public static final int CALENDAR_MODIFICATION = 2;
 		]]>
-		</extra-code>
-	</entity>
+    </extra-code>
+  </entity>
 
 </domain-models>

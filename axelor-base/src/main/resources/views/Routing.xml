@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="routing-grid" title="Routing rules" model="com.axelor.apps.base.db.Routing">
-		<field name="name"/>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="priority"/>
-		<field name="isActive"/>
-	</grid>
-	
-	<form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing" width="large">
-		<panel name="mainPanel">
-			<field name="name"/>
-			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="priority"/>
-			<field name="isActive"/>
-		</panel>
-		<panel-tabs name="mainPanelTab" >
-			<panel-related name="routingRuleListPanel" title="Filters" field="routingRuleList" grid-view="routing-rule-grid" form-view="routing-rule-form" />
-			<panel-related name="routingActionListPanel" title="Actions" field="routingActionList" grid-view="routing-action-grid" form-view="routing-action-form" />
-		</panel-tabs>
-	</form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="routing-grid" title="Routing rules" model="com.axelor.apps.base.db.Routing">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="priority"/>
+    <field name="isActive"/>
+  </grid>
+
+  <form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="priority"/>
+      <field name="isActive"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-related name="routingRuleListPanel" title="Filters"
+        field="routingRuleList" grid-view="routing-rule-grid" form-view="routing-rule-form"/>
+      <panel-related name="routingActionListPanel" title="Actions"
+        field="routingActionList" grid-view="routing-action-grid" form-view="routing-action-form"/>
+    </panel-tabs>
+  </form>
 
 </object-views>

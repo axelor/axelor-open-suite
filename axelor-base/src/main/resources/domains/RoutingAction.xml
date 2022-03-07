@@ -6,13 +6,14 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="RoutingAction" lang="java">
-  
-  	<many-to-one name="routing" ref="com.axelor.apps.base.db.Routing" title="Routing"/>
-  
+
+    <many-to-one name="routing" ref="com.axelor.apps.base.db.Routing" title="Routing"/>
+
     <string name="relatedToFilter1" title="Related to"/>
     <string name="relatedToFilter2" title="Related to"/>
-    <many-to-one name="routingActionCreate" ref="com.axelor.apps.base.db.RoutingActionCreate" title="Create"/>
-    
+    <many-to-one name="routingActionCreate"
+      ref="com.axelor.apps.base.db.RoutingActionCreate" title="Create"/>
+
   </entity>
 
 </domain-models>

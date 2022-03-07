@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-    <module name="stock" package="com.axelor.apps.stock.db" />
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
-    <entity name="LogisticalForm">
-        <string name="deliveryNumberSeq" title="Delivery number" namecolumn="true" readonly="true" />
-        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
-        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
-        <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
-            title="Deliver to customer" />
-        <date name="collectionDate" required="true" />
+  <entity name="LogisticalForm">
+    <string name="deliveryNumberSeq" title="Delivery number" namecolumn="true"
+      readonly="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
+    <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner"
+      required="true" title="Deliver to customer"/>
+    <date name="collectionDate" required="true"/>
 
-        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" />
-        <many-to-one name="forwarderPartner" ref="com.axelor.apps.base.db.Partner" title="Forwarder" />
-        <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
-        <string name="tracking" />
-        <decimal name="totalGrossMass" readonly="true" precision="20" scale="3" />
-        <decimal name="totalNetMass" readonly="true" precision="20" scale="3" />
-        <decimal name="totalVolume" title="Total volume (m³)" readonly="true" precision="20" scale="3" />
-        <integer name="statusSelect" selection="logistical.form.status.select" title="Status" default="1"
-            readonly="true" />
-        <string name="internalDeliveryComment" large="true" />
-        <string name="externalDeliveryComment" large="true" />
-        <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
-        <string name="customerAccountNumberToCarrier" />
+    <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Carrier"/>
+    <many-to-one name="forwarderPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Forwarder"/>
+    <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm"/>
+    <string name="tracking"/>
+    <decimal name="totalGrossMass" readonly="true" precision="20" scale="3"/>
+    <decimal name="totalNetMass" readonly="true" precision="20" scale="3"/>
+    <decimal name="totalVolume" title="Total volume (m³)" readonly="true" precision="20"
+      scale="3"/>
+    <integer name="statusSelect" selection="logistical.form.status.select" title="Status"
+      default="1" readonly="true"/>
+    <string name="internalDeliveryComment" large="true"/>
+    <string name="externalDeliveryComment" large="true"/>
+    <integer name="accountSelectionToCarrierSelect"
+      selection="logistical.form.account.to.carrier.select" title="Account selection to carrier"
+      default="1"/>
+    <string name="customerAccountNumberToCarrier"/>
 
-        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
-            mappedBy="logisticalForm" />
+    <one-to-many name="logisticalFormLineList"
+      ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
+      mappedBy="logisticalForm"/>
 
-      <boolean name="isEmailSent" readonly="true" title="Email sent" default="false"/>
+    <boolean name="isEmailSent" readonly="true" title="Email sent" default="false"/>
 
-        <extra-code>
+    <extra-code>
 		<![CDATA[
 			public static final int STATUS_PROVISION = 1;
 			public static final int STATUS_CARRIER_VALIDATED = 2;
@@ -40,22 +49,22 @@
 			public static final int ACCOUNT_COMPANY = 1;
 			public static final int ACCOUNT_CUSTOMER = 2;
 		]]>
-		</extra-code>
-		
-		<track>
-	      <field name="statusSelect" />
-	      <field name="deliveryNumberSeq" />
-	      <field name="collectionDate" />
-	      <field name="deliverToCustomerPartner" />
-	      <field name="carrierPartner" />
-	      <field name="forwarderPartner" />
-	      <field name="incoterm" />
-	      <field name="tracking" />
-	      <message if="statusSelect == 1" tag="important">Provision</message>
-	      <message if="statusSelect == 2" tag="info">Carrier validated</message>
-	      <message if="statusSelect == 3" tag="success">Collected</message>
-	    </track>
-		
-    </entity>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+      <field name="deliveryNumberSeq"/>
+      <field name="collectionDate"/>
+      <field name="deliverToCustomerPartner"/>
+      <field name="carrierPartner"/>
+      <field name="forwarderPartner"/>
+      <field name="incoterm"/>
+      <field name="tracking"/>
+      <message if="statusSelect == 1" tag="important">Provision</message>
+      <message if="statusSelect == 2" tag="info">Carrier validated</message>
+      <message if="statusSelect == 3" tag="success">Collected</message>
+    </track>
+
+  </entity>
 
 </domain-models>

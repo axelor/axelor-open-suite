@@ -3,17 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="account" package="com.axelor.apps.account.db"/>
-	<entity name="AccountConfig" lang="java" cacheable="true">
-	
-		<boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
-	  	<boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
+  <module name="account" package="com.axelor.apps.account.db"/>
+  <entity name="AccountConfig" lang="java" cacheable="true">
 
-		<track>
-			<field name="displayTimesheetOnPrinting" on="UPDATE"/>
-			<field name="displayExpenseOnPrinting" on="UPDATE"/>
-		</track>	
+    <boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
+    <boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
+
+    <track>
+      <field name="displayTimesheetOnPrinting" on="UPDATE"/>
+      <field name="displayExpenseOnPrinting" on="UPDATE"/>
+    </track>
   </entity>
-  
+
 </domain-models>
-  	
+

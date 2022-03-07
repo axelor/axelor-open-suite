@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="routing-action-grid" title="Routing actions" model="com.axelor.apps.base.db.RoutingAction">
-		<field name="relatedToFilter1"/>
-		<field name="relatedToFilter2"/>
-		<field name="routingActionCreate" form-view="routing-action-create-form" grid-view="routing-action-create-grid"/>
-	</grid>
-	
-	<form name="routing-action-form" title="Routing action" model="com.axelor.apps.base.db.RoutingAction">
-		<panel name="mainPanel">
-			<field name="relatedToFilter1" colSpan="12"/>
-			<field name="relatedToFilter2" colSpan="12"/>
-			<field name="routingActionCreate" colSpan="12" form-view="routing-action-create-form" grid-view="routing-action-create-grid"/>
-		</panel>
-	</form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="routing-action-grid" title="Routing actions"
+    model="com.axelor.apps.base.db.RoutingAction">
+    <field name="relatedToFilter1"/>
+    <field name="relatedToFilter2"/>
+    <field name="routingActionCreate" form-view="routing-action-create-form"
+      grid-view="routing-action-create-grid"/>
+  </grid>
+
+  <form name="routing-action-form" title="Routing action"
+    model="com.axelor.apps.base.db.RoutingAction">
+    <panel name="mainPanel">
+      <field name="relatedToFilter1" colSpan="12"/>
+      <field name="relatedToFilter2" colSpan="12"/>
+      <field name="routingActionCreate" colSpan="12" form-view="routing-action-create-form"
+        grid-view="routing-action-create-grid"/>
+    </panel>
+  </form>
 
 </object-views>

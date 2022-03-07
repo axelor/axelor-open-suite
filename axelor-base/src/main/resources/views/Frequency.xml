@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="frequency-grid" title="Frequencies" model="com.axelor.apps.base.db.Frequency">
     <field name="summary"/>
   </grid>
 
-  <form name="frequency-form" title="Frequency" model="com.axelor.apps.base.db.Frequency" width="large" onNew="action-frequency-method-compute-summary">
+  <form name="frequency-form" title="Frequency" model="com.axelor.apps.base.db.Frequency"
+    width="large" onNew="action-frequency-method-compute-summary">
     <panel>
       <field name="summary" showTitle="false" readonly="true" css="bold" colSpan="12"/>
     </panel>
@@ -18,12 +19,18 @@
       <panel title="Frequency type" colSpan="12">
         <field name="typeSelect" onChange="action-frequency-method-compute-summary"/>
         <panel>
-          <field name="everyNWeeks" showIf="typeSelect == 'everyNWeeks'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="12"/>
-          <field name="first" showIf="typeSelect == 'monthDays'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
-          <field name="second" showIf="typeSelect == 'monthDays'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
-          <field name="third" showIf="typeSelect == 'monthDays'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
-          <field name="fourth" showIf="typeSelect == 'monthDays'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
-          <field name="last" showIf="typeSelect == 'monthDays'" onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
+          <field name="everyNWeeks" showIf="typeSelect == 'everyNWeeks'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="12"/>
+          <field name="first" showIf="typeSelect == 'monthDays'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
+          <field name="second" showIf="typeSelect == 'monthDays'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
+          <field name="third" showIf="typeSelect == 'monthDays'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
+          <field name="fourth" showIf="typeSelect == 'monthDays'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
+          <field name="last" showIf="typeSelect == 'monthDays'"
+            onChange="action-frequency-method-compute-summary" hidden="true" colSpan="2"/>
         </panel>
       </panel>
 

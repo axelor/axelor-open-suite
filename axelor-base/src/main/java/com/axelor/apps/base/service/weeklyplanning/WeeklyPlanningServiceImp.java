@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
+
+  public static final int DEFAULT_SCALE = 2;
 
   public DayOfWeek getFirstDayOfWeek() {
     WeeklyPlanning planning =
@@ -202,7 +204,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       }
     }
 
-    return BigDecimal.valueOf(value).divide(BigDecimal.valueOf(60), BigDecimal.ROUND_HALF_UP);
+    return BigDecimal.valueOf(value)
+        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, BigDecimal.ROUND_HALF_UP);
   }
 
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {

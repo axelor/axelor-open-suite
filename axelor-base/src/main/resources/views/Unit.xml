@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    <grid name="unit-grid" title="Units" model="com.axelor.apps.base.db.Unit">
-        <field name="name"/>
-        <field name="labelToPrinting"/>
-        <field name="unitTypeSelect"/>
-    </grid>
-    <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
-    	<panel name="mainPanel" >
-        	<field name="name" onChange="action-unit-record-label-to-printing"/>
-        	<field name="labelToPrinting"/>
-        	<field name="unitTypeSelect"/>
-        	
-        </panel>
-    </form>
-    
-    <action-record name="action-unit-record-label-to-printing" model="com.axelor.apps.base.db.Unit">
-      <field name="labelToPrinting" expr="eval: name" if="!labelToPrinting"/>
-    </action-record>    
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  <grid name="unit-grid" title="Units" model="com.axelor.apps.base.db.Unit">
+    <field name="name"/>
+    <field name="labelToPrinting"/>
+    <field name="unitTypeSelect"/>
+  </grid>
+  <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
+    <panel name="mainPanel">
+      <field name="name" onChange="action-unit-record-label-to-printing"/>
+      <field name="labelToPrinting"/>
+      <field name="unitTypeSelect"/>
+
+    </panel>
+  </form>
+
+  <action-record name="action-unit-record-label-to-printing"
+    model="com.axelor.apps.base.db.Unit">
+    <field name="labelToPrinting" expr="eval: name" if="!labelToPrinting"/>
+  </action-record>
+
 </object-views>

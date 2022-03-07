@@ -6,30 +6,34 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="MailBatch" lang="java">
-  	
-  	<!-- HEADER -->
-  	<string name="code" title="Code" namecolumn="true" unique="true"/>
-    <integer name="actionSelect" title="Action" required="true" selection="base.batch.action.select" default="1"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template" title="Template"/>
-    
+
+    <!-- HEADER -->
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="base.batch.action.select" default="1"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
+      title="Company"/>
+    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
+      title="Template"/>
+
     <!-- OTHERS INFORMATION -->
-    <string name="description" title="Description" large="true" />
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="mailBatch" title="Batchs"/>
-    
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="mailBatch" title="Batchs"/>
+
     <!-- EMAIL INFORMATION -->
     <string name="subject" title="Subject" initParam="true"/>
-  	<string name="content" title="Content" large="true" initParam="true"/> 
+    <string name="content" title="Content" large="true" initParam="true"/>
 
-  	<extra-code><![CDATA[
-	
+    <extra-code><![CDATA[
+
 	   	// ACTION TYPE
 		public static final int ACTION_TIMESHEET_VALIDATION_REMINDER = 1;
-		
+
 		public static final String CODE_BATCH_EMAIL_TIME_SHEET = "M_TS_REM";
 		public static final String CODE_BATCH_EMAIL_ALL_TIME_SHEET = "M_A_TS_REM";
 	]]></extra-code>
-  
+
   </entity>
 
 </domain-models>

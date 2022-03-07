@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,8 @@ import com.axelor.apps.cash.management.db.repo.CashManagementForecastGeneratorRe
 import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
+import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
+import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentServiceImpl;
 import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 
 public class CashManagementModule extends AxelorModule {
@@ -32,5 +34,6 @@ public class CashManagementModule extends AxelorModule {
     bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
     bind(InvoiceServiceProjectImpl.class).to(InvoiceServiceManagementImpl.class);
     bind(ForecastGeneratorRepository.class).to(CashManagementForecastGeneratorRepository.class);
+    bind(InvoiceEstimatedPaymentService.class).to(InvoiceEstimatedPaymentServiceImpl.class);
   }
 }

@@ -4,28 +4,33 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
-	
+
   <entity name="FileTab">
-  	<integer name="sequence" title="Sequence"/>
-  	
-  	<string name="name" title="Name" required="true"/>
-  	
-  	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
-  	
-  	<integer name="importType" title="Import type" selection="file.field.import.type.select" min="1" default="3"/>
-  	
-  	<many-to-many name="searchFieldSet" ref="com.axelor.apps.base.db.FileField" title="Search fields"/>
-  	
-  	<one-to-many name="fileFieldList" ref="com.axelor.apps.base.db.FileField" title="Fields configuration" mappedBy="fileTab"/>
-    
-    <many-to-one name="validationLog" ref="com.axelor.meta.db.MetaFile" title="Validation log"/>
-    
-    <many-to-one name="advancedImport" ref="com.axelor.apps.base.db.AdvancedImport" title="Advanced import"/>
-    
+    <integer name="sequence" title="Sequence"/>
+
+    <string name="name" title="Name" required="true"/>
+
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
+
+    <integer name="importType" title="Import type" selection="file.field.import.type.select"
+      min="1" default="3"/>
+
+    <many-to-many name="searchFieldSet" ref="com.axelor.apps.base.db.FileField"
+      title="Search fields"/>
+
+    <one-to-many name="fileFieldList" ref="com.axelor.apps.base.db.FileField"
+      title="Fields configuration" mappedBy="fileTab"/>
+
+    <many-to-one name="validationLog" ref="com.axelor.meta.db.MetaFile"
+      title="Validation log"/>
+
+    <many-to-one name="advancedImport" ref="com.axelor.apps.base.db.AdvancedImport"
+      title="Advanced import"/>
+
     <string name="actions" title="Actions" large="true"/>
-    
+
     <string name="searchCall" title="Search Call" large="true"/>
-    
+
   </entity>
 
 </domain-models>

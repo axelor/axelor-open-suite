@@ -6,17 +6,20 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="DebtRecoveryMethodLine" lang="java" cacheable="true">
-  
-  	<many-to-one name="debtRecoveryLevel" required="true" ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level" />
-  	<string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
-  	<integer name="standardDeadline" title="Standard trigger delay (days)"/>
-  	<decimal name="minThreshold" title="Min. amount (€)"/>
-  	<many-to-many name="messageTemplateSet" ref="com.axelor.apps.message.db.Template" title="Message models"/>
-  	<boolean name="manualValidationOk" title="Manual validation"/>
-  	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-	<string name="printingMessage" title="Message on printing" large="true"/>
-	<string name="specificPrintingMessage" title="Specific mention on printing" large="true"/>
+
+    <many-to-one name="debtRecoveryLevel" required="true"
+      ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level"/>
+    <string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
+    <integer name="standardDeadline" title="Standard trigger delay (days)"/>
+    <decimal name="minThreshold" title="Min. amount (€)"/>
+    <many-to-many name="messageTemplateSet" ref="com.axelor.apps.message.db.Template"
+      title="Message models"/>
+    <boolean name="manualValidationOk" title="Manual validation"/>
+    <many-to-one name="debtRecoveryMethod"
+      ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
+    <string name="printingMessage" title="Message on printing" large="true"/>
+    <string name="specificPrintingMessage" title="Specific mention on printing" large="true"/>
   </entity>
 
- 
+
 </domain-models>

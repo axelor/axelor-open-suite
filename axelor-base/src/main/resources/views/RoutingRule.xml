@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="routing-rule-grid" title="Routing rules" model="com.axelor.apps.base.db.RoutingRule">
-		<field name="metaField" form-view="meta-field-form" grid-view="meta-field-grid"/>
-		<field name="ruleTypeSelect"/>
-		<field name="value"/>
-	</grid>
-	
-	<form name="routing-rule-form" title="Routing rule" model="com.axelor.apps.base.db.RoutingRule">
-		<panel name="mainPanel">
-			<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox" form-view="meta-field-form" grid-view="meta-field-grid"/>
-			<field name="ruleTypeSelect"/>
-			<field name="value"/>
-		</panel>
-	</form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="routing-rule-grid" title="Routing rules"
+    model="com.axelor.apps.base.db.RoutingRule">
+    <field name="metaField" form-view="meta-field-form" grid-view="meta-field-grid"/>
+    <field name="ruleTypeSelect"/>
+    <field name="value"/>
+  </grid>
+
+  <form name="routing-rule-form" title="Routing rule"
+    model="com.axelor.apps.base.db.RoutingRule">
+    <panel name="mainPanel">
+      <field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox"
+        form-view="meta-field-form" grid-view="meta-field-grid"/>
+      <field name="ruleTypeSelect"/>
+      <field name="value"/>
+    </panel>
+  </form>
 
 </object-views>

@@ -6,14 +6,14 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticMoveLine" lang="java">
-	
-	<many-to-one name="expenseLine" ref="com.axelor.apps.hr.db.ExpenseLine"/>
-	
-	 <extra-code><![CDATA[
-	
+
+    <many-to-one name="expenseLine" ref="com.axelor.apps.hr.db.ExpenseLine"/>
+
+    <extra-code><![CDATA[
+
 	   	// STATUS SELECT
 		public static final int STATUS_FORECAST_EXPENSE = 4;
-		
+
 	]]></extra-code>
   </entity>
 

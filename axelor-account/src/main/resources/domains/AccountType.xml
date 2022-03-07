@@ -6,13 +6,14 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountType" lang="java" cacheable="true">
-  
-<!--   	TODO - REPLACE PER INTEGER ... -->
-    <string name="technicalTypeSelect" title="Technical type" required="true" selection="account.account.technical.type.select"/> 
-	<string name="name" title="Name" required="true"/>
-	
-	 <extra-code><![CDATA[
-	
+
+    <!-- TODO - REPLACE PER INTEGER ... -->
+    <string name="technicalTypeSelect" title="Technical type" required="true"
+      selection="account.account.technical.type.select"/>
+    <string name="name" title="Name" required="true"/>
+
+    <extra-code><![CDATA[
+
 	   	// TYPE SELECT
 		public static final String TYPE_ASSET = "asset";
 		public static final String TYPE_CASH = "cash";
@@ -29,9 +30,9 @@
 		public static final String TYPE_SPECIAL = "special";
 		public static final String TYPE_TAX = "tax";
 		public static final String TYPE_VIEW = "view";
-	
+
 	]]></extra-code>
-	
+
   </entity>
-  
+
 </domain-models>

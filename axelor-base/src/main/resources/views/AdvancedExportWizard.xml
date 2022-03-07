@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <selection name='base.advanced.export.wizard.export.format.select'>
-		<option value="PDF">PDF</option>
-		<option value="EXCEL">Excel</option>
-		<option value="CSV">CSV</option>
-	</selection>
-    
-    <form name="advanced-export-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Advanced export" onNew="action-advanced-export-wizard-record-on-new">
-    	<panel name="mainPanel" >
-	      	<field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
-				   form-view="advanced-export-form" grid-view="advanced-export-grid" onSelect="action-advanced-export-wizard-attr-change-domain-from-model" />
-	      	<field name="exportFormatSelect" type="string" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
-			<button name="generateExportBtn" title="Export" showIf="_xAdvancedExport != null" onClick="action-advanced-export-wizard-method-generate-file,close"/>
-	      	<button name="personalisedExportBtn" title="Personalised export" onClick="action-advanced-export-view-open-form,close"/>
-      	</panel>
-	</form>
-	
-	<action-method name="action-method-advanced-export-wizard-view">
-		<call class="com.axelor.apps.base.web.AdvancedExportController" method="callAdvancedExportWizard"/>
-	</action-method>
-	
-	<action-method name="action-advanced-export-wizard-method-generate-file">
-		<call class="com.axelor.apps.base.web.AdvancedExportController" method="generateExportFile"/>
-	</action-method>
-	
-	<action-record name="action-advanced-export-wizard-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="_xAdvancedExport" expr="eval: __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).count() == 1 ? __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).fetchOne() : null" if="_metaModel"/>
-		<field name="exportFormatSelect" expr="CSV" />
-	</action-record>
-	
-	<action-attrs name="action-advanced-export-wizard-attr-change-domain-from-model">
-		<attribute name="domain" for="_xAdvancedExport" expr="eval: &quot; self.metaModel.id = '${_metaModel.id}' &quot;" if="_metaModel"/>
-	</action-attrs>
-	
-	<action-view name="action-advanced-export-view-open-form" title="Personalised export" model="com.axelor.apps.base.db.AdvancedExport">
-		<view type="form" name="advanced-export-form"/>
-		<context name="_metaModel" expr="eval: _metaModel"/>
-		<context name="_criteria" expr="eval: _criteria"/>
-	</action-view>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <selection name='base.advanced.export.wizard.export.format.select'>
+    <option value="PDF">PDF</option>
+    <option value="EXCEL">Excel</option>
+    <option value="CSV">CSV</option>
+  </selection>
+
+  <form name="advanced-export-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Advanced export" onNew="action-advanced-export-wizard-record-on-new">
+    <panel name="mainPanel">
+      <field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox"
+        type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
+        form-view="advanced-export-form" grid-view="advanced-export-grid"
+        onSelect="action-advanced-export-wizard-attr-change-domain-from-model"/>
+      <field name="exportFormatSelect" type="string" title="Export format"
+        requiredIf="_xAdvancedExport != null"
+        selection="base.advanced.export.wizard.export.format.select"/>
+      <button name="generateExportBtn" title="Export" showIf="_xAdvancedExport != null"
+        onClick="action-advanced-export-wizard-method-generate-file,close"/>
+      <button name="personalisedExportBtn" title="Personalised export"
+        onClick="action-advanced-export-view-open-form,close"/>
+    </panel>
+  </form>
+
+  <action-method name="action-method-advanced-export-wizard-view">
+    <call class="com.axelor.apps.base.web.AdvancedExportController"
+      method="callAdvancedExportWizard"/>
+  </action-method>
+
+  <action-method name="action-advanced-export-wizard-method-generate-file">
+    <call class="com.axelor.apps.base.web.AdvancedExportController" method="generateExportFile"/>
+  </action-method>
+
+  <action-record name="action-advanced-export-wizard-record-on-new"
+    model="com.axelor.apps.base.db.AdvancedExport">
+    <field name="_xAdvancedExport"
+      expr="eval: __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).count() == 1 ? __repo__(AdvancedExport).all().filter('self.metaModel.id = ?', _metaModel.id).fetchOne() : null"
+      if="_metaModel"/>
+    <field name="exportFormatSelect" expr="CSV"/>
+  </action-record>
+
+  <action-attrs name="action-advanced-export-wizard-attr-change-domain-from-model">
+    <attribute name="domain" for="_xAdvancedExport"
+      expr="eval: &quot; self.metaModel.id = '${_metaModel.id}' &quot;" if="_metaModel"/>
+  </action-attrs>
+
+  <action-view name="action-advanced-export-view-open-form" title="Personalised export"
+    model="com.axelor.apps.base.db.AdvancedExport">
+    <view type="form" name="advanced-export-form"/>
+    <context name="_metaModel" expr="eval: _metaModel"/>
+    <context name="_criteria" expr="eval: _criteria"/>
+  </action-view>
 
 </object-views>

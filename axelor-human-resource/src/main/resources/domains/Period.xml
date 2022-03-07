@@ -6,9 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Period" lang="java" cacheable="true">
-  
-  	<boolean name="allowExpenseCreation" title="Allow expense creation" default="true" />
-  
+
+    <boolean name="allowExpenseCreation" title="Allow expense creation" default="true"/>
+
   </entity>
 
 </domain-models>

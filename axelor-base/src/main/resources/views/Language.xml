@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="language-grid" title="Languages" model="com.axelor.apps.base.db.Language" editable="true">
-        <field name="name"/>
-        <field name="code"/>
-    </grid>
-    
-    <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language"  >
-    	<panel name="mainPanel" >
-	        <field name="name"/>
-	        <field name="code"/>
-        </panel>
-    </form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="language-grid" title="Languages" model="com.axelor.apps.base.db.Language"
+    editable="true">
+    <field name="name"/>
+    <field name="code"/>
+  </grid>
+
+  <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code"/>
+    </panel>
+  </form>
+
 </object-views>

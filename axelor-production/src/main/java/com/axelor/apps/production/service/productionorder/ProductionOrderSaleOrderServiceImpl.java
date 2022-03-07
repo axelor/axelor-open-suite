@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -64,6 +65,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class})
   public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();

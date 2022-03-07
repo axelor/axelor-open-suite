@@ -6,7 +6,8 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="TaskTemplate">
-    <string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
+    <string name="internalDescription" title="Internal Description" large="true"
+      multiline="true"/>
   </entity>
 
 </domain-models>

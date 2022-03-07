@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
- 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
- 
+
   <entity name="MrpLineType" lang="java">
 
-      <string name="code" title="Code"/>
-      <string name="label" title="Label"/>
-      <string name="name" title="Name"/>
-      <integer name="elementSelect" title="Element" selection="supplychain.mrp.line.element.select" default="0"/>
-      <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select" default="0"/>
-      <integer name="sequence" title="Sequence to order MRP results"/>
+    <string name="code" title="Code"/>
+    <string name="label" title="Label"/>
+    <string name="name" title="Name"/>
+    <integer name="elementSelect" title="Element"
+      selection="supplychain.mrp.line.element.select" default="0"/>
+    <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select"
+      default="0"/>
+    <integer name="sequence" title="Sequence to order MRP results"/>
 
-      <string name="statusSelect" title="Statuses to take into account" />
-      
-      <boolean name="includeElementWithoutDate" title="Include element without date" 
+    <string name="statusSelect" title="Statuses to take into account"/>
+
+    <boolean name="includeElementWithoutDate" title="Include element without date"
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
-      <boolean name="ignoreEndDate" title="Ignore end date" help="Include elements with a date later than MRP end date."/>
+    <boolean name="ignoreEndDate" title="Ignore end date"
+      help="Include elements with a date later than MRP end date."/>
 
-	  <string name="applicationFieldSelect" title="Field of application" selection="supplychain.mrp.line.type.application.field.select"/>
-	  
-      <extra-code><![CDATA[
-	
-	
+    <string name="applicationFieldSelect" title="Field of application"
+      selection="supplychain.mrp.line.type.application.field.select"/>
+
+    <extra-code><![CDATA[
+
+
 	   	// ELEMENT SELECT
 		public static final int ELEMENT_AVAILABLE_STOCK = 1;  // Available stock
 		public static final int ELEMENT_PURCHASE_ORDER = 2;  // Purchase order
 		public static final int ELEMENT_SALE_ORDER = 3;  // Sale order
 		public static final int ELEMENT_SALE_FORECAST = 4;  // Sales forecast
-		
+
 		public static final int ELEMENT_PURCHASE_PROPOSAL = 5;  // Purchase proposal
-		
+
 		public static final int ELEMENT_MANUFACTURING_ORDER = 6;  // Manufacturing order
 		public static final int ELEMENT_MANUFACTURING_ORDER_NEED = 7;  // Need manufacturing order
-		
+
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL = 8;  // Manufacturing proposal
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL_NEED = 9;  // Need manufacturing proposal
-		
-		
+
+
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock
 		public static final int TYPE_OUT = 2;  // Out of stock
-		
+
 		// APPLICATION FIELD SELECT
-		public static final int APPLICATION_FIELD_MRP = 1;  
-		public static final int APPLICATION_FIELD_MPS = 2;  
-	
-	
+		public static final int APPLICATION_FIELD_MRP = 1;
+		public static final int APPLICATION_FIELD_MPS = 2;
+
+
 	]]></extra-code>
-      
+
   </entity>
 
 </domain-models>

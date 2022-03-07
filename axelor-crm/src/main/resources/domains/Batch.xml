@@ -6,9 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Batch" lang="java" sequential="true">
-  	
-  	<many-to-one name="crmBatch" ref="com.axelor.apps.crm.db.CrmBatch" />
-  
+
+    <many-to-one name="crmBatch" ref="com.axelor.apps.crm.db.CrmBatch"/>
+
   </entity>
 
 </domain-models>

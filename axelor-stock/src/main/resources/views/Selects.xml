@@ -1,159 +1,165 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
-	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
-	<selection name="stock.stock.location.type.select">
-		<option value="1">Internal</option>
-		<option value="2">External</option>
-		<option value="3">Virtual</option>
-	</selection>
-	
-	<selection name="stock.move.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Planned</option>
-		<option value="3">Realized</option>
-		<option value="4">Canceled</option>
-	</selection>
-	
-	<selection name="stock.stock.move.available.status.select">
-		<option value="1">Available</option>
-		<option value="2">Partially available</option>
-		<option value="3">Unavailable</option>
-	</selection>
-	
-	<selection name="inventory.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Planned</option>
-		<option value="3">In progress</option>
-		<option value="4">Completed</option>
-		<option value="5">Validated</option>
-		<option value="6">Canceled</option>
-	</selection>
-	
-	<selection name="stock.move.type.select">
-		<option value="1">Internal move</option>
-		<option value="2">Outgoing move</option>
-		<option value="3">Incoming move</option>
-	</selection>
-	
-	<selection name="stock.stock.rules.use.case.select">
-		<option value="1">Used for MRP</option>
-		<option value="2">Stock control</option>
-	</selection>
-	
-	<selection name="stock.stock.rules.type.select">
-		<option value="1">Current</option>
-		<option value="2">Future</option>
-	</selection>
-	
-	<selection name="stock.stock.rules.order.alert.select">
-		<option value="1">Alert</option>
-		<option value="2">Purchase order</option>
-		<option value="3">Manufacturing order</option>
-	</selection>
-	
-	<selection name="stock.move.line.conformity.select">
-		<option value="1"></option>
-		<option value="2">Compliant</option>
-		<option value="3">Non-compliant</option>
-	</selection>
-	
-	<selection name="stock.move.line.available.status.select">
-		<option value="1">Available</option>
-		<option value="2">Av. for product</option>
-		<option value="3">Missing</option>
-	</selection>
-	
-	<selection name="rating.icon.select">
-		<option value="0.00" icon="img/rating/rating-0.00.png">0.00</option>
-		<option value="0.50" icon="img/rating/rating-0.50.png">0.50</option>
-		<option value="1.00" icon="img/rating/rating-1.00.png">1.00</option>
-		<option value="1.50" icon="img/rating/rating-1.50.png">1.50</option>
-		<option value="2.00" icon="img/rating/rating-2.00.png">2.00</option>
-		<option value="2.50" icon="img/rating/rating-2.50.png">2.50</option>
-		<option value="3.00" icon="img/rating/rating-3.00.png">3.00</option>
-		<option value="3.50" icon="img/rating/rating-3.50.png">3.50</option>
-		<option value="4.00" icon="img/rating/rating-4.00.png">4.00</option>
-		<option value="4.50" icon="img/rating/rating-4.50.png">4.50</option>
-		<option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
-	</selection>
-	
-	<selection name="stock.incoterm.allocation.select">
-		<option value="1">Buyer</option>
-		<option value="2">Seller</option>
-		<option value="3">Buyer/Seller</option>
-	</selection>
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-    <selection name="logistical.form.status.select">
-        <option value="1">Provision</option>
-        <option value="2">Carrier validated</option>
-        <option value="3">Collected</option>
-    </selection>
+  <selection name="stock.stock.location.type.select">
+    <option value="1">Internal</option>
+    <option value="2">External</option>
+    <option value="3">Virtual</option>
+  </selection>
 
-    <selection name="logistical.form.account.to.carrier.select">
-        <option value="1">Company account</option>
-        <option value="2">Customer account</option>
-    </selection>
+  <selection name="stock.move.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">Realized</option>
+    <option value="4">Canceled</option>
+  </selection>
 
-    <selection name="logistical.form.line.type.select">
-        <option value="1">Parcel</option>
-        <option value="2">Pallet</option>
-        <option value="3">Detail</option>
-    </selection>
-    
-    <selection name="sequence.generic.code.select" id="stock.sequence.generic.code.select">
-    	<option value="intStockMove">Internal stock move</option>
-		<option value="outStockMove">Delivery stock move</option>
-		<option value="inStockMove">Receipt stock move</option>
-		<option value="inventory">Inventory</option>
-		<option value="productTrackingNumber">Product tracking number</option>
-		<option value="logisticalForm">Logistical form</option>
-	</selection>
-	
-	<selection name="tracking.number.configuration.tracking.number.order.select">
-		<option value="1">FIFO</option>
-		<option value="2">LIFO</option>
-	</selection>
+  <selection name="stock.stock.move.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Partially available</option>
+    <option value="3">Unavailable</option>
+  </selection>
 
-	<selection name="stockmove.origin.select">
-		<option value="com.axelor.apps.stock.db.Inventory" data-grid="inventory-grid" data-form="inventory-form">Inventory</option>
-		<option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid" data-form="sale-order-form">Sale order</option>
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
-		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
-		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
-		<option value="com.axelor.apps.stock.db.StockCorrection" data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
-	</selection>
-	
-	<selection name='inventory.export.format.select'>
-		<option value="pdf">PDF</option>
-		<option value="xlsx">XLS</option>
-		<option value="csv">CSV</option>
-		<option value="ods">ODS</option>
-	</selection>
+  <selection name="inventory.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">In progress</option>
+    <option value="4">Completed</option>
+    <option value="5">Validated</option>
+    <option value="6">Canceled</option>
+  </selection>
 
-	<selection name="stock.correction.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Validated</option>
-	</selection>
+  <selection name="stock.move.type.select">
+    <option value="1">Internal move</option>
+    <option value="2">Outgoing move</option>
+    <option value="3">Incoming move</option>
+  </selection>
 
-	<selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
-		<option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
-	</selection>
+  <selection name="stock.stock.rules.use.case.select">
+    <option value="1">Used for MRP</option>
+    <option value="2">Stock control</option>
+  </selection>
 
-	<selection name='stock.stock.location.value.type'>
-		<option value="1">WAP value</option>
-		<option value="2">Accounting value</option>
-		<option value="3">Sale value</option>
-		<option value="4">Purchase value</option>
-	</selection>
-  
-    <selection name="stock.stock.location.printing.type">
-        <option value="1">Location financial data</option>
-        <option value="2">Stock location content</option>
-    </selection>
+  <selection name="stock.stock.rules.type.select">
+    <option value="1">Current</option>
+    <option value="2">Future</option>
+  </selection>
+
+  <selection name="stock.stock.rules.order.alert.select">
+    <option value="1">Alert</option>
+    <option value="2">Purchase order</option>
+    <option value="3">Manufacturing order</option>
+  </selection>
+
+  <selection name="stock.move.line.conformity.select">
+    <option value="1"></option>
+    <option value="2">Compliant</option>
+    <option value="3">Non-compliant</option>
+  </selection>
+
+  <selection name="stock.move.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Av. for product</option>
+    <option value="3">Missing</option>
+  </selection>
+
+  <selection name="rating.icon.select">
+    <option value="0.00" icon="img/rating/rating-0.00.png">0.00</option>
+    <option value="0.50" icon="img/rating/rating-0.50.png">0.50</option>
+    <option value="1.00" icon="img/rating/rating-1.00.png">1.00</option>
+    <option value="1.50" icon="img/rating/rating-1.50.png">1.50</option>
+    <option value="2.00" icon="img/rating/rating-2.00.png">2.00</option>
+    <option value="2.50" icon="img/rating/rating-2.50.png">2.50</option>
+    <option value="3.00" icon="img/rating/rating-3.00.png">3.00</option>
+    <option value="3.50" icon="img/rating/rating-3.50.png">3.50</option>
+    <option value="4.00" icon="img/rating/rating-4.00.png">4.00</option>
+    <option value="4.50" icon="img/rating/rating-4.50.png">4.50</option>
+    <option value="5.00" icon="img/rating/rating-5.00.png">5.00</option>
+  </selection>
+
+  <selection name="stock.incoterm.allocation.select">
+    <option value="1">Buyer</option>
+    <option value="2">Seller</option>
+    <option value="3">Buyer/Seller</option>
+  </selection>
+
+  <selection name="logistical.form.status.select">
+    <option value="1">Provision</option>
+    <option value="2">Carrier validated</option>
+    <option value="3">Collected</option>
+  </selection>
+
+  <selection name="logistical.form.account.to.carrier.select">
+    <option value="1">Company account</option>
+    <option value="2">Customer account</option>
+  </selection>
+
+  <selection name="logistical.form.line.type.select">
+    <option value="1">Parcel</option>
+    <option value="2">Pallet</option>
+    <option value="3">Detail</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select" id="stock.sequence.generic.code.select">
+    <option value="intStockMove">Internal stock move</option>
+    <option value="outStockMove">Delivery stock move</option>
+    <option value="inStockMove">Receipt stock move</option>
+    <option value="inventory">Inventory</option>
+    <option value="productTrackingNumber">Product tracking number</option>
+    <option value="logisticalForm">Logistical form</option>
+  </selection>
+
+  <selection name="tracking.number.configuration.tracking.number.order.select">
+    <option value="1">FIFO</option>
+    <option value="2">LIFO</option>
+  </selection>
+
+  <selection name="stockmove.origin.select">
+    <option value="com.axelor.apps.stock.db.Inventory" data-grid="inventory-grid"
+      data-form="inventory-form">Inventory</option>
+    <option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid"
+      data-form="sale-order-form">Sale order</option>
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
+      data-form="purchase-order-form">Purchase order</option>
+    <option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid"
+      data-form="manuf-order-form">Manufacturing order</option>
+    <option value="com.axelor.apps.production.db.OperationOrder"
+      data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
+    <option value="com.axelor.apps.stock.db.StockCorrection"
+      data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
+  </selection>
+
+  <selection name='inventory.export.format.select'>
+    <option value="pdf">PDF</option>
+    <option value="xlsx">XLS</option>
+    <option value="csv">CSV</option>
+    <option value="ods">ODS</option>
+  </selection>
+
+  <selection name="stock.correction.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Validated</option>
+  </selection>
+
+  <selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
+    <option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
+  </selection>
+
+  <selection name='stock.stock.location.value.type'>
+    <option value="1">WAP value</option>
+    <option value="2">Accounting value</option>
+    <option value="3">Sale value</option>
+    <option value="4">Purchase value</option>
+  </selection>
+
+  <selection name="stock.stock.location.printing.type">
+    <option value="1">Location financial data</option>
+    <option value="2">Stock location content</option>
+  </selection>
 
 </object-views>

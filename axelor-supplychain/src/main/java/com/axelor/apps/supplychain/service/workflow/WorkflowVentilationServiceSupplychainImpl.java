@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -291,11 +291,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
           qty = qty.add(invoiceLine.getQty());
         }
 
-        BigDecimal qtyToCompare = qty;
-
         Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qtyToCompare =
+          qty =
               unitConversionService.convert(
                   invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
         } catch (AxelorException e) {
@@ -306,7 +304,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                   + e.getMessage());
         }
 
-        if (stockMoveLine.getRealQty().compareTo(qtyToCompare) >= 0) {
+        if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
         } else {
           throw new AxelorException(

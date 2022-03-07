@@ -9,17 +9,20 @@
 
     <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255"/>
-    <many-to-one name="bank" title="BIC (Bank Identifier)" ref="com.axelor.apps.base.db.Bank" required="true"/>
-    <many-to-one name="bankAddress" title="SWIFT address" ref="com.axelor.apps.base.db.BankAddress"/>
+    <many-to-one name="bank" title="BIC (Bank Identifier)"
+      ref="com.axelor.apps.base.db.Bank" required="true"/>
+    <many-to-one name="bankAddress" title="SWIFT address"
+      ref="com.axelor.apps.base.db.BankAddress"/>
     <string name="iban" title="IBAN / BBAN" required="true"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
+      massUpdate="true"/>
     <string name="bankCode" title="Bank Code" max="255"/>
     <string name="sortCode" title="Sort Code" max="255"/>
-    <string name="accountNbr" title="Account Number" max="255" />
+    <string name="accountNbr" title="Account Number" max="255"/>
     <string name="bbanKey" title="BBan Key" max="255"/>
     <string name="ibanBic" title="IBAN / BBAN + BIC" max="255"/>
     <string name="label" title="Label"/>
-    <boolean name="isDefault" title="Default" />
+    <boolean name="isDefault" title="Default"/>
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[
             String str = "";
@@ -46,11 +49,11 @@
         ]]>
     </string>
     <boolean name="active" title="Active" default="true" massUpdate="true"/>
-    <string name="code" />
+    <string name="code"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 
-	<finder-method name="findDefaultByPartner" using="partner"
-		filter="self.partner = :partner AND self.isDefault = TRUE" />
+    <finder-method name="findDefaultByPartner" using="partner"
+      filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
     <entity-listener class="com.axelor.apps.base.db.repo.BankDetailsListener"/>

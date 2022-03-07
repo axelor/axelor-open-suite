@@ -6,24 +6,29 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockMove" lang="java">
-  
+
     <!-- Onglet Configuration -->
-    <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice"  mappedBy="stockMoveSet"/>
+    <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice"
+      title="Invoice" mappedBy="stockMoveSet"/>
     <string name="specificPackage" large="true"/>
 
-   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-   	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
-   	
-    <integer name="pfpValidateStatusSelect" title="PFP Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
-    <integer name="invoicingStatusSelect" title="Invoicing status" selection="supplychain.stock.move.invoicing.status.select" readonly="true" default="0"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    <string name="deliveryCondition" title="Delivery conditions" large="true"
+      multiline="true"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
+    <integer name="pfpValidateStatusSelect" title="PFP Status"
+      selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+    <integer name="invoicingStatusSelect" title="Invoicing status"
+      selection="supplychain.stock.move.invoicing.status.select" readonly="true" default="0"/>
+
+    <finder-method name="findAllBySaleOrderAndStatus"
+      using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>
     <![CDATA[
 		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
 		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
-		
+
 		// INVOICE
 	    public static final int INVOICE_ALL = 1;
 	    public static final int INVOICE_PARTIALLY = 2;
@@ -36,7 +41,7 @@
     </extra-code>
 
     <track on="UPDATE">
-		<field name="pfpValidateStatusSelect"/>
+      <field name="pfpValidateStatusSelect"/>
       <field name="invoiceSet"/>
     </track>
 

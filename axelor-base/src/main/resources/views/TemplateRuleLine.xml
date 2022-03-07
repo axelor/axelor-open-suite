@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="template-rule-line-grid" title="Template rule lines" model="com.axelor.apps.base.db.TemplateRuleLine">
-        <field name="sequence"/>
-        <field name="template" form-view="template-form" grid-view="template-grid"/>
-        <field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid"/>
-    </grid>
-    
-    <form name="template-rule-line-form" title="Template rule line" model="com.axelor.apps.base.db.TemplateRuleLine"  
-    onNew="action-template-rule-line-attrs-template-domain" onLoad="action-template-rule-line-attrs-template-domain">
-    	<panel name="mainPanel">
-	        <field name="sequence"/>
-	        <spacer name="sequenceSpacer"/>
-	        <field name="template" form-view="template-form" grid-view="template-grid"/>
-	        <field name="metaAction" domain="self.type = 'action-condition'" form-view="meta-action-form" grid-view="meta-action-grid"/>
-        </panel>
-    </form>
-    
-    <action-attrs name="action-template-rule-line-attrs-template-domain">
-    	<attribute name="domain" for="template" expr="eval: (__parent__?.metaModel) ? &quot;self.metaModel.name = \'${__parent__?.metaModel?.name}\'&quot; : null"/>
-    </action-attrs>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="template-rule-line-grid" title="Template rule lines"
+    model="com.axelor.apps.base.db.TemplateRuleLine">
+    <field name="sequence"/>
+    <field name="template" form-view="template-form" grid-view="template-grid"/>
+    <field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid"/>
+  </grid>
+
+  <form name="template-rule-line-form" title="Template rule line"
+    model="com.axelor.apps.base.db.TemplateRuleLine"
+    onNew="action-template-rule-line-attrs-template-domain"
+    onLoad="action-template-rule-line-attrs-template-domain">
+    <panel name="mainPanel">
+      <field name="sequence"/>
+      <spacer name="sequenceSpacer"/>
+      <field name="template" form-view="template-form" grid-view="template-grid"/>
+      <field name="metaAction" domain="self.type = 'action-condition'"
+        form-view="meta-action-form" grid-view="meta-action-grid"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-template-rule-line-attrs-template-domain">
+    <attribute name="domain" for="template"
+      expr="eval: (__parent__?.metaModel) ? &quot;self.metaModel.name = \'${__parent__?.metaModel?.name}\'&quot; : null"/>
+  </action-attrs>
+
 </object-views>

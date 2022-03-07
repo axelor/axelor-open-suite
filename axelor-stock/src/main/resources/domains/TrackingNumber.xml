@@ -7,16 +7,16 @@
 
   <entity name="TrackingNumber" lang="java">
 
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
-	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
-	<string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
-	<decimal name="counter" title="Counter" precision="20" scale="10"/>
-	
-	<unique-constraint columns="product,trackingNumberSeq"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+    <date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
+    <string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
+    <decimal name="counter" title="Counter" precision="20" scale="10"/>
 
-	<finder-method name="findBySeq" using="trackingNumberSeq"/>
-	
+    <unique-constraint columns="product,trackingNumberSeq"/>
+
+    <finder-method name="findBySeq" using="trackingNumberSeq"/>
+
   </entity>
 
 </domain-models>

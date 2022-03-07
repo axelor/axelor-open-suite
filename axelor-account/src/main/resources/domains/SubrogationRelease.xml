@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="account" package="com.axelor.apps.account.db" />
+  <module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="SubrogationRelease" lang="java">
+  <entity name="SubrogationRelease" lang="java">
 
-		<string name="sequenceNumber" namecolumn="true" readonly="true" />
+    <string name="sequenceNumber" namecolumn="true" readonly="true"/>
 
-		<integer name="statusSelect" title="Status"
-			selection="account.subrogation.release.status.select" readonly="true"
-			default="1" />
+    <integer name="statusSelect" title="Status"
+      selection="account.subrogation.release.status.select" readonly="true" default="1"/>
 
-		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" />
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 
-		<many-to-many name="invoiceSet" title="Release details"
-			ref="com.axelor.apps.account.db.Invoice" />
-			
-		<date name="transmissionDate" title="Transmission Date" readonly="true"/>
-		<date name="accountingDate" title="Accounting Date"/>
+    <many-to-many name="invoiceSet" title="Release details"
+      ref="com.axelor.apps.account.db.Invoice"/>
 
-		<string name="comments" title="Comments" large="true"/>
-		<string name="cancelReason" title="Reasons of cancelation" large="true"/>
+    <date name="transmissionDate" title="Transmission Date" readonly="true"/>
+    <date name="accountingDate" title="Accounting Date"/>
 
-		<one-to-many name="moveList" ref="com.axelor.apps.account.db.Move" readonly="true" hidden="true"/>
-		
-		<extra-code><![CDATA[
+    <string name="comments" title="Comments" large="true"/>
+    <string name="cancelReason" title="Reasons of cancelation" large="true"/>
+
+    <one-to-many name="moveList" ref="com.axelor.apps.account.db.Move" readonly="true"
+      hidden="true"/>
+
+    <extra-code><![CDATA[
 			// STATUS SELECT
 			public static final int STATUS_NEW = 1;
 			public static final int STATUS_TRANSMITTED = 2;
@@ -34,16 +34,16 @@
 			public static final int STATUS_CLEARED = 4;
 			public static final int STATUS_CANCELED = 5;
 		]]></extra-code>
-		
-		<track>
-			<field name="statusSelect"/>
-			<message if="true" on="CREATE">New release</message>
-			<message if="statusSelect == 2">Release transmitted</message>
-			<message if="statusSelect == 3">Release accounted</message>
-			<message if="statusSelect == 4">Release cleared</message>
-			<message if="statusSelect == 5">Release canceled</message>
-		</track>
 
-	</entity>
+    <track>
+      <field name="statusSelect"/>
+      <message if="true" on="CREATE">New release</message>
+      <message if="statusSelect == 2">Release transmitted</message>
+      <message if="statusSelect == 3">Release accounted</message>
+      <message if="statusSelect == 4">Release cleared</message>
+      <message if="statusSelect == 5">Release canceled</message>
+    </track>
+
+  </entity>
 
 </domain-models>

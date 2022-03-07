@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wkfs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  
-  <wkf code="POWKF" name="Commande produit" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0" appBuilder="PRD">
-  	<xml>
+
+  <wkf code="POWKF" name="Commande produit" isJson="true" model="ProductOrder"
+    statusField="status" displayTypeSelect="0" appBuilder="PRD">
+    <xml>
   		<![CDATA[
   		<?xml version="1.0" encoding="UTF-8"?>
 		<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:x="http://axelor.com" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
@@ -99,59 +100,72 @@
 		  </bpmndi:BPMNDiagram>
 		</definitions>
   		]]>
-  	</xml>
+    </xml>
   </wkf>
-  
-  <wkfNode wkf="POWKF" name="Brouillon" title="Brouillon" nodeType="0" sequence="1" xmlId="StartEvent_07npy19"/>
-  <wkfNode wkf="POWKF" name="Confirmé" title="Confirmé" nodeType="1" sequence="2" xmlId="Task_07my1i6" />
-  <wkfNode wkf="POWKF" name="Validé" title="Validé" nodeType="1" sequence="3" xmlId="Task_0k79fbo" />
-  <wkfNode wkf="POWKF" name="Annulé" title="Annulé" nodeType="1" sequence="4" xmlId="Task_069h0a2"/>
-  <wkfNode wkf="POWKF" name="Terminé" title="Terminé" nodeType="2" sequence="5" xmlId="EndEvent_062urgf"/>
-  
-  <transition wkf="POWKF" name="Confirmer" source="Brouillon" target="Confirmé" isButton="true" buttonTitle="Confirmer" xmlId="SequenceFlow_0qljt6y"/>
-  <transition wkf="POWKF" name="Valider" source="Confirmé" target="Validé" isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Êtes-vous sûr de vouloir valider cette commande?" successMsg="Commande validée" />
-  <transition wkf="POWKF" name="Annuler" source="Confirmé" target="Annulé" isButton="true" buttonTitle="Annuler" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1" alertMsg="Êtes-vous sûr de vouloir annuler cette commande??" />
-  <transition wkf="POWKF" name="Terminer" source="Validé" target="Terminé" isButton="true" buttonTitle="Terminer" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2" alertMsg="Commande terminée" />
-  <transition wkf="POWKF" name="Réinitialiser" source="Annulé" target="Brouillon" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
-  
+
+  <wkfNode wkf="POWKF" name="Brouillon" title="Brouillon" nodeType="0" sequence="1"
+    xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="POWKF" name="Confirmé" title="Confirmé" nodeType="1" sequence="2"
+    xmlId="Task_07my1i6"/>
+  <wkfNode wkf="POWKF" name="Validé" title="Validé" nodeType="1" sequence="3"
+    xmlId="Task_0k79fbo"/>
+  <wkfNode wkf="POWKF" name="Annulé" title="Annulé" nodeType="1" sequence="4"
+    xmlId="Task_069h0a2"/>
+  <wkfNode wkf="POWKF" name="Terminé" title="Terminé" nodeType="2" sequence="5"
+    xmlId="EndEvent_062urgf"/>
+
+  <transition wkf="POWKF" name="Confirmer" source="Brouillon" target="Confirmé"
+    isButton="true" buttonTitle="Confirmer" xmlId="SequenceFlow_0qljt6y"/>
+  <transition wkf="POWKF" name="Valider" source="Confirmé" target="Validé"
+    isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1"
+    alertMsg="Êtes-vous sûr de vouloir valider cette commande?" successMsg="Commande validée"/>
+  <transition wkf="POWKF" name="Annuler" source="Confirmé" target="Annulé"
+    isButton="true" buttonTitle="Annuler" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1"
+    alertMsg="Êtes-vous sûr de vouloir annuler cette commande??"/>
+  <transition wkf="POWKF" name="Terminer" source="Validé" target="Terminé"
+    isButton="true" buttonTitle="Terminer" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2"
+    alertMsg="Commande terminée"/>
+  <transition wkf="POWKF" name="Réinitialiser" source="Annulé" target="Brouillon"
+    isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr"/>
+
   <node wkf="POWKF" name="Brouillon">
-  		<incomings>
-  			<incoming name="Réinitialiser" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Confirmer" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Réinitialiser"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Confirmer"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Confirmé">
-  		<incomings>
-  			<incoming name="Confirmer" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Valider" />
-  			<outgoing name="Annuler" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Confirmer"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Valider"/>
+      <outgoing name="Annuler"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Validé">
-  		<incomings>
-  			<incoming name="Valider" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Terminer" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Valider"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Terminer"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Annulé">
-  		<incomings>
-  			<incoming name="Annuler" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Réinitialiser" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Annuler"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Réinitialiser"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Terminé">
-  		<incomings>
-  			<incoming name="Terminer" />
-  		</incomings>
+    <incomings>
+      <incoming name="Terminer"/>
+    </incomings>
   </node>
-  
-  <workflow code="POWKF" />
+
+  <workflow code="POWKF"/>
 </wkfs>

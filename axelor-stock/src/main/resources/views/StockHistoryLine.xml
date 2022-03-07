@@ -7,22 +7,29 @@
     canSave="false" width="large" canNew="false" canCopy="false"
     onNew="action-stock-history-line-group-onnew">
     <panel name="parameterPanel">
-      <field name="$product" colSpan="4" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" readonly="true" domain="self.dtype = 'Product'"/>
-      <field name="$company" colSpan="4" title="Company" type="many-to-one" target="com.axelor.apps.base.db.Company" readonly="true"/>
-      <field name="$stockLocation" colSpan="4" title="Stock location" type="many-to-one" readonly="true"
-        target="com.axelor.apps.stock.db.StockLocation"/>
-      <field name="$beginDate" colSpan="4" title="From date" type="date" onChange="action-stock-history-line-group-date-onchange"/>
-      <field name="$endDate" colSpan="4" title="End date" type="date" onChange="action-stock-history-line-group-date-onchange"/>
-      <field name="$nbOfPeriod" colSpan="4" title="Number of periods" readonly="true" type="integer"/>
+      <field name="$product" colSpan="4" title="Product" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" readonly="true" domain="self.dtype = 'Product'"/>
+      <field name="$company" colSpan="4" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" readonly="true"/>
+      <field name="$stockLocation" colSpan="4" title="Stock location" type="many-to-one"
+        readonly="true" target="com.axelor.apps.stock.db.StockLocation"/>
+      <field name="$beginDate" colSpan="4" title="From date" type="date"
+        onChange="action-stock-history-line-group-date-onchange"/>
+      <field name="$endDate" colSpan="4" title="End date" type="date"
+        onChange="action-stock-history-line-group-date-onchange"/>
+      <field name="$nbOfPeriod" colSpan="4" title="Number of periods" readonly="true"
+        type="integer"/>
     </panel>
     <panel name="stockHistoryLineListPanel" colSpan="12">
-      <field name="$stockHistoryLineList" type="one-to-many" target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12"
-        readonly="true" x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
+      <field name="$stockHistoryLineList" type="one-to-many"
+        target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12" readonly="true"
+        x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
     </panel>
   </form>
 
-  <form title="Stock history line" name="stock-history-line-form" model="com.axelor.apps.stock.db.StockHistoryLine"
-  		onNew="action-stock-history-line-attrs-scale" onLoad="action-stock-history-line-attrs-scale">
+  <form title="Stock history line" name="stock-history-line-form"
+    model="com.axelor.apps.stock.db.StockHistoryLine" onNew="action-stock-history-line-attrs-scale"
+    onLoad="action-stock-history-line-attrs-scale">
     <field name="label"/>
     <field name="countIncMvtStockPeriod"/>
     <field name="sumIncQtyPeriod"/>
@@ -32,7 +39,8 @@
     <field name="priceOutStockMovePeriod"/>
   </form>
 
-  <grid title="Stock history line" name="stock-history-line-grid" width="large" model="com.axelor.apps.stock.db.StockHistoryLine">
+  <grid title="Stock history line" name="stock-history-line-grid" width="large"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
     <field name="label" colSpan="3" showTitle="false"/>
     <field name="countIncMvtStockPeriod"/>
     <field name="sumIncQtyPeriod"/>
@@ -62,16 +70,20 @@
   </action-attrs>
 
   <action-attrs name="action-stock-history-line-attrs-compute-nb-of-periods">
-    <attribute name="value" for="$nbOfPeriod" expr="eval: java.time.temporal.ChronoUnit.MONTHS.between(LocalDate.parse(beginDate).withDayOfMonth(1), LocalDate.parse(endDate).withDayOfMonth(1)) + 1"/>
+    <attribute name="value" for="$nbOfPeriod"
+      expr="eval: java.time.temporal.ChronoUnit.MONTHS.between(LocalDate.parse(beginDate).withDayOfMonth(1), LocalDate.parse(endDate).withDayOfMonth(1)) + 1"/>
   </action-attrs>
-  
+
   <action-attrs name="action-stock-history-line-attrs-scale">
-    <attribute name="scale" for="sumIncQtyPeriod" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="sumOutQtyPeriod" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="sumIncQtyPeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="sumOutQtyPeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
   <action-method name="action-stock-history-line-method-fill-stock-history-line-list">
-    <call class="com.axelor.apps.stock.web.StockHistoryController" method="fillStockHistoryLineList"/>
+    <call class="com.axelor.apps.stock.web.StockHistoryController"
+      method="fillStockHistoryLineList"/>
   </action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,6 +78,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected PurchaseOrderRepository purchaseOrderRepo;
 
   @Inject protected ProductCompanyService productCompanyService;
+
+  @Inject protected CurrencyService currencyService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -401,7 +403,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      CurrencyService currencyService = Beans.get(CurrencyService.class);
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {

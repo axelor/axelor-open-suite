@@ -2,15 +2,17 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="calendar-user-grid" model="com.axelor.apps.base.db.ICalendarUser" title="Calendar Users">
-	  <field name="name" />
-	  <field name="email" />
-	</grid>
-	
-	<form name="calendar-user-form" model="com.axelor.apps.base.db.ICalendarUser" title="Calendar User" >
-	  <field name="name" />
-	  <field name="email" />
-	</form>
+
+  <grid name="calendar-user-grid" model="com.axelor.apps.base.db.ICalendarUser"
+    title="Calendar Users">
+    <field name="name"/>
+    <field name="email"/>
+  </grid>
+
+  <form name="calendar-user-form" model="com.axelor.apps.base.db.ICalendarUser"
+    title="Calendar User">
+    <field name="name"/>
+    <field name="email"/>
+  </form>
 
 </object-views>

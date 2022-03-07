@@ -6,20 +6,22 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ProductVariantValue" lang="java">
-	
-	<string name="name" title="Name" required="true"/>
-	<string name="code" title="Code" required="true"/>
-	<string name="colorSelect" title="Display color" selection="color.name.selection"/>
-	<decimal name="priceExtra" title="Price Extra" precision="20" scale="10"/>
-	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select"/>
-	<many-to-one name="productVariantAttr" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
-	
-	<extra-code>
-		// APPLICATION PRICE SELECT
-		public static final int APPLICATION_SALE_PRICE = 0;
-		public static final int APPLICATION_COST_PRICE = 1;
-	</extra-code>
+
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true"/>
+    <string name="colorSelect" title="Display color" selection="color.name.selection"/>
+    <decimal name="priceExtra" title="Price Extra" precision="20" scale="10"/>
+    <integer name="applicationPriceSelect" title="Application"
+      selection="ibase.product.variant.value.application.price.select"/>
+    <many-to-one name="productVariantAttr"
+      ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+
+    <extra-code>
+      // APPLICATION PRICE SELECT
+      public static final int APPLICATION_SALE_PRICE = 0;
+      public static final int APPLICATION_COST_PRICE = 1;
+    </extra-code>
 
   </entity>
-  
+
 </domain-models>

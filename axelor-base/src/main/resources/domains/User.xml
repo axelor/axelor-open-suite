@@ -6,14 +6,18 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
-  
-    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" massUpdate="true"/>
+
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Company"/>
+    <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"
+      title="Active company" massUpdate="true"/>
     <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <datetime name="today" title="Today date" tz="true"/>
-    <many-to-many name="teamSet" ref="com.axelor.team.db.Team"  title="Teams" mappedBy="members"/>
-    <many-to-one name="activeTeam" ref="com.axelor.team.db.Team"  title="Active Team" massUpdate="true"/>
-    
+    <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"
+      mappedBy="members"/>
+    <many-to-one name="activeTeam" ref="com.axelor.team.db.Team" title="Active Team"
+      massUpdate="true"/>
+
     <string name="fullName" namecolumn="true" search="partner,name" title="Partner name">
     	<![CDATA[
     	if(partner != null) {
@@ -24,57 +28,69 @@
     	}
     	return name;
     	]]>
-   	</string>
-   	<many-to-one name="iCalendar" ref="com.axelor.apps.base.db.ICalendar" title="Main calendar"/>
-   	<many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followed users"/>
-    <one-to-many name="calendarManagementList" ref="com.axelor.apps.base.db.CalendarManagement" title="Calendars permissions" mappedBy="parentUser"/>
-	<many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" />
-    <boolean name="useSignatureForSalesQuotations" title="Use signature for sales quotations"/>
-    <boolean name="useSignatureForPurchaseQuotations" title="Use signature for purchase quotations"/>
-    <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id" massUpdate="true"/>
-   	<string name="language" selection="select.language" massUpdate="true"/>
-   	<boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
-   	<boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
-   	<boolean name="blocked" default="true" help="Specify whether to block the user for an indefinite period." massUpdate="true"/>
+    </string>
+    <many-to-one name="iCalendar" ref="com.axelor.apps.base.db.ICalendar"
+      title="Main calendar"/>
+    <many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User"
+      title="Followed users"/>
+    <one-to-many name="calendarManagementList"
+      ref="com.axelor.apps.base.db.CalendarManagement" title="Calendars permissions"
+      mappedBy="parentUser"/>
+    <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile"/>
+    <boolean name="useSignatureForSalesQuotations"
+      title="Use signature for sales quotations"/>
+    <boolean name="useSignatureForPurchaseQuotations"
+      title="Use signature for purchase quotations"/>
+    <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id"
+      massUpdate="true"/>
+    <string name="language" selection="select.language" massUpdate="true"/>
+    <boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
+    <boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
+    <boolean name="blocked" default="true"
+      help="Specify whether to block the user for an indefinite period." massUpdate="true"/>
     <boolean name="sendEmailUponPasswordChange"/>
     <string name="homeAction" massUpdate="true"/>
-    <boolean name="receiveEmails" title="Receive notifications by email" help="Allow notifications to be sent by email" default="true"/>
-    <many-to-many name="followedMetaModelSet" title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
-    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount" title="Email accounts"/>
+    <boolean name="receiveEmails" title="Receive notifications by email"
+      help="Allow notifications to be sent by email" default="true"/>
+    <many-to-many name="followedMetaModelSet"
+      title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
+    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount"
+      title="Email accounts"/>
 
     <string name="transientPassword" transient="true"/>
-    
+
     <integer name="stepStatusSelect" selection="base.user.form.step.select" default="0"/>
 
     <string name="attrs" json="true"/>
-    
+
     <string name="emailSignature" title="Email signature" large="true"/>
 
-    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+    <finder-method name="findByCode" using="code"
+      filter="LOWER(self.code) = LOWER(:code)"/>
 
     <track>
-			<field name="name"/>
-			<field name="code"/>
-			<field name="email"/>
-			<field name="theme"/>
-			<field name="activateOn"/>
-			<field name="expiresOn"/>
-			<field name="activeCompany"/>
-			<field name="partner"/>
-			<field name="today"/>
-			<field name="activeTeam"/>
-			<field name="fullName"/>
-			<field name="iCalendar"/>
-			<field name="electronicSignature"/>
-			<field name="group"/>
-			<field name="language"/>
-			<field name="singleTab"/>
-			<field name="noHelp"/>
-			<field name="blocked"/>
-			<field name="sendEmailUponPasswordChange"/>
-			<field name="homeAction"/>
-			<field name="receiveEmails"/>
-	</track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="email"/>
+      <field name="theme"/>
+      <field name="activateOn"/>
+      <field name="expiresOn"/>
+      <field name="activeCompany"/>
+      <field name="partner"/>
+      <field name="today"/>
+      <field name="activeTeam"/>
+      <field name="fullName"/>
+      <field name="iCalendar"/>
+      <field name="electronicSignature"/>
+      <field name="group"/>
+      <field name="language"/>
+      <field name="singleTab"/>
+      <field name="noHelp"/>
+      <field name="blocked"/>
+      <field name="sendEmailUponPasswordChange"/>
+      <field name="homeAction"/>
+      <field name="receiveEmails"/>
+    </track>
 
   </entity>
 

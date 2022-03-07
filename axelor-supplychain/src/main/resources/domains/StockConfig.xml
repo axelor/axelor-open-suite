@@ -6,11 +6,12 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockConfig" lang="java" cacheable="true">
-      <many-to-one name="directOrderStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Direct order default stock location"/>
-      
-      <track>
-      	<field name="directOrderStockLocation" on="UPDATE"/>
-      </track>
+    <many-to-one name="directOrderStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Direct order default stock location"/>
+
+    <track>
+      <field name="directOrderStockLocation" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

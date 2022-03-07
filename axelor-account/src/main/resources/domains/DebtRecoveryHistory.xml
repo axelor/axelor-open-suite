@@ -6,17 +6,21 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="DebtRecoveryHistory" lang="java">
-  
-  	<many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery"/>
-	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="DebtRecoveryHistory.debtRecoveryMethodLine" />
-	<date name="debtRecoveryDate" title="Last debt recovery date"/>
-	<date name="referenceDate" title="Reference date"/>
-	<boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>
-	<boolean name="unknownAddressOK" title="Address unknown"/>
-	<decimal name="balanceDue" title="Partner Balance due"/>
-	<decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
-	<many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
+
+    <many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery"
+      title="Debt recovery"/>
+    <many-to-one name="debtRecoveryMethod"
+      ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
+    <many-to-one name="debtRecoveryMethodLine"
+      ref="com.axelor.apps.account.db.DebtRecoveryMethodLine"
+      title="DebtRecoveryHistory.debtRecoveryMethodLine"/>
+    <date name="debtRecoveryDate" title="Last debt recovery date"/>
+    <date name="referenceDate" title="Reference date"/>
+    <boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>
+    <boolean name="unknownAddressOK" title="Address unknown"/>
+    <decimal name="balanceDue" title="Partner Balance due"/>
+    <decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
+    <many-to-one name="userDebtRecovery" ref="com.axelor.auth.db.User" title="User"/>
 
     <string name="name" namecolumn="true" search="referenceDate,debtRecovery" title="Name">
 	    <![CDATA[
@@ -26,7 +30,7 @@
 	    	return name;
 	    ]]>
     </string>
-    
+
   </entity>
 
 </domain-models>

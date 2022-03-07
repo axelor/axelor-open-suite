@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking" orderBy="-blockingToDate">
-        <hilite if="$moment(blockingToDate) &gt; $moment(__date__)" background="danger"/>
-        <field name="companySet" form-view="company-form" grid-view="company-grid"/>
-        <field name="blockingSelect" selection="base.blocking.select"/>
-        <field name="blockingToDate"/>
-        <field name="blockingReason"/>
-        <field name="blockingByUser" />
-    </grid>
-    
-    <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" width="large"
-          onNew="action-blocking-record-realized-by">
-     	<panel name="mainPanel">
-            <field name="companySet" colSpan="12" widget="TagSelect" onSelect="action-blocking-attrs-domain-companySet" onNew="action-blocking-record-default-companies"/>
-            <field name="blockingSelect" colSpan="12" selection="base.blocking.select" widget="RadioSelect" required="true"/>
-            <field name="blockingToDate" colSpan="4" required="true"/>
-            <field name="blockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-            <field name="blockingByUser" colSpan="4" canNew="false" canEdit="false" canView="false" readonly="true" form-view="user-form" grid-view="user-grid"/>
-        </panel>
-    </form>
-    
-    <action-record name="action-blocking-record-realized-by" model="com.axelor.apps.base.db.Blocking">
-    	<field name="blockingByUser" expr="eval: __user__"/>
-    </action-record>
-    
-    <action-record name="action-blocking-record-default-companies" model="com.axelor.apps.base.db.Blocking">
-    	<field name="companySet" expr="eval: __repo__(Company).all().filter('self.id IN (?)', __parent__?.companySet?.collect{ it.id }).fetch().toSet()" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
-    </action-record>
+  <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking"
+    orderBy="-blockingToDate">
+    <hilite if="$moment(blockingToDate) &gt; $moment(__date__)" background="danger"/>
+    <field name="companySet" form-view="company-form" grid-view="company-grid"/>
+    <field name="blockingSelect" selection="base.blocking.select"/>
+    <field name="blockingToDate"/>
+    <field name="blockingReason"/>
+    <field name="blockingByUser"/>
+  </grid>
 
-    <action-attrs name="action-blocking-attrs-domain-companySet">
-        <attribute name="domain" for="companySet" expr="eval: null"/>
-        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + __parent__?.companySet?.collect{ it.id }.join(',') + ')'" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
-    </action-attrs>
+  <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking"
+    width="large" onNew="action-blocking-record-realized-by">
+    <panel name="mainPanel">
+      <field name="companySet" colSpan="12" widget="TagSelect"
+        onSelect="action-blocking-attrs-domain-companySet"
+        onNew="action-blocking-record-default-companies"/>
+      <field name="blockingSelect" colSpan="12" selection="base.blocking.select"
+        widget="RadioSelect" required="true"/>
+      <field name="blockingToDate" colSpan="4" required="true"/>
+      <field name="blockingReason" colSpan="4" form-view="stop-reason-form"
+        grid-view="stop-reason-grid"/>
+      <field name="blockingByUser" colSpan="4" canNew="false" canEdit="false" canView="false"
+        readonly="true" form-view="user-form" grid-view="user-grid"/>
+    </panel>
+  </form>
+
+  <action-record name="action-blocking-record-realized-by"
+    model="com.axelor.apps.base.db.Blocking">
+    <field name="blockingByUser" expr="eval: __user__"/>
+  </action-record>
+
+  <action-record name="action-blocking-record-default-companies"
+    model="com.axelor.apps.base.db.Blocking">
+    <field name="companySet"
+      expr="eval: __repo__(Company).all().filter('self.id IN (?)', __parent__?.companySet?.collect{ it.id }).fetch().toSet()"
+      if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
+  </action-record>
+
+  <action-attrs name="action-blocking-attrs-domain-companySet">
+    <attribute name="domain" for="companySet" expr="eval: null"/>
+    <attribute name="domain" for="companySet"
+      expr="eval: 'self.id IN (' + __parent__?.companySet?.collect{ it.id }.join(',') + ')'"
+      if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
+  </action-attrs>
 
 </object-views>

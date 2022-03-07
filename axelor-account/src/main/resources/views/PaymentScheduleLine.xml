@@ -1,102 +1,165 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="payment-schedule-line-grid" title="Schedule lines"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
-		<field name="paymentSchedule" width="120" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" aggregate="sum"/>
-		<field name="inTaxAmountPaid" aggregate="sum"/>
-		<field name="scheduleDate" />
-		<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
-		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="statusSelect" />
-		<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-		<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
-        <field name="paymentSchedule.statusSelect" hidden="true"/>
-        <button name="rejectBtn" title="Reject" icon="fa-times"
-          onClick="action-payment-schedule-line-show-reject-wizard"
-          readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
-          if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
-	</grid>
+  <grid name="payment-schedule-line-grid" title="Schedule lines"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
+    <field name="paymentSchedule" width="120" form-view="payment-schedule-form"
+      grid-view="payment-schedule-grid"/>
+    <field name="scheduleLineSeq"/>
+    <field name="inTaxAmount" aggregate="sum"/>
+    <field name="inTaxAmountPaid" aggregate="sum"/>
+    <field name="scheduleDate"/>
+    <field name="debitBlockingOk"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="rejectDate"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="interbankCodeLine"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment" form-view="interbank-code-line-form"
+      grid-view="interbank-code-line-grid"/>
+    <field name="statusSelect"/>
+    <field name="debitNumber"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="fromReject"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="paymentSchedule.statusSelect" hidden="true"/>
+    <button name="rejectBtn" title="Reject" icon="fa-times"
+      onClick="action-payment-schedule-line-show-reject-wizard"
+      readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+  </grid>
 
-	<form name="payment-schedule-line-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
-		<panel name="mainPanel" >
-			<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" readonly="true" />
-			<field name="scheduleLineSeq" />
-			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2"/>
-			<field name="inTaxAmountPaid" readonlyIf="fromReject || statusSelect > 2" />
-			<field name="scheduleDate" readonlyIf="statusSelect > 2"/>
-			<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  />
-			<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  />
-			<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-			<field name="statusSelect" />
-			<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-			<field name="rejectMoveLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="fromReject" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-		</panel>
-	</form>
+  <form name="payment-schedule-line-form" title="Schedule line"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+    <panel name="mainPanel">
+      <field name="paymentSchedule" form-view="payment-schedule-form"
+        grid-view="payment-schedule-grid" readonly="true"/>
+      <field name="scheduleLineSeq"/>
+      <field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2"/>
+      <field name="inTaxAmountPaid" readonlyIf="fromReject || statusSelect > 2"/>
+      <field name="scheduleDate" readonlyIf="statusSelect > 2"/>
+      <field name="debitBlockingOk"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="rejectDate"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="interbankCodeLine"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment" form-view="interbank-code-line-form"
+        grid-view="interbank-code-line-grid"/>
+      <field name="statusSelect"/>
+      <field name="debitNumber"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="rejectMoveLine"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment" form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="advanceOrPaymentMove"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment" form-view="move-form" grid-view="move-grid"/>
+      <field name="advanceMoveLine"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment" form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="fromReject"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+    </panel>
+  </form>
 
-	<grid name="payment-schedule-line-payment-schedule-grid" title="Schedule lines"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
-		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" aggregate="sum"/>
-		<field name="scheduleDate"  />
-		<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
-		<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"/>
-		<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-		<field name="statusSelect" />
-        <field name="paymentSchedule.statusSelect" hidden="true"/>
-        <button name="rejectBtn" title="Reject" icon="fa-times"
-          onClick="action-payment-schedule-line-show-reject-wizard"
-          readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
-          if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
-	</grid>
+  <grid name="payment-schedule-line-payment-schedule-grid" title="Schedule lines"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
+    <field name="scheduleLineSeq"/>
+    <field name="inTaxAmount" aggregate="sum"/>
+    <field name="scheduleDate"/>
+    <field name="debitBlockingOk"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="rejectDate"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment"/>
+    <field name="interbankCodeLine"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+      if-module="axelor-bank-payment" form-view="interbank-code-line-form"
+      grid-view="interbank-code-line-grid"/>
+    <field name="statusSelect"/>
+    <field name="paymentSchedule.statusSelect" hidden="true"/>
+    <button name="rejectBtn" title="Reject" icon="fa-times"
+      onClick="action-payment-schedule-line-show-reject-wizard"
+      readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
+      if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+  </grid>
 
-	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
-		model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
-		<panel name="mainPanel">
-			<field name="scheduleLineSeq" />
-			<field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2" />
-			<field name="scheduleDate" readonlyIf="statusSelect > 2" />
-			<field name="debitBlockingOk" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-			<field name="rejectDate" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment" />
-			<field name="interbankCodeLine" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" if-module="axelor-bank-payment"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
-			<field name="debitNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  if-module="axelor-bank-payment" />
-			<field name="rejectMoveLine"  if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="advanceOrPaymentMove" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-form" grid-view="move-grid"/>
-			<field name="advanceMoveLine" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-line-form" grid-view="move-line-grid"/>
-            <field name="fromReject" if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" readonly="true" showTitle="false">
-              <viewer><![CDATA[
+  <form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" width="large">
+    <panel name="mainPanel">
+      <field name="scheduleLineSeq"/>
+      <field name="inTaxAmount" readonlyIf="fromReject || statusSelect > 2"/>
+      <field name="scheduleDate" readonlyIf="statusSelect > 2"/>
+      <field name="debitBlockingOk"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="rejectDate"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="interbankCodeLine"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment" form-view="interbank-code-line-form"
+        grid-view="interbank-code-line-grid"/>
+      <field name="debitNumber"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        if-module="axelor-bank-payment"/>
+      <field name="rejectMoveLine" if-module="axelor-bank-payment"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="advanceOrPaymentMove" if-module="axelor-bank-payment"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" form-view="move-form"
+        grid-view="move-grid"/>
+      <field name="advanceMoveLine" if-module="axelor-bank-payment"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
+        form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="fromReject" if-module="axelor-bank-payment"
+        if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" readonly="true"
+        showTitle="false">
+        <viewer><![CDATA[
                 <span class="label label-warning" x-translate ng-show="record.fromReject">From rejection</span>
               ]]></viewer>
-            </field>
-			<field name="statusSelect" readonly="true" />
-		</panel>
-		
-	</form>
+      </field>
+      <field name="statusSelect" readonly="true"/>
+    </panel>
 
-	<search-filters name="payment-schedule-line-filters" model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line filters">
-		<field name="debitBlockingOk" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="rejectDate" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="interbankCodeLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="debitNumber" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="fromReject" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-        <field name="rejectMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="advanceOrPaymentMove" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<field name="advanceMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-		<filter title="Rejected schedule lines">
-			<domain>self.rejectDate IS NOT NULL</domain>
-		</filter>
-		<filter title="Schedule lines created from reject">
-			<domain>self.fromReject = true</domain>
-		</filter>
-	</search-filters>
+  </form>
+
+  <search-filters name="payment-schedule-line-filters"
+    model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line filters">
+    <field name="debitBlockingOk" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="rejectDate" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="interbankCodeLine" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="debitNumber" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="fromReject" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="rejectMoveLine" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="advanceOrPaymentMove" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <field name="advanceMoveLine" hidden="true"
+      if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+    <filter title="Rejected schedule lines">
+      <domain>self.rejectDate IS NOT NULL</domain>
+    </filter>
+    <filter title="Schedule lines created from reject">
+      <domain>self.fromReject = true</domain>
+    </filter>
+  </search-filters>
 
 </object-views>

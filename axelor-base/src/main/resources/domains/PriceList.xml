@@ -2,25 +2,29 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db" />
-		
-		<entity name="PriceList"  lang="java">
-			<string name="title" title="Title" namecolumn="true" required="true"/>
-			<boolean name="isActive" title="Active"/>
-			<string name="comments" title="Comments" large="true"/>
-			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price list content"/>
-			<boolean name="hideDiscount" title="Hide Discount on prints"/>
-			<decimal name="generalDiscount" title="General discount (%)" min="0" max="100"/>
-			
-			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true"/>
-			<integer name="basedOnSelect" title="Based on"/>
-			<one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList" mappedBy="parentPriceList" title="Historized Price Lists" />
-  			<many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList" title="Parent Price List"/>
-			<date name="applicationBeginDate" title="Application begin date"/>
-			<date name="applicationEndDate" title="Application end date"/>
 
-			<extra-code>
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PriceList" lang="java">
+    <string name="title" title="Title" namecolumn="true" required="true"/>
+    <boolean name="isActive" title="Active"/>
+    <string name="comments" title="Comments" large="true"/>
+    <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine"
+      mappedBy="priceList" title="Price list content"/>
+    <boolean name="hideDiscount" title="Hide Discount on prints"/>
+    <decimal name="generalDiscount" title="General discount (%)" min="0" max="100"/>
+
+    <integer name="typeSelect" title="Type" selection="base.price.list.type.select"
+      required="true"/>
+    <integer name="basedOnSelect" title="Based on"/>
+    <one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList"
+      mappedBy="parentPriceList" title="Historized Price Lists"/>
+    <many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList"
+      title="Parent Price List"/>
+    <date name="applicationBeginDate" title="Application begin date"/>
+    <date name="applicationEndDate" title="Application end date"/>
+
+    <extra-code>
 				<![CDATA[
                     // TYPE SELECT
 					public static final int TYPE_SALE = 1;
@@ -30,7 +34,7 @@
 					public static final int BASED_ON_COST_PRICE = 1;
 					public static final int BASED_ON_SALE_PRICE = 2;
                 ]]>
-			</extra-code>
-		</entity>
+    </extra-code>
+  </entity>
 
 </domain-models>

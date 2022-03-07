@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="product-multiple-qty-grid" title="Product categories" model="com.axelor.apps.base.db.ProductMultipleQty" orderBy="multipleQty" editable="true">
-        <field name="multipleQty" min="1" width="80" x-scale="2"/>
-        <field name="name"/>
-    </grid>
-    
-    <form name="product-multiple-qty-form" title="Multiple quantity" model="com.axelor.apps.base.db.ProductMultipleQty">
-		<panel name="mainPanel" >
-        	<field name="multipleQty" min="1"/>
-        	<field name="name"/>
-		</panel>
-    </form>  
-    
-   	<action-attrs name="action-product-multiple-qty-attrs-scale">
-		<attribute name="scale" for="multipleQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-	</action-attrs>
-	
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="product-multiple-qty-grid" title="Product categories"
+    model="com.axelor.apps.base.db.ProductMultipleQty" orderBy="multipleQty" editable="true">
+    <field name="multipleQty" min="1" width="80" x-scale="2"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="product-multiple-qty-form" title="Multiple quantity"
+    model="com.axelor.apps.base.db.ProductMultipleQty">
+    <panel name="mainPanel">
+      <field name="multipleQty" min="1"/>
+      <field name="name"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-product-multiple-qty-attrs-scale">
+    <attribute name="scale" for="multipleQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
 </object-views>

@@ -1,113 +1,126 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	
-    <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
-    	<field name="title"/>
-    	<field name="typeSelect"/>
-    	<field name="isActive"/>
-		<field name="applicationBeginDate"/>
-		<field name="applicationEndDate"/>
-    </grid>
-    
-    <grid name="price-list-hist-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
-    	<field name="createdOn" title="Date"></field>
-    	<field name="title"/>
-    	<field name="typeSelect"/>
-    	<field name="isActive"/>
-		<field name="applicationBeginDate"/>
-		<field name="applicationEndDate"/>
-    </grid>
-    
-   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
-	   width="large">
-   		<panel name="mainPanel" >
-		    <field name="title"/>
-			<field name="typeSelect" colSpan="4"/>
-			<field name="isActive" colSpan="2"/>
-			<field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
-			<field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
-			<field name="hideDiscount"/>
-    	</panel>
-		<panel name="priceListLinePanel" title="Price list lines" >
-			<field name="generalDiscount"/>
-			<label name="orLabel" title="Or" colSpan="12"/>
-			<panel-related name="historizedPriceListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
-		 </panel>
-		<panel name="commentsPanel" title="Comments">
-			<field name="comments" colSpan="12" height="3"/>    					
-		</panel>
-		<panel colSpan="12" name="historizedPriceDetailPanel" hideIf="$popup()">
-			<panel-related name="historizedPriceListPanel" field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
-			<button name="historizePriceListBtn" hideIf="!id" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
-		</panel>
-		<panel-dashlet name="partnerPriceListPanel" title="Partner price lists" action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
-   </form>
-   
-   <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-	   onNew="action-group-base-sale-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
-   		<panel-include view="price-list-form"/>
-   </form>
-   
-   <form name="purchase-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-	   onNew="action-group-base-purchase-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
-   		<panel-include view="price-list-form"/>
-   </form>
-   
-   <action-group name="action-group-base-sale-pricelist-onnew">
-		<action name="action-price-list-record-default"/>
-		<action name="action-price-list-record-sale-type"/>
-		<action name="action-price-list-attrs-readonly-type-select-true"/>
-	</action-group>
-	
-	<action-group name="action-group-base-purchase-pricelist-onnew">
-		<action name="action-price-list-record-default"/>
-		<action name="action-price-list-record-purchase-type"/>
-		<action name="action-price-list-attrs-readonly-type-select-true"/>
-	</action-group>
-   
-   <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">
-   		<field name="typeSelect" expr="1" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-   		<field name="typeSelect" expr="2" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-   		<field name="typeSelect" expr="1" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 3 || __parent__.operationTypeSelect == 4)"/>
-   		<field name="typeSelect" expr="2" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 1 || __parent__.operationTypeSelect == 2)"/>
-   		<field name="isActive" expr="true"/>
-   		<field name="hideDiscount" expr="false"/>
-   </action-record>
-   
-   <action-record name="action-price-list-record-sale-type" model="com.axelor.apps.base.db.PriceList">
-   		<field name="typeSelect" expr="1"/>
-   </action-record>
-   
-   <action-record name="action-price-list-record-purchase-type" model="com.axelor.apps.base.db.PriceList">
-   		<field name="typeSelect" expr="2"/>
-   </action-record>
-   
-   <action-attrs name="action-price-list-attrs-readonly-type-select">
-   		<attribute name="readonly" for="typeSelect" expr="eval: __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-   </action-attrs>
-   
-   <action-attrs name="action-price-list-attrs-readonly-type-select-true">
-   		<attribute name="readonly" for="typeSelect" expr="true"/>
-   </action-attrs>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<action-method name="action-price-list-method-check-dates">
-		<call class="com.axelor.apps.base.web.PriceListController"
-			  method="checkDates"/>
-	</action-method>
 
-	<action-view name="action-price-list-view-dashlet-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
-		<view type="grid" name="partner-price-list-grid" />
-		<view type="form" name="sale-partner-price-list-form" if="typeSelect == 1"/>
-		<view type="form" name="purchase-partner-price-list-form" if="typeSelect == 2"/>
-		<domain>:priceList MEMBER OF self.priceListSet</domain>
-		<context name="priceList" expr="eval: __self__"/>
-	</action-view>
+  <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList">
+    <field name="title"/>
+    <field name="typeSelect"/>
+    <field name="isActive"/>
+    <field name="applicationBeginDate"/>
+    <field name="applicationEndDate"/>
+  </grid>
+
+  <grid name="price-list-hist-grid" title="Price lists"
+    model="com.axelor.apps.base.db.PriceList">
+    <field name="createdOn" title="Date"></field>
+    <field name="title"/>
+    <field name="typeSelect"/>
+    <field name="isActive"/>
+    <field name="applicationBeginDate"/>
+    <field name="applicationEndDate"/>
+  </grid>
+
+  <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
+    onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
+    width="large">
+    <panel name="mainPanel">
+      <field name="title"/>
+      <field name="typeSelect" colSpan="4"/>
+      <field name="isActive" colSpan="2"/>
+      <field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
+      <field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
+      <field name="hideDiscount"/>
+    </panel>
+    <panel name="priceListLinePanel" title="Price list lines">
+      <field name="generalDiscount"/>
+      <label name="orLabel" title="Or" colSpan="12"/>
+      <panel-related name="historizedPriceListPanel" field="priceListLineList"
+        grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+    </panel>
+    <panel name="commentsPanel" title="Comments">
+      <field name="comments" colSpan="12" height="3"/>
+    </panel>
+    <panel colSpan="12" name="historizedPriceDetailPanel" hideIf="$popup()">
+      <panel-related name="historizedPriceListPanel" field="historizedPriceList"
+        colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
+      <button name="historizePriceListBtn" hideIf="!id" title="Historize Price List"
+        onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
+    </panel>
+    <panel-dashlet name="partnerPriceListPanel" title="Partner price lists"
+      action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
+  </form>
+
+  <form name="sale-price-list-form" title="Price list"
+    model="com.axelor.apps.base.db.PriceList" onNew="action-group-base-sale-pricelist-onnew"
+    onLoad="action-price-list-attrs-readonly-type-select-true">
+    <panel-include view="price-list-form"/>
+  </form>
+
+  <form name="purchase-price-list-form" title="Price list"
+    model="com.axelor.apps.base.db.PriceList" onNew="action-group-base-purchase-pricelist-onnew"
+    onLoad="action-price-list-attrs-readonly-type-select-true">
+    <panel-include view="price-list-form"/>
+  </form>
+
+  <action-group name="action-group-base-sale-pricelist-onnew">
+    <action name="action-price-list-record-default"/>
+    <action name="action-price-list-record-sale-type"/>
+    <action name="action-price-list-attrs-readonly-type-select-true"/>
+  </action-group>
+
+  <action-group name="action-group-base-purchase-pricelist-onnew">
+    <action name="action-price-list-record-default"/>
+    <action name="action-price-list-record-purchase-type"/>
+    <action name="action-price-list-attrs-readonly-type-select-true"/>
+  </action-group>
+
+  <action-record name="action-price-list-record-default"
+    model="com.axelor.apps.base.db.PriceList">
+    <field name="typeSelect" expr="1"
+      if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+    <field name="typeSelect" expr="2"
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+    <field name="typeSelect" expr="1"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 3 || __parent__.operationTypeSelect == 4)"/>
+    <field name="typeSelect" expr="2"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 1 || __parent__.operationTypeSelect == 2)"/>
+    <field name="isActive" expr="true"/>
+    <field name="hideDiscount" expr="false"/>
+  </action-record>
+
+  <action-record name="action-price-list-record-sale-type"
+    model="com.axelor.apps.base.db.PriceList">
+    <field name="typeSelect" expr="1"/>
+  </action-record>
+
+  <action-record name="action-price-list-record-purchase-type"
+    model="com.axelor.apps.base.db.PriceList">
+    <field name="typeSelect" expr="2"/>
+  </action-record>
+
+  <action-attrs name="action-price-list-attrs-readonly-type-select">
+    <attribute name="readonly" for="typeSelect"
+      expr="eval: __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+  </action-attrs>
+
+  <action-attrs name="action-price-list-attrs-readonly-type-select-true">
+    <attribute name="readonly" for="typeSelect" expr="true"/>
+  </action-attrs>
+
+  <action-method name="action-price-list-method-check-dates">
+    <call class="com.axelor.apps.base.web.PriceListController" method="checkDates"/>
+  </action-method>
+
+  <action-view name="action-price-list-view-dashlet-partner-price-list"
+    title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+    <view type="grid" name="partner-price-list-grid"/>
+    <view type="form" name="sale-partner-price-list-form" if="typeSelect == 1"/>
+    <view type="form" name="purchase-partner-price-list-form" if="typeSelect == 2"/>
+    <domain>:priceList MEMBER OF self.priceListSet</domain>
+    <context name="priceList" expr="eval: __self__"/>
+  </action-view>
 
 </object-views>
 

@@ -1,36 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-    <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="name"/>
-        <field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-    </grid>
-    
-	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
-		<panel name="mainPanel">
-			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="name"/>
-			<field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')" required="true"/>
-		</panel>
-	    <panel-tabs>
-			<panel name="taxRateListPanel" title="Tax rate list">
-				<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
-			 	<panel-related name="taxLineListPanel" field="taxLineList" colSpan="12" canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
-			</panel>
-	    	<panel-related name="accountManagementListPanel" title="Accounting configuration" field="accountManagementList" if-module="axelor-account" grid-view="account-management-tax-grid" form-view="account-management-form" if="__config__.app.isApp('account')" />
-	    </panel-tabs>
-	</form>
-	
-	<action-attrs name="action-base-attrs-domain-active-tax-line" model="com.axelor.apps.account.db.Tax">
-		<attribute name="domain" for="activeTaxLine" expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
-	</action-attrs>
-    
-    <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax" title="Tax filters">
-    	<field name="typeSelect" hidden="true" if="!__config__.app.isApp('account')"/>
-    	<field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')" />
-    </search-filters>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+  </grid>
+
+  <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name"/>
+      <field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"
+        required="true"/>
+    </panel>
+    <panel-tabs>
+      <panel name="taxRateListPanel" title="Tax rate list">
+        <field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line"
+          canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
+        <panel-related name="taxLineListPanel" field="taxLineList" colSpan="12"
+          canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
+      </panel>
+      <panel-related name="accountManagementListPanel"
+        title="Accounting configuration" field="accountManagementList" if-module="axelor-account"
+        grid-view="account-management-tax-grid" form-view="account-management-form"
+        if="__config__.app.isApp('account')"/>
+    </panel-tabs>
+  </form>
+
+  <action-attrs name="action-base-attrs-domain-active-tax-line"
+    model="com.axelor.apps.account.db.Tax">
+    <attribute name="domain" for="activeTaxLine"
+      expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
+  </action-attrs>
+
+  <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax"
+    title="Tax filters">
+    <field name="typeSelect" hidden="true" if="!__config__.app.isApp('account')"/>
+    <field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')"/>
+  </search-filters>
 
 </object-views>

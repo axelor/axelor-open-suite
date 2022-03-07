@@ -6,11 +6,12 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InvoicePayment" lang="java">
-  	
-  	<many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder" readonly="true" title="Bank Order"/>
-  	
-  	<finder-method name="findByBankOrder" using="bankOrder" all="true"/>
-  	
+
+    <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"
+      readonly="true" title="Bank Order"/>
+
+    <finder-method name="findByBankOrder" using="bankOrder" all="true"/>
+
   </entity>
 
 </domain-models>

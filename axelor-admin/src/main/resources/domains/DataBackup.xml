@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db" />
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="DataBackup">
-		<many-to-one name="backupMetaFile" ref="com.axelor.meta.db.MetaFile"
-			title="Backup File" />
-		<integer name="statusSelect" selection="data.backup.status.select"
-			title="Status" default="0" />
-		<many-to-one name="logMetaFile" ref="com.axelor.meta.db.MetaFile"
-			title="Log" />
-		<datetime name="backupDate" title="Backup On" />
-		<datetime name="restoreDate" title="Restored On" />
-		<integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
-		<boolean name="isRelativeDate" title="Relative Date"/>
-		<boolean name="updateImportId" title="Update Import Id"/>
-		<extra-code>
+  <entity name="DataBackup">
+    <many-to-one name="backupMetaFile" ref="com.axelor.meta.db.MetaFile"
+      title="Backup File"/>
+    <integer name="statusSelect" selection="data.backup.status.select" title="Status"
+      default="0"/>
+    <many-to-one name="logMetaFile" ref="com.axelor.meta.db.MetaFile" title="Log"/>
+    <datetime name="backupDate" title="Backup On"/>
+    <datetime name="restoreDate" title="Restored On"/>
+    <integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
+    <boolean name="isRelativeDate" title="Relative Date"/>
+    <boolean name="updateImportId" title="Update Import Id"/>
+    <extra-code>
 	   		<![CDATA[
 				// DATABACKUP STATUS
 				public static final int DATA_BACKUP_STATUS_DRAFT = 0;
@@ -26,8 +25,8 @@
 				public static final int DATA_BACKUP_STATUS_RESTORE = 3;
 				public static final int DATA_BACKUP_STATUS_RESTORE_ERROR = 4;
 	   		]]>
-		</extra-code>
+    </extra-code>
 
-	</entity>
+  </entity>
 
 </domain-models>

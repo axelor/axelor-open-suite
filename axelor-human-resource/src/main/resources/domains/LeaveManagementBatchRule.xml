@@ -7,12 +7,13 @@
 
   <entity name="LeaveManagementBatchRule" cacheable="true">
 
-	<integer name="executiveStatusSelect" title="Status" selection="hr.employment.contract.executiveStatus.select" />
-	<string name="formula" title="Formula"/>
-	<decimal name="leaveDayNumber" title="Leave day number" />
-	
-	<many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" />
-	  
+    <integer name="executiveStatusSelect" title="Status"
+      selection="hr.employment.contract.executiveStatus.select"/>
+    <string name="formula" title="Formula"/>
+    <decimal name="leaveDayNumber" title="Leave day number"/>
+
+    <many-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig"/>
+
   </entity>
-  
+
 </domain-models>

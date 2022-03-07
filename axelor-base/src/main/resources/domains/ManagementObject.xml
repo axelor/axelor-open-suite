@@ -6,10 +6,10 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="ManagementObject" lang="java">
-	<string name="code" title="Code" required="true"/>
-	<string name="name" title="Name" required="true"/>
-  
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
+
   </entity>
 
- 
+
 </domain-models>

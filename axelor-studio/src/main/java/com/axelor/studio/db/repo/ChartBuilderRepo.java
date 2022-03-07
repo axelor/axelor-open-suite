@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.service.builder.ChartBuilderService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
@@ -48,7 +47,6 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
   }
 
   @Override
-  @Transactional
   public void remove(ChartBuilder chartBuilder) {
 
     MetaView metaView = chartBuilder.getMetaViewGenerated();

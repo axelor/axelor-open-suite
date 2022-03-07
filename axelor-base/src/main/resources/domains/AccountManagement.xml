@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
   <module name="account" package="com.axelor.apps.account.db"/>
-  
+
   <entity name="AccountManagement" lang="java">
-	
-	<integer name="typeSelect" title="Type" required="true" selection="account.management.type.select" />
-	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-	<many-to-one name="purchaseTax" ref="com.axelor.apps.account.db.Tax" title="Purchase Tax"/>
-	<many-to-one name="saleTax" ref="com.axelor.apps.account.db.Tax" title="Sale Tax"/>
-	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
-	
-    <many-to-one  name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one  name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Accounting family"/>
-    
+
+    <integer name="typeSelect" title="Type" required="true"
+      selection="account.management.type.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-one name="purchaseTax" ref="com.axelor.apps.account.db.Tax"
+      title="Purchase Tax"/>
+    <many-to-one name="saleTax" ref="com.axelor.apps.account.db.Tax" title="Sale Tax"/>
+    <many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
+      title="Accounting family"/>
+
   </entity>
-  
+
 </domain-models>

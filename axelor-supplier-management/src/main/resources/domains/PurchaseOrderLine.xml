@@ -6,11 +6,14 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrderLine" lang="java">
-  
-<!--   	Champ du module Supplier Management -->
-	<one-to-many name="purchaseOrderSupplierLineList" ref="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" mappedBy="purchaseOrderLine" title="Suppliers requests"/>
-  	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
-  	
+
+    <!-- Champ du module Supplier Management -->
+    <one-to-many name="purchaseOrderSupplierLineList"
+      ref="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
+      mappedBy="purchaseOrderLine" title="Suppliers requests"/>
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Supplier"/>
+
   </entity>
 
 </domain-models>

@@ -6,16 +6,12 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="StopReason" lang="java" cacheable="true">
-  
+
     <string name="name" title="Label"/>
     <string name="code" title="Code"/>
-  
+
   </entity>
 
-  <!--
-  
-  Raison pour les Blocages
-  
-  -->
-  
+  <!-- Raison pour les Blocages -->
+
 </domain-models>

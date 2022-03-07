@@ -7,8 +7,8 @@
 
   <entity name="StockLocation" lang="java">
 
-    <boolean name="usableOnProduction" title="Usable on production" />
+    <boolean name="usableOnProduction" title="Usable on production"/>
     <boolean name="isWorkshop"/>
-	<boolean name="isOutsourcingLocation" title="Outsourcing location"/> 
+    <boolean name="isOutsourcingLocation" title="Outsourcing location"/>
   </entity>
 </domain-models>

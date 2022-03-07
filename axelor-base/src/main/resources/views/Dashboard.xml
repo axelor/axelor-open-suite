@@ -1,86 +1,101 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<!--  Partner Dashboard  -->
-	
-	<dashboard title="Partner Dashboard" name="base.partner.list.dashboard" width="large">
-	    <dashlet action="dashlet.customers.by.country" height="350"   canSearch="true"/>
-	    <dashlet action="dashlet.customers.by.industrySector" height="350"   canSearch="true"/>
-	    <dashlet action="dashlet.partner.by.saleman" height="350"   canSearch="true" colSpan="12"/>
-		<dashlet action="dashlet.partner.recent.partners" height="350"   canSearch="true" colSpan="12"/>	
-		<dashlet action="dashlet.my.customers" height="350"   canSearch="true" colSpan="12"/>	
-		<dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/> 
-		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
-		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
-		<dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
-  	</dashboard>
-  	
-  	<dashboard title="Contact Dashboard" name="base.contact.dashboard"  >
-		<dashlet action="dashlet.my.recent.contacts" height="350"  colSpan="12" canSearch="true"/> 
-		<dashlet action="dashlet.base.recent.contacts" height="350" colSpan="12"  canSearch="true"/>	
-  	</dashboard>
-  	
-  	
-  	
-  	<action-view name="dashlet.my.recent.contacts" title="My Recent Contacts" model="com.axelor.apps.base.db.Partner">
-		<view type="grid" name="partner-grid"/>
-		<view type="form" name="partner-form"/>
-		<domain>self.updatedOn &gt;= date(now())-30 AND self.user=:__user__ AND self.isContact = true</domain>
-	</action-view>
-	
-	<action-view name="dashlet.base.recent.contacts" title="Recently created contacts" model="com.axelor.apps.base.db.Partner" >
-    	<view type="grid" name="partner-grid"/>
-    	<view type="form" name="partner-form"/>
-    	<domain>self.createdOn &gt;= date(now())-15 AND self.isContact = true</domain>
-	</action-view>
-	
-	<action-view name="dashlet.partner.by.saleman" title="Customers by saleman" model="com.axelor.apps.base.db.Partner">
-		<view type="grid" name="partner-grid-group"/>
-		<view type="form" name="partner-form"/>
-		<domain>self.isCustomer=true</domain>
-	</action-view>
-	
-	<action-view name="dashlet.partner.recent.partners" title="Recently created partners" model="com.axelor.apps.base.db.Partner" >
-    	<view type="grid" name="partner-grid"/>
-    	<view type="form" name="partner-form"/>
-    	<domain>self.createdOn &gt;= date(now())-15</domain>
-	</action-view>
-	
-	<action-view name="dashlet.my.customers" title="My Customers" model="com.axelor.apps.base.db.Partner">
-		<view type="grid" name="partner-grid"/>
-		<view type="form" name="partner-form"/>
-		 <domain>self.user=:__user__ AND self.isCustomer=true</domain>
-	</action-view>
-	
-	<action-view name="dashlet.customers.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
-		<view type="chart" name="chart.customers.by.industrySector.bar" />
-	</action-view>
-	
-	<action-view name="dashlet.customers.by.country" title="Customers by country" model="com.axelor.apps.base.db.Partner">
-		<view type="chart" name="chart.customers.by.country.bar"/>
-	</action-view>
-		
-	<action-view title="Prospects by country" model="com.axelor.apps.base.db.Partner" name="dashlet.prospects.by.country">
-	  <view type="chart" name="chart.partner.prospects.by.country"/>
-	</action-view>
-	
-	<action-view title="Prospects by Industry Sector" model="com.axelor.apps.base.db.Partner" name="dashlet.prospects.by.industrySector">
-  		<view type="chart" name="chart.partner.prospects.by.industrySector"/>
-	</action-view>
-  	  	
-	<action-view title="My Prospects" model="com.axelor.apps.base.db.Partner" name="dashlet.my.prospects">
-		  <view type="grid" name="partner-grid"/>
-		  <view type="form" name="partner-form"/>
-		  <domain>self.user = :__user__ AND self.isProspect=true AND :activeCompany MEMBER OF self.companySet</domain>
-		  <context name="activeCompany" expr="eval:__user__.activeCompany != null ? __user__.activeCompany : null"/>  
-	</action-view>
-	
-	<action-view name="dashlet.customers.with.first.sale.order" model="com.axelor.apps.base.db.Partner"
-				title="New customers with first sale order">
-		<view type="chart" name="chart.customers.with.first.sale.order" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-	</action-view>
-  	
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <!-- Partner Dashboard -->
+
+  <dashboard title="Partner Dashboard" name="base.partner.list.dashboard" width="large">
+    <dashlet action="dashlet.customers.by.country" height="350" canSearch="true"/>
+    <dashlet action="dashlet.customers.by.industrySector" height="350" canSearch="true"/>
+    <dashlet action="dashlet.partner.by.saleman" height="350" canSearch="true" colSpan="12"/>
+    <dashlet action="dashlet.partner.recent.partners" height="350" canSearch="true"
+      colSpan="12"/>
+    <dashlet action="dashlet.my.customers" height="350" canSearch="true" colSpan="12"/>
+    <dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/>
+    <dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
+    <dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
+    <dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
+  </dashboard>
+
+  <dashboard title="Contact Dashboard" name="base.contact.dashboard">
+    <dashlet action="dashlet.my.recent.contacts" height="350" colSpan="12" canSearch="true"/>
+    <dashlet action="dashlet.base.recent.contacts" height="350" colSpan="12"
+      canSearch="true"/>
+  </dashboard>
+
+
+
+  <action-view name="dashlet.my.recent.contacts" title="My Recent Contacts"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.updatedOn &gt;= date(now())-30 AND self.user=:__user__ AND self.isContact = true</domain>
+  </action-view>
+
+  <action-view name="dashlet.base.recent.contacts" title="Recently created contacts"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.createdOn &gt;= date(now())-15 AND self.isContact = true</domain>
+  </action-view>
+
+  <action-view name="dashlet.partner.by.saleman" title="Customers by saleman"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid-group"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.isCustomer=true</domain>
+  </action-view>
+
+  <action-view name="dashlet.partner.recent.partners" title="Recently created partners"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.createdOn &gt;= date(now())-15</domain>
+  </action-view>
+
+  <action-view name="dashlet.my.customers" title="My Customers"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.user=:__user__ AND self.isCustomer=true</domain>
+  </action-view>
+
+  <action-view name="dashlet.customers.by.industrySector"
+    title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
+    <view type="chart" name="chart.customers.by.industrySector.bar"/>
+  </action-view>
+
+  <action-view name="dashlet.customers.by.country" title="Customers by country"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="chart" name="chart.customers.by.country.bar"/>
+  </action-view>
+
+  <action-view title="Prospects by country" model="com.axelor.apps.base.db.Partner"
+    name="dashlet.prospects.by.country">
+    <view type="chart" name="chart.partner.prospects.by.country"/>
+  </action-view>
+
+  <action-view title="Prospects by Industry Sector"
+    model="com.axelor.apps.base.db.Partner" name="dashlet.prospects.by.industrySector">
+    <view type="chart" name="chart.partner.prospects.by.industrySector"/>
+  </action-view>
+
+  <action-view title="My Prospects" model="com.axelor.apps.base.db.Partner"
+    name="dashlet.my.prospects">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.user = :__user__ AND self.isProspect=true AND :activeCompany MEMBER OF
+      self.companySet</domain>
+    <context name="activeCompany"
+      expr="eval:__user__.activeCompany != null ? __user__.activeCompany : null"/>
+  </action-view>
+
+  <action-view name="dashlet.customers.with.first.sale.order"
+    model="com.axelor.apps.base.db.Partner" title="New customers with first sale order">
+    <view type="chart" name="chart.customers.with.first.sale.order"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
 </object-views>

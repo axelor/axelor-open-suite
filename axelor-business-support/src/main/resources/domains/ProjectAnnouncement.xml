@@ -11,5 +11,5 @@
     <date name="date" column="date_val"/>
     <string name="content" large="true" title="Content"/>
   </entity>
- 
+
 </domain-models>

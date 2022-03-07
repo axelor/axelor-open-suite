@@ -1,145 +1,175 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="employment-contract-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-        <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
-        <field name="employee"/>
-        <field name="contractType"/>
-        <field name="startDate"/>
-        <field name="endDate"/>
-        <field name="amendmentTypeSelect"/>
-		<field name="status"/>
-    </grid>
-	
-    <grid name="employment-contract-employee-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
-        <hilite color="success" if="$moment(todayDate).diff(endDate) &lt; 0"/>
-        <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
-        <field name="contractType"/>
-        <field name="startDate"/>
-        <field name="endDate"/>
-        <field name="amendmentTypeSelect"/>
-		<field name="status"/>
-    </grid>
+  <grid name="employment-contract-grid" title="Employment contracts"
+    model="com.axelor.apps.hr.db.EmploymentContract">
+    <hilite color="warning"
+      if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
+    <field name="employee"/>
+    <field name="contractType"/>
+    <field name="startDate"/>
+    <field name="endDate"/>
+    <field name="amendmentTypeSelect"/>
+    <field name="status"/>
+  </grid>
 
-    <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new" width="large">
-		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Create amendment" action="save,action-employment-contract-method-addAmendment" hideIf="true"/>
-				<item title="Print contract" action="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
-				<item title="Generate payroll prepa." action="save,action-employment-contract-generate-payroll-prepa"
-						if="__config__.app.getApp('employee').getPayrollPreparation()"/>
-				<item title="Export employment contract" action="save,action-employment-contract-method-export"/>
-			</menu>
-		</menubar>
-        <panel name="statusPanel" title="Status">
-        	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
-        </panel>
-        <panel-stack name="generalDetailsPanel">
-			<panel name="employeeDetailsPanel">
-			  <field name="ref" showTitle="false" readonly="true" colSpan="12">
-				<viewer depends="ref"><![CDATA[
+  <grid name="employment-contract-employee-grid" title="Employment contracts"
+    model="com.axelor.apps.hr.db.EmploymentContract">
+    <hilite color="success" if="$moment(todayDate).diff(endDate) &lt; 0"/>
+    <hilite color="warning"
+      if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
+    <field name="contractType"/>
+    <field name="startDate"/>
+    <field name="endDate"/>
+    <field name="amendmentTypeSelect"/>
+    <field name="status"/>
+  </grid>
+
+  <form name="employment-contract-form" title="Employment contract"
+    model="com.axelor.apps.hr.db.EmploymentContract"
+    onNew="action-employment-contract-record-on-new" width="large">
+    <menubar>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+        <item title="Create amendment"
+          action="save,action-employment-contract-method-addAmendment" hideIf="true"/>
+        <item title="Print contract"
+          action="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
+        <item title="Generate payroll prepa."
+          action="save,action-employment-contract-generate-payroll-prepa"
+          if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+        <item title="Export employment contract"
+          action="save,action-employment-contract-method-export"/>
+      </menu>
+    </menubar>
+    <panel name="statusPanel" title="Status">
+      <field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
+    </panel>
+    <panel-stack name="generalDetailsPanel">
+      <panel name="employeeDetailsPanel">
+        <field name="ref" showTitle="false" readonly="true" colSpan="12">
+          <viewer depends="ref"><![CDATA[
 					<h3>
 						{{record.ref}}
 					</h3>
 				]]></viewer>
-			  </field>
-			  <field name="employee" canSuggest="false" canNew="false" canEdit="false" canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
-			  <field name="payCompany" canEdit="false" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
-			  <field name="companyDepartment" onSelect="action-employment-contract-attrs-department-domain"/>
-			  <field name="employmentContractVersion" canSuggest="false"/>
-			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />
-			</panel>
-			<panel name="amendmentDetailsPanel" colSpan="12" showIf="employmentContractVersion > 0">
-			  <field name="amendmentTypeSelect" colSpan="4"/>
-			  <field name="amendmentDate" colSpan="4"/>
-			</panel>  
-		</panel-stack>  
-		<panel name="mainPanel">
-			<field name="signatureDate" colSpan="4"/>
-			<field name="contractType" canNew="true"
-				   grid-view="employment-contract-type-grid"
-				   form-view="employment-contract-type-form" colSpan="4"
-				   onChange="action-employment-contract-record-contract-type-on-change,action-employment-contract-attrs-contract-type-on-change"/>
-			<field name="employmentContractSubType" colSpan="4" showIf="contractType != null" onSelect="action-employment-contract-attrs-employment-contract-sub-type-on-select"/>
-			<field name="executiveStatusSelect" colSpan="4"/>
-			<field name="employment" colSpan="4"/>
-			<panel name="organizationPanel" title="Organization" colSpan="12">
-				<field name="startDate" colSpan="3"/>
-				<field name="trialPeriodDuration" colSpan="3"/>
-				<field name="endDate" colSpan="3"/>
-				<field name="weeklyDuration" colSpan="3"/>
-				<field name="startTime" colSpan="3"/>
-				<field name="duration" colSpan="3"/>
-				<field name="hoursDistribution" colSpan="12" height="5"/>
-			</panel>
-			<panel name="positionSalaryPanel" title="Position / Salary" colSpan="12">
-				<field name="position" colSpan="4"/>
-				<field name="coefficient" colSpan="4"/>
-				<field name="hourlyGrossSalary" colSpan="4"/>
-				<field name="minMonthlyRemuneration" colSpan="4"/>
-				<field name="annualGrossSalary" colSpan="4"/>
-				<field name="monthlyGlobalCost" colSpan="4"/>
-				<panel-related name="otherCostsEmployeeSetPanel" field="otherCostsEmployeeSet" colSpan="12"/>
-			</panel>     
-		</panel>
-		<panel name="endOfContractPanel" title="End of contract">
-			<field name="endOfContractReason" canNew="true"/>
-			<field name="endContractDetails"/>
-		</panel>
-    </form>
+        </field>
+        <field name="employee" canSuggest="false" canNew="false" canEdit="false"
+          canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
+        <field name="payCompany" canEdit="false" canSuggest="false"
+          onChange="action-employment-contract-paycompany-onchange"/>
+        <field name="companyDepartment"
+          onSelect="action-employment-contract-attrs-department-domain"/>
+        <field name="employmentContractVersion" canSuggest="false"/>
+        <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox"
+          domain=":payCompany MEMBER OF self.companySet"/>
+      </panel>
+      <panel name="amendmentDetailsPanel" colSpan="12" showIf="employmentContractVersion > 0">
+        <field name="amendmentTypeSelect" colSpan="4"/>
+        <field name="amendmentDate" colSpan="4"/>
+      </panel>
+    </panel-stack>
+    <panel name="mainPanel">
+      <field name="signatureDate" colSpan="4"/>
+      <field name="contractType" canNew="true" grid-view="employment-contract-type-grid"
+        form-view="employment-contract-type-form" colSpan="4"
+        onChange="action-employment-contract-record-contract-type-on-change,action-employment-contract-attrs-contract-type-on-change"/>
+      <field name="employmentContractSubType" colSpan="4" showIf="contractType != null"
+        onSelect="action-employment-contract-attrs-employment-contract-sub-type-on-select"/>
+      <field name="executiveStatusSelect" colSpan="4"/>
+      <field name="employment" colSpan="4"/>
+      <panel name="organizationPanel" title="Organization" colSpan="12">
+        <field name="startDate" colSpan="3"/>
+        <field name="trialPeriodDuration" colSpan="3"/>
+        <field name="endDate" colSpan="3"/>
+        <field name="weeklyDuration" colSpan="3"/>
+        <field name="startTime" colSpan="3"/>
+        <field name="duration" colSpan="3"/>
+        <field name="hoursDistribution" colSpan="12" height="5"/>
+      </panel>
+      <panel name="positionSalaryPanel" title="Position / Salary" colSpan="12">
+        <field name="position" colSpan="4"/>
+        <field name="coefficient" colSpan="4"/>
+        <field name="hourlyGrossSalary" colSpan="4"/>
+        <field name="minMonthlyRemuneration" colSpan="4"/>
+        <field name="annualGrossSalary" colSpan="4"/>
+        <field name="monthlyGlobalCost" colSpan="4"/>
+        <panel-related name="otherCostsEmployeeSetPanel" field="otherCostsEmployeeSet"
+          colSpan="12"/>
+      </panel>
+    </panel>
+    <panel name="endOfContractPanel" title="End of contract">
+      <field name="endOfContractReason" canNew="true"/>
+      <field name="endContractDetails"/>
+    </panel>
+  </form>
 
-	<action-attrs name="action-employment-contract-attrs-department-domain">
-		<attribute name="domain" for="companyDepartment"
-			expr="eval: &quot;self.id IN (${payCompany.companyDepartmentList.collect{it.id}.join(',')})&quot;"
-			if="payCompany != null &amp;&amp; !payCompany.companyDepartmentList.isEmpty()" />
-		<attribute name="domain" for="companyDepartment" expr="self.id IN (0)"
-			if="payCompany == null || payCompany.companyDepartmentList.isEmpty()" />
-	</action-attrs>
+  <action-attrs name="action-employment-contract-attrs-department-domain">
+    <attribute name="domain" for="companyDepartment"
+      expr="eval: &quot;self.id IN (${payCompany.companyDepartmentList.collect{it.id}.join(',')})&quot;"
+      if="payCompany != null &amp;&amp; !payCompany.companyDepartmentList.isEmpty()"/>
+    <attribute name="domain" for="companyDepartment" expr="self.id IN (0)"
+      if="payCompany == null || payCompany.companyDepartmentList.isEmpty()"/>
+  </action-attrs>
 
-	<action-record name="action-employment-contract-paycompany-onchange"
-		model="com.axelor.apps.hr.db.EmploymentContract">
-		<field name="companyDepartment" expr="eval: null" />
-	</action-record>
+  <action-record name="action-employment-contract-paycompany-onchange"
+    model="com.axelor.apps.hr.db.EmploymentContract">
+    <field name="companyDepartment" expr="eval: null"/>
+  </action-record>
 
-<!--     <action-record name="action-employment-contract-record-contract-type-on-change" model="com.axelor.apps.hr.db.EmploymentContract"> -->
-<!--         <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect == 3)"/> -->
-<!--     </action-record> -->
+  <!-- <action-record name="action-employment-contract-record-contract-type-on-change" model="com.axelor.apps.hr.db.EmploymentContract"> -->
+  <!-- <field name="duration" expr="35" if="!duration &amp;&amp; (contractTypeSelect == 1 || contractTypeSelect
+    == 3)"/> -->
+  <!-- </action-record> -->
 
-    <action-record name="action-employment-contract-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
-        <field name="signatureDate" expr="eval: __date__"/>
-        <field name="payCompany" expr="eval: __user__.activeCompany"/>
-    </action-record>
-    
-    <action-method name="action-employment-contract-method-addAmendment">
-        <call class="com.axelor.apps.hr.web.EmploymentContractController" method="addAmendment"/>
-    </action-method>
-    
-    <action-method name="action-employment-contract-method-export">
-    	<call class="com.axelor.apps.hr.web.EmploymentContractController" method="exportEmploymentContract"/>
-    </action-method>
-    
-    <action-validate name="action-employment-contract-validate-printing-settings">
-    	<error message="Please, select an employment contract template" if="!employmentContractTemplate"/>
-    </action-validate>
-    
-    <action-export output="/home/employment_contracts" download="true" name="action-employment-contract-export-word">
-  		<export template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
-	</action-export>
-	
-	<action-view name="action-employment-contract-generate-payroll-prepa" title="Payroll Preparation" model="com.axelor.apps.hr.db.PayrollPreparation">
-		<view type="form" name="payroll-preparation-form"/>
-		<view type="grid" name="payroll-preparation-grid"/>
-    	<context name="_idEmploymentContract" expr="eval: id"/>
-	</action-view>
-	
-	<action-attrs name="action-employment-contract-attrs-contract-type-on-change">
-		<attribute name="value" for="employmentContractSubType" expr="eval: null" if="contractType == null"/>
-	</action-attrs>
-	
-	<action-attrs name="action-employment-contract-attrs-employment-contract-sub-type-on-select">
-		<attribute name="domain" for="employmentContractSubType" expr="eval: &quot;self.id IN (${contractType.employmentContractSubTypeList.collect{it.id}.join(',')})&quot;" if="!contractType.employmentContractSubTypeList.isEmpty()"/>
-		<attribute name="domain" for="employmentContractSubType" expr="eval: &quot; self.id IN (0) &quot;" if="contractType.employmentContractSubTypeList.isEmpty()"/>
-	</action-attrs>
+  <action-record name="action-employment-contract-record-on-new"
+    model="com.axelor.apps.hr.db.EmploymentContract">
+    <field name="signatureDate" expr="eval: __date__"/>
+    <field name="payCompany" expr="eval: __user__.activeCompany"/>
+  </action-record>
+
+  <action-method name="action-employment-contract-method-addAmendment">
+    <call class="com.axelor.apps.hr.web.EmploymentContractController" method="addAmendment"/>
+  </action-method>
+
+  <action-method name="action-employment-contract-method-export">
+    <call class="com.axelor.apps.hr.web.EmploymentContractController"
+      method="exportEmploymentContract"/>
+  </action-method>
+
+  <action-validate name="action-employment-contract-validate-printing-settings">
+    <error message="Please, select an employment contract template"
+      if="!employmentContractTemplate"/>
+  </action-validate>
+
+  <action-export output="/home/employment_contracts" download="true"
+    name="action-employment-contract-export-word">
+    <export
+      template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()"
+      name="${fullName}.xml" engine="groovy"/>
+  </action-export>
+
+  <action-view name="action-employment-contract-generate-payroll-prepa"
+    title="Payroll Preparation" model="com.axelor.apps.hr.db.PayrollPreparation">
+    <view type="form" name="payroll-preparation-form"/>
+    <view type="grid" name="payroll-preparation-grid"/>
+    <context name="_idEmploymentContract" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-employment-contract-attrs-contract-type-on-change">
+    <attribute name="value" for="employmentContractSubType" expr="eval: null"
+      if="contractType == null"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-employment-contract-attrs-employment-contract-sub-type-on-select">
+    <attribute name="domain" for="employmentContractSubType"
+      expr="eval: &quot;self.id IN (${contractType.employmentContractSubTypeList.collect{it.id}.join(',')})&quot;"
+      if="!contractType.employmentContractSubTypeList.isEmpty()"/>
+    <attribute name="domain" for="employmentContractSubType"
+      expr="eval: &quot; self.id IN (0) &quot;"
+      if="contractType.employmentContractSubTypeList.isEmpty()"/>
+  </action-attrs>
 
 </object-views>

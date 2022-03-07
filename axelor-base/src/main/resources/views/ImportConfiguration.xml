@@ -1,71 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="import-configuration-grid" title="Imports" model="com.axelor.apps.base.db.ImportConfiguration">
-		<field name="name"/>
-		<field name="typeSelect"/>
-        <field name="bindMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
-        <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
-        <field name="user" form-view="user-form" grid-view="user-grid"/>
-        <field name="createdOn" />
-	</grid>
-	
-	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default" width="large">
-        <panel name="mainPanel" >
-        	<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-        	<field name="name"/>
-	        <field name="typeSelect"/>
-	        <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-			<field name="dataMetaFile" widget="binary-link" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-			<field name="startDateTime" readonly="true"/>
-			<field name="endDateTime" readonly="true"/>
-			<button name="importBtn" title="importconfig.btn" colSpan="4" onClick="save,action-attrs-import-configuration-set-status-date,save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
-        </panel>
-        <panel-tabs name="mainPanelTab">
-        	<panel name="descriptionPanel" title="Description"> 
-        		<field name="description" colSpan="12" showTitle="false" widget="html" />
-        	</panel>
-        	<panel-related name="importHistoryListPanel" field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
-        </panel-tabs>
-	</form>
-	
-	<form name="import-calendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
-        <panel name="mainPanel" >
-    		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="importBtn" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
-        </panel>      	
-	</form>
-	
-	<form name="import-icalendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
-        <panel name="mainPanel" >
-    		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="importBtn" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
-        </panel>      	
-	</form>
-  
-    <action-method name="action-import-configuration-method-run">
-      <call class="com.axelor.apps.base.web.ImportConfigurationController" method="run"/>
-    </action-method>
-	
-    <action-record name="action-import-record-default" model="com.axelor.apps.base.db.ImportConfiguration">
-      <field name="user" expr="eval: __user__"/>
-    </action-record>
-    
-   <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attar-set-data-meta-file-domain">
-     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/csv'&quot;" if="typeSelect=='csv'"/>
-     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/xml'&quot;" if="typeSelect=='xml'"/>
-   </action-attrs>
-   
-   <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attrs-calendar-type-file">
-     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;" if="typeSelect=='ics'"/>
-   </action-attrs>
-   
-   <action-attrs name="action-attrs-import-configuration-set-status-date">
-   	<attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
-   	<attribute name="value" for="statusSelect" expr="eval: __repo__(ImportConfiguration).STATUS_IN_PROGRESS"/>
-   	<attribute name="value" for="endDateTime" expr="eval: null" if="endDateTime"/>
-   </action-attrs>
-   
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="import-configuration-grid" title="Imports"
+    model="com.axelor.apps.base.db.ImportConfiguration">
+    <field name="name"/>
+    <field name="typeSelect"/>
+    <field name="bindMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+    <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="createdOn"/>
+  </grid>
+
+  <form name="import-configuration-form" title="Import"
+    model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default"
+    width="large">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+      <field name="name"/>
+      <field name="typeSelect"/>
+      <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'"
+        canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
+      <field name="dataMetaFile" widget="binary-link"
+        onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form"
+        grid-view="meta-files-grid"/>
+      <field name="startDateTime" readonly="true"/>
+      <field name="endDateTime" readonly="true"/>
+      <button name="importBtn" title="importconfig.btn" colSpan="4"
+        onClick="save,action-attrs-import-configuration-set-status-date,save,action-import-configuration-method-run,save"
+        prompt="Are you sure you want to start the import?"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" colSpan="12" showTitle="false" widget="html"/>
+      </panel>
+      <panel-related name="importHistoryListPanel" field="importHistoryList"
+        title="Historical" form-view="import-history-form" grid-view="import-history-grid"
+        readonly="true"/>
+    </panel-tabs>
+  </form>
+
+  <form name="import-calendar-form" title="Import calendar"
+    model="com.axelor.apps.base.db.ImportConfiguration" width="large">
+    <panel name="mainPanel">
+      <field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true"
+        form-view="meta-files-form" grid-view="meta-files-grid"/>
+      <button name="importBtn" title="Import Calendar" colSpan="5"
+        onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile"
+        prompt="Are you sure you want to start the import?"/>
+    </panel>
+  </form>
+
+  <form name="import-icalendar-form" title="Import calendar"
+    model="com.axelor.apps.base.db.ImportConfiguration" width="large">
+    <panel name="mainPanel">
+      <field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true"
+        form-view="meta-files-form" grid-view="meta-files-grid"/>
+      <button name="importBtn" title="Import Calendar" colSpan="5"
+        onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile"
+        prompt="Are you sure you want to start the import?"/>
+    </panel>
+  </form>
+
+  <action-method name="action-import-configuration-method-run">
+    <call class="com.axelor.apps.base.web.ImportConfigurationController" method="run"/>
+  </action-method>
+
+  <action-record name="action-import-record-default"
+    model="com.axelor.apps.base.db.ImportConfiguration">
+    <field name="user" expr="eval: __user__"/>
+  </action-record>
+
+  <action-attrs model="com.axelor.apps.base.db.ImportConfiguration"
+    name="action-attar-set-data-meta-file-domain">
+    <attribute name="domain" for="dataMetaFile"
+      expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/csv'&quot;"
+      if="typeSelect=='csv'"/>
+    <attribute name="domain" for="dataMetaFile"
+      expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.fileType='text/xml'&quot;"
+      if="typeSelect=='xml'"/>
+  </action-attrs>
+
+  <action-attrs model="com.axelor.apps.base.db.ImportConfiguration"
+    name="action-attrs-calendar-type-file">
+    <attribute name="domain" for="dataMetaFile"
+      expr="eval: &quot;self.id != ${bindMetaFile?.id} and self.mime='text/csv'&quot;"
+      if="typeSelect=='ics'"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-import-configuration-set-status-date">
+    <attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
+    <attribute name="value" for="statusSelect"
+      expr="eval: __repo__(ImportConfiguration).STATUS_IN_PROGRESS"/>
+    <attribute name="value" for="endDateTime" expr="eval: null" if="endDateTime"/>
+  </action-attrs>
+
 </object-views>

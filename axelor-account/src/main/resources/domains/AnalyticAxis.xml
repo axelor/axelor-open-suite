@@ -6,10 +6,10 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticAxis" lang="java">
-  
+
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" required="true" unique="true"/>
-    
+
   </entity>
 
 </domain-models>
