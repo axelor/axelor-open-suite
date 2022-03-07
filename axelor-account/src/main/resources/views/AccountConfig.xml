@@ -143,8 +143,8 @@
               form-view="account-form"/>
           </panel>
           <panel name="financialResultPanel" title="Financial result" colSpan="12">
-            <field name="profitAccount" colSpan="6"/>
-            <field name="lossAccount" colSpan="6"/>
+            <field name="resultProfitAccount" colSpan="6"/>
+            <field name="resultLossAccount" colSpan="6"/>
           </panel>
 
 

@@ -94,14 +94,12 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String origin,
       String moveDescription,
       boolean closeYear,
-      boolean openYear,
       boolean allocatePerPartner)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
 
     Move closeYearMove = null;
-    Move openYearMove = null;
 
     if (closeYear) {
       closeYearMove =
@@ -122,6 +120,30 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       moveList.add(closeYearMove);
     }
 
+    /*if (closeYearMove != null && openYearMove != null) {
+      reconcile(closeYearMove, openYearMove);
+    }*/
+
+    return moveList;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateOpenAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean openYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move openYearMove = null;
+
     if (openYear) {
       openYearMove =
           generateCloseAnnualAccountMove(
@@ -139,10 +161,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         return null;
       }
       moveList.add(openYearMove);
-    }
-
-    if (closeYearMove != null && openYearMove != null) {
-      reconcile(closeYearMove, openYearMove);
     }
 
     return moveList;
@@ -322,7 +340,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
             accountSet.stream().map(Account::getId).collect(Collectors.toList()));
-
     Query q =
         JPA.em()
             .createQuery(

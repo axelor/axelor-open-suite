@@ -40,6 +40,18 @@ public interface AccountingCloseAnnualService {
       String origin,
       String moveDescription,
       boolean closeYear,
+      boolean allocatePerPartner)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateOpenAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
       boolean openYear,
       boolean allocatePerPartner)
       throws AxelorException;
