@@ -47,6 +47,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -76,23 +77,10 @@ public class StockMoveInvoiceController {
 
         if (invoice != null) {
           // Open the generated invoice in a new tab
-          String invoiceGrid = "";
-          String invoiceFilter = "";
-          if (invoice.getOperationTypeSelect().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-              || invoice
-                  .getOperationTypeSelect()
-                  .equals(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
-            invoiceGrid = "invoice-grid";
-            invoiceFilter = "customer-invoices-filters";
-          } else if (invoice
-                  .getOperationTypeSelect()
-                  .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-              || invoice
-                  .getOperationTypeSelect()
-                  .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
-            invoiceGrid = "invoice-supplier-grid";
-            invoiceFilter = "supplier-invoices-filters";
-          }
+          HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice);
+          String invoiceGrid = viewTypeMap.get("invoiceGrid");
+          String invoiceFilter = viewTypeMap.get("invoiceFilter");
+
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
@@ -185,14 +173,17 @@ public class StockMoveInvoiceController {
         Optional<Invoice> invoice =
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
+        HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice.get());
+        String invoiceGrid = viewTypeMap.get("invoiceGrid");
+        String invoiceFilter = viewTypeMap.get("invoiceFilter");
         invoice.ifPresent(
             inv ->
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", "invoice-grid")
+                        .add("grid", invoiceGrid)
                         .add("form", "invoice-form")
-                        .param("search-filters", "customer-invoices-filters")
+                        .param("search-filters", invoiceFilter)
                         .param("forceEdit", "true")
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
@@ -260,14 +251,17 @@ public class StockMoveInvoiceController {
           Beans.get(StockMoveMultiInvoiceService.class)
               .createInvoiceFromMultiOutgoingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
+      HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice.get());
+      String invoiceGrid = viewTypeMap.get("invoiceGrid");
+      String invoiceFilter = viewTypeMap.get("invoiceFilter");
       invoice.ifPresent(
           inv ->
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", "invoice-grid")
+                      .add("grid", invoiceGrid)
                       .add("form", "invoice-form")
-                      .param("search-filters", "customer-invoices-filters")
+                      .param("search-filters", invoiceFilter)
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -348,14 +342,17 @@ public class StockMoveInvoiceController {
         Optional<Invoice> invoice =
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiIncomingStockMove(stockMoveList);
+        HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice.get());
+        String invoiceGrid = viewTypeMap.get("invoiceGrid");
+        String invoiceFilter = viewTypeMap.get("invoiceFilter");
         invoice.ifPresent(
             inv ->
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", "invoice-grid")
+                        .add("grid", invoiceGrid)
                         .add("form", "invoice-form")
-                        .param("search-filters", "customer-invoices-filters")
+                        .param("search-filters", invoiceFilter)
                         .param("forceEdit", "true")
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -418,14 +415,17 @@ public class StockMoveInvoiceController {
           Beans.get(StockMoveMultiInvoiceService.class)
               .createInvoiceFromMultiIncomingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
+      HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice.get());
+      String invoiceGrid = viewTypeMap.get("invoiceGrid");
+      String invoiceFilter = viewTypeMap.get("invoiceFilter");
       invoice.ifPresent(
           inv ->
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", "invoice-grid")
+                      .add("grid", invoiceGrid)
                       .add("form", "invoice-form")
-                      .param("search-filters", "customer-invoices-filters")
+                      .param("search-filters", invoiceFilter)
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -516,9 +516,9 @@ public class StockMoveInvoiceController {
 
         viewBuilder
             .model(Invoice.class.getName())
-            .add("grid", "invoice-grid")
+            .add("grid", "invoice-supplier-grid")
             .add("form", "invoice-form")
-            .param("search-filters", "customer-invoices-filters")
+            .param("search-filters", "supplier-invoices-filters")
             .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
             .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
             .context(
@@ -595,12 +595,16 @@ public class StockMoveInvoiceController {
         Invoice invoice =
             stockMoveInvoiceService.createInvoice(stockMove, StockMoveRepository.INVOICE_ALL, null);
         if (invoice != null) {
+          HashMap<String, String> viewTypeMap = checkOperationTypeToGenerateViews(invoice);
+          String invoiceGrid = viewTypeMap.get("invoiceGrid");
+          String invoiceFilter = viewTypeMap.get("invoiceFilter");
+
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
+                  .add("grid", invoiceGrid)
                   .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
+                  .param("search-filters", invoiceFilter)
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
@@ -614,5 +618,25 @@ public class StockMoveInvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private HashMap<String, String> checkOperationTypeToGenerateViews(Invoice invoice) {
+    HashMap<String, String> viewTypeMap = new HashMap<String, String>();
+    if (invoice.getOperationTypeSelect().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        || invoice
+            .getOperationTypeSelect()
+            .equals(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+      viewTypeMap.put("invoiceGrid", "invoice-grid");
+      viewTypeMap.put("invoiceFilter", "customer-invoices-filters");
+    } else if (invoice
+            .getOperationTypeSelect()
+            .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || invoice
+            .getOperationTypeSelect()
+            .equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
+      viewTypeMap.put("invoiceGrid", "invoice-supplier-grid");
+      viewTypeMap.put("invoiceFilter", "supplier-invoices-filters");
+    }
+    return viewTypeMap;
   }
 }
