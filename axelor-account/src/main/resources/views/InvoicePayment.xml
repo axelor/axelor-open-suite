@@ -60,7 +60,7 @@
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
+      <field name="applyFinancialDiscount"
         onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
       <field name="$totalAmountWithFinancialDiscount" type="decimal"
         title="Total amount with Fin. Discount"

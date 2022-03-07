@@ -127,12 +127,14 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+        <field name="applyFinancialDiscount" showIf="isPaid || amountRemaining != amount"
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null" readonlyIf="paymentSession">
+        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountAmount" readonly="true"/>
@@ -272,13 +274,13 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+        <field name="applyFinancialDiscount" showIf="isPaid || amountRemaining != amount"
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null" readonlyIf="paymentSession">
-        <field name="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
         <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
         <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"

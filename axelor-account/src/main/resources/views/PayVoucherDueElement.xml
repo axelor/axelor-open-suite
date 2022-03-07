@@ -36,7 +36,7 @@
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount">
-      <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"
+      <field name="applyFinancialDiscount"
         onChange="action-method-pay-voucher-due-update-amounts"/>
       <panel readonly="true" showIf="applyFinancialDiscount" colSpan="12">
         <field name="financialDiscount"/>
