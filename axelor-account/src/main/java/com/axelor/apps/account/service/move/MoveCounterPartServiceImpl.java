@@ -98,8 +98,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
           accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
     } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
         && move.getPaymentMode() != null) {
-      accountingAccount =
-          paymentModeService.getPaymentModeAccount(move.getPaymentMode(), move.getCompany());
+      accountingAccount = paymentModeService.getPaymentModeAccount(move);
     }
     return accountingAccount;
   }
