@@ -58,7 +58,7 @@ public class AccountAccountRepository extends AccountRepository {
       return super.save(account);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }
