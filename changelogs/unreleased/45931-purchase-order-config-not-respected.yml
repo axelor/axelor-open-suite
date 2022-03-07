@@ -1,0 +1,3 @@
+---
+title: "Generating purchase orders now correctly applies the company purchase config for purchase printing"
+type: fix

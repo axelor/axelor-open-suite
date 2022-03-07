@@ -161,6 +161,8 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+    purchaseOrder.setDisplayPriceOnQuotationRequest(
+        intercoCompany.getPurchaseConfig().getDisplayPriceOnQuotationRequest());
 
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
