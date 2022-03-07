@@ -374,7 +374,12 @@ public class ReconcileServiceImpl implements ReconcileService {
       throws AxelorException {
     InvoicePayment invoicePayment = null;
     if (invoice != null) {
-      invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+      invoicePayment = this.getExistingInvoiceTerm(invoice, move);
+
+      if (invoicePayment == null) {
+        invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+      }
+
       invoicePayment.addReconcileListItem(reconcile);
     }
 
@@ -403,6 +408,13 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
+  }
+
+  protected InvoicePayment getExistingInvoiceTerm(Invoice invoice, Move move) {
+    return invoice.getInvoicePaymentList().stream()
+        .filter(it -> it.getMove().equals(move))
+        .findFirst()
+        .orElse(null);
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
