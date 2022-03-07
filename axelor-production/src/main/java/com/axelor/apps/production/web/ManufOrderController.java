@@ -50,8 +50,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Strings;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -747,7 +747,7 @@ public class ManufOrderController {
       Beans.get(ManufOrderReservedQtyService.class).cancelReservation(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
-    	TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e);
     }
   }
 
