@@ -1,3 +1,3 @@
 ---
 title: "Remove unused code importing access config"
-fix: remove
+type: remove
