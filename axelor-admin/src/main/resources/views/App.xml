@@ -65,16 +65,6 @@
     </panel>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Import access config"
-    name="import-access-config-wizard-form">
-    <panel name="wizardPanel">
-      <field type="many-to-one" name="metaFile" title="File" widget="binary-link"
-        target="com.axelor.meta.db.MetaFile"/>
-      <button name="importAccessBtn" title="Import" colSpan="4"
-        onClick="action-app-method-import-access-config" readonlyIf="metaFile == null"/>
-    </panel>
-  </form>
-
   <cards name="app-cards" model="com.axelor.apps.base.db.App" title="Apps" css="rect-image"
     canDelete="false" canNew="false" orderBy="sequence" width="25%:200">
     <toolbar>
@@ -159,15 +149,6 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="height" value="400"/>
-  </action-view>
-
-  <action-view name="action-app-view-import-access-config-wizard"
-    title="Import access config" model="com.axelor.apps.base.db.Wizard">
-    <view type="form" name="import-access-config-wizard-form"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="popup" value="true"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="show-confirm" value="false"/>
   </action-view>
 
   <action-attrs name="action-app-on-load-attrs">
