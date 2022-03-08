@@ -482,10 +482,8 @@ public class AccountModule extends AxelorModule {
 
     bind(TaxAccountToolService.class).to(TaxAccountToolServiceImpl.class);
 
-
     bind(ClosureAssistantLineService.class).to(ClosureAssistantLineServiceImpl.class);
 
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
-
   }
 }

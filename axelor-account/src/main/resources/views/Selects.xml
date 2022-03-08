@@ -706,7 +706,7 @@
     <option value="2">In progress</option>
     <option value="3">Finished</option>
   </selection>
-  
+
   <selection name='iaccount.vat.system.invoice.line.tax.select'>
     <option value="0"></option>
     <option value="1">vat.Delivery</option>
