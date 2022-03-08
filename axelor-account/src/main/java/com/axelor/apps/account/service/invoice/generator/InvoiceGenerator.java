@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
-import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,7 +41,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
@@ -275,11 +273,10 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    if (company != null && partner !=null && paymentMode != null) {
+    if (company != null && partner != null && paymentMode != null) {
       companyBankDetails =
-              Beans.get(BankDetailsService.class)
-                      .getDefaultCompanyBankDetails(
-                              company, paymentMode, partner, operationType);
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, operationType);
     }
 
     invoice.setCompanyBankDetails(companyBankDetails);
