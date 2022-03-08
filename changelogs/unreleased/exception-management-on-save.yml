@@ -2,4 +2,4 @@
 title: "Exception: fix message display when an error occurs on save."
 type: fix
 description: |
-  "For example, the message 'Invoice type missing on invoice' is now correctly displayed instead of 'com.axelor.exception.AxelorException: Invoice type missing on invoice'"
+  "For example, the message 'Invoice type missing on invoice' is now correctly displayed instead of 'com.axelor.exception.AxelorException: Invoice type missing on invoice'."
