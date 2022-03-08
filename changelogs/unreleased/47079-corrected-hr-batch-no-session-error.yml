@@ -1,3 +1,0 @@
----
-title: "HR Batch: fix internal server error happening during most HR batch executions when processing more than 10 records."
-type: fix

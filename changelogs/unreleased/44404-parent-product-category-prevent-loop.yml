@@ -1,3 +1,0 @@
----
-title: "Prevent selecting a \"children\" product category when selecting a parent, to avoid configuration errors when creating a hierarchy of product categories."
-type: fix

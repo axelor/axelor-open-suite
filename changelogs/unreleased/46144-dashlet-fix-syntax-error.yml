@@ -1,3 +1,0 @@
----
-title: "Project: in project dashboard, fix `com.axelor.internal.javax.el.ELEXCEPTION:Failed to parse the expression` error: \"My tasks due\" is now correctly displayed."
-type: fix
