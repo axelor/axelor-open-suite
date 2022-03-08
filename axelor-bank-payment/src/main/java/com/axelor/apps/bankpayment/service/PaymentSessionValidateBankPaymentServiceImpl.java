@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -21,6 +22,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -29,6 +31,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBException;
@@ -41,6 +45,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderRepository bankOrderRepo;
+  protected CurrencyService currencyService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
@@ -57,7 +63,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
       BankOrderLineOriginService bankOrderLineOriginService,
-      BankOrderRepository bankOrderRepo) {
+      BankOrderRepository bankOrderRepo,
+      CurrencyService currencyService,
+      AppAccountService appAccountService) {
     super(
         appBaseService,
         moveCreateService,
@@ -73,6 +81,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderRepo = bankOrderRepo;
+    this.currencyService = currencyService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -122,16 +132,23 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected BankOrder createBankOrder(PaymentSession paymentSession) throws AxelorException {
-    return bankOrderCreateService.createBankOrder(
-        paymentSession.getPaymentMode(),
-        paymentSession.getPartnerTypeSelect(),
-        paymentSession.getPaymentDate(),
-        paymentSession.getCompany(),
-        paymentSession.getBankDetails(),
-        paymentSession.getCurrency(),
-        paymentSession.getSequence(),
-        this.getLabel(paymentSession),
-        BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    BankOrder bankOrder =
+        bankOrderCreateService.createBankOrder(
+            paymentSession.getPaymentMode(),
+            paymentSession.getPartnerTypeSelect(),
+            paymentSession.getPaymentDate(),
+            paymentSession.getCompany(),
+            paymentSession.getBankDetails(),
+            paymentSession.getCurrency(),
+            paymentSession.getSequence(),
+            this.getLabel(paymentSession),
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
+      bankOrder.setIsMultiCurrency(true);
+    }
+
+    return bankOrder;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -174,7 +191,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (bankOrderLine == null) {
       this.generateBankOrderLineFromInvoiceTerm(paymentSession, invoiceTerm, bankOrder);
     } else {
-      this.updateBankOrderLine(invoiceTerm, bankOrderLine);
+      this.updateBankOrderLine(paymentSession, invoiceTerm, bankOrderLine);
     }
 
     bankOrderRepo.save(paymentSession.getBankOrder());
@@ -197,12 +214,20 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTerm);
 
     bankOrder.addBankOrderLineListItem(bankOrderLine);
+    bankOrderLine.setCompanyCurrencyAmount(
+        this.getAmountPaidInCompanyCurrency(paymentSession, invoiceTerm, bankOrderLine));
   }
 
-  protected void updateBankOrderLine(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+  protected void updateBankOrderLine(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      throws AxelorException {
     this.updateReference(invoiceTerm, bankOrderLine);
     bankOrderLine.setBankOrderAmount(
         bankOrderLine.getBankOrderAmount().add(invoiceTerm.getAmountPaid()));
+    bankOrderLine.setCompanyCurrencyAmount(
+        bankOrderLine
+            .getCompanyCurrencyAmount()
+            .add(this.getAmountPaidInCompanyCurrency(paymentSession, invoiceTerm, bankOrderLine)));
     bankOrderLine.addBankOrderLineOriginListItem(
         bankOrderLineOriginService.createBankOrderLineOrigin(invoiceTerm));
   }
@@ -215,7 +240,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   protected String getReference(InvoiceTerm invoiceTerm) {
     return String.format(
-        "%s (%s)", invoiceTerm.getMoveLine().getOrigin(), invoiceTerm.getDueDate());
+        "%s (%s)",
+        invoiceTerm.getMoveLine().getOrigin(),
+        invoiceTerm.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
   }
 
   protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
@@ -226,6 +253,20 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (newReference.length() < 256) {
       bankOrderLine.setReceiverReference(newReference);
     }
+  }
+
+  protected BigDecimal getAmountPaidInCompanyCurrency(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      throws AxelorException {
+    return bankOrderLine.getBankOrder().getIsMultiCurrency()
+        ? currencyService
+            .getAmountCurrencyConvertedAtDate(
+                paymentSession.getCurrency(),
+                paymentSession.getCompany().getCurrency(),
+                invoiceTerm.getAmountPaid(),
+                bankOrderLine.getBankOrderDate())
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+        : invoiceTerm.getAmountPaid();
   }
 
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
