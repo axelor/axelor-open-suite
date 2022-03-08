@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure "
+    name="closure-assistant-grid" orderBy="progress">
+    <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
+    <field name="fiscalYear.company.code" title="Company" width="300"/>
+    <field name="progress" title="Progress" widget="Progress" width="600"/>
+  </grid>
+
+
+  <form model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
+    name="closure-assistant-form" onNew="account-closure-assistant-group-on-new"
+    onSave="account-closure-assistant-group-on-save">
+    <panel name="mainPanel" colSpan="12">
+      <field name="company" colSpan="6" title="Company" readonlyIf="progress &gt; 0"/>
+      <field name="fiscalYear" domain="self.company = :company" colSpan="6"
+        title="Fiscal Year" readonlyIf="progress &gt; 0"/>
+      <panel-related name="closureAssistantLineListPanel"
+        field="closureAssistantLineList" colSpan="12" height="6" title="Closure steps"
+        grid-view="closure-assistant-line-grid" canEdit="false" canMove="false" canRemove="false"
+        canSelect="false" canNew="false" orderBy="sequence"/>
+      <field name="progress" title="Progress" widget="Progress" colSpan="8" colOffset="2"
+        readonly="true"/>
+    </panel>
+  </form>
+
+  <action-group name="account-closure-assistant-group-on-new">
+    <action name="account-closure-assistant-record-set-fields-on-new"/>
+    <action name="account-closure-assistant-method-set-fiscal-year-on-new"/>
+    <action name="account-closure-assistant-method-init-lines"/>
+  </action-group>
+
+  <action-record name="account-closure-assistant-record-set-fields-on-new"
+    model="com.axelor.apps.account.db.ClosureAssistant">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-group name="account-closure-assistant-group-on-save">
+    <action
+      name="account-closure-assistant-method-check-no-existing-closure-assistant-line-for-same-year"/>
+  </action-group>
+
+  <action-method
+    name="account-closure-assistant-method-check-no-existing-closure-assistant-line-for-same-year">
+    <call class="com.axelor.apps.account.web.ClosureAssistantController"
+      method="checkNoExistingClosureAssistantLineForSameYear"/>
+  </action-method>
+
+  <action-method name="account-closure-assistant-method-init-lines">
+    <call class="com.axelor.apps.account.web.ClosureAssistantController"
+      method="initClosureAssistantLines"/>
+  </action-method>
+
+  <action-method name="account-closure-assistant-method-set-fiscal-year-on-new">
+    <call class="com.axelor.apps.account.web.ClosureAssistantController" method="setFiscalYear"/>
+  </action-method>
+
+</object-views>
