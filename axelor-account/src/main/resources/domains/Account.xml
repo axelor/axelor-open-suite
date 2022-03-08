@@ -56,6 +56,8 @@
     <boolean name="isRegulatoryAccount" title="Regulatory account" readonly="true"
       copy="false"/>
     <boolean name="isRetrievedOnPaymentSession" title="Include on payment sessions ?"/>
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.select" default="0"/>
 
     <unique-constraint columns="code,company"/>
 
@@ -69,6 +71,11 @@
       	// STATUS SELECT
       	public static final int STATUS_INACTIVE = 0;
       	public static final int STATUS_ACTIVE = 1;
+
+      	// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_SYSTEM_GOODS = 1;
+      	public static final int VAT_SYSTEM_SERVICE = 2;
 
     ]]></extra-code>
 
@@ -89,6 +96,7 @@
       <field name="defaultTax"/>
       <field name="statusSelect"/>
       <field name="serviceType"/>
+      <field name="vatSystemSelect"/>
     </track>
 
 

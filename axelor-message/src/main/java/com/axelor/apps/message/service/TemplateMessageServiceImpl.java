@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -182,7 +182,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     return message;
   }
 
-  private Message generateMessage(
+  protected Message generateMessage(
       String model,
       Long objectId,
       Template template,
