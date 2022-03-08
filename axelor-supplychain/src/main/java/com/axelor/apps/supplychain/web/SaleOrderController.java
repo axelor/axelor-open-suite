@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -417,6 +418,7 @@ public class SaleOrderController {
     Company commonCompany = null;
     Partner commonContactPartner = null;
     TaxNumber commonTaxNumber = null;
+    Incoterm commonIncoterm = null;
     // Useful to determine if a difference exists between tax number of all sale orders
     boolean existTaxNumberDiff = false;
     FiscalPosition commonFiscalPosition = null;
@@ -436,6 +438,7 @@ public class SaleOrderController {
     // Useful to determine if a difference exists between stock locations of all
     // sale orders
     boolean existLocationDiff = false;
+    boolean existIncotermDiff = false;
 
     SaleOrder saleOrderTemp;
     int count = 1;
@@ -452,6 +455,7 @@ public class SaleOrderController {
         commonLocation = saleOrderTemp.getStockLocation();
         commonTaxNumber = saleOrderTemp.getTaxNumber();
         commonFiscalPosition = saleOrderTemp.getFiscalPosition();
+        commonIncoterm = saleOrderTemp.getIncoterm();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -492,6 +496,12 @@ public class SaleOrderController {
           commonFiscalPosition = null;
           existFiscalPositionDiff = true;
         }
+        if ((commonIncoterm == null ^ saleOrderTemp.getIncoterm() == null)
+            || (commonIncoterm != saleOrderTemp.getIncoterm()
+                && !commonIncoterm.equals(saleOrderTemp.getIncoterm()))) {
+          commonIncoterm = null;
+          existIncotermDiff = true;
+        }
       }
       count++;
     }
@@ -518,6 +528,14 @@ public class SaleOrderController {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+    if (existIncotermDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_INCOTERM));
     }
 
     if (existTaxNumberDiff) {
@@ -622,7 +640,8 @@ public class SaleOrderController {
                   commonPriceList,
                   commonTeam,
                   commonTaxNumber,
-                  commonFiscalPosition);
+                  commonFiscalPosition,
+                  commonIncoterm);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(

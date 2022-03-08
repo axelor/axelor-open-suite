@@ -485,6 +485,9 @@
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
+      <field name="saleOrder.incoterm" showIf="saleOrder"
+        if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
+        readonlyIf="statusSelect == 3"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
