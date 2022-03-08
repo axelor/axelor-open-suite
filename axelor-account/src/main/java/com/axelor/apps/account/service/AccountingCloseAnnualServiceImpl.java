@@ -85,6 +85,70 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateCloseAndOpenAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean closeYear,
+      boolean openYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move closeYearMove = null;
+    Move openYearMove = null;
+
+    if (closeYear) {
+      closeYearMove =
+          generateCloseAnnualAccountMove(
+              year,
+              account,
+              endOfYearDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              false,
+              allocatePerPartner);
+
+      if (closeYearMove == null) {
+        return null;
+      }
+      moveList.add(closeYearMove);
+    }
+
+    if (openYear) {
+      openYearMove =
+          generateCloseAnnualAccountMove(
+              year,
+              account,
+              reportedBalanceDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              true,
+              allocatePerPartner);
+
+      if (openYearMove == null) {
+        return null;
+      }
+      moveList.add(openYearMove);
+    }
+
+    if (closeYearMove != null && openYearMove != null) {
+      reconcile(closeYearMove, openYearMove);
+    }
+
+    return moveList;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,
@@ -119,10 +183,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       }
       moveList.add(closeYearMove);
     }
-
-    /*if (closeYearMove != null && openYearMove != null) {
-      reconcile(closeYearMove, openYearMove);
-    }*/
 
     return moveList;
   }

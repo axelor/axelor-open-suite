@@ -40,7 +40,9 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -127,6 +129,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     if (!end) {
       AccountingBatch accountingBatch = batch.getAccountingBatch();
       Year year = accountingBatch.getYear();
+      boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
 
       List<Long> closureAccountIdList =
           accountingCloseAnnualService.getAllAccountOfYear(
@@ -135,85 +138,147 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Long> openingAccountIdList =
           accountingCloseAnnualService.getAllAccountOfYear(
               accountingBatch.getOpeningAccountSet(), year);
-      openOrCloseProcess(accountingBatch.getCloseYear(), false, closureAccountIdList);
-      openOrCloseProcess(false, accountingBatch.getOpenYear(), openingAccountIdList);
+
+      List<Pair<Long, Long>> closureAccountAndPartnerPairList =
+          accountingCloseAnnualService.assignPartner(
+              closureAccountIdList, year, allocatePerPartner);
+
+      List<Pair<Long, Long>> openingAccountAndPartnerPairList =
+          accountingCloseAnnualService.assignPartner(
+              openingAccountIdList, year, allocatePerPartner);
+      System.err.println(closureAccountAndPartnerPairList);
+      System.err.println(openingAccountAndPartnerPairList);
+
+      Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
+      openAndCloseProcess(
+          closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
+      openAndCloseProcess(
+          openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
     }
   }
 
-  public void openOrCloseProcess(boolean close, boolean open, List<Long> accountIdList) {
+  protected void openAndCloseProcess(
+      List<Pair<Long, Long>> accountAndPartnerPairList,
+      boolean close,
+      boolean open,
+      Map<AccountByPartner, Map<Boolean, Boolean>> map) {
+    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
+      Account account = null;
+      Partner partner = null;
+      account = accountRepository.find(accountAndPartnerPair.getLeft());
+      if (accountAndPartnerPair.getRight() != null) {
+        partner = partnerRepository.find(accountAndPartnerPair.getRight());
+      } else {
+        partner = null;
+      }
+      if (close) {
+        Map<Boolean, Boolean> value = new HashMap<>();
+        value.put(close, false);
+        map.put(new AccountByPartner(account, partner), value);
+      } else if (open) {
+        Map<Boolean, Boolean> value = new HashMap<>();
+        AccountByPartner accountByPartner = new AccountByPartner(account, partner);
+        if (map.containsKey(accountByPartner)) {
+          boolean closeValue = map.get(accountByPartner).containsKey(true);
+          value.put(closeValue, open);
+          map.replace(accountByPartner, value);
+        } else {
+          value.put(false, open);
+          map.put(accountByPartner, value);
+        }
+      }
+      generateMoves(map);
+    }
+  }
+
+  protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
+    Map<Boolean, Boolean> value = new HashMap<Boolean, Boolean>();
+    boolean close = false;
+    boolean open = false;
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
     boolean closeYear = accountingBatch.getCloseYear();
+    boolean openYear = accountingBatch.getOpenYear();
     Year year = accountingBatch.getYear();
     LocalDate endOfYearDate = year.getToDate();
     LocalDate reportedBalanceDate = year.getReportedBalanceDate();
     String origin = accountingBatch.getCode();
     String moveDescription = accountingBatch.getMoveDescription();
-    List<Pair<Long, Long>> accountAndPartnerPairList =
-        accountingCloseAnnualService.assignPartner(accountIdList, year, allocatePerPartner);
-
-    Account account = null;
-    Partner partner = null;
-
-    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
-
+    for (AccountByPartner accountByPartner : map.keySet()) {
       try {
-        account = accountRepository.find(accountAndPartnerPair.getLeft());
-        if (accountAndPartnerPair.getRight() != null) {
-          partner = partnerRepository.find(accountAndPartnerPair.getRight());
-        } else {
-          partner = null;
-        }
+        value = map.get(accountByPartner);
+        if (value != null) {
+          close = value.containsKey(true);
+          open = value.containsValue(true);
+          List<Move> generateMoves = new ArrayList<Move>();
+          if (close && !open) {
+            generateMoves =
+                accountingCloseAnnualService.generateCloseAnnualAccount(
+                    yearRepository.find(year.getId()),
+                    accountByPartner.account,
+                    accountByPartner.partner,
+                    endOfYearDate,
+                    reportedBalanceDate,
+                    origin,
+                    moveDescription,
+                    closeYear,
+                    allocatePerPartner);
 
-        List<Move> generateMoves = new ArrayList<Move>();
-        if (close) {
-          generateMoves =
-              accountingCloseAnnualService.generateCloseAnnualAccount(
-                  yearRepository.find(year.getId()),
-                  account,
-                  partner,
-                  endOfYearDate,
-                  reportedBalanceDate,
-                  origin,
-                  moveDescription,
-                  closeYear,
-                  allocatePerPartner);
-        } else if (open) {
-          generateMoves =
-              accountingCloseAnnualService.generateOpenAnnualAccount(
-                  yearRepository.find(year.getId()),
-                  account,
-                  partner,
-                  endOfYearDate,
-                  reportedBalanceDate,
-                  origin,
-                  moveDescription,
-                  closeYear,
-                  allocatePerPartner);
-        }
+          } else if (open && !close) {
+            generateMoves =
+                accountingCloseAnnualService.generateOpenAnnualAccount(
+                    yearRepository.find(year.getId()),
+                    accountByPartner.account,
+                    accountByPartner.partner,
+                    endOfYearDate,
+                    reportedBalanceDate,
+                    origin,
+                    moveDescription,
+                    openYear,
+                    allocatePerPartner);
 
-        if (generateMoves != null && !generateMoves.isEmpty()) {
-          updateAccount(account);
+          } else if (open && close) {
+            generateMoves =
+                accountingCloseAnnualService.generateCloseAndOpenAnnualAccount(
+                    yearRepository.find(year.getId()),
+                    accountByPartner.account,
+                    accountByPartner.partner,
+                    endOfYearDate,
+                    reportedBalanceDate,
+                    origin,
+                    moveDescription,
+                    closeYear,
+                    openYear,
+                    allocatePerPartner);
+          }
+          System.err.println(generateMoves);
+          if (generateMoves != null && !generateMoves.isEmpty()) {
+            updateAccount(accountByPartner.account);
 
-          for (Move move : generateMoves) {
-            updateAccountMove(move, false);
+            for (Move move : generateMoves) {
+              updateAccountMove(move, false);
+            }
           }
         }
-
       } catch (AxelorException e) {
         TraceBackService.trace(
-            new AxelorException(e, e.getCategory(), I18n.get("Account") + " %s", account.getCode()),
+            new AxelorException(
+                e,
+                e.getCategory(),
+                I18n.get("Account") + " %s",
+                accountByPartner.account.getCode()),
             null,
             batch.getId());
         incrementAnomaly();
         break;
       } catch (Exception e) {
         TraceBackService.trace(
-            new Exception(String.format(I18n.get("Account") + " %s", account.getCode()), e),
+            new Exception(
+                String.format(I18n.get("Account") + " %s", accountByPartner.account.getCode()), e),
             null,
             batch.getId());
         incrementAnomaly();
-        LOG.error("Anomaly generated for the account {}", account.getCode());
+        LOG.error("Anomaly generated for the account {}", accountByPartner.account.getCode());
         break;
       } finally {
         JPA.clear();
@@ -242,5 +307,30 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             batch.getAnomaly()));
     addComment(sb.toString());
     super.stop();
+  }
+
+  class AccountByPartner {
+    protected Account account;
+    protected Partner partner;
+
+    public AccountByPartner(Account account, Partner partner) {
+      this.account = account;
+      this.partner = partner;
+    }
+
+    public int hashCode() {
+      return (int) (this.account.getId() * 10 + this.partner.getId());
+    }
+
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (!(o instanceof AccountByPartner)) {
+        return false;
+      }
+      AccountByPartner other = (AccountByPartner) o;
+      return this.account.equals(other.account) && this.partner.equals(other.partner);
+    }
   }
 }
