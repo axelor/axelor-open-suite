@@ -42,7 +42,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -273,30 +275,13 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
-      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+    if (company != null && partner !=null && paymentMode != null) {
       companyBankDetails =
-          bankDetailsList.stream()
-              .filter(bankDetails -> bankDetails.getIsDefault())
-              .findFirst()
-              .orElse(null);
-    } else if (accountingSituation != null) {
-      if (paymentMode != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
-      }
+              Beans.get(BankDetailsService.class)
+                      .getDefaultCompanyBankDetails(
+                              company, paymentMode, partner, operationType);
     }
-    if (companyBankDetails == null) {
-      companyBankDetails = company.getDefaultBankDetails();
-      List<BankDetails> allowedBDs =
-          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-      if (!allowedBDs.contains(companyBankDetails)) {
-        companyBankDetails = null;
-      }
-    }
+
     invoice.setCompanyBankDetails(companyBankDetails);
 
     if (partner.getBankDetailsList() != null && invoice.getBankDetails() == null) {
