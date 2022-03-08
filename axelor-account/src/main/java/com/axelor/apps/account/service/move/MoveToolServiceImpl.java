@@ -1,10 +1,6 @@
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -18,6 +14,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
@@ -30,10 +27,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +41,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected PartnerService partnerService;
 
   @Inject
   public MoveToolServiceImpl(
@@ -53,13 +49,15 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      PartnerService partnerService) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
+    this.partnerService = partnerService;
   }
 
   @Override
@@ -477,5 +475,22 @@ public class MoveToolServiceImpl implements MoveToolService {
     if (ObjectUtils.isEmpty(accountConfig)) {}
 
     return result;
+  }
+
+  @Override
+  public String filterJournalPartnerCompatibleType(Move move) {
+    StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
+    Journal journal = move.getJournal();
+    String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
+    Set<Long> compatiblePartnerIds = new HashSet<>();
+    for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
+      compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
+    }
+    for (Long id : compatiblePartnerIds) {
+      compatiblePartnerDomain.append(id.toString() + ",");
+    }
+    compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
+    compatiblePartnerDomain.append(")");
+    return compatiblePartnerDomain.toString();
   }
 }

@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -797,5 +798,11 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return siren;
+  }
+
+  @Override
+  public List<Long> getPartnerIdsByType(String type) {
+    return Query.of(Partner.class).filter("self." + type + "=true").fetch().stream()
+            .map(partner -> partner.getId()).collect(Collectors.toList());
   }
 }

@@ -570,4 +570,16 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      String journalPartnerCompatibleDomain =
+          Beans.get(MoveToolService.class).filterJournalPartnerCompatibleType(move);
+      response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

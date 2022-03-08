@@ -87,7 +87,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-account-move-method-filter-partner"
+            onSelect="action-account-move-method-filter-partner,action-account-move-method-filter-journal-partner-compatible-type"
             onChange="action-account-move-record-set-currency"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -180,7 +180,7 @@
         colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
-        form-view="move-line-move-form"  domain="self.isSpecific = false"
+        form-view="move-line-move-form" domain="self.isSpecific = false"
         onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
@@ -652,6 +652,12 @@
     <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
     <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
   </action-attrs>
+
+  <action-method
+    name="action-account-move-method-filter-journal-partner-compatible-type">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="filterJournalPartnerCompatibleType"/>
+  </action-method>
 
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
