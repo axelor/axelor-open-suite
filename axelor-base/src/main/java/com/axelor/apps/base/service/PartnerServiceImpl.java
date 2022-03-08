@@ -803,6 +803,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public List<Long> getPartnerIdsByType(String type) {
     return Query.of(Partner.class).filter("self." + type + "=true").fetch().stream()
-            .map(partner -> partner.getId()).collect(Collectors.toList());
+        .map(partner -> partner.getId())
+        .collect(Collectors.toList());
   }
 }
