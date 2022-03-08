@@ -7,12 +7,17 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.bankpayment.db.BankPaymentConfig;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -40,6 +45,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
   protected BankDetailsRepository bankDetailsRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected MoveValidateService moveValidateService;
+  protected BankPaymentConfigService bankPaymentConfigService;
+  private boolean end = false;
 
   @Inject
   public BatchBankOrderGenerationBillOfExchange(
@@ -49,7 +56,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       AppAccountService appAccountService,
       BankDetailsRepository bankDetailsRepository,
       InvoicePaymentRepository invoicePaymentRepository,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      BankPaymentConfigService bankPaymentConfigService) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
@@ -58,10 +66,35 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     this.bankDetailsRepository = bankDetailsRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveValidateService = moveValidateService;
+    this.bankPaymentConfigService = bankPaymentConfigService;
+  }
+
+  @Override
+  protected void start() throws IllegalAccessException {
+    super.start();
+    try {
+      BankPaymentConfig bankPaymentConfig =
+          bankPaymentConfigService.getBankPaymentConfig(batch.getAccountingBatch().getCompany());
+      if (bankPaymentConfig.getBillOfExchangeSequence() == null) {
+        throw new AxelorException(
+            bankPaymentConfig,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CONFIG_SEQUENCE_12),
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            bankPaymentConfig.getCompany().getName());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e, "Batch bill of exchange bank order generation", batch.getId());
+      incrementAnomaly();
+      end = true;
+    }
   }
 
   @Override
   protected void process() {
+    if (end) {
+      return;
+    }
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (accountingBatch.getPaymentMode() == null
@@ -71,18 +104,18 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
 
     List<Long> anomalyList = Lists.newArrayList(0L); // Can't pass an empty collection to the query
     Query<Invoice> query = buildOrderedQueryFetchLcrAccountedInvoices(accountingBatch, anomalyList);
-    List<Long> invoicePaymentIdList = createInvoicePayments(query, anomalyList);
-    if (invoicePaymentIdList != null && !invoicePaymentIdList.isEmpty()) {
+    try {
+      List<Long> invoicePaymentIdList = createInvoicePayments(query, anomalyList);
+      if (invoicePaymentIdList != null && !invoicePaymentIdList.isEmpty()) {
 
-      try {
         bankOrderMergeService.mergeFromInvoicePayments(
             invoicePaymentIdList.stream()
                 .map(id -> invoicePaymentRepository.find(id))
                 .collect(Collectors.toList()));
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e, "billOfExchangeBatch: Merge", batch.getId());
       }
+    } catch (Exception e) {
+      incrementAnomaly();
+      TraceBackService.trace(e, "billOfExchangeBatch: Merge", batch.getId());
     }
   }
 
@@ -117,7 +150,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     return invoicePaymentIdList;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void createInvoicePayment(
       List<Long> invoicePaymentIdList, BankDetails companyBankDetails, Invoice invoice) {
     log.debug("Creating Invoice payments from {}", invoice);
@@ -160,9 +193,12 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       bindings.put("currency", accountingBatch.getCurrency());
     }
 
-    if (manageMultiBanks) {
+    if (accountingBatch.getBankDetails() != null) {
       filter.append(" AND self.companyBankDetails IN (:bankDetailsSet) ");
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+      if (manageMultiBanks && accountingBatch.getIncludeOtherBankAccounts()) {
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+      }
       bindings.put("bankDetailsSet", bankDetailsSet);
     }
 
