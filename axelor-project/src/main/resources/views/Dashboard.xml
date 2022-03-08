@@ -36,7 +36,7 @@
       (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
       (self.taskDeadline <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{'closed', 'canceled'}"/>
+    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
   </action-view>
 
   <action-view name="action-project-db-my-today-planning" title="My today planning"
