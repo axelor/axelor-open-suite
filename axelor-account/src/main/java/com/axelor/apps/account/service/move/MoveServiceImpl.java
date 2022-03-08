@@ -645,4 +645,38 @@ public class MoveServiceImpl implements MoveService {
     }
     return move;
   }
+
+  @Override
+  public boolean isPartnerNotCompatible(Move move) {
+    Journal journal = move.getJournal();
+    Partner partner = move.getPartner();
+    if(journal.getCompatiblePartnerTypeSelect()!=null){
+      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
+      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
+        switch (compatiblePartnerType) {
+          case "isProspect":
+            if (partner.getIsProspect()) {
+              return false;
+            }
+            break;
+          case "isCustomer":
+            if (partner.getIsCustomer()) {
+              return false;
+            }
+            break;
+          case "isSupplier":
+            if (partner.getIsSupplier()) {
+              return false;
+            }
+            break;
+          case "isFactor":
+            if (!partner.getIsFactor()) {
+              return false;
+            }
+            break;
+        }
+      }
+    }
+    return true;
+  }
 }
