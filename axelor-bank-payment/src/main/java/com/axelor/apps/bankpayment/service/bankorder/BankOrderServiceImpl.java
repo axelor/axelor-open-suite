@@ -346,8 +346,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankOrder.getPaymentMode().getBankOrderMoveGenTriggerSelect()
-        == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_VALIDATION) {
+    if (bankOrder.getPaymentMode().getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
@@ -400,8 +400,8 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (bankOrder.getPaymentMode().getBankOrderMoveGenTriggerSelect()
-        == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_REALIZATION) {
+    if (bankOrder.getPaymentMode().getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }

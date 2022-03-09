@@ -12,8 +12,6 @@
     <boolean name="automaticTransmission" title="Transmit automatically to Bank"/>
     <integer name="orderTypeSelect" title="Order Type"
       selection="bankpayment.bank.order.type.select"/>
-    <integer name="bankOrderMoveGenTriggerSelect" title="Move generation trigger settings"
-      selection="payment.mode.bank.order.move.gen.trigger.select"/>
     <string name="bankOrderExportFolderPath"/>
     <many-to-one name="bankOrderFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
@@ -28,11 +26,9 @@
         public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
         public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_NONE = 0;
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_IMMEDIATE = 1;
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_CONFIRMATION = 2;
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_VALIDATION = 3;
-        public static final int BANK_ORDER_MOVE_GEN_TRIGGER_REALIZATION = 4;
+        public static final int ACCOUNTING_TRIGGER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_REALIZATION = 4;
     ]]></extra-code>
 
   </entity>

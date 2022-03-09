@@ -303,9 +303,8 @@
     <option value="2">BOR</option>
   </selection>
 
-  <selection name="payment.mode.bank.order.move.gen.trigger.select">
-    <option value="0">None</option>
-    <option value="1">Immediate</option>
+  <selection name="payment.mode.accounting.trigger.select"
+    id="bank.payment.payment.mode.accounting.trigger.select">
     <option value="2">Bank order confirmation</option>
     <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>

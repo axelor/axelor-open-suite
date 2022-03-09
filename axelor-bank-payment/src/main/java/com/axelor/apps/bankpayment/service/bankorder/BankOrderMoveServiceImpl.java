@@ -97,8 +97,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     paymentMode = bankOrder.getPaymentMode();
 
     if (paymentMode == null
-        || paymentMode.getBankOrderMoveGenTriggerSelect()
-            == PaymentModeRepository.BANK_ORDER_MOVE_GEN_TRIGGER_NONE) {
+        || paymentMode.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_NONE) {
       return;
     }
 

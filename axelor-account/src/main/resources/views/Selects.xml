@@ -682,14 +682,6 @@
     <option value="3">PaymentModeAccountingMethod.Global</option>
   </selection>
 
-  <selection name="payment.session.accounting.trigger.select">
-    <option value="0"/>
-    <option value="1">Immediate</option>
-    <option value="2">Bank order confirmation</option>
-    <option value="3">Bank order validation</option>
-    <option value="4">Bank order realization</option>
-  </selection>
-
   <selection name="partner.payment.notice.sending.method.select">
     <option value="0">None</option>
     <option value="1">PaymentNoticeSendingMethod.Email</option>
@@ -740,6 +732,11 @@
     <option value="3">Customer</option>
     <option value="4">Company</option>
     <option value="5">Other</option>
+  </selection>
+
+  <selection name="payment.mode.accounting.trigger.select">
+    <option value="0">None</option>
+    <option value="1">Immediate</option>
   </selection>
 
 </object-views>

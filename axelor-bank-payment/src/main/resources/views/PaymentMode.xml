@@ -6,11 +6,16 @@
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" id="bank-payment-payment-mode-form"
     extension="true">
-    <extend target="//field[@name='canSelectInPaymentSession']">
-      <attribute name="onChange"
-        value="action-payment-mode-record-can-select-in-payment-session-onchange"/>
+    <extend target="//field[@name='accountingTriggerSelect']">
+      <replace>
+        <panel name="accountingTriggerPanel" stacked="true">
+          <field name="accountingTriggerSelect" showIf="generateBankOrder"/>
+          <field name="accountingTriggerSelect" showIf="!generateBankOrder"
+            selection-in="[0,1]"/>
+        </panel>
+      </replace>
     </extend>
-    <extend target="//panel[@name='paymentSessionPanel']">
+    <extend target="//panel[@name='generalAccountingConfiguration']">
       <insert position="after">
         <panel name="bankOrderPanel" title="Bank order config." hidden="true"
           hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
@@ -22,12 +27,6 @@
             <field name="automaticTransmission"
               if="__config__.app.getApp('bank-payment')?.enableEbicsModule"/>
             <field name="consoBankOrderLinePerPartner"/>
-            <panel stacked="true" readonlyIf="!generateBankOrder">
-              <field name="bankOrderMoveGenTriggerSelect" showIf="canSelectInPaymentSession"
-                requiredIf="canSelectInPaymentSession" selection-in="[1,2,3,4]"/>
-              <field name="bankOrderMoveGenTriggerSelect" showIf="!canSelectInPaymentSession"
-                requiredIf="canSelectInPaymentSession" selection-in="[0,2,3,4]"/>
-            </panel>
             <panel stacked="true">
               <field name="orderTypeSelect" selection-in="[2,4]" hidden="true"
                 showIf="typeSelect == 2" requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"
@@ -62,17 +61,7 @@
 
   <action-record name="action-payment-mode-record-generate-bank-order-onchange"
     model="com.axelor.apps.account.db.PaymentMode">
-    <field name="bankOrderMoveGenTriggerSelect" expr="eval: 0" if="!canSelectInPaymentSession"/>
-    <field name="bankOrderMoveGenTriggerSelect" expr="eval: 1" if="canSelectInPaymentSession"/>
-  </action-record>
-
-  <action-record
-    name="action-payment-mode-record-can-select-in-payment-session-onchange"
-    model="com.axelor.apps.account.db.PaymentMode">
-    <field name="bankOrderMoveGenTriggerSelect" expr="eval: 0"
-      if="!canSelectInPaymentSession &amp;&amp; bankOrderMoveGenTriggerSelect == 1"/>
-    <field name="bankOrderMoveGenTriggerSelect" expr="eval: 1"
-      if="canSelectInPaymentSession &amp;&amp; bankOrderMoveGenTriggerSelect == 0"/>
+    <field name="accountingTriggerSelect" expr="eval: 2" if="accountingTriggerSelect > 2"/>
   </action-record>
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
