@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,6 @@ import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -65,13 +65,17 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
   private String defaultApp = null;
 
-  @Inject private MetaMenuRepository metaMenuRepo;
+  protected MetaMenuRepository metaMenuRepo;
+  protected MetaFiles metaFiles;
+  protected MetaModelRepository metaModelRepo;
 
-  @Inject private AppService appService;
-
-  @Inject private MetaFiles metaFiles;
-
-  @Inject private MetaModelRepository metaModelRepo;
+  @Inject
+  public AccessTemplateServiceImpl(
+      MetaMenuRepository metaMenuRepo, MetaFiles metaFiles, MetaModelRepository metaModelRepo) {
+    this.metaMenuRepo = metaMenuRepo;
+    this.metaFiles = metaFiles;
+    this.metaModelRepo = metaModelRepo;
+  }
 
   @Override
   public MetaFile generateTemplate() throws AxelorException {
@@ -143,11 +147,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       return false;
     }
 
-    if (model.equals(MetaJsonRecord.class.getName())) {
-      return false;
-    }
-
-    return true;
+    return !model.equals(MetaJsonRecord.class.getName());
   }
 
   private String getObjMenu(MetaMenu menu) {
@@ -217,7 +217,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return appCode;
   }
 
-  private MetaFile createExcel() throws FileNotFoundException, IOException {
+  private MetaFile createExcel() throws IOException {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
@@ -248,7 +248,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return createMetaFile(workBook);
   }
 
-  public MetaFile createMetaFile(XSSFWorkbook workBook) throws IOException, FileNotFoundException {
+  public MetaFile createMetaFile(XSSFWorkbook workBook) throws IOException {
 
     Path path = MetaFiles.createTempFile("AccessConfigTemplate", ".xlsx");
 
@@ -319,18 +319,19 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
   private boolean addObject(MetaModel model) {
 
-    for (String key : objMenu.keySet()) {
-      if (model.getFullName().contains(key)) {
-        objMenu.put(model.getFullName(), objMenu.get(key));
+    for (Entry<String, String> entry : objMenu.entrySet()) {
+      if (model.getFullName().contains(entry.getKey())) {
+        objMenu.put(model.getFullName(), entry.getValue());
         return true;
       }
     }
 
     String pkgName = model.getPackageName();
-    for (String key : objMenu.keySet()) {
+    for (Entry<String, String> entry : objMenu.entrySet()) {
+      String key = entry.getKey();
       String objPkg = key.substring(0, key.lastIndexOf("."));
       if (pkgName.equals(objPkg)) {
-        objMenu.put(model.getFullName(), objMenu.get(key));
+        objMenu.put(model.getFullName(), entry.getValue());
         return true;
       }
     }
