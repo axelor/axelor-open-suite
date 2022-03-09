@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -306,7 +306,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0),
-          fixedAsset.getName());
+          fixedAsset.getReference());
     }
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
