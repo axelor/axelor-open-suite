@@ -216,12 +216,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()
-        && financialDiscount != null) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(true);
+      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
@@ -519,12 +518,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateFinancialDiscount(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
         .forEach(it -> this.computeFinancialDiscount(it, invoice));
 
-    return invoice.getInvoiceTermList();
+    invoiceRepo.save(invoice);
   }
 
   @Override

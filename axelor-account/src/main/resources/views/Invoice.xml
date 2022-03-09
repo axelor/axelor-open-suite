@@ -1623,6 +1623,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-group-financial-discount">
     <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="save"/>
     <action name="action-method-invoice-financial-discount-update-invoice-terms"/>
   </action-group>
 
