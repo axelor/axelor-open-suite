@@ -222,7 +222,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   @Override
   public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList) {
     return invoiceTermList.stream()
-        .map(InvoiceTerm::getAmountRemainingAfterFinDiscount)
+        .map(invoiceTermService::getAmountRemaining)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
