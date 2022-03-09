@@ -146,8 +146,6 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Pair<Long, Long>> openingAccountAndPartnerPairList =
           accountingCloseAnnualService.assignPartner(
               openingAccountIdList, year, allocatePerPartner);
-      System.err.println(closureAccountAndPartnerPairList);
-      System.err.println(openingAccountAndPartnerPairList);
 
       Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
       openAndCloseProcess(
@@ -251,7 +249,6 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     openYear,
                     allocatePerPartner);
           }
-          System.err.println(generateMoves);
           if (generateMoves != null && !generateMoves.isEmpty()) {
             updateAccount(accountByPartner.account);
 

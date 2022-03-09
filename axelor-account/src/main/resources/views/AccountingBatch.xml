@@ -143,6 +143,7 @@
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear" colSpan="6"/>
         <field name="resultMoveDescription" showIf="generateResultMove" colSpan="6"/>
+        <field name="generateGeneralLedger" showIf="openYear"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
@@ -201,6 +202,7 @@
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
     <action name="action-accounting-batch-method-action-close-annual-accounts"/>
+    <action name="action-accounting-batch-method-print-report"/>
   </action-group>
 
   <action-group name="action-accounting-batch-group-realize-fixed-asset-lines">
@@ -293,6 +295,11 @@
   <action-method name="action-accounting-batch-method-bill-of-exchange">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionBillOfExchange"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-print-report">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="printAccountingReport"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

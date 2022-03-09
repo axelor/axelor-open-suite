@@ -141,6 +141,8 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
@@ -481,5 +483,7 @@ public class AccountModule extends AxelorModule {
     bind(TaxAccountToolService.class).to(TaxAccountToolServiceImpl.class);
 
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
+
+    bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
   }
 }

@@ -72,6 +72,7 @@
     <string name="resultMoveDescription" title="Result move description"/>
     <boolean name="simulateGeneratedMoves" title="Generate simulated moves"
       help="Please make sure that the journal configured for annual closure and openning, does support simulated moves."/>
+    <boolean name="generateGeneralLedger" title="Generate general ledger"/>
 
     <!-- <many-to-many name="journalSet" ref="Journal" title="Journals"/> -->
     <boolean name="allocatePerPartner" title="Allocate per partner"/>

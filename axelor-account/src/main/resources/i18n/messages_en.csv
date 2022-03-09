@@ -1451,6 +1451,7 @@
 "Generate account configurations",,,
 "Generate counterpart",,,
 "Generate fixed asset",,,
+"Generate general ledger",,,
 "Generate invoice",,,
 "Generate irrecoverable report",,,
 "Generate move for advance payment",,,
