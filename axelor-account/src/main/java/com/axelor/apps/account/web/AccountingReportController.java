@@ -19,11 +19,13 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
@@ -32,6 +34,8 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
+import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -59,16 +63,29 @@ public class AccountingReportController {
       ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
 
-    try {
-      Map<String, Object> modelAccountingReportMap =
-          Beans.get(AccountingReportService.class)
-              .getFieldsFromReportTypeModelAccountingReport(accountingReport);
-      if (modelAccountingReportMap != null) {
-        response.setValues(modelAccountingReportMap);
+      try {
+        if (accountingReport.getReportType() != null) {
+          AccountingReportType accountingReportType =
+                  Beans.get(AccountingReportTypeRepository.class)
+                          .find(accountingReport.getReportType().getId());
+          logger.debug("accountingReportType : {}", accountingReportType);
+          if (accountingReportType.getModelAccountingReport() != null) {
+            AccountingReport accountingReport1 =
+                    JPA.copy(accountingReportType.getModelAccountingReport(), false);
+            accountingReport1.setRef(null);
+            accountingReport1.setPublicationDateTime(null);
+            accountingReport1.setTotalCredit(null);
+            accountingReport1.setTotalDebit(null);
+            accountingReport1.setBalance(null);
+            accountingReport1.setDate(accountingReport.getDate());
+            accountingReport1.setStatusSelect(accountingReport.getStatusSelect());
+            Map<String, Object> map = Mapper.toMap(accountingReport1);
+            response.setValues(map);
+          }
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   /**
