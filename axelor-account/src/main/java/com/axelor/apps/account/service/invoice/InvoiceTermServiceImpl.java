@@ -354,7 +354,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTerm.setFinancialDiscountDeadlineDate(
               invoiceTerm
                   .getDueDate()
-                  .plusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay()));
+                  .minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay()));
         }
       }
     }
