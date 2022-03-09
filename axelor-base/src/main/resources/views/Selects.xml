@@ -322,6 +322,10 @@
     <option value="3">Component</option>
   </selection>
 
+  <selection name="unit.conversion.type.select">
+    <option value="1">Coeff</option>
+    <option value="2">Formula</option>
+  </selection>
 
   <selection name="crm.event.related.to.select" id="base.crm.event.related.to.select">
     <option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
@@ -553,6 +557,7 @@
     <option value="PDF">PDF</option>
     <option value="WORD">WORD</option>
     <option value="ODT">ODT</option>
+    <option value="XLSX">XLSX</option>
   </selection>
 
   <selection name="base.print.display.type.select">
@@ -651,6 +656,11 @@
   <selection name="printing.setting.address.position">
     <option value="0">Right</option>
     <option value="1">Left</option>
+  </selection>
+
+  <selection name="base.print.template.input.type.select">
+    <option value="1">String Template</option>
+    <option value="2">Excel</option>
   </selection>
 
 </object-views>

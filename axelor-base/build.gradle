@@ -36,4 +36,13 @@ dependencies {
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	implementation libs.poi
+	implementation libs.poi_ooxml
+	implementation libs.poi_scratchpad
+	implementation libs.jericho_html
+	
+	implementation libs.open_html_pdf_core
+	implementation libs.open_html_pdf_pdfbox
+	implementation libs.jsoup
 }
