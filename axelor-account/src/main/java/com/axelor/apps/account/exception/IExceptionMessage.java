@@ -838,5 +838,5 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
 
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
-      "Gross value must be greater than 0 to validate" /*)*/;
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
 }

@@ -305,7 +305,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAsset.getGrossValue() == null || fixedAsset.getGrossValue().signum() <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0));
+          I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0),
+          fixedAsset.getName());
     }
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
