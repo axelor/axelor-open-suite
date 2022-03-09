@@ -140,7 +140,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
             accountingBatch.getCompany().getCurrency(),
             null,
             null,
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                -2);
 
     for (Reimbursement reimbursement : reimbursementList) {
       BankOrderLine bankOrderLine =

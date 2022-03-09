@@ -35,7 +35,7 @@
         onChange="action-group-payment-session-on-company-change"/>
       <field name="paymentMode" readonlyIf="!company"
         domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)
-                AND self.paymentMode.accountingTriggerSelect > 0"
+                AND self.accountingTriggerSelect > 0"
         form-view="payment-mode-form" grid-view="payment-mode-grid"
         onChange="action-group-payment-session-on-payment-mode-change"/>
       <field name="partnerTypeSelect" readonlyIf="!paymentMode" selection-in="[1,2,3]"/>
