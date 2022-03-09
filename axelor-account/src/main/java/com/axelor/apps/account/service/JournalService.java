@@ -70,9 +70,8 @@ public class JournalService {
     return resultMap;
   }
 
-  public Set<Long> filterJournalPartnerCompatibleType(Move move) {
+  public Set<Long> getCompatiblePartnerIds(Journal journal) {
     Set<Long> compatiblePartnerIds = null;
-    Journal journal = move.getJournal();
     if (journal.getCompatiblePartnerTypeSelect() != null) {
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
       compatiblePartnerIds = new HashSet<>();

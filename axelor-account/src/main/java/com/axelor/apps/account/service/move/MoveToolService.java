@@ -426,7 +426,7 @@ public class MoveToolService {
 
     if (journal!=null && journal.getCompatiblePartnerTypeSelect() != null) {
       StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
-      Set<Long> compatiblePartnerIds = journalService.filterJournalPartnerCompatibleType(move);
+      Set<Long> compatiblePartnerIds = journalService.getCompatiblePartnerIds(journal);
       for (Long id : compatiblePartnerIds) {
         compatiblePartnerDomain.append(id.toString() + ",");
       }
