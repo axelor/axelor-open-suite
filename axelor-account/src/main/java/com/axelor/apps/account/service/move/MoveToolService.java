@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -38,10 +36,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,18 +48,21 @@ public class MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
+  protected JournalService journalService;
 
   @Inject
   public MoveToolService(
       MoveLineService moveLineService,
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      JournalService journalService) {
 
     this.moveLineService = moveLineService;
     this.moveLineRepository = moveLineRepository;
     this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
+    this.journalService = journalService;
   }
 
   public boolean isMinus(Invoice invoice) {
@@ -421,5 +419,21 @@ public class MoveToolService {
     }
 
     return moveLineList;
+  }
+
+  public String filterJournalPartnerCompatibleType(Move move) {
+    Journal journal = move.getJournal();
+
+    if (journal!=null && journal.getCompatiblePartnerTypeSelect() != null) {
+      StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
+      Set<Long> compatiblePartnerIds = journalService.filterJournalPartnerCompatibleType(move);
+      for (Long id : compatiblePartnerIds) {
+        compatiblePartnerDomain.append(id.toString() + ",");
+      }
+      compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
+      compatiblePartnerDomain.append(")");
+      return compatiblePartnerDomain.toString();
+    }
+    return null;
   }
 }

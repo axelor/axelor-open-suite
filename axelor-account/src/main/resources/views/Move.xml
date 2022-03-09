@@ -524,7 +524,7 @@
   </action-group>
 
   <action-method name="action-move-method-journal-on-change">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="checkIsCompatiblePartner"/>
   </action-method>
 
 </object-views>

@@ -70,22 +70,16 @@ public class JournalService {
     return resultMap;
   }
 
-  public String filterJournalPartnerCompatibleType(Move move) {
+  public Set<Long> filterJournalPartnerCompatibleType(Move move) {
+    Set<Long> compatiblePartnerIds = null;
     Journal journal = move.getJournal();
-    if (journal.getCompatiblePartnerTypeSelect()!=null) {
-      StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
+    if (journal.getCompatiblePartnerTypeSelect() != null) {
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      Set<Long> compatiblePartnerIds = new HashSet<>();
+      compatiblePartnerIds = new HashSet<>();
       for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
         compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
       }
-      for (Long id : compatiblePartnerIds) {
-        compatiblePartnerDomain.append(id.toString() + ",");
-      }
-      compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
-      compatiblePartnerDomain.append(")");
-      return compatiblePartnerDomain.toString();
     }
-    return null;
+    return compatiblePartnerIds;
   }
 }
