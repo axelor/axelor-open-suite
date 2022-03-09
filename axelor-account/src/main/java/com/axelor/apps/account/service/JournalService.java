@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;

@@ -650,7 +650,7 @@ public class MoveServiceImpl implements MoveService {
   public boolean isPartnerNotCompatible(Move move) {
     Journal journal = move.getJournal();
     Partner partner = move.getPartner();
-    if (journal!=null && journal.getCompatiblePartnerTypeSelect() != null) {
+    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
       String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
       for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
         switch (compatiblePartnerType) {
