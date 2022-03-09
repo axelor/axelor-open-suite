@@ -16,7 +16,7 @@
     <boolean name="manageBankToBankTransferPayment"
       title="Manage bank to bank transfer payment" default="true"/>
     <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
-    <boolean name="manageBillOfExchange" title="Manage bill of exchange"/>
+    <boolean name="manageBillOfExchange" title="Manage bill of exchange" default="true"/>
 
     <track>
       <field name="manageDirectDebitPayment" on="UPDATE"/>

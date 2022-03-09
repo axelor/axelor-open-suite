@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -31,6 +32,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -331,8 +333,13 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   @Transactional
-  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) {
-    billOfMaterial.getProduct().setDefaultBillOfMaterial(billOfMaterial);
+  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException {
+    Company company = billOfMaterial.getCompany();
+    Product product = billOfMaterial.getProduct();
+    if (company != null) {
+      productCompanyService.set(product, "defaultBillOfMaterial", billOfMaterial, company);
+    }
+    product.setDefaultBillOfMaterial(billOfMaterial);
   }
 
   @Override
@@ -401,5 +408,27 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     newBom.setFullName(name);
 
     return newBom;
+  }
+
+  @Override
+  public BillOfMaterial getDefaultBOM(Product originalProduct, Company company)
+      throws AxelorException {
+
+    if (company == null) {
+      company = AuthUtils.getUser().getActiveCompany();
+    }
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalProduct != null) {
+      billOfMaterial =
+          (BillOfMaterial)
+              productCompanyService.get(originalProduct, "defaultBillOfMaterial", company);
+
+      if (billOfMaterial == null) {
+        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      }
+    }
+
+    return billOfMaterial;
   }
 }

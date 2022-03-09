@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -41,6 +42,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -57,6 +59,7 @@ public class PaymentVoucherLoadService {
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -65,7 +68,8 @@ public class PaymentVoucherLoadService {
       PayVoucherDueElementRepository payVoucherDueElementRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       PayVoucherDueElementService payVoucherDueElementService,
-      PayVoucherElementToPayService payVoucherElementToPayService) {
+      PayVoucherElementToPayService payVoucherElementToPayService,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
 
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
@@ -73,6 +77,7 @@ public class PaymentVoucherLoadService {
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;
+    this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
   }
 
   /**
@@ -138,9 +143,11 @@ public class PaymentVoucherLoadService {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
 
+    int sequence = 0;
     for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
       PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(invoiceTerm);
       if (payVoucherDueElement != null) {
+        payVoucherDueElement.setSequence(sequence++);
         paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
       }
     }
@@ -215,7 +222,11 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+    paymentVoucher
+        .getPayVoucherDueElementList()
+        .sort(
+            (payVoucherDueElem1, payVoucherDueElem2) ->
+                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
@@ -432,6 +443,22 @@ public class PaymentVoucherLoadService {
         it.remove();
       }
     }
+  }
+
+  @Transactional
+  public void reloadElementToPayList(
+      PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) {
+
+    List<PayVoucherElementToPay> listToKeep = paymentVoucherContext.getPayVoucherElementToPayList();
+    paymentVoucher.clearPayVoucherElementToPayList();
+
+    listToKeep.forEach(
+        elementToPay -> {
+          paymentVoucher.addPayVoucherElementToPayListItem(
+              payVoucherElementToPayRepo.find(elementToPay.getId()));
+        });
+
+    paymentVoucherRepository.save(paymentVoucher);
   }
 
   public void computeFinancialDiscount(PaymentVoucher paymentVoucher) throws AxelorException {

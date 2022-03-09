@@ -51,6 +51,6 @@ public interface AnalyticMoveLineService {
   @CallMethod
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticDistributionLineList);
 
-  AnalyticMoveLine computeAnalyticMoveLine(MoveLine moveLine, AnalyticAccount analyticAccount)
-      throws AxelorException;
+  AnalyticMoveLine computeAnalyticMoveLine(
+      MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException;
 }

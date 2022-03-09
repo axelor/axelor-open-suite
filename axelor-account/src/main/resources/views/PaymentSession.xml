@@ -15,13 +15,15 @@
 
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
+    onLoad="action-payment-session-method-set-has-invoice-term-selected"
     model="com.axelor.apps.account.db.PaymentSession" width="large">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="12">
-      <field name="statusSelect" canEdit="true" colSpan="12"/>
+      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
+        colSpan="12"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -35,7 +37,7 @@
         domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)"
         form-view="payment-mode-form" grid-view="payment-mode-grid"
         onChange="action-group-payment-session-on-payment-mode-change"/>
-      <field name="partnerTypeSelect" readonlyIf="!paymentMode"/>
+      <field name="partnerTypeSelect" readonlyIf="!paymentMode" selection-in="[1,2,3]"/>
       <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
         grid-view="bank-details-grid"
         onSelect="action-attrs-payment-session-set-bank-details-domain"
@@ -52,30 +54,35 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails"
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
-        onClick="com.axelor.apps.account.web.InvoiceTermController:searchEligibleTerms"/>
+        onClick="action-group-payment-session-search-eligible-terms"
+        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0" onClick=""/>
-      <panel-dashlet showIf="id" colSpan="12"
-        action="action-invoice-term-view-payment-session-dashlet" canSearch="true"/>
-      <panel-dashlet showIf="id" colSpan="8"
-        action="action-invoice-term-view-payment-session-group-by-partner-dashlet" canSearch="true"/>
-      <field name="sessionTotalAmount" readonly="true" colSpan="4"/>
+        showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
+        onClick="action-method-payment-session-search-eligible-terms"/>
+      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
+        showIf="id" colSpan="12" canSearch="true"/>
+      <panel-dashlet
+        action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
+        colSpan="8" canSearch="true"/>
+      <field name="sessionTotalAmount" colSpan="4" readonly="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
-      <button name="validateBtn" title="Validate"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" css="btn-success"
-        onClick=""/>
-      <button name="cancelBtn" title="Cancel"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0" css="btn-danger"
-        onClick=""/>
+      <button name="validateBtn" title="Validate" css="btn-success"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+        onClick="action-payment-session-group-validate"/>
+      <button name="cancelBtn" title="Cancel" css="btn-danger"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; (sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm))"
+        onClick="action-payment-session-group-cancel"/>
+      <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
-    <panel name="validationPanel" sidebar="true" itemSpan="6" readonly="true">
-      <field name="validatedByUser"/>
-      <field name="validatedDate"/>
+    <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
+      <field name="validatedByUser" readonly="true"/>
+      <field name="validatedDate" readonly="true"/>
     </panel>
-    <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" sidebar="true">
+    <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true" onClick=""/>
+        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
+        onClick="save,action-payment-session-method-send-emails"/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
     <panel name="bankOrderPanel" title="Bank order"
@@ -87,8 +94,9 @@
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <field name="accountingMethodSelect"/>
-      <field name="accountingTriggerSelect"/>
-      <field name="daysMarginOnPaySession"/>
+      <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"/>
+      <field name="daysMarginOnPaySession"
+        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
     </panel>
   </form>
 
@@ -101,6 +109,18 @@
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>
+
+  <action-group name="action-payment-session-group-validate">
+    <action name="save"/>
+    <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="action-payment-session-method-validate-payment-session"/>
+  </action-group>
+
+  <action-group name="action-payment-session-group-cancel">
+    <action name="action-payment-session-validate-cancel"/>
+    <action name="save"/>
+    <action name="action-payment-session-method-cancel"/>
+  </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
     <attribute name="domain"
@@ -125,6 +145,35 @@
     <attribute name="value" expr="eval: null" for="paymentMode"/>
     <attribute name="value" expr="eval: company?.currency" for="currency"/>
   </action-attrs>
+
+  <action-method name="action-payment-session-method-validate-invoice-terms">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validateInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-validate-payment-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="validatePaymentSession"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-cancel">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="cancelPaymentSession"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-send-emails">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="sendEmails"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-set-has-invoice-term-selected">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setHasInvoiceTermSelected"/>
+  </action-method>
+
+  <action-validate name="action-payment-session-validate-cancel">
+    <alert
+      message="You are about to lose your work in progress. Are you confirming the cancellation of the session ?"/>
+  </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
     title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
@@ -152,6 +201,10 @@
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
+    <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"
+      if="paymentMode?.generateBankOrder"/>
+    <field name="accountingTriggerSelect" expr="eval: 1" if="!paymentMode?.generateBankOrder"/>
   </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">
@@ -161,6 +214,20 @@
   <action-method name="action-method-payment-session-set-journal">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setJournal"/>
   </action-method>
+
+  <action-method name="action-method-payment-session-compute-total">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="computeTotal"/>
+  </action-method>
+
+  <action-method name="action-method-payment-session-search-eligible-terms">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="searchEligibleTerms"/>
+  </action-method>
+
+  <action-group name="action-group-payment-session-search-eligible-terms">
+    <action name="save"/>
+    <action name="action-method-payment-session-search-eligible-terms"/>
+  </action-group>
 
   <action-group name="action-group-payment-session-on-company-change">
     <action name="action-attrs-payment-session-reset-on-company-change"/>

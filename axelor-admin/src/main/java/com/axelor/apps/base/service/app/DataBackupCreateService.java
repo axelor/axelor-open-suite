@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
@@ -54,6 +53,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -89,7 +89,8 @@ public class DataBackupCreateService {
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
-  protected boolean notNullReferenceFlag, referenceFlag;
+  protected boolean notNullReferenceFlag;
+  protected boolean referenceFlag;
   protected boolean byteArrFieldFlag = false;
 
   protected static Set<String> exceptColumnNameList =
@@ -124,8 +125,8 @@ public class DataBackupCreateService {
   StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public DataBackup create(DataBackup dataBackup) throws InterruptedException {
-    File tempDir = Files.createTempDir();
+  public DataBackup create(DataBackup dataBackup) throws IOException {
+    File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
     int errorsCount = 0;
@@ -199,7 +200,7 @@ public class DataBackupCreateService {
           }
 
           fileNameList.add(metaModel.getName() + ".csv");
-        } catch (ClassNotFoundException | IOException | InterruptedException e) {
+        } catch (ClassNotFoundException | IOException e) {
           TraceBackService.trace(e, DataBackupService.class.getName());
         } catch (Exception e) {
           JPA.em().getTransaction().rollback();
@@ -321,7 +322,7 @@ public class DataBackupCreateService {
   }
 
   protected long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
-      throws InterruptedException, ClassNotFoundException {
+      throws ClassNotFoundException {
     Query<Model> query = getQuery(metaModel, subClasses);
     long count = 0;
     if (query != null) {
@@ -333,7 +334,7 @@ public class DataBackupCreateService {
   protected Query<Model> getQuery(MetaModel metaModel, List<String> subClasses)
       throws ClassNotFoundException {
     StringBuilder whereStr = new StringBuilder();
-    if (subClasses != null && subClasses.size() > 0) {
+    if (subClasses != null && !subClasses.isEmpty()) {
       for (String subClassName : subClasses) {
         whereStr.append(whereStr.length() > 0 ? " AND " : "");
         whereStr.append("id NOT IN (select id from ").append(subClassName).append(")");
@@ -421,7 +422,7 @@ public class DataBackupCreateService {
 
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
-          if (dataList != null && dataList.size() > 0) {
+          if (dataList != null && !dataList.isEmpty()) {
             for (Object dataObject : dataList) {
               dataArr = new ArrayList<>();
 
@@ -455,6 +456,7 @@ public class DataBackupCreateService {
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
           }
+          JPA.clear();
         }
       } else {
         for (Property property : pro) {
@@ -755,13 +757,11 @@ public class DataBackupCreateService {
             bin.read(data, 0, data.length);
             out.write(data, 0, data.length);
           }
-          bin.close();
           out.closeEntry();
 
           file.delete();
         }
       }
-      out.close();
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }

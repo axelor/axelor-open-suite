@@ -18,7 +18,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -35,7 +34,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -45,7 +43,6 @@ import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Preconditions;
@@ -290,11 +287,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
-    Tax tax =
-        accountManagementService.getProductTax(product, purchaseOrder.getCompany(), null, true);
-
     TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class).getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
+        accountManagementService.getProductTaxEquiv(
+            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
@@ -717,13 +712,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
         purchaseOrderLine.setTaxLine(taxLine);
 
-        Tax tax =
-            accountManagementService.getProductTax(
-                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), null, true);
-
         TaxEquiv taxEquiv =
-            Beans.get(FiscalPositionService.class)
-                .getTaxEquiv(purchaseOrder.getFiscalPosition(), tax);
+            accountManagementService.getProductTaxEquiv(
+                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
 
         purchaseOrderLine.setTaxEquiv(taxEquiv);
 
