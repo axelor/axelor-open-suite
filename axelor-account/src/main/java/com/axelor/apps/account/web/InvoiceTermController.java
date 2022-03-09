@@ -111,18 +111,20 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
-        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        if (invoice != null) {
-          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-          response.setValues(invoiceTerm);
-        }
-      } else {
-        if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
-          MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-          if (moveLine != null) {
-            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+      if (request.getContext().getParent() != null) {
+        if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
+          Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+          if (invoice != null) {
+            invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
             response.setValues(invoiceTerm);
+          }
+        } else {
+          if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
+            MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+            if (moveLine != null) {
+              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+              response.setValues(invoiceTerm);
+            }
           }
         }
       }

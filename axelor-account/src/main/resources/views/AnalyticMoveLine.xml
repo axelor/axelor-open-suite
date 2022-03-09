@@ -17,6 +17,7 @@
       width="150"/>
     <field name="analyticAccount" form-view="analytic-account-form"
       grid-view="analytic-account-grid"/>
+    <field name="analyticAccount.parent"/>
     <field name="accountType"/>
     <field name="date" width="120"/>
     <field name="originalPieceAmount" aggregate="sum"/>
