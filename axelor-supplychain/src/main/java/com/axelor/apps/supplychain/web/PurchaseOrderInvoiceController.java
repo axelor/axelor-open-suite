@@ -42,7 +42,8 @@ public class PurchaseOrderInvoiceController {
 
     try {
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
-      StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService = Beans.get(StockMoveInvoiceViewGeneratorService.class);
+      StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
+          Beans.get(StockMoveInvoiceViewGeneratorService.class);
       if (invoice != null) {
         response.setReload(true);
         response.setView(
@@ -50,7 +51,9 @@ public class PurchaseOrderInvoiceController {
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(invoice))
-                .param("search-filters", stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(invoice))
+                .param(
+                    "search-filters",
+                    stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(invoice))
                 .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
                 .domain(
                     "self.operationTypeSelect = "
