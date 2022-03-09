@@ -46,6 +46,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -252,7 +253,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscount(
         invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
     invoicePayment.setFinancialDiscountTotalAmount(
-        this.getFinancialDiscountTotalAmount(invoiceTermPaymentList, invoicePayment.getAmount()));
+        this.getFinancialDiscountTotalAmount(invoiceTermPaymentList));
     invoicePayment.setFinancialDiscountTaxAmount(
         this.getFinancialDiscountTaxAmount(invoiceTermPaymentList));
     invoicePayment.setFinancialDiscountAmount(
@@ -261,10 +262,12 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
     invoicePayment.setTotalAmountWithFinancialDiscount(
         invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
+    invoicePayment.setFinancialDiscountDeadlineDate(
+        this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(
-      List<InvoiceTermPayment> invoiceTermPaymentList, BigDecimal amount) {
+      List<InvoiceTermPayment> invoiceTermPaymentList) {
     return invoiceTermPaymentList.stream()
         .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
@@ -280,10 +283,22 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
-                    .divide(it.getInvoiceTerm().getAmountRemaining(), 10, RoundingMode.HALF_UP))
+                    .divide(
+                        invoiceTermService.getAmountRemaining(it.getInvoiceTerm()),
+                        10,
+                        RoundingMode.HALF_UP))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);
+  }
+
+  protected LocalDate getFinancialDiscountDeadlineDate(
+      List<InvoiceTermPayment> invoiceTermPaymentList) {
+    return invoiceTermPaymentList.stream()
+        .map(InvoiceTermPayment::getInvoiceTerm)
+        .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
+        .min(LocalDate::compareTo)
+        .orElse(null);
   }
 
   @Override
