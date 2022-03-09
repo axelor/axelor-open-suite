@@ -183,44 +183,44 @@ public class AccountingBatchController {
       AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
       if (accountingBatch != null && accountingBatch.getGenerateGeneralLedger()) {
 
-          AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-          AccountingReport accountingReport =
-              Beans.get(BatchPrintAccountingReportService.class)
-                  .createAccountingReportFromBatch(accountingBatch);
-          int typeSelect = accountingReport.getReportType().getTypeSelect();
+        AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+        AccountingReport accountingReport =
+            Beans.get(BatchPrintAccountingReportService.class)
+                .createAccountingReportFromBatch(accountingBatch);
+        int typeSelect = accountingReport.getReportType().getTypeSelect();
 
-          if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
-              && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-            MetaFile accessFile = accountingReportService.export(accountingReport);
+        if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
+            && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
+          MetaFile accessFile = accountingReportService.export(accountingReport);
 
-            if ((typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION
-                    || typeSelect == AccountingReportRepository.EXPORT_N4DS)
-                && accessFile != null) {
+          if ((typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION
+                  || typeSelect == AccountingReportRepository.EXPORT_N4DS)
+              && accessFile != null) {
 
-              response.setView(
-                  ActionView.define(I18n.get("Export file"))
-                      .model(App.class.getName())
-                      .add(
-                          "html",
-                          "ws/rest/com.axelor.meta.db.MetaFile/"
-                              + accessFile.getId()
-                              + "/content/download?v="
-                              + accessFile.getVersion())
-                      .param("download", "true")
-                      .map());
-            }
-          } else {
-            if (Beans.get(AccountingReportToolService.class)
-                .isThereAlreadyDraftReportInPeriod(accountingReport)) {
-              response.setError(
-                  I18n.get(
-                      "There is already an ongoing accounting report of this type in draft status for this same period."));
-              return;
-            }
-            String fileLink = accountingReportService.print(accountingReport);
-            String name = Beans.get(AccountingReportPrintService.class).computeName(accountingReport);
-            response.setView(ActionView.define(name).add("html", fileLink).map());
+            response.setView(
+                ActionView.define(I18n.get("Export file"))
+                    .model(App.class.getName())
+                    .add(
+                        "html",
+                        "ws/rest/com.axelor.meta.db.MetaFile/"
+                            + accessFile.getId()
+                            + "/content/download?v="
+                            + accessFile.getVersion())
+                    .param("download", "true")
+                    .map());
           }
+        } else {
+          if (Beans.get(AccountingReportToolService.class)
+              .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+            response.setError(
+                I18n.get(
+                    "There is already an ongoing accounting report of this type in draft status for this same period."));
+            return;
+          }
+          String fileLink = accountingReportService.print(accountingReport);
+          String name = Beans.get(AccountingReportPrintService.class).computeName(accountingReport);
+          response.setView(ActionView.define(name).add("html", fileLink).map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

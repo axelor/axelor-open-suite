@@ -981,6 +981,12 @@ public interface IExceptionMessage {
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
       "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
 
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
+      "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_6 = /*$$(*/
+      "%s : Error : You must configure a result loss account and a year opening account in the account configuration" /*)*/;
+
   static final String BATCH_DOES_NOT_EXIST = /*$$(*/ "The batch does not exist." /*)*/;
 
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/

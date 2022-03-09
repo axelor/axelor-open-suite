@@ -34,6 +34,8 @@
 "%s : Error : You must configure a purchase interface sequence for the company %s",,,
 "%s : Error : You must configure a reconciliation sequence for the company %s",,,
 "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s",,,
+"%s : Error : You must configure a result loss account and a year opening account in the account configuration",,,
+"%s : Error : You must configure a result profit account and a year opening account in the account configuration",,,
 "%s : Error : You must configure a sale interface sequence for the company %s",,,
 "%s : Error : You must configure a sequence for the company %s and a payment mode %s",,,
 "%s : Error : You must configure a treasury interface sequence for the company %s",,,
