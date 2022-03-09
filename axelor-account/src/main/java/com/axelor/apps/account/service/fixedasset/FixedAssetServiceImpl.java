@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
@@ -39,17 +52,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -242,7 +244,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAsset.getGrossValue().signum() <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0),
+          fixedAsset.getReference());
     }
 
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
