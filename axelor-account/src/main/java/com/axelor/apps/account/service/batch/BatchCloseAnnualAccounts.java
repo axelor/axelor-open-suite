@@ -498,10 +498,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
       AccountByPartner other = (AccountByPartner) o;
       if (this.partner != null) {
-    	  return this.account.equals(other.account) && this.partner.equals(other.partner);
-      }
-      else {
-    	  return this.account.equals(other.account) && other.partner == null;
+        return this.account.equals(other.account) && this.partner.equals(other.partner);
+      } else {
+        return this.account.equals(other.account) && other.partner == null;
       }
     }
   }
