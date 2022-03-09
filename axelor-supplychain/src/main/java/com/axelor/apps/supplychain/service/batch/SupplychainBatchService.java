@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
@@ -50,6 +51,9 @@ public class SupplychainBatchService extends AbstractBatchService {
         break;
       case SupplychainBatchRepository.ACTION_INVOICE_ORDERS:
         batch = invoiceOrders(supplychainBatch);
+        break;
+      case SupplychainBatchRepository.ACTION_UPDATE_STOCK_HISTORY:
+        batch = updateStockHistory(supplychainBatch);
         break;
       default:
         throw new AxelorException(
@@ -81,5 +85,20 @@ public class SupplychainBatchService extends AbstractBatchService {
             String.format(
                 "Unknown invoice orders type: %d", supplychainBatch.getInvoiceOrdersTypeSelect()));
     }
+  }
+
+  public void checkDates(SupplychainBatch supplychainBatch) throws AxelorException {
+    LocalDate date = supplychainBatch.getMoveDate();
+    if (date != null
+        && date.getDayOfMonth()
+            != date.plusMonths(1).withDayOfMonth(1).minusDays(1).getDayOfMonth()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.BATCH_MOVE_DATE_ERROR));
+    }
+  }
+
+  public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
   }
 }

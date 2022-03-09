@@ -26,7 +26,7 @@
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       <button name="invoicingBatchBtn" title="Invoicing batch"
-        onClick="save,action-sale-batch-method-action-invoicing"/>
+        onClick="save,action-sale-batch-method-run-batch"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
@@ -65,8 +65,8 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-  <action-method name="action-sale-batch-method-action-invoicing">
-    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="actionInvoicing"/>
+  <action-method name="action-sale-batch-method-run-batch">
+    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="runBatch"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
@@ -79,5 +79,4 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
   </search-filters>
-
 </object-views>

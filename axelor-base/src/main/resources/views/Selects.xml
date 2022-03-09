@@ -365,6 +365,7 @@
     <option value="7">Cheque</option>
     <option value="8">Web</option>
     <option value="9">Transfer</option>
+    <option value="10">Exchanges</option>
   </selection>
 
   <selection name="iaccount.payment.mode.in.out.select">
@@ -558,10 +559,6 @@
   <selection name="base.print.display.type.select">
     <option value="1">Portrait</option>
     <option value="2">Landscape</option>
-  </selection>
-
-  <selection name="print.template.line.test.reference.select">
-    <option value="Default" order="0" hidden="true">Default</option>
   </selection>
 
   <selection name="base.print.settings.footer.font.select">

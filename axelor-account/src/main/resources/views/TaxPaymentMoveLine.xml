@@ -7,10 +7,12 @@
     model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line list">
     <field name="moveLine" width="135" readonly="true" hidden="true"/>
     <field name="originTaxLine" readonly="true"/>
+    <field name="vatSystemSelect" title="VAT System" readonly="true"/>
     <field name="detailPaymentAmount" readonly="true" title="Base"/>
     <field name="taxRate" readonly="true"/>
     <field name="taxAmount" readonly="true"/>
     <field name="date" readonly="true"/>
+    <field name="fiscalPosition" readonly="true"/>
   </grid>
 
   <form name="tax-payment-move-line-form" model="com.axelor.apps.account.db.TaxPaymentMoveLine"
@@ -18,10 +20,12 @@
     <panel name="MainInformationsPanel" itemSpan="6">
       <field name="moveLine" readonly="true"/>
       <field name="originTaxLine" readonly="true"/>
+      <field name="vatSystemSelect" title="VAT System" readonly="true"/>
       <field name="reconcile" readonly="true"/>
       <field name="detailPaymentAmount" readonly="true" title="Base"/>
       <field name="taxRate" readonly="true"/>
       <field name="taxAmount" readonly="true"/>
+      <field name="fiscalPosition" readonly="true"/>
       <field name="date" readonly="true"/>
     </panel>
   </form>

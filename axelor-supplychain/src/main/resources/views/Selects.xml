@@ -9,12 +9,14 @@
   <selection name="supplychain.batch.action.select">
     <option value="1">Accounting cut-off</option>
     <option value="3">Invoice orders</option>
+    <option value="4">Update stock history</option>
   </selection>
 
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
     <option value="1">Accounting cut-off</option>
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
+    <option value="4">Update stock history</option>
   </selection>
 
   <selection name="supplychain.mrp.status.select">
@@ -29,6 +31,7 @@
     <option value="3">Sale order</option>
     <option value="4">Sales forecast</option>
     <option value="5">Purchase proposal</option>
+    <option value="10">Stock history</option>
   </selection>
 
   <selection name="supplychain.mrp.line.type.select">
@@ -91,6 +94,8 @@
   <selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
     <option value="1">Forecasted supplier invoices</option>
     <option value="2">Forecasted customer invoices</option>
+    <option value="3">Prepaid expenses</option>
+    <option value="4">Deferred incomes</option>
   </selection>
 
   <selection name="supplychain.mrp.forecast.status.select">
@@ -158,6 +163,12 @@
     <option value="0">One-off sales included</option>
     <option value="1">One-off sales excluded</option>
     <option value="2">One-off sales only</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.type.late.sales.select">
+    <option value="0">Include late sales</option>
+    <option value="1">Exclude late sales</option>
+    <option value="2">Consider only late sales</option>
   </selection>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -131,7 +132,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     for (LocalDate estimatedDeliveryDate :
         purchaseOrderLinePerDateMap.keySet().stream()
-            .filter(x -> x != null)
+            .filter(Objects::nonNull)
             .sorted((x, y) -> x.compareTo(y))
             .collect(Collectors.toList())) {
 
@@ -356,11 +357,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Product product = purchaseOrderLine.getProduct();
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-    if (product.getControlOnReceipt()
-        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
-      return true;
-    }
-    return false;
+    return product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation();
   }
 
   protected StockMoveLine createProductStockMoveLine(

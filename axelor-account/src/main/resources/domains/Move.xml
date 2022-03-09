@@ -29,6 +29,8 @@
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
@@ -44,6 +46,7 @@
       readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
+    <boolean name="cutOffMoveGenerated" title="Cut off move generated"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
       selection="iaccount.move.functional.origin.select"/>
@@ -101,6 +104,7 @@
       <field name="reference"/>
       <field name="period"/>
       <field name="partner"/>
+      <field name="fiscalPosition" on="UPDATE"/>
       <field name="currency"/>
       <field name="companyCurrency"/>
       <field name="ignoreInAccountingOk"/>

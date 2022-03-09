@@ -2,7 +2,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="payment-delay-reason-grid" title="Payment delay reason"
+  <grid name="payment-delay-reason-grid" title="Payment delay reasons"
     model="com.axelor.apps.account.db.PaymentDelayReason" orderBy="name">
     <field name="name"/>
     <field name="description" widget="html"/>

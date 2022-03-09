@@ -65,6 +65,10 @@
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
+    <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bill of exchange receivable account"/>
+    <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
+      selection="account.account.chart.code.nbr.char.select" required="true"/>
 
 
     <!-- Automatic account creation for partners -->
@@ -288,6 +292,12 @@
     <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
       title="Holdback Supplier account"/>
 
+    <!-- Cut off accounts -->
+    <many-to-one name="prepaidExpensesAccount" title="Prepaid expenses account"
+      ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
+      ref="com.axelor.apps.account.db.Account"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -337,6 +347,7 @@
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
+      <field name="billOfExchReceivAccount" on="UPDATE"/>
 
       <field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
       <field name="customerAccountPrefix" on="UPDATE"/>

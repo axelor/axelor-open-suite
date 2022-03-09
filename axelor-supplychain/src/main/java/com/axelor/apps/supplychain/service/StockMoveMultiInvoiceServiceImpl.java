@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -386,7 +386,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     for (Address address : deliveryAddressSet) {
       deliveryAddressStr.append(
-          addressService.computeAddressStr(address).replaceAll("\n", ", ") + "\n");
+          addressService.computeAddressStr(address).replace("\n", ", ") + "\n");
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());

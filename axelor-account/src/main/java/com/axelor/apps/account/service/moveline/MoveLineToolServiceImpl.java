@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Invoice;
@@ -5,6 +22,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -15,12 +33,13 @@ import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
+  protected static final int RETURNED_SCALE = 2;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -269,16 +288,36 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       try {
         moveLine.setCurrencyRate(
             currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompany().getCurrency()));
+                move.getCurrency(), move.getCompanyCurrency()));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
-    BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-    moveLine.setCurrencyAmount(
-        unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+    if (!move.getCurrency().equals(move.getCompanyCurrency())) {
+      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+      moveLine.setCurrencyAmount(
+          unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
+    }
     return moveLine;
+  }
+
+  @Override
+  public boolean checkCutOffDates(MoveLine moveLine) {
+    return moveLine == null
+        || moveLine.getAccount() == null
+        || !moveLine.getAccount().getManageCutOffPeriod()
+        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+  }
+
+  @Override
+  public boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
+    return ml.getTaxLine() == taxLine
+        && ml.getVatSystemSelect() == vatSystem
+        && ml.getId() != id
+        && ml.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            ml.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 }

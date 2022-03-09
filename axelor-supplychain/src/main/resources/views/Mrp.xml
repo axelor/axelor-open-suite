@@ -79,6 +79,7 @@
       <panel-related name="productCategorySetPanel" field="productCategorySet"
         canEdit="false" form-view="product-category-form" grid-view="product-category-grid"
         canNew="false" colSpan="12"/>
+      <field name="takeInAccountSubCategories" colSpan="12" widget="boolean-switch"/>
       <panel-related name="productFamilySetPanel" field="productFamilySet"
         canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
         canNew="false" colSpan="12"/>
@@ -168,7 +169,7 @@
 
   <action-attrs name="action-mrp-attrs-sale-order-domain">
     <attribute name="domain" for="saleOrderLineSet"
-      expr="eval: &quot;self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.product.stockManaged = true AND self.deliveryState != 3 AND self.saleOrder.company.id = ${stockLocation?.company?.id} AND self.saleOrder.stockLocation is not null AND (${mrpTypeSelect} = 1 OR self.product.productSubTypeSelect = 1) AND self.saleOrder.statusSelect = 3 AND self.deliveredQty &lt; self.qty AND (self.saleOrder.archived = false OR self.saleOrder.archived is null) &quot;"/>
+      expr="eval: &quot;self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.product.stockManaged = true AND self.deliveryState != 3 AND self.saleOrder.company.id = ${stockLocation?.company?.id} AND self.saleOrder.stockLocation is not null AND (${mrpTypeSelect} = 1 OR self.product.productSubTypeSelect = 1) AND self.saleOrder.statusSelect != 4 AND self.deliveredQty &lt; self.qty AND (self.saleOrder.archived = false OR self.saleOrder.archived is null) &quot;"/>
   </action-attrs>
 
   <action-record name="action-mrp-record-onnew"

@@ -69,6 +69,8 @@
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Ventilated by"/>
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
@@ -103,11 +105,20 @@
     <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
 
+    <boolean name="billOfExchangeBlockingOk" title="Bill of exchange blocking"/>
+    <many-to-one name="billOfExchangeBlockingReason"
+      ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
+    <date name="billOfExchangeBlockingToDate" title="Blocking until"/>
+    <many-to-one name="billOfExchangeBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Blocking done by"/>
+
+
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Rejection move line"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
+    <boolean name="lcrAccounted" title="LCR accounted"/>
     <decimal name="amountRejected" title="Rejected amount"/>
     <date name="rejectDate" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
@@ -210,6 +221,15 @@
     <string name="legalNotice" title="Legal notice" large="true"
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
+
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv.due_date::DATE)-1 > 0 AND inv.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv.due_date::DATE) -1 ELSE 0 END from account_invoice inv WHERE inv.id =
+	      id]]>
+    </integer>
+
 
     <unique-constraint columns="invoiceId,company"/>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
@@ -92,6 +93,11 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
+      if (purchaseOrder.getPurchaseOrderLineList() != null) {
+        purchaseOrder.getPurchaseOrderLineList().stream()
+            .forEach(PurchaseOrderLine::clearBudgetDistributionList);
+      }
     }
   }
 }

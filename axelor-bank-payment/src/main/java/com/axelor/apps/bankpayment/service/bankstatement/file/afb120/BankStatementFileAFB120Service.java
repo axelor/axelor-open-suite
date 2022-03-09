@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankstatement.file.afb120;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
@@ -925,6 +926,11 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   }
 
   protected InterbankCodeLine getInterbankCodeLine(String code) {
-    return interbankCodeLineRepository.findByCode(code);
+    return interbankCodeLineRepository
+        .all()
+        .filter("self.code = :code AND self.interbankCode.typeSelect = :type")
+        .bind("code", code)
+        .bind("type", InterbankCodeRepository.TYPE_OPERATION_CODE)
+        .fetchOne();
   }
 }

@@ -147,7 +147,19 @@
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
@@ -487,7 +499,7 @@
   <menuitem name="account-conf-fiscal-position" parent="account-conf-financial"
     title="Fiscal positions" action="account.conf.fiscal.position"/>
 
-  <action-view name="account.conf.fiscal.position" title="Fiscal position"
+  <action-view name="account.conf.fiscal.position" title="Fiscal positions"
     model="com.axelor.apps.account.db.FiscalPosition">
     <view type="grid" name="fiscal-position-grid"/>
     <view type="form" name="fiscal-position-form"/>
@@ -599,10 +611,10 @@
     <view type="form" name="tax-number-form"/>
   </action-view>
 
-  <menuitem name="account-conf-financial-financial-discount" title="Financial Discount"
+  <menuitem name="account-conf-financial-financial-discount" title="Financial Discounts"
     parent="account-conf-financial" action="financial.discount"/>
 
-  <action-view name="financial.discount" title="Financial Discount"
+  <action-view name="financial.discount" title="Financial Discounts"
     model="com.axelor.apps.account.db.FinancialDiscount">
     <view type="grid" name="financial-discount-grid"/>
     <view type="form" name="financial-discount-form"/>
@@ -648,9 +660,9 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
-    title="Analytic axis" action="account.conf.analytic.axis"/>
+    title="analyticAxis.plurial" action="account.conf.analytic.axis"/>
 
-  <action-view name="account.conf.analytic.axis" title="Analytic axis"
+  <action-view name="account.conf.analytic.axis" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
     <view type="grid" name="analytic-axis-grid"/>
     <view type="form" name="analytic-axis-form"/>
@@ -904,7 +916,7 @@
     action="debt.recovery.root.conf.payment.delay.reason"/>
 
   <action-view name="debt.recovery.root.conf.payment.delay.reason"
-    title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason">
+    title="Payment delay reasons" model="com.axelor.apps.account.db.PaymentDelayReason">
     <view type="grid" name="payment-delay-reason-grid"/>
     <view type="form" name="payment-delay-reason-form"/>
   </action-view>
@@ -924,9 +936,9 @@
 
 
   <menuitem name="account-analytic-grouping" parent="account-conf-analytic"
-    title="Analytic Grouping" action="account.analytic.grouping"/>
+    title="Analytic Groupings" action="account.analytic.grouping"/>
 
-  <action-view name="account.analytic.grouping" title="Analytic Grouping"
+  <action-view name="account.analytic.grouping" title="Analytic Groupings"
     model="com.axelor.apps.account.db.AnalyticGrouping">
     <view type="grid" name="analytic-grouping-grid"/>
     <view type="form" name="analytic-grouping-form"/>

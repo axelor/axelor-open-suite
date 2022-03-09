@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
@@ -106,6 +123,48 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
+  public void checkAnalyticDistributionTemplateCompany(
+      AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
+    if (analyticDistributionTemplate.getCompany() != null) {
+      List<AnalyticDistributionLine> analyticDistributionLineList =
+          analyticDistributionTemplate.getAnalyticDistributionLineList();
+      boolean checkAxis = false;
+      boolean checkJournal = false;
+      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+        if (analyticDistributionLine.getAnalyticAxis() != null
+            && (analyticDistributionTemplate.getCompany()
+                    != analyticDistributionLine.getAnalyticAxis().getCompany()
+                || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
+          checkAxis = true;
+        }
+        if (analyticDistributionTemplate.getCompany()
+                != analyticDistributionLine.getAnalyticJournal().getCompany()
+            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+          checkJournal = true;
+        }
+      }
+      printCheckAnalyticDistributionTemplateCompany(checkAxis, checkJournal);
+    }
+  }
+
+  protected void printCheckAnalyticDistributionTemplateCompany(
+      boolean checkAxis, boolean checkJournal) throws AxelorException {
+    if (checkAxis && checkJournal) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
+    } else if (checkAxis) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
+    } else if (checkJournal) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
+    }
+  }
+
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
     Company company = account.getCompany();

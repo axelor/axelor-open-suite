@@ -203,9 +203,9 @@
     <option value="18">Move export</option>
     <option value="19">Credit Transfer</option>
     <option value="20">Realize fixed asset lines</option>
-    <option value="21">Close the annual accounts of the past year</option>
-    <option value="22">Open the annual accounts of the next year</option>
+    <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
+    <option value="24">Exchanges</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -395,6 +395,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
   </selection>
 
   <selection name="account.notification.item.type.select">
@@ -458,10 +459,6 @@
     <option value="1">Awaiting</option>
     <option value="2">PFP validated</option>
     <option value="3">Litigation</option>
-  </selection>
-  <selection name="account.tax.type.select">
-    <option value="1">Collection</option>
-    <option value="2">Debit</option>
   </selection>
 
   <selection name="account.budget.status.select">
@@ -659,6 +656,50 @@
   <selection name="account.fixed.asset.split.type.select">
     <option value="1">Quantity</option>
     <option value="2">Amount</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.bill.of.exchange.type.select">
+    <option value="1">Direct bank LCR</option>
+  </selection>
+
+  <selection name="account.account.chart.code.nbr.char.select">
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </selection>
+
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.select'>
+    <option value="0"></option>
+    <option value="1">Goods - Vat on deliveries</option>
+    <option value="2">Service - Vat on cash payments</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.partner.select'>
+    <option value="0"></option>
+    <option value="1">Common system</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.moveline.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.invoice.line.tax.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+>>>>>>> wip-accounting
   </selection>
 
 </object-views>

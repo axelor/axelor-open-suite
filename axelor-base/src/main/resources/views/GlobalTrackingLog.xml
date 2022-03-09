@@ -6,20 +6,22 @@
   <grid name="global-tracking-log-grid" title="Global tracking logs"
     model="com.axelor.apps.base.db.GlobalTrackingLog" orderBy="dateT">
     <field name="metaModel"/>
+    <field name="relatedReference"/>
     <field name="relatedId"/>
     <field name="typeSelect"/>
     <field name="user"/>
     <field name="dateT"/>
+    <button name="showReferenceButton" title="Show the reference" icon="fa-share"
+      onClick="action-global-tracking-log-method-show-reference"/>
   </grid>
-
-
 
   <form name="global-tracking-log-form" title="Global tracking log"
     model="com.axelor.apps.base.db.GlobalTrackingLog">
     <panel colSpan="12">
       <field name="metaModel"/>
-      <field name="relatedId" colSpan="3"/>
-      <field name="typeSelect" colSpan="3"/>
+      <field name="typeSelect"/>
+      <field name="relatedId"/>
+      <field name="relatedReference"/>
       <field name="user"/>
       <field name="dateT"/>
       <field name="metaFile" showIf="typeSelect == 5" widget="binary-link"/>
@@ -118,5 +120,9 @@
       method="showGlobalTrackingLogsInWizard"/>
   </action-method>
 
+  <action-method name="action-global-tracking-log-method-show-reference">
+    <call class="com.axelor.apps.base.tracking.GlobalTrackingLogController"
+      method="showReference"/>
+  </action-method>
 
 </object-views>
