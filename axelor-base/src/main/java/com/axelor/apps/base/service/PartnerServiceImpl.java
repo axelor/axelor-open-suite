@@ -804,8 +804,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public List<Long> getPartnerIdsByType(String type) {
-    return (!type.isEmpty() && (type!=null)) ? Query.of(Partner.class).filter("self." + type + "=true").fetch().stream()
-        .map(partner -> partner.getId())
-        .collect(Collectors.toList()) : null;
+    return (!type.isEmpty() && (type != null))
+        ? Query.of(Partner.class).filter("self." + type + "=true").fetch().stream()
+            .map(partner -> partner.getId())
+            .collect(Collectors.toList())
+        : null;
   }
 }
