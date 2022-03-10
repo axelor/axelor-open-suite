@@ -1037,4 +1037,8 @@ public interface IExceptionMessage {
       "Account '%s' is missing in account config" /*)*/;
   static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
+  static final String MOVE_13 = /*$$(*/
+      "The functional origin cannot be empty for the move %s" /*)*/;
+  static final String MOVE_14 = /*$$(*/
+      "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
 }
