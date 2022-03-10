@@ -42,10 +42,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     InvoiceTerm invoiceTerm = payVoucherDueElement.getInvoiceTerm();
 
-    if (invoiceTerm.getFinancialDiscount() != null
-        && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-        && invoiceTerm.getFinancialDiscountDeadlineDate().compareTo(paymentVoucher.getPaymentDate())
-            >= 0) {
+    if (this.applyFinancialDiscount(invoiceTerm, paymentVoucher)) {
       payVoucherDueElement.setApplyFinancialDiscount(true);
       payVoucherDueElement.setFinancialDiscount(invoiceTerm.getFinancialDiscount());
 
@@ -74,6 +71,14 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
     }
 
     return payVoucherDueElement;
+  }
+
+  @Override
+  public boolean applyFinancialDiscount(InvoiceTerm invoiceTerm, PaymentVoucher paymentVoucher) {
+    return invoiceTerm.getFinancialDiscount() != null
+        && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+        && invoiceTerm.getFinancialDiscountDeadlineDate().compareTo(paymentVoucher.getPaymentDate())
+            >= 0;
   }
 
   @Override

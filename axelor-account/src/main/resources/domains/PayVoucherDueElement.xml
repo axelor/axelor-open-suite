@@ -25,7 +25,8 @@
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
     <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
     <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
-    <decimal name="financialDiscountTotalAmount" title="payvoucher.financialDiscountTotalAmount"/>
+    <decimal name="financialDiscountTotalAmount"
+      title="payvoucher.financialDiscountTotalAmount"/>
 
   </entity>
 

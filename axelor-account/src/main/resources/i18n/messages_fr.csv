@@ -2527,6 +2527,7 @@
 "Situation","État",,
 "Skip ventilation","Sauter la ventilation",,
 "So many accounting operations are used on this move, so move can't be canceled","Trop d'opérations comptables ont été réalisées sur cette écriture, elle ne peut donc être annulée",,
+"Some due element couldn't be loaded because there was no amount left to pay.","Certaines échéances n'ont pas pu être chargées car il ne restait pas assez de montant à allouer.",,
 "Some move amounts have been changed since the impuration. Please remake the imputation.","Certains montants d’écritures ont été modifiés depuis l’imputation. Veuillez procéder à une nouvelle imputation.",,
 "Source Tax","Taxe à la source ",,
 "Special","Spéciaux",,

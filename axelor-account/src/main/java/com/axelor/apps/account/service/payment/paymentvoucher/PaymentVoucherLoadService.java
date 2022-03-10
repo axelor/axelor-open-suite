@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -174,8 +175,7 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
-    payVoucherDueElement.setAmountRemaining(
-        this.getAmountRemaining(payVoucherDueElement, invoiceTerm));
+    payVoucherDueElement.setAmountRemaining(this.getAmountRemaining(paymentVoucher, invoiceTerm));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
@@ -188,14 +188,14 @@ public class PaymentVoucherLoadService {
     return payVoucherDueElement;
   }
 
-  protected BigDecimal getAmountRemaining(
-      PayVoucherDueElement payVoucherDueElement, InvoiceTerm invoiceTerm) {
-    return payVoucherDueElement.getApplyFinancialDiscount()
+  protected BigDecimal getAmountRemaining(PaymentVoucher paymentVoucher, InvoiceTerm invoiceTerm) {
+    return payVoucherDueElementService.applyFinancialDiscount(invoiceTerm, paymentVoucher)
         ? invoiceTerm.getAmountRemainingAfterFinDiscount()
         : invoiceTerm.getAmountRemaining();
   }
 
-  public void loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {
+  public boolean loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {
+    boolean generateAll = true;
 
     if (paymentVoucher.getPayVoucherElementToPayList() != null) {
 
@@ -207,8 +207,10 @@ public class PaymentVoucherLoadService {
             I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
       }
 
-      this.completeElementToPay(paymentVoucher);
+      generateAll = this.completeElementToPay(paymentVoucher);
     }
+
+    return generateAll;
   }
 
   /**
@@ -221,14 +223,14 @@ public class PaymentVoucherLoadService {
    * @return values Map of data
    * @throws AxelorException
    */
-  public void completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
+  public boolean completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
     int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
+    boolean generateAll = true;
+
     paymentVoucher
         .getPayVoucherDueElementList()
-        .sort(
-            (payVoucherDueElem1, payVoucherDueElem2) ->
-                payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
+        .sort(Comparator.comparing(PayVoucherDueElement::getSequence));
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
     for (PayVoucherDueElement payVoucherDueElement : paymentVoucher.getPayVoucherDueElementList()) {
@@ -237,22 +239,28 @@ public class PaymentVoucherLoadService {
 
         PayVoucherElementToPay payVoucherElementToPay =
             this.createPayVoucherElementToPay(paymentVoucher, payVoucherDueElement, sequence++);
-        paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
 
-        if (payVoucherElementToPay != null) {
+        if (payVoucherElementToPay != null
+            && payVoucherElementToPay.getAmountToPay().signum() > 0) {
+          paymentVoucher.addPayVoucherElementToPayListItem(payVoucherElementToPay);
+
           paymentVoucher.setRemainingAmount(
               paymentVoucher
                   .getRemainingAmount()
                   .subtract(payVoucherElementToPay.getAmountToPay()));
-        }
 
-        // Remove the line from the due elements lists
-        toRemove.add(payVoucherDueElement);
+          // Remove the line from the due elements lists
+          toRemove.add(payVoucherDueElement);
+        } else {
+          generateAll = false;
+        }
       }
     }
     for (PayVoucherDueElement payVoucherDueElement : toRemove) {
       paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
     }
+
+    return generateAll;
   }
 
   public PayVoucherElementToPay createPayVoucherElementToPay(

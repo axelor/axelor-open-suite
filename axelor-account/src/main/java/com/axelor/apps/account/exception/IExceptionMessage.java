@@ -837,6 +837,9 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
       "You can't remove this payment voucher as it is already used in a move." /*)*/;
 
+  static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
+      "Some due element couldn't be loaded because there was no amount left to pay." /*)*/;
+
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
