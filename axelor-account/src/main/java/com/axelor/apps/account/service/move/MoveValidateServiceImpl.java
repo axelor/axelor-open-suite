@@ -30,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaStore;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -174,6 +175,30 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
     checkInactiveJournal(move);
+
+    if (move.getFunctionalOriginSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(IExceptionMessage.MOVE_13, move.getReference()));
+    }
+    if (journal.getAuthorizedFunctionalOriginSelect() != null
+        && !(journal
+            .getAuthorizedFunctionalOriginSelect()
+            .contains(move.getFunctionalOriginSelect().toString()))) {
+      String functionalOriginSelect =
+          MetaStore.getSelectionItem(
+                  "iaccount.move.functional.origin.select",
+                  move.getFunctionalOriginSelect().toString())
+              .getTitle();
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_14),
+              functionalOriginSelect,
+              move.getReference(),
+              journal.getName(),
+              journal.getCode()));
+    }
 
     if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
