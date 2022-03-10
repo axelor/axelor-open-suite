@@ -26,24 +26,25 @@
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[
             String str = "";
-            if (!(ownerName == null || ownerName.isEmpty())) {
-                str = ownerName;
-                if (!(ibanBic == null || ibanBic.isEmpty())) {
-                    str = str.concat(" - ").concat(ibanBic);
-                } else if (!(iban == null || iban.isEmpty())) {
-                    str = str.concat(" - ").concat(iban);
-                } else if (!(bankCode == null || bankCode.isEmpty())
-                        && !(sortCode == null || sortCode.isEmpty())
-                        && !(accountNbr == null || accountNbr.isEmpty())
-                        && !(bbanKey == null || bbanKey.isEmpty())) {
-                    str = str.concat(" - ").concat(bankCode)
-                                           .concat(sortCode)
-                                           .concat(accountNbr)
-                                           .concat(bbanKey);
-                }
-                if (!(code == null || code.isEmpty())) {
-                    str = str.concat(" - ").concat(code);
-                }
+            if (!(code == null || code.isEmpty())) {
+              str = str.concat(code);
+            }
+            if (!(label == null || label.isEmpty())) {
+              if (str.length() == 0) {
+                str = str.concat(label);
+              } else {
+                str = str.concat(" - ").concat(label);
+              }
+            }
+            if (!(iban == null || iban.isEmpty())) {
+              if (str.length() == 0) {
+                str = str.concat(iban);
+              } else {
+                str = str.concat(" - ").concat(iban);
+              }
+            }
+            if (!(bank.getBankName() == null || bank.getBankName().isEmpty())) {
+              str = str.concat(" - ").concat(bank.getBankName());
             }
             return str;
         ]]>

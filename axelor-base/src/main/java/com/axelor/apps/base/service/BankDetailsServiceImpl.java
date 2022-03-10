@@ -105,7 +105,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    */
   @Override
   public String createCompanyBankDetailsDomain(
-      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      Currency currency, Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
       throws AxelorException {
     if (company == null) {
       return "self.id IN (0)";
