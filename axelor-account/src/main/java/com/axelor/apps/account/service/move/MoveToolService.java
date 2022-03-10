@@ -423,8 +423,7 @@ public class MoveToolService {
 
   public String filterJournalPartnerCompatibleType(Move move) {
     Journal journal = move.getJournal();
-
-    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
+    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null && !journal.getCompatiblePartnerTypeSelect().isEmpty()) {
       StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
       Set<Long> compatiblePartnerIds = journalService.getCompatiblePartnerIds(journal);
       for (Long id : compatiblePartnerIds) {
