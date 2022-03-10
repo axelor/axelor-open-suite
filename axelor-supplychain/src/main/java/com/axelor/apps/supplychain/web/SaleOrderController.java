@@ -417,6 +417,9 @@ public class SaleOrderController {
     Company commonCompany = null;
     Partner commonContactPartner = null;
     TaxNumber commonTaxNumber = null;
+    Partner commonInvoicedPartner = null;
+    Partner commonDeliveredPartner = null;
+
     // Useful to determine if a difference exists between tax number of all sale orders
     boolean existTaxNumberDiff = false;
     FiscalPosition commonFiscalPosition = null;
@@ -436,6 +439,11 @@ public class SaleOrderController {
     // Useful to determine if a difference exists between stock locations of all
     // sale orders
     boolean existLocationDiff = false;
+    boolean existInvoicedPartnerDiff = false;
+    boolean existDeliveredPartnerDiff = false;
+
+    Boolean activatePartnerRelations =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getActivatePartnerRelations();
 
     SaleOrder saleOrderTemp;
     int count = 1;
@@ -452,6 +460,10 @@ public class SaleOrderController {
         commonLocation = saleOrderTemp.getStockLocation();
         commonTaxNumber = saleOrderTemp.getTaxNumber();
         commonFiscalPosition = saleOrderTemp.getFiscalPosition();
+        if (activatePartnerRelations) {
+          commonInvoicedPartner = saleOrderTemp.getInvoicedPartner();
+          commonDeliveredPartner = saleOrderTemp.getDeliveredPartner();
+        }
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -491,6 +503,20 @@ public class SaleOrderController {
                 && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
           commonFiscalPosition = null;
           existFiscalPositionDiff = true;
+        }
+        if (activatePartnerRelations) {
+          if ((commonInvoicedPartner == null ^ saleOrderTemp.getInvoicedPartner() == null)
+              || (commonInvoicedPartner != saleOrderTemp.getInvoicedPartner()
+                  && !commonInvoicedPartner.equals(saleOrderTemp.getInvoicedPartner()))) {
+            commonInvoicedPartner = null;
+            existInvoicedPartnerDiff = true;
+          }
+          if ((commonDeliveredPartner == null ^ saleOrderTemp.getDeliveredPartner() == null)
+              || (commonDeliveredPartner != saleOrderTemp.getDeliveredPartner()
+                  && !commonDeliveredPartner.equals(saleOrderTemp.getDeliveredPartner()))) {
+            commonDeliveredPartner = null;
+            existDeliveredPartnerDiff = true;
+          }
         }
       }
       count++;
@@ -537,6 +563,20 @@ public class SaleOrderController {
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage
                   .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
+    }
+    if (activatePartnerRelations) {
+      if (existInvoicedPartnerDiff) {
+        if (fieldErrors.length() > 0) {
+          fieldErrors.append("<br/>");
+        }
+        fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER));
+      }
+      if (existDeliveredPartnerDiff) {
+        if (fieldErrors.length() > 0) {
+          fieldErrors.append("<br/>");
+        }
+        fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
+      }
     }
 
     if (fieldErrors.length() > 0) {
@@ -622,7 +662,9 @@ public class SaleOrderController {
                   commonPriceList,
                   commonTeam,
                   commonTaxNumber,
-                  commonFiscalPosition);
+                  commonFiscalPosition,
+                  commonInvoicedPartner,
+                  commonDeliveredPartner);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
