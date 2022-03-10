@@ -33,6 +33,7 @@
 "An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.","Une erreur est survenue lors de l'import. Veuillez contacter un administrateur.",,
 "An incoming partial stock move has been generated (%s)","Un BR reliquat a été généré (%s)",,
 "An outgoing partial stock move has been generated (%s)","Un BL reliquat a été généré (%s)",,
+"App",,,
 "App stock","App Stocks",,
 "Are you sure you want to change status to  ""Collected "" ?","Confirmez-vous le passage au statut ""Enlevé"" ?",,
 "Are you sure you want to go back to provision ?","Êtes-vous sûr de vouloir revenir à une mise à disposition ?",,

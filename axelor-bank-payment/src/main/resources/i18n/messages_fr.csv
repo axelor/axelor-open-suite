@@ -127,6 +127,7 @@
 "Anomaly has been detected during file generation for the further information detail record of the bank order line %s","Une anomalie a été détectée lors de la génération du fichier bancaire pour l'enregistrement 'informations complémentaires' de la ligne d'ordre bancaire %s",,
 "Anomaly has been detected during file generation for the sender record of the bank order %s","Une anomalie a été détectée lors de la génération du fichier bancaire pour l'enregistrement 'émetteur' de l'ordre bancaire %s",,
 "Anomaly has been detected during file generation for the total record of the bank order %s","Une anomalie a été détectée lors de la génération du fichier bancaire pour l'enregistrement 'total' de l'ordre bancaire %s",,
+"App",,,
 "App bank payment","App paiement bancaire",,
 "Are you sure you want get the server certificates ?","Etes vous sûr de vouloir récupérer les certificats du serveur bancaire ?",,
 "Are you sure you want merge the selected bank orders ?","Etes-vous sûr de vouloir fusionner les ordres bancaires sélectionnés ?",,

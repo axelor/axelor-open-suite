@@ -127,6 +127,7 @@
 "Anomaly has been detected during file generation for the further information detail record of the bank order line %s",,,
 "Anomaly has been detected during file generation for the sender record of the bank order %s",,,
 "Anomaly has been detected during file generation for the total record of the bank order %s",,,
+"App",,,
 "App bank payment",,,
 "Are you sure you want get the server certificates ?",,,
 "Are you sure you want merge the selected bank orders ?",,,

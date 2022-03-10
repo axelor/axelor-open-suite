@@ -1,6 +1,8 @@
 "key","message","comment","context"
 "ABS portal",,,
+"App",,,
 "App Portal","App Portal",,
+"App portal",,,
 "Assign to customer",,,
 "Assign to supplier",,,
 "Awaiting invoices",,,
@@ -57,5 +59,6 @@
 "Tasks in progress",,,
 "Total projects",,,
 "Total remaining",,,
+"User is not linked with any partner. Please disconnect.",,,
 "chart",,,
 "value:Portal","waarde: Portaal",,

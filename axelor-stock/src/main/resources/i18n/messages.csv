@@ -33,6 +33,7 @@
 "An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.",,,
 "An incoming partial stock move has been generated (%s)",,,
 "An outgoing partial stock move has been generated (%s)",,,
+"App",,,
 "App stock",,,
 "Are you sure you want to change status to  ""Collected "" ?",,,
 "Are you sure you want to go back to provision ?",,,

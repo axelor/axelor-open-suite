@@ -2,6 +2,7 @@
 "An error occurs while opening the connection. Please verify the following URL : %s.",,,
 "Can not opening the connection to a empty URL.",,,
 "Cannot find record #%s",,,
+"Error executing query: %s",,,
 "Meta json field type %s could not be converted to a meta field type.",,,
 "No such template",,,
 "Templating can not be empty",,,
