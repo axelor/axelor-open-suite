@@ -17,18 +17,16 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
-import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -40,7 +38,6 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -57,35 +54,27 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Inject
   public InvoiceLineSupplychainService(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService,
-      ProductCompanyService productCompanyService,
-      InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService,
-      AccountConfigService accountConfigService,
-      AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      ListToolService listToolService,
-      AnalyticToolService analyticToolService,
-      SupplierCatalogService supplierCatalogService) {
+		  CurrencyService currencyService,
+	      PriceListService priceListService,
+	      AppAccountService appAccountService,
+	      AccountManagementAccountService accountManagementAccountService,
+	      ProductCompanyService productCompanyService,
+	      InvoiceLineRepository invoiceLineRepo,
+	      AppBaseService appBaseService,
+	      AccountConfigService accountConfigService,
+	      InvoiceLineAnalyticService invoiceLineAnalyticService,
+	      PurchaseProductService purchaseProductService,
+	      SupplierCatalogService supplierCatalogService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
-        analyticMoveLineService,
         accountManagementAccountService,
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService,
-        analyticAccountRepository,
-        accountAnalyticRulesRepository,
-        listToolService,
-        analyticToolService);
+        accountConfigService, 
+        invoiceLineAnalyticService);
     this.purchaseProductService = purchaseProductService;
     this.supplierCatalogService = supplierCatalogService;
   }

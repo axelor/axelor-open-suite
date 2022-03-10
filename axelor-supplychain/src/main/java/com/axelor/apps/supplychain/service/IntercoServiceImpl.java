@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -438,6 +439,7 @@ public class IntercoServiceImpl implements IntercoService {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService = Beans.get(InvoiceLineAnalyticService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
@@ -469,7 +471,7 @@ public class IntercoServiceImpl implements IntercoService {
             accountManagementAccountService.getAnalyticDistributionTemplate(
                 invoiceLine.getProduct(), intercoInvoice.getCompany()));
         List<AnalyticMoveLine> analyticMoveLineList =
-            invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+            invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
         analyticMoveLineList.forEach(
             analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);

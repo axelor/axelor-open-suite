@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
@@ -27,7 +28,9 @@ public interface AnalyticToolService {
 
   boolean isManageAnalytic(Company company) throws AxelorException;
 
-  boolean compareNbrOfAnalyticAxisSelect(Company company, int position) throws AxelorException;
+  boolean isPositionUnderAnalyticAxisSelect(Company company, int position) throws AxelorException;
 
-  boolean checkAxisAccount(List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis);
+  boolean isAxisAccountSumValidated(List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis);
+
+  boolean isAnalyticAxisFilled(AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
 }

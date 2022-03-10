@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -48,27 +50,36 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
   }
 
   @Override
-  public boolean compareNbrOfAnalyticAxisSelect(Company company, int position)
+  public boolean isPositionUnderAnalyticAxisSelect(Company company, int position)
       throws AxelorException {
     return company != null
         && position <= accountConfigService.getAccountConfig(company).getNbrOfAnalyticAxisSelect();
   }
 
   @Override
-  public boolean checkAxisAccount(
+  public boolean isAxisAccountSumValidated(
       List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis) {
     if (!CollectionUtils.isEmpty(analyticMoveLineList)) {
       BigDecimal sum = BigDecimal.ZERO;
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        if (analyticMoveLine.getAnalyticAxis() == analyticAxis) {
+        if (analyticMoveLine.getAnalyticAxis().equals(analyticAxis)) {
           sum = sum.add(analyticMoveLine.getPercentage());
         }
       }
-
-      if (sum.compareTo(new BigDecimal(100)) != 0) {
-        return false;
-      }
+      return sum.compareTo(new BigDecimal(100)) == 0;
     }
     return true;
+  }
+  
+  @Override
+  public boolean isAnalyticAxisFilled(AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
+	  if (analyticAccount != null) {
+	      if (!isAxisAccountSumValidated(
+		          analyticMoveLineList,
+		          analyticAccount.getAnalyticAxis())) {
+	    	  return true;
+		      }
+		    }
+	  return false;
   }
 }

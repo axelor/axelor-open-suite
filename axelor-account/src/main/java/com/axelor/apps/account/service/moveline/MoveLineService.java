@@ -17,11 +17,8 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.base.db.Company;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,20 +37,10 @@ public interface MoveLineService {
 
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
 
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
-
-  public boolean checkManageAnalytic(Move move) throws AxelorException;
-
   boolean checkManageCutOffDates(MoveLine moveLine);
 
   void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
-
-  MoveLine clearAnalyticAccounting(MoveLine moveLine);
-
-  MoveLine printAnalyticAccount(MoveLine moveLine, Company company) throws AxelorException;
-
-  MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine);
 }
