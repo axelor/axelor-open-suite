@@ -174,7 +174,8 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
-    payVoucherDueElement.setAmountRemaining(invoiceTermService.getAmountRemaining(invoiceTerm));
+    payVoucherDueElement.setAmountRemaining(
+        this.getAmountRemaining(payVoucherDueElement, invoiceTerm));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
@@ -185,6 +186,13 @@ public class PaymentVoucherLoadService {
         payVoucherDueElement, paymentVoucher);
 
     return payVoucherDueElement;
+  }
+
+  protected BigDecimal getAmountRemaining(
+      PayVoucherDueElement payVoucherDueElement, InvoiceTerm invoiceTerm) {
+    return payVoucherDueElement.getApplyFinancialDiscount()
+        ? invoiceTerm.getAmountRemainingAfterFinDiscount()
+        : invoiceTerm.getAmountRemaining();
   }
 
   public void loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {

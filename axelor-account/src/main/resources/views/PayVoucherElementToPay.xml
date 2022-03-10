@@ -22,9 +22,9 @@
     model="com.axelor.apps.account.db.PayVoucherElementToPay"
     onLoad="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay">
     <panel name="mainPanel">
-      <field name="sequence"/>
+      <field name="sequence" readonly="true"/>
       <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-      <field name="invoiceTerm"/>
+      <field name="invoiceTerm" readonly="true"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>

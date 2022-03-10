@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
   <grid name="pay-voucher-due-element-grid" title="Invoices to pay"
-    model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="moveLine.dueDate">
-    <field name="moveLine.dueDate"/>
+    model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="invoiceTerm.dueDate">
+    <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="moveLine.move.invoice" width="120"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -22,7 +22,6 @@
       <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
       <field name="invoiceTerm"/>
       <field name="invoiceTerm.dueDate"/>
-      <field name="moveLine.dueDate"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="dueAmount"/>

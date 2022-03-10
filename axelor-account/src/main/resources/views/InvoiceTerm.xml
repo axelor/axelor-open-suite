@@ -28,7 +28,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="invoice.financialDiscountDeadlineDate"
+    <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
@@ -58,7 +58,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="invoice.financialDiscountDeadlineDate"
+    <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
@@ -84,7 +84,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="invoice.financialDiscountDeadlineDate"
+    <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
@@ -320,7 +320,7 @@
         <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
         <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="invoice.financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
+        <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
