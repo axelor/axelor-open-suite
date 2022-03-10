@@ -35,6 +35,9 @@
       <field name="backupDate" readonly="true" colSpan="4"/>
       <field name="logMetaFile" readonly="true" widget="binary-link" colSpan="4"/>
     </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="importId"/>
+    </panel>
   </form>
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
@@ -57,6 +60,9 @@
       <spacer name="restoreBtnSpacer"/>
       <field name="restoreDate" readonly="true" colSpan="3"/>
       <field name="logMetaFile" readonly="true" widget="binary-link" colSpan="3"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="importId"/>
     </panel>
   </form>
 
