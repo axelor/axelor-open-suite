@@ -431,8 +431,8 @@
     <option value="2">Realized</option>
   </selection>
 
-  <selection name="account.move.template.type.type.select">
-    <option value="1">%</option>
+  <selection name="account.move.template.type.select">
+    <option value="1">Repartition</option>
     <option value="2">Amount</option>
   </selection>
 

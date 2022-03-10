@@ -8,8 +8,8 @@
   <entity name="MoveTemplate" lang="java" cacheable="true">
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
-    <many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"
-      required="1"/>
+    <integer name="moveTemplateType" title="Type"
+      selection="account.move.template.type.select" required="1"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="1"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>
@@ -24,6 +24,14 @@
     		return code+" - " + name;
 	    ]]>
     </string>
+
+    <extra-code><![CDATA[
+
+	// TYPE SELECT
+	public static final int MOVE_TEMPLATE_TYPE_PERCENTAGE = 1;
+	public static final int MOVE_TEMPLATE_TYPE_AMOUNT = 2;
+
+	]]></extra-code>
 
     <track on="UPDATE">
       <field name="name"/>

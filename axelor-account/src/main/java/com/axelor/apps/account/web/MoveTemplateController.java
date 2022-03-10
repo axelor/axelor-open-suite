@@ -20,9 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
-import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
-import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.exception.service.TraceBackService;
@@ -67,16 +65,12 @@ public class MoveTemplateController {
     try {
       Context context = request.getContext();
 
-      HashMap<String, Object> moveTemplateTypeMap =
-          (HashMap<String, Object>) context.get("moveTemplateType");
-      MoveTemplateType moveTemplateType =
-          Beans.get(MoveTemplateTypeRepository.class)
-              .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
+      Integer moveTemplateType = (Integer) context.get("moveTemplateTypeSelect");
 
       HashMap<String, Object> moveTemplateMap =
           (HashMap<String, Object>) context.get("moveTemplate");
       MoveTemplate moveTemplate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+      if (moveTemplateType == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_PERCENTAGE) {
         moveTemplate =
             Beans.get(MoveTemplateRepository.class)
                 .find(Long.parseLong(moveTemplateMap.get("id").toString()));
@@ -89,7 +83,7 @@ public class MoveTemplateController {
           (List<HashMap<String, Object>>) context.get("moveTemplateSet");
 
       LocalDate moveDate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+      if (moveTemplateType == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_AMOUNT) {
         moveDate =
             LocalDate.parse(
                 (String) context.get("moveDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));

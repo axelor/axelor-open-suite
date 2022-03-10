@@ -857,14 +857,6 @@
     <context name="_activeCompanyId" expr="eval:__user__.activeCompany?.id"/>
   </action-view>
 
-  <menuitem name="move-template-type" title="Move Template Types"
-    parent="move-template-root" action="move.template.type" top="true"/>
-  <action-view name="move.template.type" title="Move Template Types"
-    model="com.axelor.apps.account.db.MoveTemplateType">
-    <view type="grid" name="move-template-type-grid"/>
-    <view type="form" name="move-template-type-form"/>
-  </action-view>
-
 
   <action-view name="action-customer-invoice-line-menu" title="Customer Invoice Line"
     model="com.axelor.apps.account.db.InvoiceLine">

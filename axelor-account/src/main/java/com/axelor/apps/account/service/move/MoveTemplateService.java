@@ -21,13 +21,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
-import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
-import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -96,16 +94,16 @@ public class MoveTemplateService {
 
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(
-      MoveTemplateType moveTemplateType,
+      Integer moveTemplateType,
       MoveTemplate moveTemplate,
       List<HashMap<String, Object>> dataList,
       LocalDate date,
       List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
 
-    if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+    if (moveTemplateType == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_PERCENTAGE) {
       return this.generateMove(moveTemplate, dataList);
-    } else if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+    } else if (moveTemplateType == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_AMOUNT) {
       return this.generateMove(date, moveTemplateList);
     }
     return new ArrayList<>();
@@ -296,15 +294,15 @@ public class MoveTemplateService {
 
   public boolean checkValidity(MoveTemplate moveTemplate) {
 
-    MoveTemplateType moveTemplateType = moveTemplate.getMoveTemplateType();
-
-    if (moveTemplateType == null) {
+    if (moveTemplate.getMoveTemplateType() == null) {
       return false;
     }
 
-    if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+    if (moveTemplate.getMoveTemplateType()
+        == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_PERCENTAGE) {
       return this.checkValidityInPercentage(moveTemplate);
-    } else if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+    } else if (moveTemplate.getMoveTemplateType()
+        == MoveTemplateRepository.MOVE_TEMPLATE_TYPE_AMOUNT) {
       return this.checkValidityInAmount(moveTemplate);
     } else {
       return false;

@@ -7,8 +7,7 @@
     model="com.axelor.apps.account.db.MoveTemplate">
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="moveTemplateType" grid-view="move-template-type-grid"
-      form-view="move-template-type-form"/>
+    <field name="moveTemplateType"/>
     <field name="journal" grid-view="journal-grid" form-view="journal-form"/>
     <field name="endOfValidityDate"/>
     <field name="isValid"/>
@@ -26,14 +25,12 @@
         onSelect="action-move-template-set-journal-domain" grid-view="journal-grid"
         form-view="journal-form" required="true"/>
       <field name="moveTemplateType" canEdit="false"
-        readonlyIf="moveTemplateLineList.length > 0" required="true"
-        grid-view="move-template-type-grid" form-view="move-template-type-form" colSpan="3"/>
-      <field name="moveTemplateType.typeSelect" colSpan="3"/>
+        readonlyIf="moveTemplateLineList.length > 0" required="true" colSpan="3"/>
       <field name="endOfValidityDate"/>
       <field name="automaticallyValidate"/>
       <field name="description" widget="text" colSpan="12"/>
     </panel>
-    <panel showIf="moveTemplateType.typeSelect == 2">
+    <panel showIf="moveTemplateType == 2">
       <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
         colSpan="12" form-view="move-template-line-in-amount-form"
         grid-view="move-template-line-in-amount-grid"
@@ -74,7 +71,7 @@
     <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
       colSpan="12" form-view="move-template-line-in-percentage-form"
       grid-view="move-template-line-in-percentage-grid"
-      onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1"
+      onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType == 1"
       hidden="true"/>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <field name="isValid" readonlyIf="!isValid"
@@ -93,42 +90,40 @@
     onNew="action-move-template-wizard-set-active-company"
     onLoad="action-move-template-wizard-set-active-company">
     <panel name="mainPanel">
-      <field name="moveTemplateType" canEdit="false" title="Type" target-name="name"
-        type="many-to-one" target="com.axelor.apps.account.db.MoveTemplateType"
-        grid-view="move-template-type-grid" form-view="move-template-type-form"/>
+      <field name="moveTemplateTypeSelect" canEdit="false" title="Type"
+        selection="account.move.template.type.select" type="integer"/>
       <field name="company" type="many-to-one" target="com.axelor.apps.base.db.Company"
         canEdit="false" title="Company" form-view="company-form" grid-view="company-grid"
         onChange="action-move-template-wizard-attrs-company-onchange"/>
-      <panel showIf="moveTemplateType.typeSelect == 2" colSpan="12">
+      <panel showIf="moveTemplateTypeSelect == 2" colSpan="12">
         <field name="moveDate" type="date" title="Move date"
-          requiredIf="moveTemplateType.typeSelect == 2"/>
+          requiredIf="moveTemplateTypeSelect == 2"/>
       </panel>
-      <panel showIf="moveTemplateType.typeSelect == 1" colSpan="12">
-        <field name="moveTemplate" canEdit="false"
-          requiredIf="moveTemplateType.typeSelect == 1" target-name="name" type="many-to-one"
-          target="com.axelor.apps.account.db.MoveTemplate" title="Template"
-          domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND (self.endOfValidityDate &gt;= CURRENT_DATE OR self.endOfValidityDate IS NULL)"
+      <panel showIf="moveTemplateTypeSelect == 1" colSpan="12">
+        <field name="moveTemplate" canEdit="false" requiredIf="moveTemplateTypeSelect == 1"
+          target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate"
+          title="Template"
+          domain="self.moveTemplateType = :moveTemplateTypeSelect AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND (self.endOfValidityDate &gt;= CURRENT_DATE OR self.endOfValidityDate IS NULL)"
           form-view="move-template-form" grid-view="move-template-grid"/>
         <field name="moveTemplate.journal" readonly="true" showIf="moveTemplate != null"
           target-name="name" type="many-to-one" target="com.axelor.apps.account.db.Journal"
           title="Journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="moveTemplate.description" title="Description" widget="text" colSpan="12"
-          showIf="moveTemplateType.typeSelect == 1" readonly="true"/>
+          showIf="moveTemplateTypeSelect == 1" readonly="true"/>
       </panel>
       <panel-related name="dataInputListPanel" field="dataInputList"
-        type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
+        type="one-to-many" showIf="moveTemplateTypeSelect == 1"
         target="com.axelor.apps.base.db.Wizard" title="Move Lines data input"
         grid-view="wizard-custom-in-percentage-grid" colSpan="12"/>
       <panel-related name="moveTemplateSetPanel" field="moveTemplateSet"
-        type="many-to-many" showIf="moveTemplateType.typeSelect == 2"
+        type="many-to-many" showIf="moveTemplateTypeSelect == 2"
         target="com.axelor.apps.account.db.MoveTemplate" title="Move templates"
         form-view="move-template-form" grid-view="move-template-grid" colSpan="12"
-        domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND (self.endOfValidityDate &gt;= :moveDate OR self.endOfValidityDate IS NULL)"/>
-      <field name="moveTemplateType.typeSelect" hidden="true"/>
+        domain="self.moveTemplateType = :moveTemplateTypeSelect AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND (self.endOfValidityDate &gt;= :moveDate OR self.endOfValidityDate IS NULL)"/>
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="generateMovesBtn"
-        readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)"
+        readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateTypeSelect == null)"
         title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move"
         colSpan="12"/>
     </panel>
