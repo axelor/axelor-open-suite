@@ -89,7 +89,7 @@ public class AnalyticDistributionTemplateServiceImpl
         for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
           sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
         }
-        if (sum.intValue() != 100) {
+        if (sum.compareTo(new BigDecimal(100)) != 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));

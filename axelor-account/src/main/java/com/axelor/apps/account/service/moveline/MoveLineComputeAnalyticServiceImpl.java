@@ -162,12 +162,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   @Override
   public List<Long> setAxisDomains(MoveLine moveLine, Move move, int position)
       throws AxelorException {
-    List<Long> analyticAccountListByAxis = new ArrayList<Long>();
-    List<Long> analyticAccountListByRules = new ArrayList<Long>();
+    List<Long> analyticAccountListByAxis = new ArrayList<>();
+    List<Long> analyticAccountListByRules = new ArrayList<>();
 
     AnalyticAxis analyticAxis = new AnalyticAxis();
 
-    if (analyticToolService.compareNbrOfAnalyticAxisSelect(move.getCompany(), position)) {
+    if (analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), position)) {
 
       for (AnalyticAxisByCompany axis :
           accountConfigService.getAccountConfig(move.getCompany()).getAnalyticAxisByCompanyList()) {

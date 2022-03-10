@@ -17,21 +17,14 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -60,11 +53,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppBaseService appBaseService;
-  protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
-  protected AnalyticToolService analyticToolService;
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
+  
+  
 
   @Inject
   public MoveLineServiceImpl(
@@ -72,18 +62,12 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
       AppBaseService appBaseService,
-      MoveLineToolService moveLineToolService,
-      AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
-      AnalyticToolService analyticToolService) {
+      MoveLineToolService moveLineToolService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
-    this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
-    this.analyticToolService = analyticToolService;
   }
 
   @Override
@@ -273,30 +257,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
-  }
-
-  @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
     return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
   }
@@ -322,98 +282,5 @@ public class MoveLineServiceImpl implements MoveLineService {
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
 
-  @Override
-  public MoveLine clearAnalyticAccounting(MoveLine moveLine) {
-    moveLine.setAxis1AnalyticAccount(null);
-    moveLine.setAxis2AnalyticAccount(null);
-    moveLine.setAxis3AnalyticAccount(null);
-    moveLine.setAxis4AnalyticAccount(null);
-    moveLine.setAxis5AnalyticAccount(null);
-    moveLine
-        .getAnalyticMoveLineList()
-        .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
-    moveLine.getAnalyticMoveLineList().clear();
-    return moveLine;
-  }
 
-  @Override
-  public MoveLine printAnalyticAccount(MoveLine moveLine, Company company) throws AxelorException {
-    if (moveLine.getAnalyticMoveLineList() != null
-        && !moveLine.getAnalyticMoveLineList().isEmpty()
-        && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = new ArrayList();
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-          if (analyticMoveLine.getAnalyticAxis() == analyticAxisByCompany.getAnalyticAxis()) {
-            analyticMoveLineList.add(analyticMoveLine);
-          }
-        }
-        if (analyticMoveLineList.size() == 1
-            && analyticMoveLineList.get(0).getPercentage().compareTo(new BigDecimal(100)) == 0) {
-          switch (analyticAxisByCompany.getOrderSelect()) {
-            case 1:
-              moveLine.setAxis1AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
-              break;
-            case 2:
-              moveLine.setAxis2AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
-              break;
-            case 3:
-              moveLine.setAxis3AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
-              break;
-            case 4:
-              moveLine.setAxis4AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
-              break;
-            case 5:
-              moveLine.setAxis5AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
-              break;
-            default:
-              break;
-          }
-        }
-        analyticMoveLineList.clear();
-      }
-    }
-    return moveLine;
-  }
-
-  @Override
-  public MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine) {
-    if (moveLine.getAxis1AnalyticAccount() != null) {
-      if (!analyticToolService.checkAxisAccount(
-          moveLine.getAnalyticMoveLineList(),
-          moveLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
-        moveLine.setAxis1AnalyticAccount(null);
-      }
-    }
-    if (moveLine.getAxis2AnalyticAccount() != null) {
-      if (!analyticToolService.checkAxisAccount(
-          moveLine.getAnalyticMoveLineList(),
-          moveLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
-        moveLine.setAxis2AnalyticAccount(null);
-      }
-    }
-    if (moveLine.getAxis3AnalyticAccount() != null) {
-      if (!analyticToolService.checkAxisAccount(
-          moveLine.getAnalyticMoveLineList(),
-          moveLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
-        moveLine.setAxis3AnalyticAccount(null);
-      }
-    }
-    if (moveLine.getAxis4AnalyticAccount() != null) {
-      if (!analyticToolService.checkAxisAccount(
-          moveLine.getAnalyticMoveLineList(),
-          moveLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
-        moveLine.setAxis4AnalyticAccount(null);
-      }
-    }
-    if (moveLine.getAxis5AnalyticAccount() != null) {
-      if (!analyticToolService.checkAxisAccount(
-          moveLine.getAnalyticMoveLineList(),
-          moveLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
-        moveLine.setAxis5AnalyticAccount(null);
-      }
-    }
-    return moveLine;
-  }
 }

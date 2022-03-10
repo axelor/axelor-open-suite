@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -90,7 +91,7 @@ public class AnalyticDistributionLineController {
       if (analyticMoveLine != null && moveLine != null) {
         response.setValue(
             "amount",
-            Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
+            Beans.get(MoveLineAnalyticService.class).getAnalyticAmount(moveLine, analyticMoveLine));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

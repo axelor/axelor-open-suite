@@ -33,16 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineService {
-
-  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
-
-  List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine)
-      throws AxelorException;
-
-  List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
-      throws AxelorException;
-
+	
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
@@ -114,9 +105,6 @@ public interface InvoiceLineService {
       InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException;
 
-  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
-      throws AxelorException;
-
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
 
@@ -127,14 +115,4 @@ public interface InvoiceLineService {
   void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
-  InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine);
-
-  InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine);
-
-  InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
-
-  InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine, Company company) throws AxelorException;
-
-  List<Long> setAxisDomains(InvoiceLine invoiceLine, Invoice invoice, int position)
-      throws AxelorException;
 }

@@ -19,14 +19,11 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
-import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -35,7 +32,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.apps.tool.service.ListToolService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -45,36 +41,28 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
 
   @Inject
   public InvoiceLineProjectServiceImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService,
+		  CurrencyService currencyService,
+	      PriceListService priceListService,
+	      AppAccountService appAccountService,
+	      AccountManagementAccountService accountManagementAccountService,
+	      ProductCompanyService productCompanyService,
+	      InvoiceLineRepository invoiceLineRepo,
+	      AppBaseService appBaseService,
+	      AccountConfigService accountConfigService,
+	      InvoiceLineAnalyticService invoiceLineAnalyticService,
       PurchaseProductService purchaseProductService,
-      ProductCompanyService productCompanyService,
-      InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService,
-      AccountConfigService accountConfigService,
-      AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      ListToolService listToolService,
-      AnalyticToolService analyticToolService,
       SupplierCatalogService supplierCatalogService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
-        analyticMoveLineService,
         accountManagementAccountService,
-        purchaseProductService,
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
         accountConfigService,
-        analyticAccountRepository,
-        accountAnalyticRulesRepository,
-        listToolService,
-        analyticToolService,
+        invoiceLineAnalyticService,
+        purchaseProductService,
         supplierCatalogService);
   }
 
@@ -97,7 +85,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
   @Override
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
     List<AnalyticMoveLine> analyticMoveLineList =
-        super.createAnalyticDistributionWithTemplate(invoiceLine);
+    		invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
 
     if (invoiceLine.getProject() != null && analyticMoveLineList != null) {
       analyticMoveLineList.forEach(
