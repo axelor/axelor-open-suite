@@ -7,7 +7,7 @@
     model="com.axelor.apps.purchase.db.PurchaseRequest" edit-icon="true">
     <toolbar>
       <button name="generatePoBtn" title="Generate PO"
-        onClick="action-purchase-request-open-generate-po-wizard"/>
+        onClick="action-purchase-request-group-toolbar-generate-po"/>
     </toolbar>
     <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="statusSelect"/>
@@ -37,7 +37,7 @@
     model="com.axelor.apps.purchase.db.PurchaseRequest">
     <toolbar>
       <button name="generatePoBtn" title="Generate PO"
-        onClick="action-purchase-request-open-generate-po-wizard"/>
+        onClick="action-purchase-request-group-toolbar-generate-po"/>
     </toolbar>
     <hilite if="statusSelect == 2" color="info"/>
     <hilite if="statusSelect == 3" color="primary"/>
@@ -200,6 +200,11 @@
     <call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="generatePo"/>
   </action-method>
 
+  <action-method name="action-purchase-request-method-check-selected-record">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="checkSelectedRecord"/>
+  </action-method>
+
   <action-view name="action-purchase-request-open-generate-po-wizard"
     title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest">
     <view type="form" name="purchase-request-wizard-generate-po-form"/>
@@ -226,6 +231,11 @@
   <action-group name="action-purchase-request-group-company-onchange">
     <action name="action-purchase-request-method-get-stock-location"
       if="__config__.app.isApp('supplychain')"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-toolbar-generate-po">
+    <action name="action-purchase-request-method-check-selected-record"/>
+    <action name="action-purchase-request-open-generate-po-wizard"/>
   </action-group>
 
   <action-validate name="action-purchase-request-validate-check-supplier-user">

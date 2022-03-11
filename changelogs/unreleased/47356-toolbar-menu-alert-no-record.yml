@@ -1,0 +1,6 @@
+---
+title: "Users are now alert when they don't choose a record for some grid views"
+type: fix
+description: |
+  Users are now alert when they generate PO on internal purchase request view.
+  Users are now alert when they click the "Accounting Recouncile" button on Move lines view.

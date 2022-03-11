@@ -111,4 +111,12 @@ public class PurchaseRequestController {
       }
     }
   }
+
+  public void checkSelectedRecord(ActionRequest request, ActionResponse response) {
+    List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
+    if (requestIds == null) {
+      response.setError(
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED));
+    }
+  }
 }

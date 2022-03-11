@@ -141,6 +141,8 @@ public class MoveLineController {
             moveLineList.add(moveLine);
           }
         }
+      } else {
+        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
 
       if (!moveLineList.isEmpty()) {
