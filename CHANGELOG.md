@@ -1,3 +1,34 @@
+## [6.1.7] (2022-03-08)
+
+#### Changes
+
+* Data config line (for GDPR feature): Add help message for the field "Tab name".
+
+#### Fixed
+
+* Product: fix filter on cost type selection.
+* BUDGET: Clear budget when purchase order is cancelled.
+* AppLoader: Fix parent menu import on app loader import.
+* Exception: fix message display when an error occurs on save.
+
+For example, the message 'Invoice type missing on invoice' is now correctly displayed instead of 'com.axelor.exception.AxelorException: Invoice type missing on invoice'.
+
+* Menu Builder: Fix issue on menu generated with dashboard and no model.
+* MetaSchedule: Fix the title for 'Service' field.
+* Custom state accounting report: Fix typo in french demo data (explotation -> exploitation).
+* Sale order: when generating a purchase order from a sale order, we now also generate title lines.
+* HR Batch: fix internal server error happening during most HR batch executions when processing more than 10 records.
+* Improve possible performance issues on having a lot of companies on form views with a company field.
+* Product category: Prevent selecting a "children" product category when selecting a parent, to avoid configuration errors when creating a hierarchy of product categories.
+* Custom state accounting report: 'NaN' is no longer displayed, the report now shows 0 instead.
+* Project: in project dashboard, fix `com.axelor.internal.javax.el.ELEXCEPTION:Failed to parse the expression` error: "My tasks due" is now correctly displayed.
+* Object data config: Fix the title of the popup appearing when anonymizing data.
+* Search filters: fix french translation of search-filter labels.
+
+#### Removed
+
+* App base: remove unused field `defaultProjectUnit`.
+
 ## [6.1.6] (2022-02-25)
 
 #### Fixed
@@ -402,6 +433,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.7]: https://github.com/axelor/axelor-open-suite/compare/v6.1.6...v6.1.7
 [6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6
 [6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5
 [6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4

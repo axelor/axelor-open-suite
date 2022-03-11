@@ -48,8 +48,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       // field is empty: no messages required
       return "";
     }
-    List<ProductCategory> parentCategories = fetchParentCategoryList(productCategory);
-    List<ProductCategory> childrenCategories = fetchChildrenCategoryList(productCategory);
+    List<ProductCategory> parentCategories =
+        fetchParentCategoryListWithMaxDiscount(productCategory);
+    List<ProductCategory> childrenCategories =
+        fetchChildrenCategoryListWithMaxDiscount(productCategory);
 
     StringBuilder discountMessage = new StringBuilder();
     if (!parentCategories.isEmpty() || !childrenCategories.isEmpty()) {
@@ -87,20 +89,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       return Optional.of(productCategory.getMaxDiscount());
     } else {
       // this works because the returned list is ordered by parent category.
-      return fetchParentCategoryList(productCategoryRepository.find(productCategory.getId()))
+      return fetchParentCategoryListWithMaxDiscount(
+              productCategoryRepository.find(productCategory.getId()))
           .stream()
           .map(ProductCategory::getMaxDiscount)
           .findFirst();
     }
   }
 
-  /**
-   * Find parent of given category, and recursively parents of found parents.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  protected List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
+  public List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
     int i = 0;
@@ -121,18 +118,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       parentProductCategory = parentProductCategory.getParentProductCategory();
       i++;
     }
-    return parentProductCategoryList.stream()
-        .filter(pc -> pc.getMaxDiscount().signum() > 0)
-        .collect(Collectors.toList());
+    return parentProductCategoryList;
   }
 
-  /**
-   * Find child of given category, and recursively children of found children.
-   *
-   * @param productCategory a product category
-   * @return all parents of the category
-   */
-  protected List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
+  public List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException {
     // security in case of code error to avoid infinite loop
     int i = 0;
@@ -160,7 +149,32 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       nextChildrenProductCategoryList.clear();
       i++;
     }
-    return descendantsProductCategoryList.stream()
+    return descendantsProductCategoryList;
+  }
+
+  /**
+   * Find child of given category, and recursively parents of found parent that have a max discount.
+   *
+   * @param productCategory a product category
+   * @return filtered parents of the category
+   */
+  protected List<ProductCategory> fetchParentCategoryListWithMaxDiscount(
+      ProductCategory productCategory) throws AxelorException {
+    return fetchParentCategoryList(productCategory).stream()
+        .filter(pc -> pc.getMaxDiscount().signum() > 0)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Find child of given category, and recursively children of found children that have a max
+   * discount.
+   *
+   * @param productCategory a product category
+   * @return filtered children of the category
+   */
+  protected List<ProductCategory> fetchChildrenCategoryListWithMaxDiscount(
+      ProductCategory productCategory) throws AxelorException {
+    return fetchChildrenCategoryList(productCategory).stream()
         .filter(pc -> pc.getMaxDiscount().signum() > 0)
         .collect(Collectors.toList());
   }

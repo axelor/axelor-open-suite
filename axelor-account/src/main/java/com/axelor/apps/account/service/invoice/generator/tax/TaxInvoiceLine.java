@@ -74,6 +74,7 @@ public class TaxInvoiceLine extends TaxGenerator {
                 .filter(Objects::nonNull)
                 .map(TaxEquiv::getSpecificNote)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.joining("\n")));
       }
     } else {
