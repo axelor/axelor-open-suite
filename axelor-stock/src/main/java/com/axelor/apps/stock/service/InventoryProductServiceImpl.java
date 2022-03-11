@@ -18,14 +18,16 @@ public class InventoryProductServiceImpl implements InventoryProductService {
             .createQuery(
                 "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.trackingNumber HAVING COUNT(self) > 1");
 
+    Long duplicateCounter = Long.valueOf(0);
     try {
-      query.setParameter("invent", inventory.getId()).getSingleResult();
-
+      duplicateCounter = (Long) query.setParameter("invent", inventory.getId()).getSingleResult();
+    } catch (NoResultException e) {
+      // if control came here means no duplicate product.
+    }
+    if (duplicateCounter > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR));
-    } catch (NoResultException e) {
-      // if control came here means no duplicate product.
     }
   }
 }

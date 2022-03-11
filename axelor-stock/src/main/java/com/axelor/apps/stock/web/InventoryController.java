@@ -30,6 +30,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -223,8 +224,7 @@ public class InventoryController {
       Inventory inventory = request.getContext().asType(Inventory.class);
       Beans.get(InventoryProductService.class).checkDuplicate(inventory);
     } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
