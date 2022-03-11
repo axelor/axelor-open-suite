@@ -111,9 +111,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
   protected void stop() {
 
     String comment =
-        String.format(
-            I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION),
-            batch.getDone());
+        String.format(I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
     comment += "\n";
     comment +=
         String.format(
