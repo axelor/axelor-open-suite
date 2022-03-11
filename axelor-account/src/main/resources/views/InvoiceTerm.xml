@@ -127,7 +127,7 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" showIf="isPaid || amountRemaining != amount"
+        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -274,7 +274,7 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" showIf="isPaid || amountRemaining != amount"
+        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>

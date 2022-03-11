@@ -191,7 +191,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
     if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
+      this.setFinancialDiscount(invoiceTerm, invoice.getFinancialDiscount());
     }
     if (getPfpValidatorUserCondition(invoice)) {
       invoiceTerm.setPfpValidatorUser(invoiceService.getPfpValidatorUser(invoice));
@@ -221,7 +221,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
+      this.setFinancialDiscount(invoiceTerm, invoice.getFinancialDiscount());
     }
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(invoice);
@@ -246,6 +246,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     return invoiceTerm;
+  }
+
+  protected void setFinancialDiscount(
+      InvoiceTerm invoiceTerm, FinancialDiscount financialDiscount) {
+    invoiceTerm.setFinancialDiscount(financialDiscount);
+    invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
   }
 
   @Override
@@ -440,10 +446,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       if (appAccountService.getAppAccount().getManageFinancialDiscount()
           && applyFinancialDiscount) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
+        this.setFinancialDiscount(invoiceTerm, financialDiscount);
         invoiceTerm.setFinancialDiscountAmount(financialDiscountTotalAmount);
       } else {
-        invoiceTerm.setFinancialDiscount(null);
+        this.setFinancialDiscount(invoiceTerm, null);
       }
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
@@ -494,7 +500,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     List<InvoiceTerm> invoiceTerms = Lists.newArrayList();
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getAmount()) == 0) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
+        this.setFinancialDiscount(invoiceTerm, financialDiscount);
       }
       invoiceTerms.add(invoiceTerm);
     }
