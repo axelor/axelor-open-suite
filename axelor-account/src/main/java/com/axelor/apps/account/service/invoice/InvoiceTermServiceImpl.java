@@ -352,15 +352,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && invoiceTerm.getApplyFinancialDiscount()
             && invoiceTerm.getFinancialDiscount() != null) {
           invoiceTerm.setFinancialDiscountDeadlineDate(
-              invoiceTerm
-                  .getDueDate()
-                  .minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay()));
+              this.computeFinancialDiscountDeadlineDate(invoiceTerm));
         }
       }
     }
 
     initInvoiceTermsSequence(invoice);
     return invoice;
+  }
+
+  protected LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm) {
+    LocalDate deadlineDate =
+        invoiceTerm.getDueDate().minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay());
+
+    if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getInvoiceDate() != null) {
+      LocalDate invoiceDate = invoiceTerm.getInvoice().getInvoiceDate();
+      deadlineDate = deadlineDate.isBefore(invoiceDate) ? invoiceDate : deadlineDate;
+    }
+
+    return deadlineDate;
   }
 
   @Override
