@@ -43,7 +43,7 @@ public interface IExceptionMessage {
       "The production process and the bill of material must be applicable" /*)*/;
 
   /** Batch Compute work in progress valuation */
-  static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
+  static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "* %s Computed work in progress valuation" /*)*/;
 
   static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
