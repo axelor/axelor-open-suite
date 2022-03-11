@@ -344,22 +344,32 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Transactional
   public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
+    Optional<FixedAssetLine> optFixedAssetLine = Optional.empty();
 
+    // when correctedAccountingValue is 0, this means that this is just a simple recomputation of
+    // the fixedAsset list.
+    // But we have to take into account the lines that are already realized.
     if (fixedAsset.getCorrectedAccountingValue().signum() == 0) {
-      Optional<FixedAssetLine> optFixedAssetLine =
-          fixedAssetLineService.findOldestFixedAssetLine(
-              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED, 0);
-      if (optFixedAssetLine.isPresent()) {
-        fixedAsset.setCorrectedAccountingValue(optFixedAssetLine.get().getAccountingValue());
-      }
+      fixedAssetLineService.filterListByStatus(
+          fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED);
+
+      optFixedAssetLine =
+          fixedAssetLineService.findNewestFixedAssetLine(
+              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
     }
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (correctedAccountingValue != null
-        && correctedAccountingValue.signum() != 0
+        && correctedAccountingValue.signum() >= 0
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
-      fixedAssetGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
+      if (optFixedAssetLine.isPresent()) {
+        fixedAssetGenerationService.generateAndComputeFixedAssetLinesStartingWith(
+            fixedAsset, optFixedAssetLine.get());
+      } else {
+        fixedAssetGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
+      }
+
       fixedAssetGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
       fixedAssetRepo.save(fixedAsset);
     }
