@@ -20,17 +20,19 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection.Option;
 
 public class AccountingReportTypeServiceImpl implements AccountingReportTypeService {
   @Override
   public void setDefaultName(AccountingReportType accountingReportType) {
     if (accountingReportType.getTypeSelect() != null) {
-      String name =
-          I18n.get(
-              MetaStore.getSelectionItem(
-                      "accounting.report.type.select",
-                      accountingReportType.getTypeSelect().toString())
-                  .getTitle());
+      String name = "";
+      Option typeselect =
+          MetaStore.getSelectionItem(
+              "accounting.report.type.select", accountingReportType.getTypeSelect().toString());
+      if (typeselect != null) {
+        name = I18n.get(typeselect.getTitle());
+      }
       accountingReportType.setName(name);
     }
   }
