@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -57,7 +56,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
-  protected InvoiceService invoiceService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
@@ -66,8 +64,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService) {
+      InvoiceTermService invoiceTermService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
@@ -75,7 +72,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
-    this.invoiceService = invoiceService;
   }
 
   /**
@@ -108,6 +104,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   /**
    * @param invoice
    * @param amount
+   * @param paymentDate
    * @param paymentMove
    * @return
    */
@@ -119,27 +116,23 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         currencyService.getAmountCurrencyConvertedAtDate(
             paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
-
     Currency currency = paymentMove.getCurrency();
     if (currency == null) {
       currency = paymentMove.getCompanyCurrency();
     }
-
-    PaymentMode paymentMode = null;
+    PaymentMode paymentMode;
     InvoicePayment invoicePayment;
-
-    if (typePaymentMove != InvoicePaymentRepository.TYPE_REFUND_INVOICE
-        && typePaymentMove != InvoicePaymentRepository.TYPE_INVOICE) {
+    if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
+        || typePaymentMove == InvoicePaymentRepository.TYPE_INVOICE) {
+      paymentMode = null;
+    } else {
       paymentMode = paymentMove.getPaymentMode();
     }
-
     invoicePayment =
         this.createInvoicePayment(
             invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
-
     invoicePayment.setMove(paymentMove);
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-
     PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
     if (paymentVoucher != null) {
       invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
@@ -147,9 +140,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
-
-    this.computeAdvancePaymentImputation(invoicePayment, paymentMove);
-    this.computeFinancialDiscount(invoicePayment, invoice);
+    computeAdvancePaymentImputation(invoicePayment, paymentMove);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     invoice.addInvoicePaymentListItem(invoicePayment);
@@ -157,14 +148,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePaymentRepository.save(invoicePayment);
 
     return invoicePayment;
-  }
-
-  protected void computeFinancialDiscount(InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException {
-    if (invoiceService.applyFinancialDiscount(invoice)) {
-      invoicePayment.setApplyFinancialDiscount(true);
-      invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, true);
-    }
   }
 
   protected int determineType(Move move) {
