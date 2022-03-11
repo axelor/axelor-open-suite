@@ -13,7 +13,7 @@
 
   <form model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
     name="closure-assistant-form" onNew="account-closure-assistant-group-on-new"
-    onSave="account-closure-assistant-group-on-save">
+    onSave="account-closure-assistant-group-on-save" width="large">
     <panel name="mainPanel" colSpan="12">
       <field name="company" colSpan="6" title="Company" readonlyIf="progress &gt; 0"
         grid-view="company-form" form-view="company-grid"/>
@@ -22,7 +22,7 @@
         colSpan="6" title="Fiscal Year" readonlyIf="progress &gt; 0" grid-view="year-account-grid"
         form-view="year-account-form"/>
       <panel-related name="closureAssistantLineListPanel"
-        field="closureAssistantLineList" colSpan="12" height="6" title="Closure steps"
+        field="closureAssistantLineList" colSpan="12" height="8" title="Closure steps"
         grid-view="closure-assistant-line-grid" form-view="closure-assistant-line-form"
         x-can-reload="true" canEdit="false" canMove="false" canRemove="false" canSelect="false"
         canNew="false" orderBy="sequence" onChange="reload"/>
