@@ -25,7 +25,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -355,20 +354,6 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      String journalPartnerCompatibleDomain =
-          Beans.get(MoveToolService.class).filterJournalPartnerCompatibleType(move);
-      if (journalPartnerCompatibleDomain != null) {
-        response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

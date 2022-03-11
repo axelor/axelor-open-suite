@@ -72,7 +72,6 @@ public class MoveServiceImpl implements MoveService {
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
-
   protected AppAccountService appAccountService;
 
   @Inject
@@ -101,7 +100,6 @@ public class MoveServiceImpl implements MoveService {
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
-
     this.appAccountService = appAccountService;
   }
 
@@ -628,7 +626,9 @@ public class MoveServiceImpl implements MoveService {
         }
       }
       domain += ")";
+      domain += moveToolService.filterJournalPartnerCompatibleType(move);
     }
+
     return domain;
   }
 
