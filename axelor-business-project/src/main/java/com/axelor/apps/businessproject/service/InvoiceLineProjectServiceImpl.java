@@ -41,15 +41,15 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
 
   @Inject
   public InvoiceLineProjectServiceImpl(
-		  CurrencyService currencyService,
-	      PriceListService priceListService,
-	      AppAccountService appAccountService,
-	      AccountManagementAccountService accountManagementAccountService,
-	      ProductCompanyService productCompanyService,
-	      InvoiceLineRepository invoiceLineRepo,
-	      AppBaseService appBaseService,
-	      AccountConfigService accountConfigService,
-	      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
+      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService,
+      AccountConfigService accountConfigService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
       PurchaseProductService purchaseProductService,
       SupplierCatalogService supplierCatalogService) {
     super(
@@ -85,7 +85,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
   @Override
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
     List<AnalyticMoveLine> analyticMoveLineList =
-    		invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
+        invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
 
     if (invoiceLine.getProject() != null && analyticMoveLineList != null) {
       analyticMoveLineList.forEach(

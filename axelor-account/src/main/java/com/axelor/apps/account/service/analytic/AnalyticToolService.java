@@ -30,7 +30,9 @@ public interface AnalyticToolService {
 
   boolean isPositionUnderAnalyticAxisSelect(Company company, int position) throws AxelorException;
 
-  boolean isAxisAccountSumValidated(List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis);
+  boolean isAxisAccountSumValidated(
+      List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis);
 
-  boolean isAnalyticAxisFilled(AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
+  boolean isAnalyticAxisFilled(
+      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
 }

@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -191,7 +190,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       return invoiceLine;
     }
 
-    InvoiceLineAnalyticService invoiceLineAnalyticService = Beans.get(InvoiceLineAnalyticService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
 
     this.assignOriginElements(invoiceLine);
 
@@ -211,10 +211,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             invoiceLine.setAnalyticDistributionTemplate(
                 saleOrderLine.getAnalyticDistributionTemplate());
             this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+            analyticMoveLineList =
+                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
           } else {
             analyticMoveLineList =
-            		invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+                invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
             analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
           }
           break;
@@ -233,7 +234,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
       } else {
         analyticMoveLineList =
-        		invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
         analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
@@ -273,7 +274,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setInTaxPrice(inTaxPrice);
 
       analyticMoveLineList =
-    		  invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 

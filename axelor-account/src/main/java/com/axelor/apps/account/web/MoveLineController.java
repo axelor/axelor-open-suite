@@ -63,9 +63,9 @@ import java.util.stream.Collectors;
 @Singleton
 public class MoveLineController {
 
-	private final int startAxisPosition = 1;
-	private final int endAxisPosition = 5;
-	
+  private final int startAxisPosition = 1;
+  private final int endAxisPosition = 5;
+
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -414,14 +414,17 @@ public class MoveLineController {
           analyticAccountList =
               Beans.get(MoveLineComputeAnalyticService.class).setAxisDomains(moveLine, move, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
-            response.setAttr("axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "domain", "self.id IN (0)");
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                "domain",
+                "self.id IN (0)");
           } else {
             String idList =
                 analyticAccountList.stream()
                     .map(id -> id.toString())
                     .collect(Collectors.joining(","));
             response.setAttr(
-            		"axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
                 "domain",
                 "self.id IN ("
                     + idList
@@ -441,12 +444,12 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
       MoveLineAnalyticService moveLineAnalyticService = Beans.get(MoveLineAnalyticService.class);
-        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-          response.setAttr(
-        		  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-              "required",
-              moveLineAnalyticService.isAxisRequired(moveLine, move, i));
-        }
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        response.setAttr(
+            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+            "required",
+            moveLineAnalyticService.isAxisRequired(moveLine, move, i));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -481,7 +484,7 @@ public class MoveLineController {
             AnalyticAxis analyticAxis = null;
             for (int i = startAxisPosition; i <= endAxisPosition; i++) {
               response.setAttr(
-            		  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
                   "hidden",
                   !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
               for (AnalyticAxisByCompany analyticAxisByCompany :
@@ -491,7 +494,10 @@ public class MoveLineController {
                 }
               }
               if (analyticAxis != null) {
-                response.setAttr("axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "title", analyticAxis.getName());
+                response.setAttr(
+                    "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                    "title",
+                    analyticAxis.getName());
                 analyticAxis = null;
               }
             }
@@ -499,7 +505,8 @@ public class MoveLineController {
             response.setAttr("analyticDistributionTemplate", "hidden", true);
             response.setAttr("analyticMoveLineList", "hidden", true);
             for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-              response.setAttr("axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
+              response.setAttr(
+                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
             }
           }
         }
@@ -542,7 +549,7 @@ public class MoveLineController {
             moveLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
         if (!analyticMoveLineService.validateAnalyticMoveLines(
             moveLine.getAnalyticMoveLineList())) {
-          response.setError(I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED));
+          response.setError(I18n.get(IExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
         }
         Beans.get(AnalyticDistributionTemplateService.class)
             .validateTemplatePercentages(moveLine.getAnalyticDistributionTemplate());

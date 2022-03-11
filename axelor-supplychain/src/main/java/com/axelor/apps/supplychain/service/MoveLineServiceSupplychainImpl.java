@@ -26,11 +26,7 @@ public class MoveLineServiceSupplychainImpl extends MoveLineServiceImpl
       MoveLineToolService moveLineToolService,
       SupplychainBatchRepository supplychainBatchRepo) {
     super(
-        moveLineRepository,
-        invoiceRepository,
-        paymentService,
-        appBaseService,
-        moveLineToolService);
+        moveLineRepository, invoiceRepository, paymentService, appBaseService, moveLineToolService);
     this.supplychainBatchRepo = supplychainBatchRepo;
   }
 

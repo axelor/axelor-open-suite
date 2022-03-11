@@ -522,7 +522,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
 
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      List<AnalyticMoveLine> analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+      List<AnalyticMoveLine> analyticMoveLineList =
+          invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
       if (ObjectUtils.notEmpty(analyticMoveLineList)) {
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
       }

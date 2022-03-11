@@ -53,8 +53,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppBaseService appBaseService;
-  
-  
 
   @Inject
   public MoveLineServiceImpl(
@@ -281,6 +279,4 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
-
-
 }
