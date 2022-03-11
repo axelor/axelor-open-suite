@@ -46,6 +46,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -82,6 +83,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected ProductCompanyService productCompanyService;
 
   @Inject protected CurrencyService currencyService;
+
+  @Inject protected PurchaseConfigService purchaseConfigService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -233,7 +236,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
     purchaseOrder.setDisplayPriceOnQuotationRequest(
-        company.getPurchaseConfig().getDisplayPriceOnQuotationRequest());
+        purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;
   }
 
