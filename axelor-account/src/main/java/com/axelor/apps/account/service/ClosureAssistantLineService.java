@@ -9,4 +9,9 @@ public interface ClosureAssistantLineService {
 
   List<ClosureAssistantLine> initClosureAssistantLines(ClosureAssistant closureAssistant)
       throws AxelorException;
+
+  void cancelClosureAssistantLine(ClosureAssistantLine closureAssistantLine) throws AxelorException;
+
+  void validateClosureAssistantLine(ClosureAssistantLine closureAssistantLine)
+      throws AxelorException;
 }

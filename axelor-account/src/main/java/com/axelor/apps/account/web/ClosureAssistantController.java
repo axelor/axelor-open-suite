@@ -2,49 +2,66 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
-import com.axelor.apps.base.db.Year;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.List;
+import javax.persistence.TypedQuery;
 
 public class ClosureAssistantController {
 
-  public void setFiscalYear(ActionRequest request, ActionResponse response) {
+  public void setClosureAssistantFields(ActionRequest request, ActionResponse response) {
 
     try {
       ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
-      AuthUtils.getUser();
 
-      Year fiscalYear = null;
+      closureAssistant = Beans.get(ClosureAssistantService.class).updateCompany(closureAssistant);
 
-      response.setValue("fiscalYear", fiscalYear);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
+      closureAssistant = Beans.get(ClosureAssistantService.class).updateFicalYear(closureAssistant);
 
-  public void initClosureAssistantLines(ActionRequest request, ActionResponse response) {
-
-    try {
-      ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
       List<ClosureAssistantLine> closureAssistantLineList =
           Beans.get(ClosureAssistantLineService.class).initClosureAssistantLines(closureAssistant);
 
+      response.setValue("company", closureAssistant.getCompany());
+      response.setValue("fiscalYear", closureAssistant.getFiscalYear());
       response.setValue("closureAssistantLineList", closureAssistantLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void checkNoExistingClosureAssistantLineForSameYear(
+  public void checkNoExistingClosureAssistantForSameYear(
       ActionRequest request, ActionResponse response) {
 
     try {
       ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
+      TypedQuery<ClosureAssistant> closureAssistantQuery =
+          JPA.em()
+              .createQuery(
+                  "SELECT self FROM ClosureAssistant self  " + "WHERE self.fiscalYear = :year",
+                  ClosureAssistant.class);
+
+      closureAssistantQuery.setParameter("year", closureAssistant.getFiscalYear());
+
+      List<ClosureAssistant> ClosureAssistantList = closureAssistantQuery.getResultList();
+
+      if (!ObjectUtils.isEmpty(ClosureAssistantList)) {
+        response.setException(
+            new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR),
+                closureAssistant.getFiscalYear().getCode(),
+                closureAssistant.getCompany().getCode()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

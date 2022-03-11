@@ -692,7 +692,6 @@
 
 
   <selection name="account.closure.assistant.line.action.select">
-    <option value="1">Cut off generation</option>
     <option value="2">Fixed asset realization</option>
     <option value="3">Move consistency check</option>
     <option value="4">Accounting reports</option>

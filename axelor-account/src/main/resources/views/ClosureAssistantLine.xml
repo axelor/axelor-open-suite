@@ -12,15 +12,16 @@
     <panel name="actionsPanel" sidebar="true">
       <button onClick="account-closure-assistant-line-validate-action-method"
         name="validateActionBtn" hideIf="isValidated" help="Validate step" icon="fa-check-circle"
-        colSpan="12"/>
+        colSpan="12" readonlyIf="!isPreviousLineValidated"/>
       <button onClick="account-closure-assistant-line-cancel-action-method"
         name="cancelActionBtn" hideIf="!isValidated" help="Cancel step" icon="fa-times-circle"
         colSpan="12"/>
-      <button onClick="account-closure-assistant-line-open-view-link-to-action-method"
+      <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
         name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute" colSpan="12"
-        hideIf="isValidated"/>
+        hideIf="isValidated" readonlyIf="!isPreviousLineValidated"/>
       <field name="validatedOnDate" title="Validated on" readonly="true" colSpan="6"/>
       <field name="validatedByUser" title="Validated by" readonly="true" colSpan="6"/>
+      <field name="isPreviousLineValidated" hidden="true" readonly="true"/>
     </panel>
   </form>
 
@@ -33,26 +34,37 @@
     <field name="validatedOnDate" title="Validated on"/>
     <field name="validatedByUser" title="Validated by"/>
     <field name="isValidated" title="Validated"/>
+    <field name="isPreviousLineValidated" hidden="true"/>
 
-    <button onClick="account-closure-assistant-line-validate-action-method"
-      name="validateActionBtn" readonlyIf="isValidated" help="Validate step" icon="fa-check-circle"/>
-    <button onClick="account-closure-assistant-line-cancel-action-method"
+    <button onClick="save,account-closure-assistant-line-validate-action-method"
+      name="validateActionBtn" readonlyIf="isValidated  || !isPreviousLineValidated"
+      help="Validate step" icon="fa-check-circle"/>
+    <button onClick="save,account-closure-assistant-line-cancel-action-method"
       name="cancelActionBtn" readonlyIf="!isValidated" help="Cancel step" icon="fa-times-circle"/>
-    <button onClick="account-closure-assistant-line-open-view-link-to-action-method"
-      name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"/>
+    <button onClick="save,account-closure-assistant-line-open-view-link-to-action-method"
+      name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"
+      readonlyIf="isValidated  || !isPreviousLineValidated"/>
   </grid>
 
 
   <action-method name="account-closure-assistant-line-validate-action-method">
-    <call class="com.axelor.apps.account.web.ClosureAssistantLineController" method=""/>
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="validateClosureAssistantLine"/>
   </action-method>
 
   <action-method name="account-closure-assistant-line-cancel-action-method">
-    <call class="com.axelor.apps.account.web.ClosureAssistantLineController" method=""/>
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="cancelClosureAssistantLine"/>
   </action-method>
 
+  <action-group name="account-closure-assistant-line-open-view-link-to-action-group">
+    <action name="account-closure-assistant-line-open-view-link-to-action-method"/>
+  </action-group>
+
+
   <action-method name="account-closure-assistant-line-open-view-link-to-action-method">
-    <call class="com.axelor.apps.account.web.ClosureAssistantLineController" method=""/>
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="openViewLinkToAction"/>
   </action-method>
 
 </object-views>

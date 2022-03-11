@@ -17,6 +17,7 @@
       title="Validated by" readonly="true"/>
     <date name="validatedOnDate" title="Validated on" readonly="true"/>
 
+    <boolean name="isPreviousLineValidated"/>
 
     <extra-code><![CDATA[
 

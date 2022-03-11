@@ -1082,4 +1082,7 @@ public interface IExceptionMessage {
 
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
+
+  static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
+      "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
 }
