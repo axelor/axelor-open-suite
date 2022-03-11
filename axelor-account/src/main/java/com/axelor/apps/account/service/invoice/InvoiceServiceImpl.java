@@ -1276,16 +1276,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscountDeadlineDate() != null) {
       invoicePayment.setFinancialDiscountDeadlineDate(invoice.getFinancialDiscountDeadlineDate());
     }
-
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
-
     BigDecimal amount =
         invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
-        calculateAmountRemainingInPayment(invoice, applyDiscount, BigDecimal.ZERO));
+        calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
 
     return invoicePayment;
   }
@@ -1301,12 +1299,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         > 0) {
       invoicePayment.setAmount(
           calculateAmountRemainingInPayment(
-              invoice, invoicePayment.getApplyFinancialDiscount(), BigDecimal.ZERO));
+              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
     } else {
       invoicePayment =
           changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
     }
-
     return invoicePayment;
   }
 
