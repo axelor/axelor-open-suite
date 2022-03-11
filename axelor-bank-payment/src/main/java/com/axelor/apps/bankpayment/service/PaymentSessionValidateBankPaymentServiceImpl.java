@@ -185,7 +185,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
                       it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
                                   && invoiceTerm.getBankDetails() == null)
-                              || it.getReceiverBankDetails().equals(invoiceTerm.getBankDetails())))
+                              || (it.getReceiverBankDetails() != null
+                                  && it.getReceiverBankDetails()
+                                      .equals(invoiceTerm.getBankDetails()))))
               .findFirst()
               .orElse(null);
     }
