@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineAnalyticService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;

@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -70,16 +69,15 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
     }
     return true;
   }
-  
+
   @Override
-  public boolean isAnalyticAxisFilled(AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
-	  if (analyticAccount != null) {
-	      if (!isAxisAccountSumValidated(
-		          analyticMoveLineList,
-		          analyticAccount.getAnalyticAxis())) {
-	    	  return true;
-		      }
-		    }
-	  return false;
+  public boolean isAnalyticAxisFilled(
+      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
+    if (analyticAccount != null) {
+      if (!isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis())) {
+        return true;
+      }
+    }
+    return false;
   }
 }

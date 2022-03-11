@@ -439,7 +439,8 @@ public class IntercoServiceImpl implements IntercoService {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-    InvoiceLineAnalyticService invoiceLineAnalyticService = Beans.get(InvoiceLineAnalyticService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();

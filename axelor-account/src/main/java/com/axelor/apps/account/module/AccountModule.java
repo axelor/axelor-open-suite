@@ -348,7 +348,7 @@ public class AccountModule extends AxelorModule {
     bind(DepositSlipService.class).to(DepositSlipServiceImpl.class);
 
     bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
-    
+
     bind(InvoiceLineAnalyticService.class).to(InvoiceLineAnalyticServiceImpl.class);
 
     bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
@@ -451,7 +451,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
-    
+
     bind(MoveLineAnalyticService.class).to(MoveLineAnalyticServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);

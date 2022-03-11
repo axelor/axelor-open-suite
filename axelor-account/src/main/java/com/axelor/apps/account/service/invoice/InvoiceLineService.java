@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -33,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineService {
-	
+
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
@@ -114,5 +112,4 @@ public interface InvoiceLineService {
 
   void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
-
 }

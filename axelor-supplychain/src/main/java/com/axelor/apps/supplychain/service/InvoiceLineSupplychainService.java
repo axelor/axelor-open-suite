@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -54,17 +53,17 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Inject
   public InvoiceLineSupplychainService(
-		  CurrencyService currencyService,
-	      PriceListService priceListService,
-	      AppAccountService appAccountService,
-	      AccountManagementAccountService accountManagementAccountService,
-	      ProductCompanyService productCompanyService,
-	      InvoiceLineRepository invoiceLineRepo,
-	      AppBaseService appBaseService,
-	      AccountConfigService accountConfigService,
-	      InvoiceLineAnalyticService invoiceLineAnalyticService,
-	      PurchaseProductService purchaseProductService,
-	      SupplierCatalogService supplierCatalogService) {
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
+      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService,
+      AccountConfigService accountConfigService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      PurchaseProductService purchaseProductService,
+      SupplierCatalogService supplierCatalogService) {
     super(
         currencyService,
         priceListService,
@@ -73,7 +72,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService, 
+        accountConfigService,
         invoiceLineAnalyticService);
     this.purchaseProductService = purchaseProductService;
     this.supplierCatalogService = supplierCatalogService;
