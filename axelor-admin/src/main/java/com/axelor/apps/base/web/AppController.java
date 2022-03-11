@@ -20,17 +20,13 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessages;
-import com.axelor.apps.base.service.app.AccessConfigImportService;
-import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaView;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -153,28 +149,6 @@ public class AppController {
     }
   }
 
-  public void generateAccessTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    MetaFile accesssFile = Beans.get(AccessTemplateService.class).generateTemplate();
-
-    if (accesssFile == null) {
-      return;
-    }
-
-    response.setView(
-        ActionView.define(I18n.get("Export file"))
-            .model(App.class.getName())
-            .add(
-                "html",
-                "ws/rest/com.axelor.meta.db.MetaFile/"
-                    + accesssFile.getId()
-                    + "/content/download?v="
-                    + accesssFile.getVersion())
-            .param("download", "true")
-            .map());
-  }
-
   public void importRoles(ActionRequest request, ActionResponse response)
       throws AxelorException, IOException {
 
@@ -194,19 +168,5 @@ public class AppController {
 
     response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
     response.setReload(true);
-  }
-
-  public void importAccessConfig(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Map<String, Object> metaFileMap = (Map<String, Object>) request.getContext().get("metaFile");
-
-    if (metaFileMap != null) {
-      Long fileId = Long.parseLong(metaFileMap.get("id").toString());
-      Beans.get(AccessConfigImportService.class)
-          .importAccessConfig(Beans.get(MetaFileRepository.class).find(fileId));
-      response.setFlash(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
-      response.setCanClose(true);
-    }
   }
 }

@@ -133,14 +133,6 @@
     <call class="com.axelor.apps.base.web.AppController" method="importAllRoles"/>
   </action-method>
 
-  <action-method name="action-app-method-generate-access-template">
-    <call class="com.axelor.apps.base.web.AppController" method="generateAccessTemplate"/>
-  </action-method>
-
-  <action-method name="action-app-method-import-access-config">
-    <call class="com.axelor.apps.base.web.AppController" method="importAccessConfig"/>
-  </action-method>
-
   <action-view name="action-app-open-bulk-install-selector" title="Bulk install"
     model="com.axelor.apps.base.db.App">
     <view type="form" name="bulk-install-app-form"/>
