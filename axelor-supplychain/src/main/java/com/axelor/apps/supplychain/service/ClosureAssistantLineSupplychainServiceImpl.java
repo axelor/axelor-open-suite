@@ -16,7 +16,8 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
   @Inject
   public ClosureAssistantLineSupplychainServiceImpl(
       ClosureAssistantService closureAssistantService,
-      ClosureAssistantLineRepository closureAssistantLineRepository,AppBaseService appBaseService) {
+      ClosureAssistantLineRepository closureAssistantLineRepository,
+      AppBaseService appBaseService) {
     super(closureAssistantService, closureAssistantLineRepository, appBaseService);
   }
 
@@ -35,7 +36,7 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
 
       closureAssistantLineList.add(closureAssistantLine);
     }
-    
+
     return closureAssistantLineList;
   }
 }

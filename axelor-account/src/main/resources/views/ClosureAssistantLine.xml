@@ -14,14 +14,16 @@
         name="validateActionBtn" hideIf="isValidated" help="Validate step" icon="fa-check-circle"
         colSpan="12" readonlyIf="!isPreviousLineValidated"/>
       <button onClick="account-closure-assistant-line-cancel-action-method"
-        name="cancelActionBtn" hideIf="!isValidated" help="Cancel step" icon="fa-times-circle"
-        colSpan="12"/>
+        name="cancelActionBtn" hideIf="!isValidated || isNextLineValidated" help="Cancel step"
+        icon="fa-times-circle" colSpan="12"/>
       <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
         name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute" colSpan="12"
         hideIf="isValidated" readonlyIf="!isPreviousLineValidated"/>
       <field name="validatedOnDate" title="Validated on" readonly="true" colSpan="6"/>
       <field name="validatedByUser" title="Validated by" readonly="true" colSpan="6"/>
+      <field name="isValidated" hidden="true" readonly="true"/>
       <field name="isPreviousLineValidated" hidden="true" readonly="true"/>
+      <field name="isNextLineValidated" hidden="true" readonly="true"/>
     </panel>
   </form>
 
@@ -35,12 +37,13 @@
     <field name="validatedByUser" title="Validated by"/>
     <field name="isValidated" title="Validated"/>
     <field name="isPreviousLineValidated" hidden="true"/>
-
+    <field name="isNextLineValidated" hidden="true"/>
     <button onClick="save,account-closure-assistant-line-validate-action-method"
       name="validateActionBtn" readonlyIf="isValidated  || !isPreviousLineValidated"
       help="Validate step" icon="fa-check-circle"/>
     <button onClick="save,account-closure-assistant-line-cancel-action-method"
-      name="cancelActionBtn" readonlyIf="!isValidated" help="Cancel step" icon="fa-times-circle"/>
+      name="cancelActionBtn" readonlyIf="!isValidated || isNextLineValidated" help="Cancel step"
+      icon="fa-times-circle"/>
     <button onClick="save,account-closure-assistant-line-open-view-link-to-action-method"
       name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"
       readonlyIf="isValidated  || !isPreviousLineValidated"/>

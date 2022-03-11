@@ -8,7 +8,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
       } else {
         closureAssistantLine.setIsPreviousLineValidated(true);
       }
-
+      closureAssistantLine.setIsNextLineValidated(false);
       closureAssistantLineList.add(closureAssistantLine);
     }
     return closureAssistantLineList;
@@ -65,12 +64,13 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   protected ClosureAssistantLine validateOrCancelClosureAssistantLine(
       ClosureAssistantLine closureAssistantLine, boolean isValidated) throws AxelorException {
     closureAssistantLine.setIsValidated(isValidated);
-    if(isValidated) {
-    	closureAssistantLine.setValidatedByUser(AuthUtils.getUser());
-    	closureAssistantLine.setValidatedOnDate(appBaseService.getTodayDate(closureAssistantLine.getClosureAssistant().getCompany()));
-    }else {
-      	closureAssistantLine.setValidatedByUser(null);
-    	closureAssistantLine.setValidatedOnDate(null);
+    if (isValidated) {
+      closureAssistantLine.setValidatedByUser(AuthUtils.getUser());
+      closureAssistantLine.setValidatedOnDate(
+          appBaseService.getTodayDate(closureAssistantLine.getClosureAssistant().getCompany()));
+    } else {
+      closureAssistantLine.setValidatedByUser(null);
+      closureAssistantLine.setValidatedOnDate(null);
     }
     setIsPreviousLineValidatedForPreviousAndNextLine(closureAssistantLine, isValidated);
     closureAssistantLineRepository.save(closureAssistantLine);
@@ -113,6 +113,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
 
     if (previousClosureAssistantLine != null) {
       previousClosureAssistantLine.setIsPreviousLineValidated(!isValidated);
+      previousClosureAssistantLine.setIsNextLineValidated(isValidated);
       closureAssistantLineRepository.save(previousClosureAssistantLine);
     }
     if (nextClosureAssistantLine != null) {

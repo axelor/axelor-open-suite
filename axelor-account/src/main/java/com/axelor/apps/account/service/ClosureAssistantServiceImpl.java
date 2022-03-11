@@ -39,7 +39,9 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
       BigDecimal nbClosureAssistantLines =
           BigDecimal.valueOf(closureAssistant.getClosureAssistantLineList().size());
       closureAssistant.setProgress(
-    		  (countValidatedLines.divide(nbClosureAssistantLines, 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))));
+          (countValidatedLines
+              .divide(nbClosureAssistantLines, 2, RoundingMode.HALF_UP)
+              .multiply(BigDecimal.valueOf(100))));
     }
     return closureAssistant;
   }
