@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.auth.AuthUtils;
@@ -121,7 +122,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         team,
         taxNumber,
         fiscalPosition,
-        tradingName);
+        tradingName,
+        null,
+        null,
+        null);
   }
 
   public SaleOrder createSaleOrder(
@@ -138,7 +142,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Team team,
       TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
-      TradingName tradingName)
+      TradingName tradingName,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
 
     logger.debug(
@@ -171,6 +178,9 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
     saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+    saleOrder.setIncoterm(incoterm);
+    saleOrder.setInvoicedPartner(invoicedPartner);
+    saleOrder.setDeliveredPartner(deliveredPartner);
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
@@ -199,7 +209,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Team team,
       TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
 
     StringBuilder numSeq = new StringBuilder();
@@ -233,7 +246,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             team,
             taxNumber,
             fiscalPosition,
-            null);
+            null,
+            incoterm,
+            invoicedPartner,
+            deliveredPartner);
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
