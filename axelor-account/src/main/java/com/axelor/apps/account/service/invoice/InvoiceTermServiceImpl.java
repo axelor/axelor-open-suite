@@ -694,7 +694,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 && discountDelay != null
                 && (dueDate.minusDays(discountDelay).isAfter(paymentDate)
                     || dueDate.minusDays(discountDelay).isEqual(paymentDate)))) {
-      invoiceTerm.setApplyFinancialDiscount(true);
+      invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
       invoiceTerm.setPaymentAmount(
           invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
     } else {
