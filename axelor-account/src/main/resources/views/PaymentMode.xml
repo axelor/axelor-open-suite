@@ -11,7 +11,8 @@
           <panel-related name="accountManagementListPanel"
             field="accountManagementList" grid-view="account-management-payment-mode-grid"
             form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
-          <panel name="generalAccountingConfiguration" title="General accounting configuration">
+          <panel name="generalAccountingConfiguration"
+            title="General accounting configuration">
             <field name="accountingTriggerSelect"/>
             <field name="canSelectInPaymentSession"
               readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"/>

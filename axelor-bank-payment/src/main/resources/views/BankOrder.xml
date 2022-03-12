@@ -157,8 +157,7 @@
         <field name="bankOrderFileFormat" form-view="bank-order-file-format-form"
           grid-view="bank-order-file-format-grid" canView="false"
           domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-          colSpan="6"
-          onChange="action-bank-order-group-bank-order-file-format-onchange"
+          colSpan="6" onChange="action-bank-order-group-bank-order-file-format-onchange"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="partnerTypeSelect" css="label-bold bold" colSpan="6"
           onChange="action-bank-order-group-partner-type-select-change"
@@ -168,7 +167,8 @@
           readonlyIf="technicalOriginSelect == 1"/>
         <panel name="accountingTriggerPanel" stacked="true">
           <field name="accountingTriggerSelect" showIf="functionalOriginSelect != 1"/>
-          <field name="accountingTriggerSelect" selection-in="[0,2,3,4]" showIf="functionalOriginSelect == 1"/>
+          <field name="accountingTriggerSelect" selection-in="[0,2,3,4]"
+            showIf="functionalOriginSelect == 1"/>
           <field name="functionalOriginSelect" hidden="true"/>
         </panel>
       </panel>

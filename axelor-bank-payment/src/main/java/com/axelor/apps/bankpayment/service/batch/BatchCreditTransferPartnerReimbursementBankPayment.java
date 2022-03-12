@@ -141,7 +141,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
             null,
             null,
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                -2);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_BATCH_PAYBACK);
 
     for (Reimbursement reimbursement : reimbursementList) {
       BankOrderLine bankOrderLine =

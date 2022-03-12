@@ -318,17 +318,16 @@
     <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>
   </selection>
-  
+
   <selection name="bank.order.functional.origin.select">
     <option value="1">Manual</option>
     <option value="10">Invoice Payment</option>
-    <option value="11">Invoice Direct Payment</option>
-    <option value="12">Payment Voucher</option>
-    <option value="20">Move Payment</option>
+    <option value="20">Expense</option>
     <option value="30">Payment session</option>
     <option value="40">LCR</option>
-    <option value="50">Wire Transfer Batch</option>
-    <option value="51">Direct debit Batch</option>
+    <option value="50">Batch</option>
+    <option value="51">MonthlyPaymentScheduleLines (batch)</option>
+    <option value="52">CreditTransferPartnerReimbursement (batch)</option>
   </selection>
 
 </object-views>
