@@ -1271,6 +1271,7 @@
 "Error in account chart import please check the log","Erreur lors de l'import du plan comptable. Veuillez regarder les logs.",,
 "Error in move deleting or archiving, please check the log","Erreur dans la suppression ou l'archivage d'un mouvement, veuillez vérifier le journal.",,
 "Error in move generation","Erreur lors de la génération de l'écriture",,
+"Error in the analytic distribution template. Please for each line give a value to analytic axis, analytic account and analytic journal.","Erreur dans le modèle de répartition analytique. Veuillez, pour chaque ligne, remplir un axe, un compte et un journal analytique.",,
 "Error on uploading printed invoice:","Erreur lors de l'enregistrement de l'impression de la facture :",,
 "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs.","Erreur ou anomalie détectée rendant impossible de continuer le processus de comptabilisation des écritures suivantes : %s. Veuillez vérifier les logs.",,
 "Excel","Excel",,

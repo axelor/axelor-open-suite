@@ -304,4 +304,23 @@ public class AnalyticDistributionTemplateServiceImpl
         specificAnalyticDistributionLine);
     return specificAnalyticDistributionLine;
   }
+
+  @Override
+  public void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && !CollectionUtils.isEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine line :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (line.getAnalyticAxis() == null
+            || line.getAnalyticAccount() == null
+            || line.getAnalyticJournal() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(IExceptionMessage.NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE));
+        }
+      }
+    }
+  }
 }

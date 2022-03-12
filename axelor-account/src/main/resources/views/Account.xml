@@ -45,8 +45,7 @@
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" width="large"
     onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
-    onLoad="action-group-account-account-onload"
-    onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account"
+    onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
     canDelete="!isRegulatoryAccount">
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
@@ -200,6 +199,12 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-group name="action-account-group-onsave">
+    <action name="action-account-method-check-if-code-already-exist-for-company"/>
+    <action name="action-on-change-distribution-template-account"/>
+    <action name="action-account-method-verify-template-value"/>
+  </action-group>
+
   <action-group name="action-group-account-account-onload">
     <action name="action-account-method-compute-balance"/>
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
@@ -351,6 +356,10 @@
 
   <action-method name="action-method-account-fill-account-code">
     <call class="com.axelor.apps.account.web.AccountController" method="fillAccountCode"/>
+  </action-method>
+
+  <action-method name="action-account-method-verify-template-value">
+    <call class="com.axelor.apps.account.web.AccountController" method="verifyTemplateValues"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
