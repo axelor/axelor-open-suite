@@ -15,6 +15,7 @@
 
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
+    onLoad="action-payment-session-method-set-has-invoice-term-selected"
     model="com.axelor.apps.account.db.PaymentSession" width="large">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
@@ -36,7 +37,7 @@
         domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)"
         form-view="payment-mode-form" grid-view="payment-mode-grid"
         onChange="action-group-payment-session-on-payment-mode-change"/>
-      <field name="partnerTypeSelect" readonlyIf="!paymentMode"/>
+      <field name="partnerTypeSelect" readonlyIf="!paymentMode" selection-in="[1,2,3]"/>
       <field name="bankDetails" readonlyIf="!company" form-view="bank-details-form"
         grid-view="bank-details-grid"
         onSelect="action-attrs-payment-session-set-bank-details-domain"
@@ -54,9 +55,9 @@
       readonlyIf="statusSelect > 1">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
-        readonlyIf="sessionTotalAmount > 0"/>
+        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0"
+        showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
         showIf="id" colSpan="12" canSearch="true"/>
@@ -70,8 +71,9 @@
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-payment-session-group-validate"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; (sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm))"
         onClick="action-payment-session-group-cancel"/>
+      <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
       <field name="validatedByUser" readonly="true"/>
@@ -92,8 +94,9 @@
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <field name="accountingMethodSelect"/>
-      <field name="accountingTriggerSelect"/>
-      <field name="daysMarginOnPaySession"/>
+      <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"/>
+      <field name="daysMarginOnPaySession"
+        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
     </panel>
   </form>
 
@@ -162,6 +165,11 @@
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="sendEmails"/>
   </action-method>
 
+  <action-method name="action-payment-session-method-set-has-invoice-term-selected">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setHasInvoiceTermSelected"/>
+  </action-method>
+
   <action-validate name="action-payment-session-validate-cancel">
     <alert
       message="You are about to lose your work in progress. Are you confirming the cancellation of the session ?"/>
@@ -193,6 +201,10 @@
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
+    <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"
+      if="paymentMode?.generateBankOrder"/>
+    <field name="accountingTriggerSelect" expr="eval: 1" if="!paymentMode?.generateBankOrder"/>
   </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">

@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
@@ -605,6 +606,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                     .plusDays(paymentSession.getDaysMarginOnPaySession()))
             .bind("currency", paymentSession.getCurrency())
             .bind("partnerTypeSelect", paymentSession.getPartnerTypeSelect())
+            .bind("receivable", AccountTypeRepository.TYPE_RECEIVABLE)
+            .bind("payable", AccountTypeRepository.TYPE_PAYABLE)
             .fetch();
     eligibleInvoiceTermList.forEach(
         invoiceTerm -> {
@@ -631,14 +634,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             + " AND (self.moveLine.account.isRetrievedOnPaymentSession = TRUE"
             + " OR self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE)";
     String pfpCondition =
-        " AND ((self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE)"
-            + " OR (self.invoice.operationTypeSelect != 1 AND self.invoice.operationTypeSelect != 2"
-            + " AND self.moveLine.move.journal.journalType.technicalTypeSelect != 1)"
-            + " OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
+        " AND (self.invoice.operationTypeSelect = 3"
+            + " OR self.invoice.operationTypeSelect = 4"
+            + " OR self.moveLine.account.accountType.technicalTypeSelect = :receivable"
+            + " OR self.invoice.company.accountConfig.isManagePassedForPayment = FALSE"
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE"
+            + " OR ((self.invoice.operationTypeSelect = 1"
+            + " OR self.invoice.operationTypeSelect = 2"
+            + " OR self.moveLine.account.accountType.technicalTypeSelect = :payable)"
+            + " AND (self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
-            + " AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2"
-            + " OR self.moveLine.move.journal.journalType.technicalTypeSelect = 1)"
             + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4)))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"

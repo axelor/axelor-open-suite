@@ -71,7 +71,7 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
-      if (Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
+      if (!Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession)) {
         response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
       }
     } catch (Exception e) {
@@ -83,12 +83,19 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      PaymentSessionValidateService paymentSessionValidateService =
+          Beans.get(PaymentSessionValidateService.class);
 
-      int moveCount =
-          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+      int moveCount = paymentSessionValidateService.processPaymentSession(paymentSession);
+
       response.setReload(true);
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+
+      StringBuilder flashMessage =
+          paymentSessionValidateService.generateFlashMessage(paymentSession, moveCount);
+
+      if (flashMessage.length() > 0) {
+        response.setFlash(flashMessage.toString());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -122,6 +129,17 @@ public class PaymentSessionController {
         response.setFlash(
             String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setHasInvoiceTermSelected(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      boolean hasUnselectedInvoiceTerm =
+          Beans.get(PaymentSessionService.class).hasUnselectedInvoiceTerm(paymentSession);
+      response.setValue("$hasUnselectedInvoiceTerm", hasUnselectedInvoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -76,6 +76,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -89,7 +90,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineConsolidateService moveLineConsolidateService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineTaxService moveLineTaxService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -101,6 +103,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -485,6 +488,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
           moveLine.setTaxCode(tax.getCode());
+          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
           moveLines.add(moveLine);
         }
 
@@ -518,6 +522,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
           moveLine.setTaxCode(tax.getCode());
+          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
           moveLines.add(moveLine);
         }
       }
@@ -686,7 +691,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
     }
-    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     MoveLine newOrUpdatedMoveLine = new MoveLine();
 
     newOrUpdatedMoveLine.setAccount(newAccount);
@@ -708,6 +714,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
     newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+    newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());

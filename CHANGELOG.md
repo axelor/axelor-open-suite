@@ -1,3 +1,49 @@
+## [6.1.6] (2022-02-25)
+
+#### Fixed
+
+* Studio: add missing french translations.
+* Production process: Fix french help message in data-init.
+* Bank Reconciliation Line: Fix errors an account or a partner in a bank reconciliation line.
+* Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list.
+* SaleOrder: lines generated from complementary products are now correctly sorted directly after original sale order line.
+* INVOICE LINE: Fix product selection in supplier invoice line when the product does not have a catalog supplier for the selected partner.
+* Partner category: fix french translation.
+* BPM: Add french translations.
+* Analytic distribution required on sale order line: Fix french translation.
+* Analytic distribution required on purchase order line: fix french translation.
+* Lead: fix 'no transaction is in progress' error when trying to convert a lead.
+* YEAR: changed demo data for period on civil year.
+
+## [6.1.5] (2022-02-10)
+
+#### Changes
+
+* Move / Move lines: add functional origin tag in header.
+
+#### Fixed
+
+* ADDRESS: fix zip code not filled in demo data.
+* AdvancedExport: filter out transient fields in AdvancedExportLine form.
+* GEONAMES: fix NPE while importing cities from geonames.
+* PaymentVoucher: Fixed element to pay that was imputed to 0 when changing amount to pay and reloading due element.
+* Fiscal Position: fix issue where reverse charge tax lines on purchase order were not correctly generated.
+* Stock move: add server side check on status before realizing a stock move.
+* Budget: Fix budget lines update on cancelling a purchase order.
+* Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true.
+* Sale Order: Fix transaction issue when generating production order from sale order.
+* AppLoader: fix dashletbuilder import with json field of real model.
+* INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`).
+* MRP: fix NPE during computation when having multiple BOM levels.
+* BPM: Fix terminate and redeploy.
+
+Fix unique process id error on redeployment of bpm diagram.
+
+
+#### Removed
+
+* PrintingSettings: remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+
 ## [6.1.4] (2022-01-14)
 
 #### Changes
@@ -356,6 +402,8 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6
+[6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5
 [6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4
 [6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
 [6.1.2]: https://github.com/axelor/axelor-open-suite/compare/v6.1.1...v6.1.2

@@ -137,12 +137,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   }
 
   @Override
-  public Map<String, Object> fillPriceAndAccount(
-      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
-    return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-  }
-
-  @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 

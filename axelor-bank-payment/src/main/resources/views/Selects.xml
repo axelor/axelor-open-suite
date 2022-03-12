@@ -201,7 +201,8 @@
 
   <selection name="bankpayment.account.batch.bill.of.exchange.step.batch.select">
     <option value="1">Bill of exchange generation</option>
-    <option value="2">Bank order generation</option>
+    <option value="2">Send note bills</option>
+    <option value="3">Bank order generation</option>
   </selection>
 
   <selection name="bankpayment.bank.statement.line.afb.120.line.type.select">
@@ -241,6 +242,7 @@
     <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
     <option value="com.axelor.apps.account.db.PaymentScheduleLine">Payment schedule line</option>
     <option value="com.axelor.apps.account.db.Reimbursement">Reimbursement</option>
+    <option value="com.axelor.apps.account.db.InvoiceTerm">Invoice term</option>
     <option value="com.axelor.apps.hr.db.Expense">Expense</option>
   </selection>
 
