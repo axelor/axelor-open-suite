@@ -241,18 +241,18 @@
         <editor x-layout="table" x-show-on-new="false" x-viewer="true"
           onNew="action-bank-order-line-onnew">
           <field name="sequence" css="label-bold bold" readonly="true"
-            hideIf="sequence == null" colSpan="6"/>
+            hideIf="sequence == null"/>
           <field name="bankOrderDate" hidden="true"/>
-          <panel name="receiverCompanyPanel" colSpan="6" itemSpan="12">
+          <panel name="receiverCompanyPanel" itemSpan="12">
             <field name="receiverCompany" canEdit="false" form-view="company-form"
               grid-view="company-grid" css="label-bold bold"
-              onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+              onChange="action-bank-order-line-group-receiver-company-onchange"/>
             <field name="partner" canView="false" form-view="partner-form"
               grid-view="partner-grid" css="label-bold bold"
               onSelect="action-bank-order-line-attrs-partner-domain"
-              onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+              onChange="action-bank-order-line-group-partner-onchange"/>
           </panel>
-          <panel name="receiverBankDetailsPanel" colSpan="6" itemSpan="12">
+          <panel name="receiverBankDetailsPanel" itemSpan="12">
             <field name="receiverBankDetails" showIf="receiverCompany" canView="false"
               onSelect="action-bank-order-line-method-set-bank-details-domain" required="true"
               onChange="action-bank-order-line-record-receiver-bank-details-onchange"
@@ -269,7 +269,7 @@
             <field name="bankOrderCurrency" canView="false" hidden="true"
               onChange="action-bank-order-line-method-compute-company-currency-amount"/>
           </panel>
-          <panel name="companyCurrencyPanel" colSpan="6">
+          <panel name="companyCurrencyPanel">
             <field name="companyCurrencyAmount" canView="false" colSpan="8" readonly="true"/>
             <field name="bankOrder.companyCurrency" canView="false" colSpan="4"/>
           </panel>

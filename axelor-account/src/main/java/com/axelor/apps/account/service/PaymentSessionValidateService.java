@@ -7,4 +7,6 @@ public interface PaymentSessionValidateService {
   public boolean validateInvoiceTerms(PaymentSession paymentSession);
 
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException;
+
+  public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount);
 }
