@@ -264,13 +264,6 @@ public class PaymentVoucherConfirmService {
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
           paidLineTotal = paidLineTotal.add(amountToPay);
-
-          boolean financialDiscount = payVoucherElementToPay.getApplyFinancialDiscount();
-          boolean financialDiscountVat =
-              financialDiscount
-                  && payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-                      == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
-
           this.payMoveLine(
               move,
               moveLineNo++,
@@ -281,7 +274,12 @@ public class PaymentVoucherConfirmService {
               isDebitToPay,
               paymentDate);
 
-          if (financialDiscount) {
+          if (payVoucherElementToPay.getApplyFinancialDiscount()
+              && payVoucherElementToPay.getFinancialDiscount() != null) {
+            boolean financialDiscountVat =
+                payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
+                    == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+
             moveLineNo =
                 this.createFinancialDiscountMoveLines(
                     move,
@@ -434,9 +432,11 @@ public class PaymentVoucherConfirmService {
               ? accountConfig.getPurchFinancialDiscountTax()
               : accountConfig.getSaleFinancialDiscountTax();
 
-      financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
-      financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
-      financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
+      if (financialDiscountTax.getActiveTaxLine() != null) {
+        financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+        financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+        financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
+      }
     }
 
     move.addMoveLineListItem(financialDiscountMoveLine);
