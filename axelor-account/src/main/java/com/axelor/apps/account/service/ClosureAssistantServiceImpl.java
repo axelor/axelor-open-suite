@@ -80,4 +80,20 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
     closureAssistant.setCompany(company);
     return closureAssistant;
   }
+
+  @Override
+  public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant)
+      throws AxelorException {
+    TypedQuery<ClosureAssistant> closureAssistantQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT self FROM ClosureAssistant self  " + "WHERE self.fiscalYear = :year",
+                ClosureAssistant.class);
+
+    closureAssistantQuery.setParameter("year", closureAssistant.getFiscalYear());
+
+    List<ClosureAssistant> ClosureAssistantList = closureAssistantQuery.getResultList();
+
+    return !ObjectUtils.isEmpty(ClosureAssistantList);
+  }
 }

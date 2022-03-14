@@ -11,4 +11,7 @@ public interface ClosureAssistantService {
   public ClosureAssistant updateFicalYear(ClosureAssistant closureAssistant) throws AxelorException;
 
   public ClosureAssistant updateCompany(ClosureAssistant closureAssistant) throws AxelorException;
+
+  public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant)
+      throws AxelorException;
 }

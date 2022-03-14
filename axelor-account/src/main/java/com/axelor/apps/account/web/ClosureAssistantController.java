@@ -5,8 +5,6 @@ import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -15,7 +13,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.List;
-import javax.persistence.TypedQuery;
 
 public class ClosureAssistantController {
 
@@ -44,17 +41,8 @@ public class ClosureAssistantController {
 
     try {
       ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
-      TypedQuery<ClosureAssistant> closureAssistantQuery =
-          JPA.em()
-              .createQuery(
-                  "SELECT self FROM ClosureAssistant self  " + "WHERE self.fiscalYear = :year",
-                  ClosureAssistant.class);
-
-      closureAssistantQuery.setParameter("year", closureAssistant.getFiscalYear());
-
-      List<ClosureAssistant> ClosureAssistantList = closureAssistantQuery.getResultList();
-
-      if (!ObjectUtils.isEmpty(ClosureAssistantList)) {
+      if (Beans.get(ClosureAssistantService.class)
+          .checkNoExistingClosureAssistantForSameYear(closureAssistant)) {
         response.setException(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
