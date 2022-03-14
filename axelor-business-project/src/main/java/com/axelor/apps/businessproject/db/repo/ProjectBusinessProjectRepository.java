@@ -58,7 +58,7 @@ public class ProjectBusinessProjectRepository extends ProjectHRRepository {
         project.setCode(seq);
       }
     } catch (AxelorException e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(project);
   }
