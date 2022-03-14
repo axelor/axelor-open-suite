@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"<b>Tags:</b> $user: Current user, $date: Today's date, $time: Current time","<b>Libellé:</b> $user: Utilisateur actuel, $date: Date d'aujourd'hui, $time: Heure actuelle",,
+"<b>Tags:</b>$date: Today's date, $time: Current time","<b>Libellé:</b> $date: Date d'aujourd'hui, $time: Heure actuelle",,
 "AND","ET",,
 "Action","Action",,
 "Action builder","Constructeur d'action",,

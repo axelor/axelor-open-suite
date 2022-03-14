@@ -929,4 +929,7 @@ public interface IExceptionMessage {
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
       "The import failed: the move %s already exist." /*)*/;
+
+  public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
 }
