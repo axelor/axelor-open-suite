@@ -248,7 +248,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
-    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
+    if (stockMove.getStatusSelect() == null || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
