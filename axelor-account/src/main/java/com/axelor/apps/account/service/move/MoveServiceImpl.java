@@ -626,6 +626,7 @@ public class MoveServiceImpl implements MoveService {
         }
       }
       domain += ")";
+      domain += " AND ";
       domain += moveToolService.filterJournalPartnerCompatibleType(move);
     }
 
