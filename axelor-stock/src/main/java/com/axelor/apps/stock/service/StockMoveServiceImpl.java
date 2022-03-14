@@ -248,6 +248,12 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_MOVE_PLAN_WRONG_STATUS));
+    }
 
     LOG.debug("Planification du mouvement de stock : {} ", stockMove.getStockMoveSeq());
 
@@ -373,6 +379,13 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
+    if (stockMove.getStatusSelect() == null
+        || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_MOVE_REALIZATION_WRONG_STATUS));
+    }
+
     LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
 
     if (checkOngoingInventoryFlag) {
@@ -774,6 +787,13 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
+    if (stockMove.getStatusSelect() == null
+        || stockMove.getStatusSelect() == StockMoveRepository.STATUS_DRAFT
+        || stockMove.getStatusSelect() == StockMoveRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_MOVE_CANCEL_WRONG_STATUS));
+    }
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
   }

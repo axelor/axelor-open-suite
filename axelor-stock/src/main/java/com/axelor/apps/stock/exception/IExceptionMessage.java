@@ -44,6 +44,18 @@ public interface IExceptionMessage {
   static final String INVENTORY_3_REAL_QUANTITY = /*$$(*/ "Real quantity problem" /*)*/;
   static final String INVENTORY_3_CURRENT_QUANTITY = /*$$(*/ "Current quantity problem" /*)*/;
   static final String INVENTORY_3_DATA_NULL_OR_EMPTY = /*$$(*/ "Data is null or empty" /*)*/;
+  static final String INVENTORY_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan a draft inventory." /*)*/;
+  static final String INVENTORY_START_WRONG_STATUS = /*$$(*/
+      "Can only start a draft inventory." /*)*/;
+  static final String INVENTORY_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only complete a started inventory." /*)*/;
+  static final String INVENTORY_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Cannot validate an inventory that is not completed." /*)*/;
+  static final String INVENTORY_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a validated inventory." /*)*/;
+  static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft if cancelled." /*)*/;
 
   /** Stock Location Line Service Impl */
   static final String LOCATION_LINE_1 = /*$$(*/
@@ -90,8 +102,12 @@ public interface IExceptionMessage {
       "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
+  static final String STOCK_MOVE_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan a drafted stock move." /*)*/;
   String STOCK_MOVE_REALIZATION_WRONG_STATUS = /*$$(*/
       "Cannot realize a stock move that is not planned." /*)*/;
+  static final String STOCK_MOVE_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a planned or realized stock move." /*)*/;
   static final String STOCK_MOVE_PLANNED_NOT_DELETED = /*$$(*/
       "Can't delete a planned stock move" /*)*/;
   static final String STOCK_MOVE_REALIZED_NOT_DELETED = /*$$(*/
