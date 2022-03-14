@@ -96,7 +96,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -113,7 +113,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
 
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -127,7 +127,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrder.setFullName(fullName);
       }
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
