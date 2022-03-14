@@ -464,10 +464,10 @@ public interface IExceptionMessage {
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "One of previous periods is not closed or temporarily closed." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
-      "The previous period is not closed." /*)*/;
+      "One of the previous periods is not closed." /*)*/;
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;

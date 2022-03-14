@@ -222,7 +222,7 @@ public class PeriodServiceImpl implements PeriodService {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate <= :date AND self.year.company = :company");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
@@ -245,7 +245,7 @@ public class PeriodServiceImpl implements PeriodService {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate <= :date AND self.year.company = :company");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
