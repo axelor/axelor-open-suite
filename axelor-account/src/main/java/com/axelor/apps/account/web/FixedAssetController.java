@@ -171,7 +171,7 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
-        Beans.get(FixedAssetService.class).validate(fixedAsset);
+        Beans.get(FixedAssetValidateService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }

@@ -2,9 +2,12 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -43,6 +46,14 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
+
+    if (fixedAsset.getGrossValue().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0),
+          fixedAsset.getReference());
+    }
+
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
       if (StringUtils.isEmpty(fixedAsset.getFixedAssetSeq())) {
@@ -66,30 +77,26 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
         fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
       }
 
-      if (!fixedAsset
-          .getDepreciationPlanSelect()
-          .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
-      } else {
-        fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
-      }
+      if (fixedAsset.getDepreciationPlanSelect() != null) {
+        if (!fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+          fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+        } else {
+          fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
+        }
 
-      if (fixedAsset.getIsEqualToFiscalDepreciation()) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-      } else if (fixedAsset
-          .getDepreciationPlanSelect()
-          .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset.setAccountingValue(BigDecimal.ZERO);
-      } else {
-        fixedAsset.setAccountingValue(
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+        if (fixedAsset.getIsEqualToFiscalDepreciation()) {
+          fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+        } else if (fixedAsset
+            .getDepreciationPlanSelect()
+            .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+          fixedAsset.setAccountingValue(BigDecimal.ZERO);
+        } else {
+          fixedAsset.setAccountingValue(
+              fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+        }
       }
-
-    } else {
-      fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
     fixedAssetRepo.save(fixedAsset);
