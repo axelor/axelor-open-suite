@@ -52,10 +52,10 @@
   <form name="closure-assistant-line-outrun-wizard" title="Outrun result"
     model="com.axelor.apps.base.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
     <panel name="mainPanel" itemSpan="12" readonly="true">
-      <field name="year" type="many-to-one" target="com.axelor.apps.base.db.Year"/>
-      <field name="income" type="decimal"/>
-      <field name="charge" type="decimal"/>
-      <field name="profit" type="decimal"/>
+      <field name="year" title="Fiscal year" type="many-to-one" target="com.axelor.apps.base.db.Year"/>
+      <field name="income" title="Income total" type="decimal"/>
+      <field name="charge" title="Charge total" type="decimal"/>
+      <field name="profit" title="Profit" type="decimal"/>
     </panel>
   </form>
 
