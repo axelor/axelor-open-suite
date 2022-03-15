@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.ClosureAssistant;
+import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.ClosureAssistantRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
@@ -8,7 +9,6 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -27,28 +27,25 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
 
   @Override
   @Transactional
-  public ClosureAssistant updateClosureAssistantProgress(ClosureAssistant closureAssistant)
-      throws AxelorException {
+  public ClosureAssistant updateClosureAssistantProgress(ClosureAssistant closureAssistant) {
     closureAssistant = closureAssistantRepository.find(closureAssistant.getId());
     if (!ObjectUtils.isEmpty(closureAssistant.getClosureAssistantLineList())) {
       BigDecimal countValidatedLines =
           BigDecimal.valueOf(
               closureAssistant.getClosureAssistantLineList().stream()
-                  .filter(cl -> cl.getIsValidated() == true)
+                  .filter(ClosureAssistantLine::getIsValidated)
                   .count());
       BigDecimal nbClosureAssistantLines =
           BigDecimal.valueOf(closureAssistant.getClosureAssistantLineList().size());
       closureAssistant.setProgress(
-          (countValidatedLines
-              .divide(nbClosureAssistantLines, 2, RoundingMode.HALF_UP)
-              .multiply(BigDecimal.valueOf(100))));
+          (countValidatedLines.multiply(
+              BigDecimal.valueOf(100).divide(nbClosureAssistantLines, 2, RoundingMode.HALF_UP))));
     }
     return closureAssistant;
   }
 
   @Override
-  public ClosureAssistant updateFicalYear(ClosureAssistant closureAssistant)
-      throws AxelorException {
+  public ClosureAssistant updateFiscalYear(ClosureAssistant closureAssistant) {
     TypedQuery<Year> yearQuery =
         JPA.em()
             .createQuery(
@@ -70,20 +67,23 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
   }
 
   @Override
-  public ClosureAssistant updateCompany(ClosureAssistant closureAssistant) throws AxelorException {
+  public ClosureAssistant updateCompany(ClosureAssistant closureAssistant) {
     Company company = null;
-    if (AuthUtils.getUser().getActiveCompany() != null) {
-      company = AuthUtils.getUser().getActiveCompany();
-    } else if (!ObjectUtils.isEmpty(AuthUtils.getUser().getCompanySet())) {
-      company = (Company) AuthUtils.getUser().getCompanySet().toArray()[0];
+
+    if (AuthUtils.getUser() != null) {
+      if (AuthUtils.getUser().getActiveCompany() != null) {
+        company = AuthUtils.getUser().getActiveCompany();
+      } else if (!ObjectUtils.isEmpty(AuthUtils.getUser().getCompanySet())) {
+        company = (Company) AuthUtils.getUser().getCompanySet().toArray()[0];
+      }
     }
+
     closureAssistant.setCompany(company);
     return closureAssistant;
   }
 
   @Override
-  public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant)
-      throws AxelorException {
+  public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant) {
     TypedQuery<ClosureAssistant> closureAssistantQuery =
         JPA.em()
             .createQuery(

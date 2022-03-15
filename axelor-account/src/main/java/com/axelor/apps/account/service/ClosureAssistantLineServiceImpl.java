@@ -1,17 +1,24 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.TypedQuery;
 
 public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineService {
@@ -58,6 +65,45 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   public void validateClosureAssistantLine(ClosureAssistantLine closureAssistantLine)
       throws AxelorException {
     this.validateOrCancelClosureAssistantLine(closureAssistantLine, true);
+  }
+
+  @Override
+  public Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine) {
+    switch (closureAssistantLine.getActionSelect()) {
+      case ClosureAssistantLineRepository.ACTION_FIXED_ASSET_REALIZATION:
+        return this.getAccountingBatchView(
+            AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES);
+      case ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK:
+        // TODO in 46858
+        return null;
+      case ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS:
+        return ActionView.define(I18n.get("Accounting report"))
+            .model(AccountingReport.class.getName())
+            .add("form", "accounting-report-form")
+            .map();
+      case ClosureAssistantLineRepository.ACTION_CALCULATE_THE_OUTRUN_OF_THE_YEAR:
+        return null;
+      case ClosureAssistantLineRepository.ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH:
+        return this.getAccountingBatchView(
+            AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS);
+      case ClosureAssistantLineRepository.ACTION_FISCAL_YEAR_CLOSURE:
+        return ActionView.define(I18n.get("Fiscal year"))
+            .model(Year.class.getName())
+            .add("form", "year-account-form")
+            .context(
+                "_showRecord", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .map();
+      default:
+        return null;
+    }
+  }
+
+  protected Map<String, Object> getAccountingBatchView(int actionSelect) {
+    return ActionView.define(I18n.get("Accounting Batch"))
+        .model(AccountingBatch.class.getName())
+        .add("form", "accounting-batch-form")
+        .context("_actionSelect", actionSelect)
+        .map();
   }
 
   @Transactional

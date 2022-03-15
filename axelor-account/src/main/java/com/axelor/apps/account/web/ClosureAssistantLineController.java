@@ -14,6 +14,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Map;
 
 public class ClosureAssistantLineController {
 
@@ -51,26 +52,18 @@ public class ClosureAssistantLineController {
     try {
       ClosureAssistantLine closureAssistantLine =
           request.getContext().asType(ClosureAssistantLine.class);
+
       if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_FIXED_ASSET_REALIZATION) {
-
-      } else if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK) {
-
-      } else if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS) {
-
-      } else if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_CALCULATE_THE_OUTRUN_OF_THE_YEAR) {
-
-      } else if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH) {
-
-      } else if (closureAssistantLine.getActionSelect()
           == ClosureAssistantLineRepository.ACTION_FISCAL_YEAR_CLOSURE) {
-
+        response.setAlert(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_FISCAL_YEAR_CLOSURE);
       }
 
+      Map<String, Object> view =
+          Beans.get(ClosureAssistantLineService.class).getViewToOpen(closureAssistantLine);
+
+      if (view != null) {
+        response.setView(view);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -6,10 +6,14 @@ import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.ClosureAssistantService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistantLineServiceImpl {
 
@@ -38,5 +42,18 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
     }
 
     return closureAssistantLineList;
+  }
+
+  @Override
+  public Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine) {
+    if (closureAssistantLine.getActionSelect()
+        == ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION) {
+      return ActionView.define(I18n.get("Supplychain Batch"))
+          .model(SupplychainBatch.class.getName())
+          .add("form", "supplychain-batch-form")
+          .map();
+    } else {
+      return super.getViewToOpen(closureAssistantLine);
+    }
   }
 }

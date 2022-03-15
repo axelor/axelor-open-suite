@@ -1085,4 +1085,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
       "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
+
+  static final String ACCOUNT_CLOSURE_ASSISTANT_FISCAL_YEAR_CLOSURE = /*$$(*/
+      "Closing the fiscal year is a definitive action. Make sure that you have completed first all the tasks of the annual closure." /*)*/;
 }

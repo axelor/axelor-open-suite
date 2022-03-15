@@ -23,7 +23,8 @@ public class ClosureAssistantController {
 
       closureAssistant = Beans.get(ClosureAssistantService.class).updateCompany(closureAssistant);
 
-      closureAssistant = Beans.get(ClosureAssistantService.class).updateFicalYear(closureAssistant);
+      closureAssistant =
+          Beans.get(ClosureAssistantService.class).updateFiscalYear(closureAssistant);
 
       List<ClosureAssistantLine> closureAssistantLineList =
           Beans.get(ClosureAssistantLineService.class).initClosureAssistantLines(closureAssistant);
