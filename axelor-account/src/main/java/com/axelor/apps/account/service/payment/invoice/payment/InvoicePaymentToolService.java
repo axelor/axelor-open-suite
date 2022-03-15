@@ -19,11 +19,13 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoicePaymentToolService {
@@ -48,4 +50,8 @@ public interface InvoicePaymentToolService {
   List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+
+  BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList);
+
+  void computeFinancialDiscount(InvoicePayment invoicePayment);
 }
