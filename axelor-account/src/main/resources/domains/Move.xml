@@ -57,6 +57,14 @@
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
+    <string name="nameCompany" title="Company name"
+      help="Field used to store the company name onto the move for legal purpose, in case some changes may be applied on the related company record to the move and if the fiscal year was already closed"/>
+    <string name="codeCompany" title="Company code"
+      help="Field used to store the company code onto the move for legal purpose, in case some changes may be applied on the related company record to the move and if the fiscal year was already closed"/>
+    <string name="nameJournal" title="Journal name"
+      help="Field used to store the journal name onto the move for legal purpose, in case some changes may be applied on the related journal record to the move and if the fiscal year was already closed"/>
+    <string name="codeJournal" title="Journal code"
+      help="Field used to store the journal code onto the move for legal purpose, in case some changes may be applied on the related journal record to the move and if the fiscal year was already closed"/>
 
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
