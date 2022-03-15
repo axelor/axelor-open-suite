@@ -40,6 +40,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +154,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(false);
     }
 
+    Collections.sort(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       purchaseOrder.addPurchaseOrderLineListItem(
           purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
