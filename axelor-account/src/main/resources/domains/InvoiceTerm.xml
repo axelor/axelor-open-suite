@@ -51,7 +51,8 @@
     <decimal name="paymentAmount" title="Signed payment amount"/>
 
     <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
-    <boolean name="applyFinancialDiscountOnPaymentSession" title="Apply Fin. Discount (session) ?"/>
+    <boolean name="applyFinancialDiscountOnPaymentSession"
+      title="Apply Fin. Discount (session) ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true"/>
 
     <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
