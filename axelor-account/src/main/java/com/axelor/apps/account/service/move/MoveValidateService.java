@@ -213,7 +213,14 @@ public class MoveValidateService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
-
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(MoveRepository.STATUS_NEW);
+    authorizedStatus.add(MoveRepository.STATUS_ACCOUNTED);
+    if (move.getStatusSelect() == null || !authorizedStatus.contains(move.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MOVE_ACCOUNT_VALIDATE_WRONG_STATUS));
+    }
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);

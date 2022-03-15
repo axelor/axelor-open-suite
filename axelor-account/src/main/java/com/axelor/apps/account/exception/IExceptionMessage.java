@@ -193,6 +193,10 @@ public interface IExceptionMessage {
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  static final String MOVE_ACCOUNT_VALIDATE_WRONG_STATUS = /*$$(*/
+      "The move was neither new nor accounted." /*)*/;
+  static final String MOVE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate an accounted move." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
