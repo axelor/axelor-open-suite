@@ -78,6 +78,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS:
         batch = closeAnnualAccounts(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_MOVES_CONSISTENCY_CONTROL:
+        batch = controlMovesConsistency(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -175,6 +178,10 @@ public class AccountingBatchService extends AbstractBatchService {
     return Beans.get(BatchBlockCustomersWithLatePayments.class).run(accountingBatch);
   }
 
+  public Batch controlMovesConsistency(AccountingBatch accountingBatch) {
+	    return Beans.get(BatchControlMovesConsistency.class).run(accountingBatch);
+	  }
+  
   @Transactional
   public AccountingBatch createNewAccountingBatch(int action, Company company) {
     if (company != null) {

@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -147,6 +148,37 @@ public class AccountingBatchController {
         Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
+  }
+
+  /**
+   * Lancer le batch de contrôle des écritures
+   *
+   * @param request
+   * @param response
+   */
+  public void controlMoveConsistency(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      AccountingBatchService accountingBatchService = Beans.get(AccountingBatchService.class);
+      accountingBatchService.setBatchModel(accountingBatch);
+
+      ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
+      Batch batch =
+          batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
+      response.setReload(true);
+      response.setView(
+          ActionView.define("Batch")
+              .model(Batch.class.getName())
+              .add("form", "batch-form")
+              .param("popup-save", "true")
+              .context("_showRecord", batch.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   // WS
