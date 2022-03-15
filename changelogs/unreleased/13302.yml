@@ -1,0 +1,6 @@
+---
+title: "SaleOrder: The java processes for confirm order has been refactored into one single method"
+type: fix
+description: |
+  It was done in order to be able to do the full process of confirmation when calling the java method to confirm.
+  
