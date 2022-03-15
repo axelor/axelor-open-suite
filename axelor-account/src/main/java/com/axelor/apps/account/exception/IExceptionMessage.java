@@ -733,6 +733,14 @@ public interface IExceptionMessage {
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
+  static final String INVOICE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a drafted invoice" /*)*/;
+  static final String INVOICE_VENTILATE_WRONG_STATUS = /*$$(*/
+      "Can only ventilate a validated invoice" /*)*/;
+  static final String INVOICE_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a drafted or validated invoice" /*)*/;
+  static final String INVOICE_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return draft from a cancelled invoice" /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;

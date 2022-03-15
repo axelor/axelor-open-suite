@@ -256,7 +256,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
-
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VALIDATE_WRONG_STATUS));
+    }
     log.debug("Validation de la facture");
 
     compute(invoice);
@@ -279,6 +284,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_VENTILATE_WRONG_STATUS));
+    }
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -339,12 +350,32 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException {
-
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InvoiceRepository.STATUS_DRAFT);
+    authorizedStatus.add(InvoiceRepository.STATUS_VALIDATED);
+    if (invoice.getStatusSelect() == null
+        || !authorizedStatus.contains(invoice.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_CANCEL_WRONG_STATUS));
+    }
     log.debug("Annulation de la facture {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToDraft(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_DRAFT_WRONG_STATUS));
+    }
+    invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
   }
 
   /**
