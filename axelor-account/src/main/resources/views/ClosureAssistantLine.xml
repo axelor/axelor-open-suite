@@ -49,6 +49,15 @@
       readonlyIf="isValidated  || !isPreviousLineValidated"/>
   </grid>
 
+  <form name="closure-assistant-line-outrun-wizard" title="Outrun result"
+    model="com.axelor.apps.base.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
+    <panel name="mainPanel" itemSpan="12" readonly="true">
+      <field name="year" type="many-to-one" target="com.axelor.apps.base.db.Year"/>
+      <field name="income" type="decimal"/>
+      <field name="charge" type="decimal"/>
+      <field name="profit" type="decimal"/>
+    </panel>
+  </form>
 
   <action-method name="account-closure-assistant-line-validate-action-method">
     <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
@@ -74,6 +83,11 @@
     name="account-closure-assistant-line-method-check-no-existing-closure-assistant-for-same-year">
     <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
       method="checkNoExistingClosureAssistantForSameYear"/>
+  </action-method>
+
+  <action-method name="action-closure-assistant-line-method-outrun">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="fillOutrunResult"/>
   </action-method>
 
 </object-views>

@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -77,14 +78,23 @@ public class AccountService {
    * @return The balance (debit balance or credit balance)
    */
   public BigDecimal computeBalance(Account account, int balanceType) {
+    return this.computeBalance(account, null, balanceType);
+  }
 
+  public BigDecimal computeBalance(AccountType accountType, int balanceType) {
+    return this.computeBalance(null, accountType, balanceType);
+  }
+
+  protected BigDecimal computeBalance(Account account, AccountType accountType, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
-                "select sum(self.debit - self.credit) from MoveLine self where self.account = :account "
-                    + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)");
+                String.format(
+                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)",
+                    account == null ? ".accountType" : null));
 
-    balanceQuery.setParameter("account", account);
+    balanceQuery.setParameter("account", account != null ? account : accountType);
 
     BigDecimal balance = (BigDecimal) balanceQuery.getSingleResult();
 

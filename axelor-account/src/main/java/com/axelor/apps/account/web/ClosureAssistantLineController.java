@@ -1,19 +1,26 @@
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class ClosureAssistantLineController {
@@ -93,6 +100,46 @@ public class ClosureAssistantLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillOutrunResult(ActionRequest request, ActionResponse response) {
+    try {
+      Year year = Beans.get(YearRepository.class).find((long) request.getContext().get("_year"));
+
+      if (year == null) {
+        return;
+      }
+
+      AccountTypeRepository accountTypeRepo = Beans.get(AccountTypeRepository.class);
+      AccountType incomeType =
+          accountTypeRepo
+              .all()
+              .filter("self.technicalTypeSelect = ?", AccountTypeRepository.TYPE_INCOME)
+              .fetchOne();
+      AccountType chargeType =
+          accountTypeRepo
+              .all()
+              .filter("self.technicalTypeSelect = ?", AccountTypeRepository.TYPE_CHARGE)
+              .fetchOne();
+
+      if (incomeType == null || chargeType == null) {
+        return;
+      }
+
+      AccountService accountService = Beans.get(AccountService.class);
+      BigDecimal income =
+          accountService.computeBalance(incomeType, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+      BigDecimal charge =
+          accountService.computeBalance(chargeType, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+      BigDecimal profit = income.subtract(charge);
+
+      response.setAttr("year", "value", year);
+      response.setAttr("income", "value", income);
+      response.setAttr("charge", "value", charge);
+      response.setAttr("profit", "value", profit);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

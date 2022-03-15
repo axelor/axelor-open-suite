@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -82,7 +83,11 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
             .add("form", "accounting-report-form")
             .map();
       case ClosureAssistantLineRepository.ACTION_CALCULATE_THE_OUTRUN_OF_THE_YEAR:
-        return null;
+        return ActionView.define(I18n.get("Outrun result"))
+            .model(Wizard.class.getName())
+            .add("form", "closure-assistant-line-outrun-wizard")
+            .context("_year", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .map();
       case ClosureAssistantLineRepository.ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH:
         return this.getAccountingBatchView(
             AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS);
