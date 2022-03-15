@@ -676,7 +676,6 @@
   </selection>
 
   <selection name="paymentMode.accounting.method.select">
-    <option value="0"></option>
     <option value="1">By invoice term</option>
     <option value="2">By partner</option>
     <option value="3">PaymentModeAccountingMethod.Global</option>
