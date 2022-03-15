@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,8 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -29,8 +31,10 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
@@ -39,41 +43,46 @@ public class MoveManagementRepository extends MoveRepository {
 
   @Override
   public Move copy(Move entity, boolean deep) {
-
     Move copy = super.copy(entity, deep);
 
-    copy.setDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
-
-    Period period = null;
     try {
-      period =
+      copy.setDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
+
+      Period period =
           Beans.get(PeriodService.class)
               .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+      copy.setStatusSelect(STATUS_NEW);
+      if (Beans.get(AccountConfigService.class)
+              .getAccountConfig(entity.getCompany())
+              .getIsActivateSimulatedMove()
+          && entity.getStatusSelect() == STATUS_SIMULATED) {
+        copy.setStatusSelect(STATUS_SIMULATED);
+      }
+      copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
+      copy.setReference(null);
+      copy.setExportNumber(null);
+      copy.setExportDate(null);
+      copy.setAccountingReport(null);
+      copy.setValidationDate(null);
+      copy.setPeriod(period);
+      copy.setAccountingOk(false);
+      copy.setIgnoreInDebtRecoveryOk(false);
+      copy.setPaymentVoucher(null);
+      copy.setRejectOk(false);
+      copy.setInvoice(null);
+      copy.setCodeJournal(null);
+      copy.setCodeCompany(null);
+      copy.setNameJournal(null);
+      copy.setNameCompany(null);
+
+      List<MoveLine> moveLineList = copy.getMoveLineList();
+
+      if (moveLineList != null) {
+        moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
+      }
     } catch (AxelorException e) {
-      throw new PersistenceException(e.getLocalizedMessage());
-    }
-    int statusSelect = entity.getStatusSelect() == STATUS_SIMULATED ? STATUS_SIMULATED : STATUS_NEW;
-    copy.setStatusSelect(statusSelect);
-    copy.setReference(null);
-    copy.setExportNumber(null);
-    copy.setExportDate(null);
-    copy.setAccountingReport(null);
-    copy.setValidationDate(null);
-    copy.setPeriod(period);
-    copy.setAccountingOk(false);
-    copy.setIgnoreInDebtRecoveryOk(false);
-    copy.setPaymentVoucher(null);
-    copy.setRejectOk(false);
-    copy.setInvoice(null);
-    copy.setCodeJournal(null);
-    copy.setCodeCompany(null);
-    copy.setNameJournal(null);
-    copy.setNameCompany(null);
-
-    List<MoveLine> moveLineList = copy.getMoveLineList();
-
-    if (moveLineList != null) {
-      moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     return copy;
@@ -84,6 +93,12 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
     moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+    moveLine.setReconcileGroup(null);
+    moveLine.setDebitReconcileList(null);
+    moveLine.setCreditReconcileList(null);
+    moveLine.setAmountPaid(BigDecimal.ZERO);
+    moveLine.setTaxPaymentMoveLineList(null);
+    moveLine.setTaxAmount(BigDecimal.ZERO);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
@@ -99,8 +114,11 @@ public class MoveManagementRepository extends MoveRepository {
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
-
+      if (move.getCurrency() != null) {
+        move.setCurrencyCode(move.getCurrency().getCode());
+      }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
+      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
@@ -111,11 +129,13 @@ public class MoveManagementRepository extends MoveRepository {
               analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
             }
           }
+          moveLineControlService.controlAccountingAccount(moveLine);
         }
       }
       return super.save(move);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -129,7 +149,7 @@ public class MoveManagementRepository extends MoveRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);

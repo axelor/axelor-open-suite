@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models
-	xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="human-resource" package="com.axelor.apps.hr.db" />
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-	<entity name="Employment" lang="java">
-		<string name="name" title="Employment.name" />
-		<many-to-one name="collectiveAgreement" title="Collective agreement" ref="com.axelor.apps.hr.db.CollectiveAgreement" />
-		<many-to-many name="qualificationSet" title="Qualifications" ref="com.axelor.apps.hr.db.Qualification" />
-		<many-to-many name="qualificationLevelSet" title="Qualification levels" ref="com.axelor.apps.hr.db.QualificationLevel" />
-		<string name="exportCode" title="Export code" />
-		<string name="csp" title="CSP" />
-		<boolean name="isAllCompanies" title="All companies" />
-		<many-to-many name="companySet" title="Companies" ref="com.axelor.apps.base.db.Company" />
-		<string name="experienceDuration" title="Experience duration" />
+  <entity name="Employment" lang="java">
+    <string name="name" title="Employment.name"/>
+    <many-to-one name="collectiveAgreement" title="Collective agreement"
+      ref="com.axelor.apps.hr.db.CollectiveAgreement"/>
+    <many-to-many name="qualificationSet" title="Qualifications"
+      ref="com.axelor.apps.hr.db.Qualification"/>
+    <many-to-many name="qualificationLevelSet" title="Qualification levels"
+      ref="com.axelor.apps.hr.db.QualificationLevel"/>
+    <string name="exportCode" title="Export code"/>
+    <string name="csp" title="CSP"/>
+    <boolean name="isAllCompanies" title="All companies"/>
+    <many-to-many name="companySet" title="Companies"
+      ref="com.axelor.apps.base.db.Company"/>
+    <string name="experienceDuration" title="Experience duration"/>
 
-		<string name="fullName" title="Full name">
+    <string name="fullName" title="Full name">
 			<![CDATA[
 				String fullName = "";
 				if(name != null)
@@ -26,9 +29,9 @@
 					fullName += " - " + experienceDuration;
 				return fullName;
 		  	]]>
-		</string>
+    </string>
 
-		<string name="companySetStr" title="Companies">
+    <string name="companySetStr" title="Companies">
 			<![CDATA[
 				return getIsAllCompanies()	? I18n.get("All companies")
 						: getCompanySet().stream()
@@ -36,32 +39,32 @@
 							.filter(Objects::nonNull)
 							.collect(Collectors.joining(","));
 		  	]]>
-		</string>
+    </string>
 
-		<string name="qualificationSetStr" title="Qualifications">
+    <string name="qualificationSetStr" title="Qualifications">
 		  	<![CDATA[
 		  		return getQualificationSet().stream()
 		  				.map(Qualification::getCode)
 		  				.filter(Objects::nonNull)
 		  				.collect(Collectors.joining(","));
 		  	]]>
-		</string>
+    </string>
 
-		<string name="qualificationLevelSetStr" title="Qualification levels">
+    <string name="qualificationLevelSetStr" title="Qualification levels">
 		  	<![CDATA[
 		  		return getQualificationLevelSet().stream()
 		  				.map(QualificationLevel::getCode)
 		  				.filter(Objects::nonNull)
 		  				.collect(Collectors.joining(","));
 		  	]]>
-		</string>
+    </string>
 
-		<extra-imports>
-			import java.util.stream.Collectors;
-			import com.axelor.i18n.I18n;
-		</extra-imports>
+    <extra-imports>
+      import java.util.stream.Collectors;
+      import com.axelor.i18n.I18n;
+    </extra-imports>
 
-	</entity>
+  </entity>
 
 
 </domain-models>

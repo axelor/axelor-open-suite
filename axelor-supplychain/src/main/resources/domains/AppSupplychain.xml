@@ -1,98 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppSupplychain" lang="java" extends="App">
-		<boolean name="custStockMoveMgtOnSO" title="Customer deliveries management" default="false"/>
-		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
-		<boolean name="supplStockMoveMgtOnPO" title="Supplier arrivals management" default="false"/>
-		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
-		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders" default="false"/>
-		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
-		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
+  <entity name="AppSupplychain" lang="java">
 
-		<boolean name="validStepForInvOutSM" title="Validation step for invoicing outgoing stock move" default="false" />
+    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
-		<boolean name="completeSaleOrderOnInvoicing" title="Complete sale order when all has been invoiced"/>
-		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>
-		
-        <boolean name="allowCompleteManuallySaleOrder" title="Allow complete manually sale order"/>
+    <boolean name="custStockMoveMgtOnSO" title="Customer deliveries management"
+      default="false"/>
+    <boolean name="customerStockMoveGenerationAuto"
+      title="Generate customer deliveries automatically" default="false"/>
+    <boolean name="supplStockMoveMgtOnPO" title="Supplier arrivals management"
+      default="false"/>
+    <boolean name="supplierStockMoveGenerationAuto"
+      title="Generate supplier arrivals automatically" default="false"/>
+    <boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders"
+      default="false"/>
+    <boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
+    <boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move"
+      default="false"/>
 
-		<boolean name="purchaseOrderGenerationAuto" title="Generate purchase orders automatically" default="false"/>
+    <boolean name="validStepForInvOutSM"
+      title="Validation step for invoicing outgoing stock move" default="false"/>
 
-        <boolean name="allowFinishManuallyPurchaseOrder" title="Allow finish manually purchase order" default="false"/>
-		
-		<boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order" default="false"/>
-		<boolean name="generateInvoiceFromPurchaseOrder" title="Generate invoice from purchase order" default="false"/>
-		<boolean name="allowTimetableInvoicing" title="Allow timetable invoicing" default="false"/>
+    <boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery"
+      default="false"/>
+    <boolean name="completeSaleOrderOnInvoicing"
+      title="Complete sale order when all has been invoiced"/>
+    <boolean name="terminatePurchaseOrderOnReceipt"
+      title="Terminate purchase order on Receipt" default="false"/>
 
-		<boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
-		<boolean name="intercoFromSale" title="Interco from sale" default="false"/>
-		<boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
+    <boolean name="allowCompleteManuallySaleOrder"
+      title="Allow complete manually sale order"/>
 
-		<integer name="intercoPurchaseCreatingStatusSelect"
-				 title="Create purchase counterpart on this status"
-				 selection="purchase.purchase.order.status.select"/> 
-		<integer name="intercoSaleCreatingStatusSelect"
-				 title="Create sale counterpart on this status"
-				 selection="sale.order.status.select"/>
-		<boolean name="manageStockReservation" title="Manage stock reservation"/>
-		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>
-        <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
-        <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
-        <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
-        <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
+    <boolean name="purchaseOrderGenerationAuto"
+      title="Generate purchase orders automatically" default="false"/>
 
-        <string name="sOFilterOnStockDetailStatusSelect" title="Status considered to filter a sale order" selection="sale.order.status.select" default="3"/>
-	    <string name="pOFilterOnStockDetailStatusSelect" title="Status considered to filter a purchase order" selection="purchase.purchase.order.status.select" default="3"/>
-	    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
-	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
-    	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
-    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
-		<boolean name="activatePartnerRelations" title="Activate partner delegations"/>
+    <boolean name="allowFinishManuallyPurchaseOrder"
+      title="Allow finish manually purchase order" default="false"/>
 
-		<track>
-    	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
-    	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
-    	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>
-    	<field name="supplierStockMoveGenerationAuto" on="UPDATE"/>
-    	<field name="allowSusbcriptionSaleOrder" on="UPDATE"/>
-    	<field name="checkSaleStocks" on="UPDATE"/>
-    	<field name="generateInvoiceFromStockMove" on="UPDATE"/>
+    <boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order"
+      default="false"/>
+    <boolean name="generateInvoiceFromPurchaseOrder"
+      title="Generate invoice from purchase order" default="false"/>
+    <boolean name="allowTimetableInvoicing" title="Allow timetable invoicing"
+      default="false"/>
 
-    	<field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
-    	<field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
+    <boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
+    <boolean name="intercoFromSale" title="Interco from sale" default="false"/>
+    <boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
 
-    	<field name="allowCompleteManuallySaleOrder" on="UPDATE"/>
+    <integer name="intercoPurchaseCreatingStatusSelect"
+      title="Create purchase counterpart on this status"
+      selection="purchase.purchase.order.status.select"/>
+    <integer name="intercoSaleCreatingStatusSelect"
+      title="Create sale counterpart on this status" selection="sale.order.status.select"/>
+    <boolean name="manageStockReservation" title="Manage stock reservation"/>
+    <many-to-one name="cancelReasonOnChangingSaleOrder"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <boolean name="intercoSaleOrderCreateFinalized"
+      title="Create interco sale quotation as finalized"/>
+    <boolean name="intercoPurchaseOrderCreateRequested"
+      title="Create interco purchase quotation as requested"/>
+    <boolean name="intercoInvoiceCreateValidated"
+      title="Create interco invoice as validated"/>
+    <boolean name="blockDeallocationOnAvailabilityRequest"
+      title="Block deallocation on availability request"/>
 
-    	<field name="purchaseOrderGenerationAuto" on="UPDATE"/>
+    <string name="sOFilterOnStockDetailStatusSelect"
+      title="Status considered to filter a sale order" selection="sale.order.status.select"
+      default="3"/>
+    <string name="pOFilterOnStockDetailStatusSelect"
+      title="Status considered to filter a purchase order"
+      selection="purchase.purchase.order.status.select" default="3"/>
+    <boolean name="isVerifyProductStock"
+      title="Verify product stock before availabity request"/>
+    <boolean name="isSaleOrderWithoutOutgoingStockMove"
+      title="Sale order without outgoing stock move"/>
+    <boolean name="isPurchaseOrderWithoutIncomingStockMove"
+      title="Purchase order without incoming stock move"/>
+    <boolean name="manageAdvancePaymentsFromPaymentConditions"
+      title="Manage advance payments from payment conditions" default="false"/>
+    <boolean name="activatePartnerRelations" title="Activate partner delegations"/>
 
-    	<field name="allowFinishManuallyPurchaseOrder" on="UPDATE"/>
+    <track>
+      <field name="custStockMoveMgtOnSO" on="UPDATE"/>
+      <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
+      <field name="supplStockMoveMgtOnPO" on="UPDATE"/>
+      <field name="supplierStockMoveGenerationAuto" on="UPDATE"/>
+      <field name="allowSusbcriptionSaleOrder" on="UPDATE"/>
+      <field name="checkSaleStocks" on="UPDATE"/>
+      <field name="generateInvoiceFromStockMove" on="UPDATE"/>
 
-    	<field name="generateInvoiceFromSaleOrder" on="UPDATE"/>
-    	<field name="generateInvoiceFromPurchaseOrder" on="UPDATE"/>
-    	<field name="allowTimetableInvoicing" on="UPDATE"/>
+      <field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
+      <field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
 
-    	<field name="intercoFromPurchase" on="UPDATE"/>
-    	<field name="intercoFromSale" on="UPDATE"/>
-    	<field name="intercoFromInvoice" on="UPDATE"/>
+      <field name="allowCompleteManuallySaleOrder" on="UPDATE"/>
 
-    	<field name="intercoPurchaseCreatingStatusSelect" on="UPDATE"/>
-    	<field name="intercoSaleCreatingStatusSelect" on="UPDATE"/>
-    	<field name="manageStockReservation" on="UPDATE"/>
-    	<field name="cancelReasonOnChangingSaleOrder" on="UPDATE"/>
-    	<field name="intercoSaleOrderCreateFinalized" on="UPDATE"/>
-    	<field name="intercoPurchaseOrderCreateRequested" on="UPDATE"/>
-    	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
-    	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
-    	<field name="isVerifyProductStock" on="UPDATE"/>
-    	<field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
-    	<field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
-    	<field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
+      <field name="purchaseOrderGenerationAuto" on="UPDATE"/>
+
+      <field name="allowFinishManuallyPurchaseOrder" on="UPDATE"/>
+
+      <field name="generateInvoiceFromSaleOrder" on="UPDATE"/>
+      <field name="generateInvoiceFromPurchaseOrder" on="UPDATE"/>
+      <field name="allowTimetableInvoicing" on="UPDATE"/>
+
+      <field name="intercoFromPurchase" on="UPDATE"/>
+      <field name="intercoFromSale" on="UPDATE"/>
+      <field name="intercoFromInvoice" on="UPDATE"/>
+
+      <field name="intercoPurchaseCreatingStatusSelect" on="UPDATE"/>
+      <field name="intercoSaleCreatingStatusSelect" on="UPDATE"/>
+      <field name="manageStockReservation" on="UPDATE"/>
+      <field name="cancelReasonOnChangingSaleOrder" on="UPDATE"/>
+      <field name="intercoSaleOrderCreateFinalized" on="UPDATE"/>
+      <field name="intercoPurchaseOrderCreateRequested" on="UPDATE"/>
+      <field name="intercoInvoiceCreateValidated" on="UPDATE"/>
+      <field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
+      <field name="isVerifyProductStock" on="UPDATE"/>
+      <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
+      <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
+      <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
     </track>
-	</entity>
+  </entity>
 
 </domain-models>

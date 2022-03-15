@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,6 +89,9 @@ public interface IExceptionMessage {
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
   static final String PAY_PERIOD_CLOSED = /*$$(*/ "Warning : the pay period %s is closed." /*)*/;
+
+  String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
+  String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -98,6 +101,12 @@ public interface IExceptionMessage {
   String ABSTRACT_BATCH_DONE_PLURAL = /*$$(*/ "%d records processed successfully," /*)*/;
   String ABSTRACT_BATCH_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
   String ABSTRACT_BATCH_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+  String ABSTRACT_BATCH_FINISHED_SUBJECT = /*$$(*/ "Batch %s is now finished" /*)*/;
+  String ABSTRACT_BATCH_FINISHED_DEFAULT_MESSAGE = /*$$(*/ "Batch execution is now finished" /*)*/;
+  String ABSTRACT_BATCH_MESSAGE_ON_EXCEPTION = /*$$(*/
+      "Error happened during batch execution" /*)*/;
+
   /** Indicator generator grouping service */
   public static final String INDICATOR_GENERATOR_GROUPING_1 = /*$$(*/
       "Error : no export path has been set" /*)*/;
@@ -430,8 +439,6 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
-  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
-      "Refresh page to reflect changes in selection" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
@@ -443,4 +450,19 @@ public interface IExceptionMessage {
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
+  public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
+      "Please upload csv or txt or zip files only." /*)*/;
+  public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
+
+  public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
+
+  /* Pricing scale */
+  public static final String PRICING_1 = /*$$(*/
+      "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
+
+  public static final String PRICING_2 = /*$$(*/
+      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String CITIES_IMPORT_FAILED = /*$$(*/
+      "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,13 +34,12 @@ public class JsonFieldService {
 
     String selectionText = metaJsonField.getSelectionText();
 
-    String name = SELECTION_PREFIX + metaJsonField.getId();
+    String name = getSelectionName(metaJsonField);
 
     if (Strings.isNullOrEmpty(selectionText)) {
       selectionBuilderService.removeSelection(name, null);
 
-      if (metaJsonField.getSelection() != null
-          && metaJsonField.getSelection().equals(SELECTION_PREFIX + metaJsonField.getId())) {
+      if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
         metaJsonField.setSelection(null);
       }
 
@@ -55,10 +54,21 @@ public class JsonFieldService {
   @Transactional
   public void removeSelection(MetaJsonField metaJsonField) {
 
-    String name = SELECTION_PREFIX + metaJsonField.getId();
+    String name = getSelectionName(metaJsonField);
 
     if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
       selectionBuilderService.removeSelection(name, null);
     }
+  }
+
+  public String getSelectionName(MetaJsonField metaJsonField) {
+
+    String model =
+        metaJsonField.getJsonModel() != null
+            ? metaJsonField.getJsonModel().getName()
+            : metaJsonField.getModel();
+    model = model.contains(".") ? model.substring(model.lastIndexOf(".") + 1) : model;
+
+    return SELECTION_PREFIX + model + "-" + metaJsonField.getName();
   }
 }

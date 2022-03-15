@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,8 +44,10 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -361,7 +363,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine
             .getRealQty()
             .multiply(stockMoveLine.getNetMass())
-            .setScale(2, RoundingMode.HALF_EVEN));
+            .setScale(2, RoundingMode.HALF_UP));
 
     if (product != null) {
       stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
@@ -614,7 +616,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+  public void checkExpirationDates(StockMove stockMove) {
     List<String> errorList = new ArrayList<>();
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
@@ -644,10 +646,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (!errorList.isEmpty()) {
       String errorStr = errorList.stream().collect(Collectors.joining(", "));
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
-          errorStr);
+      TraceBackService.trace(
+          new AxelorAlertException(
+              stockMove,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
+              errorStr));
     }
   }
 

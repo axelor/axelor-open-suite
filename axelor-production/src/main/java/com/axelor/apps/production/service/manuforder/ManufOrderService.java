@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
 
@@ -242,8 +243,11 @@ public interface ManufOrderService {
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
-  public List<ManufOrder> generateAllSubManufOrder(
-      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
+  public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
+      throws AxelorException;
+
+  public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
 
   /**
    * Merge different manufacturing orders into a single one.
@@ -259,4 +263,12 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
+
+  /**
+   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
+   * {@link ManufOrder} on the header of every page.
+   *
+   * @return
+   */
+  public void createBarcode(ManufOrder manufOrder);
 }

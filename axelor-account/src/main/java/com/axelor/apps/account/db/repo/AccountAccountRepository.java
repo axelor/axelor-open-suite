@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.db.JPA;
+import com.axelor.exception.service.TraceBackService;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 
@@ -56,7 +57,8 @@ public class AccountAccountRepository extends AccountRepository {
       }
       return super.save(account);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

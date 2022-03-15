@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -664,7 +664,7 @@ public class OperationOrderWorkflowService {
           prodProcessLine.getName());
     }
 
-    BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
     BigDecimal nbCycles;
     if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
@@ -694,7 +694,7 @@ public class OperationOrderWorkflowService {
               .longValue();
     }
 
-    BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
     duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;

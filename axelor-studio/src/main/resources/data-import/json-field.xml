@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+
+  <input file="json-field.xml" root="json-fields">
+
+    <bind node="json-field" type="com.axelor.meta.db.MetaJsonField"
+      if="jsonModel != null &amp;&amp; !jsonModel.empty"
+      search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel.name = :jsonModel"
+      call="com.axelor.studio.service.ImportService:importJsonModelField" update="true">
+      <bind node="name" to="name"/>
+      <bind node="title" to="title"/>
+      <bind node="type" to="type"/>
+      <bind node="defaultValue" to="defaultValue"/>
+      <bind node="domain" to="domain"/>
+      <bind node="enumType" to="enumType"/>
+      <bind node="help" to="help"/>
+      <bind node="formView" to="formView"/>
+      <bind node="gridView" to="gridView"/>
+      <bind node="hidden" to="hidden"/>
+      <bind node="visibleInGrid" to="visibleInGrid"/>
+      <bind node="hideIf" to="hideIf"/>
+      <bind node="maxSize" to="maxSize"/>
+      <bind node="minSize" to="minSize"/>
+      <bind node="model" to="model"/>
+      <bind node="modelField" to="modelField"/>
+      <bind node="nameField" to="nameField"/>
+      <bind node="onChange" to="onChange"/>
+      <bind node="onClick" to="onClick"/>
+      <bind node="precision" to="precision"/>
+      <bind node="regex" to="regex"/>
+      <bind node="required" to="required"/>
+      <bind node="requiredIf" to="requiredIf"/>
+      <bind node="readonly" to="readonly"/>
+      <bind node="readonlyIf" to="readonlyIf"/>
+      <bind node="includeIf" to="includeIf"/>
+      <bind node="scale" to="scale"/>
+      <bind node="selection" to="selection"/>
+      <bind node="sequence" to="sequence"/>
+      <bind node="showIf" to="showIf"/>
+      <bind node="targetModel" to="targetModel"/>
+      <bind node="widget" to="widget"/>
+      <bind node="widgetAttrs" to="widgetAttrs"/>
+      <bind node="valueExpr" to="valueExpr"/>
+      <bind node="jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true"
+        alias="jsonModel" create="false"/>
+      <bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel"
+        update="true" create="false"/>
+      <bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+      <bind node="modelAppBuilder" alias="modelAppBuilder"/>
+      <bind node="selectionText" to="selectionText"/>
+      <bind node="isSelectionField" to="isSelectionField"/>
+    </bind>
+
+  </input>
+
+  <input file="json-field.xml" root="json-fields">
+
+    <bind node="json-field" type="com.axelor.meta.db.MetaJsonField" if="jsonModel == null"
+      search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel is null"
+      call="com.axelor.studio.service.ImportService:importJsonField" update="true">
+      <bind node="name" to="name"/>
+      <bind node="title" to="title"/>
+      <bind node="type" to="type"/>
+      <bind node="defaultValue" to="defaultValue"/>
+      <bind node="domain" to="domain"/>
+      <bind node="enumType" to="enumType"/>
+      <bind node="help" to="help"/>
+      <bind node="formView" to="formView"/>
+      <bind node="gridView" to="gridView"/>
+      <bind node="hidden" to="hidden"/>
+      <bind node="visibleInGrid" to="visibleInGrid"/>
+      <bind node="hideIf" to="hideIf"/>
+      <bind node="maxSize" to="maxSize"/>
+      <bind node="minSize" to="minSize"/>
+      <bind node="model" to="model"/>
+      <bind node="modelField" to="modelField"/>
+      <bind node="nameField" to="nameField"/>
+      <bind node="onChange" to="onChange"/>
+      <bind node="onClick" to="onClick"/>
+      <bind node="precision" to="precision"/>
+      <bind node="regex" to="regex"/>
+      <bind node="required" to="required"/>
+      <bind node="requiredIf" to="requiredIf"/>
+      <bind node="readonly" to="readonly"/>
+      <bind node="readonlyIf" to="readonlyIf"/>
+      <bind node="includeIf" to="includeIf"/>
+      <bind node="scale" to="scale"/>
+      <bind node="selection" to="selection"/>
+      <bind node="sequence" to="sequence"/>
+      <bind node="showIf" to="showIf"/>
+      <bind node="targetModel" to="targetModel"/>
+      <bind node="widget" to="widget"/>
+      <bind node="widgetAttrs" to="widgetAttrs"/>
+      <bind node="valueExpr" to="valueExpr"/>
+      <bind node="jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true"
+        create="false"/>
+      <bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel"
+        update="true" create="false"/>
+      <bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+      <bind node="modelAppBuilder" alias="modelAppBuilder" create="false"/>
+      <bind node="selectionText" to="selectionText"/>
+      <bind node="isSelectionField" to="isSelectionField"/>
+    </bind>
+
+  </input>
+
+</xml-inputs>

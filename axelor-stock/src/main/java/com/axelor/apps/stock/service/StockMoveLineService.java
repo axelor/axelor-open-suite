@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -177,7 +177,7 @@ public interface StockMoveLineService {
    * @param stockMove
    * @throws AxelorException
    */
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException;
+  public void checkExpirationDates(StockMove stockMove);
 
   /**
    * Return unit found in stock move line, or if the unit is empty, take the unit from the product.

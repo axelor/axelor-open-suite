@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="stock" package="com.axelor.apps.stock.db" />
+  <module name="stock" package="com.axelor.apps.stock.db"/>
 
-    <entity name="FreightCarrierCustomerAccountNumber">
-        <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
-        <many-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig" />
-        <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner" title="Carrier" required="true" index="idx_stock_fccan_carrier_partner"/>
-        <string name="customerAccountNumber" required="true" />
-    </entity>
+  <entity name="FreightCarrierCustomerAccountNumber">
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="stockConfig" ref="com.axelor.apps.stock.db.StockConfig"/>
+    <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Carrier" required="true" index="idx_stock_fccan_carrier_partner"/>
+    <string name="customerAccountNumber" required="true"/>
+  </entity>
 
 </domain-models>

@@ -6,13 +6,14 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrder" lang="java">
-  
-	
-	<!--   	Champ du module Supplier Management -->
-	<many-to-one name="parentPurchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Initial purchase order"/>
-	<boolean name="isPurchaseParent" title="Purchase order"/>
-	
-	
+
+
+    <!-- Champ du module Supplier Management -->
+    <many-to-one name="parentPurchaseOrder"
+      ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Initial purchase order"/>
+    <boolean name="isPurchaseParent" title="Purchase order"/>
+
+
   </entity>
 
 </domain-models>

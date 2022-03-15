@@ -1,164 +1,221 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-  <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
-		<field name="name"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="prod-process-grid" title="Production process"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="name"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="workshopStockLocation"
+      if="__config__.app.getApp('production').getManageWorkshop()"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="stockLocation" grid-view="stock-location-grid"
+      form-view="stock-location-form"/>
     <field name="product"/>
     <field name="statusSelect"/>
   </grid>
-    
-    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
-          onNew="action-prod-process-group-on-new"
-          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing,action-prod-process-attrs-scale-and-precision"
-          onSave="action-prod-process-method-validate-prod-process" width="large">
 
-    	<toolbar>
-			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
-			<button name="newVersionBtn" title="Generate new version"  if="__config__.app.getApp('production').manageProdProcessVersion" onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
-		</toolbar>
+  <form name="prod-process-form" title="Production process"
+    model="com.axelor.apps.production.db.ProdProcess" onNew="action-prod-process-group-on-new"
+    onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing,action-prod-process-attrs-scale-and-precision"
+    onSave="action-prod-process-method-validate-prod-process" width="large">
 
-		<panel name="mainPanel">
-            <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
-            <panel name="namePanel" stacked="true" colSpan="8">
-                <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
-                <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
-            </panel>
-            <field name="$numberOfPhases" showTitle="false" type="integer" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
-                <viewer depends="$numberOfPhases">
+    <toolbar>
+      <button name="printBtn" title="Print" icon="fa-print"
+        onClick="save,action-production-process-print"/>
+      <button name="newVersionBtn" title="Generate new version"
+        if="__config__.app.getApp('production').manageProdProcessVersion"
+        onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
+    </toolbar>
+
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" colSpan="12" readonly="false"
+        widget="NavSelect"/>
+      <panel name="namePanel" stacked="true" colSpan="8">
+        <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false"
+          css="label-bold bold large"/>
+        <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
+      </panel>
+      <field name="$numberOfPhases" showTitle="false" type="integer" readonly="true"
+        showIf="$numberOfPhases > 0" colSpan="4">
+        <viewer depends="$numberOfPhases">
                     <![CDATA[
                         <h4 class="text-right">
                             <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{fmt('$numberOfPhases')}}</span>
                         </h4>
 					]]>
-                </viewer>
-            </field>
-	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
-            <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-            <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
-        </panel>
+        </viewer>
+      </field>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false"
+        grid-view="product-grid" form-view="product-form"
+        domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="workshopStockLocation" canEdit="false"
+        domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
+        if="__config__.app.getApp('production').getManageWorkshop()"/>
+    </panel>
 
-		<panel-tabs>
-			
-			<panel-related title="Phases" name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
-			
-			<panel title="Details" name="detailsPanel">
-				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
-				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
-				<field name="launchQty"/>
-				<field name="stockMoveRealizeOrderSelect"/>
-				<field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>
-				<field name="outsourcing" colSpan="3" onChange="action-prod-process-method-change-prodprocesslist-outsourcing" if="__config__.app.getApp('production').getManageOutsourcing()"/>
-				<field name="generatePurchaseOrderOnMoPlanning" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
-				<field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
-				<spacer colSpan="2"/>
-				<field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3" onChange="action-production-record-subcontractors-on-change" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing" requiredIf="outsourcing" form-view="partner-form"/>
-				<field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
-			</panel>
-			
-			<panel-dashlet name="viewBillOfMaterialsPanel" action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
-			
-		</panel-tabs>
+    <panel-tabs>
 
-        <panel name="versionManagementPanel" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
-            <field name="versionNumber" colSpan="3" />
-            <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
- 		</panel>            
-    
-    	<panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail> 
-    </form>
-    
-    <action-attrs name="action-prod-process-attrs-scale-and-precision">
-    	<attribute name="scale" for="launchQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-	</action-attrs>
-	
-	<action-record name="action-production-record-subcontractors-on-change" model="com.axelor.apps.production.db.ProdProcess">
-	   <field name="outsourcingStockLocation" if="subcontractors != null" expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
+      <panel-related title="Phases" name="prodProcessLineListPanel"
+        field="prodProcessLineList" colSpan="12" height="15"
+        onChange="action-prod-process-record-count-number-of-phases"
+        grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+
+      <panel title="Details" name="detailsPanel">
+        <field name="stockLocation" canEdit="false" required="true"
+          grid-view="stock-location-grid" form-view="stock-location-form"
+          onChange="action-prod-process-record-set-second-location"
+          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+        <field name="producedProductStockLocation" canEdit="false"
+          grid-view="stock-location-grid" form-view="stock-location-form"
+          domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+        <field name="launchQty"/>
+        <field name="stockMoveRealizeOrderSelect"/>
+        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"
+          readonlyIf="isEnabledForAllProducts"/>
+        <field name="outsourcing" colSpan="3"
+          onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
+          if="__config__.app.getApp('production').getManageOutsourcing()"/>
+        <field name="generatePurchaseOrderOnMoPlanning" colSpan="3"
+          if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
+        <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
+        <spacer colSpan="2"/>
+        <field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3"
+          onChange="action-production-record-subcontractors-on-change"
+          if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"
+          requiredIf="outsourcing" form-view="partner-form"/>
+        <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
+          colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()"
+          showIf="outsourcing"/>
+      </panel>
+
+      <panel-dashlet name="viewBillOfMaterialsPanel"
+        action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
+
+    </panel-tabs>
+
+    <panel name="versionManagementPanel" title="Version management" hidden="true"
+      showIf="versionNumber &gt; 1">
+      <field name="versionNumber" colSpan="3"/>
+      <field name="originalProdProcess" grid-view="prod-process-grid"
+        form-view="prod-process-form" colSpan="3" readonly="true"/>
+    </panel>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-prod-process-attrs-scale-and-precision">
+    <attribute name="scale" for="launchQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-record name="action-production-record-subcontractors-on-change"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="outsourcingStockLocation" if="subcontractors != null"
+      expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
 	                                                                                  subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
-	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation" />
-	</action-record>
-
-	<action-group name="action-prod-process-group-on-new">
-		<action name="action-prod-process-default-record" if="_product"/>
-		<action name="action-prod-process-record-set-default-company"/>
-		<action name="action-prod-process-record-set-realize-order-select"/>
-		<action name="action-prod-process-attrs-scale-and-precision"/>
-	</action-group>
-    
-    <action-attrs name="action-prod-process-attrs-hide-outsourcing">
-    	<attribute name="hidden" for="prodProcessLineList.outsourcing" expr="eval:!__this__.outsourcing"/>
-    </action-attrs>
-    
-    <action-validate name="action-prod-process-validate-is-cons-pro">
-    	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
-			   if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1" action="action-prod-process-record-false"/>
-    </action-validate>
-    
-    <action-record name="action-prod-process-default-record" model="com.axelor.apps.production.db.ProdProcess">
-     	<field name="product" expr="eval:_product"/>
-  		<field name="name" expr="eval:_product?.name"/>
-  		<field name="code" expr="eval:_product?.code"/>
-    </action-record>
-    
-    <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
-    	<field name="isConsProOnOperation" expr="false"/>
-    </action-record>
-    
-    <action-method name="action-prod-process-method-validate-prod-process">
-    	<call class="com.axelor.apps.production.web.ProdProcessController" method="validateProdProcess"/>
-    </action-method>
-    
-    <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
-    	<call class="com.axelor.apps.production.web.ProdProcessController" method="changeProdProcessListOutsourcing"/>
-    </action-method>
-    
-    <action-method name="action-production-process-print">
-		<call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
-	</action-method>
-	
-	<action-method name="action-production-process-check-other-version">
-     	<call class="com.axelor.apps.production.web.ProdProcessController" method="checkOriginalProductionProcess"/>
-     </action-method>
-     
-     <action-method name="action-production-process-generate-new-version">
-     	<call class="com.axelor.apps.production.web.ProdProcessController" method="generateNewVersion"/>
-     </action-method>
-
-	<action-record name="action-prod-process-record-set-second-location" model="com.axelor.apps.production.db.ProdProcess">
-		<field name="producedProductStockLocation" expr="eval: stockLocation" if="producedProductStockLocation == null"/>
-	</action-record>
-	
-	<action-record name="action-prod-process-record-set-default-company" model="com.axelor.apps.production.db.ProdProcess">
-		<field name="company" expr="eval: __user__.getActiveCompany()"/>
-		<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
-	</action-record>
-
-  <action-record name="action-prod-process-record-set-realize-order-select" model="com.axelor.apps.production.db.ProdProcess">
-    <field name="stockMoveRealizeOrderSelect" expr="__config__.app.getApp('production').getStockMoveRealizeOrderSelect()"/>
+	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation"/>
   </action-record>
 
-    <action-record name="action-prod-process-record-count-number-of-phases" model="com.axelor.apps.production.db.ProdProcess">
-        <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>
-    </action-record>
-    
-    <action-view name="action-prod-process-view-bill-of-materials" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<view type="grid" name="bill-of-material-grid"/>
-		<view type="form" name="bill-of-material-form"/>
-		<domain>self.prodProcess.id = :prodProcessId</domain>
-		<context name="prodProcessId" expr="eval: id"/>
-    </action-view>
+  <action-group name="action-prod-process-group-on-new">
+    <action name="action-prod-process-default-record" if="_product"/>
+    <action name="action-prod-process-record-set-default-company"/>
+    <action name="action-prod-process-record-set-realize-order-select"/>
+    <action name="action-prod-process-attrs-scale-and-precision"/>
+  </action-group>
 
-	<search-filters name="prod-process-filters" model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-        <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
-    </search-filters>
+  <action-attrs name="action-prod-process-attrs-hide-outsourcing">
+    <attribute name="hidden" for="prodProcessLineList.outsourcing"
+      expr="eval:!__this__.outsourcing"/>
+  </action-attrs>
+
+  <action-validate name="action-prod-process-validate-is-cons-pro">
+    <error
+      message="You can't manage the consumed products on phases because this production process is related to several bills of material"
+      if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1"
+      action="action-prod-process-record-false"/>
+  </action-validate>
+
+  <action-record name="action-prod-process-default-record"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="product" expr="eval:_product"/>
+    <field name="name" expr="eval:_product?.name"/>
+    <field name="code" expr="eval:_product?.code"/>
+  </action-record>
+
+  <action-record name="action-prod-process-record-false"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="isConsProOnOperation" expr="false"/>
+  </action-record>
+
+  <action-method name="action-prod-process-method-validate-prod-process">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="validateProdProcess"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="changeProdProcessListOutsourcing"/>
+  </action-method>
+
+  <action-method name="action-production-process-print">
+    <call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
+  </action-method>
+
+  <action-method name="action-production-process-check-other-version">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="checkOriginalProductionProcess"/>
+  </action-method>
+
+  <action-method name="action-production-process-generate-new-version">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="generateNewVersion"/>
+  </action-method>
+
+  <action-record name="action-prod-process-record-set-second-location"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="producedProductStockLocation" expr="eval: stockLocation"
+      if="producedProductStockLocation == null"/>
+  </action-record>
+
+  <action-record name="action-prod-process-record-set-default-company"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="company" expr="eval: __user__.getActiveCompany()"/>
+    <field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation"
+      if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+  </action-record>
+
+  <action-record name="action-prod-process-record-set-realize-order-select"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="stockMoveRealizeOrderSelect"
+      expr="__config__.app.getApp('production').getStockMoveRealizeOrderSelect()"/>
+  </action-record>
+
+  <action-record name="action-prod-process-record-count-number-of-phases"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>
+  </action-record>
+
+  <action-view name="action-prod-process-view-bill-of-materials"
+    title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
+    <view type="grid" name="bill-of-material-grid"/>
+    <view type="form" name="bill-of-material-form"/>
+    <domain>self.prodProcess.id = :prodProcessId</domain>
+    <context name="prodProcessId" expr="eval: id"/>
+  </action-view>
+
+  <search-filters name="prod-process-filters"
+    model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="workshopStockLocation" hidden="true"
+      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+  </search-filters>
 </object-views>

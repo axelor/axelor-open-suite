@@ -1,0 +1,462 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+@import "../font-awesome/css/font-awesome.min.css";
+
+:root {
+  --token-simulation-green-base-44: #3ecf8e;
+  --token-simulation-grey-base-40: #666666;
+  --token-simulation-grey-darken-30: #212121;
+  --token-simulation-grey-lighten-56: #909090;
+  --token-simulation-red-base-62: #ff3d3d;
+  --token-simulation-silver-base-97: #f8f8f8;
+  --token-simulation-silver-darken-94: #efefef;
+
+  --token-simulation-white: #ffffff;
+}
+
+html,
+body,
+#canvas {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Arial", sans-serif;
+}
+
+.bjs-container {
+  border: solid 4px transparent;
+  box-sizing: border-box;
+  height: calc(100% - 56px) !important;
+}
+
+.bjs-container.simulation {
+  border-color: var(--token-simulation-green-base-44, #3ecf8e);
+}
+
+.bjs-container.simulation.paused {
+  border-color: var(--token-simulation-grey-base-40, #666666);
+}
+
+.bjs-container.simulation.warning {
+  border-color: var(--token-simulation-red-base-62, #ff3d3d) !important;
+}
+
+.context-pad {
+  cursor: pointer;
+  background-color: var(--token-simulation-grey-lighten-56, #909090);
+  border-radius: 2px;
+  margin: 0;
+  font-size: 16px;
+  color: var(--token-simulation-grey-darken-30, #212121);
+  opacity: 0.5;
+  transition: all 0.1s ease-in-out;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.context-pad:not(.disabled):hover {
+  width: 40px;
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  opacity: 1;
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.context-pad.disabled {
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  color: var(--token-simulation-grey-base-40, #666666);
+  pointer-events: none;
+}
+
+.context-pad.hidden {
+  display: none;
+}
+
+.context-pad [class^="bpmn-icon-"]:before,
+[class*=" bpmn-icon-"]:before {
+  margin: 0;
+}
+
+.token .text {
+  fill: var(--token-simulation-white, #ffffff);
+  font-family: "Arial", sans-serif;
+}
+
+.token-count {
+  background-color: #fafafa;
+  border-radius: 100%;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--token-simulation-grey-darken-30, #212121);
+  user-select: none;
+  animation: jump 1s infinite;
+  animation-timing-function: ease;
+  position: relative;
+  top: 0;
+}
+
+.token-count.waiting {
+  color: var(--token-simulation-white, #ffffff);
+  font-family: "Arial", sans-serif;
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+}
+
+@keyframes jump {
+  50% {
+    top: 5px;
+  }
+}
+
+.notifications {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.notifications .notification {
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  padding: 4px 8px;
+  font-size: 16px;
+  color: var(--token-simulation-silver-darken-94, #efefef);
+  user-select: none;
+  margin-top: 4px;
+  min-width: 300px;
+}
+
+.notifications .notification.info {
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  color: #000;
+}
+
+.notifications .notification.success {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.notifications .notification.warning {
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.notifications .notification .icon {
+  display: inline-flex;
+  justify-content: center;
+  margin-right: 8px;
+  min-width: 20px;
+}
+
+.notifications .notification .icon [class^="bpmn-icon-"]:before,
+[class*=" bpmn-icon-"]:before {
+  margin: 0;
+}
+
+.bjs-container.paused .play-pause.active {
+  color: var(--token-simulation-silver-darken-94, #efefef);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+}
+
+.element-notification {
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  height: 30px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 6px 0 6px;
+  user-select: none;
+}
+
+.element-notification .fa,
+.element-notification .text {
+  margin: 0 3px 0 3px;
+}
+
+.element-notification .text {
+  white-space: nowrap;
+}
+
+.element-notification.success {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.element-notification.warning {
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.toggle-mode {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  padding: 6px;
+  font-size: 16px;
+  color: var(--token-simulation-grey-darken-30, #212121);
+  user-select: none;
+}
+
+.bjs-container.simulation .toggle-mode,
+.toggle-mode:hover {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.bjs-container .djs-palette {
+  top: 60px;
+}
+
+.bjs-container.simulation .djs-palette {
+  display: none;
+}
+
+.bjs-container.simulation .djs-outline,
+.bjs-container.simulation .djs-bendpoint,
+.bjs-container.simulation .djs-segment-dragger,
+.bjs-container.simulation .djs-resizer {
+  display: none !important;
+}
+
+.token-simulation-palette {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+}
+
+.token-simulation-palette.hidden {
+  display: none;
+}
+
+.token-simulation-palette .entry {
+  cursor: pointer;
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  padding: 6px 0;
+  margin-bottom: 6px;
+  font-size: 16px;
+  color: var(--token-simulation-grey-darken-30, #212121);
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  box-sizing: border-box;
+  transition: all 0.1s ease;
+}
+
+.token-simulation-palette .entry:last-child {
+  margin-bottom: 0;
+}
+
+.token-simulation-palette .entry:not(.disabled):hover {
+  width: 40px;
+  color: var(--token-simulation-white, #ffffff);
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+}
+
+.token-simulation-palette .entry.active {
+  color: var(--token-simulation-white, #ffffff);
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+}
+
+.token-simulation-palette .entry.disabled {
+  pointer-events: none;
+  color: var(--token-simulation-grey-base-40, #666666);
+}
+
+.token-simulation-log {
+  position: absolute;
+  top: 128px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+.token-simulation-log.hidden {
+  display: none;
+}
+
+.token-simulation-log .header {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  padding: 6px 8px;
+  color: var(--token-simulation-white, #ffffff);
+  height: 30px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.token-simulation-log .header .close {
+  float: right;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.token-simulation-log .header .fa-align-left {
+  cursor: pointer;
+}
+
+.token-simulation-log .content {
+  position: absolute;
+  overflow-y: auto;
+  box-sizing: border-box;
+  top: 30px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.token-simulation-log .content .entry {
+  font-size: 16px;
+  margin: 0 0 6px 0;
+  padding: 6px;
+  background: var(--token-simulation-white, #ffffff);
+  border-radius: 2px;
+}
+
+.token-simulation-log .content .entry.success {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.token-simulation-log .content .entry.success .date,
+.token-simulation-log .content .entry.warning .date {
+  color: var(--token-simulation-silver-darken-94, #efefef);
+}
+
+.token-simulation-log .content .entry.warning {
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.token-simulation-log .content .entry:last-child {
+  margin: 0;
+}
+
+.token-simulation-log .content .entry .date {
+  display: inline-block;
+  margin-right: 6px;
+  min-width: 120px;
+  color: var(--token-simulation-grey-base-40, #666666);
+}
+
+.token-simulation-log .content .entry .icon {
+  display: inline-block;
+  margin-right: 6px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.token-simulation-log .content .entry.placeholder.hidden {
+  display: none;
+}
+
+.process-instances {
+  position: absolute;
+  top: 20px;
+  left: 190px;
+  display: flex;
+  flex-direction: row;
+}
+
+.process-instances.hidden {
+  display: none;
+}
+
+.process-instances .process-instance {
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: center;
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.process-instances .process-instance.active {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}
+
+.djs-container.highlight {
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+}
+
+.set-animation-speed {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 16px;
+  text-align: center;
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 6px;
+  overflow: hidden;
+}
+
+.set-animation-speed .fa-tachometer {
+  margin-bottom: 2px;
+}
+
+.set-animation-speed.hidden {
+  display: none;
+}
+
+.set-animation-speed .animation-speed-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.set-animation-speed .animation-speed-buttons {
+  margin-left: 6px;
+}
+
+.set-animation-speed .animation-speed-buttons .animation-speed-button {
+  padding: 6px;
+  width: 30px;
+}
+
+.set-animation-speed .animation-speed-buttons .animation-speed-button.active,
+.set-animation-speed .animation-speed-buttons .animation-speed-button:hover {
+  background-color: var(--token-simulation-green-base-44, #3ecf8e);
+  color: var(--token-simulation-white, #ffffff);
+}

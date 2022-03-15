@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -126,9 +126,9 @@ public abstract class CurrencyConversionService {
         && previousRate.compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal diffRate = currentRate.subtract(previousRate);
       BigDecimal variation =
-          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_EVEN);
+          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_UP);
       variation =
-          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       variations = variation.toString() + "%";
     }
 

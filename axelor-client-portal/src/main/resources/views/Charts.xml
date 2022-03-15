@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-	
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <chart name="chart.client.portal.sum.invoices.four.months" title="Sum of last 4 months invoices">
+
+  <chart name="chart.client.portal.sum.invoices.four.months"
+    title="Sum of last 4 months invoices">
     <dataset type="jpql">
     <![CDATA[
   SELECT
@@ -21,15 +22,16 @@
         month
      ]]>
     </dataset>
-    <category key="month" type="month" title="Months" />
-    <series key="amount" type="bar" title="Sum" />
+    <category key="month" type="month" title="Months"/>
+    <series key="amount" type="bar" title="Sum"/>
   </chart>
-	
-	
+
+
   <action-view name="dashlet.client.portal.sum.invoices.four.months" title="chart">
     <view type="chart" name="chart.client.portal.sum.invoices.four.months"/>
-    <context name="fromDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany).minusMonths(3)"/>
-  	<context name="userPartner" expr="eval: __user__.partner"/>
+    <context name="fromDate"
+      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).minusMonths(3)"/>
+    <context name="userPartner" expr="eval: __user__.partner"/>
   </action-view>
-	
+
 </object-views>

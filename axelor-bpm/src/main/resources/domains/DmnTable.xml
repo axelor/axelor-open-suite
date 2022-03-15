@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="DmnTable" cacheable="true">
+
+    <string name="name" title="Name" readonly="true"/>
+    <string name="decisionId" title="Decision Id" readonly="true" unique="true"/>
+    <many-to-one name="wkfDmnModel" ref="WkfDmnModel" title="Dmn model"/>
+    <one-to-many name="outputDmnFieldList" ref="DmnField" title="Outputs"
+      mappedBy="outputDmnTable"/>
+
+  </entity>
+
+</domain-models>

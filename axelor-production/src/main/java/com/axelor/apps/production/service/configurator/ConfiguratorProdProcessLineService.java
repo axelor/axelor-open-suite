@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,11 +30,14 @@ public interface ConfiguratorProdProcessLineService {
    * the custom values
    *
    * @param confProdProcessLine
+   * @param isConsProOnOperation
    * @param attributes
    * @return
    */
   ProdProcessLine generateProdProcessLine(
-      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      ConfiguratorProdProcessLine confProdProcessLine,
+      boolean isConsProOnOperation,
+      JsonContext attributes)
       throws AxelorException;
 
   public void setWorkCenterGroup(

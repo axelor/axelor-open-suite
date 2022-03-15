@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.AccessConfig;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AccessConfigRepository;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
@@ -27,6 +28,7 @@ import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
@@ -47,15 +49,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class AccessConfigImportServiceImpl implements AccessConfigImportService {
 
-  @Inject private AppService appService;
+  protected AccessConfigRepository accessConfigRepo;
+  protected PermissionRepository permissionRepo;
+  protected RoleRepository roleRepo;
+  protected MetaMenuRepository metaMenuRepo;
 
-  @Inject private AccessConfigRepository accessConfigRepo;
-
-  @Inject private PermissionRepository permissionRepo;
-
-  @Inject private RoleRepository roleRepo;
-
-  @Inject private MetaMenuRepository metaMenuRepo;
+  @Inject
+  public AccessConfigImportServiceImpl(
+      AccessConfigRepository accessConfigRepo,
+      PermissionRepository permissionRepo,
+      RoleRepository roleRepo,
+      MetaMenuRepository metaMenuRepo) {
+    this.accessConfigRepo = accessConfigRepo;
+    this.permissionRepo = permissionRepo;
+    this.roleRepo = roleRepo;
+    this.metaMenuRepo = metaMenuRepo;
+  }
 
   @Override
   public void importAccessConfig(MetaFile metaFile) throws AxelorException {
@@ -90,7 +99,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
 
   private void importObjectAccess(XSSFSheet sheet) {
 
-    App app = appService.getApp(sheet.getSheetName());
+    App app = Beans.get(AppRepository.class).findByCode(sheet.getSheetName());
     if (app == null) {
       return;
     }
@@ -137,7 +146,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value) || invalidValue(value)) {
+      if (Strings.isNullOrEmpty(value) || invalidValue(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
@@ -222,7 +231,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
 
   private void importMenuAccess(XSSFSheet sheet) {
 
-    App app = appService.getApp(sheet.getSheetName().split("-")[0]);
+    App app = Beans.get(AppRepository.class).findByCode(sheet.getSheetName().split("-")[0]);
     if (app == null) {
       return;
     }
@@ -244,7 +253,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
     while (cellIter.hasNext()) {
       Cell cell = cellIter.next();
       String value = cell.getStringCellValue();
-      if (cell == null || Strings.isNullOrEmpty(value)) {
+      if (Strings.isNullOrEmpty(value)) {
         continue;
       }
       AccessConfig config = accessMap.get(cell.getColumnIndex());

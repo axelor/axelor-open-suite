@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,10 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.util.List;
@@ -39,7 +40,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);
@@ -48,6 +49,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
 
   @Override
   public MoveLine save(MoveLine entity) {
+
     List<AnalyticMoveLine> analyticMoveLineList = entity.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
@@ -56,9 +58,10 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       }
     }
     try {
-      Beans.get(MoveLineService.class).validateMoveLine(entity);
+      Beans.get(MoveLineControlService.class).validateMoveLine(entity);
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(entity);
   }

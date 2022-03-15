@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -53,12 +55,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
@@ -75,6 +79,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,6 +108,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
+  protected AppBaseService appBaseService;
+  protected TaxService taxService;
+
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public InvoiceServiceImpl(
@@ -115,7 +125,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      AppBaseService appBaseService,
+      TaxService taxService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -127,6 +139,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
+    this.appBaseService = appBaseService;
+    this.taxService = taxService;
   }
 
   // WKF
@@ -225,7 +239,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           public Invoice generate() throws AxelorException {
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.addAll(invoice.getInvoiceLineList());
+            if (invoice.getInvoiceLineList() != null) {
+              invoiceLines.addAll(invoice.getInvoiceLineList());
+            }
 
             populate(invoice, invoiceLines);
 
@@ -449,7 +465,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
     Invoice invoiceMerged =
         mergeInvoice(
@@ -460,7 +478,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             contactPartner,
             priceList,
             paymentMode,
-            paymentCondition);
+            paymentCondition,
+            tradingName,
+            fiscalPosition);
     deleteOldInvoices(invoiceList);
     return invoiceMerged;
   }
@@ -475,23 +495,25 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
     for (Invoice invoiceLocal : invoiceList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
       }
       if (invoiceLocal.getInternalReference() != null) {
-        numSeq += invoiceLocal.getInternalReference();
+        numSeq.append(invoiceLocal.getInternalReference());
       }
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (invoiceLocal.getExternalReference() != null) {
-        externalRef += invoiceLocal.getExternalReference();
+        externalRef.append(invoiceLocal.getExternalReference());
       }
     }
 
@@ -506,11 +528,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             contactPartner,
             currency,
             priceList,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             null,
             company.getDefaultBankDetails(),
-            null,
+            tradingName,
             null) {
 
           @Override
@@ -520,6 +542,108 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           }
         };
     Invoice invoiceMerged = invoiceGenerator.generate();
+    invoiceMerged.setFiscalPosition(fiscalPosition);
+    List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
+    invoiceGenerator.populate(invoiceMerged, invoiceLines);
+    this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
+    invoiceRepo.save(invoiceMerged);
+    return invoiceMerged;
+  }
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition,
+            tradingName,
+            fiscalPosition,
+            supplierInvoiceNb,
+            originDate);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException {
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (Invoice invoiceLocal : invoiceList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      if (invoiceLocal.getInternalReference() != null) {
+        numSeq.append(invoiceLocal.getInternalReference());
+      }
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
+      }
+      if (invoiceLocal.getExternalReference() != null) {
+        externalRef.append(invoiceLocal.getExternalReference());
+      }
+    }
+
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator(
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            company,
+            paymentCondition,
+            paymentMode,
+            partnerService.getInvoicingAddress(partner),
+            partner,
+            contactPartner,
+            currency,
+            priceList,
+            numSeq.toString(),
+            externalRef.toString(),
+            null,
+            company.getDefaultBankDetails(),
+            tradingName,
+            null) {
+
+          @Override
+          public Invoice generate() throws AxelorException {
+
+            return super.createInvoiceHeader();
+          }
+        };
+    Invoice invoiceMerged = invoiceGenerator.generate();
+    invoiceMerged.setFiscalPosition(fiscalPosition);
+    invoiceMerged.setSupplierInvoiceNb(supplierInvoiceNb);
+    invoiceMerged.setOriginDate(originDate);
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
@@ -973,5 +1097,233 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
+  }
+
+  @Override
+  public List<Long> getInvoiceLineIds(Invoice invoice) {
+    List<Long> invoiceLineListIds = new ArrayList<Long>();
+    if (invoice != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        invoiceLineListIds.add(invoiceLine.getId());
+      }
+    }
+    return invoiceLineListIds;
+  }
+
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
+    return calculateFinancialDiscountAmountUnscaled(invoice, amount)
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal calculateFinancialDiscountAmountUnscaled(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
+    if (invoice == null || invoice.getFinancialDiscount() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal baseAmount = computeBaseAmount(invoice, amount);
+    Company company = invoice.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    BigDecimal baseAmountByRate =
+        baseAmount.multiply(
+            invoice
+                .getFinancialDiscountRate()
+                .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
+    if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
+      return baseAmountByRate.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        && accountConfig.getPurchFinancialDiscountTax() != null) {
+
+      return baseAmountByRate.divide(
+          taxService
+              .getTaxLine(
+                  accountConfig.getPurchFinancialDiscountTax(),
+                  appBaseService.getTodayDate(company))
+              .getValue()
+              .add(new BigDecimal(1)),
+          CALCULATION_SCALE,
+          RoundingMode.HALF_UP);
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        && accountConfig.getSaleFinancialDiscountTax() != null) {
+      return baseAmountByRate.divide(
+          taxService
+              .getTaxLine(
+                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+              .getValue()
+              .add(new BigDecimal(1)),
+          CALCULATION_SCALE,
+          RoundingMode.HALF_UP);
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  @Override
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
+    return calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal calculateFinancialDiscountTaxAmountUnscaled(
+      Invoice invoice, BigDecimal amount) throws AxelorException {
+    if (invoice == null
+        || invoice.getFinancialDiscount() == null
+        || invoice.getFinancialDiscount().getDiscountBaseSelect()
+            != FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal financialDiscountAmount = calculateFinancialDiscountAmountUnscaled(invoice, amount);
+
+    Company company = invoice.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        && accountConfig.getPurchFinancialDiscountTax() != null) {
+      return financialDiscountAmount.multiply(
+          taxService
+              .getTaxLine(
+                  accountConfig.getPurchFinancialDiscountTax(),
+                  appBaseService.getTodayDate(company))
+              .getValue());
+    } else if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        && accountConfig.getSaleFinancialDiscountTax() != null) {
+      return financialDiscountAmount.multiply(
+          taxService
+              .getTaxLine(
+                  accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
+              .getValue());
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal computeBaseAmount(Invoice invoice, BigDecimal amount) {
+    if (amount.signum() > 0) {
+      return amount;
+    } else {
+      return invoice.getAmountRemaining();
+    }
+  }
+
+  @Override
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
+    return (calculateFinancialDiscountAmountUnscaled(invoice, amount)
+            .add(calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)))
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal calculateAmountRemainingInPayment(
+      Invoice invoice, boolean apply, BigDecimal amount) throws AxelorException {
+    if (apply) {
+      return invoice
+          .getAmountRemaining()
+          .subtract(calculateFinancialDiscountTaxAmountUnscaled(invoice, amount))
+          .subtract(calculateFinancialDiscountAmountUnscaled(invoice, amount))
+          .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return invoice.getAmountRemaining();
+  }
+
+  public boolean applyFinancialDiscount(Invoice invoice) {
+    return (invoice != null
+        && invoice.getFinancialDiscountDeadlineDate() != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
+        && invoice
+                .getFinancialDiscountDeadlineDate()
+                .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
+            >= 0);
+  }
+
+  public String setAmountTitle(boolean applyFinancialDiscount) {
+    if (applyFinancialDiscount) {
+      return I18n.get("Financial discount deducted");
+    }
+    return I18n.get("Amount");
+  }
+
+  @Override
+  public InvoicePayment computeDatasForFinancialDiscount(
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount)
+      throws AxelorException {
+
+    if (invoice.getFinancialDiscountDeadlineDate() != null) {
+      invoicePayment.setFinancialDiscountDeadlineDate(invoice.getFinancialDiscountDeadlineDate());
+    }
+    if (invoice.getFinancialDiscount() != null) {
+      invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
+    }
+    BigDecimal amount =
+        invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
+    invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
+    invoicePayment.setAmount(
+        calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
+
+    return invoicePayment;
+  }
+
+  @Override
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException {
+
+    if (invoicePayment
+            .getAmount()
+            .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
+            .longValue()
+        > invoice.getAmountRemaining().longValue()) {
+      invoicePayment.setAmount(
+          calculateAmountRemainingInPayment(
+              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
+    } else {
+      invoicePayment =
+          changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
+    }
+    return invoicePayment;
+  }
+
+  public InvoicePayment changeFinancialDiscountAmounts(
+      InvoicePayment invoicePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
+    invoicePayment.setFinancialDiscountAmount(calculateFinancialDiscountAmount(invoice, amount));
+    invoicePayment.setFinancialDiscountTaxAmount(
+        calculateFinancialDiscountTaxAmount(invoice, amount));
+    invoicePayment.setFinancialDiscountTotalAmount(
+        calculateFinancialDiscountTotalAmount(invoice, amount));
+    return invoicePayment;
+  }
+
+  @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
   }
 }

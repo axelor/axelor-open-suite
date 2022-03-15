@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="app-data-loader-grid" title="App Data Loader"
+    model="com.axelor.studio.db.AppDataLoader" canMove="true" orderBy="sequence">
+    <field name="modelName"/>
+    <field name="isJson"/>
+  </grid>
+
+  <form name="app-data-loader-form" title="App Data Loader"
+    model="com.axelor.studio.db.AppDataLoader">
+    <panel name="mainPanel">
+      <panel name="panelMetaModel" colSpan="12" showIf="isJson == null || !isJson">
+        <field name="metaModel" colSpan="4"
+          onChange="action-app-data-loader-attrs-set-model-name"
+          requiredIf="isJson == null || !isJson"/>
+        <field name="isJson" onChange="action-app-data-loader-attrs-is-json-change"
+          colSpan="2"/>
+        <field name="searchMetaFieldSet" readonlyIf="!metaModel" widget="TagSelect"
+          domain="self.metaModel = :metaModel" canNew="false" requiredIf="isJson == null || !isJson"/>
+        <field name="metaFieldSet" readonlyIf="!metaModel" widget="TagSelect" colSpan="12"
+          domain="self.metaModel = :metaModel" canNew="false" requiredIf="isJson == null || !isJson"/>
+        <field name="filterQuery" readonlyIf="!metaModel" widget="String" colSpan="12"/>
+      </panel>
+      <panel name="panelJsonModel" colSpan="12" showIf="isJson != null &amp;&amp; isJson">
+        <field name="jsonModel" colSpan="4"
+          onChange="action-app-data-loader-attrs-set-model-name"
+          requiredIf="isJson != null &amp;&amp; isJson"/>
+        <field name="isJson" onChange="action-app-data-loader-attrs-is-json-change"
+          colSpan="2"/>
+        <field name="searchJsonFieldSet" readonlyIf="!jsonModel" widget="TagSelect"
+          domain="self.jsonModel = :jsonModel and self.type not in ('panel','separator','button','label','spacer')"
+          canNew="false" requiredIf="isJson != null &amp;&amp; isJson"/>
+        <field name="jsonFieldSet" readonlyIf="!jsonModel"
+          requiredIf="isJson != null &amp;&amp; isJson" widget="TagSelect" colSpan="12"
+          domain="self.jsonModel = :jsonModel and self.type not in ('panel','separator','button','label')"
+          canNew="false"/>
+        <field name="filterQuery" readonlyIf="!jsonModel" widget="String" colSpan="12"/>
+      </panel>
+      <field name="modelName" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-app-data-loader-attrs-set-model-name">
+    <attribute name="value" for="modelName"
+      expr="eval: isJson == true ? jsonModel?.name : metaModel?.name"/>
+  </action-attrs>
+
+  <action-attrs name="action-app-data-loader-attrs-is-json-change">
+    <attribute name="value" for="metaModel" expr="eval:null"/>
+    <attribute name="value" for="searchMetaFieldSet" expr="eval:null"/>
+    <attribute name="value" for="metaFieldSet" expr="eval:null"/>
+    <attribute name="value" for="jsonModel" expr="eval:null"/>
+    <attribute name="value" for="searchJsonFieldSet" expr="eval:null"/>
+    <attribute name="value" for="jsonFieldSet" expr="eval:null"/>
+    <attribute name="value" for="modelName" expr="eval:null"/>
+  </action-attrs>
+
+</object-views>

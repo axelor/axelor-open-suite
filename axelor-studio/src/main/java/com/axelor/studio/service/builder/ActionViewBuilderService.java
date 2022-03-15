@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -53,13 +54,16 @@ public class ActionViewBuilderService {
 
     appendParams(builder.getViewParams(), xml);
 
-    appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
+    if (!Strings.isNullOrEmpty(builder.getModel())) {
+      appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
+    }
 
     appendContext(builder, xml);
 
     xml.append("\n" + "</action-view>");
 
-    return metaService.updateMetaAction(builder.getName(), "action-view", xml.toString(), model);
+    return metaService.updateMetaAction(
+        builder.getName(), "action-view", xml.toString(), model, builder.getXmlId());
   }
 
   private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
@@ -126,13 +130,17 @@ public class ActionViewBuilderService {
 
     xml.append("<action-view name=\"" + builder.getName() + "\" ");
     xml.append("title=\"" + builder.getTitle() + "\" ");
-    xml.append("id=\"studio-" + builder.getName() + "\" ");
+    xml.append("id=\"" + builder.getXmlId() + "\" ");
 
     String model = MetaJsonRecord.class.getName();
     if (!builder.getIsJson()) {
       model = builder.getModel();
     }
-    xml.append("model=\"" + model + "\">");
+
+    if (!Strings.isNullOrEmpty(builder.getModel())) {
+      xml.append("model=\"" + model + "\" ");
+    }
+    xml.append(">");
 
     return model;
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.inject.Beans;
 import com.axelor.mail.MailParser;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -38,8 +39,6 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject private AppRecruitmentRepository appRecruitmentRepo;
 
-  @Inject private JobPositionService jobPositionService;
-
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date)
@@ -50,13 +49,13 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
     AppRecruitment appRecruitment = appRecruitmentRepo.all().fetchOne();
 
     if (appRecruitment != null
-        && appRecruitment.getActive()
+        && appRecruitment.getApp().getActive()
         && message.getMailAccount() != null
         && message.getMailAccount().getServerTypeSelect() > 1) {
 
       String lastEmailId = appRecruitment.getLastEmailId();
       if (lastEmailId == null || message.getId() > Long.parseLong(lastEmailId)) {
-        jobPositionService.createJobApplication(message);
+        Beans.get(JobPositionService.class).createJobApplication(message);
       }
     }
 

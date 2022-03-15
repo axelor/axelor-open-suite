@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,7 @@ public class SelectionBuilderService {
 
   public void build(SelectionBuilder selectionBuilder) {
 
-    String xmlId = SELECTION_PREFIX + selectionBuilder.getId();
+    String xmlId = SELECTION_PREFIX + selectionBuilder.getName().replace(" ", "-");
 
     updateMetaSelectFromText(
         selectionBuilder.getSelectionText(),
@@ -115,7 +115,7 @@ public class SelectionBuilderService {
 
   private MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
 
-    String[] selection = selectionText.split("\n");
+    String[] selection = selectionText.trim().split("\n");
 
     MetaSelect metaSelect = xmlId != null ? findMetaSelectById(xmlId) : findMetaSelectByName(name);
 
@@ -134,6 +134,9 @@ public class SelectionBuilderService {
 
     for (String option : selection) {
       option = option.trim();
+      if (option.isEmpty()) {
+        continue;
+      }
       final String title;
       final String value;
 

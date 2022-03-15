@@ -1,0 +1,10 @@
+"importId";"name";"company.importId";"fixedAssetType.importId";"journal.importId";"chargeAccount.importId";"depreciationAccount.importId";"numberOfDepreciation";"durationInMonth";"isProrataTemporis";"computationMethodSelect";"degressiveCoef"
+1;"Equipment (L)";1;2;3;818;269;7;84;"false";"linear";
+2;"Tooling";1;2;3;818;269;6;72;"false";"linear";
+3;"Transportation equipment";1;2;3;818;269;5;60;"false";"linear";
+4;"Furniture";1;2;3;818;269;10;120;"false";"linear";
+5;"IT Equipment";1;2;3;818;269;3;36;"false";"linear";
+6;"Patents";1;1;3;817;263;5;60;"false";"linear";
+7;"Softwarres";1;1;3;817;263;3;36;"false";"linear";
+10;"Equipment (L-PT)";1;2;3;818;269;7;84;"true";"linear";
+100;"Equipment (D-PT)";1;2;3;818;269;7;84;"true";"degressive";"1.75"

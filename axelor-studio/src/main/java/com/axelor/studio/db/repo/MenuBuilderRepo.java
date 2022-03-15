@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,9 +36,6 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Override
   public MenuBuilder save(MenuBuilder menuBuilder) {
-    if (menuBuilder.getName() == null) {
-      menuBuilder.setName("studio-menu-" + menuBuilder.getId());
-    }
     if (menuBuilder.getActionBuilder() != null) {
       menuBuilder.getActionBuilder().setMenuAction(true);
     }
@@ -66,7 +63,10 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
   public void remove(MenuBuilder menuBuilder) {
     MetaMenu metaMenu = menuBuilder.getMetaMenu();
     menuBuilder.setMetaMenu(null);
-    metaService.removeMetaMenu(metaMenu);
+
+    if (metaMenu != null) {
+      metaService.removeMetaMenu(metaMenu);
+    }
 
     ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
 

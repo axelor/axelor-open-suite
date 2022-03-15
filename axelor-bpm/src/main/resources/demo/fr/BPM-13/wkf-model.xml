@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-13</code>
+
+    <name>Event Gateway</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-13" camunda:diagramName="Event Gateway" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-13">
+  <bpmn2:process id="Process_Event_Gateway" name="Event Gateway" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Event" metaModelLabel="Event (Events)" isStartModel="true" model="com.axelor.apps.crm.db.Event" metaModelFullName="com.axelor.apps.crm.db.Event" title="Event" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_1bn97jk</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_1bn97jk" sourceRef="StartEvent_1" targetRef="Activity_1feu343" />
+    <bpmn2:sequenceFlow id="Flow_119sayr" sourceRef="Activity_1feu343" targetRef="Gateway_1khxq2d" />
+    <bpmn2:eventBasedGateway id="Gateway_1khxq2d" name="Wait for event">
+      <bpmn2:incoming>Flow_119sayr</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1wy0adh</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1o56bjc</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1vsk30k</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_03ctuwu</bpmn2:outgoing>
+    </bpmn2:eventBasedGateway>
+    <bpmn2:intermediateCatchEvent id="Event_07jxxc4">
+      <bpmn2:incoming>Flow_1wy0adh</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0kz2261</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_18fvfq8" messageRef="Message_0sjnj0p" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_1wy0adh" sourceRef="Gateway_1khxq2d" targetRef="Event_07jxxc4" />
+    <bpmn2:intermediateCatchEvent id="Event_1hjozbp">
+      <bpmn2:incoming>Flow_1o56bjc</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_03gu41t</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_1ofgzgy">
+        <bpmn2:timeDuration xs:type="bpmn2:tFormalExpression">PT1M</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_1o56bjc" sourceRef="Gateway_1khxq2d" targetRef="Event_1hjozbp" />
+    <bpmn2:intermediateCatchEvent id="Event_0kdh8gd">
+      <bpmn2:incoming>Flow_1vsk30k</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_17vlcok</bpmn2:outgoing>
+      <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_1qirm3q" camunda:variableName="eventId" camunda:variableEvent="">
+        <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">$ctx.find('Event',eventId).statusSelect == 2</bpmn2:condition>
+      </bpmn2:conditionalEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_1vsk30k" sourceRef="Gateway_1khxq2d" targetRef="Event_0kdh8gd" />
+    <bpmn2:intermediateCatchEvent id="Event_03n08un">
+      <bpmn2:incoming>Flow_03ctuwu</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_19mecui</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_149740m" signalRef="Signal_0d1tb2i" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_03ctuwu" sourceRef="Gateway_1khxq2d" targetRef="Event_03n08un" />
+    <bpmn2:sequenceFlow id="Flow_0kz2261" sourceRef="Event_07jxxc4" targetRef="Activity_16uhtsb" />
+    <bpmn2:sequenceFlow id="Flow_17vlcok" sourceRef="Event_0kdh8gd" targetRef="Activity_1pymhxe" />
+    <bpmn2:sequenceFlow id="Flow_19mecui" sourceRef="Event_03n08un" targetRef="Activity_1gi0744" />
+    <bpmn2:sequenceFlow id="Flow_1wdri5b" sourceRef="Activity_16uhtsb" targetRef="Gateway_0bwa3n6" />
+    <bpmn2:inclusiveGateway id="Gateway_0bwa3n6">
+      <bpmn2:incoming>Flow_1wdri5b</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1k92and</bpmn2:incoming>
+      <bpmn2:incoming>Flow_14fixn0</bpmn2:incoming>
+      <bpmn2:incoming>Flow_008g9x7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1b3fljf</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_1k92and" sourceRef="Activity_1pymhxe" targetRef="Gateway_0bwa3n6" />
+    <bpmn2:sequenceFlow id="Flow_14fixn0" sourceRef="Activity_1gi0744" targetRef="Gateway_0bwa3n6" />
+    <bpmn2:endEvent id="Event_14enm7l" name="End">
+      <bpmn2:incoming>Flow_1b3fljf</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_1b3fljf" sourceRef="Gateway_0bwa3n6" targetRef="Event_14enm7l" />
+    <bpmn2:userTask id="Activity_1feu343" name="Check if campaign not null" camunda:completedIf="event?.campaign != null" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Event&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;campaign&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;MANY_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;campaign&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Campaign&#34;,&#34;target&#34;:&#34;com.axelor.apps.marketing.db.Campaign&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;campaign&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Campaign&#34;,&#34;target&#34;:&#34;com.axelor.apps.marketing.db.Campaign&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:extensionElements />
+      <bpmn2:incoming>Flow_1bn97jk</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_119sayr</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_03gu41t" sourceRef="Event_1hjozbp" targetRef="Activity_1l4qy9f" />
+    <bpmn2:sequenceFlow id="Flow_008g9x7" sourceRef="Activity_1l4qy9f" targetRef="Gateway_0bwa3n6" />
+    <bpmn2:task id="Activity_16uhtsb" name="Event from msg">
+      <bpmn2:incoming>Flow_0kz2261</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1wdri5b</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:task id="Activity_1l4qy9f" name="Event from timer">
+      <bpmn2:incoming>Flow_03gu41t</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_008g9x7</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:task id="Activity_1pymhxe" name="Event from condition">
+      <bpmn2:incoming>Flow_17vlcok</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1k92and</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:task id="Activity_1gi0744" name="Event from signal">
+      <bpmn2:incoming>Flow_19mecui</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_14fixn0</bpmn2:outgoing>
+    </bpmn2:task>
+  </bpmn2:process>
+  <bpmn2:message id="Message_147xb1f" name="" />
+  <bpmn2:message id="Message_1p50k57" name="" />
+  <bpmn2:signal id="Signal_0d1tb2i" name="Signal_1fv902d" />
+  <bpmn2:message id="Message_10uktet" name="CampaignStart-${campaign.Id}" />
+  <bpmn2:message id="Message_0sjnj0p" name="CampaignStart" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Event_Gateway">
+      <bpmndi:BPMNEdge id="Flow_008g9x7_di" bpmnElement="Flow_008g9x7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="810" y="250" />
+        <di:waypoint x="810" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03gu41t_di" bpmnElement="Flow_03gu41t" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="548" y="250" />
+        <di:waypoint x="620" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b3fljf_di" bpmnElement="Flow_1b3fljf" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="835" y="150" />
+        <di:waypoint x="902" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14fixn0_di" bpmnElement="Flow_14fixn0" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="720" y="460" />
+        <di:waypoint x="810" y="460" />
+        <di:waypoint x="810" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k92and_di" bpmnElement="Flow_1k92and" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="720" y="350" />
+        <di:waypoint x="810" y="350" />
+        <di:waypoint x="810" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wdri5b_di" bpmnElement="Flow_1wdri5b" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="720" y="150" />
+        <di:waypoint x="785" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19mecui_di" bpmnElement="Flow_19mecui" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="548" y="460" />
+        <di:waypoint x="620" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17vlcok_di" bpmnElement="Flow_17vlcok" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="548" y="350" />
+        <di:waypoint x="620" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kz2261_di" bpmnElement="Flow_0kz2261" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="548" y="150" />
+        <di:waypoint x="620" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ctuwu_di" bpmnElement="Flow_03ctuwu" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="430" y="175" />
+        <di:waypoint x="430" y="460" />
+        <di:waypoint x="512" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vsk30k_di" bpmnElement="Flow_1vsk30k" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="430" y="175" />
+        <di:waypoint x="430" y="350" />
+        <di:waypoint x="512" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o56bjc_di" bpmnElement="Flow_1o56bjc" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="430" y="175" />
+        <di:waypoint x="430" y="250" />
+        <di:waypoint x="512" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wy0adh_di" bpmnElement="Flow_1wy0adh" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="455" y="150" />
+        <di:waypoint x="512" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_119sayr_di" bpmnElement="Flow_119sayr" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="350" y="150" />
+        <di:waypoint x="405" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bn97jk_di" bpmnElement="Flow_1bn97jk" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="198" y="150" />
+        <di:waypoint x="250" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="162" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="175" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xi9r9p_di" bpmnElement="Gateway_1khxq2d" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="405" y="125" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="396" y="95" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07jxxc4_di" bpmnElement="Event_07jxxc4" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="512" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hjozbp_di" bpmnElement="Event_1hjozbp" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="512" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kdh8gd_di" bpmnElement="Event_0kdh8gd" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="512" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03n08un_di" bpmnElement="Event_03n08un" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="512" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0g7vo0p_di" bpmnElement="Gateway_0bwa3n6" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="785" y="125" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14enm7l_di" bpmnElement="Event_14enm7l" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="902" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="911" y="175" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rnb921_di" bpmnElement="Activity_1feu343" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="250" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16mmgzg_di" bpmnElement="Activity_16uhtsb" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="620" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mvhvvz_di" bpmnElement="Activity_1l4qy9f" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="620" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j5732e_di" bpmnElement="Activity_1pymhxe" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="620" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oh3lux_di" bpmnElement="Activity_1gi0744" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="620" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-13</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

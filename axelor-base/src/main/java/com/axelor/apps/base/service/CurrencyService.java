@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,7 +117,7 @@ public class CurrencyService {
       }
 
       return isInverse
-          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_EVEN)
+          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_UP)
           : exchangeRate;
     }
 
@@ -199,7 +199,7 @@ public class CurrencyService {
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_EVEN);
+      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
     }
 
     return amount;

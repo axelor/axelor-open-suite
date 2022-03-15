@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -113,6 +114,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @param company
    * @return
    */
+  @Override
   public AccountManagement getAccountManagement(
       List<AccountManagement> accountManagements, Company company) {
 
@@ -130,6 +132,14 @@ public class AccountManagementServiceImpl implements AccountManagementService {
     return null;
   }
 
+  @Override
+  public TaxEquiv getProductTaxEquiv(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
+      throws AxelorException {
+    Tax tax = getProductTax(product, company, isPurchase);
+    return fiscalPositionService.getTaxEquiv(fiscalPosition, tax);
+  }
+
   /**
    * Get the product tax according to the fiscal position
    *
@@ -140,23 +150,42 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
-  @Override
-  public Tax getProductTax(
+  protected Tax getProductTax(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
+      throws AxelorException {
+    Tax generalTax = this.getProductTax(product, company, isPurchase);
+    Tax tax = fiscalPositionService.getTax(fiscalPosition, generalTax);
+
+    if (tax != null) {
+      return tax;
+    }
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+        product.getCode(),
+        company.getName());
+  }
+
+  /**
+   * Get product tax before using tax equiv from fiscal position.
+   *
+   * @param product
+   * @param company
+   * @param isPurchase specify if we want get the tax for purchase or sale
+   * @return the tax defined for the product
+   * @throws AxelorException
+   */
+  protected Tax getProductTax(Product product, Company company, boolean isPurchase)
       throws AxelorException {
 
     LOG.debug(
-        "Get the tax for the product {} (company : {}, purchase : {}, fiscal position : {})",
-        new Object[] {
-          product.getCode(),
-          company.getName(),
-          isPurchase,
-          fiscalPosition != null ? fiscalPosition.getCode() : null
-        });
+        "Get the tax for the product {} (company : {}, purchase : {}",
+        product.getCode(),
+        company.getName(),
+        isPurchase);
 
-    Tax generalTax = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
-
-    Tax tax = fiscalPositionService.getTax(fiscalPosition, generalTax);
+    Tax tax = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
 
     if (tax != null) {
       return tax;

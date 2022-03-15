@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -119,7 +119,7 @@ public class StockLocationServiceImpl implements StockLocationService {
           BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
-                stockLocationLineService.getOrCreateStockLocationLine(
+                stockLocationLineService.getStockLocationLine(
                     stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 
             if (stockLocationLine != null) {
@@ -141,7 +141,7 @@ public class StockLocationServiceImpl implements StockLocationService {
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocationLineService.getStockLocationLine(
                 stockLocationRepo.find(locationId), productRepo.find(productId));
 
         if (stockLocationLine != null) {
@@ -283,7 +283,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     List<?> result = query.getResultList();
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
-        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
   }
 
   @Override

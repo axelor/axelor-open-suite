@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -31,13 +30,16 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +50,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -71,10 +74,28 @@ public class ManufOrderController {
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
-
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
-
       response.setReload(true);
+      String message = "";
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+        message = manufOrder.getMoCommentFromSaleOrder();
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        message =
+            message
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrderLine());
+      }
+
+      if (!message.isEmpty()) {
+        message =
+            I18n.get(ITranslation.PRODUCTION_COMMENT)
+                .concat(System.lineSeparator())
+                .concat(message);
+        response.setFlash(message);
+        response.setCanClose(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -208,16 +229,34 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      for (ManufOrder manufOrder : manufOrders) {
+      String message = "";
 
+      for (ManufOrder manufOrder : manufOrders) {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
+        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+          message = manufOrder.getMoCommentFromSaleOrder();
+        }
 
         if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
           Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
         }
-      }
 
+        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+          message =
+              message
+                  .concat(System.lineSeparator())
+                  .concat(manufOrder.getMoCommentFromSaleOrderLine());
+        }
+      }
       response.setReload(true);
+      if (!message.isEmpty()) {
+        message =
+            I18n.get(ITranslation.PRODUCTION_COMMENT)
+                .concat(System.lineSeparator())
+                .concat(message);
+        response.setFlash(message);
+        response.setCanClose(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -518,7 +557,12 @@ public class ManufOrderController {
             if (canMerge) {
               response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
-              response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+              if (Beans.get(AppProductionService.class).getAppProduction().getManageWorkshop()) {
+                response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+              } else {
+                response.setError(
+                    I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
+              }
             }
           }
         } else {
@@ -602,16 +646,33 @@ public class ManufOrderController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
       }
-      List<Product> productList =
-          prodProductList.stream().map(ProdProduct::getProduct).collect(Collectors.toList());
-      List<BillOfMaterial> billOfMaterialList =
-          mo.getBillOfMaterial().getBillOfMaterialSet().stream()
-              .filter(billOfMaterial -> productList.contains(billOfMaterial.getProduct()))
-              .collect(Collectors.toList());
+
+      List<Product> selectedProductList = new ArrayList<>();
+
+      for (ProdProduct prod : prodProductList) {
+        if (selectedProductList.contains(prod.getProduct())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
+        }
+        selectedProductList.add(prod.getProduct());
+      }
+
       List<ManufOrder> moList =
-          Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
-      response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), moList.size()));
+          Beans.get(ManufOrderService.class).generateAllSubManufOrder(selectedProductList, mo);
+
       response.setCanClose(true);
+      response.setView(
+          ActionView.define(I18n.get("Manufacturing orders"))
+              .model(ManufOrder.class.getName())
+              .add("grid", "generated-manuf-order-grid")
+              .add("form", "manuf-order-form")
+              .param("popup", "true")
+              .param("popup-save", "false")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .domain("self.id in (" + StringTool.getIdListString(moList) + ")")
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

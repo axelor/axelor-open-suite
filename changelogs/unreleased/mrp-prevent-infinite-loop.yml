@@ -1,3 +1,0 @@
----
-title: "Mrp: fix MRP process being stuck in a loop with wrong mrp line type configuration."
-type: fix

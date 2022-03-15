@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,13 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.axelor.apps.tool.StringTool;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperRecord {
 
   private String targetModel = null;
@@ -29,7 +32,11 @@ public class MapperRecord {
 
   private boolean newRecord = true;
 
-  private boolean createVariable = false;
+  private boolean savedRecord = false;
+
+  private String targetVariable = "rec";
+
+  private StringBuilder scriptBuilder = new StringBuilder();
 
   private List<MapperField> fields = new ArrayList<MapperField>();
 
@@ -49,6 +56,14 @@ public class MapperRecord {
     this.newRecord = newRecord;
   }
 
+  public boolean isSavedRecord() {
+    return savedRecord;
+  }
+
+  public void setSavedRecord(boolean savedRecord) {
+    this.savedRecord = savedRecord;
+  }
+
   public List<MapperField> getFields() {
     return fields;
   }
@@ -65,47 +80,78 @@ public class MapperRecord {
     this.sourceModel = sourceModel;
   }
 
-  public boolean getCreateVariable() {
-    return createVariable;
+  public StringBuilder getScriptBuilder() {
+    return this.scriptBuilder;
   }
 
-  public void setCreateVariable(boolean createVariable) {
-    this.createVariable = createVariable;
+  public String getTargetVariable() {
+    return targetVariable;
+  }
+
+  public void setTargetVariable(String targetVariable) {
+    this.targetVariable = targetVariable;
   }
 
   public String toScript() {
-    StringBuilder stb = new StringBuilder();
-    if (newRecord) {
-      stb.append("def rec = $ctx.create('" + targetModel + "')\n");
-    } else {
-      stb.append(
-          "def rec = $ctx.find('"
-              + targetModel
-              + "',"
-              + targetModel.substring(0, 1).toLowerCase()
-              + targetModel.substring(1)
-              + "Id)\n");
-    }
+
+    scriptBuilder = new StringBuilder();
+
+    addTarget();
 
     if (!Strings.isNullOrEmpty(sourceModel)) {
-      stb.append(
-          "def src = "
-              + sourceModel.substring(0, 1).toLowerCase()
-              + sourceModel.substring(1)
-              + "\n");
+
+      addSource();
     }
+
+    addFields();
+
+    addReturn();
+
+    return scriptBuilder.toString();
+  }
+
+  public void addSource() {
+
+    String src = StringTool.toFirstLower(sourceModel);
+
+    src = "def src = " + src + "\n";
+
+    scriptBuilder.append(src);
+  }
+
+  public StringBuilder addTarget() {
+
+    if (newRecord) {
+      scriptBuilder.append("def " + targetVariable + " = $ctx.create('" + targetModel + "')\n");
+    } else if (savedRecord) {
+      scriptBuilder.append(
+          "def "
+              + targetVariable
+              + " = $ctx.find('"
+              + targetModel
+              + "',"
+              + StringTool.toFirstLower(targetModel)
+              + "Id)\n");
+    } else {
+      targetVariable = StringTool.toFirstLower(targetModel);
+    }
+
+    return scriptBuilder;
+  }
+
+  public void addFields() {
 
     if (fields != null) {
       for (MapperField field : fields) {
-        stb.append(field.toScript("rec") + "\n");
+        scriptBuilder.append(field.toScript(targetVariable) + "\n");
       }
     }
+  }
 
-    if (createVariable) {
-      stb.append("$ctx.createVariable($ctx.save(rec), execution)");
-    } else {
-      stb.append("return $ctx.save(rec)");
+  public void addReturn() {
+
+    if (newRecord || savedRecord) {
+      scriptBuilder.append("return $ctx.save(" + targetVariable + ")");
     }
-    return stb.toString();
   }
 }

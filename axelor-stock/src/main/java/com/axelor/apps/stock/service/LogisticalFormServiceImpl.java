@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -489,9 +489,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
 
       totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-      logisticalForm.setTotalNetMass(totalNetMass.setScale(3, RoundingMode.HALF_EVEN));
-      logisticalForm.setTotalGrossMass(totalGrossMass.setScale(3, RoundingMode.HALF_EVEN));
-      logisticalForm.setTotalVolume(totalVolume.setScale(3, RoundingMode.HALF_EVEN));
+      logisticalForm.setTotalNetMass(totalNetMass.setScale(3, RoundingMode.HALF_UP));
+      logisticalForm.setTotalGrossMass(totalGrossMass.setScale(3, RoundingMode.HALF_UP));
+      logisticalForm.setTotalVolume(totalVolume.setScale(3, RoundingMode.HALF_UP));
     }
   }
 
