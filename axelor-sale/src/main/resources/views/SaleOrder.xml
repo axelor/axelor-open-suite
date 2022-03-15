@@ -550,24 +550,24 @@
       <panel name="businessProjectPanel" title="Business project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         if-module="axelor-business-project">
-        <field name="$_projectGeneratorType" title="Type of project's elements generated"
+        <field name="projectGeneratorType" title="Type of project's elements generated"
           x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
-        <field name="$_elementStartDate" title="Start date" widget="date-time" type="datetime"/>
+        <field name="elementStartDate" title="Start date" widget="date-time" type="datetime"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
           form-view="project-form" grid-view="project-grid"/>
         <field name="toInvoiceViaTask" hidden="true"
-          showIf="$_projectGeneratorType == 'TASK_BY_LINE' || $_projectGeneratorType == 'TASK_TEMPLATE'"/>
+          showIf="projectGeneratorType == 'TASK_BY_LINE' || projectGeneratorType == 'TASK_TEMPLATE'"/>
         <panel name="projectDetailsPanel" colSpan="12">
           <button name="updateLinesBtn" title="Update lines with selected project"
             onClick="save,action-business-project-sale-order-method-update-lines,save"
             readonlyIf="!project"/>
           <panel name="fillOrGenerateProjectPanel" stacked="true">
-            <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType"
+            <button name="fillProjectBtn" readonlyIf="!projectGeneratorType"
               title="Fill project"
               if="__config__.app.getApp('business-project').projectSaleOrderLines"
               showIf="project != null" hidden="true"
               onClick="save,action-business-project-method-fill-project"/>
-            <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType"
+            <button name="generateProjectBtn" readonlyIf="!projectGeneratorType"
               title="Generate Project/Business"
               if="!__config__.app.getApp('business-project').automaticProject"
               showIf="project == null" hidden="true"
@@ -1444,9 +1444,6 @@
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
-    <action name="action-sale-order-method-check-analytic-distribution-template"/>
-    <action name="action-business-project-method-generate-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-validate-check-on-confirm"/>
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
@@ -2095,7 +2092,7 @@
 
   <action-attrs name="action-sale-order-record-project-default-fields"
     if-module="axelor-business-project">
-    <attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
+    <attribute for="elementStartDate" name="value" expr="#{__datetime__}"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-external-reference">
@@ -2153,15 +2150,9 @@
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-set-required">
-    <attribute name="required" for="$_projectGeneratorType"
+    <attribute name="required" for="projectGeneratorType"
       expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
   </action-attrs>
-
-  <action-method name="action-sale-order-method-check-analytic-distribution-template">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="checkSaleOrderAnalyticDistributionTemplate"
-      if="company?.saleConfig?.isAnalyticDistributionRequired"/>
-  </action-method>
 
   <action-method name="action-sale-order-method-generate-advance-payment">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"

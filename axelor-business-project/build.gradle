@@ -15,6 +15,7 @@ axelor {
 dependencies {
 	api project(":modules:axelor-human-resource")
 	api project(":modules:axelor-contract")
+	api project(":modules:axelor-production")
 
 	implementation libs.commons_lang3
 }

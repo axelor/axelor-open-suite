@@ -54,6 +54,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AppSupplychain appSupplychain;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
+  protected SaleOrderAnalyticService saleOrderAnalyticService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -67,7 +68,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      PartnerSupplychainService partnerSupplychainService) {
+      PartnerSupplychainService partnerSupplychainService,
+      SaleOrderAnalyticService saleOrderAnalyticService) {
 
     super(
         sequenceService,
@@ -82,11 +84,18 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
+    this.saleOrderAnalyticService = saleOrderAnalyticService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
+
+    saleOrderAnalyticService.checkSaleOrderAnalyticDistributionTemplate(saleOrder);
 
     super.confirmSaleOrder(saleOrder);
 
@@ -94,10 +103,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
-    }
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return;
     }
 
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {

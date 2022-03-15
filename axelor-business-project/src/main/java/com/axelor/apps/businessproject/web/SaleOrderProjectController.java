@@ -17,16 +17,13 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
+import com.axelor.apps.businessproject.service.SaleOrderBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -35,13 +32,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Optional;
 
 @Singleton
 public class SaleOrderProjectController {
@@ -52,23 +44,8 @@ public class SaleOrderProjectController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
-        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
-        return;
-      }
-      String generatorType = (String) request.getContext().get("_projectGeneratorType");
-      LocalDateTime startDate = getElementStartDate(request.getContext());
 
-      ProjectGeneratorType projectGeneratorType = ProjectGeneratorType.valueOf(generatorType);
-
-      ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
-
-      Project project;
-      if (projectGeneratorType.equals(ProjectGeneratorType.PROJECT_ALONE)) {
-        project = factory.create(saleOrder);
-      } else {
-        project = factory.generate(saleOrder, startDate);
-      }
+      Project project = Beans.get(SaleOrderBusinessProjectService.class).generateProject(saleOrder);
 
       response.setReload(true);
       response.setView(
@@ -95,11 +72,12 @@ public class SaleOrderProjectController {
         response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
         return;
       }
-      String generatorType = (String) request.getContext().get("_projectGeneratorType");
-      LocalDateTime startDate = getElementStartDate(request.getContext());
+
+      LocalDateTime startDate =
+          Beans.get(SaleOrderBusinessProjectService.class).getElementStartDate(saleOrder);
 
       ProjectGeneratorFactory factory =
-          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
+          ProjectGeneratorFactory.getFactory(saleOrder.getProjectGeneratorType());
       ActionViewBuilder view = factory.fill(saleOrder.getProject(), saleOrder, startDate);
 
       response.setReload(true);
@@ -120,20 +98,5 @@ public class SaleOrderProjectController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  private LocalDateTime getElementStartDate(Context context) {
-    LocalDateTime date;
-    String stringStartDate = (String) context.get("_elementStartDate");
-    if (!Strings.isNullOrEmpty(stringStartDate)) {
-      date = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
-    } else {
-      date =
-          Beans.get(AppBaseService.class)
-              .getTodayDate(
-                  Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-              .atStartOfDay();
-    }
-    return date;
   }
 }

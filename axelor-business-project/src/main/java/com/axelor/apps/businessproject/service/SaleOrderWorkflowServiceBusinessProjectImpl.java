@@ -1,35 +1,13 @@
-/*
- * Axelor Business Solutions
- *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package com.axelor.apps.businessproduction.service;
+package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.businessproject.service.SaleOrderBusinessProjectService;
-import com.axelor.apps.businessproject.service.SaleOrderWorkflowServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -39,16 +17,18 @@ import com.axelor.apps.supplychain.service.SaleOrderAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class SaleOrderWorkflowServiceBusinessProductionImpl
-    extends SaleOrderWorkflowServiceBusinessProjectImpl {
+public class SaleOrderWorkflowServiceBusinessProjectImpl
+    extends SaleOrderWorkflowServiceProductionImpl {
 
-  private AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected AppBusinessProjectService appBusinessProjectService;
+  protected SaleOrderBusinessProjectService saleOrderBusinessProjectService;
 
   @Inject
-  public SaleOrderWorkflowServiceBusinessProductionImpl(
+  public SaleOrderWorkflowServiceBusinessProjectImpl(
       SequenceService sequenceService,
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
@@ -61,7 +41,6 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
       PartnerSupplychainService partnerSupplychainService,
       SaleOrderAnalyticService saleOrderAnalyticService,
       AppBusinessProjectService appBusinessProjectService,
@@ -80,22 +59,19 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         productionOrderSaleOrderService,
         appProductionService,
         partnerSupplychainService,
-        saleOrderAnalyticService,
-        appBusinessProjectService,
-        saleOrderBusinessProjectService);
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
+        saleOrderAnalyticService);
+    this.appBusinessProjectService = appBusinessProjectService;
+    this.saleOrderBusinessProjectService = saleOrderBusinessProjectService;
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
-    super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
-        analyticMoveLine.setProject(null);
-        analyticMoveLineRepository.save(analyticMoveLine);
-      }
+  @Transactional(rollbackOn = {Exception.class})
+  public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    super.confirmSaleOrder(saleOrder);
+
+    if (appBusinessProjectService.isApp("business-project")
+        && appBusinessProjectService.getAppBusinessProject().getAutomaticProject()) {
+      saleOrderBusinessProjectService.generateProject(saleOrder);
     }
   }
 }

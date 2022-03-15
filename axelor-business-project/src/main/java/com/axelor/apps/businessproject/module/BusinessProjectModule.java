@@ -54,9 +54,12 @@ import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServic
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
+import com.axelor.apps.businessproject.service.SaleOrderBusinessProjectService;
+import com.axelor.apps.businessproject.service.SaleOrderBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.SaleOrderWorkflowServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectService;
@@ -74,6 +77,7 @@ import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
@@ -140,5 +144,8 @@ public class BusinessProjectModule extends AxelorModule {
         .to(PurchaseOrderWorkflowServiceProjectImpl.class);
     bind(InvoiceMergingServiceSupplychainImpl.class)
         .to(InvoiceMergingServiceBusinessProjectImpl.class);
+    bind(SaleOrderBusinessProjectService.class).to(SaleOrderBusinessProjectServiceImpl.class);
+    bind(SaleOrderWorkflowServiceProductionImpl.class)
+        .to(SaleOrderWorkflowServiceBusinessProjectImpl.class);
   }
 }

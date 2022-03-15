@@ -28,6 +28,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
@@ -56,7 +57,8 @@ public class SaleOrderWorkflowServiceProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      PartnerSupplychainService partnerSupplychainService) {
+      PartnerSupplychainService partnerSupplychainService,
+      SaleOrderAnalyticService saleOrderAnalyticService) {
 
     super(
         sequenceService,
@@ -69,7 +71,8 @@ public class SaleOrderWorkflowServiceProductionImpl
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
-        partnerSupplychainService);
+        partnerSupplychainService,
+        saleOrderAnalyticService);
 
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;

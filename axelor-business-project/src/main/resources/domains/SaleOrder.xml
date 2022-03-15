@@ -9,6 +9,10 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <boolean name="toInvoiceViaTask" title="To invoice via task" default="false"/>
+    <enum name="projectGeneratorType" ref="com.axelor.apps.project.db.ProjectGeneratorType"
+      title="Type of project's elements generated"/>
+    <datetime name="elementStartDate" title="Start date"/>
+
 
   </entity>
 
