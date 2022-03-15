@@ -808,10 +808,10 @@ public class PartnerServiceImpl implements PartnerService {
     query.append("self.");
     query.append(type);
     query.append("=true");
-    return (!type.isEmpty() && (type != null))
+    return (!StringUtils.isEmpty(type))
         ? Query.of(Partner.class).filter(query.toString()).fetch().stream()
             .map(partner -> partner.getId())
             .collect(Collectors.toList())
-        : null;
+        : new ArrayList<>();
   }
 }

@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -423,9 +424,7 @@ public class MoveToolService {
 
   public String filterJournalPartnerCompatibleType(Move move) {
     Journal journal = move.getJournal();
-    if (journal != null
-        && journal.getCompatiblePartnerTypeSelect() != null
-        && !journal.getCompatiblePartnerTypeSelect().isEmpty()) {
+    if (!StringUtils.isEmpty(journal.getCompatiblePartnerTypeSelect())) {
       StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
       Set<Long> compatiblePartnerIds = journalService.getCompatiblePartnerIds(journal);
       for (Long id : compatiblePartnerIds) {
