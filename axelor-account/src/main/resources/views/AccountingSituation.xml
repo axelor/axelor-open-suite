@@ -21,7 +21,7 @@
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="partner.partnerSeq"/>
     <field name="partner.simpleFullName"/>
-    <field name="partner.fixedPhone" widget="phone"/>
+    <field name="partner.fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="partner.emailAddress.address"/>
     <field name="partner.mainAddress"/>
     <field name="partner.companyStr"/>
@@ -72,6 +72,13 @@
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
         grid-view="account-grid" canNew="true"
         domain="self.statusSelect = 1 AND self.company = :company"/>
+      <field name="partner.isCustomer" hidden="true"/>
+      <field name="partner.isSupplier" hidden="true"/>
+    </panel>
+    <panel name="vatSystemPanel" title="VAT System"
+      showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
+      <field name="vatSystemSelect"
+        showIf="(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -193,6 +200,7 @@
     <action name="action-account-accounting-situation-default-set"/>
     <action name="action-accounting-situation-method-set-default-mail"/>
     <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
+    <action name="action-record-manage-vat-system-onnew"/>
   </action-group>
 
   <action-group name="action-accounting-situation-group-form-onload">
@@ -249,7 +257,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="holdBackCustomerAccount"
       expr="eval:__user__.activeCompany?.accountConfig?.holdBackCustomerAccount"
       if="__user__.activeCompany != null"/>
@@ -262,6 +270,12 @@
     <field name="holdBackSupplierAccount"
       expr="eval:__repo__(Company).all().fetchOne()?.accountConfig?.holdBackSupplierAccount"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-record name="action-record-manage-vat-system-onnew"
+    model="com.axelor.apps.account.db.AccountingSituation">
+    <field name="vatSystemSelect" expr="eval: 1"
+      if="partner != null &amp;&amp; (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">

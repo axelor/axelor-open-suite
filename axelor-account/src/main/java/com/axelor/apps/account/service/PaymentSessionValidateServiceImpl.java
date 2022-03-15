@@ -129,6 +129,40 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
+    Map<Partner, List<Move>> moveMap = new HashMap<>();
+    Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
+
+    boolean out = paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT;
+    boolean isGlobal =
+        paymentSession.getAccountingMethodSelect()
+            == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
+
+    this.processInvoiceTerms(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+
+    return this.getMoveCount(moveMap, isGlobal);
+  }
+
+  protected void postProcessPaymentSession(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.updateStatuses(paymentSession, moveMap, paymentAmountMap);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processInvoiceTerms(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    counter = 0;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
@@ -137,14 +171,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .filter("self.paymentSession = :paymentSession")
             .bind("paymentSession", paymentSession)
             .order("id");
-
-    Map<Partner, List<Move>> moveMap = new HashMap<>();
-    Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
-    counter = 0;
-    boolean out = paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT;
-    boolean isGlobal =
-        paymentSession.getAccountingMethodSelect()
-            == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
 
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
         .isEmpty()) {
@@ -163,25 +189,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       JPA.clear();
     }
-
-    if (!moveMap.isEmpty()) {
-      this.generateCashMoveLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-
-      if (isGlobal) {
-        this.generateCashMove(paymentSession, paymentAmountMap.values().iterator().next(), out);
-      }
-    }
-
-    paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    for (List<Move> moveList : moveMap.values()) {
-      for (Move move : moveList) {
-        move = moveRepo.find(move.getId());
-        move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
-        this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
-      }
-    }
-
-    return this.getMoveCount(moveMap, isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -204,6 +211,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
     } else {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+      paymentSessionRepo.save(paymentSession);
     }
 
     return paymentSession;
@@ -354,6 +362,22 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return reconcileService.reconcile(debitMoveLine, creditMoveLine, false, true);
   }
 
+  protected void generateCashMoveAndLines(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out,
+      boolean isGlobal)
+      throws AxelorException {
+    if (!moveMap.isEmpty()) {
+      this.generateCashMoveLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+
+      if (isGlobal) {
+        this.generateCashMove(paymentSession, paymentAmountMap.values().iterator().next(), out);
+      }
+    }
+  }
+
   protected Move generateCashMove(
       PaymentSession paymentSession, BigDecimal paymentAmount, boolean out) throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
@@ -442,6 +466,23 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.save(invoiceTerm);
   }
 
+  protected void updateStatuses(
+      PaymentSession paymentSession,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap)
+      throws AxelorException {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+
+    for (List<Move> moveList : moveMap.values()) {
+      for (Move move : moveList) {
+        move = moveRepo.find(move.getId());
+        move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
+
+        this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+      }
+    }
+  }
+
   protected void updateStatus(Move move, boolean daybook) throws AxelorException {
     moveValidateService.updateValidateStatus(move, daybook);
 
@@ -455,5 +496,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected int getMoveCount(Map<Partner, List<Move>> moveMap, boolean isGlobal) {
     return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
         + (isGlobal ? 1 : 0);
+  }
+
+  @Override
+  public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
+    StringBuilder flashMessage = new StringBuilder();
+
+    if (moveCount > 0) {
+      flashMessage.append(
+          String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_MOVES), moveCount));
+    }
+
+    return flashMessage;
   }
 }

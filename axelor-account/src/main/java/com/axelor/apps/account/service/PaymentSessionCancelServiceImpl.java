@@ -34,26 +34,26 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
 
   @Transactional(rollbackOn = {Exception.class})
   protected void cancelInvoiceTerms(PaymentSession paymentSession) {
-    int offset = 0;
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0)).isEmpty()) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
-
-        invoiceTerm.setPaymentSession(null);
-        invoiceTerm.setIsSelectedOnPaymentSession(false);
-        invoiceTerm.setApplyFinancialDiscount(false);
-        invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
-        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+        this.cancelInvoiceTerm(invoiceTerm);
 
         invoiceTermRepo.save(invoiceTerm);
       }
 
       JPA.clear();
     }
+  }
+
+  protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setPaymentSession(null);
+    invoiceTerm.setIsSelectedOnPaymentSession(false);
+    invoiceTerm.setApplyFinancialDiscount(false);
+    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+    invoiceTerm.setAmountPaid(BigDecimal.ZERO);
   }
 }

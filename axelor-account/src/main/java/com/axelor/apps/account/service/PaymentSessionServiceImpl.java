@@ -20,12 +20,13 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -33,6 +34,17 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentSessionServiceImpl implements PaymentSessionService {
+
+  protected PaymentSessionRepository paymentSessionRepository;
+  protected InvoiceTermRepository invoiceTermRepository;
+
+  @Inject
+  public PaymentSessionServiceImpl(
+      PaymentSessionRepository paymentSessionRepository,
+      InvoiceTermRepository invoiceTermRepository) {
+    this.paymentSessionRepository = paymentSessionRepository;
+    this.invoiceTermRepository = invoiceTermRepository;
+  }
 
   @Override
   public String computeName(PaymentSession paymentSession) {
@@ -103,6 +115,17 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                 .setParameter(1, paymentSession)
                 .getSingleResult();
     paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    Beans.get(PaymentSessionRepository.class).save(paymentSession);
+    paymentSessionRepository.save(paymentSession);
+  }
+
+  @Override
+  public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
+    return invoiceTermRepository
+            .all()
+            .filter(
+                "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS FALSE")
+            .bind("paymentSession", paymentSession.getId())
+            .count()
+        > 0;
   }
 }

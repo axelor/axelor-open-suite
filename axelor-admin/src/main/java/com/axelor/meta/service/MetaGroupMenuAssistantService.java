@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,7 +48,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -63,15 +62,25 @@ import org.slf4j.LoggerFactory;
 
 public class MetaGroupMenuAssistantService {
 
-  @Inject private MetaGroupMenuAssistantRepository menuAssistantRepository;
+  protected MetaGroupMenuAssistantRepository menuAssistantRepository;
+  protected GroupRepository groupRepository;
+  protected MetaMenuRepository menuRepository;
+  protected RoleRepository roleRepository;
+  protected MetaFiles metaFiles;
 
-  @Inject private GroupRepository groupRepository;
-
-  @Inject private MetaMenuRepository menuRepository;
-
-  @Inject private RoleRepository roleRepository;
-
-  @Inject private MetaFiles metaFiles;
+  @Inject
+  public MetaGroupMenuAssistantService(
+      MetaGroupMenuAssistantRepository menuAssistantRepository,
+      GroupRepository groupRepository,
+      MetaMenuRepository menuRepository,
+      RoleRepository roleRepository,
+      MetaFiles metaFiles) {
+    this.menuAssistantRepository = menuAssistantRepository;
+    this.groupRepository = groupRepository;
+    this.menuRepository = menuRepository;
+    this.roleRepository = roleRepository;
+    this.metaFiles = metaFiles;
+  }
 
   private List<String> badGroups = new ArrayList<>();
 
@@ -90,9 +99,7 @@ public class MetaGroupMenuAssistantService {
 
     String userCode = groupMenuAssistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-    String fileName = "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
-
-    return fileName;
+    return "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
   }
 
   private void setBundle(Locale locale) {
@@ -137,7 +144,7 @@ public class MetaGroupMenuAssistantService {
       throws IOException {
 
     MetaFile metaFile = groupMenuAssistant.getMetaFile();
-    List<String[]> rows = new ArrayList<String[]>();
+    List<String[]> rows = new ArrayList<>();
     if (metaFile != null) {
       File csvFile = MetaFiles.getPath(metaFile).toFile();
       logger.debug("File name: {}", csvFile.getAbsolutePath());
@@ -158,10 +165,9 @@ public class MetaGroupMenuAssistantService {
     return rows;
   }
 
-  private String[] getGroupRow(String[] row, MetaGroupMenuAssistant groupMenuAssistant)
-      throws IOException {
+  private String[] getGroupRow(String[] row, MetaGroupMenuAssistant groupMenuAssistant) {
 
-    List<String> groupList = new ArrayList<String>();
+    List<String> groupList = new ArrayList<>();
     if (row != null) {
       groupList.addAll(Arrays.asList(row));
     } else {
@@ -216,15 +222,7 @@ public class MetaGroupMenuAssistantService {
       rows.add(menu);
     }
 
-    Collections.sort(
-        rows,
-        new Comparator<String[]>() {
-
-          @Override
-          public int compare(String[] first, String[] second) {
-            return first[0].compareTo(second[0]);
-          }
-        });
+    Collections.sort(rows, (first, second) -> first[0].compareTo(second[0]));
 
     rows.add(0, groupRow);
   }
@@ -262,7 +260,7 @@ public class MetaGroupMenuAssistantService {
 
   private Map<String, Object> checkGroups(String[] groupRow) {
 
-    Map<String, Object> groupMap = new HashMap<String, Object>();
+    Map<String, Object> groupMap = new HashMap<>();
 
     for (Integer glen = 2; glen < groupRow.length; glen++) {
 
@@ -280,7 +278,7 @@ public class MetaGroupMenuAssistantService {
 
   private Map<String, Role> checkRoles(String[] roleRow) {
 
-    Map<String, Role> roleMap = new HashMap<String, Role>();
+    Map<String, Role> roleMap = new HashMap<>();
 
     for (Integer rlen = 2; rlen < roleRow.length; rlen++) {
 
@@ -346,8 +344,7 @@ public class MetaGroupMenuAssistantService {
   }
 
   private void importMenus(
-      String[] row, String[] groupRow, Map<String, Object> groupMap, Group admin)
-      throws IOException {
+      String[] row, String[] groupRow, Map<String, Object> groupMap, Group admin) {
 
     List<MetaMenu> menus =
         menuRepository.all().filter("self.name = ?1", row[0]).order("-priority").fetch();

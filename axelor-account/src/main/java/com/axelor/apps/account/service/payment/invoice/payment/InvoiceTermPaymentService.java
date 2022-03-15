@@ -59,6 +59,15 @@ public interface InvoiceTermPaymentService {
   public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException;
 
   /**
+   * Method to create new InvoiceTermPayment without InvoicePayment
+   *
+   * @param invoiceTermToPay
+   * @param amount
+   * @return
+   */
+  InvoiceTermPayment createInvoiceTermPayment(InvoiceTerm invoiceTermToPay, BigDecimal amount);
+
+  /**
    * Method to create new InvoiceTermPayment usign invoiceTerm amountRemaining
    *
    * @param invoicePayment
@@ -88,4 +97,9 @@ public interface InvoiceTermPaymentService {
    */
   public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
       throws AxelorException;
+
+  public void manageInvoiceTermFinancialDiscount(
+      InvoiceTermPayment invoiceTermPayment,
+      InvoiceTerm invoiceTerm,
+      boolean applyFinancialDiscount);
 }

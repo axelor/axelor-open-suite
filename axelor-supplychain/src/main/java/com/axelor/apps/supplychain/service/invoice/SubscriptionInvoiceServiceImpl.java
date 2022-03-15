@@ -47,7 +47,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
   @Override
   public List<Invoice> generateSubscriptionInvoices() throws AxelorException {
 
-    List<Invoice> invoices = new ArrayList<Invoice>();
+    List<Invoice> invoices = new ArrayList<>();
 
     for (SaleOrder saleOrder : getSubscriptionOrders(null)) {
       Invoice invoice = generateSubscriptionInvoice(saleOrder);

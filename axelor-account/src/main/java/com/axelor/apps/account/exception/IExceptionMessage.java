@@ -45,7 +45,7 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
@@ -707,6 +707,8 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_SALEORDER = /*$$(*/
       "The sale order must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_PURCHASEORDER = /*$$(*/
+      "The purchase order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
@@ -763,6 +765,9 @@ public interface IExceptionMessage {
 
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
+
+  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
+      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
@@ -831,6 +836,9 @@ public interface IExceptionMessage {
   /** Payment voucher controller */
   static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
       "You can't remove this payment voucher as it is already used in a move." /*)*/;
+
+  static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
+      "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
@@ -1026,6 +1034,15 @@ public interface IExceptionMessage {
   static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
       "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves" /*)*/;
 
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL = /*$$(*/
+      "Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS = /*$$(*/
+      "Selected AnalyticAxis doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
+      "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
@@ -1077,6 +1094,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
+  static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
+      "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
@@ -1088,8 +1107,39 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
+  static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing partner." /*)*/;
+
+  static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
+
+  static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
+
+  static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+
+  static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  static final String COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
+      "At least one tax accounting move line associated to this move is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
+
+  static final String SAME_TAX_MOVE_LINES = /*$$(*/
+      "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
+
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  static final String PAYMENT_SESSION_NO_EMAIL_SENT = /*$$(*/ "No email have been sent." /*)*/;
+
+  static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d emails have been sent." /*)*/;
 
   static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;

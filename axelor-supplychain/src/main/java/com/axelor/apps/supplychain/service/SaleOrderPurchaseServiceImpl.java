@@ -98,7 +98,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         }
 
         if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
         }
 
         saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
@@ -154,11 +154,9 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getProduct() != null) {
-        purchaseOrder.addPurchaseOrderLineListItem(
-            purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
-                purchaseOrder, saleOrderLine));
-      }
+      purchaseOrder.addPurchaseOrderLineListItem(
+          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
+              purchaseOrder, saleOrderLine));
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

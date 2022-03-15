@@ -85,20 +85,20 @@
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="analyticAxis"
-      domain="self.parent is null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.id = :_accountId">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
-      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
     <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
-      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
-      draggable="true">
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
       <field name="name" as="name"/>
       <field name="code" as="code"/>
     </node>
@@ -106,8 +106,9 @@
 
   <action-view name="action-analytic-account-tree-view"
     model="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Tree">
-    <view type="tree" name="analytic-account-tree-2"/>
+    <view name="analytic-account-tree-2" type="tree"/>
     <context name="_axisId" expr="eval: analyticAxis?.id"/>
+    <context name="_accountId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-analytic-account-view-account-onchange-view"

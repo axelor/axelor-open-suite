@@ -10,12 +10,14 @@
     <string name="name" title="Session name" namecolumn="true"/>
     <many-to-one name="company" title="Company" required="true"
       ref="com.axelor.apps.base.db.Company"/>
-    <many-to-one name="journal" title="Journal" ref="com.axelor.apps.account.db.Journal"/>
+    <many-to-one name="journal" title="Journal" ref="com.axelor.apps.account.db.Journal"
+      required="true"/>
     <many-to-one name="bankDetails" title="Bank details" required="true"
       ref="com.axelor.apps.base.db.BankDetails"/>
-    <many-to-one name="paymentMode" title="Payment mode"
+    <many-to-one name="paymentMode" title="Payment mode" required="true"
       ref="com.axelor.apps.account.db.PaymentMode"/>
-    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
+    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"
+      required="true"/>
     <many-to-one name="assignedToUser" title="Assigned to" required="true"
       ref="com.axelor.auth.db.User"/>
     <date name="paymentDate" title="Payment date" required="true"/>
@@ -29,9 +31,9 @@
     <boolean name="hasEmailsSent" title="Email sent"/>
     <boolean name="hasMovesGenerated" title="Moves generated"/>
     <integer name="accountingMethodSelect" title="Accounting method for payment move"
-      selection="paymentMode.accounting.method.select" default="1"/>
+      required="true" selection="paymentMode.accounting.method.select" default="1"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
-      selection="paymentMode.accounting.trigger.select" default="1"/>
+      required="true" selection="paymentMode.accounting.trigger.select" default="1"/>
     <integer name="daysMarginOnPaySession" title="Days margin on pay session"
       required="true"/>
     <integer name="partnerTypeSelect" title="Recipient type"
@@ -39,6 +41,7 @@
     <many-to-one ref="com.axelor.auth.db.User" name="validatedByUser"
       title="Validated by"/>
     <datetime name="validatedDate" title="Validated Date"/>
+    <many-to-one name="partnerForEmail" ref="com.axelor.apps.base.db.Partner"/>
 
     <extra-code><![CDATA[
 

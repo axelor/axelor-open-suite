@@ -17,17 +17,16 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
-import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -45,6 +44,7 @@ public class PayVoucherElementToPayService {
   protected CurrencyService currencyService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected AccountConfigService accountConfigService;
+  protected InvoiceTermService invoiceTermService;
 
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
@@ -53,10 +53,12 @@ public class PayVoucherElementToPayService {
   public PayVoucherElementToPayService(
       CurrencyService currencyService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceTermService invoiceTermService) {
     this.currencyService = currencyService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.accountConfigService = accountConfigService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -69,24 +71,24 @@ public class PayVoucherElementToPayService {
    * @return
    */
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PaymentVoucher paymentVoucher,
+      PaymentVoucher pv,
       int seq,
       Invoice invoice,
-      MoveLine moveLine,
+      MoveLine ml,
       BigDecimal totalAmount,
       BigDecimal remainingAmount,
       BigDecimal amountToPay) {
 
     log.debug("In  createPayVoucherElementToPay....");
 
-    if (paymentVoucher != null && moveLine != null) {
+    if (pv != null && ml != null) {
       PayVoucherElementToPay piToPay = new PayVoucherElementToPay();
       piToPay.setSequence(seq);
-      piToPay.setMoveLine(moveLine);
+      piToPay.setMoveLine(ml);
       piToPay.setTotalAmount(totalAmount);
       piToPay.setRemainingAmount(remainingAmount);
       piToPay.setAmountToPay(amountToPay);
-      piToPay.setPaymentVoucher(paymentVoucher);
+      piToPay.setPaymentVoucher(pv);
 
       log.debug("End createPayVoucherElementToPay IF.");
 
@@ -116,15 +118,12 @@ public class PayVoucherElementToPayService {
   public PayVoucherElementToPay updateElementToPayWithFinancialDiscount(
       PayVoucherElementToPay payVoucherElementToPay,
       PayVoucherDueElement payVoucherDueElement,
-      PaymentVoucher paymentVoucher)
-      throws AxelorException {
+      PaymentVoucher paymentVoucher) {
     if (!payVoucherDueElement.getApplyFinancialDiscount()
         || payVoucherDueElement.getFinancialDiscount() == null) {
       return payVoucherElementToPay;
     }
-    if (paymentVoucher != null) {
-      payVoucherElementToPay.setPaymentVoucher(paymentVoucher);
-    }
+
     FinancialDiscount financialDiscount = payVoucherDueElement.getFinancialDiscount();
     LocalDate financialDiscountDeadlineDate =
         payVoucherDueElement.getFinancialDiscountDeadlineDate();
@@ -133,126 +132,51 @@ public class PayVoucherElementToPayService {
       payVoucherElementToPay.setFinancialDiscount(financialDiscount);
       payVoucherElementToPay.setFinancialDiscountDeadlineDate(financialDiscountDeadlineDate);
       payVoucherElementToPay.setFinancialDiscountAmount(
-          calculateFinancialDiscountAmount(payVoucherElementToPay));
+          payVoucherDueElement.getFinancialDiscountAmount());
       payVoucherElementToPay.setFinancialDiscountTaxAmount(
-          calculateFinancialDiscountTaxAmount(payVoucherElementToPay));
+          payVoucherDueElement.getFinancialDiscountTaxAmount());
       payVoucherElementToPay.setFinancialDiscountTotalAmount(
-          calculateFinancialDiscountTotalAmount(payVoucherElementToPay));
-      payVoucherElementToPay.setRemainingAmountAfterFinDiscount(
-          payVoucherElementToPay
-              .getAmountToPay()
-              .subtract(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
+          payVoucherDueElement.getFinancialDiscountTotalAmount());
+
+      this.updateFinancialDiscount(payVoucherElementToPay);
     }
+
     return payVoucherElementToPay;
   }
 
-  public BigDecimal calculateFinancialDiscountAmount(PayVoucherElementToPay payVoucherElementToPay)
-      throws AxelorException {
-    return calculateFinancialDiscountAmountUnscaled(payVoucherElementToPay)
-        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
-  }
-
-  protected BigDecimal calculateFinancialDiscountAmountUnscaled(
-      PayVoucherElementToPay payVoucherElementToPay) throws AxelorException {
-    if (payVoucherElementToPay == null
-        || payVoucherElementToPay.getFinancialDiscount() == null
-        || payVoucherElementToPay.getPaymentVoucher() == null) {
-      return BigDecimal.ZERO;
+  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {
+    if (!payVoucherElementToPay.getApplyFinancialDiscount()
+        || payVoucherElementToPay.getFinancialDiscount() == null) {
+      return;
     }
 
-    BigDecimal baseAmount = payVoucherElementToPay.getAmountToPay();
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(
-            payVoucherElementToPay.getPaymentVoucher().getCompany());
+    InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
 
-    BigDecimal baseAmountByRate =
-        baseAmount.multiply(
-            payVoucherElementToPay
-                .getFinancialDiscount()
-                .getDiscountRate()
-                .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
+    BigDecimal percentagePaid =
+        payVoucherElementToPay
+            .getAmountToPay()
+            .divide(
+                invoiceTerm.getRemainingAmountAfterFinDiscount(),
+                CALCULATION_SCALE,
+                RoundingMode.HALF_UP);
 
-    if (payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-        == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
-      return baseAmountByRate.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
-    } else if (payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-        && (payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE)
-        && accountConfig.getPurchFinancialDiscountTax() != null) {
-      return baseAmountByRate.divide(
-          accountConfig
-              .getPurchFinancialDiscountTax()
-              .getActiveTaxLine()
-              .getValue()
-              .add(new BigDecimal(1)),
-          CALCULATION_SCALE,
-          RoundingMode.HALF_UP);
-    } else if (payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-        && (payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            || payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND)
-        && accountConfig.getSaleFinancialDiscountTax() != null) {
-      return baseAmountByRate.divide(
-          accountConfig
-              .getSaleFinancialDiscountTax()
-              .getActiveTaxLine()
-              .getValue()
-              .add(new BigDecimal(1)),
-          CALCULATION_SCALE,
-          RoundingMode.HALF_UP);
-    } else {
-      return BigDecimal.ZERO;
-    }
-  }
-
-  public BigDecimal calculateFinancialDiscountTaxAmount(
-      PayVoucherElementToPay payVoucherElementToPay) throws AxelorException {
-    return calculateFinancialDiscountTaxAmountUnscaled(payVoucherElementToPay)
-        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
-  }
-
-  protected BigDecimal calculateFinancialDiscountTaxAmountUnscaled(
-      PayVoucherElementToPay payVoucherElementToPay) throws AxelorException {
-    if (payVoucherElementToPay == null
-        || payVoucherElementToPay.getFinancialDiscount() == null
-        || payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-            != FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return BigDecimal.ZERO;
-    }
-
-    BigDecimal financialDiscountAmount =
-        calculateFinancialDiscountAmountUnscaled(payVoucherElementToPay);
-
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(
-            payVoucherElementToPay.getPaymentVoucher().getCompany());
-    if ((payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_SALE)
-        && accountConfig.getPurchFinancialDiscountTax() != null) {
-      return financialDiscountAmount.multiply(
-          accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue());
-    } else if ((payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            || payVoucherElementToPay.getPaymentVoucher().getOperationTypeSelect()
-                == PaymentVoucherRepository.OPERATION_TYPE_CLIENT_REFUND)
-        && accountConfig.getSaleFinancialDiscountTax() != null) {
-      return financialDiscountAmount.multiply(
-          accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue());
-    }
-    return BigDecimal.ZERO;
-  }
-
-  public BigDecimal calculateFinancialDiscountTotalAmount(
-      PayVoucherElementToPay payVoucherElementToPay) throws AxelorException {
-    return (calculateFinancialDiscountAmountUnscaled(payVoucherElementToPay)
-            .add(calculateFinancialDiscountTaxAmountUnscaled(payVoucherElementToPay)))
-        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+    payVoucherElementToPay.setFinancialDiscountTotalAmount(
+        invoiceTerm
+            .getFinancialDiscountAmount()
+            .multiply(percentagePaid)
+            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+    payVoucherElementToPay.setFinancialDiscountTaxAmount(
+        invoiceTermService
+            .getFinancialDiscountTaxAmount(payVoucherElementToPay.getInvoiceTerm())
+            .multiply(percentagePaid)
+            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+    payVoucherElementToPay.setFinancialDiscountAmount(
+        payVoucherElementToPay
+            .getFinancialDiscountTotalAmount()
+            .subtract(payVoucherElementToPay.getFinancialDiscountTaxAmount()));
+    payVoucherElementToPay.setTotalAmountWithFinancialDiscount(
+        payVoucherElementToPay
+            .getAmountToPay()
+            .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
   }
 }

@@ -14,8 +14,8 @@
   <form name="bank-order-line-origin-form"
     model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origin">
     <panel name="mainPanel">
-      <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
-        colSpan="12"/>
+      <field name="relatedToSelect" title="Related to" widget="RefSelect"
+        x-related="relatedToSelectId" colSpan="12"/>
     </panel>
   </form>
 

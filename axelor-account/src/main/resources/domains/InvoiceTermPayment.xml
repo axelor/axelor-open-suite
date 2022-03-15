@@ -15,6 +15,11 @@
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <many-to-many name="reconcileList" ref="com.axelor.apps.account.db.Reconcile"
+      readonly="true" title="Reconciliations"/>
+
+    <finder-method name="findByReconcileId" using="Long:reconcileId"
+      filter="(:reconcileId) MEMBER OF self.reconcileList " all="true"/>
 
   </entity>
 
