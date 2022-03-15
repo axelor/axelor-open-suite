@@ -236,7 +236,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     List<InvoiceTermPayment> invoiceTermPaymentList =
         invoicePayment.getInvoiceTermPaymentList().stream()
-            .filter(it -> it.getInvoiceTerm().getApplyFinancialDiscount())
+            .filter(
+                it ->
+                    it.getInvoiceTerm() != null && it.getInvoiceTerm().getApplyFinancialDiscount())
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {

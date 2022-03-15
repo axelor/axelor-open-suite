@@ -366,8 +366,8 @@ public class PaymentVoucherLoadService {
   }
 
   /**
-   * @param moveLineInvoiceToPay Les lignes de factures récupérées depuis l'échéance
-   * @param amountToPay Le montant du paiement
+   * @param moveLineInvoiceToPay Invoice lines fetched from invoice
+   * @param amountToPay Amount of the payment
    * @return
    */
   public List<MoveLine> assignMaxAmountToReconcile(

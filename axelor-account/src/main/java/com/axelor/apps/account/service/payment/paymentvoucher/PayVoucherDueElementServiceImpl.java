@@ -21,6 +21,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
 
+  private final int RETURN_SCALE = 2;
+
   @Inject
   public PayVoucherDueElementServiceImpl(
       PayVoucherDueElementRepository payVoucherDueElementRepository,
@@ -56,12 +58,12 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
           invoiceTerm
               .getFinancialDiscountAmount()
               .multiply(ratioPaid)
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
       payVoucherDueElement.setFinancialDiscountTaxAmount(
           invoiceTermService
               .getFinancialDiscountTaxAmount(invoiceTerm)
               .multiply(ratioPaid)
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
       payVoucherDueElement.setFinancialDiscountAmount(
           payVoucherDueElement
               .getFinancialDiscountTotalAmount()

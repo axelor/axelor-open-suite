@@ -45,7 +45,7 @@
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
     <hilite color="danger"
-      if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+      if="!isPaid &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
     <field name="name"/>
     <field name="dueDate"/>

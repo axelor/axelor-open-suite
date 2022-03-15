@@ -46,6 +46,9 @@ public class PayVoucherElementToPayService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
 
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
+
   @Inject
   public PayVoucherElementToPayService(
       CurrencyService currencyService,
@@ -152,18 +155,21 @@ public class PayVoucherElementToPayService {
     BigDecimal percentagePaid =
         payVoucherElementToPay
             .getAmountToPay()
-            .divide(invoiceTerm.getRemainingAmountAfterFinDiscount(), 10, RoundingMode.HALF_UP);
+            .divide(
+                invoiceTerm.getRemainingAmountAfterFinDiscount(),
+                CALCULATION_SCALE,
+                RoundingMode.HALF_UP);
 
     payVoucherElementToPay.setFinancialDiscountTotalAmount(
         invoiceTerm
             .getFinancialDiscountAmount()
             .multiply(percentagePaid)
-            .setScale(2, RoundingMode.HALF_UP));
+            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountTaxAmount(
         invoiceTermService
             .getFinancialDiscountTaxAmount(payVoucherElementToPay.getInvoiceTerm())
             .multiply(percentagePaid)
-            .setScale(2, RoundingMode.HALF_UP));
+            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountAmount(
         payVoucherElementToPay
             .getFinancialDiscountTotalAmount()
