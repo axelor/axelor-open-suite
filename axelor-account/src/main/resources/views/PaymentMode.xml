@@ -8,12 +8,13 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel-tabs name="mainPanelTab">
-          <panel-related name="accountManagementListPanel"
-            field="accountManagementList" grid-view="account-management-payment-mode-grid"
-            form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
-          <panel name="generalAccountingConfiguration"
-            title="General accounting configuration">
+          <panel name="mainAccountingSettingsTab" title="General accounting configuration">
             <field name="accountingTriggerSelect"/>
+            <panel-related name="accountManagementListPanel"
+              field="accountManagementList" grid-view="account-management-payment-mode-grid"
+              form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
+          </panel>
+          <panel name="paymentProcessesSettingsPanel" title="Payment processes settings">
             <field name="canSelectInPaymentSession"
               readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"/>
             <panel name="paymentSessionPanel" colSpan="12" showIf="canSelectInPaymentSession">

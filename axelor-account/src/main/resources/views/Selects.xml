@@ -735,8 +735,8 @@
   </selection>
 
   <selection name="payment.mode.accounting.trigger.select">
-    <option value="0">None</option>
-    <option value="1">Immediate</option>
+    <option value="0" order="0">None</option>
+    <option value="1" order="1">Immediate</option>
   </selection>
 
 </object-views>

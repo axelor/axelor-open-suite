@@ -15,7 +15,7 @@
         </panel>
       </replace>
     </extend>
-    <extend target="//panel[@name='generalAccountingConfiguration']">
+    <extend target="//panel[@name='paymentProcessesSettingsPanel']">
       <insert position="after">
         <panel name="bankOrderPanel" title="Bank order config." hidden="true"
           hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">

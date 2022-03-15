@@ -26,7 +26,7 @@
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
             form-view="account-form"/>
         </panel>
-        <panel name="directDebitDetailsPanel" title="Direct Debit" colSpan="4"
+        <panel name="directDebitDetailsPanel" title="Direct debit" colSpan="4"
           if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
           <field name="icsNumber"
             if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
