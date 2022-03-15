@@ -89,6 +89,17 @@
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
   </grid>
 
+  <grid name="invoice-term-debt-recovery-grid" model="com.axelor.apps.account.db.InvoiceTerm"
+    title="Invoice term">
+    <field name="moveLine.move.company"/>
+    <field name="moveLine.origin"/>
+    <field name="moveLine.move.originDate"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="amountRemaining"/>
+    <field name="moveLine.description"></field>
+  </grid>
+
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
     onLoad="action-invoice-term-group-check-pfp-validator-user">
