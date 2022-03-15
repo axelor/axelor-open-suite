@@ -205,6 +205,12 @@ public interface IExceptionMessage {
 
   String LOGISTICAL_FORM_INVALID_DIMENSIONS = /*$$(*/ "Invalid field dimensions" /*)*/;
 
+  String LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only be validated if provisioned" /*)*/;
+  String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/ "Can only be collected if validated" /*)*/;
+  String LOGISTICAL_FORM_PROVISION_WRONG_STATUS = /*$$(*/
+      "Can only return to provision if was validated or collected" /*)*/;
+
   String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
   String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
