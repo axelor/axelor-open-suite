@@ -28,6 +28,8 @@ public class JournalManagementRepository extends JournalRepository {
 
     copy.setCode(String.format("%s (copy)", entity.getCode()));
     copy.setName(String.format("%s (copy)", entity.getName()));
+    copy.setAuthorizeSimulatedMove(Boolean.FALSE);
+    copy.setAllowAccountingDaybook(Boolean.FALSE);
     copy.setStatusSelect(JournalRepository.STATUS_INACTIVE);
     copy.setSequence(null);
 
