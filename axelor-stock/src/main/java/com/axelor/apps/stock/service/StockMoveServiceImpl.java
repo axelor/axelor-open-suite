@@ -788,9 +788,11 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(StockMoveRepository.STATUS_PLANNED);
+    authorizedStatus.add(StockMoveRepository.STATUS_REALIZED);
     if (stockMove.getStatusSelect() == null
-        || stockMove.getStatusSelect() == StockMoveRepository.STATUS_DRAFT
-        || stockMove.getStatusSelect() == StockMoveRepository.STATUS_CANCELED) {
+        || !authorizedStatus.contains(stockMove.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_MOVE_CANCEL_WRONG_STATUS));

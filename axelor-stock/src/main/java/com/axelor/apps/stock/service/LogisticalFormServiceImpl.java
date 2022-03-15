@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -703,8 +704,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void backToProvision(LogisticalForm logisticalForm) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(LogisticalFormRepository.STATUS_CARRIER_VALIDATED);
+    authorizedStatus.add(LogisticalFormRepository.STATUS_COLLECTED);
     if (logisticalForm.getStatusSelect() == null
-        || logisticalForm.getStatusSelect() == LogisticalFormRepository.STATUS_PROVISION) {
+        || !authorizedStatus.contains(logisticalForm.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));

@@ -400,7 +400,7 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public void draftInventory(Inventory inventory) throws AxelorException {
     if (inventory.getStatusSelect() == null
-        || inventory.getStatusSelect() == InventoryRepository.STATUS_DRAFT) {
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_CANCELED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_DRAFT_WRONG_STATUS));
@@ -412,8 +412,14 @@ public class InventoryService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Inventory inventory) throws AxelorException {
-    if (inventory.getStatusSelect() == null
-        || inventory.getStatusSelect() == InventoryRepository.STATUS_CANCELED) {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InventoryRepository.STATUS_DRAFT);
+    authorizedStatus.add(InventoryRepository.STATUS_PLANNED);
+    authorizedStatus.add(InventoryRepository.STATUS_IN_PROGRESS);
+    authorizedStatus.add(InventoryRepository.STATUS_COMPLETED);
+    authorizedStatus.add(InventoryRepository.STATUS_VALIDATED);
+
+    if (inventory.getStatusSelect() == null || !authorizedStatus.contains(inventory.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));
