@@ -985,4 +985,18 @@
     <view type="form" name="analytic-grouping-value-form"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-annual-move-consistency-control"
+    parent="account-root-periodic-processing-annual-processing"
+    action="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" order="90"/>
+
+  <action-view
+    name="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" model="com.axelor.apps.account.db.AccountingBatch">
+    <view type="grid" name="accounting-batch-grid"/>
+    <view type="form" name="accounting-batch-form"/>
+    <view-param name="search-filters" value="accounting-batch-filters"/>
+    <domain>self.actionSelect = 25</domain>
+  </action-view>
+
 </object-views>
