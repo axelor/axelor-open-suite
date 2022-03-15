@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -78,23 +79,29 @@ public class AccountService {
    * @return The balance (debit balance or credit balance)
    */
   public BigDecimal computeBalance(Account account, int balanceType) {
-    return this.computeBalance(account, null, balanceType);
+    return this.computeBalance(account, null, null, balanceType);
   }
 
-  public BigDecimal computeBalance(AccountType accountType, int balanceType) {
-    return this.computeBalance(null, accountType, balanceType);
+  public BigDecimal computeBalance(AccountType accountType, Year year, int balanceType) {
+    return this.computeBalance(null, accountType, year, balanceType);
   }
 
-  protected BigDecimal computeBalance(Account account, AccountType accountType, int balanceType) {
+  protected BigDecimal computeBalance(
+      Account account, AccountType accountType, Year year, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)",
-                    account == null ? ".accountType" : null));
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)%s",
+                    account == null ? ".accountType" : "",
+                    year != null ? " and self.move.period.year = :year" : ""));
 
     balanceQuery.setParameter("account", account != null ? account : accountType);
+
+    if (year != null) {
+      balanceQuery.setParameter("year", year);
+    }
 
     BigDecimal balance = (BigDecimal) balanceQuery.getSingleResult();
 
