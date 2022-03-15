@@ -419,7 +419,8 @@ public class InventoryService {
     authorizedStatus.add(InventoryRepository.STATUS_COMPLETED);
     authorizedStatus.add(InventoryRepository.STATUS_VALIDATED);
 
-    if (inventory.getStatusSelect() == null || !authorizedStatus.contains(inventory.getStatusSelect())) {
+    if (inventory.getStatusSelect() == null
+        || !authorizedStatus.contains(inventory.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));

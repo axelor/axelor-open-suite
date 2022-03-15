@@ -22,9 +22,12 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.service.MrpForecastProductionService;
+import com.axelor.apps.production.service.MrpForecastService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -122,5 +125,27 @@ public class MrpForecastController {
     response.setValue("$mrpForecasts", mrpForecastList);
     response.setValue("$totalForecast", totalForecast);
     response.setValue("$difference", sopSalesForecast);
+  }
+
+  public void confirm(ActionRequest request, ActionResponse response) {
+    try {
+      MrpForecast mrpForecast = request.getContext().asType(MrpForecast.class);
+      mrpForecast = Beans.get(MrpForecastRepository.class).find(mrpForecast.getId());
+      Beans.get(MrpForecastService.class).confirm(mrpForecast);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+    try {
+      MrpForecast mrpForecast = request.getContext().asType(MrpForecast.class);
+      mrpForecast = Beans.get(MrpForecastRepository.class).find(mrpForecast.getId());
+      Beans.get(MrpForecastService.class).cancel(mrpForecast);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

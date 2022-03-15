@@ -93,9 +93,11 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public boolean validate(StockCorrection stockCorrection) throws AxelorException {
-    if(stockCorrection.getStatusSelect() == null || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT){
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
+    if (stockCorrection.getStatusSelect() == null
+        || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(stockCorrection);
