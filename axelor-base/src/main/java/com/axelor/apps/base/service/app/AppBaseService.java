@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -72,8 +71,6 @@ public interface AppBaseService extends AppService {
    * @return
    */
   public LocalDate getTodayDate(Company company);
-
-  public Unit getUnit();
 
   public int getNbDecimalDigitForUnitPrice();
 

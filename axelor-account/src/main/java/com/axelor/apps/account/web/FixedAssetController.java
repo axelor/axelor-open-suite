@@ -171,12 +171,7 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
-        if (fixedAsset.getGrossValue().signum() <= 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
-        }
-        Beans.get(FixedAssetValidateService.class).validate(fixedAsset);
+        Beans.get(FixedAssetService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }

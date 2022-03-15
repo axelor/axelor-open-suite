@@ -324,6 +324,7 @@
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
+          <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
@@ -363,15 +364,20 @@
 	                ]]></viewer>
         </field>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="validateBtn" title="Validate"
-          hideIf="statusSelect == 3 || statusSelect == 4" colSpan="12"
-          onClick="action-account-move-group-accounting-click"/>
-        <button name="simulateBtn" title="Simulate"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"
-          colSpan="12" onClick="action-move-account-group-simulate"/>
-        <button name="counterpartGenerateBtn" title="Generate counterpart"
-          showIf="statusSelect == 1 &amp;&amp; journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
-          colSpan="12" onClick="action-account-move-group-generate-counterpart"/>
+        <button name="accountingBtn" title="Accounting.toAccount"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
+          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
+        <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
+          onClick="action-move-account-group-simulate" colSpan="12"
+          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+        <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
+          colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
+        <button
+          showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
+          onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        <field name="$validatePeriod" hidden="true"/>
       </panel>
     </panel>
     <panel>
@@ -569,14 +575,14 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
       if="date == null &amp;&amp; __user__.activeCompany != null"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
