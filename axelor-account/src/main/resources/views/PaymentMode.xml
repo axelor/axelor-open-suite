@@ -8,7 +8,7 @@
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel-tabs name="mainPanelTab">
-          <panel name="mainAccountingSettingsTab" title="General accounting configuration">
+          <panel name="mainAccountingSettingsTab" title="General accounting config.">
             <field name="accountingTriggerSelect"/>
             <panel-related name="accountManagementListPanel"
               field="accountManagementList" grid-view="account-management-payment-mode-grid"
