@@ -34,9 +34,10 @@
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
     <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
     <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
-    <decimal name="financialDiscountTotalAmount" title="Fin. discount total amount"/>
-    <decimal name="remainingAmountAfterFinDiscount"
-      title="Remaining amount after Fin. discount"/>
+    <decimal name="financialDiscountTotalAmount"
+      title="payvoucher.financialDiscountTotalAmount"/>
+    <decimal name="totalAmountWithFinancialDiscount"
+      title="Total amount with financial discount"/>
   </entity>
 
 </domain-models>

@@ -238,6 +238,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Transactional(rollbackOn = {Exception.class})
   public void validate(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
+
+    if (fixedAsset.getGrossValue().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0),
+          fixedAsset.getReference());
+    }
+
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
       if (StringUtils.isEmpty(fixedAsset.getFixedAssetSeq())) {
@@ -297,8 +305,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);
       if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
         validate(fixedAsset);
-        JPA.clear();
         count++;
+        JPA.clear();
       }
     }
     return count;
