@@ -179,9 +179,9 @@ public class AccountingBatchService extends AbstractBatchService {
   }
 
   public Batch controlMovesConsistency(AccountingBatch accountingBatch) {
-	    return Beans.get(BatchControlMovesConsistency.class).run(accountingBatch);
-	  }
-  
+    return Beans.get(BatchControlMovesConsistency.class).run(accountingBatch);
+  }
+
   @Transactional
   public AccountingBatch createNewAccountingBatch(int action, Company company) {
     if (company != null) {

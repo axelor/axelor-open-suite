@@ -93,7 +93,13 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
           return this.getAccountingBatchView(accountingBatch.getId());
         }
       case ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK:
-        // TODO in 46858
+        accountingBatch =
+            accountingBatchService.createNewAccountingBatch(
+                AccountingBatchRepository.ACTION_MOVES_CONSISTENCY_CONTROL,
+                AuthUtils.getUser().getActiveCompany());
+        if (accountingBatch != null && accountingBatch.getId() != null) {
+          return this.getAccountingBatchView(accountingBatch.getId());
+        }
         return null;
       case ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS:
         return ActionView.define(I18n.get("Accounting report"))
