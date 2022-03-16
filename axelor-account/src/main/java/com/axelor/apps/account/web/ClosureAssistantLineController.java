@@ -135,4 +135,22 @@ public class ClosureAssistantLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setParentStatus(ActionRequest request, ActionResponse response) {
+
+    try {
+      ClosureAssistantLine closureAssistantLine =
+          request.getContext().asType(ClosureAssistantLine.class);
+      ClosureAssistant closureAssistant = closureAssistantLine.getClosureAssistant();
+      if (closureAssistant.getId() != null) {
+        closureAssistant =
+            Beans.get(ClosureAssistantRepository.class).find(closureAssistant.getId());
+      }
+      if (Beans.get(ClosureAssistantService.class).setStatusWithLines(closureAssistant)) {
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

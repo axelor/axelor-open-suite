@@ -8,6 +8,7 @@
     <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
     <field name="fiscalYear.company.code" title="Company" width="300"/>
     <field name="progress" title="Progress" widget="Progress" width="600"/>
+    <field name="statusSelect"/>
   </grid>
 
 
@@ -33,6 +34,7 @@
 
   <action-group name="account-closure-assistant-group-on-new">
     <action name="account-closure-assistant-method-set-fields-on-new"/>
+    <action name="save"/>
   </action-group>
 
   <action-group name="account-closure-assistant-group-on-save">
