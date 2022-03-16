@@ -2,6 +2,7 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -157,12 +158,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<Partner, List<Move>> moveMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      Map<Move, MoveLine> financialDiscountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+            paymentSession,
+            invoiceTerm,
+            moveMap,
+            paymentAmountMap,
+            out,
+            isGlobal);
 
     if (paymentSession.getBankOrder() != null) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(

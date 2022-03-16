@@ -7,6 +7,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -15,6 +17,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -137,7 +140,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
 
-    this.processInvoiceTerms(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.processInvoiceTerms(
+        paymentSession, moveMap, paymentAmountMap, out, isGlobal);
     this.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
 
     return this.getMoveCount(moveMap, isGlobal);
@@ -181,7 +185,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
         if (invoiceTerm.getIsSelectedOnPaymentSession()) {
           this.processInvoiceTerm(
-              paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+              paymentSession,
+              invoiceTerm,
+              moveMap,
+              paymentAmountMap,
+              out,
+              isGlobal);
         } else {
           this.releaseInvoiceTerm(invoiceTerm);
         }
@@ -208,7 +217,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           appBaseService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
 
       this.generateMoveFromInvoiceTerm(
-          paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+          paymentSession,
+          invoiceTerm,
+          moveMap,
+          paymentAmountMap,
+          out,
+          isGlobal);
     } else {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
       paymentSessionRepo.save(paymentSession);
@@ -239,6 +253,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     this.generateMoveLineFromInvoiceTerm(
         paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
+
+    //TODO use new apply boolean
+    if (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+        || paymentSession.getPartnerTypeSelect()
+            == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER) {
+      this.createFinancialDiscountMoveLine(
+          paymentSession, invoiceTerm, move, out);
+    }
 
     return moveRepo.save(move);
   }
@@ -496,6 +518,47 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected int getMoveCount(Map<Partner, List<Move>> moveMap, boolean isGlobal) {
     return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
         + (isGlobal ? 1 : 0);
+  }
+
+  protected MoveLine createFinancialDiscountMoveLine(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, Move move, boolean out)
+      throws AxelorException {
+    Account financialDiscountAccount =
+        this.getFinancialDiscountAccount(paymentSession.getCompany(), out);
+
+    MoveLine moveLine =
+        this.generateMoveLine(
+            move,
+            null,
+            financialDiscountAccount,
+            invoiceTerm.getFinancialDiscountAmount(),
+            move.getOrigin(),
+            move.getDescription(),
+            !out);
+
+    if (invoiceTerm.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      Tax financialDiscountTax = this.getFinancialDiscountTax(paymentSession.getCompany(), out);
+
+      if (financialDiscountTax != null && financialDiscountTax.getActiveTaxLine() != null) {
+        moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+        moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+        moveLine.setTaxCode(financialDiscountTax.getCode());
+      }
+    }
+
+    return moveLine;
+  }
+
+  protected Account getFinancialDiscountAccount(Company company, boolean out) {
+    return out
+        ? company.getAccountConfig().getPurchFinancialDiscountAccount()
+        : company.getAccountConfig().getSaleFinancialDiscountAccount();
+  }
+
+  protected Tax getFinancialDiscountTax(Company company, boolean out) {
+    return out
+        ? company.getAccountConfig().getPurchFinancialDiscountTax()
+        : company.getAccountConfig().getSaleFinancialDiscountTax();
   }
 
   @Override
