@@ -38,7 +38,7 @@ public class RawMaterialRequirementProductionRepository extends RawMaterialRequi
       return super.save(rawMaterialRequirement);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

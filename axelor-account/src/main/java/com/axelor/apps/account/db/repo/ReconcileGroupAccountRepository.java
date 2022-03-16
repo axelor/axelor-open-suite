@@ -36,7 +36,7 @@ public class ReconcileGroupAccountRepository extends ReconcileGroupRepository {
       return super.save(reconcileGroup);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

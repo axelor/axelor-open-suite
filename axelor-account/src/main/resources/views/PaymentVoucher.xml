@@ -105,7 +105,7 @@
       <panel-related name="payVoucherDueElementListPanel" colSpan="12"
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
         grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1" orderBy="sequence"
-        canMove="true" canNew="false"/>
+        canMove="true" readonly="true"/>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="action-method-payment-voucher-load-selected-lines,save"
@@ -235,12 +235,12 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="operationTypeSelect" expr="eval: _operationTypeSelect"
       if="_operationTypeSelect"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
   </action-record>
 
