@@ -28,6 +28,7 @@
     <option value='special'>Special</option>
     <option value='tax'>Tax</option>
     <option value='view'>View</option>
+    <option value="ifrs">IFRS</option>
   </selection>
 
   <selection name='account.partner.bal.config.select'>

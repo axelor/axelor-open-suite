@@ -29,6 +29,8 @@
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
 
+    <boolean name="displayIFRSEntries" title="Display IFRS Entries" default="false"/>
+
     <boolean name="isComparativeBalance" title="Comparative balance" default="false"/>
     <date name="previousDateFrom" title="From (N-1)"/>
     <date name="previousDateTo" title="To (N-1)"/>
@@ -133,6 +135,7 @@
 		public static final int EXPORT_PURCHASES = 1009;
 		public static final int EXPORT_GENERAL_BALANCE = 1010;
 		public static final int EXPORT_N4DS = 1011;
+		public static final int EXPORT_IFRS = 1012;
 
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
