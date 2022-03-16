@@ -62,7 +62,7 @@
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
       <field name="applyFinancialDiscount"
-             onChange="action-invoice-payment-group-change-amounts"/>
+        onChange="action-invoice-payment-group-change-amounts"/>
       <field name="$totalAmountWithFinancialDiscount" type="decimal"
         title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null"

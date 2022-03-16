@@ -160,7 +160,8 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
+        <field name="applyFinancialDiscount"
+          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -168,7 +169,8 @@
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount" readonlyIf="paymentSession">
+        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
+        readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
