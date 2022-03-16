@@ -38,7 +38,7 @@
     <field name="isValidated" title="Validated"/>
     <field name="isPreviousLineValidated" hidden="true"/>
     <field name="isNextLineValidated" hidden="true"/>
-    <button onClick=",save,account-closure-assistant-line-validate-action-method"
+    <button onClick="save,account-closure-assistant-line-validate-action-method"
       name="validateActionBtn" readonlyIf="isValidated  || !isPreviousLineValidated"
       help="Validate step" icon="fa-check-circle"/>
     <button onClick="save,account-closure-assistant-line-cancel-action-method"

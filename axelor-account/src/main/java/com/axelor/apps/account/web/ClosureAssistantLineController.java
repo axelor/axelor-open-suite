@@ -12,9 +12,7 @@ import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,12 +83,10 @@ public class ClosureAssistantLineController {
 
       if (Beans.get(ClosureAssistantService.class)
           .checkNoExistingClosureAssistantForSameYear(closureAssistant)) {
-        response.setException(
-            new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
+        response.setError(
+            String.format(
                 I18n.get(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR),
-                closureAssistant.getFiscalYear().getCode(),
-                closureAssistant.getCompany().getCode()));
+                closureAssistantLine.getId()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

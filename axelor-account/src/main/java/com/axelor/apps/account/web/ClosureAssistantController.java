@@ -5,8 +5,6 @@ import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -20,11 +18,11 @@ public class ClosureAssistantController {
 
     try {
       ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
+      ClosureAssistantService closureAssistantService = Beans.get(ClosureAssistantService.class);
 
-      closureAssistant = Beans.get(ClosureAssistantService.class).updateCompany(closureAssistant);
+      closureAssistant = closureAssistantService.updateCompany(closureAssistant);
 
-      closureAssistant =
-          Beans.get(ClosureAssistantService.class).updateFiscalYear(closureAssistant);
+      closureAssistant = closureAssistantService.updateFiscalYear(closureAssistant);
 
       List<ClosureAssistantLine> closureAssistantLineList =
           Beans.get(ClosureAssistantLineService.class).initClosureAssistantLines(closureAssistant);
@@ -44,12 +42,10 @@ public class ClosureAssistantController {
       ClosureAssistant closureAssistant = request.getContext().asType(ClosureAssistant.class);
       if (Beans.get(ClosureAssistantService.class)
           .checkNoExistingClosureAssistantForSameYear(closureAssistant)) {
-        response.setException(
-            new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
+        response.setError(
+            String.format(
                 I18n.get(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR),
-                closureAssistant.getFiscalYear().getCode(),
-                closureAssistant.getCompany().getCode()));
+                closureAssistant.getId()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
