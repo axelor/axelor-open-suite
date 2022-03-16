@@ -374,7 +374,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       throws AxelorException {
     InvoicePayment invoicePayment = null;
     if (invoice != null) {
-      invoicePayment = this.getExistingInvoiceTerm(invoice, move);
+      invoicePayment = this.getExistingInvoicePayment(invoice);
 
       if (invoicePayment == null) {
         invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
@@ -390,7 +390,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       if (invoiceTermList != null) {
         invoiceTermPaymentList =
             invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-                invoicePayment, invoiceTermList, amount);
+                invoicePayment,
+                invoiceTermList,
+                invoicePayment != null ? invoicePayment.getAmount() : amount);
 
         for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
           invoiceTermService.updateInvoiceTermsPaidAmount(
@@ -410,10 +412,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  protected InvoicePayment getExistingInvoiceTerm(Invoice invoice, Move move) {
+  protected InvoicePayment getExistingInvoicePayment(Invoice invoice) {
     return invoice.getInvoicePaymentList().stream()
-        .filter(it -> it.getMove().equals(move))
-        .findFirst()
+        .min(Comparator.comparing(InvoicePayment::getCreatedOn))
         .orElse(null);
   }
 

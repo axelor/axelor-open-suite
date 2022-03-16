@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -248,12 +247,11 @@ public class InvoicePaymentController {
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
-          for (InvoiceTermPayment invoiceTermPayment :
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoicePayment.setInvoiceTermPaymentList(
               Beans.get(InvoiceTermPaymentService.class)
                   .initInvoiceTermPaymentsWithAmount(
-                      invoicePayment, invoiceTerms, invoicePayment.getAmount())) {
-            invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
-          }
+                      invoicePayment, invoiceTerms, invoicePayment.getAmount()));
         }
         response.setValues(invoicePayment);
 
