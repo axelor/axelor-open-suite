@@ -694,49 +694,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   private void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
     LocalDate paymentDate = paymentSession.getPaymentDate();
-    LocalDate financialDiscountDeadlineDate = null;
-    LocalDate dueDate = invoiceTerm.getDueDate();
-    Integer discountDelay = null;
-    if (invoiceTerm.getInvoice() != null) {
-      financialDiscountDeadlineDate = invoiceTerm.getInvoice().getFinancialDiscountDeadlineDate();
-    }
-    if (invoiceTerm.getMoveLine() != null
-        && invoiceTerm.getMoveLine().getPartner() != null
-        && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
-        && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay()
-            != null) {
-      discountDelay =
-          invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay();
-    }
+    LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
+    invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemaining());
 
-    if (nextSessionDate != null
-        && (financialDiscountDeadlineDate != null
-                && (financialDiscountDeadlineDate.isAfter(nextSessionDate)
-                    || financialDiscountDeadlineDate.isEqual(nextSessionDate))
-            || (dueDate != null
-                && discountDelay != null
-                && (dueDate.minusDays(discountDelay).isAfter(nextSessionDate)
-                    || dueDate.minusDays(discountDelay).isEqual(nextSessionDate))))) {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-      invoiceTerm.setIsSelectedOnPaymentSession(false);
-    } else if (paymentDate != null
-        && (financialDiscountDeadlineDate != null
-                && (financialDiscountDeadlineDate.isAfter(paymentDate)
-                    || financialDiscountDeadlineDate.isEqual(paymentDate))
-            || dueDate != null
-                && discountDelay != null
-                && (dueDate.minusDays(discountDelay).isAfter(paymentDate)
-                    || dueDate.minusDays(discountDelay).isEqual(paymentDate)))) {
+    if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
       invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
-      invoiceTerm.setPaymentAmount(
-          invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
-    } else {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemainingAfterFinDiscount());
     }
-    invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+
+    if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
+      invoiceTerm.setIsSelectedOnPaymentSession(false);
+    }
+
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
   }
 
   @Override
@@ -818,8 +791,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm) {
+  public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
     return invoiceTerm.getApplyFinancialDiscount()
+            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
         ? invoiceTerm.getAmountRemainingAfterFinDiscount()
         : invoiceTerm.getAmountRemaining();
   }
@@ -947,8 +921,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
       if (accountConfigService
-          .getAccountConfig(invoiceTerm.getInvoice().getCompany())
-          .getIsManagePassedForPayment()) {
+              .getAccountConfig(invoiceTerm.getInvoice().getCompany())
+              .getIsManagePassedForPayment()
+          && invoiceTerm.getInvoice().getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
       } else {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
@@ -958,19 +934,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional
-  public void select(InvoiceTerm invoiceTerm) throws AxelorException {
+  public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException {
     if (invoiceTerm != null) {
-      invoiceTerm.setIsSelectedOnPaymentSession(true);
-      managePassedForPayment(invoiceTerm);
-      invoiceTermRepo.save(invoiceTerm);
-    }
-  }
-
-  @Override
-  @Transactional
-  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException {
-    if (invoiceTerm != null) {
-      invoiceTerm.setIsSelectedOnPaymentSession(false);
+      invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }

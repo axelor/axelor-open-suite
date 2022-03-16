@@ -235,7 +235,8 @@ public class InvoicePaymentController {
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
         BigDecimal payableAmount =
-            Beans.get(InvoicePaymentToolService.class).getPayableAmount(invoiceTerms);
+            Beans.get(InvoicePaymentToolService.class)
+                .getPayableAmount(invoiceTerms, invoicePayment.getPaymentDate());
 
         if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
