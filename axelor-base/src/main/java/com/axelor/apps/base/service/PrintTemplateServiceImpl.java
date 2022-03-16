@@ -28,8 +28,10 @@ import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.wordreport.WordReportService;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -42,20 +44,28 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.script.ScriptException;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class PrintTemplateServiceImpl implements PrintTemplateService {
 
@@ -68,6 +78,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
   protected PrintService printService;
   protected TemplateMessageServiceBaseImpl templateMessageService;
   protected TemplateContextService templateContextService;
+  protected WordReportService wordReportService;
   protected int rank;
 
   @Inject
@@ -75,17 +86,60 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       PrintRepository printRepo,
       PrintService printService,
       TemplateMessageServiceBaseImpl templateMessageService,
-      TemplateContextService templateContextService) {
+      TemplateContextService templateContextService,
+      WordReportService wordReportService) {
     this.printRepo = printRepo;
     this.printService = printService;
     this.templateMessageService = templateMessageService;
     this.templateContextService = templateContextService;
+    this.wordReportService = wordReportService;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Print generatePrint(Long objectId, PrintTemplate printTemplate)
+  public Map<String, Object> generatePrintTemplate(Long objectId, PrintTemplate printTemplate)
+      throws AxelorException, IOException, ClassNotFoundException, ScriptException,
+          ParserConfigurationException, SAXException, Docx4JException {
+
+    Map<String, Object> output = null;
+    Integer inputTypeSelect = printTemplate.getInputTypeSelect();
+    if (inputTypeSelect == 1) {
+      output = this.createStringTemplate(objectId, printTemplate);
+    } else if (inputTypeSelect == 2) {
+      output = this.createWordTemplate(objectId, printTemplate);
+    }
+    return output;
+  }
+
+  @Override
+  public Map<String, Object> getWordReportTemplateView(Long objectId, Print print)
+      throws AxelorException, Docx4JException, IOException, ClassNotFoundException, ScriptException,
+          ParserConfigurationException, SAXException {
+    if (ObjectUtils.isEmpty(print.getWordTemplate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.NO_WORD_TEMPLATE_FILE));
+    }
+
+    if (!"docx".equals(FilenameUtils.getExtension(print.getWordTemplate().getFileName()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ONLY_DOCX_FILE_FORMAT));
+    }
+
+    if (StringUtils.isEmpty(print.getFormatSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.SELECT_OUTPUT_FORMAT));
+    }
+
+    File outputFile = wordReportService.createReport(objectId, print);
+    String fileLink = PdfTool.getFileLinkFromPdfFile(outputFile, outputFile.getName());
+
+    return ActionView.define(I18n.get(print.getMetaModel().getName())).add("html", fileLink).map();
+  }
+
+  private Print getTemplatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
     if (metaModel == null) {
@@ -123,8 +177,14 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setIsEditable(printTemplate.getIsEditable());
     print.setAttach(printTemplate.getAttach());
     print.setMetaFileField(printTemplate.getMetaFileField());
+    print.setHeaderHeight(printTemplate.getHeaderHeight());
+    print.setFooterHeight(printTemplate.getFooterHeight());
+    print.setWordTemplate(printTemplate.getWordTemplate());
+    if (ObjectUtils.notEmpty(printTemplate.getReportQueryBuilderList())) {
+      print.setReportQueryBuilderList(new HashSet<>(printTemplate.getReportQueryBuilderList()));
+    }
 
-    if (!printTemplate.getHidePrintSettings()) {
+    if (Boolean.FALSE.equals(printTemplate.getHidePrintSettings())) {
       if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfHeader())) {
         maker.setTemplate(printTemplate.getPrintTemplatePdfHeader());
         print.setPrintPdfHeader(maker.make());
@@ -143,6 +203,14 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       print.setLogoPositionSelect(printTemplate.getLogoPositionSelect());
       print.setLogoWidth(printTemplate.getLogoWidth());
       print.setHeaderContentWidth(printTemplate.getHeaderContentWidth());
+      if (StringUtils.notEmpty(printTemplate.getWatermarkText())) {
+        maker.setTemplate(printTemplate.getWatermarkText());
+        print.setWatermarkText(maker.make());
+        print.setWatermarkAngle(printTemplate.getWatermarkAngle());
+        print.setWatermarkTopMargin(printTemplate.getWatermarkTopMargin());
+        print.setWatermarkLeftMargin(printTemplate.getWatermarkLeftMargin());
+        print.setOpacity(printTemplate.getOpacity());
+      }
     }
 
     Context scriptContext = null;
@@ -174,7 +242,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           subObjectId = (Long) Mapper.of(subModelClass).get(subMetaModelObject, "id");
         }
 
-        Print subPrint = generatePrint(subObjectId, subPrintTemplate);
+        Print subPrint = getTemplatePrint(subObjectId, subPrintTemplate);
         print.addPrintSetItem(subPrint);
       }
     }
@@ -183,6 +251,39 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     printService.attachMetaFiles(print, getMetaFiles(maker, printTemplate));
 
     return print;
+  }
+
+  private Map<String, Object> createStringTemplate(Long objectId, PrintTemplate printTemplate)
+      throws ClassNotFoundException, AxelorException, IOException {
+    Print print = this.getTemplatePrint(objectId, printTemplate);
+    if (Boolean.TRUE.equals(print.getIsEditable())) {
+      return ActionView.define(I18n.get("Create print"))
+          .model(Print.class.getName())
+          .add("form", "print-form")
+          .param("forceEdit", "true")
+          .context("_showRecord", print.getId().toString())
+          .map();
+    } else {
+      return printService.getStringTemplateView(print);
+    }
+  }
+
+  private Map<String, Object> createWordTemplate(Long objectId, PrintTemplate printTemplate)
+      throws ClassNotFoundException, AxelorException, IOException, Docx4JException, ScriptException,
+          ParserConfigurationException, SAXException {
+    Print print = this.getTemplatePrint(objectId, printTemplate);
+    if (Boolean.TRUE.equals(print.getIsEditable())) {
+      return ActionView.define(I18n.get("Create print"))
+          .model(Print.class.getName())
+          .add("form", "print-form")
+          .param("forceEdit", "true")
+          .context("_showRecord", print.getId().toString())
+          .context("_isWordTemplate", "true")
+          .context("_objectId", objectId)
+          .map();
+    } else {
+      return this.getWordReportTemplateView(objectId, print);
+    }
   }
 
   private void processPrintTemplateLineList(
@@ -200,7 +301,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       seq = templateLineList.get(0).getSequence().intValue();
     }
     for (PrintTemplateLine printTemplateLine : templateLineList) {
-      if (printTemplateLine.getIgnoreTheLine()) {
+      if (Boolean.TRUE.equals(printTemplateLine.getIgnoreTheLine())) {
         continue;
       }
       try {

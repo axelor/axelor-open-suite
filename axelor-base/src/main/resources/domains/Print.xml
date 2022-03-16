@@ -38,6 +38,17 @@
       selection="base.print.settings.footer.font.color.select"/>
     <string name="headerContentWidth" title="Header Content Width"/>
     <string name="logoWidth" title="Company Logo Width"/>
+    <many-to-many name="reportQueryBuilderList" title="Report query builders"
+      ref="com.axelor.apps.base.db.ReportQueryBuilder"/>
+    <string name="watermarkText" multiline="true" large="true" title="Watermark text"/>
+    <integer name="watermarkTopMargin" title="Watermark top margin" min="0" default="0"/>
+    <integer name="watermarkLeftMargin" title="Watermark left margin" min="0" default="0"/>
+    <integer name="headerHeight" title="Header height"/>
+    <integer name="footerHeight" title="Footer height"/>
+    <integer name="watermarkAngle" title="Watermark angle"/>
+    <many-to-one name="wordTemplate" ref="com.axelor.meta.db.MetaFile"
+      title="Word template"/>
+    <decimal name="opacity" title="Opacity" min="0" max="1" default="0.3"/>
 
     <extra-code><![CDATA[
 

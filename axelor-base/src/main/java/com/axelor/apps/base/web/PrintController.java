@@ -19,12 +19,18 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.service.PrintService;
+import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.io.IOException;
+import javax.script.ScriptException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.xml.sax.SAXException;
 
 public class PrintController {
 
@@ -32,8 +38,26 @@ public class PrintController {
     Print print = request.getContext().asType(Print.class);
 
     try {
-      response.setView(Beans.get(PrintService.class).generatePDF(print));
-    } catch (AxelorException e) {
+      response.setView(Beans.get(PrintService.class).getStringTemplateView(print));
+    } catch (AxelorException | IOException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void printWordTemplate(ActionRequest request, ActionResponse response) {
+    Print print = request.getContext().asType(Print.class);
+    Long objectId = (Long) request.getContext().get("objectId");
+
+    try {
+      response.setView(
+          Beans.get(PrintTemplateService.class).getWordReportTemplateView(objectId, print));
+    } catch (ClassNotFoundException
+        | Docx4JException
+        | ScriptException
+        | ParserConfigurationException
+        | SAXException
+        | AxelorException
+        | IOException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }

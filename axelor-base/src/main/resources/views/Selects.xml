@@ -626,6 +626,11 @@
       data-grid="payment-condition-grid" data-form="payment-condition-form">Payment condition</option>
   </selection>
 
+  <selection name="base.print.template.input.type.select">
+    <option value="1">String Template</option>
+    <option value="2">Word</option>
+  </selection>
+
   <selection name="message.address.type.select">
     <option value="1">From</option>
     <option value="2">To</option>

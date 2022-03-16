@@ -15,20 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.wordreport.config;
 
 import com.axelor.apps.base.db.Print;
-import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import java.util.ResourceBundle;
+import org.apache.commons.lang3.tuple.Pair;
 
-public interface PrintService {
-  public File generatePDF(Print print) throws AxelorException;
+public interface WordReportTranslationService {
 
-  public Map<String, Object> getStringTemplateView(Print print) throws AxelorException, IOException;
+  public ResourceBundle getResourceBundle(Print print);
 
-  public void attachMetaFiles(Print print, Set<MetaFile> metaFiles);
+  public Pair<Boolean, String> checkTranslationFunction(String value);
+
+  public String getValueTranslation(String value, ResourceBundle rsBundle);
 }

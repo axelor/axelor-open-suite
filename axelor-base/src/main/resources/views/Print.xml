@@ -12,7 +12,10 @@
   <form name="print-form" title="PRINT_NOUN" model="com.axelor.apps.base.db.Print">
     <toolbar>
       <button name="print" title="Print" icon="fa-print"
-        onClick="save,action-print-method-print" readonlyIf="id == null"/>
+        onClick="save,action-print-method-print" readonlyIf="id == null" showIf="!_isWordTemplate"/>
+      <button name="printWordTemplate" title="Print" icon="fa-print"
+        onClick="save,action-print-method-print-word-template" readonlyIf="id == null"
+        showIf="_isWordTemplate"/>
     </toolbar>
     <panel>
       <field name="documentName" title="Document name"/>
@@ -52,6 +55,10 @@
 
   <action-method name="action-print-method-print">
     <call class="com.axelor.apps.base.web.PrintController" method="generatePDF"/>
+  </action-method>
+
+  <action-method name="action-print-method-print-word-template">
+    <call class="com.axelor.apps.base.web.PrintController" method="printWordTemplate"/>
   </action-method>
 
 </object-views>

@@ -36,4 +36,9 @@ dependencies {
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	implementation libs.docx_4j
+	implementation libs.open_html_pdf_core
+	implementation libs.open_html_pdf_pdfbox
+	implementation libs.jsoup
 }

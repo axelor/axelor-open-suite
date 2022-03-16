@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.wordreport.config;
 
-import com.axelor.apps.base.db.Print;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import javax.script.ScriptException;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
-public interface PrintService {
-  public File generatePDF(Print print) throws AxelorException;
+public interface WordReportGroovyService {
 
-  public Map<String, Object> getStringTemplateView(Print print) throws AxelorException, IOException;
+  public Object evaluate(String expression, Object bean) throws ClassNotFoundException;
 
-  public void attachMetaFiles(Print print, Set<MetaFile> metaFiles);
+  public Object validateCondition(String condition, Object bean);
+
+  public ImmutablePair<String, String> getIfConditionResult(String statement, Object bean)
+      throws IOException, AxelorException;
+
+  public String calculateFromString(String expression, int bigDecimalScale) throws ScriptException;
 }

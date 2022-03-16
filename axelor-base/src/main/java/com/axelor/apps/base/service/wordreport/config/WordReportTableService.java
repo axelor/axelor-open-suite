@@ -15,25 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.wordreport.config;
 
-import com.axelor.apps.base.db.Print;
-import com.axelor.apps.base.db.PrintTemplate;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.script.ScriptException;
-import javax.xml.parsers.ParserConfigurationException;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.xml.sax.SAXException;
+import org.docx4j.wml.Tbl;
 
-public interface PrintTemplateService {
+public interface WordReportTableService {
 
-  public Map<String, Object> generatePrintTemplate(Long objectId, PrintTemplate printTemplate)
-      throws AxelorException, IOException, ClassNotFoundException, ScriptException,
-          ParserConfigurationException, SAXException, Docx4JException;
-
-  public Map<String, Object> getWordReportTemplateView(Long objectId, Print print)
-      throws AxelorException, Docx4JException, IOException, ClassNotFoundException, ScriptException,
-          ParserConfigurationException, SAXException;
+  public void setTable(
+      Tbl table,
+      Mapper mapper,
+      Object object,
+      ResourceBundle resourceBundle,
+      Map<String, List<Object>> reportQueryBuilderResultMap)
+      throws ScriptException, AxelorException, IOException, ClassNotFoundException;
 }

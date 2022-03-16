@@ -20,6 +20,7 @@
     model="com.axelor.apps.base.db.PrintTemplate" width="large">
     <panel>
       <field name="name"/>
+      <field name="inputTypeSelect"/>
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
       <field name="metaModelDefaultPath"/>
       <field name="company" grid-view="company-grid" form-view="company-form"/>
@@ -39,6 +40,7 @@
           colSpan="4"/>
         <field name="logoWidth" hideIf="logoPositionSelect == 0 || logoPositionSelect == 2"
           help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
+        <field name="headerHeight" colSpan="4"/>
         <field name="headerContentWidth"
           hideIf="logoPositionSelect == 0 || logoPositionSelect == 2"
           help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
@@ -48,9 +50,23 @@
         <field name="printTemplatePdfFooter" colSpan="12"/>
         <field name="footerFontType" colSpan="4"/>
         <field name="footerTextAlignment" colSpan="4"/>
+        <field name="footerHeight" colSpan="4"/>
         <field name="footerFontSize" colSpan="4"/>
         <field name="footerFontColor" colSpan="4"/>
         <field name="isFooterUnderLine" colSpan="4"/>
+      </panel>
+      <panel name="wordTypePanel" showIf="inputTypeSelect == 2" colSpan="12">
+        <field name="wordTemplate" widget="binary-link" colSpan="4"/>
+        <spacer name="wordTemplateSpacer" colSpan="8"/>
+        <field name="reportQueryBuilderList"/>
+        <panel name="watermarkConfigurationPanel" title="Watermark configuration"
+          showIf="formatSelect == 'PDF'" colSpan="12">
+          <field name="watermarkAngle" colSpan="4"/>
+          <field name="watermarkLeftMargin" colSpan="4"/>
+          <field name="watermarkTopMargin" colSpan="4"/>
+          <field name="watermarkText" colSpan="4"/>
+          <field name="opacity" colSpan="4"/>
+        </panel>
       </panel>
       <panel-related name="printTemplateLineListPanel" field="printTemplateLineList"
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"

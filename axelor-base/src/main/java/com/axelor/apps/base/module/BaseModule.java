@@ -152,6 +152,20 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
+import com.axelor.apps.base.service.wordreport.WordReportService;
+import com.axelor.apps.base.service.wordreport.WordReportServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.ReportValueService;
+import com.axelor.apps.base.service.wordreport.config.ReportValueServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.WordReportGroovyService;
+import com.axelor.apps.base.service.wordreport.config.WordReportGroovyServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.WordReportHelperService;
+import com.axelor.apps.base.service.wordreport.config.WordReportHelperServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.WordReportQueryBuilderService;
+import com.axelor.apps.base.service.wordreport.config.WordReportQueryBuilderServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.WordReportTableService;
+import com.axelor.apps.base.service.wordreport.config.WordReportTableServiceImpl;
+import com.axelor.apps.base.service.wordreport.config.WordReportTranslationService;
+import com.axelor.apps.base.service.wordreport.config.WordReportTranslationServiceImpl;
 import com.axelor.apps.base.tracking.ExportObserver;
 import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
@@ -251,5 +265,12 @@ public class BaseModule extends AxelorModule {
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(WordReportService.class).to(WordReportServiceImpl.class);
+    bind(WordReportHelperService.class).to(WordReportHelperServiceImpl.class);
+    bind(ReportValueService.class).to(ReportValueServiceImpl.class);
+    bind(WordReportTableService.class).to(WordReportTableServiceImpl.class);
+    bind(WordReportGroovyService.class).to(WordReportGroovyServiceImpl.class);
+    bind(WordReportTranslationService.class).to(WordReportTranslationServiceImpl.class);
+    bind(WordReportQueryBuilderService.class).to(WordReportQueryBuilderServiceImpl.class);
   }
 }

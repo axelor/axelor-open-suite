@@ -148,6 +148,8 @@
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
 
+    <!-- Print template configuration -->
+    <integer name="bigdecimalScale" title="Bigdecimal scale" default="2"/>
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

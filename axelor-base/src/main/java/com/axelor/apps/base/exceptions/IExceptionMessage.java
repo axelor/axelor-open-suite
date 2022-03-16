@@ -439,6 +439,15 @@ public interface IExceptionMessage {
       "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
+  public static final String NO_WORD_TEMPLATE_FILE = /*$$(*/ "No word template file selected" /*)*/;
+  public static final String ONLY_DOCX_FILE_FORMAT = /*$$(*/
+      "Only DOCX file format is allowed" /*)*/;
+  public static final String SELECT_OUTPUT_FORMAT = /*$$(*/
+      "Please select an output format type" /*)*/;
+  public static final String WML_PACKAGE_RETRIEVAL_FAILED = /*$$(*/
+      "Could not retrieve wml package from docx" /*)*/;
+  public static final String NO_SUCH_FIELD = /*$$(*/ "No such field like %s" /*)*/;
+  public static final String SYNTAX_ERROR = /*$$(*/ "Syntax error at %s" /*)*/;
 
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
