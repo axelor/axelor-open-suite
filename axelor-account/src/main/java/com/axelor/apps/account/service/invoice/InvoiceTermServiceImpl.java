@@ -287,7 +287,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm) {
 
-    moveLine.addInvoiceTermListItem(invoiceTerm);
     invoiceTerm.setInvoice(moveLine.getMove().getInvoice());
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
