@@ -16,5 +16,6 @@ public interface ClosureAssistantLineService {
   void validateClosureAssistantLine(ClosureAssistantLine closureAssistantLine)
       throws AxelorException;
 
-  Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine);
+  Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine)
+      throws AxelorException;
 }

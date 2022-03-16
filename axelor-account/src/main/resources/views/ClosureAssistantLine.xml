@@ -44,7 +44,7 @@
     <button onClick="save,account-closure-assistant-line-cancel-action-method"
       name="cancelActionBtn" readonlyIf="!isValidated || isNextLineValidated" help="Cancel step"
       icon="fa-times-circle"/>
-    <button onClick="save,account-closure-assistant-line-open-view-link-to-action-method"
+    <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
       name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"
       readonlyIf="isValidated  || !isPreviousLineValidated"/>
   </grid>
@@ -71,9 +71,10 @@
   </action-method>
 
   <action-group name="account-closure-assistant-line-open-view-link-to-action-group">
+    <action name="save"/>
+    <action name="action-closure-assistant-line-validate-fiscal-year-closure"/>
     <action name="account-closure-assistant-line-open-view-link-to-action-method"/>
   </action-group>
-
 
   <action-method name="account-closure-assistant-line-open-view-link-to-action-method">
     <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
@@ -90,5 +91,11 @@
     <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
       method="fillOutrunResult"/>
   </action-method>
+
+  <action-validate name="action-closure-assistant-line-validate-fiscal-year-closure">
+    <alert
+      message="Closing the fiscal year is a definitive action. Make sure that you have completed first all the tasks of the annual closure."
+      if="actionSelect == 7"/>
+  </action-validate>
 
 </object-views>

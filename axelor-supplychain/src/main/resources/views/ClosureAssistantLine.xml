@@ -7,6 +7,9 @@
   <action-group
     id="supplychain-account-closure-assistant-line-open-view-link-to-action-group"
     name="account-closure-assistant-line-open-view-link-to-action-group">
+    <action name="save"/>
+    <action name="action-closure-assistant-line-validate-fiscal-year-closure"
+      if="actionSelect != 1"/>
     <action name="account-closure-assistant-line-open-view-link-to-action-method"
       if="actionSelect != 1"/>
     <action name="supplychain-account-closure-assistant-line-open-view-link-to-action-method"

@@ -5,9 +5,15 @@ import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.Inject;
@@ -17,12 +23,21 @@ import java.util.Map;
 
 public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistantLineServiceImpl {
 
+  protected SupplychainBatchService supplychainBatchService;
+
   @Inject
   public ClosureAssistantLineSupplychainServiceImpl(
       ClosureAssistantService closureAssistantService,
       ClosureAssistantLineRepository closureAssistantLineRepository,
-      AppBaseService appBaseService) {
-    super(closureAssistantService, closureAssistantLineRepository, appBaseService);
+      AppBaseService appBaseService,
+      AccountingBatchService accountingBatchService,
+      SupplychainBatchService supplychainBatchService) {
+    super(
+        closureAssistantService,
+        closureAssistantLineRepository,
+        appBaseService,
+        accountingBatchService);
+    this.supplychainBatchService = supplychainBatchService;
   }
 
   @Override
@@ -45,13 +60,27 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
   }
 
   @Override
-  public Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine) {
+  public Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine)
+      throws AxelorException {
     if (closureAssistantLine.getActionSelect()
         == ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION) {
-      return ActionView.define(I18n.get("Supplychain Batch"))
-          .model(SupplychainBatch.class.getName())
-          .add("form", "supplychain-batch-form")
-          .map();
+      if (AuthUtils.getUser().getActiveCompany() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+      }
+      SupplychainBatch supplychainBatch =
+          supplychainBatchService.createNewSupplychainBatch(
+              SupplychainBatchRepository.ACTION_ACCOUNTING_CUT_OFF,
+              AuthUtils.getUser().getActiveCompany());
+      if (supplychainBatch != null && supplychainBatch.getId() != null) {
+        return ActionView.define(I18n.get("Supplychain Batch"))
+            .model(SupplychainBatch.class.getName())
+            .add("form", "supplychain-batch-form")
+            .context("_showRecord", supplychainBatch.getId())
+            .map();
+      }
+      return null;
     } else {
       return super.getViewToOpen(closureAssistantLine);
     }

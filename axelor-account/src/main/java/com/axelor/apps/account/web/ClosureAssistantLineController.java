@@ -60,19 +60,13 @@ public class ClosureAssistantLineController {
       ClosureAssistantLine closureAssistantLine =
           request.getContext().asType(ClosureAssistantLine.class);
 
-      if (closureAssistantLine.getActionSelect()
-          == ClosureAssistantLineRepository.ACTION_FISCAL_YEAR_CLOSURE) {
-        response.setAlert(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_FISCAL_YEAR_CLOSURE);
-      }
-
       Map<String, Object> view =
           Beans.get(ClosureAssistantLineService.class).getViewToOpen(closureAssistantLine);
-
       if (view != null) {
         response.setView(view);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -105,8 +99,9 @@ public class ClosureAssistantLineController {
 
   public void fillOutrunResult(ActionRequest request, ActionResponse response) {
     try {
-      Year year = Beans.get(YearRepository.class).find((long) request.getContext().get("_year"));
-
+      Year year =
+          Beans.get(YearRepository.class)
+              .find(Long.parseLong(request.getContext().get("_year").toString()));
       if (year == null) {
         return;
       }
