@@ -219,6 +219,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="billOfExchangeStepBatchSelect" expr="eval: 1"/>
+    <field name="actionSelect" expr="eval: _actionSelect" if="_actionSelect"/>
   </action-record>
 
   <action-record name="action-accounting-batch-record-default-currency"
