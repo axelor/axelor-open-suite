@@ -11,4 +11,6 @@ public interface ClosureAssistantService {
   public ClosureAssistant updateCompany(ClosureAssistant closureAssistant);
 
   public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant);
+
+  public boolean setStatusWithLines(ClosureAssistant closureAssistant);
 }
