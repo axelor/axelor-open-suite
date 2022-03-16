@@ -165,7 +165,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
+  public void updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -232,4 +232,8 @@ public interface InvoiceTermService {
 
   public Integer massRefusePfp(
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
+
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm);
 }

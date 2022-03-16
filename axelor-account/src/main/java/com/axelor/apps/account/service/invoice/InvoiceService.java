@@ -344,9 +344,6 @@ public interface InvoiceService {
 
   public boolean applyFinancialDiscount(Invoice invoice);
 
-  @CallMethod
-  public String setAmountTitle(boolean applyFinancialDiscount);
-
   public InvoicePayment computeDatasForFinancialDiscount(
       InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) throws AxelorException;
 

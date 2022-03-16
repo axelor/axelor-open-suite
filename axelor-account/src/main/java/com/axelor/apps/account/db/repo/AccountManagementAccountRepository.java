@@ -46,7 +46,7 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
             I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     }
     return super.validate(json, context);

@@ -1268,13 +1268,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             >= 0);
   }
 
-  public String setAmountTitle(boolean applyFinancialDiscount) {
-    if (applyFinancialDiscount) {
-      return I18n.get("Financial discount deducted");
-    }
-    return I18n.get("Amount");
-  }
-
   @Override
   public InvoicePayment computeDatasForFinancialDiscount(
       InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount)
@@ -1283,14 +1276,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getFinancialDiscountDeadlineDate() != null) {
       invoicePayment.setFinancialDiscountDeadlineDate(invoice.getFinancialDiscountDeadlineDate());
     }
+
     if (invoice.getFinancialDiscount() != null) {
       invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
     }
+
     BigDecimal amount =
         invoicePayment.getFinancialDiscountTotalAmount().add(invoicePayment.getAmount());
     invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
     invoicePayment.setAmount(
-        calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
+        calculateAmountRemainingInPayment(invoice, applyDiscount, BigDecimal.ZERO));
 
     return invoicePayment;
   }
@@ -1302,15 +1297,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoicePayment
             .getAmount()
             .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
-            .longValue()
-        > invoice.getAmountRemaining().longValue()) {
+            .compareTo(invoice.getAmountRemaining())
+        > 0) {
       invoicePayment.setAmount(
           calculateAmountRemainingInPayment(
-              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
+              invoice, invoicePayment.getApplyFinancialDiscount(), BigDecimal.ZERO));
     } else {
       invoicePayment =
           changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
     }
+
     return invoicePayment;
   }
 

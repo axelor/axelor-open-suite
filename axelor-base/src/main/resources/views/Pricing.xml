@@ -20,7 +20,7 @@
         <field name="startDate" required="true"/>
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
-          required="true"/>
+          required="true" domain="self.name = 'SaleOrderLine'"/>
       </panel>
       <panel name="classificationPanel" colSpan="12">
         <field name="class1PricingRule"

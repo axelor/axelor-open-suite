@@ -13,6 +13,36 @@
     <field name="assignedToUser" hidden="true"/>
   </grid>
 
+  <grid name="my-payment-session-dashlet-grid" title="My payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <hilite color="success"
+      if="(!$get('paymentMode.generateBankOrder') &amp;&amp; statusSelect == 3) || ($get('paymentMode.generateBankOrder') &amp;&amp; statusSelect == 3 &amp;&amp; $get('bankOrder.statusSelect') == 4)"/>
+    <hilite color="danger"
+      if="(statusSelect == 1 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &gt; 7 &amp;&amp; todayDate &gt; paymentDate) || (statusSelect == 2 &amp;&amp; accountingTriggerSelect != 1 &amp;&amp; $get('bankOrder.statusSelect') != 4 &amp;&amp; $get('bankOrder.statusSelect') &lt; 4 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &gt; 7)"/>
+    <hilite color="warning"
+      if="statusSelect == 2 || (statusSelect == 1 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &lt; 7 &amp;&amp; todayDate &gt; paymentDate) || ($get('paymentMode.generateBankOrder') &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; $get('bankOrder.statusSelect') == 5) || ($get('paymentMode.generateBankOrder') &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; $get('bankOrder.statusSelect') &lt; 4 &amp;&amp; $moment(todayDate).diff(paymentDate,'days') &lt; 7)"/>
+    <hilite color="primary" if="statusSelect == 1 &amp;&amp; paymentDate &gt;= todayDate"/>
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+    <field name="paymentDate" hidden="true"/>
+    <field name="accountingTriggerSelect" hidden="true"/>
+    <field name="bankOrder.statusSelect" hidden="true"/>
+    <field name="paymentMode.generateBankOrder" hidden="true"/>
+  </grid>
+
+  <grid name="payment-session-dashlet-grid" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="name"/>
+    <field name="createdOn"/>
+    <field name="assignedToUser"/>
+    <field name="company"/>
+    <field name="sessionTotalAmount"/>
+    <field name="statusSelect"/>
+  </grid>
+
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
     onLoad="action-payment-session-method-set-has-invoice-term-selected"
@@ -34,7 +64,8 @@
         onSelect="action-attrs-payment-session-set-company-domain"
         onChange="action-group-payment-session-on-company-change"/>
       <field name="paymentMode" readonlyIf="!company"
-        domain="self.id in (select self2.paymentMode.id from AccountManagement self2 where self2.paymentMode.canSelectInPaymentSession = true AND self2.company = :company)"
+        domain="self.id in (select accountManagement.paymentMode.id from AccountManagement accountManagement where accountManagement.paymentMode.canSelectInPaymentSession = true AND accountManagement.company = :company)
+                AND self.accountingTriggerSelect > 0"
         form-view="payment-mode-form" grid-view="payment-mode-grid"
         onChange="action-group-payment-session-on-payment-mode-change"/>
       <field name="partnerTypeSelect" readonlyIf="!paymentMode" selection-in="[1,2,3]"/>
@@ -94,7 +125,8 @@
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <field name="accountingMethodSelect"/>
-      <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"/>
+      <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
+        selection-in="[1,2,3,4]"/>
       <field name="daysMarginOnPaySession"
         readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
     </panel>
@@ -202,9 +234,7 @@
     <field name="daysMarginOnPaySession" expr="eval: paymentMode?.daysMarginOnPaySession"/>
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
-    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"
-      if="paymentMode?.generateBankOrder"/>
-    <field name="accountingTriggerSelect" expr="eval: 1" if="!paymentMode?.generateBankOrder"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
   </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">
@@ -250,5 +280,23 @@
       if="nextSessionDate != null &amp;&amp; nextSessionDate &lt; paymentDate"
       error="Next session date cannot be inferior to payment date"/>
   </action-condition>
+
+  <action-view name="dashlet.paymentSession.my.paymentSessions"
+    title="My payment sessions" model="com.axelor.apps.account.db.PaymentSession">
+    <view type="grid" name="my-payment-session-dashlet-grid"/>
+    <view type="form" name="payment-session-form"/>
+    <domain>self.assignedToUser.id = :userId</domain>
+    <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <action-view name="dashlet.paymentSession.paymentSessions" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <view type="grid" name="payment-session-dashlet-grid"/>
+    <view type="form" name="payment-session-form"/>
+    <domain>self.assignedToUser.id = :userId OR self.assignedToUser.employee.managerUser = :userId</domain>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
 
 </object-views>

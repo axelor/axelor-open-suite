@@ -59,7 +59,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoicePayment.clearInvoiceTermPaymentList();
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
-          createInvoiceTermPayment(invoicePayment, invoiceTerm, invoiceTerm.getAmountRemaining()));
+          createInvoiceTermPayment(
+              invoicePayment, invoiceTerm, invoiceTermService.getAmountRemaining(invoiceTerm)));
     }
 
     return invoicePayment;
@@ -122,7 +123,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       invoiceTermToPay =
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
-      BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
+      BigDecimal invoiceTermAmount = invoiceTermService.getAmountRemaining(invoiceTermToPay);
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPaymentList.add(
@@ -164,25 +165,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       return this.initInvoiceTermPayment(invoiceTermToPay, paidAmount);
     } else {
       return this.initInvoiceTermPayment(
-          invoicePayment,
-          invoiceTermToPay,
-          invoicePayment.getAmount(),
-          invoicePayment.getFinancialDiscountTotalAmount(),
-          paidAmount,
-          invoicePayment.getApplyFinancialDiscount());
+          invoicePayment, invoiceTermToPay, paidAmount, invoicePayment.getApplyFinancialDiscount());
     }
   }
 
   protected InvoiceTermPayment initInvoiceTermPayment(
       InvoiceTerm invoiceTermToPay, BigDecimal amount) {
-    return initInvoiceTermPayment(null, invoiceTermToPay, null, null, amount, false);
+    return initInvoiceTermPayment(null, invoiceTermToPay, amount, false);
   }
 
   protected InvoiceTermPayment initInvoiceTermPayment(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      BigDecimal amount,
-      BigDecimal financialDiscountTotalAmount,
       BigDecimal paidAmount,
       boolean applyFinancialDiscount) {
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
@@ -192,26 +186,30 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setPaidAmount(paidAmount);
 
     manageInvoiceTermFinancialDiscount(
-        invoiceTermPayment,
-        amount,
-        financialDiscountTotalAmount,
-        paidAmount,
-        applyFinancialDiscount);
+        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
     return invoiceTermPayment;
   }
 
+  @Override
   public void manageInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
-      BigDecimal amount,
-      BigDecimal financialDiscountTotalAmount,
-      BigDecimal paidAmount,
+      InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount) {
     if (applyFinancialDiscount) {
+      BigDecimal remainingTotalFinancialDiscountAmount =
+          invoiceTerm
+              .getAmountRemaining()
+              .subtract(invoiceTerm.getAmountRemainingAfterFinDiscount());
+      BigDecimal ratioPaid =
+          invoiceTermPayment
+              .getPaidAmount()
+              .divide(invoiceTerm.getAmountRemainingAfterFinDiscount(), 10, RoundingMode.HALF_UP);
+
       invoiceTermPayment.setFinancialDiscountAmount(
-          paidAmount
-              .multiply(financialDiscountTotalAmount)
-              .divide(amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          remainingTotalFinancialDiscountAmount
+              .multiply(ratioPaid)
+              .setScale(2, RoundingMode.HALF_UP));
     }
   }
 
