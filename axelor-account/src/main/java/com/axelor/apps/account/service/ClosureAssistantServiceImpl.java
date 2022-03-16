@@ -13,8 +13,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ClosureAssistantServiceImpl implements ClosureAssistantService {
 
@@ -95,5 +98,33 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
     List<ClosureAssistant> ClosureAssistantList = closureAssistantQuery.getResultList();
 
     return !ObjectUtils.isEmpty(ClosureAssistantList);
+  }
+
+  @Override
+  @Transactional
+  public boolean setStatusWithLines(ClosureAssistant closureAssistant) {
+    if (!CollectionUtils.isEmpty(closureAssistant.getClosureAssistantLineList())) {
+      List<ClosureAssistantLine> lines =
+          closureAssistant.getClosureAssistantLineList().stream()
+              .sorted(Comparator.comparing(ClosureAssistantLine::getSequence))
+              .collect(Collectors.toList());
+      if (!lines.get(0).getIsValidated()
+          && closureAssistant.getStatusSelect() != ClosureAssistantRepository.STATUS_NEW) {
+        closureAssistant.setStatusSelect(ClosureAssistantRepository.STATUS_NEW);
+        closureAssistantRepository.save(closureAssistant);
+        return true;
+      } else if (lines.get(lines.size() - 1).getIsValidated()
+          && closureAssistant.getStatusSelect() != ClosureAssistantRepository.STATUS_TERMINATED) {
+        closureAssistant.setStatusSelect(ClosureAssistantRepository.STATUS_TERMINATED);
+        closureAssistantRepository.save(closureAssistant);
+        return true;
+      } else if (closureAssistant.getStatusSelect()
+          != ClosureAssistantRepository.STATUS_IN_PROGRESS) {
+        closureAssistant.setStatusSelect(ClosureAssistantRepository.STATUS_IN_PROGRESS);
+        closureAssistantRepository.save(closureAssistant);
+        return true;
+      }
+    }
+    return false;
   }
 }
