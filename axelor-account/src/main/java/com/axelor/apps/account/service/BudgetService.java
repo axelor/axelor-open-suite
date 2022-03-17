@@ -210,12 +210,26 @@ public class BudgetService {
   }
 
   @Transactional
-  public void validate(Budget budget) {
+  public void validate(Budget budget) throws AxelorException {
+    if (budget.getStatusSelect() == null
+        || budget.getStatusSelect() != BudgetRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BUDGET_VALIDATE_WRONG_STATUS));
+    }
+
     budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
   }
 
   @Transactional
-  public void draft(Budget budget) {
+  public void draft(Budget budget) throws AxelorException {
+    if (budget.getStatusSelect() == null
+        || budget.getStatusSelect() != BudgetRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BUDGET_DRAFT_WRONG_STATUS));
+    }
+
     budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
   }
 

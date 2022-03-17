@@ -52,10 +52,10 @@
         onClick="save,action-subrogation-release-method-enter-release-in-the-accounts"
         showIf="statusSelect == 2"/>
       <button name="cancelReleaseBtn" title="Cancel release"
-        onClick="action-subrogation-release-record-cancel-release,save"
+        onClick="action-subrogation-release-method-cancel,save"
         showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 3"/>
       <button name="renewReleaseBtn" title="Renew release"
-        onClick="action-subrogation-release-record-renew-release,save" showIf="statusSelect == 5"/>
+        onClick="action-subrogation-release-method-renew,save" showIf="statusSelect == 5"/>
       <button name="displayMoveLines" title="See Move Lines"
         onClick="action-subrogation-release-display-move-lines-view"
         showIf="statusSelect == 3 || statusSelect == 4"/>
@@ -105,6 +105,16 @@
       method="displayMoveLines"/>
   </action-method>
 
+  <action-method name="action-subrogation-release-method-cancel">
+    <call class="com.axelor.apps.account.web.SubrogationReleaseController"
+      method="cancelRelease"/>
+  </action-method>
+
+  <action-method name="action-subrogation-release-method-renew">
+    <call class="com.axelor.apps.account.web.SubrogationReleaseController"
+      method="renewRelease"/>
+  </action-method>
+
   <action-record name="action-subrogation-release-onnew"
     model="com.axelor.apps.account.db.SubrogationRelease">
     <field name="company" expr="eval: __user__.getActiveCompany()"/>
@@ -114,16 +124,6 @@
     model="com.axelor.apps.account.db.SubrogationRelease">
     <field name="$totalAmountRemaining"
       expr="eval: invoiceSet?.collect{it->it.amountRemaining}.sum()"/>
-  </action-record>
-
-  <action-record name="action-subrogation-release-record-cancel-release"
-    model="com.axelor.apps.account.db.SubrogationRelease">
-    <field name="statusSelect" expr="eval: __repo__(SubrogationRelease).STATUS_CANCELED"/>
-  </action-record>
-
-  <action-record name="action-subrogation-release-record-renew-release"
-    model="com.axelor.apps.account.db.SubrogationRelease">
-    <field name="statusSelect" expr="eval: __repo__(SubrogationRelease).STATUS_NEW"/>
   </action-record>
 
   <search-filters name="subrogation-release-filters"

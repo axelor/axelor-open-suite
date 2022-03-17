@@ -106,6 +106,12 @@ public class PaymentVoucherConfirmService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void confirmPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
+    if (paymentVoucher.getStatusSelect() == null
+        || paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONFIRM_WRONG_STATUS));
+    }
     log.debug("In confirmPaymentVoucherService ....");
     paymentVoucherSequenceService.setReference(paymentVoucher);
 

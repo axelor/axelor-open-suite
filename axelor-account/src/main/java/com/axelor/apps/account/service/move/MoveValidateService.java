@@ -213,14 +213,6 @@ public class MoveValidateService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(MoveRepository.STATUS_NEW);
-    authorizedStatus.add(MoveRepository.STATUS_ACCOUNTED);
-    if (move.getStatusSelect() == null || !authorizedStatus.contains(move.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MOVE_ACCOUNT_VALIDATE_WRONG_STATUS));
-    }
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
@@ -299,12 +291,28 @@ public class MoveValidateService {
   }
 
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(MoveRepository.STATUS_NEW);
+    authorizedStatus.add(MoveRepository.STATUS_ACCOUNTED);
 
-    if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
-      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
-    } else {
+    if (!daybook
+        && (move.getStatusSelect() != null
+            && move.getStatusSelect() == MoveRepository.STATUS_NEW)) {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
       move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+    } else if (daybook
+        && (move.getStatusSelect() != null
+            && move.getStatusSelect() == MoveRepository.STATUS_NEW)) {
+      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+    } else if (daybook
+        && (move.getStatusSelect() != null
+            && move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED)) {
+      move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
+      move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MOVE_ACCOUNT_VALIDATE_WRONG_STATUS));
     }
   }
 

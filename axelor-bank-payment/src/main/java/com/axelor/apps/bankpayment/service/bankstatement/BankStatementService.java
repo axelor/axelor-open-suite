@@ -47,6 +47,13 @@ public class BankStatementService {
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
       throws IOException, AxelorException {
 
+    if (bankStatement.getStatusSelect() == null
+        || bankStatement.getStatusSelect() != BankStatementRepository.STATUS_RECEIVED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_RUN_IMPORT_WRONG_STATUS));
+    }
+
     bankStatement = find(bankStatement);
 
     if (bankStatement.getBankStatementFile() == null) {

@@ -27,11 +27,14 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -68,6 +71,13 @@ public class BankReconciliationValidateService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankReconciliation bankReconciliation) throws AxelorException {
+
+    if (bankReconciliation.getStatusSelect() == null
+        || bankReconciliation.getStatusSelect() != BankReconciliationRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_RECONCILIATION_VALIDATE_WRONG_STATUS));
+    }
 
     // TODO CHECK should be done on all, before generate any moves.
     // Also, line should be sort by date and sequence

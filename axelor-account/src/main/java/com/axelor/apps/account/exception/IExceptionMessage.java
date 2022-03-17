@@ -100,6 +100,8 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CLEARANCE_6 = /*$$(*/
       "%s : You must configure an overpayment account clearance journal for the company %s" /*)*/;
   static final String ACCOUNT_CLEARANCE_7 = /*$$(*/ "Move lines generated" /*)*/;
+  static final String ACCOUNT_CLEARANCE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a drafted account cleanrance." /*)*/;
 
   /** Account customer service */
   static final String ACCOUNT_CUSTOMER_1 = /*$$(*/
@@ -111,6 +113,9 @@ public interface IExceptionMessage {
   /** Check rejection service */
   static final String CHECK_REJECTION_1 = /*$$(*/
       "%s : You must configure a cheque rejection sequence for the company %s" /*)*/;
+
+  static final String CHECK_REJECTION_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a drafted cheque rejection." /*)*/;
 
   /** Irrecoverable service and controller */
   static final String IRRECOVERABLE_1 = /*$$(*/ "Timetable line %s" /*)*/;
@@ -124,6 +129,8 @@ public interface IExceptionMessage {
   static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/;
   static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/;
   static final String IRRECOVERABLE_7 = /*$$(*/ "You must select a printing type" /*)*/;
+  static final String IRRECOVERABLE_PASS_IN_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted irrecoverable." /*)*/;
 
   /** Journal service */
   static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -233,6 +240,10 @@ public interface IExceptionMessage {
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
   static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
+  static final String RECONCILE_RECONCILE_WRONG_STATUS = /*$$(*/
+      "Can only reconcile a drafted reconcile." /*)*/;
+  static final String RECONCILE_UNRECONCILE_WRONG_STATUS = /*$$(*/
+      "Can only unreconcile if reconciled." /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/
@@ -243,6 +254,8 @@ public interface IExceptionMessage {
   static final String REIMBURSEMENT_3 = /*$$(*/
       "No reimbursement found for the ref %s and the company %s." /*)*/;
   static final String REIMBURSEMENT_4 = /*$$(*/ "You must configure a RIB." /*)*/;
+  static final String REIMBURSEMENT_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Reimbursement must be 'To Validated' to be validated." /*)*/;
 
   /** Year service */
   static final String YEAR_1 = /*$$(*/
@@ -702,6 +715,10 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_TOOL_1 = /*$$(*/
       "Payment entry's type missing from payment entry %s" /*)*/;
 
+  /** Payment voucher to confirm service */
+  static final String PAYMENT_VOUCHER_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted payment voucher." /*)*/;
+
   /** Payment voucher controller */
   static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
       "You can't remove this payment voucher as it is already used in a move." /*)*/;
@@ -756,6 +773,11 @@ public interface IExceptionMessage {
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
+  static final String BUDGET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate drafted budget." /*)*/;
+  static final String BUDGET_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from a validated budget." /*)*/;
+
   static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
 
   /*
@@ -801,7 +823,14 @@ public interface IExceptionMessage {
       "Missing subrogation release sequence for company %s" /*)*/;
   static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
       "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
-
+  static final String SUBROGATION_RELEASE_TRANSMIT_RELEASE_WRONG_STATUS = /*$$(*/
+      "Can only transmit a new release." /*)*/;
+  static final String SUBROGATION_RELEASE_ENTER_RELEASE_IN_ACCOUNT_WRONG_STATUS = /*$$(*/
+      "Can only release in the accounts a transmitted release." /*)*/;
+  static final String SUBROGATION_RELEASE_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a transmitted release." /*)*/;
+  static final String SUBROGATION_RELEASE_RENEW_WRONG_STATUS = /*$$(*/
+      "Can only renew a cancelled release." /*)*/;
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 
@@ -851,4 +880,13 @@ public interface IExceptionMessage {
 
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
       "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String FIXED_ASSET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate drafted fixed asset." /*)*/;
+  static final String FIXED_ASSET_DISPOSAL_WRONG_STATUS = /*$$(*/
+      "Can only dispose validated fixed asset." /*)*/;
+
+  /** Notification service * */
+  static final String NOTIFICATION_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a new notification" /*)*/;
 }

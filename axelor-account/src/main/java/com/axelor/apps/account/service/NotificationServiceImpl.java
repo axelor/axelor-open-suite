@@ -29,11 +29,13 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -97,7 +99,12 @@ public class NotificationServiceImpl implements NotificationService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Notification notification) throws AxelorException {
-
+    if (notification.getStatusSelect() == null
+        || notification.getStatusSelect() != NotificationRepository.STATUS_NEW) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.NOTIFICATION_VALIDATE_WRONG_STATUS));
+    }
     for (NotificationItem notificationItem : notification.getNotificationItemList()) {
       this.createPaymentMove(notificationItem);
     }

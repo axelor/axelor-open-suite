@@ -110,6 +110,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
+    if (subrogationRelease.getStatusSelect() == null
+        || subrogationRelease.getStatusSelect() != SubrogationReleaseRepository.STATUS_NEW) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_TRANSMIT_RELEASE_WRONG_STATUS));
+    }
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
         sequenceService.getSequenceNumber("subrogationRelease", subrogationRelease.getCompany());
@@ -126,6 +132,31 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
     subrogationRelease.setTransmissionDate(
         appBaseService.getTodayDate(subrogationRelease.getCompany()));
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelRelease(SubrogationRelease subrogationRelease) throws AxelorException {
+    if (subrogationRelease.getStatusSelect() == null
+        || subrogationRelease.getStatusSelect()
+            != SubrogationReleaseRepository.STATUS_TRANSMITTED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_CANCEL_WRONG_STATUS));
+    }
+    subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CANCELED);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void renewRelease(SubrogationRelease subrogationRelease) throws AxelorException {
+    if (subrogationRelease.getStatusSelect() == null
+        || subrogationRelease.getStatusSelect() != SubrogationReleaseRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_RENEW_WRONG_STATUS));
+    }
+    subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_NEW);
   }
 
   protected void checkIfAnOtherSubrogationAlreadyExist(SubrogationRelease subrogationRelease)
@@ -229,6 +260,14 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Transactional(rollbackOn = {Exception.class})
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
+
+    if (subrogationRelease.getStatusSelect() == null
+        || subrogationRelease.getStatusSelect()
+            != SubrogationReleaseRepository.STATUS_TRANSMITTED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_ENTER_RELEASE_IN_ACCOUNT_WRONG_STATUS));
+    }
     MoveService moveService = Beans.get(MoveService.class);
     MoveRepository moveRepository = Beans.get(MoveRepository.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
