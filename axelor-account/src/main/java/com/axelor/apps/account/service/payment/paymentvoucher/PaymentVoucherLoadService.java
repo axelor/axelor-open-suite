@@ -260,6 +260,8 @@ public class PaymentVoucherLoadService {
       paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
     }
 
+    this.sortElementsToPay(paymentVoucher);
+
     return generateAll;
   }
 
@@ -456,6 +458,8 @@ public class PaymentVoucherLoadService {
         it.remove();
       }
     }
+
+    this.sortElementsToPay(paymentVoucher);
   }
 
   @Transactional
@@ -466,10 +470,11 @@ public class PaymentVoucherLoadService {
     paymentVoucher.clearPayVoucherElementToPayList();
 
     listToKeep.forEach(
-        elementToPay -> {
-          paymentVoucher.addPayVoucherElementToPayListItem(
-              payVoucherElementToPayRepo.find(elementToPay.getId()));
-        });
+        elementToPay ->
+            paymentVoucher.addPayVoucherElementToPayListItem(
+                payVoucherElementToPayRepo.find(elementToPay.getId())));
+
+    this.sortElementsToPay(paymentVoucher);
 
     paymentVoucherRepository.save(paymentVoucher);
   }
@@ -485,6 +490,18 @@ public class PaymentVoucherLoadService {
             payVoucherDueElementService.updateDueElementWithFinancialDiscount(
                 payVoucherDueElement, paymentVoucher);
       }
+    }
+  }
+
+  protected void sortElementsToPay(PaymentVoucher paymentVoucher) {
+    paymentVoucher
+        .getPayVoucherElementToPayList()
+        .sort(Comparator.comparing(t -> t.getInvoiceTerm().getDueDate()));
+
+    int seq = 1;
+    for (PayVoucherElementToPay payVoucherElementToPay :
+        paymentVoucher.getPayVoucherElementToPayList()) {
+      payVoucherElementToPay.setSequence(seq++);
     }
   }
 }
