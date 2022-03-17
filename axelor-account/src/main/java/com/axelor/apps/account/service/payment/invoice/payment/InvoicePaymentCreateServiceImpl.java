@@ -156,14 +156,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     return invoicePayment;
   }
 
-  protected void computeFinancialDiscount(InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException {
-    if (invoiceService.applyFinancialDiscount(invoice)) {
-      invoicePayment.setApplyFinancialDiscount(true);
-      invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, true);
-    }
-  }
-
   protected int determineType(Move move) {
 
     Invoice invoice = move.getInvoice();

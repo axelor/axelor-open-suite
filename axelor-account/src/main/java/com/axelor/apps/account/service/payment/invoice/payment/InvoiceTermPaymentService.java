@@ -36,11 +36,6 @@ public interface InvoiceTermPaymentService {
   public InvoicePayment initInvoiceTermPayments(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay);
 
-  public void generateInvoiceTermPaymentsWithAmount(
-      InvoicePayment invoicePayment,
-      List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount);
-
   /**
    * Method to init invoiceTermPayments based on invoiceTerm to pay and inserted amount
    *

@@ -364,23 +364,27 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = creditMove.getInvoice();
     BigDecimal amount = reconcile.getAmount();
 
-    this.updatePayment(reconcile, debitMoveLine, debitInvoice, debitMove, amount);
-    this.updatePayment(reconcile, creditMoveLine, creditInvoice, creditMove, amount);
+    this.updatePayment(reconcile, debitMoveLine, debitInvoice, debitMove, creditMove, amount);
+    this.updatePayment(reconcile, creditMoveLine, creditInvoice, creditMove, debitMove, amount);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePayment(
-      Reconcile reconcile, MoveLine moveLine, Invoice invoice, Move move, BigDecimal amount)
+      Reconcile reconcile,
+      MoveLine moveLine,
+      Invoice invoice,
+      Move move,
+      Move otherMove,
+      BigDecimal amount)
       throws AxelorException {
     InvoicePayment invoicePayment = null;
     if (invoice != null) {
-      invoicePayment = this.getExistingInvoicePayment(invoice);
+      invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
 
       if (invoicePayment == null) {
         invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+        invoicePayment.addReconcileListItem(reconcile);
       }
-
-      invoicePayment.addReconcileListItem(reconcile);
     }
 
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
@@ -402,20 +406,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     if (invoicePayment != null) {
-      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-        invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
-      }
-
       invoicePaymentRepo.save(invoicePayment);
     } else {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
-  }
-
-  protected InvoicePayment getExistingInvoicePayment(Invoice invoice) {
-    return invoice.getInvoicePaymentList().stream()
-        .min(Comparator.comparing(InvoicePayment::getCreatedOn))
-        .orElse(null);
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
@@ -457,6 +451,13 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return date1.compareTo(date2);
+  }
+
+  protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
+    return invoice.getInvoicePaymentList().stream()
+        .filter(it -> it.getMove() != null && it.getMove().equals(move))
+        .findFirst()
+        .orElse(null);
   }
 
   protected void updatePaymentTax(Reconcile reconcile) throws AxelorException {

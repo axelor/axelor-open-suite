@@ -226,11 +226,6 @@ public class InvoicePaymentController {
       boolean amountError = false;
 
       if (invoiceId > 0) {
-        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        InvoiceService invoiceService = Beans.get(InvoiceService.class);
-
-        invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
-
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
@@ -248,10 +243,9 @@ public class InvoicePaymentController {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
           invoicePayment.clearInvoiceTermPaymentList();
-          invoicePayment.setInvoiceTermPaymentList(
-              Beans.get(InvoiceTermPaymentService.class)
-                  .initInvoiceTermPaymentsWithAmount(
-                      invoicePayment, invoiceTerms, invoicePayment.getAmount()));
+          Beans.get(InvoiceTermPaymentService.class)
+              .initInvoiceTermPaymentsWithAmount(
+                  invoicePayment, invoiceTerms, invoicePayment.getAmount());
         }
         response.setValues(invoicePayment);
 
@@ -345,7 +339,7 @@ public class InvoicePaymentController {
             Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
             InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-            invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
+            // TODO update amounts when fixing this
           }
           response.setValues(invoicePayment);
         }
