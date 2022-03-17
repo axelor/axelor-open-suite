@@ -72,7 +72,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     if (entity.getOperationOrderList() != null) {

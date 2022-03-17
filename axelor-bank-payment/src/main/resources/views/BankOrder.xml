@@ -150,14 +150,14 @@
         <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="paymentMode" css="label-bold bold" colSpan="6" canView="false"
-          domain="self.orderTypeSelect = :orderTypeSelect"
-          onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"
+          domain="self.orderTypeSelect = :orderTypeSelect
+                  AND (:functionalOriginSelect &lt;&gt; 1 OR self.accountingTriggerSelect &lt;&gt; 1)"
+          onChange="action-bank-order-group-payment-mode-onchange"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="bankOrderFileFormat" form-view="bank-order-file-format-form"
           grid-view="bank-order-file-format-grid" canView="false"
           domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-          colSpan="6"
-          onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"
+          colSpan="6" onChange="action-bank-order-group-bank-order-file-format-onchange"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="partnerTypeSelect" css="label-bold bold" colSpan="6"
           onChange="action-bank-order-group-partner-type-select-change"
@@ -165,6 +165,12 @@
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"
           readonlyIf="technicalOriginSelect == 1"/>
+        <panel name="accountingTriggerPanel" stacked="true">
+          <field name="accountingTriggerSelect" showIf="functionalOriginSelect != 1"/>
+          <field name="accountingTriggerSelect" selection-in="[0,2,3,4]"
+            showIf="functionalOriginSelect == 1"/>
+          <field name="functionalOriginSelect" hidden="true"/>
+        </panel>
       </panel>
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
         <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
@@ -525,6 +531,19 @@
     <action name="action-bank-order-method-reset-receivers"/>
   </action-group>
 
+  <action-group name="action-bank-order-group-payment-mode-onchange">
+    <action name="action-bank-order-record-payment-mode-change"/>
+    <action name="action-bank-order-attrs-bank-order-file-format-change"/>
+    <action name="action-bank-order-record-update-bankorder-currency"/>
+    <action name="action-bank-order-record-update-bank-order-parameter"/>
+  </action-group>
+
+  <action-group name="action-bank-order-group-bank-order-file-format-onchange">
+    <action name="action-bank-order-attrs-bank-order-file-format-change"/>
+    <action name="action-bank-order-record-update-bankorder-currency"/>
+    <action name="action-bank-order-record-update-bank-order-parameter"/>
+  </action-group>
+
   <!-- Actions Attributes -->
 
   <action-attrs name="action-bank-order-attrs-on-load">
@@ -667,6 +686,7 @@
   <action-record name="action-bank-order-record-payment-mode-change"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
   </action-record>
 
   <action-record name="action-bank-order-record-partner-type-select-default"

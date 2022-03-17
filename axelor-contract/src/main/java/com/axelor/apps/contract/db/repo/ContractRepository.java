@@ -42,7 +42,7 @@ public class ContractRepository extends AbstractContractRepository {
       return super.save(contract);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -61,7 +61,7 @@ public class ContractRepository extends AbstractContractRepository {
       }
       return seq;
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

@@ -14,7 +14,8 @@
     model="com.axelor.apps.base.db.DataConfigLine" width="large">
     <panel name="mainPanel">
       <field name="metaModel" canEdit="false"/>
-      <field name="tabName"/>
+      <field name="tabName"
+        help="Choose a name for the tab in the spreadsheet containing the exported fields listed below."/>
       <field name="typeSelect"/>
       <field name="metaFieldPath" hidden="true" showIf="typeSelect == 0"
         requiredIf="typeSelect == 0" onSelect="action-object-attrs-metaFieldPath-onselect"/>

@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -40,14 +41,16 @@ public class TestFixedAssetLineComputationService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
   protected AnalyticFixedAssetService analyticFixedAssetService;
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
+  protected AppBaseService appBaseService;
 
   @Before
   public void prepare() {
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
+    appBaseService = mock(AppBaseService.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService, fixedAssetFailOverControlService);
+            analyticFixedAssetService, fixedAssetFailOverControlService, appBaseService);
   }
 
   @Test

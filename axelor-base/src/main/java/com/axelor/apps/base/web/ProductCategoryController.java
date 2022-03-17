@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -41,6 +42,18 @@ public class ProductCategoryController {
       if (!"".equals(discountsMessage)) {
         response.setFlash(discountsMessage);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterParentCategory(ActionRequest request, ActionResponse response) {
+    try {
+      ProductCategory productCategory = request.getContext().asType(ProductCategory.class);
+      String domain =
+          Beans.get(ProductCategoryDomainCreatorService.class)
+              .createProductCategoryDomainFilteringChildren(productCategory);
+      response.setAttr("parentProductCategory", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
