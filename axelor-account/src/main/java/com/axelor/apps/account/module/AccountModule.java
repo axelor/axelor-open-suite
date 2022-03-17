@@ -93,6 +93,10 @@ import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
+import com.axelor.apps.account.service.ClosureAssistantLineService;
+import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
+import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.account.service.ClosureAssistantServiceImpl;
 import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -506,6 +510,8 @@ public class AccountModule extends AxelorModule {
 
     bind(TaxAccountToolService.class).to(TaxAccountToolServiceImpl.class);
 
+    bind(ClosureAssistantLineService.class).to(ClosureAssistantLineServiceImpl.class);
+
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
 
     bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
@@ -521,5 +527,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentSessionEmailService.class).to(PaymentSessionEmailServiceImpl.class);
 
     bind(PayVoucherDueElementService.class).to(PayVoucherDueElementServiceImpl.class);
+
+    bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
   }
 }

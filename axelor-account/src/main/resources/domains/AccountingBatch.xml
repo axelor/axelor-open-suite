@@ -80,6 +80,8 @@
     <many-to-one ref="com.axelor.apps.account.db.Journal" name="billOfExchangeJournal"
       title="Bill of exchange journal"/>
 
+    <many-to-many ref="com.axelor.apps.base.db.Year" name="yearSet" title="Years"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -93,6 +95,7 @@
 		public static final int ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS = 21;
 		public static final int ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING = 23;
 		public static final int ACTION_BILL_OF_EXCHANGE = 24;
+		public static final int ACTION_MOVES_CONSISTENCY_CONTROL = 25;
 
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
