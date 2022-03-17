@@ -84,9 +84,11 @@ public class ClosureAssistantLineController {
       if (Beans.get(ClosureAssistantService.class)
           .checkNoExistingClosureAssistantForSameYear(closureAssistant)) {
         response.setError(
-            String.format(
-                I18n.get(IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR),
-                closureAssistantLine.getId()));
+            I18n.get(
+                String.format(
+                    IExceptionMessage.ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR,
+                    closureAssistant.getFiscalYear().getCode(),
+                    closureAssistant.getCompany().getCode())));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

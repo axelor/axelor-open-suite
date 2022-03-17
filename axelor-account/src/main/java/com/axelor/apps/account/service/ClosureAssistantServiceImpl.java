@@ -90,13 +90,14 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
     TypedQuery<ClosureAssistant> closureAssistantQuery =
         JPA.em()
             .createQuery(
-                "SELECT self FROM ClosureAssistant self  " + "WHERE self.fiscalYear = :year",
+                "SELECT self FROM ClosureAssistant self  "
+                    + "WHERE self.fiscalYear = :year AND self.id != :id",
                 ClosureAssistant.class);
 
     closureAssistantQuery.setParameter("year", closureAssistant.getFiscalYear());
+    closureAssistantQuery.setParameter("id", closureAssistant.getId());
 
     List<ClosureAssistant> ClosureAssistantList = closureAssistantQuery.getResultList();
-
     return !ObjectUtils.isEmpty(ClosureAssistantList);
   }
 

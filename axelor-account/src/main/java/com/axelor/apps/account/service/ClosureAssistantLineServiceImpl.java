@@ -12,6 +12,7 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -23,6 +24,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.TypedQuery;
 
 public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineService {
@@ -47,7 +49,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   @Override
   public List<ClosureAssistantLine> initClosureAssistantLines(ClosureAssistant closureAssistant)
       throws AxelorException {
-    List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<ClosureAssistantLine>();
+    List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<>();
     for (int i = 2; i < 8; i++) {
       ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i - 1, null, i, false);
 
@@ -77,7 +79,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   @Override
   public Map<String, Object> getViewToOpen(ClosureAssistantLine closureAssistantLine)
       throws AxelorException {
-    if (AuthUtils.getUser().getActiveCompany() == null) {
+    if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null) == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
@@ -93,7 +95,13 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
           return this.getAccountingBatchView(accountingBatch.getId());
         }
       case ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK:
-        // TODO in 46858
+        accountingBatch =
+            accountingBatchService.createNewAccountingBatch(
+                AccountingBatchRepository.ACTION_MOVES_CONSISTENCY_CONTROL,
+                AuthUtils.getUser().getActiveCompany());
+        if (accountingBatch != null && accountingBatch.getId() != null) {
+          return this.getAccountingBatchView(accountingBatch.getId());
+        }
         return null;
       case ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS:
         return ActionView.define(I18n.get("Accounting report"))

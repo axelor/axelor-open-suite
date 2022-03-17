@@ -12,6 +12,7 @@ import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -20,6 +21,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistantLineServiceImpl {
 
@@ -43,7 +45,7 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
   @Override
   public List<ClosureAssistantLine> initClosureAssistantLines(ClosureAssistant closureAssistant)
       throws AxelorException {
-    List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<ClosureAssistantLine>();
+    List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<>();
     for (int i = 1; i < 8; i++) {
       ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i, null, i, false);
 
@@ -64,7 +66,8 @@ public class ClosureAssistantLineSupplychainServiceImpl extends ClosureAssistant
       throws AxelorException {
     if (closureAssistantLine.getActionSelect()
         == ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION) {
-      if (AuthUtils.getUser().getActiveCompany() == null) {
+      if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+          == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));

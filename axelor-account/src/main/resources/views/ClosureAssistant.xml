@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure "
+  <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
     name="closure-assistant-grid" orderBy="progress">
     <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
     <field name="fiscalYear.company.code" title="Company" width="300"/>
