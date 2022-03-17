@@ -52,47 +52,43 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   @Inject protected WeeklyPlanningService weeklyPlanningService;
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getSeniorityDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getSeniorityDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
+
+    Period period =
+        Period.between(
+            employee.getSeniorityDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
-
-    try {
-      Period period =
-          Period.between(
-              employee.getBirthDate(),
-              refDate == null
-                  ? Beans.get(AppBaseService.class)
-                      .getTodayDate(
-                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                  : refDate);
-      return period.getYears();
-    } catch (IllegalArgumentException e) {
+    if (employee.getBirthDate() == null) {
       throw new AxelorException(
-          e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+
+    Period period =
+        Period.between(
+            employee.getBirthDate(),
+            refDate == null
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(
+                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                : refDate);
+    return period.getYears();
   }
 
   @Override
