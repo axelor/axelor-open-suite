@@ -31,6 +31,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
@@ -107,9 +108,15 @@ public class EmployeeBonusService {
       maker.addInContext("EmployeeBonusMgtLine", line);
       String formula = bonus.getEmployeeBonusType().getApplicationCondition();
       Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
-      formula =
-          replaceExpressionInFormula(
-              formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
+      try {
+        formula =
+                replaceExpressionInFormula(
+                        formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        formula = "true";
+        lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
+      }
       maker.setTemplate(formula);
       eval = maker.make();
 
