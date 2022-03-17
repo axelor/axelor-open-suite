@@ -294,7 +294,7 @@
     <option value="0">No indication</option>
     <option value="1">Discounted transfer under a Dailly agreement</option>
     <option value="2">Pledge of receivables under a Dailly agreement</option>
-    <option value="3">Pledge of receivables under a Dailly agreement</option>
+    <option value="3">Assignment or pledge outside Dailly agreement</option>
   </selection>
 
   <selection name="bankpayment.bank.order.accept.per.line.code.select">
