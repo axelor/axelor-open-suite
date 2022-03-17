@@ -220,6 +220,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
+      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
@@ -542,8 +543,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getId() == null
         || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || (BigDecimal.ZERO.compareTo(invoice.getAmountRemaining()) == 0
-            && BigDecimal.ZERO.compareTo(invoice.getExTaxTotal()) == 0
+        || (invoice.getAmountRemaining().signum() == 0
+            && invoice.getExTaxTotal().signum() == 0
             && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
       return false;
     }
@@ -710,6 +711,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
         invoiceTerm.setIsSelectedOnPaymentSession(false);
+        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
       }
     }
 
