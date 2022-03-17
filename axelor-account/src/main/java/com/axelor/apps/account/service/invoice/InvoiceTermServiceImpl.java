@@ -220,8 +220,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
-      invoiceTerm.setFinancialDiscount(financialDiscount);
+      this.setFinancialDiscount(invoiceTerm, financialDiscount);
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
@@ -258,6 +257,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(invoice);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
@@ -282,6 +282,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     return invoiceTerm;
+  }
+
+  protected void setFinancialDiscount(
+      InvoiceTerm invoiceTerm, FinancialDiscount financialDiscount) {
+    invoiceTerm.setFinancialDiscount(financialDiscount);
+    invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
   }
 
   @Override
@@ -543,8 +549,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || (BigDecimal.ZERO.compareTo(invoice.getAmountRemaining()) == 0
+            && BigDecimal.ZERO.compareTo(invoice.getExTaxTotal()) == 0
+            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
