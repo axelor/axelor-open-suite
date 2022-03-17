@@ -27,7 +27,8 @@
     <many-to-one name="invoiceTerm" title="Invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
 
-    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"
+      readonly="true"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>

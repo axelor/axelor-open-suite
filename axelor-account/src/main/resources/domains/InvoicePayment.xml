@@ -40,7 +40,8 @@
 
     <string name="description" title="Description"/>
 
-    <boolean name="applyFinancialDiscount" title="Apply Financial Discount ?"/>
+    <boolean name="applyFinancialDiscount" title="Apply Financial Discount ?"
+      readonly="true"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <date name="financialDiscountDeadlineDate" title="Fin. Discount Deadline Date"/>
