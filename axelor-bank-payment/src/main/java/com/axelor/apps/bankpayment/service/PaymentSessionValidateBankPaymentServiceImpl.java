@@ -107,16 +107,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       throws AxelorException {
     super.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
 
-    BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
-    bankOrderService.updateTotalAmounts(bankOrder);
-    bankOrderRepo.save(bankOrder);
+    if (paymentSession.getBankOrder() != null) {
+      BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
+      bankOrderService.updateTotalAmounts(bankOrder);
+      bankOrderRepo.save(bankOrder);
 
-    if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
-      try {
-        bankOrderService.confirm(bankOrder);
-      } catch (JAXBException | IOException | DatatypeConfigurationException e) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
+        try {
+          bankOrderService.confirm(bankOrder);
+        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+        }
       }
     }
   }
@@ -143,7 +145,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             paymentSession.getCurrency(),
             paymentSession.getSequence(),
             this.getLabel(paymentSession),
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION);
 
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);

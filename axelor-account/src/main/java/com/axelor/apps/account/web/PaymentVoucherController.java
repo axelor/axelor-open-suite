@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -86,10 +87,15 @@ public class PaymentVoucherController {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     try {
-      Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
+      boolean generateAll =
+          Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+
+      if (!generateAll) {
+        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

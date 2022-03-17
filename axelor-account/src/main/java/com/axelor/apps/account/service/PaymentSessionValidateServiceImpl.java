@@ -210,7 +210,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean isGlobal)
       throws AxelorException {
     if (paymentSession.getAccountingTriggerSelect()
-        == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
       paymentSession.setValidatedByUser(AuthUtils.getUser());
       paymentSession.setValidatedDate(
