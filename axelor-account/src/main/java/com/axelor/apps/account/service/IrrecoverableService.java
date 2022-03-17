@@ -858,15 +858,13 @@ public class IrrecoverableService {
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
+    BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
     BigDecimal creditAmount = null;
-    BigDecimal debitAmount = null;
     if (isInvoiceReject) {
       creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
-      debitAmount = creditAmount;
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
-      debitAmount = creditAmount;
     }
 
     // Debits MoveLines Tva
@@ -874,42 +872,55 @@ public class IrrecoverableService {
       amount =
           (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
       // do not generate move line with amount equal to zero
-      if (amount.signum() == 0) {
-        continue;
+      if (amount.signum() != 0) {
+
+        debitMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                payerPartner,
+                taxAccountService.getAccount(
+                    invoiceLineTax.getTaxLine().getTax(), company, false, false),
+                amount,
+                true,
+                appAccountService.getTodayDate(company),
+                seq,
+                irrecoverableName,
+                invoice.getInvoiceId());
+
+        debitMoveLine.setTaxLine(invoiceLineTax.getTaxLine());
+        debitMoveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
+        debitMoveLine.setTaxCode(invoiceLineTax.getTaxLine().getTax().getCode());
+        debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+
+        move.getMoveLineList().add(debitMoveLine);
+        seq++;
       }
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              payerPartner,
-              taxAccountService.getAccount(
-                  invoiceLineTax.getTaxLine().getTax(), company, false, false),
-              amount,
-              true,
-              appAccountService.getTodayDate(company),
-              seq,
-              irrecoverableName,
-              invoice.getInvoiceId());
 
-      move.getMoveLineList().add(debitMoveLine);
-      seq++;
-      debitAmount = debitAmount.subtract(amount);
+      amountExTax =
+          (invoiceLineTax.getExTaxBase().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+      // do not generate move line with amount equal to zero
+      if (amountExTax.signum() != 0) {
+
+        // Debit MoveLine 654 (irrecoverable account)
+        debitMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                payerPartner,
+                accountConfig.getIrrecoverableAccount(),
+                amountExTax,
+                true,
+                appAccountService.getTodayDate(company),
+                seq,
+                irrecoverableName,
+                invoice.getInvoiceId());
+
+        debitMoveLine.setTaxLine(invoiceLineTax.getTaxLine());
+        debitMoveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
+        debitMoveLine.setTaxCode(invoiceLineTax.getTaxLine().getTax().getCode());
+        move.getMoveLineList().add(debitMoveLine);
+        seq++;
+      }
     }
-
-    // Debit MoveLine 654 (irrecoverable account)
-    debitMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            payerPartner,
-            accountConfig.getIrrecoverableAccount(),
-            debitAmount,
-            true,
-            appAccountService.getTodayDate(company),
-            seq,
-            irrecoverableName,
-            invoice.getInvoiceId());
-    move.getMoveLineList().add(debitMoveLine);
-
-    seq++;
 
     // Getting customer MoveLine from Facture
     MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
