@@ -82,18 +82,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     if (employee.getUser() == null) {
       throw new AxelorException(
-              employee,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessage.EMPLOYEE_NO_USER),
-              employee.getName());
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.EMPLOYEE_NO_USER),
+          employee.getName());
     }
 
     if (employee.getUser().getActiveCompany() == null) {
       throw new AxelorException(
-              employee,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
-              employee.getName());
+          employee,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
+          employee.getName());
     }
 
     Period period =

@@ -118,7 +118,8 @@ public interface IExceptionMessage {
       "The employee %s has no seniority date" /*)*/;
   static final String EMPLOYEE_NO_BIRTH_DATE = /*$$(*/ "The employee %s has no birth date." /*)*/;
   static final String EMPLOYEE_NO_USER = /*$$(*/ "The employee %s has no associated user." /*)*/;
-  static final String EMPLOYEE_NO_ACTIVE_COMPANY = /*$$(*/ "The employee %s user profile has no active company." /*)*/;
+  static final String EMPLOYEE_NO_ACTIVE_COMPANY = /*$$(*/
+      "The employee %s user profile has no active company." /*)*/;
   static final String CONTACT_CANNOT_DELETE = /*$$(*/
       "This contact is referenced from employee %s - %s" /*)*/;
 

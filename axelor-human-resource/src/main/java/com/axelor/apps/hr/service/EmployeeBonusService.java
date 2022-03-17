@@ -110,8 +110,8 @@ public class EmployeeBonusService {
       Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
       try {
         formula =
-                replaceExpressionInFormula(
-                        formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
+            replaceExpressionInFormula(
+                formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
       } catch (Exception e) {
         TraceBackService.trace(e);
         formula = "true";
