@@ -16,6 +16,7 @@
 "Analytic distribution template","Modèle de répartition analytique",,
 "Analytic move lines","Lignes d’écriture analytique",,
 "Analytics","Analytiques",,
+"App",,,
 "App contract","Application contrat",,
 "Attention the contract will have as starting date the provisional activation         date ${currentContractVersion.supposedActivationDate}, Are you sure?","Attention le contrat aura comme date de début la date d'activation prévisionnelle ${currentContractVersion.supposedActivationDate}, etes-vous sur?",,
 "Auto enable version on renew","Activer automatiquement la version au renouvellement",,
