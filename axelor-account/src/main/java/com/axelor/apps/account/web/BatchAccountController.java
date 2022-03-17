@@ -3,7 +3,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.batch.BatchControlMovesConsistency;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -15,7 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BatchAccountController {
 
-  public void showMoveError(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void showMoveError(ActionRequest request, ActionResponse response) {
     try {
       Long batchId = request.getContext().asType(Batch.class).getId();
 

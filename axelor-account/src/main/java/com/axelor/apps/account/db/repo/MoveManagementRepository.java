@@ -26,11 +26,9 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -38,10 +36,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.PersistenceException;
-import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -155,18 +151,5 @@ public class MoveManagementRepository extends MoveRepository {
     } else {
       super.remove(entity);
     }
-  }
-
-  public List<Move> findDaybookByYear(List<Year> yearList) {
-    List<Long> idList = new ArrayList<Long>();
-    yearList.forEach(y -> idList.add(y.getId()));
-    if (!CollectionUtils.isEmpty(idList)) {
-      return Query.of(Move.class)
-          .filter("self.period.year.id in :years AND self.statusSelect = :statusSelect")
-          .bind("years", idList)
-          .bind("statusSelect", MoveRepository.STATUS_DAYBOOK)
-          .fetch();
-    }
-    return null;
   }
 }

@@ -151,7 +151,7 @@ public class AccountingBatchController {
   }
 
   /**
-   * Lancer le batch de contrôle des écritures
+   * Throw the control of move consistency batch
    *
    * @param request
    * @param response
@@ -169,13 +169,15 @@ public class AccountingBatchController {
         response.setFlash(batch.getComments());
       }
       response.setReload(true);
-      response.setView(
-          ActionView.define("Batch")
-              .model(Batch.class.getName())
-              .add("form", "batch-form")
-              .param("popup-save", "true")
-              .context("_showRecord", batch.getId())
-              .map());
+      if (batch != null) {
+        response.setView(
+            ActionView.define("Batch")
+                .model(Batch.class.getName())
+                .add("form", "batch-form")
+                .param("popup-save", "true")
+                .context("_showRecord", batch.getId())
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

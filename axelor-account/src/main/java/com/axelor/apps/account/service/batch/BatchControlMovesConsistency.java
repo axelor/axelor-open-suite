@@ -2,9 +2,8 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.base.db.Year;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.TraceBack;
@@ -18,25 +17,24 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BatchControlMovesConsistency extends BatchStrategy {
 
-  protected MoveManagementRepository moveManagementRepo;
+  protected MoveToolService moveToolService;
   protected MoveValidateService moveValidateService;
   protected TraceBackRepository tracebackRepository;
 
   @Inject
   public BatchControlMovesConsistency(
-      MoveManagementRepository moveManagementRepo,
+      MoveToolService moveToolService,
       MoveValidateService moveValidateService,
       TraceBackRepository tracebackRepository) {
-    this.moveManagementRepo = moveManagementRepo;
+    this.moveToolService = moveToolService;
     this.moveValidateService = moveValidateService;
     this.tracebackRepository = tracebackRepository;
   }
 
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
-    List<Year> yearList = accountingBatch.getYearSet();
-    if (!CollectionUtils.isEmpty(yearList)) {
-      List<Move> moveList = moveManagementRepo.findDaybookByYear(yearList);
+    if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {
+      List<Move> moveList = moveToolService.findDaybookByYear(accountingBatch.getYearSet());
       if (!CollectionUtils.isEmpty(moveList)) {
         for (Move move : moveList) {
           try {
@@ -57,7 +55,7 @@ public class BatchControlMovesConsistency extends BatchStrategy {
   }
 
   public List<Long> getAllMovesId(Long batchId) {
-    List<Long> idList = new ArrayList<Long>();
+    List<Long> idList = new ArrayList<>();
     List<TraceBack> traceBackList = tracebackRepository.findByBatchId(batchId).fetch();
     if (!CollectionUtils.isEmpty(traceBackList)) {
       for (TraceBack traceBack : traceBackList) {
