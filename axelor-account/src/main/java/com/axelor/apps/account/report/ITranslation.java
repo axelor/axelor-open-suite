@@ -229,8 +229,12 @@ public interface ITranslation {
       "AccountingReportType4.clientBalance"; /*)*/
   public static final String ACCOUNTING_REPORT_4_PERIOD_TOTAL = /*$$(*/
       "AccountingReportType4.periodTotal"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_PERIOD_TOTAL = /*$$(*/
+      "AccountingReportType4.termPeriodTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_4_CONTROL = /*$$(*/
       "AccountingReportType4.control"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_CONTROL = /*$$(*/
+      "AccountingReportType4.termControl"; /*)*/
   public static final String ACCOUNTING_REPORT_4_EDITION_DATE = /*$$(*/
       "AccountingReportType4.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_4_INVOICE = /*$$(*/
@@ -253,6 +257,8 @@ public interface ITranslation {
       "AccountingReportType4.180days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_AGE_OF_THE_DEBT = /*$$(*/
       "AccountingReportType4.ageOfTheDebt"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_INVOICE_REMAINING_AMOUNT = /*$$(*/
+      "AccountingReportType4.invoiceRemainingAmount"; /*)*/
 
   public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
       "AccountingReportType7.title"; /*)*/
