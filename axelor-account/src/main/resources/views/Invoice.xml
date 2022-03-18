@@ -772,12 +772,12 @@ InvoiceSet.length > 0))"
         </panel>
         <panel name="financialDiscountPanel" colSpan="12"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount" colSpan="6"
+          <field name="financialDiscount"
             onChange="action-record-invoice-set-financial-discount-informations"
             showIf="statusSelect &gt;=3"/>
-          <field name="financialDiscountRate" colSpan="6"
+          <field name="financialDiscountRate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
-          <field name="financialDiscountDeadlineDate" colSpan="6"
+          <field name="financialDiscountDeadlineDate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
         </panel>
 
