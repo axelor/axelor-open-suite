@@ -277,6 +277,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.checkPreconditions(move);
 
+    log.debug("Check preconditions de l'écriture comptable {} OK", move.getReference());
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
         && !move.getAutoYearClosureMove()) {
       throw new AxelorException(
@@ -288,6 +289,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
 
+    log.debug("dayBookMode {}", dayBookMode);
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
     }
@@ -297,15 +299,19 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     this.completeMoveLines(move);
-
+    log.debug("After complete move lines");
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    log.debug("After freeze method");
 
     this.updateValidateStatus(move, dayBookMode);
 
+    log.debug("After status update");
     moveRepository.save(move);
 
+    log.debug("After save");
     if (updateCustomerAccount) {
       moveCustAccountService.updateCustomerAccount(move);
+      log.debug("After updateCustomerAccount");
     }
   }
 

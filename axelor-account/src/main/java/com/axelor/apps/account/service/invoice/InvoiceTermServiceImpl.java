@@ -929,6 +929,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Transactional
+  protected InvoiceTerm createNewTerm(InvoiceTerm originalInvoiceTerm, BigDecimal amount) {
+    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
+    newInvoiceTerm.setIsCustomized(true);
+    newInvoiceTerm.setIsPaid(false);
+    newInvoiceTerm.setMoveLine(originalInvoiceTerm.getMoveLine());
+    newInvoiceTerm.setDueDate(originalInvoiceTerm.getDueDate());
+    newInvoiceTerm.setIsHoldBack(originalInvoiceTerm.getIsHoldBack());
+    newInvoiceTerm.setEstimatedPaymentDate(originalInvoiceTerm.getEstimatedPaymentDate());
+    newInvoiceTerm.setAmount(amount);
+    newInvoiceTerm.setAmountRemaining(amount);
+    newInvoiceTerm.setPaymentMode(originalInvoiceTerm.getPaymentMode());
+    newInvoiceTerm.setBankDetails(originalInvoiceTerm.getBankDetails());
+    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    newInvoiceTerm.setPfpValidatorUser(originalInvoiceTerm.getPfpValidatorUser());
+    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    return invoiceTermRepo.save(newInvoiceTerm);
+  }
+
+  @Transactional
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
       BigDecimal pfpGrantedAmount,
