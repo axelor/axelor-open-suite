@@ -44,11 +44,10 @@ public interface InvoiceTermPaymentService {
    * @param availableAmount
    * @return
    */
-  public InvoicePayment initInvoiceTermPaymentsWithAmount(
+  public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount)
-      throws AxelorException;
+      BigDecimal availableAmount);
 
   /**
    * Method to create invoiceTermPayments for an invoicePayment
@@ -57,15 +56,6 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException;
-
-  /**
-   * Method to create new InvoiceTermPayment without InvoicePayment
-   *
-   * @param invoiceTermToPay
-   * @param amount
-   * @return
-   */
-  InvoiceTermPayment createInvoiceTermPayment(InvoiceTerm invoiceTermToPay, BigDecimal amount);
 
   /**
    * Method to create new InvoiceTermPayment usign invoiceTerm amountRemaining

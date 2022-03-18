@@ -220,8 +220,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal percentage =
           invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
 
-      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
-      invoiceTerm.setFinancialDiscount(financialDiscount);
+      this.setFinancialDiscount(invoiceTerm, financialDiscount);
       invoiceTerm.setFinancialDiscountAmount(
           financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
@@ -258,6 +257,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(invoice);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
@@ -277,17 +277,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-
-      invoiceTerm.setMoveLine(getExistingInvoiceTermMoveLine(invoice));
+      MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
+      moveLine.addInvoiceTermListItem(invoiceTerm);
     }
 
     return invoiceTerm;
   }
 
+  protected void setFinancialDiscount(
+      InvoiceTerm invoiceTerm, FinancialDiscount financialDiscount) {
+    invoiceTerm.setFinancialDiscount(financialDiscount);
+    invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
+  }
+
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm) {
 
-    invoiceTerm.setMoveLine(moveLine);
     invoiceTerm.setInvoice(moveLine.getMove().getInvoice());
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
@@ -469,7 +474,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public void updateInvoiceTermsPaidAmount(
-      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException {
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      InvoiceTermPayment invoiceTermPayment)
+      throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
         Collections.singletonList(invoiceTermPayment), invoiceTermToPay.getPaymentMode());
   }
@@ -541,8 +549,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || (BigDecimal.ZERO.compareTo(invoice.getAmountRemaining()) == 0
+            && BigDecimal.ZERO.compareTo(invoice.getExTaxTotal()) == 0
+            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -904,7 +914,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setInvoice(invoice);
     newInvoiceTerm.setIsCustomized(true);
     newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setMoveLine(originalInvoiceTerm.getMoveLine());
+    originalInvoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
     newInvoiceTerm.setDueDate(originalInvoiceTerm.getDueDate());
     newInvoiceTerm.setIsHoldBack(originalInvoiceTerm.getIsHoldBack());
     newInvoiceTerm.setEstimatedPaymentDate(originalInvoiceTerm.getEstimatedPaymentDate());
