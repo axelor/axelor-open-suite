@@ -529,6 +529,9 @@ public class IrrecoverableService {
 
     BigDecimal prorataRate = this.getProrataRate(invoice, invoice.getRejectMoveLine() != null);
 
+    // Getting customer MoveLine from Facture
+    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+
     // Ajout de l'écriture générée
     Move move =
         this.createIrrecoverableMove(
@@ -543,8 +546,6 @@ public class IrrecoverableService {
     moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
 
-    // Getting customer MoveLine from Facture
-    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
     customerMoveLine.setIrrecoverableStatusSelect(
         MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
