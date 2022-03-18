@@ -2557,7 +2557,7 @@
 "Situation",,,
 "Skip ventilation",,,
 "So many accounting operations are used on this move, so move can't be canceled",,,
-"Some due element couldn't be loaded because there was no amount left to pay.",,,
+"Some due elements could not be loaded there was no amount left to pay.",,,
 "Some move amounts have been changed since the impuration. Please remake the imputation.",,,
 "Source Tax",,,
 "Special",,,
