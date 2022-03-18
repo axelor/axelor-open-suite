@@ -70,12 +70,36 @@ public interface LeadService {
   public boolean isThereDuplicateLead(Lead lead);
 
   /**
+   * Set the lead status to In Process.
+   *
+   * @param lead
+   * @throws AxelorException
+   */
+  void startLead(Lead lead) throws AxelorException;
+
+  /**
+   * Set the lead status to In Process.
+   *
+   * @param lead
+   * @throws AxelorException
+   */
+  void assignToMeLead(Lead lead) throws AxelorException;
+
+  /**
+   * Set the lead status to In Process.
+   *
+   * @param lead
+   * @throws AxelorException
+   */
+  void recycleLead(Lead lead) throws AxelorException;
+
+  /**
    * Set the lead status to lost and set the lost reason with the given lost reason.
    *
    * @param lead a context lead object
    * @param lostReason the specified lost reason
    */
-  public void loseLead(Lead lead, LostReason lostReason);
+  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException;
 
   public String processFullName(String enterpriseName, String name, String firstName);
 }
