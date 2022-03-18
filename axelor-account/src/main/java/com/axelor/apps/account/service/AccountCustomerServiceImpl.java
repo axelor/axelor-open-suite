@@ -143,7 +143,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "GROUP BY term.move_line, term.amount_remaining ) AS t2 ON (t2.term_ml = m2.moveline_id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company "
+                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok IN ('false', null) "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 ")
@@ -237,7 +237,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company "
+                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok in ('false', null) "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 "
