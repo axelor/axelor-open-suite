@@ -867,14 +867,20 @@ public class IrrecoverableService {
     BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
     BigDecimal creditAmount = null;
+    BigDecimal amountToDebitLeft = null;
     if (isInvoiceReject) {
       creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
+      amountToDebitLeft = creditAmount;
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
+      amountToDebitLeft = creditAmount;
     }
 
     // Debits MoveLines Tva
+    int entryNumber = 0;
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      entryNumber++;
+
       amount =
           (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
       // do not generate move line with amount equal to zero
@@ -900,10 +906,16 @@ public class IrrecoverableService {
 
         move.getMoveLineList().add(debitMoveLine);
         seq++;
+
+        amountToDebitLeft = amountToDebitLeft.subtract(amount);
       }
 
       amountExTax =
           (invoiceLineTax.getExTaxBase().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+      if (invoice.getInvoiceLineTaxList().size() == entryNumber) {
+        amountExTax = amountToDebitLeft;
+      }
+
       // do not generate move line with amount equal to zero
       if (amountExTax.signum() != 0) {
 
@@ -925,6 +937,8 @@ public class IrrecoverableService {
         debitMoveLine.setTaxCode(invoiceLineTax.getTaxLine().getTax().getCode());
         move.getMoveLineList().add(debitMoveLine);
         seq++;
+
+        amountToDebitLeft = amountToDebitLeft.subtract(amountExTax);
       }
     }
 
