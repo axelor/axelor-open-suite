@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -179,7 +180,7 @@ public class MoveCreateService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.PERIOD_1),
             company.getName(),
-            date.toString());
+            L10n.getInstance().format(date));
       }
     } else {
       move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
