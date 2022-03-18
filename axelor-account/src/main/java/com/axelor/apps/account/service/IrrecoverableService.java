@@ -543,6 +543,11 @@ public class IrrecoverableService {
     moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
 
+    // Getting customer MoveLine from Facture
+    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+    customerMoveLine.setIrrecoverableStatusSelect(
+        MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
+
     invoice.setIrrecoverableStatusSelect(
         InvoiceRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
@@ -931,8 +936,6 @@ public class IrrecoverableService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
-    customerMoveLine.setIrrecoverableStatusSelect(
-        MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
     // Credit MoveLine Customer account (411, 416, ...)
     MoveLine creditMoveLine =
