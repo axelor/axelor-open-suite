@@ -208,6 +208,7 @@
     <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
     <option value="24">Exchanges</option>
+    <option value="25">Moves consistency control</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -717,6 +718,22 @@
     <option value="0"></option>
     <option value="1">vat.Delivery</option>
     <option value="2">vat.Payment</option>
+  </selection>
+
+
+  <selection name="account.closure.assistant.line.action.select">
+    <option value="2">Fixed asset realization</option>
+    <option value="3">Move consistency check</option>
+    <option value="4">closure.accountingReport</option>
+    <option value="5">Calculate the outrun of the year</option>
+    <option value="6">Closure and opening of fiscal year batch</option>
+    <option value="7">Fiscal year closure</option>
+  </selection>
+
+  <selection name="account.closure.assistant.status.select">
+    <option value="1">New</option>
+    <option value="2">In progress</option>
+    <option value="3">Finished</option>
   </selection>
 
   <selection name='iaccount.vat.system.invoice.line.tax.select'>
