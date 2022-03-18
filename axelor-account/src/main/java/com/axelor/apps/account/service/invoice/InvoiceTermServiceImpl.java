@@ -550,9 +550,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (invoice.getId() == null
         || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || (BigDecimal.ZERO.compareTo(invoice.getAmountRemaining()) == 0
-            && BigDecimal.ZERO.compareTo(invoice.getExTaxTotal()) == 0
-            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
+        || (invoice.getAmountRemaining().signum() != 0
+            && invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED)) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
