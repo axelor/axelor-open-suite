@@ -148,23 +148,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
 
-    this.computeAdvancePaymentImputation(invoicePayment, paymentMove);
-    this.computeFinancialDiscount(invoicePayment, invoice);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    computeAdvancePaymentImputation(invoicePayment, paymentMove);
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);
 
     return invoicePayment;
-  }
-
-  protected void computeFinancialDiscount(InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException {
-    if (invoiceService.applyFinancialDiscount(invoice)) {
-      invoicePayment.setApplyFinancialDiscount(true);
-      invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, true);
-    }
   }
 
   protected int determineType(Move move) {

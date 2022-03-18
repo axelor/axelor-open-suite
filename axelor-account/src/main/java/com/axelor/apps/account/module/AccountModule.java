@@ -209,8 +209,12 @@ import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineControlServiceImpl;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -527,6 +531,10 @@ public class AccountModule extends AxelorModule {
     bind(PaymentSessionEmailService.class).to(PaymentSessionEmailServiceImpl.class);
 
     bind(PayVoucherDueElementService.class).to(PayVoucherDueElementServiceImpl.class);
+
+    bind(MoveInvoiceTermService.class).to(MoveInvoiceTermServiceImpl.class);
+
+    bind(MoveLineInvoiceTermService.class).to(MoveLineInvoiceTermServiceImpl.class);
 
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
   }
