@@ -10,9 +10,11 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -56,6 +58,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
+      InvoiceTermService invoiceTermService,
+      MoveLineTaxService moveLineTaxService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -73,6 +77,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         moveValidateService,
         moveLineCreateService,
         reconcileService,
+        invoiceTermService,
+        moveLineTaxService,
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
@@ -167,12 +173,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession,
-            invoiceTerm,
-            moveMap,
-            paymentAmountMap,
-            out,
-            isGlobal);
+            paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
 
     if (paymentSession.getBankOrder() != null) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
