@@ -110,9 +110,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">lmdpdlaa</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -126,9 +123,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">3</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -190,8 +184,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -517,7 +509,7 @@ coalesce(MetaFile.file_path) as logo_path,
 DebtRecoveryHistory.debt_recovery_date,
 AccountDebtRecoveryMethodLine.printing_message,
 AccountDebtRecoveryMethodLine.specific_printing_message,
-Partner.name as PartnerName, 
+Partner.simple_full_name as PartnerName, 
 PartnerAddress.addressl4 as street,
 PartnerAddress.addressl6 as postalCodeAndCity,
 Country.name as CountryName,
@@ -971,8 +963,8 @@ and Currency.code is not null)]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[(select Currency.code as CurrencyCode,
-CASE when Invoice.invoice_id IS NOT NULL THEN Invoice.invoice_id 
-when Invoice.invoice_id IS NULL THEN Move.origin
+CASE when InvoiceTerm.invoice IS NOT NULL THEN (SELECT invoice_id from account_invoice where id = InvoiceTerm.invoice)  
+when InvoiceTerm.invoice IS NULL THEN Move.origin
 end as IDCode,
 InvoiceTerm.due_date as DueDate,
 DATE_PART('day',  coalesce ((select today from base_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
@@ -980,13 +972,12 @@ InvoiceTerm.amount as Amount,
 (InvoiceTerm.amount - InvoiceTerm.amount_remaining) as AmountPaid,
 InvoiceTerm.amount_remaining as ToPay
 from account_debt_recovery_history DebtRecoveryHistory
-left join account_debt_recovery DebtRecovery on DebtRecoveryHistory.debt_recovery = DebtRecovery.id
-left join account_debt_recovery_invoice_term_debt_recovery_set DebtRecoveryInvoiceTermSet on DebtRecovery.id = DebtRecoveryInvoiceTermSet.account_debt_recovery
-left join account_invoice_term InvoiceTerm  on DebtRecoveryInvoiceTermSet.invoice_term_debt_recovery_set = InvoiceTerm.id
-left join account_invoice Invoice on Invoice.id = InvoiceTerm.invoice
-left join account_move_line MoveLine on MoveLine.id = InvoiceTerm.move_line
-left join account_move Move on Move.id = MoveLine.move
-left join base_currency Currency on Move.currency = Currency.id
+join account_debt_recovery DebtRecovery on DebtRecoveryHistory.debt_recovery = DebtRecovery.id
+join account_debt_recovery_invoice_term_debt_recovery_set DebtRecoveryInvoiceTermSet on DebtRecovery.id = DebtRecoveryInvoiceTermSet.account_debt_recovery
+join account_invoice_term InvoiceTerm  on DebtRecoveryInvoiceTermSet.invoice_term_debt_recovery_set = InvoiceTerm.id
+join account_move_line MoveLine on MoveLine.id = InvoiceTerm.move_line
+join account_move Move on Move.id = MoveLine.move
+join base_currency Currency on Move.currency = Currency.id
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
 and InvoiceTerm.due_date + INTERVAL '1 day' * (select mail_transit_time FROM account_account_config) < coalesce ((select today from base_app_base), NOW()) )]]></xml-property>
@@ -2328,7 +2319,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["dueDate"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["duedate"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5815">
