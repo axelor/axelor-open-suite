@@ -40,6 +40,7 @@
 
     <string name="description" title="Description"/>
 
+    <boolean name="manualChange" default="false"/>
     <boolean name="applyFinancialDiscount" title="Apply Financial Discount ?"
       readonly="true"/>
     <many-to-one name="financialDiscount"
