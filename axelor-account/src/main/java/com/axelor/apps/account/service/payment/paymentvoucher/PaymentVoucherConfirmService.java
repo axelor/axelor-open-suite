@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -75,6 +76,7 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherControlService paymentVoucherControlService;
   protected PaymentVoucherToolService paymentVoucherToolService;
   protected AccountConfigService accountConfigService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
 
@@ -90,6 +92,7 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherControlService paymentVoucherControlService,
       PaymentVoucherToolService paymentVoucherToolService,
       AccountConfigService accountConfigService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository) {
 
@@ -103,6 +106,7 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherControlService = paymentVoucherControlService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.accountConfigService = accountConfigService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
   }
@@ -571,6 +575,7 @@ public class PaymentVoucherConfirmService {
 
     paymentMove.addMoveLineListItem(moveLine);
     payVoucherElementToPay.setMoveLineGenerated(moveLine);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine);
 
     BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 
