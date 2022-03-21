@@ -63,7 +63,9 @@ public class AccountingReportController {
       Map<String, Object> modelAccountingReportMap =
           Beans.get(AccountingReportService.class)
               .getFieldsFromReportTypeModelAccountingReport(accountingReport);
-      response.setValues(modelAccountingReportMap);
+      if (modelAccountingReportMap != null) {
+        response.setValues(modelAccountingReportMap);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
