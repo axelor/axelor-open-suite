@@ -91,6 +91,19 @@ public interface MoveLineCreateService {
       String description)
       throws AxelorException;
 
+  MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amount,
+      boolean isDebit,
+      TaxLine taxLine,
+      LocalDate date,
+      int ref,
+      String origin,
+      String description)
+      throws AxelorException;
+
   List<MoveLine> createMoveLines(
       Invoice invoice,
       Move move,

@@ -893,14 +893,12 @@ public class IrrecoverableService {
                   invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
+              invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
               irrecoverableName,
               invoice.getInvoiceId());
 
-      debitMoveLine.setTaxLine(invoiceLineTax.getTaxLine());
-      debitMoveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-      debitMoveLine.setTaxCode(invoiceLineTax.getTaxLine().getTax().getCode());
       debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
 
       move.getMoveLineList().add(debitMoveLine);
@@ -919,14 +917,12 @@ public class IrrecoverableService {
               accountConfig.getIrrecoverableAccount(),
               amountExTax,
               true,
+              invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
               irrecoverableName,
               invoice.getInvoiceId());
 
-      debitMoveLine.setTaxLine(invoiceLineTax.getTaxLine());
-      debitMoveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-      debitMoveLine.setTaxCode(invoiceLineTax.getTaxLine().getTax().getCode());
       move.getMoveLineList().add(debitMoveLine);
       seq++;
 

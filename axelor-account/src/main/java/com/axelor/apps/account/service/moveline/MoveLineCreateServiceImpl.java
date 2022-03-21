@@ -778,4 +778,46 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLine.setTaxLine(taxLine);
     return moveLine;
   }
+
+  /**
+   * Créer une ligne d'écriture comptable
+   *
+   * @param move
+   * @param partner
+   * @param account
+   * @param amount
+   * @param isDebit <code>true = débit</code>, <code>false = crédit</code>
+   * @param taxLine
+   * @param date
+   * @param ref
+   * @param origin
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  public MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amount,
+      boolean isDebit,
+      TaxLine taxLine,
+      LocalDate date,
+      int ref,
+      String origin,
+      String description)
+      throws AxelorException {
+
+    MoveLine moveLine =
+        this.createMoveLine(
+            move, partner, account, amount, isDebit, date, date, ref, origin, description);
+
+    if (taxLine != null) {
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxRate(taxLine.getValue());
+      moveLine.setTaxCode(taxLine.getTax() != null ? taxLine.getTax().getCode() : "");
+    }
+
+    return moveLine;
+  }
 }
