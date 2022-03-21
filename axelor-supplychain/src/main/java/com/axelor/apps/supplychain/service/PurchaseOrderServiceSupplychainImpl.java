@@ -371,8 +371,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional
-  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    if (purchaseOrder.getStatusSelect() == null
+        || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
+    }
+
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     purchaseOrderRepo.save(purchaseOrder);
   }

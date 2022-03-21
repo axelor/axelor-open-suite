@@ -22,11 +22,11 @@ import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderWorkflowService {
 
-  void draftPurchaseOrder(PurchaseOrder purchaseOrder);
+  void draftPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void finishPurchaseOrder(PurchaseOrder purchaseOrder);
+  void finishPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
+  void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 }

@@ -87,7 +87,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
   @Override
   @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")

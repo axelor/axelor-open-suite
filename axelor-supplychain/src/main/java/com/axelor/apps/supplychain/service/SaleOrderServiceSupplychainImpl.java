@@ -237,7 +237,13 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   @Transactional
-  public void updateToConfirmedStatus(SaleOrder saleOrder) {
+  public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getStatusSelect() == null
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
+    }
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
   }
