@@ -169,4 +169,7 @@ public interface MoveToolService {
   boolean checkMoveLinesCutOffDates(Move move);
 
   List<Move> findDaybookByYear(Set<Year> yearList);
+
+  @CallMethod
+  boolean isSimulatedMovePeriodClosed(Move move);
 }
