@@ -106,8 +106,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
-    BigDecimal depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
-    BigDecimal accountingValue = depreciationBase.subtract(depreciation);
+    BigDecimal depreciation = BigDecimal.ZERO;
+    BigDecimal accountingValue = BigDecimal.ZERO;
+    if (!isAlreadyDepreciated(fixedAsset)) {
+      depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
+      accountingValue = depreciationBase.subtract(depreciation);
+    }
 
     FixedAssetLine line =
         createFixedAssetLine(
