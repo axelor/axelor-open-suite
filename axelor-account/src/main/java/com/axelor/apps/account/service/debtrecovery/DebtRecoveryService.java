@@ -287,7 +287,6 @@ public class DebtRecoveryService {
             }
           }
         }
-        // Invoice term ou échéances rejetées qui ne sont pas bloqués
         InvoiceTerm invoiceTerm =
             invoiceTermRepo
                 .all()
@@ -397,39 +396,26 @@ public class DebtRecoveryService {
 
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
-    Query<InvoiceTerm> query;
-    if (tradingName == null) {
-      query =
-          invoiceTermRepo
-              .all()
-              .filter(
-                  "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != ?1) "
-                      + " and self.amountRemaining > 0 "
-                      + " and self.isPaid IS FALSE "
-                      + " and self.debtRecoveryBlockingOk IS FALSE "
-                      + " and self.moveLine IS NOT NULL "
-                      + " and self.moveLine.move.company = ?2 "
-                      + " and self.moveLine.partner = ?3 ",
-                  PaymentSessionRepository.STATUS_ONGOING,
-                  company,
-                  partner);
-    } else {
-      query =
-          invoiceTermRepo
-              .all()
-              .filter(
-                  "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != ?1) "
-                      + " and self.amountRemaining > 0 "
-                      + " and self.isPaid IS FALSE "
-                      + " and self.debtRecoveryBlockingOk IS FALSE "
-                      + " and self.moveLine IS NOT NULL "
-                      + " and self.moveLine.move.company = ?2 "
-                      + " and self.moveLine.partner = ?3 "
-                      + " and self.moveLine.move.tradingName = ?4",
-                  PaymentSessionRepository.STATUS_ONGOING,
-                  company,
-                  partner,
-                  tradingName);
+    Query<InvoiceTerm> query =
+        invoiceTermRepo
+            .all()
+            .filter(
+                "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != :paymentSessionStatus) "
+                    + " and self.amountRemaining > 0 "
+                    + " and self.isPaid IS FALSE "
+                    + " and self.debtRecoveryBlockingOk IS FALSE "
+                    + " and self.moveLine IS NOT NULL "
+                    + " and self.moveLine.move.company = :company "
+                    + " and self.moveLine.partner = :partner "
+                    + (tradingName != null
+                        ? " and self.moveLine.move.tradingName = :tradingName"
+                        : ""))
+            .bind("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
+            .bind("company", company)
+            .bind("partner", partner);
+
+    if (tradingName != null) {
+      query.bind("tradingName", tradingName);
     }
 
     List<InvoiceTerm> invoiceTermList = query.fetch();
@@ -633,18 +619,10 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        // List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company,
-        // tradingName);
-
         List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
         this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
         this.updateInvoiceDebtRecovery(
             debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
-
-        /*
-        * this.updatePaymentScheduleLineDebtRecovery(
-            debtRecovery, this.getPaymentScheduleList(moveLineList, partner));
-        */
 
         debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
