@@ -72,8 +72,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getAutoYearClosureMove(),
             move.getOrigin(),
             move.getDescription(),
-            move.getInvoice(),
-            move.getPaymentVoucher());
+            null,
+            null);
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
@@ -81,7 +81,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
-      Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+      boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
 
@@ -96,8 +96,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
                     dateOfReversion);
         if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
-          analyticMoveLineList.forEach(
-              analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));
+          analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
         }
       }
 
