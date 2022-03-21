@@ -76,6 +76,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
             && saleOrderLine
                 .getProduct()
                 .getProductTypeSelect()
-                .equals(ProductRepository.PRODUCT_TYPE_SERVICE));
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE))
+        || saleOrderLine.getProduct().getStockManaged() == false;
   }
 }
