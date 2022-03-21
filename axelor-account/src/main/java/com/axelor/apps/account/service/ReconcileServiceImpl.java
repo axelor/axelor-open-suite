@@ -401,6 +401,10 @@ public class ReconcileServiceImpl implements ReconcileService {
         for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
           invoiceTermService.updateInvoiceTermsPaidAmount(
               invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+
+          if (invoicePayment == null) {
+            invoiceTermPayment.addReconcileListItem(reconcile);
+          }
         }
       }
     }
@@ -589,13 +593,13 @@ public class ReconcileServiceImpl implements ReconcileService {
       for (InvoicePayment invoicePayment : invoicePaymentList) {
         invoiceTermService.updateInvoiceTermsAmountRemaining(invoicePayment);
       }
-    } else {
-      List<InvoiceTermPayment> invoiceTermPaymentList =
-          invoiceTermPaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+    }
 
-      if (CollectionUtils.isNotEmpty(invoiceTermPaymentList)) {
-        invoiceTermService.updateInvoiceTermsAmountRemaining(invoiceTermPaymentList);
-      }
+    List<InvoiceTermPayment> invoiceTermPaymentList =
+        invoiceTermPaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+
+    if (CollectionUtils.isNotEmpty(invoiceTermPaymentList)) {
+      invoiceTermService.updateInvoiceTermsAmountRemaining(invoiceTermPaymentList);
     }
   }
 
