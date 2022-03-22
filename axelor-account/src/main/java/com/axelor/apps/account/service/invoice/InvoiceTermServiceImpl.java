@@ -44,6 +44,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -981,5 +982,27 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       managePassedForPayment(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }
+  }
+
+  @Override
+  public BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm) {
+    if (parentContext.get("_model").equals(Invoice.class.getName())) {
+      Invoice invoice = parentContext.asType(Invoice.class);
+      return invoice.getInTaxTotal();
+    } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
+      MoveLine moveLine = parentContext.asType(MoveLine.class);
+      return moveLine.getDebit().max(moveLine.getCredit());
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  @Override
+  public BigDecimal getCustomizedAmount(Context parentContext, InvoiceTerm invoiceTerm) {
+    return invoiceTerm
+        .getPercentage()
+        .multiply(this.getCustomizedTotal(parentContext, invoiceTerm))
+        .divide(
+            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 }
