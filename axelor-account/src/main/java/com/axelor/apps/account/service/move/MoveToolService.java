@@ -25,11 +25,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveToolService {
 
@@ -184,4 +186,6 @@ public interface MoveToolService {
   boolean getEditAuthorization(Move move) throws AxelorException;
 
   boolean checkMoveLinesCutOffDates(Move move);
+
+  List<Move> findDaybookByYear(Set<Year> yearList);
 }
