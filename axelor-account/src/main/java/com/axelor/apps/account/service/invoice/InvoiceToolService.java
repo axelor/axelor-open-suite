@@ -244,5 +244,10 @@ public class InvoiceToolService {
     copy.setInternalReference(null);
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
+    copy.setOldMove(null);
+    copy.setBillOfExchangeBlockingOk(false);
+    copy.setBillOfExchangeBlockingReason(null);
+    copy.setBillOfExchangeBlockingToDate(null);
+    copy.setBillOfExchangeBlockingByUser(null);
   }
 }
