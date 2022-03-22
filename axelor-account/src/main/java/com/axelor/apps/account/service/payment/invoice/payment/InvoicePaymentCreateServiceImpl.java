@@ -149,6 +149,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     computeAdvancePaymentImputation(invoicePayment, paymentMove);
+    /**
+     * this.computeAdvancePaymentImputation(invoicePayment, paymentMove);
+     * this.computeFinancialDiscount(invoicePayment, invoice);
+     * invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, invoiceTermToPayList);
+     * invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+     */
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);
@@ -273,7 +279,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
+    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }

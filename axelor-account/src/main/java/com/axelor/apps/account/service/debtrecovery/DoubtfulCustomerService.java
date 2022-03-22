@@ -125,6 +125,19 @@ public class DoubtfulCustomerService {
     }
   }
 
+  public MoveLine getInvoicePartnerMoveLine(Move move, Account doubtfulCustomerAccount) {
+    MoveLine invoicePartnerMoveLine = null;
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAccount() != doubtfulCustomerAccount
+          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+        invoicePartnerMoveLine = moveLine;
+      }
+    }
+    return invoicePartnerMoveLine;
+  }
+
   /**
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
    * de facture
@@ -162,14 +175,7 @@ public class DoubtfulCustomerService {
 
     MoveLine invoicePartnerMoveLine = null;
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAccount() != doubtfulCustomerAccount
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        invoicePartnerMoveLine = moveLine;
-      }
-    }
+    invoicePartnerMoveLine = getInvoicePartnerMoveLine(move, doubtfulCustomerAccount);
 
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
@@ -214,6 +220,7 @@ public class DoubtfulCustomerService {
     List<InvoiceTerm> invoiceTermToAdd = Lists.newArrayList();
     List<InvoiceTerm> invoiceTermToRemove = Lists.newArrayList();
     List<InvoiceTerm> invoiceTermToAddToInvoicePartnerMoveLine = Lists.newArrayList();
+    List<InvoiceTerm> invoiceTermToAddToDebitMoveLine = Lists.newArrayList();
     for (InvoiceTerm invoiceTerm : invoicePartnerMoveLine.getInvoiceTermList()) {
       paymentMode = invoiceTerm.getPaymentMode();
       bankDetails = invoiceTerm.getBankDetails();
@@ -221,11 +228,9 @@ public class DoubtfulCustomerService {
       if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
           && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
 
-        // Remove invoice from old invoice term
-        invoiceTermToRemove.add(invoiceTerm);
         // Copy invoice term on put it on new move line
         InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
-        debitMoveLine.addInvoiceTermListItem(copy);
+        invoiceTermToAddToDebitMoveLine.add(copy);
         invoiceTermToAdd.add(copy);
         log.debug(
             "Montant = Montant restant -> Ajout d'une échéance sur la facture "
@@ -239,6 +244,9 @@ public class DoubtfulCustomerService {
             invoiceTerm.getAmount(),
             invoiceTerm.getAmountRemaining(),
             invoiceTerm.getPercentage());
+
+        // Remove invoice from old invoice term
+        invoiceTermToRemove.add(invoiceTerm);
       }
       if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
           && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0) {
@@ -254,20 +262,21 @@ public class DoubtfulCustomerService {
                 .multiply(percentage)
                 .divide(amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         copyOnNewMoveLine.setPercentage(newPercentage);
-        debitMoveLine.addInvoiceTermListItem(copyOnNewMoveLine);
+        invoiceTermToAddToDebitMoveLine.add(copyOnNewMoveLine);
         invoiceTermToAdd.add(copyOnNewMoveLine);
-        // Update current invoice term
-        invoiceTerm.setAmount(amountRemaining);
-        invoiceTerm.setPercentage(newPercentage);
-        invoiceTermToRemove.add(invoiceTerm);
-        // Create a paid invoice term on old move line
+
         InvoiceTerm copyOnOldMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
-        copyOnOldMoveLine.setAmount(amount.subtract(remainingAmount));
-        copyOnOldMoveLine.setAmountRemaining(BigDecimal.ZERO);
-        copyOnOldMoveLine.setIsPaid(true);
-        copyOnOldMoveLine.setPercentage(percentage.subtract(newPercentage));
+        copyOnOldMoveLine.setAmount(remainingAmount);
+        copyOnOldMoveLine.setAmountRemaining(remainingAmount);
+        copyOnOldMoveLine.setPercentage(newPercentage);
         invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
-        invoiceTermToAdd.add(copyOnOldMoveLine);
+        invoice.addInvoiceTermListItem(copyOnOldMoveLine);
+        invoiceTermToRemove.add(copyOnOldMoveLine);
+        // Update current invoice term
+        invoiceTerm.setAmount(amount.subtract(remainingAmount));
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setIsPaid(true);
+        invoiceTerm.setPercentage(percentage.subtract(newPercentage));
       }
     }
     for (InvoiceTerm it : invoiceTermToAddToInvoicePartnerMoveLine) {
@@ -278,6 +287,124 @@ public class DoubtfulCustomerService {
           it.getPercentage());
       invoicePartnerMoveLine.addInvoiceTermListItem(it);
     }
+
+    // Create invoice term on new credit move line
+    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
+    newInvoiceTerm.setIsCustomized(true);
+    newInvoiceTerm.setIsPaid(false);
+    newInvoiceTerm.setDueDate(todayDate);
+    newInvoiceTerm.setIsHoldBack(false);
+    newInvoiceTerm.setEstimatedPaymentDate(null);
+    newInvoiceTerm.setAmount(amountRemaining);
+    newInvoiceTerm.setAmountRemaining(amountRemaining);
+    newInvoiceTerm.setPaymentMode(paymentMode);
+    newInvoiceTerm.setBankDetails(bankDetails);
+    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    newInvoiceTerm.setPfpValidatorUser(pfpUser);
+    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
+    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
+
+    newMove.getMoveLineList().add(debitMoveLine);
+    newMove.getMoveLineList().add(creditMoveLine);
+
+    log.debug(
+        "Échéances de la debit move line credit {} debit {} restant {} :: ",
+        debitMoveLine.getCredit(),
+        debitMoveLine.getDebit(),
+        debitMoveLine.getAmountRemaining());
+
+    int i = 1;
+    log.debug(
+        "Échéances de la credit move line credit {} debit {} restant {} :: ",
+        creditMoveLine.getCredit(),
+        creditMoveLine.getDebit(),
+        creditMoveLine.getAmountRemaining());
+    for (InvoiceTerm it : creditMoveLine.getInvoiceTermList()) {
+      log.debug(
+          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
+          i,
+          it.getAmount(),
+          it.getAmountRemaining(),
+          it.getIsPaid(),
+          it.getPercentage());
+      i++;
+    }
+    i = 1;
+    log.debug(
+        "Échéances de la invoicePartnerMoveLine move line credit {} debit {} restant {} :: ",
+        invoicePartnerMoveLine.getCredit(),
+        invoicePartnerMoveLine.getDebit(),
+        invoicePartnerMoveLine.getAmountRemaining());
+    for (InvoiceTerm it : invoicePartnerMoveLine.getInvoiceTermList()) {
+      log.debug(
+          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
+          i,
+          it.getAmount(),
+          it.getAmountRemaining(),
+          it.getIsPaid(),
+          it.getPercentage());
+      i++;
+    }
+
+    log.debug("Échéances de la facture :: ");
+    i = 1;
+    for (InvoiceTerm it : invoice.getInvoiceTermList()) {
+      log.debug(
+          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
+          i,
+          it.getAmount(),
+          it.getAmountRemaining(),
+          it.getIsPaid(),
+          it.getPercentage());
+      i++;
+    }
+
+    moveValidateService.accounting(newMove);
+    moveRepo.save(newMove);
+
+    if (creditMoveLine != null) {
+      Reconcile reconcile =
+          reconcileService.createReconcile(
+              invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
+      if (reconcile != null) {
+        List<InvoiceTerm> invoiceTermToPayList = Lists.newArrayList();
+        invoicePartnerMoveLine.getInvoiceTermList().stream()
+            .filter(it -> it.getIsPaid() == false)
+            .forEach(it -> invoiceTermToPayList.add(it));
+        reconcileService.confirmReconcile(reconcile, true);
+      }
+    }
+    if (debitMoveLine.getInvoiceTermList() != null) {
+      for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
+        invoiceTermRepo.remove(it);
+      }
+      debitMoveLine.clearInvoiceTermList();
+    }
+    for (InvoiceTerm it : invoiceTermToAddToDebitMoveLine) {
+      debitMoveLine.addInvoiceTermListItem(it);
+    }
+    // Recalculate percentage on debit moveline
+    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
+      it.setPercentage(
+          it.getAmount()
+              .multiply(BigDecimal.valueOf(100))
+              .divide(
+                  amountRemaining, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    }
+    i = 1;
+    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
+      log.debug(
+          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
+          i,
+          it.getAmount(),
+          it.getAmountRemaining(),
+          it.getIsPaid(),
+          it.getPercentage());
+      i++;
+    }
+
     for (InvoiceTerm it : invoiceTermToAdd) {
       log.debug(
           "Échéance à ajouter à la facture: Montant {}, Montant Restant {}, Pourcentage {}",
@@ -294,96 +421,6 @@ public class DoubtfulCustomerService {
           it.getPercentage());
       invoice.removeInvoiceTermListItem(it);
       it.setInvoice(null);
-    }
-
-    // Create invoice term on new credit move line
-    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
-    newInvoiceTerm.setIsCustomized(true);
-    newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setDueDate(todayDate);
-    newInvoiceTerm.setIsHoldBack(false);
-    newInvoiceTerm.setEstimatedPaymentDate(null);
-    newInvoiceTerm.setAmount(amountRemaining);
-    newInvoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-    newInvoiceTerm.setPaymentMode(paymentMode);
-    newInvoiceTerm.setBankDetails(bankDetails);
-    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    newInvoiceTerm.setPfpValidatorUser(pfpUser);
-    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
-    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
-
-    log.debug(
-        "Debit move Line " + " Debit {}, Credit {}, Montant restant {}",
-        debitMoveLine.getDebit(),
-        debitMoveLine.getCredit(),
-        debitMoveLine.getAmountRemaining());
-
-    log.debug(
-        "Credit move Line " + " Debit {}, Credit {}, Montant restant {}",
-        creditMoveLine.getDebit(),
-        creditMoveLine.getCredit(),
-        creditMoveLine.getAmountRemaining());
-
-    log.debug(
-        "invoicePartnerMoveLine " + " Debit {}, Credit {}, Montant restant {}",
-        invoicePartnerMoveLine.getDebit(),
-        invoicePartnerMoveLine.getCredit(),
-        invoicePartnerMoveLine.getAmountRemaining());
-
-    log.debug("Invoice partner move line invoice term");
-    for (InvoiceTerm it : invoicePartnerMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Montant {}, Montant Restant {}, Montant payé {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getAmountPaid(),
-          it.getPercentage());
-    }
-
-    log.debug("Debit move line invoice term");
-    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Montant {}, Montant Restant {}, Montant payé {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getAmountPaid(),
-          it.getPercentage());
-    }
-    log.debug("Credit move line invoice term");
-    for (InvoiceTerm it : creditMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Montant {}, Montant Restant {},Montant payé {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getAmountPaid(),
-          it.getPercentage());
-    }
-
-    log.debug("Invoice term of invoice");
-    for (InvoiceTerm it : invoice.getInvoiceTermList()) {
-      log.debug(
-          "Montant {}, Montant Restant {}, Montant payé {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getAmountPaid(),
-          it.getPercentage());
-    }
-
-    newMove.getMoveLineList().add(debitMoveLine);
-    newMove.getMoveLineList().add(creditMoveLine);
-
-    moveValidateService.accounting(newMove);
-    moveRepo.save(newMove);
-
-    if (creditMoveLine != null) {
-      Reconcile reconcile =
-          reconcileService.createReconcile(
-              invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
-      if (reconcile != null) {
-        reconcileService.confirmReconcile(reconcile, true);
-      }
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);

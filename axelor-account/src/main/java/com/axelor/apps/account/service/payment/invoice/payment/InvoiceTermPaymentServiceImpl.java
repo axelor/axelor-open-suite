@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -68,7 +69,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
-  public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException {
+  public void createInvoicePaymentTerms(
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermToPayList)
+      throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     if (invoice == null
@@ -77,7 +80,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     }
 
     List<InvoiceTerm> invoiceTerms;
-    if (invoicePayment.getMove() != null
+    if (invoiceTermToPayList != null && !invoiceTermToPayList.isEmpty()) {
+      invoiceTerms = Lists.newArrayList();
+      invoiceTerms.addAll(invoiceTermToPayList);
+    } else if (invoicePayment.getMove() != null
         && invoicePayment.getMove().getPaymentVoucher() != null
         && CollectionUtils.isNotEmpty(
             invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {

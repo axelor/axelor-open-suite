@@ -176,6 +176,19 @@ public class ReconcileServiceImpl implements ReconcileService {
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException {
 
+    reconcile = initReconcileConfirmation(reconcile);
+
+    if (updateInvoicePayments) {
+      this.updatePayments(reconcile);
+    }
+    this.addToReconcileGroup(reconcile);
+
+    return reconcileRepository.save(reconcile);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Reconcile initReconcileConfirmation(Reconcile reconcile) throws AxelorException {
+
     this.reconcilePreconditions(reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -203,12 +216,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updatePaymentTax(reconcile);
     this.updatePaymentMoveLineDistribution(reconcile);
-    if (updateInvoicePayments) {
-      this.updatePayments(reconcile);
-    }
-    this.addToReconcileGroup(reconcile);
-
-    return reconcileRepository.save(reconcile);
+    return reconcile;
   }
 
   @Override
