@@ -221,9 +221,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList) {
+  public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date) {
     return invoiceTermList.stream()
-        .map(invoiceTermService::getAmountRemaining)
+        .map(it -> invoiceTermService.getAmountRemaining(it, date))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -286,7 +286,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
-                        invoiceTermService.getAmountRemaining(it.getInvoiceTerm()),
+                        it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
                         RoundingMode.HALF_UP))
         .reduce(BigDecimal::add)

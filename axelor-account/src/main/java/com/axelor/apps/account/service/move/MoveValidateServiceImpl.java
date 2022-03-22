@@ -74,6 +74,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
   protected MoveToolService moveToolService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveRepository moveRepository;
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
@@ -89,6 +90,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
       MoveToolService moveToolService,
+      MoveInvoiceTermService moveInvoiceTermService,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
@@ -102,6 +104,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
     this.moveToolService = moveToolService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
@@ -285,7 +288,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
     }
 
-    Boolean dayBookMode =
+    boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
 
@@ -296,6 +299,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       move.setAdjustingMove(true);
     }
+
+    moveInvoiceTermService.generateInvoiceTerms(move);
 
     this.completeMoveLines(move);
 

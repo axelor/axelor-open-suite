@@ -577,7 +577,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 moveLineId++,
                 origin,
                 null);
-        invoiceTerm.setMoveLine(holdBackMoveLine);
+        holdBackMoveLine.addInvoiceTermListItem(invoiceTerm);
         moveLines.add(holdBackMoveLine);
       } else {
         if (moveLine == null) {
@@ -631,12 +631,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsHoldBack()) {
-        invoiceTerm.setMoveLine(moveLine);
+    if (moveLine != null) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (!invoiceTerm.getIsHoldBack()) {
+          moveLine.addInvoiceTermListItem(invoiceTerm);
+        }
       }
+      moveLines.add(moveLine);
     }
-    moveLines.add(moveLine);
+
     return moveLines;
   }
 

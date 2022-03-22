@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoicePaymentToolService {
@@ -51,7 +52,7 @@ public interface InvoicePaymentToolService {
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 
-  BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList);
+  BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date);
 
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 }
