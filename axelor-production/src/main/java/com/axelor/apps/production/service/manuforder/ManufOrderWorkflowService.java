@@ -103,6 +103,17 @@ public class ManufOrderWorkflowService {
 
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(ManufOrderRepository.STATUS_DRAFT);
+    authorizedStatus.add(ManufOrderRepository.STATUS_CANCELED);
+    if (manufOrder.getStatusSelect() == null
+        || !authorizedStatus.contains(manufOrder.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_PLAN_WRONG_STATUS));
+    }
+
     List<ManufOrder> manufOrderList = new ArrayList<>();
     manufOrderList.add(manufOrder);
     plan(manufOrderList);
@@ -198,6 +209,13 @@ public class ManufOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public void start(ManufOrder manufOrder) throws AxelorException {
 
+    if (manufOrder.getStatusSelect() == null
+        || manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_START_WRONG_STATUS));
+    }
+
     if (manufOrder.getBillOfMaterial().getStatusSelect()
             != BillOfMaterialRepository.STATUS_APPLICABLE
         || manufOrder.getProdProcess().getStatusSelect()
@@ -222,8 +240,16 @@ public class ManufOrderWorkflowService {
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
-  @Transactional
-  public void pause(ManufOrder manufOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void pause(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getStatusSelect() == null
+        || manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_PAUSE_WRONG_STATUS));
+    }
+
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -236,8 +262,20 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional
-  public void resume(ManufOrder manufOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void resume(ManufOrder manufOrder) throws AxelorException {
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    authorizedStatus.add(ManufOrderRepository.STATUS_STANDBY);
+
+    if (manufOrder.getStatusSelect() == null
+        || !authorizedStatus.contains(manufOrder.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_RESUME_WRONG_STATUS));
+    }
+
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY) {
@@ -252,6 +290,14 @@ public class ManufOrderWorkflowService {
 
   @Transactional(rollbackOn = {Exception.class})
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getStatusSelect() == null
+        || manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_FINISH_WRONG_STATUS));
+    }
+
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -346,6 +392,14 @@ public class ManufOrderWorkflowService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getStatusSelect() == null
+        || manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_FINISH_WRONG_STATUS));
+    }
+
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
@@ -379,6 +433,14 @@ public class ManufOrderWorkflowService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
     }
+
+    if (manufOrder.getStatusSelect() == null
+        || manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL_WRONG_STATUS));
+    }
+
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
