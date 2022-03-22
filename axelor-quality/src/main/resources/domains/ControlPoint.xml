@@ -24,6 +24,7 @@
     <extra-code>
 			<![CDATA[
 				public static final int STATUS_ON_HOLD = 1;
+				public static final int STATUS_DONE = 2;
 			]]>
     </extra-code>
   </entity>

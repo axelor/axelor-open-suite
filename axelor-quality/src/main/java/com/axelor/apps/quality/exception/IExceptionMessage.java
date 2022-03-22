@@ -23,4 +23,8 @@ public interface IExceptionMessage {
 
   static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on quality control" /*)*/;
+
+  /** Control Point Workflow service * */
+  static final String CONTROL_POINT_CLOSE_WRONG_STATUS = /*$$(*/
+      "Can only close on hold control point. " /*)*/;
 }
