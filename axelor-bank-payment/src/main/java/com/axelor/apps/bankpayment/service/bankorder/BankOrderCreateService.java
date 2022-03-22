@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -80,7 +81,8 @@ public class BankOrderCreateService {
       String senderReference,
       String senderLabel,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      int accountingTriggerSelect)
       throws AxelorException {
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
@@ -121,6 +123,7 @@ public class BankOrderCreateService {
     bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
     bankOrder.setTechnicalOriginSelect(technicalOriginSelect);
     bankOrder.setFunctionalOriginSelect(functionalOriginSelect);
+    bankOrder.setAccountingTriggerSelect(accountingTriggerSelect);
     return bankOrder;
   }
 
@@ -159,7 +162,8 @@ public class BankOrderCreateService {
             reference,
             null,
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =

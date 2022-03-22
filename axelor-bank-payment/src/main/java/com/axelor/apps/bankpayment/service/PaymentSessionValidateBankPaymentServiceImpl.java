@@ -145,7 +145,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             paymentSession.getSequence(),
             this.getLabel(paymentSession),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
+            paymentSession.getAccountingTriggerSelect());
 
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);

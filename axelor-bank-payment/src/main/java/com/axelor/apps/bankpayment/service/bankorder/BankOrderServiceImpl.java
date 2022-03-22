@@ -315,6 +315,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
+      bankOrderMoveService.generateMoves(bankOrder);
+      validatePayment(bankOrder);
+    }
+
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
         && paymentMode != null
         && paymentMode.getAutomaticTransmission()) {
@@ -346,9 +352,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankOrder.getPaymentMode() != null
-        && bankOrder.getPaymentMode().getAccountingTriggerSelect()
-            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
@@ -401,9 +406,8 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (bankOrder.getPaymentMode() != null
-        && bankOrder.getPaymentMode().getAccountingTriggerSelect()
-            == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
       bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }

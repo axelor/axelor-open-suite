@@ -18,7 +18,7 @@
 
     <extend target="//panel[@name='emailPanel']">
       <insert position="after">
-        <panel name="bankOrderPanel" sidebar="true"
+        <panel name="bankOrderPanel" sidebar="true" title="Bank order"
           showIf="paymentMode &amp;&amp; paymentMode.generateBankOrder &amp;&amp; statusSelect &gt; 1">
           <field name="bankOrder" colSpan="12" readonly="true"/>
           <field name="paymentMode.generateBankOrder" hidden="true" colSpan="12"/>
