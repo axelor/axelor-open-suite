@@ -101,7 +101,7 @@
     <field name="moveLine.move.statusSelect"/>
     <field name="isSelectedOnPaymentSession"/>
     <field name="paymentAmount"/>
-    <field name="applyFinancialDiscount"/>
+    <field name="applyFinancialDiscountOnPaymentSession"/>
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select"
@@ -265,6 +265,8 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
@@ -410,6 +412,8 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
