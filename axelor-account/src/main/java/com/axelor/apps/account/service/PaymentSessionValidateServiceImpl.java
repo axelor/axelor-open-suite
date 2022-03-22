@@ -251,8 +251,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateMoveLineFromInvoiceTerm(
         paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
 
-    // TODO use new apply boolean
-    if (invoiceTerm.getApplyFinancialDiscount()
+    if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()
         && (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
             || paymentSession.getPartnerTypeSelect()
                 == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)) {
