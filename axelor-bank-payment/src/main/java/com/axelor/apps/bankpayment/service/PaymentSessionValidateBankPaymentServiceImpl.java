@@ -89,7 +89,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
     if (paymentSession.getPaymentMode() != null
-        && paymentSession.getPaymentMode().getGenerateBankOrder()) {
+        && paymentSession.getPaymentMode().getGenerateBankOrder()
+        && paymentSession.getBankOrder() == null) {
       this.generateBankOrderFromPaymentSession(paymentSession);
     }
 
@@ -168,7 +169,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
 
-    if (paymentSession.getBankOrder() != null) {
+    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }

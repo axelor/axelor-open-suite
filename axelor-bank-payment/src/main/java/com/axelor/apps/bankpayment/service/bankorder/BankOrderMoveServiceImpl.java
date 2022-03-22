@@ -23,10 +23,8 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -60,7 +58,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected AccountingSituationService accountingSituationService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected MoveLineCreateService moveLineCreateService;
-  protected PaymentSessionRepository paymentSessionRepo;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -80,8 +77,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
       BankPaymentConfigService bankPaymentConfigService,
-      MoveLineCreateService moveLineCreateService,
-      PaymentSessionRepository paymentSessionRepo) {
+      MoveLineCreateService moveLineCreateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -89,7 +85,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     this.accountingSituationService = accountingSituationService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.moveLineCreateService = moveLineCreateService;
-    this.paymentSessionRepo = paymentSessionRepo;
   }
 
   @Override
@@ -105,8 +100,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         || bankOrder.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
       return;
-    } else {
-      this.updatePaymentSession(bankOrder);
     }
 
     orderTypeSelect = bankOrder.getOrderTypeSelect();
@@ -295,16 +288,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       return bankOrderLine.getBankOrderCurrency();
     } else {
       return bankOrderLine.getBankOrder().getBankOrderCurrency();
-    }
-  }
-
-  protected void updatePaymentSession(BankOrder bankOrder) {
-    PaymentSession paymentSession =
-        paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
-
-    if (paymentSession != null) {
-      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
-      paymentSessionRepo.save(paymentSession);
     }
   }
 }

@@ -126,19 +126,35 @@
         onClick="action-bank-order-method-print"/>
     </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"
         selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"
         showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
-                    <![CDATA[
-                      <h4 class="text-right">
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
-                      </h4>
-                    ]]>
+          <![CDATA[
+            <h4 class="text-right">
+               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
+               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
+               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
+            </h4>
+          ]]>
+        </viewer>
+      </field>
+      <field name="$functionalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
+        <viewer depends="functionalOriginSelect">
+          <![CDATA[
+            <h4 class="text-right">
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 1" x-translate>Manual</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 10" x-translate>bankorder.invoicePayment</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 20" x-translate>Expense</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 30" x-translate>Payment session<</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 40" x-translate>LCR</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 50" x-translate>Batch</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 51" x-translate>MonthlyPaymentScheduleLines (batch)</span>
+               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 52" x-translate>CreditTransferPartnerReimbursement (batch)</span>
+            </h4>
+          ]]>
         </viewer>
       </field>
     </panel>
