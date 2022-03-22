@@ -109,7 +109,10 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException;
 
   public void updateInvoiceTermsPaidAmount(
-      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException;
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      InvoiceTermPayment invoiceTermPayment)
+      throws AxelorException;
 
   /**
    * Update amount remaining and paid status after unreconcile
