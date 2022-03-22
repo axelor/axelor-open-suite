@@ -494,9 +494,11 @@ public class PaymentVoucherLoadService {
   }
 
   protected void sortElementsToPay(PaymentVoucher paymentVoucher) {
-    paymentVoucher
-        .getPayVoucherElementToPayList()
-        .sort(Comparator.comparing(t -> t.getInvoiceTerm().getDueDate()));
+    Comparator<PayVoucherElementToPay> comparator =
+        Comparator.comparing(t -> t.getInvoiceTerm().getDueDate());
+    comparator = comparator.thenComparing(t -> t.getInvoiceTerm().getInvoice().getInvoiceDate());
+
+    paymentVoucher.getPayVoucherElementToPayList().sort(comparator);
 
     int seq = 1;
     for (PayVoucherElementToPay payVoucherElementToPay :
