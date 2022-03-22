@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -468,11 +469,17 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
+  public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException {
     if (period != null
         && period.getYear().getCompany() != null
         && user.getGroup() != null
         && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      if (journal != null
+          && period.getKeepJournalsOpenOnPeriod()
+          && period.getOpenedJournalSet().contains(journal)) {
+        return false;
+      }
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
       for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
