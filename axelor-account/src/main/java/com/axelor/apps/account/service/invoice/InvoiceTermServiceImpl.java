@@ -716,8 +716,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm.setAmountPaid(BigDecimal.ZERO);
       }
     }
-
-    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+    computeAmountPaid(invoiceTerm);
   }
 
   @Override
@@ -947,6 +946,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
+    }
+  }
+
+  @Override
+  public void computeAmountPaid(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+      if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        BigDecimal financialDiscountAmount =
+            invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) < 0
+                ? invoiceTerm.getFinancialDiscountAmount()
+                : invoiceTerm.getFinancialDiscountAmount().negate();
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount().add(financialDiscountAmount));
+      } else {
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+      }
+    } else {
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
   }
 }
