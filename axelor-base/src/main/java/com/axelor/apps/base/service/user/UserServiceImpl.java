@@ -339,11 +339,6 @@ public class UserServiceImpl implements UserService {
         return;
       }
 
-      if (user.equals(AuthUtils.getUser())) {
-        logger.debug("User {} changed own password.", user.getCode());
-        return;
-      }
-
       AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
       Template template = appBase.getPasswordChangedTemplate();
 
@@ -404,24 +399,11 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void generateRandomPasswordForUsers(List<Long> userIds) {
-    AuthService authService = Beans.get(AuthService.class);
-    LocalDateTime todayDateTime =
-        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 
     for (Long userId : userIds) {
       User user = userRepo.find(userId);
-      String password = this.generateRandomPassword().toString();
-      user.setTransientPassword(password);
-      password = authService.encrypt(password);
-      user.setPassword(password);
-      user.setPasswordUpdatedOn(todayDateTime);
+      user = this.generateRandomPasswordForUser(user);
       userRepo.save(user);
-    }
-
-    // Update login date in session so that user changing own password doesn't get logged out.
-    if (userIds.contains(getUserId())) {
-      Session session = AuthUtils.getSubject().getSession();
-      session.setAttribute("loginDate", todayDateTime);
     }
   }
 
@@ -433,5 +415,29 @@ public class UserServiceImpl implements UserService {
     user.setPartner(partner);
     userRepo.save(user);
     return partner;
+  }
+
+  @Override
+  public User generateRandomPasswordForUser(User user) {
+
+    AuthService authService = Beans.get(AuthService.class);
+    LocalDateTime todayDateTime =
+        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+
+    String password = this.generateRandomPassword().toString();
+    user.setTransientPassword(password);
+    password = authService.encrypt(password);
+    user.setPassword(password);
+    user.setPasswordUpdatedOn(todayDateTime);
+
+    User loginUser = this.getUser();
+
+    // Update login date in session so that user changing own password doesn't get logged out.
+    if (loginUser.equals(user)) {
+      Session session = AuthUtils.getSubject().getSession();
+      session.setAttribute("com.axelor.internal.loginDate", todayDateTime);
+    }
+
+    return user;
   }
 }
