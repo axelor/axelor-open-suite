@@ -235,7 +235,7 @@
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" min="0"
         readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-      <field name="residualValue"/>
+      <field name="residualValue" readonly="true"/>
       <field name="accountingValue"
         hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"/>
     </panel>
