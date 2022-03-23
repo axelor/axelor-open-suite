@@ -215,9 +215,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN ( "
                     + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + :mailTransitTime ) < :todayDate ) "
-                    + "OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < :todayDate)"
-                    + "OR (moveline.due_date IS NULL AND moveline.date_val < :todayDate)) "
+                    + "WHERE moveline.debit > 0 "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
                     + "SELECT moveline.id AS moveline_id "
@@ -241,7 +239,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 "
-                    + " AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
+                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
                 "todayDate",
