@@ -705,7 +705,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsSelectedOnPaymentSession(true);
     invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemaining());
 
-    if (financialDiscountDeadlineDate != null) {
+    if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
       if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
         invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemainingAfterFinDiscount());
