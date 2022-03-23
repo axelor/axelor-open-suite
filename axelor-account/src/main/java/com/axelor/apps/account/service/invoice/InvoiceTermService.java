@@ -214,6 +214,8 @@ public interface InvoiceTermService {
 
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
+  public void computeAmountPaid(InvoiceTerm invoiceTerm);
+
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
