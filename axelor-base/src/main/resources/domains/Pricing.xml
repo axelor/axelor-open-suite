@@ -9,6 +9,7 @@
 
     <string name="name" title="Name"/>
     <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="concernedModel" ref="com.axelor.meta.db.MetaModel"
       title="Concerned model"/>

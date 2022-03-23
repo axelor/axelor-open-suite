@@ -59,6 +59,7 @@ public class PricingServiceImpl implements PricingService {
     filter.append(
         "AND self.company = :company "
             + "AND self.startDate <= :todayDate "
+            + "AND (self.endDate > :todayDate OR self.endDate = NULL) "
             + "AND self.concernedModel.name = :modelName");
 
     return pricingRepo
