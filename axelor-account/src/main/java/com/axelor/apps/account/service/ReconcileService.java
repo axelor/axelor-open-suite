@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
@@ -43,6 +44,14 @@ public interface ReconcileService {
   public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException;
 
   public List<Partner> getPartners(Reconcile reconcile);
+
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
 
   public Reconcile reconcile(
       MoveLine debitMoveLine,

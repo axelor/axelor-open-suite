@@ -47,7 +47,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
 
@@ -297,6 +299,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, Collections.singletonList(invoiceTerm));
+
     return invoicePaymentRepository.save(invoicePayment);
   }
 
@@ -318,7 +324,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     for (Long invoiceId : invoiceList) {
 
       Invoice invoice = invoiceRepository.find(invoiceId);
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      for (InvoiceTerm invoiceTerm :
+          invoice.getInvoiceTermList().stream()
+              .filter(it -> !it.getIsPaid() && it.getAmountRemaining().signum() > 0)
+              .collect(Collectors.toList())) {
         InvoicePayment invoicePayment =
             this.createInvoicePayment(
                 invoiceTerm,

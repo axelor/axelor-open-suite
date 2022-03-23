@@ -130,8 +130,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
 
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
@@ -262,7 +260,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       for (MoveLine invoiceMoveLine : invoiceMoveLines) {
         invoicePayment.addReconcileListItem(
-            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, true));
+            reconcileService.reconcile(
+                invoiceMoveLine, customerMoveLine, true, true, invoicePayment));
       }
     }
 
