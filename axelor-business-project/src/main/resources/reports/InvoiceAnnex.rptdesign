@@ -53,6 +53,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 }
 if(params["FooterHeight"].value != 0) {
 reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}
+if(params["BirtLocale"].value != null){
+reportContext.getDesignHandle().setStringProperty("locale",params["BirtLocale"].value);
 }]]></method>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -170,6 +173,17 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
         <scalar-parameter name="FooterHeight" id="5373">
             <property name="valueType">static</property>
             <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BirtLocale" id="5376">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
