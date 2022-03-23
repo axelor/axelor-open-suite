@@ -1898,6 +1898,7 @@
 "MoveLine",,,
 "MoveLine Amount",,,
 "MoveLine.amountReconciled","Amount reconciled",,
+"MoveLine.origin","Origin doc.",,
 "MoveLines content data input",,,
 "Moves",,,
 "Moves Lines (Moves) exported",,,
