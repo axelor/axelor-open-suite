@@ -51,9 +51,18 @@
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
-    <panel name="statusSelectPanel" colSpan="12">
+    <panel name="statusSelectPanel" colSpan="7" stacked="true">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
         colSpan="12"/>
+    </panel>
+    <panel name="viewerTagsPanel" colSpan="5">
+      <field name="$viewerTags" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+                       <h4 class="text-right">
+                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmount < 0">Session total amount is negative</span>
+                       </h4>
+        ]]></viewer>
+      </field>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -144,7 +153,9 @@
 
   <action-group name="action-payment-session-group-validate">
     <action name="save"/>
+    <action name="action-payment-session-method-check-session"/>
     <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="action-payment-session-method-reconciled-invoice-term-moves"/>
     <action name="action-payment-session-method-validate-payment-session"/>
   </action-group>
 
@@ -254,7 +265,16 @@
       method="searchEligibleTerms"/>
   </action-method>
 
-  <action-group name="action-group-payment-session-search-eligible-terms">
+  <action-method name="action-payment-session-method-reconciled-invoice-term-moves">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="reconciledInvoiceTermMoves"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-check-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="checkSession"/>
+  </action-method>
+
+  <action-group name="action-payment-session-method-reconciled-invoice-term-moves">
     <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
   </action-group>

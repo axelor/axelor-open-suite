@@ -24,12 +24,16 @@ import com.axelor.apps.account.service.PaymentSessionCancelService;
 import com.axelor.apps.account.service.PaymentSessionEmailService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionValidateService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PaymentSessionController {
@@ -140,6 +144,42 @@ public class PaymentSessionController {
       boolean hasUnselectedInvoiceTerm =
           Beans.get(PaymentSessionService.class).hasUnselectedInvoiceTerm(paymentSession);
       response.setValue("$hasUnselectedInvoiceTerm", hasUnselectedInvoiceTerm);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void reconciledInvoiceTermMoves(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionValidateService.class).reconciledInvoiceTermMoves(paymentSession);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkSession(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      List<Partner> partnerWithNegativeAmountList =
+          Beans.get(PaymentSessionValidateService.class)
+              .getPartnersWithNegativeAmount(paymentSession);
+
+      if (!ObjectUtils.isEmpty(partnerWithNegativeAmountList)) {
+        StringBuilder partnerFullNames = new StringBuilder("");
+        partnerFullNames.append(
+            partnerWithNegativeAmountList.stream()
+                .map(partner -> partner.getFullName())
+                .collect(Collectors.joining(",")));
+        response.setError(
+            String.format(
+                I18n.get(IExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
+                partnerFullNames.toString(),
+                paymentSession.getPaymentMode().getCode()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

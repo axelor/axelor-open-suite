@@ -1152,4 +1152,7 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
       "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
+
+  static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
+      "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
 }

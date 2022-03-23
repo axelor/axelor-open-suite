@@ -15,16 +15,19 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -33,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
   protected AppBaseService appBaseService;
@@ -508,5 +512,43 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " GROUP BY Partner.id "
+                    + " HAVING SUM(InvoiceTerm.amountPaid) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
+  }
+
+  @Override
+  public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException {
+
+    TypedQuery<MoveLine> moveLineQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT MoveLine FROM MoveLine MoveLine "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession ",
+                MoveLine.class);
+
+    moveLineQuery.setParameter("paymentSession", paymentSession);
+
+    List<MoveLine> moveLineList = moveLineQuery.getResultList();
+    if (!ObjectUtils.isEmpty(moveLineList)) {
+      Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+    }
   }
 }

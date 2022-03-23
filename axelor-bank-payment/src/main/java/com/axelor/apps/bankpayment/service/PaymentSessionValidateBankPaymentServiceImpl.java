@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -35,6 +36,7 @@ import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -287,5 +289,24 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " GROUP BY Partner.id , InvoiceTerm.bankDetails "
+                    + " HAVING SUM(InvoiceTerm.amountPaid) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
   }
 }

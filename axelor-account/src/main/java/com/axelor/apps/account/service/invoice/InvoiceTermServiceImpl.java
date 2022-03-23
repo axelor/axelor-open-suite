@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -728,6 +729,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                   .subtract(invoiceTerm.getMoveLine().getCredit())
                   .signum()
               < 0;
+    } else if (invoiceTerm.getPaymentMode() != null) {
+      isSignedNegative = invoiceTerm.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN;
     }
 
     invoiceTerm.setPaymentSession(paymentSession);
@@ -988,6 +991,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                     .subtract(invoiceTerm.getMoveLine().getCredit())
                     .signum()
                 < 0;
+      } else if (invoiceTerm.getPaymentMode() != null) {
+        isSignedNegative =
+            invoiceTerm.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN;
       }
       if (accountConfigService
           .getAccountConfig(invoiceTerm.getInvoice().getCompany())
