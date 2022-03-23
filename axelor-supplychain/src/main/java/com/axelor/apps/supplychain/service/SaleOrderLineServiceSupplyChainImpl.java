@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -72,7 +73,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -91,6 +92,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
@@ -102,7 +104,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         appBaseService,
         appSaleService,
         accountManagementService,
-        saleOrderLineRepo);
+        saleOrderLineRepo,
+        saleOrderService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -306,7 +309,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.saleOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)
@@ -321,20 +324,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine) {
     BigDecimal qty = saleOrderLine.getQty();
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
-    BigDecimal invoicedQty = BigDecimal.ZERO;
+    BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT SUM(self.qty) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId");
-    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
-    query.setParameter("saleOrderLineId", saleOrderLine.getId());
-
-    invoicedQty = (BigDecimal) query.getSingleResult();
-
-    if (invoicedQty != null
-        && qty.compareTo(invoicedQty) == -1
-        && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
     } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
       return deliveredQty;
@@ -436,5 +428,18 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       }
     }
     return soLine;
+  }
+
+  protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {
+
+    TypedQuery<BigDecimal> query =
+        JPA.em()
+            .createQuery(
+                "SELECT COALESCE(SUM(CASE WHEN self.invoice.operationTypeSelect = 3 THEN self.qty WHEN self.invoice.operationTypeSelect = 4 THEN -self.qty END),0) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId",
+                BigDecimal.class);
+    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    query.setParameter("saleOrderLineId", saleOrderLine.getId());
+
+    return query.getSingleResult();
   }
 }

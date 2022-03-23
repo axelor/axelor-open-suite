@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="move-template-grid" title="Move template"
+  <grid name="move-template-grid" title="Move templates"
     model="com.axelor.apps.account.db.MoveTemplate">
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -143,15 +143,12 @@
       title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
     <field name="debitPartner" target-name="fullName" title="Partner to Debit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
-      readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 2"
       target="com.axelor.apps.base.db.Partner"/>
     <field name="creditPartner" target-name="fullName" title="Partner to Credit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
-      readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 1"
       target="com.axelor.apps.base.db.Partner"/>
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
-    <field name="partnerInputSelect" type="integer" hidden="true"/>
   </grid>
 
   <action-group name="action-move-template-group-line-list-onchange">
@@ -183,7 +180,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-attrs name="action-move-template-wizard-attrs-company-onchange">
@@ -225,8 +222,6 @@
       if="date == null"/>
     <field name="moveTemplate"
       expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
-    <field name="partnerInputSelect"
-      expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id).partnerInputSelect"/>
   </action-record>
 
 </object-views>

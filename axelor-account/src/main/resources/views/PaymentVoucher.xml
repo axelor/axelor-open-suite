@@ -57,7 +57,8 @@
 
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
-        domain=":company member of self.companySet" onChange="action-pv-record-default-partner-inf"
+        domain=":company member of self.companySet"
+        onChange="action-group-payment-voucher-reset-imputation,action-pv-record-default-partner-inf"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
@@ -81,13 +82,12 @@
 
     <panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
       <button name="loadMoveLinesBtn" title="Search elements to pay"
-        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save"
-        colSpan="6"/>
+        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines" colSpan="6"/>
     </panel>
 
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
       <field name="paidAmount" colSpan="4"
-        onChange="action-group-payment-voucher-reset-imputation"/>
+        onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
         grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation"/>
       <field name="remainingAmount" readonly="true" colSpan="4"/>
@@ -101,18 +101,17 @@
     <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect >= 2">
       <panel-related name="payVoucherDueElementListPanel" colSpan="12"
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
-        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"/>
+        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1" orderBy="sequence"
+        canMove="true" canNew="false"/>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
-          onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save"
-          colSpan="6"/>
+          onClick="action-method-payment-voucher-load-selected-lines,save" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="save,com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save"
-          colSpan="6"/>
+          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
-        grid-view="pay-voucher-element-to-pay-grid"/>
+        grid-view="pay-voucher-element-to-pay-grid" orderBy="sequence" canNew="false"/>
     </panel-stack>
 
   </form>
@@ -229,12 +228,12 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="operationTypeSelect" expr="eval: _operationTypeSelect"
       if="_operationTypeSelect"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
   </action-record>
 
@@ -318,19 +317,28 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <action name="save" if="payVoucherElementToPayList"/>
     <action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
-    <action name="save" if="payVoucherElementToPayList"/>
   </action-group>
 
   <action-method name="action-payment-voucher-reset-imputation">
     <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
   </action-method>
 
+  <action-method name="action-payment-voucher-reload-element-to-pay-list"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="reloadPaymentVoucher"/>
+  </action-method>
+
   <action-attrs name="action-payment-voucher-set-trading-name-domain">
     <attribute name="domain" for="tradingName"
       expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
+
+  <action-method name="action-method-payment-voucher-load-selected-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="loadSelectedLines"/>
+  </action-method>
 
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -235,6 +235,10 @@ public class ManufOrderController {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
           message = manufOrder.getMoCommentFromSaleOrder();
+        }
+
+        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
+          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
         }
 
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {

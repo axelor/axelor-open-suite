@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -126,6 +126,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("ProformaInvoice", proforma)
+        .addParam(
+            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format)
         .generate()
         .getFileLink();
@@ -302,7 +304,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
             newSoLine.setParentId(originSoLine.getManualId());
 
-            saleOrderLineList.add(newSoLine);
+            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
+            saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
           newSoLine.setQty(
@@ -316,6 +319,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
+    }
+
+    for (int i = 0; i < saleOrderLineList.size(); i++) {
+      saleOrderLineList.get(i).setSequence(i);
     }
 
     return saleOrderLineList;

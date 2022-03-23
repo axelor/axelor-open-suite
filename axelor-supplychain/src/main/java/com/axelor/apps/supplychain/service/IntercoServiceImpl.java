@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,10 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -44,7 +44,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -99,6 +98,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
+            null,
+            null,
             null);
 
     // in ati
@@ -438,13 +439,14 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
-    Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
+      FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
+
       Account account =
           accountManagementAccountService.getProductAccount(
               invoiceLine.getProduct(),
               intercoInvoice.getCompany(),
-              partner.getFiscalPosition(),
+              fiscalPosition,
               isPurchase,
               false);
       invoiceLine.setAccount(account);
@@ -453,17 +455,25 @@ public class IntercoServiceImpl implements IntercoService {
       invoiceLine.setTaxLine(taxLine);
       invoiceLine.setTaxRate(taxLine.getValue());
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
+          accountManagementAccountService.getProductTaxEquiv(
+              invoiceLine.getProduct(), intercoInvoice.getCompany(), fiscalPosition, isPurchase);
       invoiceLine.setTaxEquiv(taxEquiv);
       invoiceLine.setCompanyExTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
       invoiceLine.setCompanyInTaxTotal(
           invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), intercoInvoice));
+
+      if (invoiceLine.getAnalyticDistributionTemplate() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            accountManagementAccountService.getAnalyticDistributionTemplate(
+                invoiceLine.getProduct(), intercoInvoice.getCompany()));
+        List<AnalyticMoveLine> analyticMoveLineList =
+            invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+        analyticMoveLineList.forEach(
+            analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
+        invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+      }
     }
     return invoiceLine;
   }

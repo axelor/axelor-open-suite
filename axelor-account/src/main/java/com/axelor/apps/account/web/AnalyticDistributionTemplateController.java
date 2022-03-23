@@ -1,8 +1,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -20,10 +21,21 @@ public class AnalyticDistributionTemplateController {
           .validateTemplatePercentages(analyticDistributionTemplate)) {
         response.setError(
             I18n.get(
-                "The distribution is wrong, some axes percentage values are not equal to 100%"));
+                "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTemplateCompany(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .checkAnalyticDistributionTemplateCompany(analyticDistributionTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

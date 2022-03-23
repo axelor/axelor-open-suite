@@ -79,6 +79,7 @@
   </form>
 
   <action-group name="action-group-base-message-onnew">
+    <action name="action-message-method-display-generate-message" if="_message != null"/>
     <action name="action-message-record-default"/>
     <action name="action-message-record-mail-account"/>
     <action name="action-message-record-get-signature"/>
@@ -98,7 +99,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-method name="action-message-method-print-pdf-email">

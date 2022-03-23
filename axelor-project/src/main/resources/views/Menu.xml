@@ -20,6 +20,12 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjects"/>
   </action-method>
 
+  <menuitem name="project-task-all" parent="menu-project-root" order="15" title="Tasks"
+    action="project.task.all"/>
+  <action-method name="project.task.all">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
+  </action-method>
+
   <menuitem name="project-open-tickets" parent="menu-project-root" title="Tickets"
     order="21" action="all.open.project.tickets" if-module="axelor-business-support"
     if="__config__.app.isApp('business-support')"/>

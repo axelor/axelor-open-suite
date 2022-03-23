@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -87,6 +88,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationService {
   protected static final int RETURNED_SCALE = 2;
@@ -140,6 +142,7 @@ public class BankReconciliationService {
       BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
+      AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
@@ -164,6 +167,7 @@ public class BankReconciliationService {
     this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
+    this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
   }
 
@@ -257,6 +261,9 @@ public class BankReconciliationService {
             bankReconciliationLine.getEffectDate(),
             bankReconciliationLine.getEffectDate(),
             accountManagement.getPaymentMode(),
+            bankStatementRule.getPartner() != null
+                ? bankStatementRule.getPartner().getFiscalPosition()
+                : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankReconciliationLine.getBankStatementLine().getOrigin(),
@@ -646,6 +653,47 @@ public class BankReconciliationService {
     return cashAccount;
   }
 
+  public String getAccountDomain(BankReconciliation bankReconciliation) {
+    if (bankReconciliation != null) {
+      String domain = "self.id != 0";
+      if (bankReconciliation.getCompany() != null) {
+        domain = domain.concat(" AND self.company.id = " + bankReconciliation.getCompany().getId());
+      }
+      if (bankReconciliation.getCashAccount() != null) {
+        domain = domain.concat(" AND self.id != " + bankReconciliation.getCashAccount().getId());
+      }
+      if (bankReconciliation.getJournal() != null
+          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountTypeSet())) {
+        domain =
+            domain.concat(
+                " AND (self.accountType.id IN "
+                    + bankReconciliation.getJournal().getValidAccountTypeSet().stream()
+                        .map(AccountType::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
+                        .toString());
+      } else {
+        domain = domain.concat(" AND (self.accountType.id = 0");
+      }
+      if (bankReconciliation.getJournal() != null
+          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountSet())) {
+        domain =
+            domain.concat(
+                " OR self.id IN "
+                    + bankReconciliation.getJournal().getValidAccountSet().stream()
+                        .map(Account::getId)
+                        .map(id -> id.toString())
+                        .collect(Collectors.joining("','", "('", "')"))
+                        .toString()
+                    + ")");
+      } else {
+        domain = domain.concat(" OR self.id = 0)");
+      }
+      return domain;
+    }
+    return "self.id = 0";
+  }
+
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
         "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
@@ -855,6 +903,9 @@ public class BankReconciliationService {
 
   public String printNewBankReconciliation(BankReconciliation bankReconciliation)
       throws AxelorException {
+    if (bankReconciliation.getCompany() == null) {
+      return null;
+    }
     PrintingSettings printingSettings = bankReconciliation.getCompany().getPrintingSettings();
     String watermark = null;
     String fileLink = null;
@@ -868,7 +919,8 @@ public class BankReconciliationService {
               .toString();
     }
     fileLink =
-        ReportFactory.createReport(IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
+        ReportFactory.createReport(
+                IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
             .addParam("BankReconciliationId", bankReconciliation.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam(
@@ -893,6 +945,25 @@ public class BankReconciliationService {
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLineContext.getIsSelectedBankReconciliation());
     return bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  public String createDomainForMoveLine(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    String domain = "";
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(getRequestMoveLines(bankReconciliation))
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    String idList = StringTool.getIdListString(authorizedMoveLines);
+    if (idList.equals("")) {
+      domain = "self.id IN (0)";
+    } else {
+      domain = "self.id IN (" + idList + ")";
+    }
+    return domain;
   }
 
   public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
