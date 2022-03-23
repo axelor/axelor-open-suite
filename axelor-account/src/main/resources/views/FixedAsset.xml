@@ -601,7 +601,7 @@
     <attribute name="value" for="fiscalDurationInMonth"
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="fiscalNumberOfDepreciation"
-      expr="eval:fixedAssetCategory.numberOfDepreciation"/>
+      expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
     <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
     <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false"
       if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
@@ -621,7 +621,7 @@
     <attribute name="value" for="ifrsDurationInMonth"
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="ifrsNumberOfDepreciation"
-      expr="eval:fixedAssetCategory.numberOfDepreciation"/>
+      expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
     <attribute name="value" for="isIfrsEqualToFiscalDepreciation" expr="eval:true"/>
 
   </action-attrs>
