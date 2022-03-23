@@ -58,8 +58,7 @@
         title="Refuse"/>
       <button name="cancelBtn" onClick="action-leave-request-group-cancel"
         hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-      <button name="draftBtn"
-        onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel"
+      <button name="draftBtn" onClick="action-leave-request-group-draft"
         title="Return to draft status" showIf="statusSelect &gt; 3 "/>
     </panel>
     <panel name="statusPanel">
@@ -199,6 +198,14 @@
     <action name="action-leave-request-attrs-draft-cancel"/>
   </action-group>
 
+  <action-group name="action-leave-request-group-draft">
+    <action name="save"/>
+    <action name="action-leave-request-method-draft-leave-request"/>
+    <action name="save"/>
+    <action name="action-leave-request-attrs-buttons"/>
+    <action name="action-leave-request-attrs-draft-cancel"/>
+  </action-group>
+
   <action-group name="action-leave-request-group-on-form-load">
     <action name="action-leave-request-attrs-buttons"/>
     <action name="action-leave-request-attrs-draft-cancel"/>
@@ -225,11 +232,6 @@
     <attribute name="domain" for="$leaveSelect"
       expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
   </action-attrs>
-
-  <action-record name="action-leave-request-record-draft"
-    model="com.axelor.apps.hr.db.LeaveRequest">
-    <field name="statusSelect" expr="1"/>
-  </action-record>
 
   <action-attrs name="action-leave-request-attrs-buttons">
     <attribute name="hidden" for="validateBtn"
@@ -313,6 +315,10 @@
 
   <action-method name="action-leave-request-method-cancel-leave-request">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-leave-request-method-draft-leave-request">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="backToDraft"/>
   </action-method>
 
   <action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal"

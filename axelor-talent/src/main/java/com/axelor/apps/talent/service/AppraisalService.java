@@ -30,11 +30,11 @@ public interface AppraisalService {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, MessagingException;
 
-  public void realize(Appraisal appraisal);
+  public void realize(Appraisal appraisal) throws AxelorException;
 
-  public void cancel(Appraisal appraisal);
+  public void cancel(Appraisal appraisal) throws AxelorException;
 
-  public void draft(Appraisal appraisal);
+  public void draft(Appraisal appraisal) throws AxelorException;
 
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)

@@ -295,4 +295,15 @@ public class ExtraHoursController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void draft(ActionRequest request, ActionResponse response) {
+    try {
+      ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+      extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
+      Beans.get(ExtraHoursService.class).draft(extraHours);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

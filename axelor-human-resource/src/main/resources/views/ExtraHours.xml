@@ -50,7 +50,7 @@
           onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons"
           hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
         <button name="draftBtn"
-          onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons"
+          onClick="action-extra-hours-method-draft,save,action-extra-hours-attrs-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3 "/>
       </panel>
     </panel>
@@ -126,11 +126,6 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-record>
 
-  <action-record name="action-extra-hours-record-draft"
-    model="com.axelor.apps.hr.db.ExtraHours">
-    <field name="statusSelect" expr="1"/>
-  </action-record>
-
   <action-attrs name="action-extra-hours-attrs-buttons">
     <attribute name="hidden" for="validateBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
@@ -165,6 +160,10 @@
 
   <action-method name="action-extra-hours-method-cancel">
     <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-extra-hours-method-draft">
+    <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="draft"/>
   </action-method>
 
   <action-method name="action-extra-hours-method-compute">

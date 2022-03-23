@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.*;
 import com.axelor.apps.hr.db.repo.*;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -89,6 +90,17 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
   @Transactional(rollbackOn = {Exception.class})
   public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
     Company company = lunchVoucherMgt.getCompany();
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(LunchVoucherMgtRepository.STATUS_DRAFT);
+    authorizedStatus.add(LunchVoucherMgtRepository.STATUS_CALCULATED);
+
+    if (lunchVoucherMgt.getStatusSelect() == null
+        || !authorizedStatus.contains(lunchVoucherMgt.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LUNCH_VOUCHER_CALCULATE_WRONG_STATUS));
+    }
 
     if (company == null) {
       throw new AxelorException(
@@ -277,6 +289,14 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
+
+    if (lunchVoucherMgt.getStatusSelect() == null
+        || lunchVoucherMgt.getStatusSelect() != LunchVoucherMgtRepository.STATUS_CALCULATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LUNCH_VOUCHER_VALIDATE_WRONG_STATUS));
+    }
+
     Company company = lunchVoucherMgt.getCompany();
     HRConfig hrConfig = hrConfigService.getHRConfig(company);
 
@@ -312,5 +332,18 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 
     Beans.get(HRConfigRepository.class).save(hrConfig);
     lunchVoucherMgtRepository.save(lunchVoucherMgt);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void close(LunchVoucherMgt lunchVoucherMgt) throws AxelorException {
+    if (lunchVoucherMgt.getStatusSelect() == null
+        || lunchVoucherMgt.getStatusSelect() != LunchVoucherMgtRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LUNCH_VOUCHER_CLOSE_WRONG_STATUS));
+    }
+
+    lunchVoucherMgt.setStatusSelect(LunchVoucherMgtRepository.STATUS_FINISHED);
   }
 }

@@ -51,6 +51,9 @@ public interface ExtraHoursService {
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(ExtraHours extraHours) throws AxelorException;
 
+  @Transactional(rollbackOn = {Exception.class})
+  public void draft(ExtraHours extraHours) throws AxelorException;
+
   public Message sendRefusalEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;

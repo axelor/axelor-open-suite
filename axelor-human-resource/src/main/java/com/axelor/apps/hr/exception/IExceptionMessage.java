@@ -86,6 +86,16 @@ public interface IExceptionMessage {
       "Timesheet line list is empty, please add a timesheet line list" /*)*/;
   static final String TIMESHEET_HOLIDAY = /*$$(*/ "Holiday" /*)*/;
   static final String TIMESHEET_DAY_LEAVE = /*$$(*/ "Day leave" /*)*/;
+  static final String TIMESHEET_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted timesheet." /*)*/;
+  static final String TIMESHEET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate confirmed timesheet." /*)*/;
+  static final String TIMESHEET_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse confirmed timesheet." /*)*/;
+  static final String TIMESHEET_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel drafted or confirmed timesheet." /*)*/;
+  static final String TIMESHEET_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from refused or canceled timesheet." /*)*/;
 
   static final String LEAVE_USER_EMPLOYEE = /*$$(*/
       "Please create an employee for the user %s" /*)*/;
@@ -101,6 +111,16 @@ public interface IExceptionMessage {
       "Please, choose unit in leave reason %s." /*)*/;
   static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
       "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
+  static final String LEAVE_REQUEST_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted leave request." /*)*/;
+  static final String LEAVE_REQUEST_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate awaiting validation leave request." /*)*/;
+  static final String LEAVE_REQUEST_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse awaiting validation leave request." /*)*/;
+  static final String LEAVE_REQUEST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled leave request." /*)*/;
+  static final String LEAVE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from refused or canceled leave request." /*)*/;
 
   static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s" /*)*/;
   static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/
@@ -157,6 +177,15 @@ public interface IExceptionMessage {
   static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/
       "Minimum stock of lunch vouchers will be reached for the company %s. Minimum Stock allowed : %s. Available Stock : %s" /*)*/;
 
+  static final String LUNCH_VOUCHER_CALCULATE_WRONG_STATUS = /*$$(*/
+      "Can only calculate drafted or already calculated lunch voucher management." /*)*/;
+
+  static final String LUNCH_VOUCHER_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate calculated lunch voucher management." /*)*/;
+
+  static final String LUNCH_VOUCHER_CLOSE_WRONG_STATUS = /*$$(*/
+      "Can only finish validated lunch voucher management." /*)*/;
+
   static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/
       "There is no year for society %s which includes date %s" /*)*/;
 
@@ -191,6 +220,20 @@ public interface IExceptionMessage {
   static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
   static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
   static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/ "Please fill the payment mode." /*)*/;
+  static final String EXPENSE_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted expense." /*)*/;
+  static final String EXPENSE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate confirmed expense." /*)*/;
+  static final String EXPENSE_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse confirmed expense." /*)*/;
+  static final String EXPENSE_ADD_PAYMENT_WRONG_STATUS = /*$$(*/
+      "Can only add payment to validated expense." /*)*/;
+  static final String EXPENSE_CANCEL_PAYMENT_WRONG_STATUS = /*$$(*/
+      "Can only cancel payment to reimbursed expense." /*)*/;
+  static final String EXPENSE_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from refused or canceled expense." /*)*/;
+  static final String EXPENSE_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled or reimbursed expense." /*)*/;
 
   /** Timesheet Editor */
   static final String NEW_PROJECT_LINE = /*$$(*/ "New project line" /*)*/;
@@ -224,4 +267,17 @@ public interface IExceptionMessage {
 
   static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
       "No time sheet found for employee %s" /*)*/;
+
+  /** ExtraHours Service */
+  static final String EXTRA_HOURS_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm drafted extra hours." /*)*/;
+
+  static final String EXTRA_HOURS_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse confirmed extra hours." /*)*/;
+  static final String EXTRA_HOURS_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate confirmed extra hours." /*)*/;
+  static final String EXTRA_HOURS_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled extra hours." /*)*/;
+  static final String EXTRA_HOURS_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to cancel from refused and canceled extra hours." /*)*/;
 }

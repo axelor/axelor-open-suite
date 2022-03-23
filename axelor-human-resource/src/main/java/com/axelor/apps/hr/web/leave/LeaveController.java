@@ -401,6 +401,17 @@ public class LeaveController {
     }
   }
 
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
+      Beans.get(LeaveService.class).backToDraft(leave);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /* Count Tags displayed on the menu items */
 
   @Transactional

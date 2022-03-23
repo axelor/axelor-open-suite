@@ -111,11 +111,9 @@
             hidden="true"/>
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
             hidden="true"/>
-          <button name="cancelBtn"
-            onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field"
-            hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-          <button name="draftBtn"
-            onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field"
+          <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
+            title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+          <button name="draftBtn" onClick="action-expense-group-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
@@ -251,6 +249,21 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-expense-group-cancel">
+    <action name="action-expense-validate-period"/>
+    <action name="save"/>
+    <action name="action-expense-method-cancel"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+  </action-group>
+
+  <action-group name="action-expense-group-draft">
+    <action name="save"/>
+    <action name="action-expense-method-draft"/>
+    <action name="save"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+    <action name="save"/>
+  </action-group>
+
   <action-record name="action-expense-record-default"
     model="com.axelor.apps.hr.db.Expense">
     <field name="user" expr="eval:__user__"/>
@@ -326,6 +339,14 @@
 
   <action-method name="action-expense-method-cancel-payment">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
+  </action-method>
+
+  <action-method name="action-expense-method-cancel">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-expense-method-draft">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
   </action-method>
 
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">

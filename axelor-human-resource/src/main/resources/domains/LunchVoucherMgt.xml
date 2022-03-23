@@ -43,6 +43,7 @@
 	  		public static final Integer STATUS_DRAFT = 1;
 	  		public static final Integer STATUS_CALCULATED = 2;
 	  		public static final Integer STATUS_VALIDATED = 3;
+	  		public static final Integer STATUS_FINISHED = 4;
 	  ]]>
     </extra-code>
 

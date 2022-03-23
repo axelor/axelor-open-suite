@@ -86,7 +86,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
 
   @Override
   @Transactional
-  public void validate(Timesheet timesheet) {
+  public void validate(Timesheet timesheet) throws AxelorException {
     super.validate(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
@@ -99,7 +99,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
 
   @Override
   @Transactional
-  public void refuse(Timesheet timesheet) {
+  public void refuse(Timesheet timesheet) throws AxelorException {
     super.refuse(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
@@ -112,7 +112,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
 
   @Override
   @Transactional
-  public void cancel(Timesheet timesheet) {
+  public void cancel(Timesheet timesheet) throws AxelorException {
     super.cancel(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
@@ -125,7 +125,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
 
   @Override
   @Transactional
-  public void draft(Timesheet timesheet) {
+  public void draft(Timesheet timesheet) throws AxelorException {
     super.draft(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 

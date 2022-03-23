@@ -43,19 +43,16 @@
     </panel>
     <panel name="buttonPanel" sidebar="true">
       <button name="statusDraftBtn" title="Draft"
-        onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4"
-        colSpan="12"/>
+        onClick="save,action-job-position-method-draft,save" showIf="statusSelect == 4" colSpan="12"/>
       <button name="statusOpenBtn" title="Open"
-        onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0"
-        colSpan="12"/>
+        onClick="save,action-job-position-method-open,save" showIf="statusSelect == 0" colSpan="12"/>
       <button name="statusOnHoldBtn" title="On hold"
-        onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1"
-        colSpan="12"/>
+        onClick="save,action-job-position-method-pause,save" showIf="statusSelect == 1" colSpan="12"/>
       <button name="statusClosedBtn" title="Close"
-        onClick="save,action-job-position-record-status-closed,save"
+        onClick="save,action-job-position-method-close,save"
         showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
       <button name="cancelBtn" title="Cancel"
-        onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4"
+        onClick="save,action-job-position-method-cancel,save" hideIf="statusSelect == 4"
         colSpan="12" icon="fa-times-circle" css="btn-danger"/>
     </panel>
     <panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
@@ -100,30 +97,25 @@
     <context name="_responsibleId" expr="eval:employee.id"/>
   </action-view>
 
-  <action-record name="action-job-position-record-status-draft"
-    model="com.axelor.apps.talent.db.JobPosition">
-    <field name="statusSelect" expr="eval: 0"/>
-  </action-record>
+  <action-method name="action-job-position-method-draft">
+    <call class="com.axelor.apps.talent.web.JobPositionController" method="backToDraft"/>
+  </action-method>
 
-  <action-record name="action-job-position-record-status-open"
-    model="com.axelor.apps.talent.db.JobPosition">
-    <field name="statusSelect" expr="eval: 1"/>
-  </action-record>
+  <action-method name="action-job-position-method-open">
+    <call class="com.axelor.apps.talent.web.JobPositionController" method="open"/>
+  </action-method>
 
-  <action-record name="action-job-position-record-status-onhold"
-    model="com.axelor.apps.talent.db.JobPosition">
-    <field name="statusSelect" expr="eval: 2"/>
-  </action-record>
+  <action-method name="action-job-position-method-pause">
+    <call class="com.axelor.apps.talent.web.JobPositionController" method="pause"/>
+  </action-method>
 
-  <action-record name="action-job-position-record-status-closed"
-    model="com.axelor.apps.talent.db.JobPosition">
-    <field name="statusSelect" expr="eval: 3"/>
-  </action-record>
+  <action-method name="action-job-position-method-close">
+    <call class="com.axelor.apps.talent.web.JobPositionController" method="close"/>
+  </action-method>
 
-  <action-record name="action-job-position-record-status-cancel"
-    model="com.axelor.apps.talent.db.JobPosition">
-    <field name="statusSelect" expr="eval: 4"/>
-  </action-record>
+  <action-method name="action-job-position-method-cancel">
+    <call class="com.axelor.apps.talent.web.JobPositionController" method="cancel"/>
+  </action-method>
 
   <search-filters name="job-position-filters"
     model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">

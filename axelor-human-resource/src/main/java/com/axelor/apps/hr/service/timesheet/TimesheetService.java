@@ -88,7 +88,7 @@ public interface TimesheetService {
    *
    * @param timesheet a timesheet
    */
-  void draft(Timesheet timesheet);
+  void draft(Timesheet timesheet) throws AxelorException;
 
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,

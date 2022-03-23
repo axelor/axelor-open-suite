@@ -28,13 +28,18 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
+import com.axelor.apps.talent.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,6 +62,13 @@ public class AppraisalServiceImpl implements AppraisalService {
   public void send(Appraisal appraisal)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, MessagingException {
+
+    if (appraisal.getStatusSelect() == null
+        || appraisal.getStatusSelect() != AppraisalRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.APPRAISAL_SEND_WRONG_STATUS));
+    }
 
     Employee employee = appraisal.getEmployee();
 
@@ -87,27 +99,50 @@ public class AppraisalServiceImpl implements AppraisalService {
     appraisalRepo.save(appraisal);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void realize(Appraisal appraisal) {
+  public void realize(Appraisal appraisal) throws AxelorException {
+
+    if (appraisal.getStatusSelect() == null
+        || appraisal.getStatusSelect() != AppraisalRepository.STATUS_SENT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.APPRAISAL_REALIZE_WRONG_STATUS));
+    }
 
     appraisal.setStatusSelect(AppraisalRepository.STATUS_COMPLETED);
 
     appraisalRepo.save(appraisal);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void cancel(Appraisal appraisal) {
+  public void cancel(Appraisal appraisal) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(AppraisalRepository.STATUS_DRAFT);
+    authorizedStatus.add(AppraisalRepository.STATUS_SENT);
+    if (appraisal.getStatusSelect() == null
+        || !authorizedStatus.contains(appraisal.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.APPRAISAL_CANCEL_WRONG_STATUS));
+    }
 
     appraisal.setStatusSelect(AppraisalRepository.STATUS_CANCELED);
 
     appraisalRepo.save(appraisal);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void draft(Appraisal appraisal) {
+  public void draft(Appraisal appraisal) throws AxelorException {
+
+    if (appraisal.getStatusSelect() == null
+        || appraisal.getStatusSelect() != AppraisalRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.APPRAISAL_DRAFT_WRONG_STATUS));
+    }
 
     appraisal.setStatusSelect(AppraisalRepository.STATUS_DRAFT);
 

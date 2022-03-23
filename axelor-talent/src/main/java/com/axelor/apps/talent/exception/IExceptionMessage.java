@@ -27,4 +27,31 @@ public interface IExceptionMessage {
 
   public static final String NO_EVENT_GENERATED = /*$$(*/
       "No Training register is generated because selected employees don't have any user." /*)*/;
+
+  public static final String JOB_POSITION_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from canceled job position." /*)*/;
+
+  public static final String JOB_POSITION_OPEN_WRONG_STATUS = /*$$(*/
+      "Can only open drafted job position." /*)*/;
+
+  public static final String JOB_POSITION_PAUSE_WRONG_STATUS = /*$$(*/
+      "Can only pause opened job position." /*)*/;
+
+  public static final String JOB_POSITION_CLOSE_WRONG_STATUS = /*$$(*/
+      "Can only close opened or on hold job position." /*)*/;
+
+  public static final String JOB_POSITION_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel closed job position." /*)*/;
+
+  public static final String APPRAISAL_SEND_WRONG_STATUS = /*$$(*/
+      "Can only send drafted appraisal." /*)*/;
+
+  public static final String APPRAISAL_REALIZE_WRONG_STATUS = /*$$(*/
+      "Can only realize sent appraisal." /*)*/;
+
+  public static final String APPRAISAL_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel drafted or sent appraisal.." /*)*/;
+
+  public static final String APPRAISAL_DRAFT_WRONG_STATUS = /*$$(*/
+      "Can only return to draft from canceled appraisal." /*)*/;
 }

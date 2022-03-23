@@ -711,6 +711,13 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 
+    if (leaveRequest.getStatusSelect() == null
+        || leaveRequest.getStatusSelect() == LeaveRequestRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_CANCEL_WRONG_STATUS));
+    }
+
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageCancelLeaves(leaveRequest);
     }
@@ -721,6 +728,21 @@ public class LeaveServiceImpl implements LeaveService {
       icalEventRepo.remove(icalEventRepo.find(event.getId()));
     }
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToDraft(LeaveRequest leaveRequest) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(LeaveRequestRepository.STATUS_CANCELED);
+    authorizedStatus.add(LeaveRequestRepository.STATUS_REFUSED);
+    if (leaveRequest.getStatusSelect() == null
+        || !authorizedStatus.contains(leaveRequest.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_DRAFT_WRONG_STATUS));
+    }
+    leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_DRAFT);
   }
 
   @Override
@@ -742,6 +764,13 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (leaveRequest.getStatusSelect() == null
+        || leaveRequest.getStatusSelect() != LeaveRequestRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_CONFIRM_WRONG_STATUS));
+    }
 
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageSentLeaves(leaveRequest);
@@ -772,6 +801,13 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (leaveRequest.getStatusSelect() == null
+        || leaveRequest.getStatusSelect() != LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_VALIDATE_WRONG_STATUS));
+    }
 
     if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
@@ -818,6 +854,13 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (leaveRequest.getStatusSelect() == null
+        || leaveRequest.getStatusSelect() != LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_REFUSE_WRONG_STATUS));
+    }
 
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageRefuseLeaves(leaveRequest);

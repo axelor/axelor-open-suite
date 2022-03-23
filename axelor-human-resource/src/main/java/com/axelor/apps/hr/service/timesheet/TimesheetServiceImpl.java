@@ -154,6 +154,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
+
+    if (timesheet.getStatusSelect() == null
+        || timesheet.getStatusSelect() != TimesheetRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMESHEET_CONFIRM_WRONG_STATUS));
+    }
+
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
 
@@ -239,8 +247,15 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  @Transactional
-  public void validate(Timesheet timesheet) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void validate(Timesheet timesheet) throws AxelorException {
+
+    if (timesheet.getStatusSelect() == null
+        || timesheet.getStatusSelect() != TimesheetRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMESHEET_VALIDATE_WRONG_STATUS));
+    }
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -274,8 +289,15 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  @Transactional
-  public void refuse(Timesheet timesheet) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void refuse(Timesheet timesheet) throws AxelorException {
+
+    if (timesheet.getStatusSelect() == null
+        || timesheet.getStatusSelect() != TimesheetRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMESHEET_REFUSE_WRONG_STATUS));
+    }
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
@@ -309,14 +331,38 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  @Transactional
-  public void cancel(Timesheet timesheet) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancel(Timesheet timesheet) throws AxelorException {
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(TimesheetRepository.STATUS_DRAFT);
+    authorizedStatus.add(TimesheetRepository.STATUS_CONFIRMED);
+
+    if (timesheet.getStatusSelect() == null
+        || !authorizedStatus.contains(timesheet.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMESHEET_CANCEL_WRONG_STATUS));
+    }
+
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
 
   @Override
-  @Transactional
-  public void draft(Timesheet timesheet) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void draft(Timesheet timesheet) throws AxelorException {
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(TimesheetRepository.STATUS_CANCELED);
+    authorizedStatus.add(TimesheetRepository.STATUS_REFUSED);
+
+    if (timesheet.getStatusSelect() == null
+        || !authorizedStatus.contains(timesheet.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMESHEET_DRAFT_WRONG_STATUS));
+    }
+
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
   }
 

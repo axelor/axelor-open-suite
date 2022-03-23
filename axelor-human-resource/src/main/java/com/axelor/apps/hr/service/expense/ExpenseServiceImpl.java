@@ -246,6 +246,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException {
 
+    if (expense.getStatusSelect() == null
+        || expense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_CONFIRM_WRONG_STATUS));
+    }
+
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
     expense.setSentDate(appAccountService.getTodayDate(expense.getCompany()));
     expenseRepository.save(expense);
@@ -270,6 +277,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException {
+
+    if (expense.getStatusSelect() == null
+        || expense.getStatusSelect() != ExpenseRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_VALIDATE_WRONG_STATUS));
+    }
 
     Employee employee = expense.getUser().getEmployee();
     if (employee == null) {
@@ -331,6 +345,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException {
+
+    if (expense.getStatusSelect() == null
+        || expense.getStatusSelect() != ExpenseRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_REFUSE_WRONG_STATUS));
+    }
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
     expense.setRefusedBy(AuthUtils.getUser());
@@ -501,6 +522,16 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException {
+    List<Integer> unauthorizedStatus = new ArrayList<>();
+    unauthorizedStatus.add(ExpenseRepository.STATUS_CANCELED);
+    unauthorizedStatus.add(ExpenseRepository.STATUS_REIMBURSED);
+    if (expense.getStatusSelect() == null
+        || unauthorizedStatus.contains(expense.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_CANCEL_WRONG_STATUS));
+    }
+
     Move move = expense.getMove();
     if (move == null) {
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
@@ -543,6 +574,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
+
+    if (expense.getStatusSelect() == null
+        || expense.getStatusSelect() != ExpenseRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_ADD_PAYMENT_WRONG_STATUS));
+    }
 
     expense.setPaymentDate(appAccountService.getTodayDate(expense.getCompany()));
 
@@ -677,6 +715,14 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException {
+
+    if (expense.getStatusSelect() == null
+        || expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_CANCEL_PAYMENT_WRONG_STATUS));
+    }
+
     BankOrder bankOrder = expense.getBankOrder();
 
     if (bankOrder != null) {
@@ -1060,5 +1106,20 @@ public class ExpenseServiceImpl implements ExpenseService {
       }
     }
     return expense;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToDraft(Expense expense) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(ExpenseRepository.STATUS_REFUSED);
+    authorizedStatus.add(ExpenseRepository.STATUS_CANCELED);
+    if (expense.getStatusSelect() == null
+        || !authorizedStatus.contains(expense.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.EXPENSE_DRAFT_WRONG_STATUS));
+    }
+    expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
   }
 }

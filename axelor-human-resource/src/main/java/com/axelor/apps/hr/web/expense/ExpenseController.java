@@ -700,4 +700,15 @@ public class ExpenseController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    try {
+      Beans.get(ExpenseService.class).backToDraft(expense);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
