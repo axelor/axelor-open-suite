@@ -606,12 +606,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
     if (ObjectUtils.isEmpty(fixedAssetCategory)
         || StringUtils.isEmpty(fixedAsset.getDepreciationPlanSelect())
-        || fixedAsset
+        || !fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       return;
     }
-
     fixedAsset.setJournal(fixedAssetCategory.getJournal());
     fixedAsset.setComputationMethodSelect(fixedAssetCategory.getComputationMethodSelect());
     fixedAsset.setDegressiveCoef(fixedAssetCategory.getDegressiveCoef());
