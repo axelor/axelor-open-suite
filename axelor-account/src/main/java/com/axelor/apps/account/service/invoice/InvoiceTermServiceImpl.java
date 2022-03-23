@@ -703,17 +703,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
-    invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemaining());
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
 
     if (financialDiscountDeadlineDate != null) {
       if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
-        invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemainingAfterFinDiscount());
       }
-
       if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
         invoiceTerm.setIsSelectedOnPaymentSession(false);
-        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
       }
     }
     computeAmountPaid(invoiceTerm);
@@ -945,6 +942,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
+      computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }
   }
