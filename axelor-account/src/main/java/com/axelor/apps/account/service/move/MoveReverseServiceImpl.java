@@ -89,8 +89,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getAutoYearClosureMove(),
             move.getOrigin(),
             move.getDescription(),
-            move.getInvoice(),
-            move.getPaymentVoucher());
+            null,
+            null);
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
