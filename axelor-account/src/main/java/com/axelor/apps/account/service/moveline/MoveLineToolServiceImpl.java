@@ -22,6 +22,7 @@ import java.util.List;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
+  protected static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -269,8 +270,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (move.getMoveLineList().size() == 0) {
       try {
         moveLine.setCurrencyRate(
-            currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompanyCurrency()));
+            currencyService
+                .getCurrencyConversionRate(move.getCurrency(), move.getCompanyCurrency())
+                .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
