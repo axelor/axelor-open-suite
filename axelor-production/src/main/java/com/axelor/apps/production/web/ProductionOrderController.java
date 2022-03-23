@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -97,7 +97,7 @@ public class ProductionOrderController {
                 null,
                 productionOrder.getSaleOrder(),
                 null,
-                ManufOrderService.ORIGIN_TYPE_OTHER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
       } else {
         response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
       }

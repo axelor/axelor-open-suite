@@ -221,6 +221,7 @@
 "Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)",,,
 "Account missing on the tax line : %s (company : %s)",,,
+"Account missing on the tax line %s nor on fiscal position %s (company : %s)",,,
 "Account move",,,
 "Account move %s has a total debit different than total credit : %s <> %s",,,
 "Account moves",,,
