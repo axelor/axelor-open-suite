@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -36,6 +36,9 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[if(params["BirtLocale"].value != null){
+reportContext.getDesignHandle().setStringProperty("locale",params["BirtLocale"].value);
+}]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -152,6 +155,17 @@
             <property name="paramType">simple</property>
             <property name="controlType">check-box</property>
             <structure name="format"/>
+        </scalar-parameter>
+        <scalar-parameter name="BirtLocale" id="5427">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
         </scalar-parameter>
     </parameters>
     <data-sources>
@@ -2816,9 +2830,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopWidth">thin</property>
                         <property name="textAlign">center</property>
                         <image id="4693">
+                            <expression name="altText">""</expression>
                             <property name="source">file</property>
                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                            <expression name="altText">""</expression>
                         </image>
                     </cell>
                     <cell id="4694">

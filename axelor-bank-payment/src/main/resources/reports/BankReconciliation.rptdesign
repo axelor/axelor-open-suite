@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -36,6 +36,9 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[if(params["BirtLocale"].value != null){
+reportContext.getDesignHandle().setStringProperty("locale",params["BirtLocale"].value);
+}]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -134,6 +137,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant">org.postgresql.Driver</value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BirtLocale" id="6415">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1522,6 +1536,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <property name="overflow">hidden</property>
                                 <property name="height">35px</property>
                                 <property name="width">154px</property>
+                                <expression name="altText">""</expression>
                                 <property name="dataSet">BankReconciliationDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1571,7 +1586,6 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
-                                <expression name="altText">""</expression>
                             </image>
                         </cell>
                         <cell id="6058">
