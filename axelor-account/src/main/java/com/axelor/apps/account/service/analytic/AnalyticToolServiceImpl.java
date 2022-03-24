@@ -73,11 +73,7 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
   @Override
   public boolean isAnalyticAxisFilled(
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
-    if (analyticAccount != null) {
-      if (!isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis())) {
-        return true;
-      }
-    }
-    return false;
+    return analyticAccount != null
+        && !isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis());
   }
 }

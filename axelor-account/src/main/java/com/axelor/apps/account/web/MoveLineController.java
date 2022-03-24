@@ -383,8 +383,7 @@ public class MoveLineController {
     }
   }
 
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -400,19 +399,18 @@ public class MoveLineController {
     }
   }
 
-  public void setAxisDomains(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
       List<Long> analyticAccountList = new ArrayList<Long>();
-
+      AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
+          Beans.get(MoveLineComputeAnalyticService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         if (move != null
-            && Beans.get(AnalyticToolService.class)
-                .isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
-          analyticAccountList =
-              Beans.get(MoveLineComputeAnalyticService.class).setAxisDomains(moveLine, move, i);
+            && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
+          analyticAccountList = moveLineComputeAnalyticService.setAxisDomains(moveLine, move, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(
                 "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
@@ -438,8 +436,7 @@ public class MoveLineController {
     }
   }
 
-  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
@@ -455,8 +452,7 @@ public class MoveLineController {
     }
   }
 
-  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
@@ -473,7 +469,7 @@ public class MoveLineController {
     }
   }
 
-  public void manageAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().getParent() != null) {
         Move move = request.getContext().getParent().asType(Move.class);
