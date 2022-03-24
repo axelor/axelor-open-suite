@@ -391,8 +391,7 @@ public class InvoiceLineController {
     response.setValue("fixedAssetCategory", fixedAssetCategory);
   }
 
-  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       InvoiceLineAnalyticService invoiceLineAnalyticService =
@@ -410,8 +409,7 @@ public class InvoiceLineController {
     }
   }
 
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (request.getContext().getParentContext() != null) {
@@ -425,20 +423,20 @@ public class InvoiceLineController {
     }
   }
 
-  public void setAxisDomains(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (request.getContext().getParentContext() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         List<Long> analyticAccountList = new ArrayList<Long>();
-
+        AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
+        InvoiceLineAnalyticService invoiceLineAnalyticService =
+            Beans.get(InvoiceLineAnalyticService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
           if (invoice != null
-              && Beans.get(AnalyticToolService.class)
-                  .isPositionUnderAnalyticAxisSelect(invoice.getCompany(), i)) {
+              && analyticToolService.isPositionUnderAnalyticAxisSelect(invoice.getCompany(), i)) {
             analyticAccountList =
-                Beans.get(InvoiceLineAnalyticService.class).getAxisDomains(invoiceLine, invoice, i);
+                invoiceLineAnalyticService.getAxisDomains(invoiceLine, invoice, i);
             if (CollectionUtils.isEmpty(analyticAccountList)) {
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
@@ -462,8 +460,7 @@ public class InvoiceLineController {
     }
   }
 
-  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       InvoiceLineAnalyticService invoiceLineAnalyticService =
@@ -539,8 +536,7 @@ public class InvoiceLineController {
     }
   }
 
-  public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().getParentContext() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
