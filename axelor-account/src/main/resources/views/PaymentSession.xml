@@ -292,7 +292,7 @@
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="checkSession"/>
   </action-method>
 
-  <action-group name="action-payment-session-method-reconciled-invoice-term-moves">
+  <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
   </action-group>
