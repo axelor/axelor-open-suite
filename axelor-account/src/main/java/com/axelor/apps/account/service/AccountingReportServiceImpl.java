@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -279,6 +281,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
+
+      this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
@@ -881,5 +885,30 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     setStatus(accountingExport);
     return accountingExport;
+  }
+
+  @Override
+  public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
+      AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType() != null) {
+      AccountingReportType accountingReportType =
+          Beans.get(AccountingReportTypeRepository.class)
+              .find(accountingReport.getReportType().getId());
+
+      if (accountingReportType.getModelAccountingReport() != null) {
+        AccountingReport modelAccountingReportCopy =
+            JPA.copy(accountingReportType.getModelAccountingReport(), false);
+        modelAccountingReportCopy.setRef(null);
+        modelAccountingReportCopy.setPublicationDateTime(null);
+        modelAccountingReportCopy.setTotalCredit(null);
+        modelAccountingReportCopy.setTotalDebit(null);
+        modelAccountingReportCopy.setBalance(null);
+        modelAccountingReportCopy.setDate(accountingReport.getDate());
+        modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
+        Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
+        return modelAccountingReportCopyMap;
+      }
+    }
+    return null;
   }
 }

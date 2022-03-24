@@ -48,7 +48,7 @@
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave">
+    onSave="action-account-move-group-onsave" readonlyIf="$periodClosed">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -70,7 +70,7 @@
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-            onChange="action-move-account-record-set-journal-technical-type-select"/>
+            onChange="action-move-group-journal-on-change"/>
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
             canView="false" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
           <field name="date"
@@ -298,6 +298,7 @@
         <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
         <field name="ignoreInDebtRecoveryOk"/>
         <field name="rejectOk" showIf="rejectOk" readonly="true"/>
+        <field name="$periodClosed" hidden="true"/>
       </panel>
     </panel-tabs>
 
@@ -341,6 +342,7 @@
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
+          <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-origin-and-description-on-lines"/>
@@ -380,15 +382,20 @@
 	                ]]></viewer>
         </field>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="validateBtn" title="Validate"
-          hideIf="statusSelect == 3 || statusSelect == 4" colSpan="12"
-          onClick="action-account-move-group-accounting-click"/>
-        <button name="simulateBtn" title="Simulate"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"
-          colSpan="12" onClick="action-move-account-group-simulate"/>
-        <button name="counterpartGenerateBtn" title="Generate counterpart"
-          showIf="statusSelect == 1 &amp;&amp; journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
-          colSpan="12" onClick="action-account-move-group-generate-counterpart"/>
+        <button name="accountingBtn" title="Accounting.toAccount"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
+          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
+        <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
+          onClick="action-move-account-group-simulate" colSpan="12"
+          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+        <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
+          readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
+          colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
+        <button
+          showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
+          onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        <field name="$validatePeriod" hidden="true"/>
       </panel>
     </panel>
     <panel>
@@ -494,6 +501,7 @@
     <action name="default-move-record"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-record-journal"/>
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
@@ -504,6 +512,7 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-record-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-record-check-period-and-status"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -520,6 +529,8 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-attrs-check-related-cut-off-moves"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-record-check-period-and-status"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -586,14 +597,14 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
       if="date == null &amp;&amp; __user__.activeCompany != null"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
@@ -768,6 +779,12 @@
       expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__user__)"/>
   </action-record>
 
+  <action-record name="action-move-record-check-period-and-status"
+    model="com.axelor.apps.account.db.Move">
+    <field name="$periodClosed"
+      expr="call:com.axelor.apps.account.service.move.MoveToolService:isSimulatedMovePeriodClosed(__this__)"/>
+  </action-record>
+
   <!-- ACTION VIEW -->
   <action-view name="action-move-view-open-generate-reverse-wizard"
     title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
@@ -779,15 +796,6 @@
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_moveDate" expr="eval: date"/>
-  </action-view>
-
-  <action-view name="action-move-view-period-moves-to-validate"
-    title="Move list to validate" model="com.axelor.apps.account.db.Move">
-    <view type="grid" name="move-grid-period"/>
-    <view type="form" name="move-form"/>
-    <view-param name="showArchived" value="true"/>
-    <domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR (self.statusSelect = 1 AND
-      (self.archived = false OR self.archived is null) ))</domain>
   </action-view>
 
   <action-view name="action-move-view-related-cut-off-moves"
@@ -852,5 +860,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
 
   </action-method>
+
+  <action-group name="action-move-group-journal-on-change">
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-attrs-validate-button-title"/>
+  </action-group>
 
 </object-views>

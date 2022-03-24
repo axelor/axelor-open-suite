@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -78,7 +79,7 @@ public interface ProductionOrderService {
       LocalDateTime endDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})

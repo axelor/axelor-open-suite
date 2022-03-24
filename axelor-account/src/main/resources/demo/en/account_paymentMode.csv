@@ -15,4 +15,4 @@
 14;"Cheque Payments";"OUT_CHQ";16;"Cheque";2;7;;;;;;
 15;"Wire Transfer Payments";"OUT_WT";19;"Wire transfer";2;9;;;;;;
 16;"Other Payments";"OUT_OTH";21;"Other payment methods";2;1;;;;;;
-17;"Bill of Exchange Cashing";"ENC_LCR";13;"Other payment methods";2;1;"true";"true";"true";"8";"/tmp/";"pain.xxx.cfonb160.dco - LCR"
+17;"Bill of Exchange Cashing";"ENC_LCR";13;"Other payment methods";1;10;"true";"true";"true";"8";"/tmp/";"pain.xxx.cfonb160.dco - LCR"
