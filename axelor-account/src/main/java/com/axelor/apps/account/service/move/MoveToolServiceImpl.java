@@ -36,11 +36,13 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -543,5 +546,26 @@ public class MoveToolServiceImpl implements MoveToolService {
   public boolean checkMoveLinesCutOffDates(Move move) {
     return move.getMoveLineList() == null
         || move.getMoveLineList().stream().allMatch(moveLineToolService::checkCutOffDates);
+  }
+
+  @Override
+  public List<Move> findDaybookByYear(Set<Year> yearList) {
+    List<Long> idList = new ArrayList<>();
+    yearList.forEach(y -> idList.add(y.getId()));
+    if (!CollectionUtils.isEmpty(idList)) {
+      return Query.of(Move.class)
+          .filter("self.period.year.id in :years AND self.statusSelect = :statusSelect")
+          .bind("years", idList)
+          .bind("statusSelect", MoveRepository.STATUS_DAYBOOK)
+          .fetch();
+    }
+    return new ArrayList<Move>();
+  }
+
+  @Override
+  public boolean isSimulatedMovePeriodClosed(Move move) {
+    return move.getPeriod() != null
+        && (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED)
+        && (move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
   }
 }

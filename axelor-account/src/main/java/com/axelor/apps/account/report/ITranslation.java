@@ -620,6 +620,12 @@ public interface ITranslation {
       "SubrogationRelease.company"; /*)*/
   public static final String SUBROGATION_RELEASE_SEQUENCE_NUMBER = /*$$(*/
       "SubrogationRelease.sequenceNumber"; /*)*/
+  public static final String SUBROGATION_RELEASE_TERM_TOTAL = /*$$(*/
+      "SubrogationRelease.termTotal"; /*)*/
+  public static final String SUBROGATION_RELEASE_TERM_SEQ = /*$$(*/
+      "SubrogationRelease.termSeq"; /*)*/
+  public static final String SUBROGATION_RELEASE_TOTAL_REMAINING = /*$$(*/
+      "SubrogationRelease.totalRemaining"; /*)*/
 
   public static final String CHEQUE_DEPOSIT_SLIP_TITLE = /*$$(*/ "ChequeDepositSlip.title"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_PRINTED_ON = /*$$(*/

@@ -45,7 +45,7 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
@@ -274,9 +274,11 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
-  static final String MOVE_LINE_8 = /*$$(*/
+  static final String MOVE_LINE_INVOICE_TERM_SUM = /*$$(*/
       "The sum of all invoice terms is not equal to the move line amount" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
+  static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
+      "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
@@ -766,6 +768,9 @@ public interface IExceptionMessage {
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
+  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
+      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
+
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
@@ -833,6 +838,9 @@ public interface IExceptionMessage {
   /** Payment voucher controller */
   static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
       "You can't remove this payment voucher as it is already used in a move." /*)*/;
+
+  static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
+      "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
   /** Payment schedule line service */
   String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
@@ -1127,6 +1135,9 @@ public interface IExceptionMessage {
 
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
+
+  static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
+      "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
 
   static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
       "There is no sequence set for the payment session for the company %s" /*)*/;

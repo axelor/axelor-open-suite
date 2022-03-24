@@ -322,14 +322,18 @@ public class InvoiceController {
   }
 
   public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
     try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
           || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
-      response.setValue("invoiceTermList", invoiceTermService.updateFinancialDiscount(invoice));
+
+      invoiceTermService.updateFinancialDiscount(invoice);
+      response.setReload(true);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
