@@ -49,4 +49,6 @@ public interface MoveLineService {
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
+  void reconcileMoveLinesWithFullRollBack(List<MoveLine> moveLineList) throws AxelorException;
 }

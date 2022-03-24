@@ -552,7 +552,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     List<MoveLine> moveLineList = moveLineQuery.getResultList();
     if (!ObjectUtils.isEmpty(moveLineList)) {
-      Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+      Beans.get(MoveLineService.class).reconcileMoveLinesWithFullRollBack(moveLineList);
     }
   }
 }

@@ -197,6 +197,33 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void reconcileMoveLinesWithFullRollBack(List<MoveLine> moveLineList)
+      throws AxelorException {
+    List<MoveLine> reconciliableCreditMoveLineList =
+        moveLineToolService.getReconciliableCreditMoveLines(moveLineList);
+    List<MoveLine> reconciliableDebitMoveLineList =
+        moveLineToolService.getReconciliableDebitMoveLines(moveLineList);
+
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+
+    populateCredit(moveLineMap, reconciliableCreditMoveLineList);
+
+    populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+
+    Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
+
+    for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+      List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+      List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+      companyPartnerCreditMoveLineList.sort(byDate);
+      companyPartnerDebitMoveLineList.sort(byDate);
+      paymentService.useExcessPaymentOnMoveLines(
+          companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+    }
+  }
+
   @Transactional
   protected void useExcessPaymentOnMoveLinesDontThrow(
       Comparator<MoveLine> byDate,
