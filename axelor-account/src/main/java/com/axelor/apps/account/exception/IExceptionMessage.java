@@ -274,9 +274,11 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
-  static final String MOVE_LINE_8 = /*$$(*/
+  static final String MOVE_LINE_INVOICE_TERM_SUM = /*$$(*/
       "The sum of all invoice terms is not equal to the move line amount" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
+  static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
+      "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;

@@ -718,26 +718,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
-    invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemaining());
-
-    if (financialDiscountDeadlineDate != null) {
-      if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
-        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
-        invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemainingAfterFinDiscount());
-      }
-
-      if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
-        invoiceTerm.setIsSelectedOnPaymentSession(false);
-        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
-      }
-    }
-
     if (isSignedNegative) {
       invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
 
     } else {
       invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
     }
+
+    if (financialDiscountDeadlineDate != null) {
+      if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
+        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
+      }
+      if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
+        invoiceTerm.setIsSelectedOnPaymentSession(false);
+      }
+    }
+
+    computeAmountPaid(invoiceTerm);
   }
 
   @Override
@@ -987,7 +984,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
+      computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
+    }
+  }
+
+  @Override
+  public void computeAmountPaid(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+      if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        BigDecimal financialDiscountAmount =
+            invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) < 0
+                ? invoiceTerm.getFinancialDiscountAmount()
+                : invoiceTerm.getFinancialDiscountAmount().negate();
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount().add(financialDiscountAmount));
+      } else {
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+      }
+    } else {
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
   }
 }

@@ -130,8 +130,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
 
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
