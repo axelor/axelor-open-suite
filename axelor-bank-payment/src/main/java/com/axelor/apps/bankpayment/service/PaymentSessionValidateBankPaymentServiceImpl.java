@@ -301,8 +301,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
                     + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
                     + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
                     + " GROUP BY Partner.id , InvoiceTerm.bankDetails "
-                    + " HAVING SUM(InvoiceTerm.amountPaid) < 0 ",
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
                 Partner.class);
 
     partnerQuery.setParameter("paymentSession", paymentSession);

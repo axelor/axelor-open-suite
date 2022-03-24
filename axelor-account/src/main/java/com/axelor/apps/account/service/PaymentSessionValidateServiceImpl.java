@@ -238,13 +238,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (!isGlobal) {
       partner = invoiceTerm.getMoveLine().getPartner();
     }
+    if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+      Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
 
-    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
+      this.generateMoveLineFromInvoiceTerm(
+          paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
 
-    this.generateMoveLineFromInvoiceTerm(
-        paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
-
-    return moveRepo.save(move);
+      return moveRepo.save(move);
+    }
+    return null;
   }
 
   protected Move getMove(
@@ -524,8 +526,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
                     + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
                     + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true"
                     + " GROUP BY Partner.id "
-                    + " HAVING SUM(InvoiceTerm.amountPaid) < 0 ",
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
                 Partner.class);
 
     partnerQuery.setParameter("paymentSession", paymentSession);
@@ -541,7 +544,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .createQuery(
                 "SELECT MoveLine FROM MoveLine MoveLine "
                     + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
-                    + " WHERE InvoiceTerm.paymentSession = :paymentSession ",
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
                 MoveLine.class);
 
     moveLineQuery.setParameter("paymentSession", paymentSession);
