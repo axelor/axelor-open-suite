@@ -1,0 +1,9 @@
+---
+title: loading lead logo when opening converting wizard
+type: fix
+description: |
+  When opening lead conversion wizard logo did not appear
+  
+  Added code to load the logo from lead object
+  lead image is in byte tab while Partner's is a Metafile
+  Had to convert logo type. 
