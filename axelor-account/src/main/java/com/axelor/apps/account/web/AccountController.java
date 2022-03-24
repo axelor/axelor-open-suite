@@ -143,7 +143,7 @@ public class AccountController {
           && specificAnalyticDistributionTemplate != null) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
-            ActionView.define("Specific Analytic Distribution Template")
+            ActionView.define(I18n.get("Specific Analytic Distribution Template"))
                 .model(AnalyticDistributionTemplate.class.getName())
                 .add("form", "analytic-distribution-template-account-form")
                 .param("popup", "true")
