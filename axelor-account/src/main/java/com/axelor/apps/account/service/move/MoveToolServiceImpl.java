@@ -471,23 +471,32 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
-    if (period != null
-        && period.getYear().getCompany() != null
-        && user.getGroup() != null
-        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-      if (journal != null
-          && period.getKeepJournalsOpenOnPeriod()
-          && period.getOpenedJournalSet().contains(journal)) {
-        return false;
+    if (period != null) {
+      if (period.getStatusSelect() == PeriodRepository.STATUS_OPENED
+          && period.getCloseJournalsOnPeriod()
+          && journal != null
+          && !CollectionUtils.isEmpty(period.getClosedJournalSet())
+          && period.getClosedJournalSet().contains(journal)) {
+        return true;
       }
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(period.getYear().getCompany());
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
-        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+      if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+        if (journal != null
+            && period.getKeepJournalsOpenOnPeriod()
+            && !CollectionUtils.isEmpty(period.getOpenedJournalSet())
+            && period.getOpenedJournalSet().contains(journal)) {
           return false;
         }
+        if (period.getYear().getCompany() != null && user.getGroup() != null) {
+          AccountConfig accountConfig =
+              accountConfigService.getAccountConfig(period.getYear().getCompany());
+          for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+              return false;
+            }
+          }
+          return true;
+        }
       }
-      return true;
     }
     return false;
   }

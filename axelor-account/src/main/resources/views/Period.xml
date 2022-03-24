@@ -33,7 +33,7 @@
           onClick="action-account-period-record-open-closed-journal,action-account-period-attrs-show-journal-btn"
           name="openClosedJournalBtn" title="Open closed journals on the period" hidden="true"
           css="btn-success"
-          showIf="closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty()"/>
+          showIf="statusSelect == 1 &amp;&amp; closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty()"/>
         <field name="keepJournalsOpenOnPeriod" showIf="statusSelect == 4" colSpan="12"
           onChange="action-account-period-attrs-show-journal-btn"/>
         <field name="openedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
@@ -44,7 +44,7 @@
           onClick="action-account-period-record-close-journal-still-open,action-account-period-attrs-show-journal-btn"
           name="closeJournalStillOpenBtn" title="Close journals still open on the period"
           hidden="true" css="btn-warning"
-          showIf="keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty()"/>
+          showIf="statusSelect == 4 &amp;&amp; keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty()"/>
       </insert>
     </extend>
   </form>
