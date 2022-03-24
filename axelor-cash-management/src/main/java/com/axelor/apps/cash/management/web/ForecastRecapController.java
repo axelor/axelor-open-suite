@@ -17,10 +17,7 @@
  */
 package com.axelor.apps.cash.management.web;
 
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
@@ -36,10 +33,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,45 +59,12 @@ public class ForecastRecapController {
   public void fillStartingBalance(ActionRequest request, ActionResponse response) {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     try {
-      Set<BankDetails> bankDetailsSet = forecastRecap.getBankDetailsSet();
+
       Company company = forecastRecap.getCompany();
       if (company != null && company.getCurrency() != null) {
-        CurrencyService currencyService = Beans.get(CurrencyService.class);
-        AppBaseService appBaseService = Beans.get(AppBaseService.class);
-        if (bankDetailsSet != null && !CollectionUtils.isEmpty(bankDetailsSet)) {
-          BigDecimal amount = BigDecimal.ZERO;
-          for (BankDetails bankDetails : bankDetailsSet) {
-            if (bankDetails.getCurrency() != null && bankDetails.getBalance() != null) {
-              amount =
-                  amount.add(
-                      currencyService
-                          .getAmountCurrencyConvertedAtDate(
-                              bankDetails.getCurrency(),
-                              company.getCurrency(),
-                              bankDetails.getBalance(),
-                              appBaseService.getTodayDate(company))
-                          .setScale(
-                              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-            }
-          }
-          forecastRecap.setStartingBalance(amount);
-        } else {
-          BankDetails bankDetails = company.getDefaultBankDetails();
-          if (bankDetails != null
-              && bankDetails.getCurrency() != null
-              && bankDetails.getBalance() != null) {
-            BigDecimal amount =
-                currencyService
-                    .getAmountCurrencyConvertedAtDate(
-                        bankDetails.getCurrency(),
-                        company.getCurrency(),
-                        bankDetails.getBalance(),
-                        appBaseService.getTodayDate(company))
-                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-            forecastRecap.setStartingBalance(amount);
-          }
-        }
-        response.setValues(forecastRecap);
+        response.setValues(
+            Beans.get(ForecastRecapService.class)
+                .computeStartingBalanceForReporting(forecastRecap));
       }
 
     } catch (Exception e) {

@@ -21,6 +21,8 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
@@ -66,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
@@ -772,5 +775,45 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         .addFormat(reportType)
         .generate()
         .getFileLink();
+  }
+
+  @Override
+  public ForecastRecap computeStartingBalanceForReporting(ForecastRecap forecastRecap)
+      throws AxelorException {
+    Company company = forecastRecap.getCompany();
+    Set<BankDetails> bankDetailsSet = forecastRecap.getBankDetailsSet();
+    if (bankDetailsSet != null && !CollectionUtils.isEmpty(bankDetailsSet)) {
+      BigDecimal amount = BigDecimal.ZERO;
+      for (BankDetails bankDetails : bankDetailsSet) {
+        if (bankDetails.getCurrency() != null && bankDetails.getBalance() != null) {
+          amount =
+              amount.add(
+                  currencyService
+                      .getAmountCurrencyConvertedAtDate(
+                          bankDetails.getCurrency(),
+                          company.getCurrency(),
+                          bankDetails.getBalance(),
+                          appBaseService.getTodayDate(company))
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+        }
+      }
+      forecastRecap.setStartingBalance(amount);
+    } else {
+      BankDetails bankDetails = company.getDefaultBankDetails();
+      if (bankDetails != null
+          && bankDetails.getCurrency() != null
+          && bankDetails.getBalance() != null) {
+        BigDecimal amount =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    bankDetails.getCurrency(),
+                    company.getCurrency(),
+                    bankDetails.getBalance(),
+                    appBaseService.getTodayDate(company))
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        forecastRecap.setStartingBalance(amount);
+      }
+    }
+    return forecastRecap;
   }
 }

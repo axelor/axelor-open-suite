@@ -1,7 +1,7 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.cash.management.service.ChartService;
+import com.axelor.apps.cash.management.service.CashManagementChartService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
@@ -27,7 +27,7 @@ public class ChartController {
         bankDetails = Mapper.toBean(BankDetails.class, map);
       }
       List<Map<String, Object>> dataList =
-          Beans.get(ChartService.class).getCashBalanceData(user, bankDetails);
+          Beans.get(CashManagementChartService.class).getCashBalanceData(user, bankDetails);
       response.setData(dataList);
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-public class ChartServiceImpl implements ChartService {
+public class CashManagementChartServiceImpl implements CashManagementChartService {
 
   protected ForecastRecapRepository forecastRepo;
   protected ForecastRecapLineRepository forecastLineRepo;
 
   @Inject
-  public ChartServiceImpl(
+  public CashManagementChartServiceImpl(
       ForecastRecapRepository forecastRepo, ForecastRecapLineRepository forecastLineRepo) {
     this.forecastRepo = forecastRepo;
     this.forecastLineRepo = forecastLineRepo;

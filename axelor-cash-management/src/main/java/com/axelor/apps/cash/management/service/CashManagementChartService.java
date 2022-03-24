@@ -5,7 +5,7 @@ import com.axelor.auth.db.User;
 import java.util.List;
 import java.util.Map;
 
-public interface ChartService {
+public interface CashManagementChartService {
 
   public List<Map<String, Object>> getCashBalanceData(User user, BankDetails bankDetails);
 }
