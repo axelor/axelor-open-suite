@@ -32,7 +32,8 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -640,7 +641,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .all()
             .filter(retrieveEligibleTermsQuery())
             .bind("company", paymentSession.getCompany())
-            .bind("paymentMode", paymentSession.getPaymentMode())
+            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -650,6 +651,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .bind("partnerTypeSelect", paymentSession.getPartnerTypeSelect())
             .bind("receivable", AccountTypeRepository.TYPE_RECEIVABLE)
             .bind("payable", AccountTypeRepository.TYPE_PAYABLE)
+            .bind("partnerTypeClient", PaymentSessionRepository.PARTNER_TYPE_CUSTOMER)
+            .bind("partnerTypeSupplier", PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)
+            .bind("functionalOriginClient", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .bind("functionalOriginSupplier", MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+            .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
+            .bind(
+                "pfpValidateStatusPartiallyValidated",
+                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
             .fetch();
     eligibleInvoiceTermList.forEach(
         invoiceTerm -> {
@@ -659,61 +668,58 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
   }
 
-  private String retrieveEligibleTermsQuery() {
+  protected String retrieveEligibleTermsQuery() {
     String generalCondition =
         "self.moveLine.move.company = :company "
             + " AND self.dueDate <= :paymentDatePlusMargin "
-            + " AND (self.invoice.currency = :currency OR self.moveLine.move.currency = :currency) "
-            + " AND self.bankDetails IS NOT NULL ";
-    String termsFromInvoiceAndMoveLineCondition =
-        " AND (self.moveLine.account.isRetrievedOnPaymentSession = TRUE "
-            + " OR self.invoice.partnerAccount.isRetrievedOnPaymentSession = TRUE) "
-            + " AND (((self.invoice.operationTypeSelect = 3 "
-            + " OR self.invoice.operationTypeSelect = 4 "
-            + " OR self.moveLine.account.accountType.technicalTypeSelect = :receivable) "
-            + " AND (self.invoice.partner.isCustomer = TRUE AND :partnerTypeSelect = 3"
-            + " OR self.moveLine.partner.isCustomer = TRUE AND :partnerTypeSelect = 3)"
-            + " AND self.paymentMode.typeSelect = 2 ) "
-            + " OR ((self.invoice.operationTypeSelect = 1 "
-            + " OR self.invoice.operationTypeSelect = 2 "
-            + " OR self.moveLine.account.accountType.technicalTypeSelect = :payable ) "
-            + " AND self.paymentMode.typeSelect = 9 "
-            + " AND ( self.invoice.partner.isSupplier = TRUE AND :partnerTypeSelect = 1"
-            + " OR self.moveLine.partner.isSupplier = TRUE AND :partnerTypeSelect = 1)"
-            + " AND ((self.invoice.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.invoice.company.accountConfig.isManagePassedForPayment = FALSE "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE ) "
-            + " OR ((self.invoice.company.accountConfig.isManagePassedForPayment = TRUE"
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE)"
-            + " AND (self.pfpValidateStatusSelect = 2 OR self.pfpValidateStatusSelect = 4))))"
-            + " OR (self.moveLine.partner.isEmployee = TRUE "
-            + " AND :partnerTypeSelect = 2 "
-            + " AND self.invoice IS NULL "
-            + " AND self.paymentMode = :paymentMode))";
+            + " AND self.moveLine.move.currency = :currency "
+            + " AND self.bankDetails IS NOT NULL "
+            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+    String termsMoveLineCondition =
+        " AND ((self.moveLine.partner.isCustomer = TRUE "
+            + " AND :partnerTypeSelect = :partnerTypeClient"
+            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
+            + " OR ( self.moveLine.partner.isSupplier = TRUE "
+            + " AND :partnerTypeSelect = :partnerTypeSupplier "
+            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
+            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
+            + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
+            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) ";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"
             + " AND self.paymentSession IS NULL";
-    return generalCondition + termsFromInvoiceAndMoveLineCondition + paymentHistoryCondition;
+    return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
-  private void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+  protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
     LocalDate paymentDate = paymentSession.getPaymentDate();
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
     boolean isSignedNegative = false;
 
     if (invoiceTerm.getMoveLine() != null) {
-      isSignedNegative =
-          invoiceTerm
-                  .getMoveLine()
-                  .getDebit()
-                  .subtract(invoiceTerm.getMoveLine().getCredit())
-                  .signum()
-              < 0;
-    } else if (invoiceTerm.getPaymentMode() != null) {
-      isSignedNegative = invoiceTerm.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN;
+      if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+          == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+        isSignedNegative =
+            invoiceTerm
+                    .getMoveLine()
+                    .getDebit()
+                    .subtract(invoiceTerm.getMoveLine().getCredit())
+                    .signum()
+                < 0;
+      } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+          == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+        isSignedNegative =
+            invoiceTerm
+                    .getMoveLine()
+                    .getCredit()
+                    .subtract(invoiceTerm.getMoveLine().getDebit())
+                    .signum()
+                < 0;
+      }
     }
 
     invoiceTerm.setPaymentSession(paymentSession);
@@ -947,16 +953,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
       boolean isSignedNegative = false;
       if (invoiceTerm.getMoveLine() != null) {
-        isSignedNegative =
-            invoiceTerm
-                    .getMoveLine()
-                    .getDebit()
-                    .subtract(invoiceTerm.getMoveLine().getCredit())
-                    .signum()
-                < 0;
-      } else if (invoiceTerm.getPaymentMode() != null) {
-        isSignedNegative =
-            invoiceTerm.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN;
+        if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+            == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+          isSignedNegative =
+              invoiceTerm
+                      .getMoveLine()
+                      .getDebit()
+                      .subtract(invoiceTerm.getMoveLine().getCredit())
+                      .signum()
+                  < 0;
+        } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+            == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+          isSignedNegative =
+              invoiceTerm
+                      .getMoveLine()
+                      .getCredit()
+                      .subtract(invoiceTerm.getMoveLine().getDebit())
+                      .signum()
+                  < 0;
+        }
       }
       if (accountConfigService
               .getAccountConfig(invoiceTerm.getInvoice().getCompany())
