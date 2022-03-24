@@ -149,11 +149,6 @@
       if="depreciationPlanSelect?.contains(&quot;0&quot;)"/>
   </action-attrs>
 
-  <action-record name="test" model="com.axelor.apps.account.db.FixedAssetCategory">
-    <field name="depreciationPlanSelect" expr="eval:'0'"
-      if="depreciationPlanSelect?.contains(&quot;0&quot;)"/>
-  </action-record>
-
   <action-attrs name="action-fixed-asset-attrs-set-degressive-coef">
     <attribute name="value" for="degressiveCoef" expr="eval: 1.25"
       if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &lt;= 4"/>
