@@ -605,9 +605,7 @@
     <template>
 		<![CDATA[
 		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		{{description}}
-	    </div>
+		<div class="card-body" ng-bind-html="description"></div>
 		]]>
     </template>
   </kanban>
