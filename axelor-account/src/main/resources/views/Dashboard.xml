@@ -31,6 +31,8 @@
     <dashlet action="dashlet.prod.qty.suppl.invoices.last.12m" height="350" canSearch="true"/>
     <dashlet action="dashlet.prod.turnover.suppl.invoices.last.12m" height="350"
       canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.my.awaiting.pfp"
+      canSearch="true"/>
     <dashlet action="dashlet.supplier.invoices.per.month" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.purchase.situation" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.purchase.amount.by.month" height="350" canSearch="true"/>

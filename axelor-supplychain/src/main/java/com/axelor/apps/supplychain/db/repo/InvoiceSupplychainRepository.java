@@ -62,7 +62,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       return super.save(invoice);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

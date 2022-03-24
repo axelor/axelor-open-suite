@@ -26,25 +26,21 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UnitConversionService unitConversionService;
   protected ProductionOrderService productionOrderService;
@@ -65,6 +61,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class})
   public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
@@ -192,7 +189,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 null,
                 saleOrder,
                 saleOrderLine,
-                ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
         tempChildBomList.addAll(
             childBom.getBillOfMaterialSet().stream()
                 .filter(BillOfMaterial::getDefineSubBillOfMaterial)

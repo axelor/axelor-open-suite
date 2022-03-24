@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,8 +15,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Inject
   public FixedAssetLineIfrsComputationServiceImpl(
-      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
-    super(fixedAssetFailOverControlService);
+      FixedAssetFailOverControlService fixedAssetFailOverControlService,
+      AppBaseService appBaseService) {
+    super(fixedAssetFailOverControlService, appBaseService);
   }
 
   @Override
@@ -117,5 +119,15 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected Integer getDurationInMonth(FixedAsset fixedAsset) {
     return fixedAsset.getIfrsDurationInMonth();
+  }
+
+  @Override
+  protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsDepreciatedAmountCurrentYear();
+  }
+
+  @Override
+  protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsFailOverDepreciationEndDate();
   }
 }

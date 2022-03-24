@@ -8,6 +8,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileZoneName;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -596,7 +597,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       endorsedDetailRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ENDORSED_DETAIL_RECORD_ZONE_F3),
-              this.partnerService.getSIRENNumber(this.senderBankDetails.getPartner()),
+              this.partnerService.getSIRENNumber(senderCompany.getPartner()),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               15));
@@ -801,10 +802,11 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
 
     try {
       Address address = null;
-      if (bankOrderLine.getPartner().getMainAddress() != null) {
-        address = bankOrderLine.getPartner().getMainAddress();
+      Partner partner = bankOrderLine.getPartner();
+      if (partner.getMainAddress() != null) {
+        address = partner.getMainAddress();
       } else {
-        address = partnerService.getDefaultAddress(bankOrderLine.getPartner());
+        address = partnerService.getDefaultAddress(partner);
       }
       // Area A : Register code
       additionalDetailRecordBuilder.append(
@@ -842,7 +844,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C1),
-              getAdditionalC1Value(address),
+              getAdditionalC1Value(address, partner),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               32));
@@ -850,7 +852,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C2),
-              getAdditionalC2Value(address),
+              getAdditionalC2Value(address, partner),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               32));
@@ -858,7 +860,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       additionalDetailRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_ADDITIONAL_DETAIL_RECORD_ZONE_C3),
-              getAdditionalC3Value(address),
+              getAdditionalC3Value(address, partner),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               32));
@@ -887,29 +889,32 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
     }
   }
 
-  protected String getAdditionalC3Value(Address address) throws AxelorException {
+  protected String getAdditionalC3Value(Address address, Partner partner) throws AxelorException {
     if (address == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP));
+          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ZIP),
+          partner.getFullName());
     }
     return address.getZip();
   }
 
-  protected String getAdditionalC2Value(Address address) throws AxelorException {
+  protected String getAdditionalC2Value(Address address, Partner partner) throws AxelorException {
     if (address == null || address.getCity() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY));
+          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_CITY),
+          partner.getFullName());
     }
     return address.getCity().getName();
   }
 
-  protected String getAdditionalC1Value(Address address) throws AxelorException {
+  protected String getAdditionalC1Value(Address address, Partner partner) throws AxelorException {
     if (address == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS));
+          I18n.get(IExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS),
+          partner.getFullName());
     }
     return address.getAddressL4();
   }
