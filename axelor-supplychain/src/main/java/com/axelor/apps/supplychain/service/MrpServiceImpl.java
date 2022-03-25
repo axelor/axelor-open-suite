@@ -1482,7 +1482,7 @@ public class MrpServiceImpl implements MrpService {
             I18n.get(IExceptionMessage.MRP_NO_PRODUCT_UNIT),
             product.getFullName());
       }
-      if (product.getId() == null) {
+      if (!this.productMap.containsKey(product.getId())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.MRP_NO_PRODUCT_ID),
