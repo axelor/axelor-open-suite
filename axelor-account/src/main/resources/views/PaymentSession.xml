@@ -45,15 +45,19 @@
 
   <form name="payment-session-form" title="Payment session"
     onNew="action-group-payment-session-set-default-values"
-    onLoad="action-payment-session-method-set-has-invoice-term-selected"
-    model="com.axelor.apps.account.db.PaymentSession" width="large">
+    onLoad="action-group-payment-session-on-load" model="com.axelor.apps.account.db.PaymentSession"
+    width="large">
     <toolbar>
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
     <panel name="statusSelectPanel" colSpan="12">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
-        colSpan="12"/>
+        colSpan="9"/>
+      <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+        widget="info-button" onClick="" colSpan="3"
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
+        x-currency="company.currency.symbol"/>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -91,11 +95,15 @@
         showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
-        showIf="id" colSpan="12" canSearch="true"/>
+        showIf="id" colSpan="12" canSearch="true" height="600"/>
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
-        colSpan="8" canSearch="true"/>
-      <field name="sessionTotalAmount" colSpan="4" readonly="true"/>
+        colSpan="8" canSearch="true" height="380"/>
+      <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+        widget="info-button" onClick="" colSpan="4"
+        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
+        x-currency="company.currency.symbol"/>
+      <field name="sessionTotalAmount" hidden="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
       <button name="validateBtn" title="Validate" css="btn-success"
@@ -152,6 +160,11 @@
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-group-payment-session-on-load">
+    <action name="action-payment-session-method-set-has-invoice-term-selected"/>
+    <action name="action-payment-session-record-set-session-total-amount-btn"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
@@ -235,6 +248,11 @@
     <field name="partnerTypeSelect" expr="eval: 3" if="paymentMode?.inOutSelect == 1"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
+  </action-record>
+
+  <action-record name="action-payment-session-record-set-session-total-amount-btn"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <field name="$sessionTotalAmountBtn" expr="eval: sessionTotalAmount"/>
   </action-record>
 
   <action-method name="action-method-payment-session-set-bank-details">

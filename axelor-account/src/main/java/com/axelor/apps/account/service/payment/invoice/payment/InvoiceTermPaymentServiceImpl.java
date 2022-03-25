@@ -61,7 +61,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
           createInvoiceTermPayment(
-              invoicePayment, invoiceTerm, invoiceTermService.getAmountRemaining(invoiceTerm)));
+              invoicePayment,
+              invoiceTerm,
+              invoiceTermService.getAmountRemaining(invoiceTerm, invoicePayment.getPaymentDate())));
     }
 
     return invoicePayment;
@@ -118,7 +120,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       invoiceTermToPay =
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
-      BigDecimal invoiceTermAmount = invoiceTermService.getAmountRemaining(invoiceTermToPay);
+      BigDecimal invoiceTermAmount =
+          invoiceTermService.getAmountRemaining(
+              invoiceTermToPay,
+              invoicePayment != null
+                  ? invoicePayment.getPaymentDate()
+                  : appAccountService.getTodayDate(null));
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
@@ -135,7 +142,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (invoicePayment != null) {
         invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
 
-        if (invoicePayment.getApplyFinancialDiscount()) {
+        if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
           invoicePaymentToolService.computeFinancialDiscount(invoicePayment);

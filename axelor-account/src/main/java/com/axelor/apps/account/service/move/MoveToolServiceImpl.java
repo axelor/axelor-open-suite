@@ -561,4 +561,11 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
     return new ArrayList<Move>();
   }
+
+  @Override
+  public boolean isSimulatedMovePeriodClosed(Move move) {
+    return move.getPeriod() != null
+        && (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED)
+        && (move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
+  }
 }
