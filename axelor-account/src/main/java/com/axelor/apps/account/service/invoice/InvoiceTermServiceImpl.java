@@ -227,6 +227,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
     }
   }
 
