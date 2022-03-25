@@ -92,7 +92,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       BigDecimal resultMoveAmount = getResultMoveAmount(batch.getAccountingBatch());
       this.testCloseAnnualBatchFields(resultMoveAmount);
       if (batch.getAccountingBatch().getGenerateResultMove()) {
-        generateResultMove(batch.getAccountingBatch(), resultMoveAmount);
+        this.generateResultMove(batch.getAccountingBatch(), resultMoveAmount);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(
@@ -151,14 +151,12 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
               I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_6),
               accountingBatch.getCode());
         }
-      } else {
-        if (accountConfig.getResultProfitAccount() == null
-            || accountConfig.getYearOpeningAccount() == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_5),
-              accountingBatch.getCode());
-        }
+      } else if (accountConfig.getResultProfitAccount() == null
+          || accountConfig.getYearOpeningAccount() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_5),
+            accountingBatch.getCode());
       }
     }
   }
@@ -203,15 +201,12 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       account = accountRepository.find(accountAndPartnerPair.getLeft());
       if (accountAndPartnerPair.getRight() != null) {
         partner = partnerRepository.find(accountAndPartnerPair.getRight());
-      } else {
-        partner = null;
       }
+      Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
-        Map<Boolean, Boolean> value = new HashMap<>();
         value.put(close, false);
         map.put(new AccountByPartner(account, partner), value);
       } else if (open) {
-        Map<Boolean, Boolean> value = new HashMap<>();
         AccountByPartner accountByPartner = new AccountByPartner(account, partner);
         if (map.containsKey(accountByPartner)) {
           boolean closeValue = map.get(accountByPartner).containsKey(true);
@@ -245,9 +240,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         if (value != null) {
           close = value.containsKey(true);
           open = value.containsValue(true);
-          List<Move> generateMoves = new ArrayList<Move>();
+          List<Move> generatedMoves = new ArrayList<Move>();
           if (close && !open) {
-            generateMoves =
+            generatedMoves =
                 accountingCloseAnnualService.generateCloseAnnualAccount(
                     yearRepository.find(year.getId()),
                     accountByPartner.account,
@@ -260,7 +255,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     allocatePerPartner);
 
           } else if (open && !close) {
-            generateMoves =
+            generatedMoves =
                 accountingCloseAnnualService.generateOpenAnnualAccount(
                     yearRepository.find(year.getId()),
                     accountByPartner.account,
@@ -273,7 +268,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     allocatePerPartner);
 
           } else if (open && close) {
-            generateMoves =
+            generatedMoves =
                 accountingCloseAnnualService.generateCloseAndOpenAnnualAccount(
                     yearRepository.find(year.getId()),
                     accountByPartner.account,
@@ -286,10 +281,10 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     openYear,
                     allocatePerPartner);
           }
-          if (generateMoves != null && !generateMoves.isEmpty()) {
+          if (!CollectionUtils.isEmpty(generatedMoves)) {
             updateAccount(accountByPartner.account);
 
-            for (Move move : generateMoves) {
+            for (Move move : generatedMoves) {
               updateAccountMove(move, false);
             }
           }
@@ -347,12 +342,11 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     if (accountingBatch.getGenerateResultMove() && accountingBatch.getYear() != null) {
       String query = "";
       if (!CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
-        List<Long> idList = new ArrayList<Long>();
-        for (Account account : accountingBatch.getClosureAccountSet()) {
-          idList.add(account.getId());
-        }
         String idListStr =
-            idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
+            accountingBatch.getClosureAccountSet().stream()
+                .map(account -> account.getId())
+                .map(id -> id.toString())
+                .collect(Collectors.joining(","));
         query = "self.account in (" + idListStr + ") AND ";
       }
       query =
@@ -366,16 +360,19 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'income'",
                   BigDecimal.class);
-      Query qCharge =
-          JPA.em()
-              .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
-                      + query
-                      + " AND self.account.accountType.technicalTypeSelect = 'charge'",
-                  BigDecimal.class);
-      if (qIncome.getSingleResult() != null && qCharge.getSingleResult() != null) {
-        return ((BigDecimal) qIncome.getSingleResult())
-            .subtract((BigDecimal) qCharge.getSingleResult());
+      if (qIncome.getSingleResult() != null) {
+        Query qCharge =
+            JPA.em()
+                .createQuery(
+                    "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                        + query
+                        + " AND self.account.accountType.technicalTypeSelect = 'charge'",
+                    BigDecimal.class);
+        if (qCharge.getSingleResult() != null) {
+          return ((BigDecimal) qIncome.getSingleResult())
+              .subtract((BigDecimal) qCharge.getSingleResult());
+        }
+        return (BigDecimal) qIncome.getSingleResult();
       }
     }
     return BigDecimal.ZERO;
@@ -405,73 +402,48 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             false,
             null,
             description);
+    Account accountCredit = null;
+    Account accountDebit = null;
     if (amount.compareTo(BigDecimal.ZERO) < 0) {
-      MoveLine credit =
-          new MoveLine(
-              move,
-              null,
-              accountConfig.getYearOpeningAccount(),
-              date,
-              date,
-              1,
-              BigDecimal.ZERO,
-              amount.abs(),
-              description,
-              null,
-              BigDecimal.ONE,
-              amount.abs(),
-              date);
-      MoveLine debit =
-          new MoveLine(
-              move,
-              null,
-              accountConfig.getResultLossAccount(),
-              date,
-              date,
-              2,
-              BigDecimal.ZERO,
-              amount.abs(),
-              description,
-              null,
-              BigDecimal.ONE,
-              amount.abs(),
-              date);
-      move.addMoveLineListItem(credit);
-      move.addMoveLineListItem(debit);
+      accountCredit = accountConfig.getYearOpeningAccount();
+      accountDebit = accountConfig.getResultLossAccount();
     } else {
-      MoveLine credit =
-          new MoveLine(
-              move,
-              null,
-              accountConfig.getResultProfitAccount(),
-              date,
-              date,
-              1,
-              BigDecimal.ZERO,
-              amount.abs(),
-              description,
-              null,
-              BigDecimal.ONE,
-              amount.abs(),
-              date);
-      MoveLine debit =
-          new MoveLine(
-              move,
-              null,
-              accountConfig.getYearOpeningAccount(),
-              date,
-              date,
-              2,
-              BigDecimal.ZERO,
-              amount.abs(),
-              description,
-              null,
-              BigDecimal.ONE,
-              amount.abs(),
-              date);
-      move.addMoveLineListItem(credit);
-      move.addMoveLineListItem(debit);
+      accountCredit = accountConfig.getResultProfitAccount();
+      accountDebit = accountConfig.getYearOpeningAccount();
     }
+    MoveLine credit =
+        new MoveLine(
+            move,
+            null,
+            accountCredit,
+            date,
+            date,
+            1,
+            BigDecimal.ZERO,
+            amount.abs(),
+            description,
+            null,
+            BigDecimal.ONE,
+            amount.abs(),
+            date);
+    MoveLine debit =
+        new MoveLine(
+            move,
+            null,
+            accountDebit,
+            date,
+            date,
+            2,
+            BigDecimal.ZERO,
+            amount.abs(),
+            description,
+            null,
+            BigDecimal.ONE,
+            amount.abs(),
+            date);
+    move.addMoveLineListItem(credit);
+    move.addMoveLineListItem(debit);
+
     moveRepo.save(move);
   }
 

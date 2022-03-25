@@ -105,7 +105,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (closeYear) {
       closeYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               endOfYearDate,
@@ -124,7 +124,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (openYear) {
       openYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               reportedBalanceDate,
@@ -167,7 +167,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (closeYear) {
       closeYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               endOfYearDate,
@@ -206,7 +206,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (openYear) {
       openYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               reportedBalanceDate,
@@ -226,7 +226,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  protected Move generateCloseAnnualAccountMove(
+  protected Move generateCloseOrOpenAnnualAccountMove(
       Year year,
       Account account,
       LocalDate moveDate,
@@ -276,10 +276,10 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             moveDescription);
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move, origin, account, moveDescription, originDate, balance.negate());
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move,
         origin,
         getYearClosureOrOpeningAccount(accountConfig, isReverse),
@@ -307,7 +307,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     }
   }
 
-  protected MoveLine generateCloseAnnualMoveLine(
+  protected MoveLine generateCloseOrOpenAnnualMoveLine(
       Move move,
       String origin,
       Account account,

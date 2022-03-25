@@ -62,7 +62,6 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setTotalDebit(debitBalance);
     accountingReport.setTotalCredit(creditBalance);
     accountingReport.setBalance(debitBalance.subtract(creditBalance));
-    accountingReportRepo.save(accountingReport);
-    return accountingReport;
+    return accountingReportRepo.save(accountingReport);
   }
 }
