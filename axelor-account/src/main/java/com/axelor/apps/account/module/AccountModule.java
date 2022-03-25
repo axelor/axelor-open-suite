@@ -493,6 +493,5 @@ public class AccountModule extends AxelorModule {
     bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
 
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
-
   }
 }

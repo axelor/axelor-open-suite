@@ -312,7 +312,7 @@
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="printAccountingReport"/>
   </action-method>
-  
+
   <action-method name="action-accounting-batch-method-moves-consistency-control">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="controlMoveConsistency"/>
