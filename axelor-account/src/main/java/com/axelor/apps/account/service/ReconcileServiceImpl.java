@@ -105,6 +105,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param canBeZeroBalanceOk Peut être soldé?
    * @return Une reconciliation
    */
+  @Override
   @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
@@ -150,6 +151,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la reconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException {
@@ -179,7 +181,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
-    this.udpatePaymentTax(reconcile);
+    this.updatePaymentTax(reconcile);
     this.updatePaymentMoveLineDistribution(reconcile);
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
@@ -198,6 +200,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
   }
 
+  @Override
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -281,6 +284,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException {
 
     List<Partner> partnerList = this.getPartners(reconcile);
@@ -298,6 +302,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public List<Partner> getPartners(Reconcile reconcile) {
 
     List<Partner> partnerList = Lists.newArrayList();
@@ -359,7 +364,17 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  /**
+   * @deprecated use {@link #updatePaymentTax(Reconcile)} instead
+   * @param reconcile
+   * @throws AxelorException
+   */
+  @Deprecated
   protected void udpatePaymentTax(Reconcile reconcile) throws AxelorException {
+    updatePaymentTax(reconcile);
+  }
+
+  protected void updatePaymentTax(Reconcile reconcile) throws AxelorException {
     Move debitMove = reconcile.getDebitMoveLine().getMove();
     Move creditMove = reconcile.getCreditMoveLine().getMove();
     Invoice debitInvoice = debitMove.getInvoice();
@@ -382,6 +397,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param creditMoveLine
    * @throws AxelorException
    */
+  @Override
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
@@ -406,6 +422,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la réconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
 
@@ -492,6 +509,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param reconcile Une reconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void canBeZeroBalance(Reconcile reconcile) throws AxelorException {
 
@@ -534,6 +552,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param company
    * @throws AxelorException
    */
+  @Override
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException {
     if (creditMoveLine != null) {
       BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
@@ -566,6 +585,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public List<Reconcile> getReconciles(MoveLine moveLine) {
 
     List<Reconcile> debitReconcileList = moveLine.getDebitReconcileList();
