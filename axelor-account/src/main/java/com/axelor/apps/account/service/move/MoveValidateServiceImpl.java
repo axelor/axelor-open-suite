@@ -642,10 +642,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void validateVatSystem(Move move) throws AxelorException {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
-      if ((move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-              || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)
+      if ((move.getJournal() != null
+              && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                  || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
           && isConfiguredVatSystem(move)
           && isConfigurationIssueOnVatSystem(move)) {
         throw new AxelorException(
