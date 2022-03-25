@@ -123,7 +123,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected PricingService pricingService;
 
   @Override
-  public String computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     // Reset fields which are going to recalculate in this method
@@ -138,18 +138,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
-    String pricingName = fillPrice(saleOrderLine, saleOrder);
+    fillPrice(saleOrderLine, saleOrder);
     fillComplementaryProductList(saleOrderLine);
-    return pricingName;
   }
 
   @Override
-  public String fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    String pricingName = null;
     // Populate fields from pricing scale before starting process of fillPrice
     if (appSaleService.getAppSale().getEnablePricingScale()) {
-      pricingName = computePricingScale(saleOrder, saleOrderLine);
+      computePricingScale(saleOrder, saleOrderLine);
     }
 
     fillTaxInformation(saleOrderLine, saleOrder);
@@ -172,7 +170,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
     }
-    return pricingName;
   }
 
   @Override
@@ -1035,10 +1032,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public String computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
+  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
     if (orderLine.getProduct() == null) {
-      return null;
+      return;
     }
 
     // (1) Get the Pricing
@@ -1052,10 +1049,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 null)
             .fetchOne();
 
-    return this.computePricing(defaultPricing, saleOrder, orderLine, null, 0);
+    this.computePricing(defaultPricing, saleOrder, orderLine, null, 0);
   }
 
-  private String computePricing(
+  private PricingLine computePricing(
       Pricing pricing,
       SaleOrder saleOrder,
       SaleOrderLine orderLine,
@@ -1097,7 +1094,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             });
 
     if (pricingLine == null) {
-      return pricing.getName();
+      return null;
     }
 
     // (4) Compute the result formulas
@@ -1118,7 +1115,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     long totalChildPricing = childPricingQry.count();
 
     if (totalChildPricing == 0) {
-      return null;
+      return pricingLine;
 
     } else if (totalChildPricing > 1) {
       throw new AxelorException(
@@ -1178,48 +1175,47 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (CollectionUtils.isEmpty(pricingLines)) {
       return null;
     }
-    List<PricingLine> newPricingLines = new ArrayList<>();
 
     if (ruleValue4 != null) {
-      newPricingLines =
+      pricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule3(
               pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule4(
               pricingLines, fieldTypeAndOpList.get(3)[0], fieldTypeAndOpList.get(3)[1], ruleValue4);
 
     } else if (ruleValue3 != null) {
-      newPricingLines =
+      pricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule3(
               pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
 
     } else if (ruleValue2 != null) {
-      newPricingLines =
+      pricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      newPricingLines =
+      pricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
 
     } else if (ruleValue1 != null) {
-      newPricingLines =
+      pricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
     }
 
-    Optional<PricingLine> pricingLineValue = newPricingLines.stream().findFirst();
+    Optional<PricingLine> pricingLineValue = pricingLines.stream().findFirst();
     return pricingLineValue.isPresent() ? pricingLineValue.get() : null;
   }
 

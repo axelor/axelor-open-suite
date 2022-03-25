@@ -42,7 +42,7 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  String computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -141,7 +141,7 @@ public interface SaleOrderLineService {
    * @param saleOrder
    * @throws AxelorException
    */
-  public String fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Fill the complementaryProductList of the saleOrderLine from the possible complementary products
@@ -311,7 +311,7 @@ public interface SaleOrderLineService {
       ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public String computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
+  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
       throws ClassNotFoundException, AxelorException;
 
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
