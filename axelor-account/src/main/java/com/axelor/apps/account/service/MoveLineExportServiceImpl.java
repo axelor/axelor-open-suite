@@ -669,11 +669,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
 
     writeMoveLineToCsvFile(
-        company,
-        fileName,
-        this.createHeaderForDetailFile(typeSelect),
-        allMoveLineData,
-        accountingReport);
+        company, fileName, this.createHeaderForDetailFile(), allMoveLineData, accountingReport);
   }
 
   protected MetaFile writeMoveLineToCsvFile(
@@ -730,8 +726,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public String[] createHeaderForJournalEntry() {
-    String header =
-        "JournalCode;"
+    return ("JournalCode;"
             + "JournalLib;"
             + "EcritureNum;"
             + "EcritureDate;"
@@ -748,15 +743,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "DateLet;"
             + "ValidDate;"
             + "Montantdevise;"
-            + "Idevise;";
-    return header.split(";");
+            + "Idevise;")
+        .split(";");
   }
 
-  public String[] createHeaderForDetailFile(int typeSelect) {
-    String header = "";
-
-    header =
-        "Société;"
+  public String[] createHeaderForDetailFile() {
+    return ("Société;"
             + "Journal;"
             + "Numéro d'écriture;"
             + "Num. ligne d'écriture;"
@@ -767,9 +759,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "Site;"
             + "Métier;"
             + "Activité;"
-            + "Nom;";
-
-    return header.split(";");
+            + "Nom;")
+        .split(";");
   }
 
   public MetaFile exportMoveLine(AccountingReport accountingReport)
