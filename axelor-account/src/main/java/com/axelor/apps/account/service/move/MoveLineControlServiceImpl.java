@@ -109,7 +109,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_8),
+            I18n.get(IExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM),
             moveLine.getAccount().getCode());
       }
     }
