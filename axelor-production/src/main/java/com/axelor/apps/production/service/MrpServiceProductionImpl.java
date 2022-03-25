@@ -169,7 +169,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
+                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
+                    + "self.prodProcess.producedProductStockLocation in (?2))"
                     + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
