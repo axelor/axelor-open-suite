@@ -642,7 +642,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void validateVatSystem(Move move) throws AxelorException {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
-      if ((move.getJournal() != null
+      if ((move.getJournal().getJournalType() != null
               && (move.getJournal().getJournalType().getTechnicalTypeSelect()
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
                   || move.getJournal().getJournalType().getTechnicalTypeSelect()
