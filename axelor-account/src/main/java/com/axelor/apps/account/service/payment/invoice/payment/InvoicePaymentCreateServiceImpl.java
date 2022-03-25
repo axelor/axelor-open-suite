@@ -149,12 +149,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     computeAdvancePaymentImputation(invoicePayment, paymentMove);
-    /**
-     * this.computeAdvancePaymentImputation(invoicePayment, paymentMove);
-     * this.computeFinancialDiscount(invoicePayment, invoice);
-     * invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, invoiceTermToPayList);
-     * invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-     */
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);

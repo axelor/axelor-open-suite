@@ -126,16 +126,17 @@ public class DoubtfulCustomerService {
   }
 
   public MoveLine getInvoicePartnerMoveLine(Move move, Account doubtfulCustomerAccount) {
-    MoveLine invoicePartnerMoveLine = null;
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAccount() != doubtfulCustomerAccount
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        invoicePartnerMoveLine = moveLine;
+      if (moveLine.getAccount() != null
+          && moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getAmountRemaining().signum() > 0
+          && !moveLine.getAccount().equals(doubtfulCustomerAccount)
+          && moveLine.getDebit().signum() > 0) {
+        return moveLine;
       }
     }
-    return invoicePartnerMoveLine;
+
+    return null;
   }
 
   /**
@@ -150,12 +151,10 @@ public class DoubtfulCustomerService {
   @Transactional(rollbackOn = {Exception.class})
   public void createDoubtFulCustomerMove(
       Move move, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException {
-
-    log.debug("Concerned account move : {} ", move.getReference());
-
     Company company = move.getCompany();
     Partner partner = move.getPartner();
     Invoice invoice = move.getInvoice();
+
     Move newMove =
         moveCreateService.createMove(
             company.getAccountConfig().getAutoMiscOpeJournal(),
@@ -173,9 +172,7 @@ public class DoubtfulCustomerService {
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
-    MoveLine invoicePartnerMoveLine = null;
-
-    invoicePartnerMoveLine = getInvoicePartnerMoveLine(move, doubtfulCustomerAccount);
+    MoveLine invoicePartnerMoveLine = this.getInvoicePartnerMoveLine(move, doubtfulCustomerAccount);
 
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
@@ -221,36 +218,26 @@ public class DoubtfulCustomerService {
     List<InvoiceTerm> invoiceTermToRemove = Lists.newArrayList();
     List<InvoiceTerm> invoiceTermToAddToInvoicePartnerMoveLine = Lists.newArrayList();
     List<InvoiceTerm> invoiceTermToAddToDebitMoveLine = Lists.newArrayList();
+
     for (InvoiceTerm invoiceTerm : invoicePartnerMoveLine.getInvoiceTermList()) {
       paymentMode = invoiceTerm.getPaymentMode();
       bankDetails = invoiceTerm.getBankDetails();
       pfpUser = invoiceTerm.getPfpValidatorUser();
-      if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+
+      if (invoiceTerm.getAmountRemaining().signum() > 0
           && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
 
         // Copy invoice term on put it on new move line
         InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
         invoiceTermToAddToDebitMoveLine.add(copy);
         invoiceTermToAdd.add(copy);
-        log.debug(
-            "Montant = Montant restant -> Ajout d'une échéance sur la facture "
-                + " et debit move line, Montant {}, Montant restant {}, Pourcentage {}",
-            copy.getAmount(),
-            copy.getAmountRemaining(),
-            copy.getPercentage());
-        log.debug(
-            "Suppression d'une échéance de la fature "
-                + " Montant {}, Montant restant {}, Pourcentage {}",
-            invoiceTerm.getAmount(),
-            invoiceTerm.getAmountRemaining(),
-            invoiceTerm.getPercentage());
 
         // Remove invoice from old invoice term
         invoiceTermToRemove.add(invoiceTerm);
       }
-      if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+
+      if (invoiceTerm.getAmountRemaining().signum() > 0
           && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0) {
-        log.debug("Montant != Montant restant");
         BigDecimal amount = invoiceTerm.getAmount();
         BigDecimal remainingAmount = invoiceTerm.getAmountRemaining();
         BigDecimal percentage = invoiceTerm.getPercentage();
@@ -279,100 +266,27 @@ public class DoubtfulCustomerService {
         invoiceTerm.setPercentage(percentage.subtract(newPercentage));
       }
     }
+
     for (InvoiceTerm it : invoiceTermToAddToInvoicePartnerMoveLine) {
-      log.debug(
-          "Échéance à ajouter à la ligne d'écriture client initiale: Montant {}, Montant Restant {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getPercentage());
       invoicePartnerMoveLine.addInvoiceTermListItem(it);
     }
 
-    // Create invoice term on new credit move line
-    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
-    newInvoiceTerm.setIsCustomized(true);
-    newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setDueDate(todayDate);
-    newInvoiceTerm.setIsHoldBack(false);
-    newInvoiceTerm.setEstimatedPaymentDate(null);
-    newInvoiceTerm.setAmount(amountRemaining);
-    newInvoiceTerm.setAmountRemaining(amountRemaining);
-    newInvoiceTerm.setPaymentMode(paymentMode);
-    newInvoiceTerm.setBankDetails(bankDetails);
-    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    newInvoiceTerm.setPfpValidatorUser(pfpUser);
-    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
-    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
-
-    newMove.getMoveLineList().add(debitMoveLine);
-    newMove.getMoveLineList().add(creditMoveLine);
-
-    log.debug(
-        "Échéances de la debit move line credit {} debit {} restant {} :: ",
-        debitMoveLine.getCredit(),
-        debitMoveLine.getDebit(),
-        debitMoveLine.getAmountRemaining());
-
-    int i = 1;
-    log.debug(
-        "Échéances de la credit move line credit {} debit {} restant {} :: ",
-        creditMoveLine.getCredit(),
-        creditMoveLine.getDebit(),
-        creditMoveLine.getAmountRemaining());
-    for (InvoiceTerm it : creditMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
-          i,
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getIsPaid(),
-          it.getPercentage());
-      i++;
-    }
-    i = 1;
-    log.debug(
-        "Échéances de la invoicePartnerMoveLine move line credit {} debit {} restant {} :: ",
-        invoicePartnerMoveLine.getCredit(),
-        invoicePartnerMoveLine.getDebit(),
-        invoicePartnerMoveLine.getAmountRemaining());
-    for (InvoiceTerm it : invoicePartnerMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
-          i,
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getIsPaid(),
-          it.getPercentage());
-      i++;
-    }
-
-    log.debug("Échéances de la facture :: ");
-    i = 1;
-    for (InvoiceTerm it : invoice.getInvoiceTermList()) {
-      log.debug(
-          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
-          i,
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getIsPaid(),
-          it.getPercentage());
-      i++;
-    }
-
-    moveValidateService.accounting(newMove);
-    moveRepo.save(newMove);
-
     if (creditMoveLine != null) {
+      // Create invoice term on new credit move line
+      this.createInvoiceTerm(
+          creditMoveLine, bankDetails, pfpUser, paymentMode, todayDate, amountRemaining);
+
+      newMove.getMoveLineList().add(debitMoveLine);
+      newMove.getMoveLineList().add(creditMoveLine);
+
+      moveValidateService.accounting(newMove);
+      moveRepo.save(newMove);
+
       Reconcile reconcile =
           reconcileService.createReconcile(
               invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
+
       if (reconcile != null) {
-        List<InvoiceTerm> invoiceTermToPayList = Lists.newArrayList();
-        invoicePartnerMoveLine.getInvoiceTermList().stream()
-            .filter(it -> it.getIsPaid() == false)
-            .forEach(it -> invoiceTermToPayList.add(it));
         reconcileService.confirmReconcile(reconcile, true);
       }
     }
@@ -393,37 +307,44 @@ public class DoubtfulCustomerService {
               .divide(
                   amountRemaining, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     }
-    i = 1;
-    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
-      log.debug(
-          "Échéance {}: Montant {}, Montant Restant {}, Paid {}, Pourcentage {}",
-          i,
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getIsPaid(),
-          it.getPercentage());
-      i++;
-    }
 
-    for (InvoiceTerm it : invoiceTermToAdd) {
-      log.debug(
-          "Échéance à ajouter à la facture: Montant {}, Montant Restant {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getPercentage());
-      invoice.addInvoiceTermListItem(it);
-    }
-    for (InvoiceTerm it : invoiceTermToRemove) {
-      log.debug(
-          "Échéance à supprimerde la facture: Montant {}, Montant Restant {}, Pourcentage {}",
-          it.getAmount(),
-          it.getAmountRemaining(),
-          it.getPercentage());
-      invoice.removeInvoiceTermListItem(it);
-      it.setInvoice(null);
+    if (invoice != null) {
+      for (InvoiceTerm it : invoiceTermToAdd) {
+        invoice.addInvoiceTermListItem(it);
+      }
+
+      for (InvoiceTerm it : invoiceTermToRemove) {
+        invoice.removeInvoiceTermListItem(it);
+        it.setInvoice(null);
+      }
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
+  }
+
+  protected void createInvoiceTerm(
+      MoveLine creditMoveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate todayDate,
+      BigDecimal amountRemaining) {
+    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
+    newInvoiceTerm.setIsCustomized(true);
+    newInvoiceTerm.setIsPaid(false);
+    newInvoiceTerm.setDueDate(todayDate);
+    newInvoiceTerm.setIsHoldBack(false);
+    newInvoiceTerm.setEstimatedPaymentDate(null);
+    newInvoiceTerm.setAmount(amountRemaining);
+    newInvoiceTerm.setAmountRemaining(amountRemaining);
+    newInvoiceTerm.setPaymentMode(paymentMode);
+    newInvoiceTerm.setBankDetails(bankDetails);
+    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    newInvoiceTerm.setPfpValidatorUser(pfpUser);
+    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
+    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
   }
 
   public void createDoubtFulCustomerRejectMove(
