@@ -1,3 +1,3 @@
 ---
-title: "Verify if an user doesn't have an active company when we convert lead"
+title: "Lead: Fix 'NullPointerException' error when an user linked to a lead does not have an active company during lead conversion."
 type: fix
