@@ -148,6 +148,12 @@
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
       </panel>
+      <panel name="moveConsistencyControl" title="Move Consistency Control"
+        hideIf="actionSelect != 25">
+        <panel-related field="yearSet" widget="TagSelect" canSelect="true"
+          canNew="false" canEdit="false" grid-view="year-account-grid" form-view="year-account-form"
+          colSpan="12"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -155,6 +161,7 @@
         <panel-related name="batchListPanel" field="batchList" colSpan="12"
           form-view="batch-form" grid-view="batch-grid" readonly="true"/>
       </panel>
+
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="reimbursementBatchBtn" title="Reimbursement Batch"
@@ -191,6 +198,9 @@
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
         showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
+      <button name="movesConsistencyControl" title="Control moves consistency"
+        showIf="actionSelect == 25"
+        onClick="save,action-accounting-batch-method-moves-consistency-control"/>
     </panel>
   </form>
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">
@@ -224,13 +234,14 @@
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
       expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="billOfExchangeStepBatchSelect" expr="eval: 1"/>
+    <field name="actionSelect" expr="eval: _actionSelect" if="_actionSelect"/>
   </action-record>
 
   <action-record name="action-accounting-batch-record-default-currency"
@@ -300,6 +311,11 @@
   <action-method name="action-accounting-batch-method-print-report">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="printAccountingReport"/>
+  </action-method>
+  
+  <action-method name="action-accounting-batch-method-moves-consistency-control">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="controlMoveConsistency"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->
