@@ -1,0 +1,3 @@
+---
+title: take into account the prodProcess.stockLocation and the prodProcess.producedProductStockLocation for mrp's manuf order
+type: change
