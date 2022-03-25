@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
@@ -115,8 +116,22 @@ public class InvoiceTermController {
         } else {
           if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
             MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+
             if (moveLine != null) {
-              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+              Move move = null;
+
+              if (moveLine.getMove() == null
+                  && request.getContext().getParent().getParent() != null
+                  && request
+                      .getContext()
+                      .getParent()
+                      .getParent()
+                      .get("_model")
+                      .equals(Move.class.getName())) {
+                move = request.getContext().getParent().getParent().asType(Move.class);
+              }
+
+              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
               response.setValues(invoiceTerm);
             }
           }
