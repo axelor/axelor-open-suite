@@ -525,7 +525,7 @@
 
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
@@ -538,7 +538,7 @@
         </viewer>
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         onChange="action-invoice-group-payment-condition-onchange"/>
     </panel>
 
