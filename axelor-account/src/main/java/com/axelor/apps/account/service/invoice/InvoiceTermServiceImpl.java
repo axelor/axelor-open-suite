@@ -544,10 +544,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || ObjectUtils.isEmpty(invoice.getInvoiceTermList())
         || (invoice.getAmountRemaining().signum() == 0
             && invoice.getExTaxTotal().signum() == 0
-            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
+            && ObjectUtils.isEmpty(invoice.getInvoiceLineList()))
+        || invoice.getAmountRemaining().signum() > 0) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
