@@ -214,9 +214,9 @@ public interface InvoiceTermService {
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public void select(InvoiceTerm invoiceTerm) throws AxelorException;
+  public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
-  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException;
+  public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
@@ -237,7 +237,7 @@ public interface InvoiceTermService {
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm);
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
   BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm);
 

@@ -301,7 +301,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
-      Beans.get(InvoiceTermService.class).select(invoiceTerm);
+      Beans.get(InvoiceTermService.class).toggle(invoiceTerm, true);
       response.setReload(true);
 
     } catch (Exception e) {
@@ -323,7 +323,7 @@ public class InvoiceTermController {
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
             invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
-            invoiceTermService.select(invoiceTermTemp);
+            invoiceTermService.toggle(invoiceTermTemp, true);
           }
         }
       }
@@ -337,7 +337,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
-      Beans.get(InvoiceTermService.class).unselect(invoiceTerm);
+      Beans.get(InvoiceTermService.class).toggle(invoiceTerm, false);
       response.setReload(true);
 
     } catch (Exception e) {
@@ -359,7 +359,7 @@ public class InvoiceTermController {
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
             invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
-            invoiceTermService.unselect(invoiceTermTemp);
+            invoiceTermService.toggle(invoiceTermTemp, false);
           }
         }
       }

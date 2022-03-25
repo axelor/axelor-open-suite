@@ -22,14 +22,15 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.Locale;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -50,22 +51,23 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public String computeName(PaymentSession paymentSession) {
     StringBuilder name = new StringBuilder("Session");
     User createdBy = paymentSession.getCreatedBy();
-    Boolean isFr =
-        ObjectUtils.notEmpty(createdBy)
-            && ObjectUtils.notEmpty(createdBy.getLanguage())
-            && createdBy.getLanguage().equals(Locale.FRENCH.getLanguage());
     if (ObjectUtils.notEmpty(paymentSession.getPaymentMode())) {
       name.append(" " + paymentSession.getPaymentMode().getName());
     }
     if (ObjectUtils.notEmpty(paymentSession.getCreatedOn())) {
       name.append(
-          (isFr ? " du " : " on the ")
-              + paymentSession
+          String.format(
+              " %s %s",
+              I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_ON_THE),
+              paymentSession
                   .getCreatedOn()
-                  .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+                  .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
     }
     if (ObjectUtils.notEmpty(createdBy)) {
-      name.append((isFr ? " par " : " by ") + createdBy.getName());
+      name.append(
+          String.format(
+              " %s %s",
+              I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_BY), createdBy.getName()));
     }
     return name.toString();
   }

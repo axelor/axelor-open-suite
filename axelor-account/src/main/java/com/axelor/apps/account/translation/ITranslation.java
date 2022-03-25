@@ -30,4 +30,6 @@ public interface ITranslation {
       "Invoiced Amount" /*)*/;
   public static final String INVOICE_PURCHASE_SITUTATION_UNPAID_INVOICE_AMOUNT = /*$$(*/
       "Unpaid Inv. due" /*)*/;
+  public static final String PAYMENT_SESSION_COMPUTE_NAME_ON_THE = /*$$(*/ "on the" /*)*/;
+  public static final String PAYMENT_SESSION_COMPUTE_NAME_BY = /*$$(*/ "by" /*)*/;
 }
