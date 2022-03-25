@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="file-source-connector-parameters-grid" title="File source connectors"
+    model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <field name="name"/>
+    <field name="fileSourceConnector"/>
+  </grid>
+
+  <form name="file-source-connector-parameters-form" title="File source connector"
+    model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <panel name="mainPanel">
+      <field name="name" colSpan="6"/>
+      <field name="fileSourceConnector" colSpan="3"/>
+      <field name="fileSourceConnector.connectionType" colSpan="3"/>
+    </panel>
+    <panel-tabs>
+      <panel
+        showIf="fileSourceConnector != null &amp;&amp; fileSourceConnector.connectionType == 1"
+        name="FTPPanel" title="FTP informations">
+        <field name="sourceFolder" colSpan="6"/>
+        <field name="destinationFolder" colSpan="6"/>
+        <field name="fileNamingRule" colSpan="6"/>
+
+        <!-- TODO: To remove (only for test) -->
+        <field name="metaFile" widget="binary-link" form-view="meta-files-form"
+          grid-view="meta-files-grid"/>
+      </panel>
+    </panel-tabs>
+
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,to-remove" name="toRemoveBtn" title="download"/>
+    </panel>
+
+  </form>
+
+  <action-method name="to-remove">
+    <call class="com.axelor.apps.base.web.FileSourceConnectorController" method="download"/>
+  </action-method>
+
+</object-views>

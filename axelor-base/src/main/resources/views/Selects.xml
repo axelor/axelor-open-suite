@@ -654,4 +654,8 @@
     <option value="1">Left</option>
   </selection>
 
+  <selection name="base.file.source.connector.connection.type.select">
+    <option value="1">SFTP</option>
+  </selection>
+
 </object-views>

@@ -43,4 +43,10 @@ public interface ITranslation {
       "AbcAnalysisLine.class"; /*)*/
   public static final String BASE_GEONAMES_CITY_IMPORT_COMPLETED = /*$$(*/
       "City import completed"; /*)*/
+  public static final String BASE_FILE_SOURCE_CONNECTOR_SUCCESS_CONNECTION =
+      /*$$(*/
+      "Successful connection"; /*)*/
+  public static final String BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION =
+      /*$$(*/
+      "Connection has failed"; /*)*/
 }

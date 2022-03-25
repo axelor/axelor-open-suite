@@ -131,6 +131,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
+import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
@@ -247,5 +249,6 @@ public class BaseModule extends AxelorModule {
     bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
+    bind(FileSourceConnectorService.class).to(FileSourceConnectorServiceImpl.class);
   }
 }

@@ -922,4 +922,29 @@
     <view type="grid" name="print-template-grid"/>
     <view type="form" name="print-template-form"/>
   </action-view>
+
+  <!-- File source connector -->
+
+  <menuitem name="base-file-source-connector-conf" parent="admin-root-general"
+    title="File source connectors"/>
+  <menuitem name="base-file-source-connector-all" parent="base-file-source-connector-conf"
+    title="File source connectors" action="action.file.source.connector.view.all"/>
+
+  <action-view name="action.file.source.connector.view.all"
+    title="File source connectors" model="com.axelor.apps.base.db.FileSourceConnector">
+    <view type="grid" name="file-source-connector-grid"/>
+    <view type="form" name="file-source-connector-form"/>
+  </action-view>
+
+  <menuitem title="File source connector parameters"
+    parent="base-file-source-connector-conf" name="action-file-source-connector-parameters-all"
+    action="action.file.source.connector.parameters.view.all"/>
+
+  <action-view name="action.file.source.connector.parameters.view.all"
+    title="File source connectors" model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <view type="grid" name="file-source-connector-parameters-grid"/>
+    <view type="form" name="file-source-connector-parameters-form"/>
+  </action-view>
+
+
 </object-views>
