@@ -174,6 +174,15 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(IExceptionMessage.MOVE_4), move.getReference()));
     }
+    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_13),
+              move.getJournal().getCode(),
+              move.getPeriod().getCode()));
+    }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
