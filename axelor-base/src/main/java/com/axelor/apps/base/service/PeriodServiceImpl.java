@@ -226,14 +226,14 @@ public class PeriodServiceImpl implements PeriodService {
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
-        Period previousPeriod =
-            periodRepo.find(
-                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
-        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
-            && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+        for (Object result : resultQuery.getResultList()) {
+          Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
+          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
+              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+          }
         }
       }
     }
@@ -249,13 +249,14 @@ public class PeriodServiceImpl implements PeriodService {
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
-        Period previousPeriod =
-            periodRepo.find(
-                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
-        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+
+        for (Object result : resultQuery.getResultList()) {
+          Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
+          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+          }
         }
       }
     }
