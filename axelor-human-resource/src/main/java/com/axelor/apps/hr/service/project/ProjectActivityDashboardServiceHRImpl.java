@@ -48,18 +48,18 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
 
   @Override
   protected Project getActivityProject(
-      Project contextProject, MailMessage message, Set<Long> contextProjectIdsSet) {
+      Project project, MailMessage message, Set<Long> projectIdSet) {
     if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       TimesheetLine timesheetLine = timesheetLineRepo.find(message.getRelatedId());
       if (timesheetLine != null) {
-        Project project = timesheetLine.getProject();
-        if (contextProject == null
-            || (project != null && contextProjectIdsSet.contains(project.getId()))) {
-          return project;
+        Project tsLineProject = timesheetLine.getProject();
+        if (project == null
+            || (tsLineProject != null && projectIdSet.contains(tsLineProject.getId()))) {
+          return tsLineProject;
         }
       }
     }
-    return super.getActivityProject(contextProject, message, contextProjectIdsSet);
+    return super.getActivityProject(project, message, projectIdSet);
   }
 
   @Override

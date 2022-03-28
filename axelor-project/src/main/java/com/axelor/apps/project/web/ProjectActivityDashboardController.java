@@ -18,6 +18,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,19 +29,38 @@ import java.time.LocalDate;
 public class ProjectActivityDashboardController {
 
   public void getData(ActionRequest request, ActionResponse response) {
-    LocalDate todayDate = LocalDate.now();
-    response.setValues(
-        Beans.get(ProjectActivityDashboardService.class)
-            .getData(todayDate.minusDays(29), todayDate));
+
+    try {
+      LocalDate todayDate = LocalDate.now();
+      Long projectId = (Long) request.getContext().get("id");
+      response.setValues(
+          Beans.get(ProjectActivityDashboardService.class)
+              .getData(todayDate.minusDays(29), todayDate, projectId));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void getPreviousData(ActionRequest request, ActionResponse response) {
-    String fromDate = request.getContext().get("fromDate").toString();
-    response.setValues(Beans.get(ProjectActivityDashboardService.class).getPreviousData(fromDate));
+
+    try {
+      String startDate = request.getContext().get("startDate").toString();
+      Long projectId = (Long) request.getContext().get("id");
+      response.setValues(
+          Beans.get(ProjectActivityDashboardService.class).getPreviousData(startDate, projectId));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void getNextData(ActionRequest request, ActionResponse response) {
-    String toDate = request.getContext().get("toDate").toString();
-    response.setValues(Beans.get(ProjectActivityDashboardService.class).getNextData(toDate));
+    try {
+      String endDate = request.getContext().get("endDate").toString();
+      Long projectId = (Long) request.getContext().get("id");
+      response.setValues(
+          Beans.get(ProjectActivityDashboardService.class).getNextData(endDate, projectId));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
