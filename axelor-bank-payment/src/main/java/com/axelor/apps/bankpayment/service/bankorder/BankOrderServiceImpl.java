@@ -340,11 +340,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      bankOrder = this.generateMoves(bankOrder);
-    }
-
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
         && paymentMode != null
         && paymentMode.getAutomaticTransmission()) {
@@ -357,6 +352,11 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderRepo.save(bankOrder);
     } else {
       validate(bankOrder);
+    }
+
+    if (bankOrder.getAccountingTriggerSelect()
+        == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
+      this.generateMoves(bankOrder);
     }
   }
 

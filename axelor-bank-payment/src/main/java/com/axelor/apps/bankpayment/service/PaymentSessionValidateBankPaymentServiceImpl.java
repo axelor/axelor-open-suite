@@ -2,7 +2,6 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -119,7 +118,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       bankOrderService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
-      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
+      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
+          && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
           bankOrderService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
