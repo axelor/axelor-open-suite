@@ -140,7 +140,7 @@
     <bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
     <bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
     <bind to="paymentCondition" column="paymentCondition.importId" if="false"/>
-    <bind to="language" search="self.code = :languageCode"/>
+    <bind to="language" search="self.code = :languageCode" if="languageCode"/>
   </input>
 
   <!-- A BESOIN DE PARTNER -->
