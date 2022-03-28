@@ -42,4 +42,18 @@ public class PayVoucherElementToPayController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      PayVoucherElementToPay payVoucherElementToPay =
+          request.getContext().asType(PayVoucherElementToPay.class);
+
+      Beans.get(PayVoucherElementToPayService.class)
+          .updateFinancialDiscount(payVoucherElementToPay);
+
+      response.setValues(payVoucherElementToPay);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

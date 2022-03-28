@@ -282,7 +282,6 @@
 
   <action-group name="action-group-account-accounting-report-reporttype-onchange">
     <action name="action-accounting-report-record-reset"/>
-    <action name="action-accounting-report-method-get-journal-type"/>
     <action name="action-accounting-report-record-default-global"/>
     <action name="action-accounting-report-method-get-account"/>
     <action
@@ -451,11 +450,11 @@
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="currency" expr="eval:__user__.activeCompany?.currency"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(null)"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
@@ -509,11 +508,6 @@
   <action-method name="action-accounting-report-method-search-move-line">
     <call class="com.axelor.apps.account.web.AccountingReportController"
       method="searchMoveLine"/>
-  </action-method>
-
-  <action-method name="action-accounting-report-method-get-journal-type">
-    <call class="com.axelor.apps.account.web.AccountingReportController"
-      method="getJournalType"/>
   </action-method>
 
   <action-method name="action-accounting-report-method-set-bank-details-domain">

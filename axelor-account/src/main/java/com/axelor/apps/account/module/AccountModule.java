@@ -93,6 +93,10 @@ import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticJournalControlService;
 import com.axelor.apps.account.service.AnalyticJournalControlServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
+import com.axelor.apps.account.service.ClosureAssistantLineService;
+import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
+import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.account.service.ClosureAssistantServiceImpl;
 import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -155,6 +159,8 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
@@ -205,8 +211,12 @@ import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineControlServiceImpl;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -233,6 +243,8 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
+import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -504,6 +516,12 @@ public class AccountModule extends AxelorModule {
 
     bind(TaxAccountToolService.class).to(TaxAccountToolServiceImpl.class);
 
+    bind(ClosureAssistantLineService.class).to(ClosureAssistantLineServiceImpl.class);
+
+    bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
+
+    bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
+
     bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
 
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
@@ -517,5 +535,11 @@ public class AccountModule extends AxelorModule {
     bind(PaymentSessionEmailService.class).to(PaymentSessionEmailServiceImpl.class);
 
     bind(PayVoucherDueElementService.class).to(PayVoucherDueElementServiceImpl.class);
+
+    bind(MoveInvoiceTermService.class).to(MoveInvoiceTermServiceImpl.class);
+
+    bind(MoveLineInvoiceTermService.class).to(MoveLineInvoiceTermServiceImpl.class);
+
+    bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
   }
 }

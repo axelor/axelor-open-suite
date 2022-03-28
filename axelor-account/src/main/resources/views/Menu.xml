@@ -282,6 +282,20 @@
     <context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-annual-processing"
+    parent="account-root-periodic-processing" title="Annual processing"/>
+
+  <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
+    parent="account-root-periodic-processing-annual-processing" title="Year closure"
+    action="account.root.periodic.processing.annual.processing.year.closure"/>
+
+  <action-view name="account.root.periodic.processing.annual.processing.year.closure"
+    title="Year closure" model="com.axelor.apps.account.db.ClosureAssistant">
+    <view type="grid" name="closure-assistant-grid"/>
+    <view type="form" name="closure-assistant-form"/>
+  </action-view>
+
+
   <menuitem name="account-root-debt-recovery" parent="account-root" title="Debt recovery"
     order="15"/>
 
@@ -1000,6 +1014,20 @@
     title="Analytic Regrouping Values" model="com.axelor.apps.account.db.AnalyticGroupingValue">
     <view type="grid" name="analytic-grouping-value-grid"/>
     <view type="form" name="analytic-grouping-value-form"/>
+  </action-view>
+
+  <menuitem name="account-root-periodic-processing-annual-move-consistency-control"
+    parent="account-root-periodic-processing-annual-processing"
+    action="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" order="90"/>
+
+  <action-view
+    name="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" model="com.axelor.apps.account.db.AccountingBatch">
+    <view type="grid" name="accounting-batch-grid"/>
+    <view type="form" name="accounting-batch-form"/>
+    <view-param name="search-filters" value="accounting-batch-filters"/>
+    <domain>self.actionSelect = 25</domain>
   </action-view>
 
 </object-views>

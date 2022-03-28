@@ -191,14 +191,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticMoveLine computeAnalyticMoveLine(
-      MoveLine moveLine, AnalyticAccount analyticAccount) throws AxelorException {
+      MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
 
-    if (moveLine.getMove() != null && moveLine.getMove().getCompany() != null) {
+    if (company != null) {
       AnalyticJournal analyticJournal =
-          accountConfigService
-              .getAccountConfig(moveLine.getMove().getCompany())
-              .getAnalyticJournal();
+          accountConfigService.getAccountConfig(company).getAnalyticJournal();
       if (analyticJournal != null) {
         analyticMoveLine.setAnalyticJournal(analyticJournal);
       }

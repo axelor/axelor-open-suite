@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
-import com.axelor.apps.account.db.repo.AccountInvoiceTermRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -111,18 +111,20 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
-        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        if (invoice != null) {
-          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-          response.setValues(invoiceTerm);
-        }
-      } else {
-        if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
-          MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-          if (moveLine != null) {
-            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+      if (request.getContext().getParent() != null) {
+        if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
+          Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+          if (invoice != null) {
+            invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
             response.setValues(invoiceTerm);
+          }
+        } else {
+          if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
+            MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+            if (moveLine != null) {
+              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
+              response.setValues(invoiceTerm);
+            }
           }
         }
       }
@@ -290,7 +292,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
-      Beans.get(InvoiceTermService.class).select(invoiceTerm);
+      Beans.get(InvoiceTermService.class).toggle(invoiceTerm, true);
       response.setReload(true);
 
     } catch (Exception e) {
@@ -301,18 +303,18 @@ public class InvoiceTermController {
   public void selectPartnerTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      if (invoiceTerm.getInvoice().getPartner() != null
+      if (invoiceTerm.getMoveLine().getPartner() != null
           && invoiceTerm.getPaymentSession() != null) {
         List<InvoiceTerm> invoiceTermList =
-            Beans.get(AccountInvoiceTermRepository.class)
+            Beans.get(InvoiceTermAccountRepository.class)
                 .findByPaymentSessionAndPartner(
-                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getMoveLine().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
           InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
             invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
-            invoiceTermService.select(invoiceTermTemp);
+            invoiceTermService.toggle(invoiceTermTemp, true);
           }
         }
       }
@@ -326,7 +328,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
-      Beans.get(InvoiceTermService.class).unselect(invoiceTerm);
+      Beans.get(InvoiceTermService.class).toggle(invoiceTerm, false);
       response.setReload(true);
 
     } catch (Exception e) {
@@ -337,18 +339,18 @@ public class InvoiceTermController {
   public void unselectPartnerTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      if (invoiceTerm.getInvoice().getPartner() != null
+      if (invoiceTerm.getMoveLine().getPartner() != null
           && invoiceTerm.getPaymentSession() != null) {
         List<InvoiceTerm> invoiceTermList =
-            Beans.get(AccountInvoiceTermRepository.class)
+            Beans.get(InvoiceTermAccountRepository.class)
                 .findByPaymentSessionAndPartner(
-                    invoiceTerm.getPaymentSession(), invoiceTerm.getInvoice().getPartner());
+                    invoiceTerm.getPaymentSession(), invoiceTerm.getMoveLine().getPartner());
         if (!CollectionUtils.isEmpty(invoiceTermList)) {
           InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
           InvoiceTermRepository invoiceTermRepository = Beans.get(InvoiceTermRepository.class);
           for (InvoiceTerm invoiceTermTemp : invoiceTermList) {
             invoiceTermTemp = invoiceTermRepository.find(invoiceTermTemp.getId());
-            invoiceTermService.unselect(invoiceTermTemp);
+            invoiceTermService.toggle(invoiceTermTemp, false);
           }
         }
       }

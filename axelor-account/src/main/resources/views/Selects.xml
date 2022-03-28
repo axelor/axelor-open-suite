@@ -90,10 +90,6 @@
     <option order="24" value="24">Personnalized report</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
-    <option value="1006">Export sale -> Acc. Soft.</option>
-    <option value="1007">Export refunds -> Acc. Soft.</option>
-    <option value="1008">Export treasury -> Acc. Soft.</option>
-    <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
     <option value="1011">Export N4DS</option>
     <option order="2000" value="2000">Analytic balance</option>
@@ -104,10 +100,6 @@
   <selection name='accounting.report.type.select.export'>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
-    <option value="1006">Export sale -> Acc. Soft.</option>
-    <option value="1007">Export refunds -> Acc. Soft.</option>
-    <option value="1008">Export treasury -> Acc. Soft.</option>
-    <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
     <option value="1011">Export N4DS</option>
   </selection>
@@ -208,6 +200,7 @@
     <option value="21">Close/Open the annual accounts</option>
     <option value="23">Block customer with late payment issues</option>
     <option value="24">Exchanges</option>
+    <option value="25">Moves consistency control</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -398,6 +391,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="noteBills">Note bills</option>
     <option value="paymentSession">Payment session</option>
   </selection>
 
@@ -675,18 +669,9 @@
   </selection>
 
   <selection name="paymentMode.accounting.method.select">
-    <option value="0"></option>
     <option value="1">By invoice term</option>
     <option value="2">By partner</option>
     <option value="3">PaymentModeAccountingMethod.Global</option>
-  </selection>
-
-  <selection name="paymentMode.accounting.trigger.select">
-    <option value="0"></option>
-    <option value="1">Immediate</option>
-    <option value="2">Bank order confirmation</option>
-    <option value="3">Bank order validation</option>
-    <option value="4">Bank order realization</option>
   </selection>
 
   <selection name="partner.payment.notice.sending.method.select">
@@ -702,6 +687,11 @@
     <option value="8">8</option>
     <option value="9">9</option>
     <option value="10">10</option>
+  </selection>
+
+  <selection name="iaccount.tax.payment.move.vat.system.select">
+    <option value="1">taxPaymentMove.Delivery</option>
+    <option value="2">taxPaymentMove.Payment</option>
   </selection>
 
   <selection name='iaccount.vat.system.select'>
@@ -722,12 +712,39 @@
     <option value="2">vat.Payment</option>
   </selection>
 
+
+  <selection name="account.closure.assistant.line.action.select">
+    <option value="2">Fixed asset realization</option>
+    <option value="3">Move consistency check</option>
+    <option value="4">closure.accountingReport</option>
+    <option value="5">Calculate the outrun of the year</option>
+    <option value="6">Closure and opening of fiscal year batch</option>
+    <option value="7">Fiscal year closure</option>
+  </selection>
+
+  <selection name="account.closure.assistant.status.select">
+    <option value="1">New</option>
+    <option value="2">In progress</option>
+    <option value="3">Finished</option>
+  </selection>
+
+  <selection name='iaccount.vat.system.invoice.line.tax.select'>
+    <option value="0"></option>
+    <option value="1">vat.Delivery</option>
+    <option value="2">vat.Payment</option>
+  </selection>
+
   <selection name="iaccount.payment.session.partner.type.select">
     <option value="1">Supplier</option>
     <option value="2">Employee</option>
     <option value="3">Customer</option>
     <option value="4">Company</option>
     <option value="5">Other</option>
+  </selection>
+
+  <selection name="payment.mode.accounting.trigger.select">
+    <option value="0" order="0">None</option>
+    <option value="1" order="1">Immediate</option>
   </selection>
 
 </object-views>

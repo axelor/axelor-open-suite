@@ -726,7 +726,7 @@
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
           </editor>
         </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
@@ -894,15 +894,6 @@
 				</h4>
 			  </div>
 			</div>
-			<h4 style="text-align: right;">
-                <span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-                <span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-                <span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-                <span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-                <span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
-                <span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-                <span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-            </h4>
 		]]>
     </template>
   </cards>
