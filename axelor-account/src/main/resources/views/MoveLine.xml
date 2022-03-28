@@ -869,7 +869,7 @@
   <action-record name="action-record-initialize-permission-validation-move-line"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.move?.period,__user__)"/>
+      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.move?.period,__this__.move?.journal,__user__)"/>
   </action-record>
 
   <action-record name="action-account-move-line-record-calculate-balance"

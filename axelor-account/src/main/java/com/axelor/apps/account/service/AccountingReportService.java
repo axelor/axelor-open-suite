@@ -19,7 +19,6 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
@@ -46,8 +45,6 @@ public interface AccountingReportService {
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
-
-  public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException;
 
   public Account getAccount(AccountingReport accountingReport);
 

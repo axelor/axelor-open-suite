@@ -776,7 +776,7 @@
   <action-record name="action-record-initialize-permission-validation-move"
     model="com.axelor.apps.account.db.Move">
     <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__user__)"/>
+      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__this__.journal,__user__)"/>
   </action-record>
 
   <action-record name="action-move-record-check-period-and-status"

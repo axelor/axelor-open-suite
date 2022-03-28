@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -510,19 +511,34 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period != null
-        && period.getYear().getCompany() != null
-        && user.getGroup() != null
-        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(period.getYear().getCompany());
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
-        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+  public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException {
+    if (period != null) {
+      if (period.getStatusSelect() == PeriodRepository.STATUS_OPENED
+          && period.getCloseJournalsOnPeriod()
+          && journal != null
+          && !CollectionUtils.isEmpty(period.getClosedJournalSet())
+          && period.getClosedJournalSet().contains(journal)) {
+        return true;
+      }
+      if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+        if (journal != null
+            && period.getKeepJournalsOpenOnPeriod()
+            && !CollectionUtils.isEmpty(period.getOpenedJournalSet())
+            && period.getOpenedJournalSet().contains(journal)) {
           return false;
         }
+        if (period.getYear().getCompany() != null && user.getGroup() != null) {
+          AccountConfig accountConfig =
+              accountConfigService.getAccountConfig(period.getYear().getCompany());
+          for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+              return false;
+            }
+          }
+          return true;
+        }
       }
-      return true;
     }
     return false;
   }
