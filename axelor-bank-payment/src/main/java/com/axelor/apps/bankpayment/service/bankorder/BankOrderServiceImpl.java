@@ -303,7 +303,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  protected void generateMoves(BankOrder bankOrder) throws AxelorException {
+  protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
     switch (bankOrder.getFunctionalOriginSelect()) {
       case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
         PaymentSession paymentSession =
@@ -318,6 +318,8 @@ public class BankOrderServiceImpl implements BankOrderService {
         bankOrderMoveService.generateMoves(bankOrder);
         validatePayment(bankOrder);
     }
+
+    return bankOrderRepo.find(bankOrder.getId());
   }
 
   @Override
@@ -340,8 +342,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      this.generateMoves(bankOrder);
-      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
@@ -377,7 +378,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      this.generateMoves(bankOrder);
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrderRepo.save(bankOrder);
@@ -430,7 +431,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
-      this.generateMoves(bankOrder);
+      bankOrder = this.generateMoves(bankOrder);
     }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
