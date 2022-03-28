@@ -169,7 +169,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<Partner, List<Move>> moveMap,
       Map<Move, BigDecimal> paymentAmountMap,
-      Map<Move, MoveLine> financialDiscountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
