@@ -1,0 +1,3 @@
+---
+title: "When duplicating an invoice, the new invoice doesn't copy the supplier invoice number and origin date anymore."
+type: fix
