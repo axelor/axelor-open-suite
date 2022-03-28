@@ -42,7 +42,7 @@ public interface MoveCreateFromInvoiceService {
    */
   Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException;
 
-  void createMoveUseExcessPayment(Invoice invoice) throws AxelorException;
+  Move createMoveUseExcessPayment(Invoice invoice) throws AxelorException;
 
   Move createMoveUseDebit(
       Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine)
