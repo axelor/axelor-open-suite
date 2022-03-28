@@ -131,7 +131,7 @@
 "Status","Stato",,
 "Tab name","Nome della scheda",,
 "Technical maintenance","Manutenzione tecnica",,
-"The 'Path Field' of the line '%s' should not be empty.",,,
+"The 'Path Field' of the line with the tab name '%s' should not be empty.",,,
 "The 'Query' of the line '%s' cannot be empty.",,,
 "The 'Relational field' of the line '%s' cannot be empty.",,,
 "This app is used by %s. Please deactivate them before continue.","Questa applicazione è usata da %s. Disattivarli prima di continuare.",,

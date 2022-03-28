@@ -131,7 +131,7 @@
 "Status","Statut",,
 "Tab name","Nom de l'onglet",,
 "Technical maintenance","Maintenance technique",,
-"The 'Path Field' of the line '%s' should not be empty.","Le ""Champ de cheminement"" de la ligne ""%s"" ne doit pas être vide.",,
+"The 'Path Field' of the line with the tab name '%s' should not be empty.",,,
 "The 'Query' of the line '%s' cannot be empty.","La ""Requête"" de la ligne ""%s"" ne doit pas être vide.",,
 "The 'Relational field' of the line '%s' cannot be empty.","Le ""Champ relationnel"" de la ligne ""%s"" ne doit pas être vide.",,
 "This app is used by %s. Please deactivate them before continue.","Cette application est utilisée par %s. Veuillez les désactiver avent de continuer",,

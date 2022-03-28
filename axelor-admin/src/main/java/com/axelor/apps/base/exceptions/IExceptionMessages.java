@@ -52,5 +52,5 @@ public interface IExceptionMessages {
   public static final String EMPTY_QUERY_IN_DATA_CONFIG_LINE = /*$$(*/
       "The 'Query' of the line '%s' cannot be empty." /*)*/;
   public static final String EMPTY_PATH_FIELD = /*$$(*/
-      "The 'Path Field' of the line '%s' should not be empty." /*)*/;
+      "The 'Path Field' of the line with the tab name '%s' should not be empty." /*)*/;
 }
