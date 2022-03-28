@@ -64,7 +64,16 @@
     <boolean name="openYear" title="Open the year accounts"/>
     <boolean name="closeYear" title="Close the year accounts"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
-    <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
+    <many-to-many name="closureAccountSet" ref="com.axelor.apps.account.db.Account"
+      title="Closure accounts"/>
+    <many-to-many name="openingAccountSet" ref="com.axelor.apps.account.db.Account"
+      title="Opening accounts"/>
+    <boolean name="generateResultMove" title="Generate result move"/>
+    <string name="resultMoveDescription" title="Result move description"/>
+    <boolean name="simulateGeneratedMoves" title="Generate simulated moves"
+      help="Please make sure that the journal configured for annual closure and openning, does support simulated moves."/>
+    <boolean name="generateGeneralLedger" title="Generate general ledger"/>
+
     <!-- <many-to-many name="journalSet" ref="Journal" title="Journals"/> -->
     <boolean name="allocatePerPartner" title="Allocate per partner"/>
     <string name="moveDescription" title="Move description"/>

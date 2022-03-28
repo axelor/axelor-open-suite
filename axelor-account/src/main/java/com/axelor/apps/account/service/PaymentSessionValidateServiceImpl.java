@@ -7,14 +7,18 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -40,6 +44,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected MoveValidateService moveValidateService;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
+  protected InvoiceTermService invoiceTermService;
+  protected MoveLineTaxService moveLineTaxService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
@@ -53,6 +59,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
+      InvoiceTermService invoiceTermService,
+      MoveLineTaxService moveLineTaxService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -62,6 +70,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
+    this.invoiceTermService = invoiceTermService;
+    this.moveLineTaxService = moveLineTaxService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
@@ -152,6 +162,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       throws AxelorException {
     this.updateStatus(paymentSession);
     this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
+    this.generateTaxMoveLines(moveMap);
     this.updateStatuses(paymentSession, moveMap, paymentAmountMap);
   }
 
@@ -233,6 +244,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateMoveLineFromInvoiceTerm(
         paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
 
+    if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()
+        && (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+            || paymentSession.getPartnerTypeSelect()
+                == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)) {
+      this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
+    }
+
     return moveRepo.save(move);
   }
 
@@ -255,12 +273,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
 
       moveMap.get(partner).add(move);
-      paymentAmountMap.put(move, invoiceTerm.getPaymentAmount());
+      paymentAmountMap.put(move, invoiceTerm.getAmountPaid());
     } else {
       move = moveMap.get(partner).get(0);
       move = moveRepo.find(move.getId());
-      paymentAmountMap.replace(
-          move, paymentAmountMap.get(move).add(invoiceTerm.getPaymentAmount()));
+      paymentAmountMap.replace(move, paymentAmountMap.get(move).add(invoiceTerm.getAmountPaid()));
     }
 
     return move;
@@ -410,6 +427,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
+  protected void generateTaxMoveLines(Map<Partner, List<Move>> moveMap) throws AxelorException {
+    for (Partner partner : moveMap.keySet()) {
+      for (Move move : moveMap.get(partner)) {
+        move = moveRepo.find(move.getId());
+        moveLineTaxService.autoTaxLineGenerate(move);
+      }
+    }
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   protected Move generateCashMoveLine(
       Move move,
@@ -507,6 +533,49 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected int getMoveCount(Map<Partner, List<Move>> moveMap, boolean isGlobal) {
     return moveMap.values().stream().map(List::size).reduce(Integer::sum).orElse(0)
         + (isGlobal ? 1 : 0);
+  }
+
+  protected MoveLine createFinancialDiscountMoveLine(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, Move move, boolean out)
+      throws AxelorException {
+    Account financialDiscountAccount =
+        this.getFinancialDiscountAccount(paymentSession.getCompany(), out);
+    BigDecimal financialDiscountTaxAmount =
+        invoiceTermService.getFinancialDiscountTaxAmount(invoiceTerm);
+
+    MoveLine moveLine =
+        this.generateMoveLine(
+            move,
+            null,
+            financialDiscountAccount,
+            invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount),
+            move.getOrigin(),
+            move.getDescription(),
+            !out);
+
+    if (financialDiscountTaxAmount.signum() > 0) {
+      Tax financialDiscountTax = this.getFinancialDiscountTax(paymentSession.getCompany(), out);
+
+      if (financialDiscountTax != null && financialDiscountTax.getActiveTaxLine() != null) {
+        moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+        moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+        moveLine.setTaxCode(financialDiscountTax.getCode());
+      }
+    }
+
+    return moveLine;
+  }
+
+  protected Account getFinancialDiscountAccount(Company company, boolean out) {
+    return out
+        ? company.getAccountConfig().getPurchFinancialDiscountAccount()
+        : company.getAccountConfig().getSaleFinancialDiscountAccount();
+  }
+
+  protected Tax getFinancialDiscountTax(Company company, boolean out) {
+    return out
+        ? company.getAccountConfig().getPurchFinancialDiscountTax()
+        : company.getAccountConfig().getSaleFinancialDiscountTax();
   }
 
   @Override
