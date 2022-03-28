@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
@@ -36,12 +35,12 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +54,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -279,6 +279,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
+
+      this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
@@ -310,14 +312,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (accountingReport.getReportType().getTypeSelect()
           >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
         this.addParams("self.move.journal.notExportOk = false ");
-      }
-
-      if (accountingReport.getReportType().getTypeSelect()
-          > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
-        JournalType journalType = this.getJournalType(accountingReport);
-        if (journalType != null) {
-          this.addParams("self.move.journal.journalType = ?%d", journalType);
-        }
       }
 
       if (accountingReport.getReportType().getTypeSelect()
@@ -433,37 +427,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
         accountingReport.getReportType().getTypeSelect());
-  }
-
-  public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException {
-    if (accountingReport.getReportType() == null) {
-      return null;
-    }
-
-    Company company = accountingReport.getCompany();
-
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    switch (accountingReport.getReportType().getTypeSelect()) {
-      case AccountingReportRepository.EXPORT_SALES:
-        return accountConfigService.getSaleJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_REFUNDS:
-        return accountConfigService.getCreditNoteJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_TREASURY:
-        return accountConfigService.getCashJournalType(accountConfig);
-
-      case AccountingReportRepository.EXPORT_PURCHASES:
-        return accountConfigService.getPurchaseJournalType(accountConfig);
-
-      default:
-        break;
-    }
-
-    return null;
   }
 
   public Account getAccount(AccountingReport accountingReport) {
@@ -881,5 +844,30 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     setStatus(accountingExport);
     return accountingExport;
+  }
+
+  @Override
+  public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
+      AccountingReport accountingReport) throws AxelorException {
+    if (accountingReport.getReportType() != null) {
+      AccountingReportType accountingReportType =
+          Beans.get(AccountingReportTypeRepository.class)
+              .find(accountingReport.getReportType().getId());
+
+      if (accountingReportType.getModelAccountingReport() != null) {
+        AccountingReport modelAccountingReportCopy =
+            JPA.copy(accountingReportType.getModelAccountingReport(), false);
+        modelAccountingReportCopy.setRef(null);
+        modelAccountingReportCopy.setPublicationDateTime(null);
+        modelAccountingReportCopy.setTotalCredit(null);
+        modelAccountingReportCopy.setTotalDebit(null);
+        modelAccountingReportCopy.setBalance(null);
+        modelAccountingReportCopy.setDate(accountingReport.getDate());
+        modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
+        Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
+        return modelAccountingReportCopyMap;
+      }
+    }
+    return null;
   }
 }

@@ -2,5 +2,5 @@
 title: "Standardize Edition Rules - Modelization"
 type: feature
 description: |
-Added boolean allowAccountingDaybook on Journal object. 
-Added bankDetails to InvoiceTerm
+  Added boolean allowAccountingDaybook on Journal object.
+  Added bankDetails to InvoiceTerm

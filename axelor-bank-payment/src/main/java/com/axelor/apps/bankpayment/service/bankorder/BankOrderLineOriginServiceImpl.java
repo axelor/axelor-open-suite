@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -60,6 +61,8 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
       return ((PaymentScheduleLine) model).getName();
 
+    } else if (model instanceof InvoiceTerm) {
+      return ((InvoiceTerm) model).getName();
     } else if (model instanceof Reimbursement) {
 
       return ((Reimbursement) model).getRef();
@@ -92,6 +95,8 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
       return ((PaymentScheduleLine) model).getScheduleDate();
 
+    } else if (model instanceof InvoiceTerm) {
+      return ((InvoiceTerm) model).getDueDate();
     } else if (model instanceof Reimbursement) {
 
       return null;
