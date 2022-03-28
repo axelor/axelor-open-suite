@@ -303,13 +303,16 @@
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1" validIf="amount > 0"
+        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
+          validIf="amount > 0"
           onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
           onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
-        <field name="paymentMode" required="true"/>
+        <field name="paymentMode"
+          requiredIf="invoice != null || [1,2].indexOf(moveLine?.move?.journal?.journalType?.technicalTypeSelect) != -1"/>
+        <field name="moveLine.move.journal.journalTypeSelect" hidden="true"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
@@ -418,7 +421,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" title="Amount paid / reconciled" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / reconciled" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
