@@ -1,8 +1,5 @@
 package com.axelor.apps.base.service.filesourceconnector;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -13,6 +10,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.Objects;
 
 public class FileSourceConnectorServiceImpl implements FileSourceConnectorService {
 

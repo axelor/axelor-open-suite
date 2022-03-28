@@ -1,15 +1,5 @@
 package com.axelor.apps.base.service.filesourceconnector.models;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -25,12 +15,21 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpProgressMonitor;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SFTPFileTransfertSession implements FileTransfertSession {
 
   private Session session;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final int TIME_OUT = 60000;
+  private static final int TIME_OUT = 10000;
   protected MetaFiles metaFiles;
 
   @Inject
@@ -54,15 +53,22 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
       final ChannelSftp channel = SFTPUtils.openSftpChannel(this.session);
       channel.connect(TIME_OUT);
       channel.cd(parameter.getDestinationFolder());
-      
+      SftpProgressMonitor monitor = createMonitor();
+
       try {
         for (MetaFile file : files) {
-          SFTPUtils.put(channel, new FileInputStream(MetaFiles.getPath(file).toFile()), file.getFileName());
+          SFTPUtils.put(
+              channel,
+              new FileInputStream(MetaFiles.getPath(file).toFile()),
+              file.getFileName(),
+              monitor);
         }
       } catch (Exception e) {
         throw e;
       } finally {
-        channel.disconnect();
+        if (channel != null) {
+          channel.disconnect();
+        }
       }
 
     } catch (Exception e) {
@@ -87,7 +93,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
       channel.connect(TIME_OUT);
       try {
         List<LsEntry> lsEntries = SFTPUtils.getFiles(channel, parameter.getSourceFolder());
-
+        SftpProgressMonitor monitor = createMonitor();
         String fileNamingRule =
             parameter.getFileNamingRule() == null ? "" : parameter.getFileNamingRule();
         return lsEntries.stream()
@@ -98,11 +104,9 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
             .map(
                 lsEntry -> {
                   try {
-                    InputStream inputStream =
-                        SFTPUtils.get(
-                            channel,
-                            String.format(
-                                "%s/%s", parameter.getSourceFolder(), lsEntry.getFilename()));
+                    String absoluthPath =
+                        String.format("%s/%s", parameter.getSourceFolder(), lsEntry.getFilename());
+                    InputStream inputStream = SFTPUtils.get(channel, absoluthPath, monitor);
                     return metaFiles.upload(inputStream, lsEntry.getFilename());
                   } catch (Exception e) {
                     TraceBackService.trace(e);
@@ -124,6 +128,40 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     }
   }
 
+  private SftpProgressMonitor createMonitor() {
+
+    SftpProgressMonitor monitor =
+        new SftpProgressMonitor() {
+
+          private long fileSize;
+          private String operation;
+          private long bytes;
+          private String fileName;
+
+          @Override
+          public void init(int op, String src, String dest, long max) {
+            this.operation = op == SftpProgressMonitor.GET ? "download" : "upload";
+            this.fileSize = max;
+            this.bytes = 0;
+            this.fileName = src;
+            log.debug("Starting {} from {} to {}. (Size: {} B)", operation, src, dest, max);
+          }
+
+          @Override
+          public boolean count(long count) {
+            bytes += count;
+            log.debug("{} {}/{} ({})", operation, bytes, fileSize, fileName);
+            return true;
+          }
+
+          @Override
+          public void end() {
+            log.debug("{} ended", operation);
+          }
+        };
+    return monitor;
+  }
+
   @Override
   public FileTransfertSession configureSession(FileSourceConnector fileSourceConnector)
       throws AxelorException {
@@ -134,14 +172,21 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS));
     }
+
+    String privateKeyFileName = null;
+    if (fileSourceConnector.getKeyFile() != null) {
+      privateKeyFileName = fileSourceConnector.getKeyFile().getFileName();
+    }
     try {
       this.session =
           SFTPUtils.createSession(
               fileSourceConnector.getHost(),
               fileSourceConnector.getPort(),
               fileSourceConnector.getUsername(),
-              fileSourceConnector.getPassword());
-      this.session.setTimeout(60000);
+              fileSourceConnector.getPassword(),
+              privateKeyFileName,
+              fileSourceConnector.getKeyFilePassphrase());
+      this.session.setTimeout(TIME_OUT);
     } catch (JSchException e) {
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }

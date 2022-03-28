@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.db.repo.FileSourceConnectorParametersRepository;
@@ -32,6 +29,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileSourceConnectorController {
 
@@ -87,7 +86,7 @@ public class FileSourceConnectorController {
             fileSourceConnectorParameters.getFileSourceConnector();
         FileSourceConnectorService fileSourceConnectorService =
             Beans.get(FileSourceConnectorService.class);
-        
+
         List<MetaFile> files = Arrays.asList(fileSourceConnectorParameters.getMetaFile());
         fileSourceConnectorService.upload(
             fileSourceConnectorService.createSession(fileSourceConnector),

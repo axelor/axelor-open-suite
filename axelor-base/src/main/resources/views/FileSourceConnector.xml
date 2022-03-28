@@ -23,8 +23,14 @@
     <panel name="credentialPanel" title="Credentials">
       <field name="username" colSpan="6"/>
       <field name="password" colSpan="6"/>
+      <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+			<p>The application does not support key starting with <code>-----BEGIN OPENSSH PRIVATE KEY-----</code>. Using those keys will result in a <code>Invalid private key error</code> </p>
+]]>
+        </viewer>
+      </field>
       <field name="keyFile" colSpan="3" canNew="true" hidden="true"
-        showIf="connectionType == 1"/>
+        showIf="connectionType == 1" widget="binary-link"/>
       <field name="keyFilePassphrase" colSpan="3" hidden="true" showIf="connectionType == 1"/>
     </panel>
     <panel name="actionPanel" sidebar="true">

@@ -18,7 +18,7 @@
       help="This field allows to filter files and download only those that respect specified naming without sensitive case. Example : 'ABCD' will filter on files that contain 'ABCD' in their name."/>
 
     <!-- TODO: To remove (only for test) -->
-	<many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
 
   </entity>
 
