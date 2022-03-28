@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
@@ -28,7 +29,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
-import com.axelor.apps.supplychain.service.StockMoveInvoiceViewGeneratorService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -77,16 +77,12 @@ public class StockMoveInvoiceController {
 
         if (invoice != null) {
           // Open the generated invoice in a new tab
-          StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-              Beans.get(StockMoveInvoiceViewGeneratorService.class);
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(invoice))
+                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
                   .add("form", "invoice-form")
-                  .param(
-                      "search-filters",
-                      stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(invoice))
+                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
@@ -173,19 +169,15 @@ public class StockMoveInvoiceController {
         Optional<Invoice> invoice =
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
-        StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-            Beans.get(StockMoveInvoiceViewGeneratorService.class);
         invoice.ifPresent(
             inv -> {
               try {
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(inv))
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
-                        .param(
-                            "search-filters",
-                            stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(inv))
+                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
@@ -257,19 +249,15 @@ public class StockMoveInvoiceController {
           Beans.get(StockMoveMultiInvoiceService.class)
               .createInvoiceFromMultiOutgoingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
-      StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-          Beans.get(StockMoveInvoiceViewGeneratorService.class);
       invoice.ifPresent(
           inv -> {
             try {
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(inv))
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
-                      .param(
-                          "search-filters",
-                          stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(inv))
+                      .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -354,19 +342,15 @@ public class StockMoveInvoiceController {
         Optional<Invoice> invoice =
             Beans.get(StockMoveMultiInvoiceService.class)
                 .createInvoiceFromMultiIncomingStockMove(stockMoveList);
-        StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-            Beans.get(StockMoveInvoiceViewGeneratorService.class);
         invoice.ifPresent(
             inv -> {
               try {
                 response.setView(
                     ActionView.define("Invoice")
                         .model(Invoice.class.getName())
-                        .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(inv))
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
-                        .param(
-                            "search-filters",
-                            stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(inv))
+                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -433,19 +417,15 @@ public class StockMoveInvoiceController {
           Beans.get(StockMoveMultiInvoiceService.class)
               .createInvoiceFromMultiIncomingStockMove(
                   stockMoveList, paymentCondition, paymentMode, contactPartner);
-      StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-          Beans.get(StockMoveInvoiceViewGeneratorService.class);
       invoice.ifPresent(
           inv -> {
             try {
               response.setView(
                   ActionView.define("Invoice")
                       .model(Invoice.class.getName())
-                      .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(inv))
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
-                      .param(
-                          "search-filters",
-                          stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(inv))
+                      .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
@@ -619,16 +599,12 @@ public class StockMoveInvoiceController {
         Invoice invoice =
             stockMoveInvoiceService.createInvoice(stockMove, StockMoveRepository.INVOICE_ALL, null);
         if (invoice != null) {
-          StockMoveInvoiceViewGeneratorService stockMoveInvoiceViewGeneratorService =
-              Beans.get(StockMoveInvoiceViewGeneratorService.class);
           response.setView(
               ActionView.define(I18n.get(ITranslation.INVOICE))
                   .model(Invoice.class.getName())
-                  .add("grid", stockMoveInvoiceViewGeneratorService.invoiceGridGenerator(invoice))
+                  .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
                   .add("form", "invoice-form")
-                  .param(
-                      "search-filters",
-                      stockMoveInvoiceViewGeneratorService.invoiceFilterGenerator(invoice))
+                  .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
