@@ -18,18 +18,43 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InventoryLineService {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected InventoryLineRepository inventoryLineRepository;
+  protected AppBaseService appBaseService;
+  protected UnitConversionService unitConversionService;
+
+  @Inject
+  public InventoryLineService(
+      InventoryLineRepository inventoryLineRepository,
+      AppBaseService appBaseService,
+      UnitConversionService unitConversionService) {
+    this.inventoryLineRepository = inventoryLineRepository;
+    this.unitConversionService = unitConversionService;
+    this.appBaseService = appBaseService;
+  }
 
   public InventoryLine createInventoryLine(
       Inventory inventory,
@@ -142,5 +167,39 @@ public class InventoryLineService {
       }
     }
     return currentQty;
+  }
+
+  public List<InventoryLine> getInventoryLines(Product product) {
+
+    if (product != null && !product.getStockManaged()) {
+      return null;
+    }
+
+    return inventoryLineRepository
+        .all()
+        .filter("self.product.id = :_productId")
+        .bind("_productId", product.getId())
+        .fetch();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInventoryLineFromProduct(InventoryLine inventoryLine, Product product)
+      throws AxelorException {
+    Unit productUnit = product.getUnit();
+    Unit inventoryLineUnit = inventoryLine.getUnit();
+
+    if (productUnit != null && !productUnit.equals(inventoryLineUnit)) {
+      BigDecimal oldQty = inventoryLine.getCurrentQty();
+
+      BigDecimal currentQty =
+          unitConversionService.convert(
+              inventoryLineUnit, productUnit, oldQty, oldQty.scale(), product);
+
+      inventoryLine.setCurrentQty(currentQty);
+
+      this.compute(inventoryLine, inventoryLine.getInventory());
+    }
+
+    inventoryLineRepository.save(inventoryLine);
   }
 }

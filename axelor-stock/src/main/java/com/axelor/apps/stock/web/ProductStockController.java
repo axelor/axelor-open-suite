@@ -19,9 +19,11 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
@@ -94,6 +96,25 @@ public class ProductStockController {
         stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
       }
       Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInventory(ActionRequest request, ActionResponse response) {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      InventoryLineService inventoryLineService = Beans.get(InventoryLineService.class);
+      if (product.getId() == null) {
+        return;
+      }
+      product = Beans.get(ProductRepository.class).find(product.getId());
+      List<InventoryLine> inventoryLineList = inventoryLineService.getInventoryLines(product);
+
+      for (InventoryLine inventoryLine : inventoryLineList) {
+        inventoryLineService.updateInventoryLineFromProduct(inventoryLine, product);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
