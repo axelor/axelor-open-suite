@@ -391,7 +391,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (moveLine.getAccount().getHasInvoiceTerm()) {
-      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, move, moveLine);
+      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
 
       if (invoiceTermList != null) {
         invoiceTermPaymentList =
@@ -424,6 +424,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           && move.getPaymentVoucher() != null
           && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
         return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+            .filter(it -> it.getMoveLine().equals(moveLine))
             .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
             .map(PayVoucherElementToPay::getInvoiceTerm)
             .collect(Collectors.toList());
