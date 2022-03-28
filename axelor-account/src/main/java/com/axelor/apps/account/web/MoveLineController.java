@@ -603,4 +603,16 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void displayInvoiceTermWarningMessage(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      response.setAttr(
+          "$invoiceTermListPercentageWarningText",
+          "hidden",
+          !(Beans.get(MoveLineControlService.class).displayInvoiceTermWarningMessage(moveLine)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

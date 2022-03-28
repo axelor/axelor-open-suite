@@ -353,6 +353,12 @@
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
+        <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
+          showTitle="false" readonly="true">
+          <viewer>
+          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          </viewer>
+        </field>
         <field name="invoiceTermList" colSpan="12"
           form-view="invoice-term-move-line-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
@@ -600,6 +606,12 @@
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
+        <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
+          showTitle="false" readonly="true">
+          <viewer>
+          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          </viewer>
+        </field>
         <field name="invoiceTermList" colSpan="12"
           form-view="invoice-term-move-line-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
@@ -739,6 +751,7 @@
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
+    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"
@@ -746,6 +759,7 @@
   </action-group>
 
   <action-group name="action-account-moveline-move-onload-group">
+    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"/>
@@ -1029,6 +1043,12 @@
 
   <action-method name="action-account-move-line-method-update-tax-move-line">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxMoveLine"/>
+  </action-method>
+
+  <action-method
+    name="action-account-move-line-method-display-invoice-term-warning-message">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="displayInvoiceTermWarningMessage"/>
   </action-method>
 
   <search-filters name="move-line-filters"
