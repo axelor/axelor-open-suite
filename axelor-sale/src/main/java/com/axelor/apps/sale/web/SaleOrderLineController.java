@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -28,6 +29,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -97,7 +99,11 @@ public class SaleOrderLineController {
 
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
-        saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        String pricingName =
+            saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        if (!StringUtils.isBlank(pricingName)) {
+          response.setFlash(String.format(I18n.get(IExceptionMessage.PRICING_3), pricingName));
+        }
         response.setValue("saleSupplySelect", product.getSaleSupplySelect());
         response.setValues(saleOrderLine);
       } catch (Exception e) {
@@ -368,8 +374,10 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
-      saleOrderLineService.computePricingScale(saleOrder, saleOrderLine);
-
+      String pricingName = saleOrderLineService.computePricingScale(saleOrder, saleOrderLine);
+      if (!StringUtils.isBlank(pricingName)) {
+        response.setNotify(String.format(I18n.get(IExceptionMessage.PRICING_3), pricingName));
+      }
       response.setValues(saleOrderLine);
 
     } catch (Exception e) {
