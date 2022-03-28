@@ -517,7 +517,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
 
     productInformation.put("productName", invoiceLine.getProduct().getName());
-
     return productInformation;
   }
 
@@ -628,39 +627,44 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     if (CollectionUtils.isEmpty(invoiceLineList)) {
       return null;
     } else {
       for (InvoiceLine invoiceLine : invoiceLineList) {
-
-        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
-        boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-        TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
-        invoiceLine.setTaxLine(taxLine);
-        invoiceLine.setTaxRate(taxLine.getValue());
-        invoiceLine.setTaxCode(taxLine.getTax().getCode());
-
-        TaxEquiv taxEquiv =
-            accountManagementAccountService.getProductTaxEquiv(
-                invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
-        invoiceLine.setTaxEquiv(taxEquiv);
-
-        Account account =
-            accountManagementAccountService.getProductAccount(
-                invoiceLine.getProduct(),
-                invoice.getCompany(),
-                fiscalPosition,
-                isPurchase,
-                invoiceLine.getFixedAssets());
-        invoiceLine.setAccount(account);
-        invoiceLine.setInTaxTotal(
-            invoiceLine
-                .getExTaxTotal()
-                .multiply(invoiceLine.getTaxRate())
-                .setScale(2, RoundingMode.HALF_UP));
-        invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+        Map<String, Object> productInformation =
+            fillPriceAndAccountAfterFiscalPositionChange(invoice, invoiceLine, isPurchase);
+        invoiceLine.setTaxLine((TaxLine) productInformation.get("taxLine"));
+        invoiceLine.setTaxRate((BigDecimal) productInformation.get("taxRate"));
+        invoiceLine.setTaxCode((String) productInformation.get("taxCode"));
+        invoiceLine.setTaxEquiv((TaxEquiv) productInformation.get("taxEquiv"));
+        invoiceLine.setAccount((Account) productInformation.get("account"));
+        invoiceLine.setPrice((BigDecimal) productInformation.get("price"));
+        invoiceLine.setInTaxPrice((BigDecimal) productInformation.get("inTaxPrice"));
+        invoiceLine.setInTaxTotal((BigDecimal) productInformation.get("inTaxTotal"));
+        invoiceLine.setCompanyInTaxTotal((BigDecimal) productInformation.get("companyInTaxTotal"));
       }
     }
     return invoiceLineList;
+  }
+
+  private Map<String, Object> fillPriceAndAccountAfterFiscalPositionChange(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    if (invoiceLine.getExTaxTotal() != null) {
+      productInformation.put(
+          "inTaxTotal",
+          (invoiceLine
+                  .getExTaxTotal()
+                  .multiply((BigDecimal) productInformation.get("taxRate"))
+                  .setScale(2, RoundingMode.HALF_UP))
+              .add(invoiceLine.getExTaxTotal()));
+    }
+
+    if (invoiceLine.getInTaxTotal() != null) {
+      productInformation.put("companyInTaxTotal", invoiceLine.getInTaxTotal());
+    }
+
+    return productInformation;
   }
 }

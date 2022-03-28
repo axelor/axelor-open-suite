@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -326,6 +325,23 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setInTaxPrice(inTaxPrice);
 
     line.setMaxPurchasePrice(getPurchaseMaxPrice(purchaseOrder, line));
+
+    if (line.getExTaxTotal() != null) {
+      line.setInTaxTotal(
+          (line.getExTaxTotal()
+                  .multiply(line.getTaxLine().getValue())
+                  .setScale(2, RoundingMode.HALF_UP))
+              .add(line.getExTaxTotal()));
+    }
+
+    if (line.getCompanyExTaxTotal() != null) {
+      line.setCompanyInTaxTotal(
+          (line.getCompanyExTaxTotal()
+                  .multiply(line.getTaxLine().getValue())
+                  .setScale(2, RoundingMode.HALF_UP))
+              .add(line.getExTaxTotal()));
+    }
+
     return line;
   }
 
@@ -707,27 +723,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       return null;
     } else {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
-        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
-        purchaseOrderLine.setTaxLine(taxLine);
-
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
-
-        purchaseOrderLine.setTaxEquiv(taxEquiv);
-
-        purchaseOrderLine.setInTaxTotal(
-            purchaseOrderLine
-                .getExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        purchaseOrderLine.setCompanyInTaxTotal(
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+        purchaseOrderLine = fill(purchaseOrderLine, purchaseOrder);
       }
     }
     return purchaseOrderLineList;

@@ -239,6 +239,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
       saleOrderLine.setTaxEquiv(taxEquiv);
+
+      if (saleOrderLine.getExTaxTotal() != null) {
+        saleOrderLine.setInTaxTotal(
+            (saleOrderLine
+                    .getExTaxTotal()
+                    .multiply(saleOrderLine.getTaxLine().getValue())
+                    .setScale(2, RoundingMode.HALF_UP))
+                .add(saleOrderLine.getExTaxTotal()));
+      }
+
+      if (saleOrderLine.getCompanyExTaxTotal() != null) {
+        saleOrderLine.setCompanyInTaxTotal(
+            (saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()))
+                .add(saleOrderLine.getExTaxTotal()));
+      }
+
     } else {
       saleOrderLine.setTaxLine(null);
       saleOrderLine.setTaxEquiv(null);
@@ -1419,26 +1435,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return null;
     } else {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-
-        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-        saleOrderLine.setTaxLine(taxLine);
-
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setTaxEquiv(taxEquiv);
-
-        saleOrderLine.setInTaxTotal(
-            saleOrderLine
-                .getExTaxTotal()
-                .multiply(saleOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        saleOrderLine.setCompanyInTaxTotal(
-            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+        fillTaxInformation(saleOrderLine, saleOrder);
       }
     }
     return saleOrderLineList;

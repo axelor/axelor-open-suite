@@ -1,0 +1,3 @@
+---
+title: "Refactor duplicated code and fix Total A.T.I calculation for invoice, purchase order and sale order line services"
+type: fix
