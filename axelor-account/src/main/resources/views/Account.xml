@@ -88,7 +88,7 @@
               <field name="name"/>
               <field name="company" readonly="true"/>
               <field name="analyticDistributionLineList" colSpan="12" editable="true"
-                grid-view="analytic-distribution-line-editable-grid"
+                showTitle="false" grid-view="analytic-distribution-line-editable-grid"
                 form-view="analytic-distribution-line-form"/>
             </editor>
           </field>
