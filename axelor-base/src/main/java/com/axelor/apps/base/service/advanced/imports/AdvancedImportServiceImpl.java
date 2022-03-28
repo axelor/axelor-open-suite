@@ -408,9 +408,12 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     } else {
       ignoreFields.add(index);
     }
-    fileFieldList.add(fileField);
-    fileField = fileFieldRepository.save(fileField);
-    fileTab.addFileFieldListItem(fileField);
+
+    if (fileField.getImportField() != null) {
+      fileFieldList.add(fileField);
+      fileField = fileFieldRepository.save(fileField);
+      fileTab.addFileFieldListItem(fileField);
+    }
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)
@@ -426,6 +429,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
                 I18n.get(IExceptionMessage.ADVANCED_IMPORT_1),
                 importField,
                 mapper.getBeanClass().getSimpleName()));
+      }
+
+      if ("id".equals(parentProp.getName()) || "version".equals(parentProp.getName())) {
+        return false;
       }
 
       if (parentProp.getType().name().equals("ONE_TO_MANY")) {

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -32,6 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +49,9 @@ public class FileTabController {
 
       FileTab fileTab = context.asType(FileTab.class);
       Beans.get(FileTabService.class).updateFields(fileTab);
-      response.setValue("fileFieldList", fileTab.getFileFieldList());
+      List<FileField> fileFieldList = fileTab.getFileFieldList();
+      fileFieldList.removeIf(field -> field.getImportField() == null);
+      response.setValue("fileFieldList", fileFieldList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
