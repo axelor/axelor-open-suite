@@ -22,10 +22,13 @@
 
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
-    onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
-    onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
-
-    <panel-include view="sale-order-form" from="axelor-sale"/>
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"/>
+      <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
+      <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
+    </extend>
   </form>
 
   <form name="sale-order-generate-po-select-supplierpartner-form"
@@ -41,11 +44,12 @@
   </form>
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
-    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4"
-    onNew="action-group-supplychain-saleorder-onnew"
-    onSave="save,action-sale-order-method-compute,save"
-    onLoad="action-group-supplychain-saleorder-onload" width="large">
-    <panel-include view="sale-order-form-client" from="axelor-sale"/>
+    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="large" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
+      <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
+      <attribute name="cols" value="4"/>
+    </extend>
   </form>
 
   <form name="sale-order-template-form" title="Template"
