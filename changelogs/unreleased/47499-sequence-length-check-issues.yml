@@ -1,0 +1,3 @@
+---
+title: "Fix an issue where we could create sequences with overs 14 characters by adding '%'"
+type: fix

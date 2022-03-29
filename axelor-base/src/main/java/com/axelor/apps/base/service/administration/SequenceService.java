@@ -73,6 +73,9 @@ public class SequenceService {
 
   protected final SequenceRepository sequenceRepo;
 
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Inject
   public SequenceService(
       SequenceVersionRepository sequenceVersionRepository,
@@ -116,8 +119,8 @@ public class SequenceService {
   }
 
   public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replace("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replace("%", "");
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
 
     return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
   }
