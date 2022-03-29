@@ -380,10 +380,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     FixedAsset newFixedAsset = fixedAssetGenerationService.copyFixedAsset(fixedAsset, disposalQty);
 
     BigDecimal prorata =
-        disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
+        disposalQty.divide(fixedAsset.getQty(), CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal remainingProrata =
-        BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
-
+        BigDecimal.ONE.subtract(prorata).setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+    System.err.println(prorata + " " + remainingProrata);
     multiplyLinesBy(newFixedAsset, prorata);
     multiplyLinesBy(fixedAsset, remainingProrata);
     multiplyFieldsToSplit(newFixedAsset, prorata);
