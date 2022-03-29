@@ -395,6 +395,12 @@ public class ReconcileServiceImpl implements ReconcileService {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, move, moveLine);
 
       if (invoiceTermList != null) {
+        if (this.checkAvailableTotalAmount(invoiceTermList, amount)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
+        }
+
         invoiceTermPaymentList =
             invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
                 invoicePayment,
@@ -402,12 +408,6 @@ public class ReconcileServiceImpl implements ReconcileService {
                 invoicePayment != null ? invoicePayment.getAmount() : amount);
 
         for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-          if (this.checkAvailableTotalAmount(moveLine.getInvoiceTermList(), amount)) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
-          }
-
           invoiceTermService.updateInvoiceTermsPaidAmount(
               invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
 
@@ -438,7 +438,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO)
             .compareTo(amount)
-        >= 0;
+        <= 0;
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
