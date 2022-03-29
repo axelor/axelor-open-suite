@@ -390,11 +390,12 @@ public class DebtRecoveryService {
    * @param company A company to be concerned by the move lines
    * @param tradingName (Optional) A trading name to be concerned by the move lines
    * @return all corresponding move lines as a List
+   * @throws AxelorException
    */
   public List<InvoiceTerm> getInvoiceTerms(
-      Partner partner, Company company, TradingName tradingName) {
+      Partner partner, Company company, TradingName tradingName) throws AxelorException {
 
-    int mailTransitTime = company.getAccountConfig().getMailTransitTime();
+    int mailTransitTime = accountConfigService.getAccountConfig(company).getMailTransitTime();
 
     Query<InvoiceTerm> query =
         invoiceTermRepo

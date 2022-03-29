@@ -132,7 +132,7 @@
     <field name="dueDate"/>
     <field name="amount"/>
     <field name="amountRemaining"/>
-    <field name="moveLine.description"></field>
+    <field name="moveLine.description"/>
   </grid>
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"

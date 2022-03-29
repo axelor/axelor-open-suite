@@ -2166,6 +2166,7 @@
 "PaymentReminder.late_payment_days",,,
 "PaymentReminder.payment_reminder",,,
 "PaymentReminder.reference_date",,,
+"PaymentReminder.term_seq",,,
 "PaymentReminder.to_pay",,,
 "PaymentReminder.total_amount",,,
 "PaymentReminder.total_amount_incl",,,
