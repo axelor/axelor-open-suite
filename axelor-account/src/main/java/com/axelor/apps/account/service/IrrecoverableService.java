@@ -529,6 +529,9 @@ public class IrrecoverableService {
 
     BigDecimal prorataRate = this.getProrataRate(invoice, invoice.getRejectMoveLine() != null);
 
+    // Getting customer MoveLine from Facture
+    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+
     // Ajout de l'écriture générée
     Move move =
         this.createIrrecoverableMove(
@@ -542,6 +545,9 @@ public class IrrecoverableService {
     }
     moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
+
+    customerMoveLine.setIrrecoverableStatusSelect(
+        MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
     invoice.setIrrecoverableStatusSelect(
         InvoiceRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
@@ -858,6 +864,7 @@ public class IrrecoverableService {
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
+    BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
     BigDecimal creditAmount = null;
     BigDecimal debitAmount = null;
@@ -871,6 +878,7 @@ public class IrrecoverableService {
 
     // Debits MoveLines Tva
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+
       amount =
           (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
       // do not generate move line with amount equal to zero
@@ -885,6 +893,31 @@ public class IrrecoverableService {
                   invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
+              invoiceLineTax.getTaxLine(),
+              appAccountService.getTodayDate(company),
+              seq,
+              irrecoverableName,
+              invoice.getInvoiceId());
+
+      debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+
+      move.getMoveLineList().add(debitMoveLine);
+      seq++;
+
+      debitAmount = debitAmount.subtract(amount);
+
+      amountExTax =
+          (invoiceLineTax.getExTaxBase().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+
+      // Debit MoveLine 654 (irrecoverable account)
+      debitMoveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              payerPartner,
+              accountConfig.getIrrecoverableAccount(),
+              amountExTax,
+              true,
+              invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
               irrecoverableName,
@@ -892,24 +925,9 @@ public class IrrecoverableService {
 
       move.getMoveLineList().add(debitMoveLine);
       seq++;
-      debitAmount = debitAmount.subtract(amount);
+
+      debitAmount = debitAmount.subtract(amountExTax);
     }
-
-    // Debit MoveLine 654 (irrecoverable account)
-    debitMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            payerPartner,
-            accountConfig.getIrrecoverableAccount(),
-            debitAmount,
-            true,
-            appAccountService.getTodayDate(company),
-            seq,
-            irrecoverableName,
-            invoice.getInvoiceId());
-    move.getMoveLineList().add(debitMoveLine);
-
-    seq++;
 
     // Getting customer MoveLine from Facture
     MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
@@ -920,8 +938,6 @@ public class IrrecoverableService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
-    customerMoveLine.setIrrecoverableStatusSelect(
-        MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
 
     // Credit MoveLine Customer account (411, 416, ...)
     MoveLine creditMoveLine =
