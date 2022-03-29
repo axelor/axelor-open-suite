@@ -122,7 +122,6 @@ public class SequenceService {
         computeNextSeq(
             sequenceVersion, sequence, appBaseService.getTodayDate(sequence.getCompany()));
 
-    log.debug("DEBUGGER" + nextSeq.length());
     if (nextSeq.length() > 14) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
