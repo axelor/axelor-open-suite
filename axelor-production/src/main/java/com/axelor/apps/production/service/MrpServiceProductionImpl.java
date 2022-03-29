@@ -574,6 +574,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           if (defaultBOM != null) {
             this.assignProductLevel(defaultBOM, level);
           }
+          List<BillOfMaterial> alternativesBOM =
+              billOfMaterialService.getAlternativesBOM(subProduct, company);
+          for (BillOfMaterial alternativeBom : alternativesBOM) {
+            this.assignProductLevel(alternativeBom, level);
+          }
         }
       }
     }
