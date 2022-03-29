@@ -10,11 +10,8 @@
   </grid>
 
   <form name="object-data-config-form" title="Object data config"
-    model="com.axelor.apps.base.db.ObjectDataConfig"
-    onNew="action-object-data-config-record-on-onnew">
+    model="com.axelor.apps.base.db.ObjectDataConfig">
     <panel name="overviewPanel">
-      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
-        widget="NavSelect"/>
       <panel name="mainPanel" colSpan="12">
         <field name="title"/>
         <field name="modelSelect"/>
@@ -32,26 +29,8 @@
         onClick="save,action-open-object-data-export-form"/>
       <button name="anonymizeBtn" title="Anonymize"
         onClick="save,action-open-object-data-anonymize-wizard"/>
-      <button name="draftBtn" title="Draft" showIf="statusSelect == 3"
-        onClick="action-object-data-config-record-set-status,save"/>
-      <button name="validatedBtn" title="Validated" showIf="statusSelect == 1"
-        onClick="save,action-object-data-config-record-set-status,save"/>
-      <button name="cancelledBtn" title="Cancelled" showIf="statusSelect == 2"
-        onClick="save,action-object-data-config-record-set-status,save"/>
     </panel>
   </form>
-
-  <action-record name="action-object-data-config-record-on-onnew"
-    model="com.axelor.apps.base.db.ObjectDataConfig">
-    <field name="statusSelect" expr="1"/>
-  </action-record>
-
-  <action-record name="action-object-data-config-record-set-status"
-    model="com.axelor.apps.base.db.ObjectDataConfig">
-    <field name="statusSelect" expr="1" if="statusSelect == 3"/>
-    <field name="statusSelect" expr="2" if="statusSelect == 1"/>
-    <field name="statusSelect" expr="3" if="statusSelect == 2"/>
-  </action-record>
 
   <action-view name="action-open-object-data-export-form" title="Export"
     model="com.axelor.apps.base.db.ObjectDataConfigExport">

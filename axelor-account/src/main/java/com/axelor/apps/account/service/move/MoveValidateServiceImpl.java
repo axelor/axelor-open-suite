@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -173,6 +174,15 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(IExceptionMessage.MOVE_4), move.getReference()));
+    }
+    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_13),
+              move.getJournal().getCode(),
+              move.getPeriod().getCode()));
     }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
@@ -641,7 +651,13 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void validateVatSystem(Move move) throws AxelorException {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
-      if (isConfiguredVatSystem(move) && isConfigurationIssueOnVatSystem(move)) {
+      if ((move.getJournal().getJournalType() != null
+              && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                  || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
+          && isConfiguredVatSystem(move)
+          && isConfigurationIssueOnVatSystem(move)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT));

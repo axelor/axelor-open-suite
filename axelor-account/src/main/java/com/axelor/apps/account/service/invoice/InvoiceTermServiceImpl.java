@@ -544,10 +544,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || (invoice.getAmountRemaining().signum() == 0
-            && invoice.getExTaxTotal().signum() == 0
-            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
+        || ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        || (invoice.getInTaxTotal().signum() == 0
+            && invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            && !ObjectUtils.isEmpty(invoice.getInvoiceLineList()))
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getAmountRemaining().signum() > 0) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -703,21 +705,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
-    invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemaining());
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
 
-    if (financialDiscountDeadlineDate != null) {
+    if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
       if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
-        invoiceTerm.setAmountPaid(invoiceTerm.getAmountRemainingAfterFinDiscount());
       }
-
       if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
         invoiceTerm.setIsSelectedOnPaymentSession(false);
-        invoiceTerm.setAmountPaid(BigDecimal.ZERO);
       }
     }
-
-    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+    computeAmountPaid(invoiceTerm);
   }
 
   @Override
@@ -946,7 +944,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm != null) {
       invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
+      computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
+    }
+  }
+
+  @Override
+  public void computeAmountPaid(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+      if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        BigDecimal financialDiscountAmount =
+            invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) < 0
+                ? invoiceTerm.getFinancialDiscountAmount()
+                : invoiceTerm.getFinancialDiscountAmount().negate();
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount().add(financialDiscountAmount));
+      } else {
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+      }
+    } else {
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
   }
 }
