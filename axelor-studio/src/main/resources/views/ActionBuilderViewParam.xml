@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="action-builder-view-param-grid" title="View params"
+    model="com.axelor.studio.db.ActionBuilderViewParam">
+    <field name="name"/>
+    <field name="value"/>
+  </grid>
+
+  <form name="action-builder-view-param-form" title="View param"
+    model="com.axelor.studio.db.ActionBuilderViewParam">
+    <panel name="mainPanel">
+      <field name="name" onChange="action-view-param-attrs-value"/>
+      <panel itemSpan="12">
+        <field name="value"
+          hideIf="name == 'search-filters' || name == 'default-search-filters' || name == 'limit'"
+          selection="studio.action.builder.view.param.boolean.select"/>
+        <field name="value"
+          hideIf="name != 'search-filters' &amp;&amp; name != 'default-search-filters' &amp;&amp; name != 'limit'"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-attrs name="action-view-param-attrs-value">
+    <attribute name="value" for="value" expr="eval: null"/>
+    <attribute name="selection-in" for="value" expr="eval: ['true','false']"
+      if="name != 'popup'"/>
+    <attribute name="selection-in" for="value" expr="eval: ['true','false','reload']"
+      if="name == 'popup'"/>
+  </action-attrs>
+
+</object-views>

@@ -36,8 +36,10 @@
       mappedBy="actionBuilder" orderBy="sequence"/>
     <boolean name="isJson" title="Json"/>
 
-    <string name="domainCondition" title="Domain"/>
-    <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine"/>
+    <string name="domainCondition" title="Domain" large="true"/>
+    <string name="domainMetadata" title="Domain metadata" large="true"/>
+    <one-to-many name="viewParams" title="View params" ref="ActionBuilderViewParam"
+      mappedBy="actionBuilder"/>
     <boolean name="menuAction"/>
 
     <many-to-one name="appBuilder" ref="AppBuilder" title="App builder"/>
