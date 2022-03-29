@@ -15,7 +15,7 @@
     canAttach="false">
     <panel name="moduleIconPanel" colSpan="12">
       <panel name="mainModulePanel" colSpan="10" itemSpan="2" colOffset="2">
-        <button name="myOrdersBtn" hidden="true" title="Orders"
+        <button name="myOrdersBtn" hidden="true" title="SupplierView.orders"
           onClick="wizard-supplier-form-open-my-purchase-order"
           css="img-button client-img-menu btn-default" icon="img/128px/app-purchase.png"
           if-module="axelor-purchase"/>
@@ -37,9 +37,9 @@
     </panel>
     <panel name="indicatorsPanel" colSpan="12">
       <panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
-        <panel name="purchaseOrderPanel" title="Order" if-module="axelor-purchase"
+        <panel name="purchaseOrderPanel" title="SupplierView.order" if-module="axelor-purchase"
           itemSpan="12">
-          <button name="$orders" title="Orders" width="190px" widget="info-button"
+          <button name="$orders" title="SupplierView.orders" width="190px" widget="info-button"
             onClick="action-method-supplier-view-get-purchase-order"/>
           <button name="$quotationInProgress" title="Quotation in progress" width="190px"
             widget="info-button"

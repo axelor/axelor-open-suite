@@ -11,7 +11,7 @@
     <string name="icon" title="Icon" selection="studio.menu.builder.icon.select"/>
     <string name="iconBackground" title="Background"
       selection="studio.menu.builder.icon.background.select"/>
-    <integer name="order" title="MenuBuilder.Order" column="order_seq"/>
+    <integer name="menuOrder" title="MenuBuilder.Order" column="order_seq"/>
     <string name="tag" title="Tag label"/>
     <string name="tagGet" title="Tag method"/>
     <boolean name="tagCount" title="Tag count"/>
