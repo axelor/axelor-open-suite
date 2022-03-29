@@ -166,9 +166,10 @@ public class DoubtfulCustomerService {
                 ? invoice.getFiscalPosition()
                 : (partner != null ? partner.getFiscalPosition() : null),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            move.getFunctionalOriginSelect(),
+            MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             move.getOrigin(),
             debtPassReason);
+    newMove.setOriginDate(move.getOriginDate());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
@@ -385,7 +386,7 @@ public class DoubtfulCustomerService {
             moveLine.getMove().getPaymentMode(),
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            moveLine.getMove().getFunctionalOriginSelect(),
+            MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             moveLine.getName(),
             debtPassReason);
 

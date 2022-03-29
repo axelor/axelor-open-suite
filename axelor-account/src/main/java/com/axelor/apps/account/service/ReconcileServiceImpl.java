@@ -388,7 +388,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount)
       throws AxelorException {
     InvoicePayment invoicePayment = null;
-    if (invoice != null) {
+    if (invoice != null
+        && otherMove.getFunctionalOriginSelect()
+            != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
 
       if (invoicePayment == null) {

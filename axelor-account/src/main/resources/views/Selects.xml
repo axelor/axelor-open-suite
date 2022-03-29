@@ -509,6 +509,7 @@
     <option value='5'>Payment</option>
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
+    <option value='8'>Doubtful customer</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
