@@ -794,21 +794,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return moveLine;
   }
 
-  /**
-   * Créer une ligne d'écriture comptable
-   *
-   * @param move
-   * @param partner
-   * @param account
-   * @param amount
-   * @param isDebit <code>true = débit</code>, <code>false = crédit</code>
-   * @param taxLine
-   * @param date
-   * @param ref
-   * @param origin
-   * @return
-   * @throws AxelorException
-   */
   @Override
   public MoveLine createMoveLine(
       Move move,
