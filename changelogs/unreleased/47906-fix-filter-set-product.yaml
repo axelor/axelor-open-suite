@@ -1,0 +1,5 @@
+---
+title: "Product Disponibility: missing filter on products set"
+type: fix
+description: |
+  Add filter to remove products that are not stock managed from product set in product disponibility form 
