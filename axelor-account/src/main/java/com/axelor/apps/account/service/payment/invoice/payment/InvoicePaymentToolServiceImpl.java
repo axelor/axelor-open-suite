@@ -280,6 +280,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal getFinancialDiscountTaxAmount(
       List<InvoiceTermPayment> invoiceTermPaymentList) {
     return invoiceTermPaymentList.stream()
+        .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
             it ->
                 invoiceTermService

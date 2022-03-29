@@ -302,6 +302,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     invoiceTermPaymentService.initInvoiceTermPayments(
         invoicePayment, Collections.singletonList(invoiceTerm));
+    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+
+    invoicePayment.setAmount(
+        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
 
     return invoicePaymentRepository.save(invoicePayment);
   }
