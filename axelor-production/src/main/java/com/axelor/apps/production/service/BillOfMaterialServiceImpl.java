@@ -443,10 +443,11 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return billOfMaterialRepo
         .all()
         .filter(
-            "self.product = ?1 AND self.company = ?2 AND self.id != ?3",
+            "self.product = ?1 AND self.company = ?2 AND self.id != ?3 AND self.statusSelect = ?4",
             originalProduct,
             company,
-            defaultBOM != null ? defaultBOM.getId() : 0)
+            defaultBOM != null ? defaultBOM.getId() : 0,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
         .fetch();
   }
 }
