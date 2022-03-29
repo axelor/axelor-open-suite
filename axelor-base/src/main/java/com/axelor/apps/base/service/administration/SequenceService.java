@@ -116,9 +116,6 @@ public class SequenceService {
   }
 
   public void isSequenceLengthValid(Sequence sequence) throws AxelorException {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
-
     SequenceVersion sequenceVersion =
         getVersion(sequence, appBaseService.getTodayDate(sequence.getCompany()));
     String nextSeq =
