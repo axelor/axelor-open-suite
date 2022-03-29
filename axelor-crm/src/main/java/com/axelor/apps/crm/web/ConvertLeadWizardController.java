@@ -29,22 +29,18 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
 import java.util.Map;
 
 @Singleton
@@ -247,31 +243,26 @@ public class ConvertLeadWizardController {
     }
   }
 
-  public void setContactDefaults(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException {
+  public void setContactDefaults(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = findLead(request);
 
-    Lead lead = findLead(request);
-
-    if (lead.getPicture() != null) {
-      String base64Img = new String(lead.getPicture());
-      String base64ImgData = base64Img.split(",")[1];
-      byte[] img = Base64.getDecoder().decode(base64ImgData);
-      ByteArrayInputStream inImg = new ByteArrayInputStream(img);
       MetaFile picture =
-          Beans.get(MetaFiles.class)
-              .upload(inImg, Files.createTempFile(null, null).toFile().getName());
-
+          Beans.get(ConvertBinaryToMetafileService.class)
+              .convertByteTabPictureInMetafile(lead.getPicture());
       response.setAttr("picture", "value", picture);
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+      response.setAttr("titleSelect", "value", lead.getTitleSelect());
+      response.setAttr("emailAddress", "value", lead.getEmailAddress());
+      response.setAttr("mobilePhone", "value", lead.getMobilePhone());
+      response.setAttr("fixedPhone", "value", lead.getFixedPhone());
+      response.setAttr("user", "value", lead.getUser());
+      response.setAttr("team", "value", lead.getTeam());
+      response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
-    response.setAttr("titleSelect", "value", lead.getTitleSelect());
-    response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-    response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
   }
 
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
