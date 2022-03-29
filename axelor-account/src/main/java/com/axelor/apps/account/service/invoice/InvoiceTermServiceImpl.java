@@ -734,7 +734,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
-      if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
+      if (invoiceTerm.getFinancialDiscountAmount().compareTo(invoiceTerm.getAmountRemaining())
+          > 0) {
+        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
+      } else if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
       }
       if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
@@ -1021,5 +1024,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else {
       invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public InvoiceTerm updatePaymentAmountAndAmountPaidAfterReconciliation(InvoiceTerm invoiceTerm)
+      throws AxelorException {
+    this.fillEligibleTerm(invoiceTerm.getPaymentSession(), invoiceTerm);
+
+    return invoiceTerm;
   }
 }

@@ -183,7 +183,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.amountRemaining > 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -251,9 +251,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
     if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
       Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
-
-      this.generateMoveLineFromInvoiceTerm(
-          paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
 
       this.generateMoveLineFromInvoiceTerm(
           paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
@@ -626,6 +623,27 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     List<MoveLine> moveLineList = moveLineQuery.getResultList();
     if (!ObjectUtils.isEmpty(moveLineList)) {
       Beans.get(MoveLineService.class).reconcileMoveLinesWithFullRollBack(moveLineList);
+
+      TypedQuery<InvoiceTerm> invoiceTermQuery =
+          JPA.em()
+              .createQuery(
+                  "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                      + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                      + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
+                  InvoiceTerm.class);
+      invoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+      List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
+
+      this.updatePaymentAmountAndAmountPaidAfterReconciliation(invoiceTermList);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updatePaymentAmountAndAmountPaidAfterReconciliation(
+      List<InvoiceTerm> invoiceTermList) throws AxelorException {
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      invoiceTermService.updatePaymentAmountAndAmountPaidAfterReconciliation(invoiceTerm);
     }
   }
 }

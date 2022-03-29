@@ -236,4 +236,7 @@ public interface InvoiceTermService {
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
+
+  public InvoiceTerm updatePaymentAmountAndAmountPaidAfterReconciliation(InvoiceTerm invoiceTerm)
+      throws AxelorException;
 }
