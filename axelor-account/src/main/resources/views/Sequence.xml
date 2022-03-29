@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="sequence-form" id="account-sequence-form" title="Sequence"
+    model="com.axelor.apps.base.db.Sequence" extension="true">
+    <extend target="/">
+      <attribute name="onSave" value="action-sequence-group-onsave"/>
+    </extend>
+  </form>
+
+  <action-group name="action-sequence-group-onsave">
+    <action name="action-sequence-validate"/>
+    <action name="action-sequence-account-method-checkif-fixed-asset-sequence-exists"/>
+  </action-group>
+
+  <action-method
+    name="action-sequence-account-method-checkif-fixed-asset-sequence-exists">
+    <call class="com.axelor.apps.account.web.SequenceAccountController"
+      method="checkIfFixedAssetSequenceExist"/>
+  </action-method>
+
+</object-views>
