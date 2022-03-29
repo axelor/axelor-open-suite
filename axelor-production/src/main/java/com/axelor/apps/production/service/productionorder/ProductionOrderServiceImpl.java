@@ -27,6 +27,8 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -109,7 +111,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         null,
         null,
         null,
-        ManufOrderService.ORIGIN_TYPE_OTHER);
+        ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
   }
@@ -125,7 +127,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime endDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException {
 
     ManufOrder manufOrder =
@@ -137,7 +139,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             billOfMaterial,
             startDate,
             endDate,
-            originType);
+            manufOrderOriginType);
 
     if (manufOrder != null) {
       if (saleOrder != null) {
