@@ -7,7 +7,7 @@
     <field name="parentMenu"/>
     <field name="title"/>
     <field name="actionBuilder.model" title="Model"/>
-    <field name="menuOrder" title="MenuBuilder.Order"/>
+    <field name="order" title="MenuBuilder.Order"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
       if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
     <button name="recordsBtn" onClick="action-studio-method-menu-builder-show-records"
@@ -29,7 +29,7 @@
       <field name="parentMenu"/>
       <field name="icon" widget="ImageSelect"/>
       <field name="iconBackground"/>
-      <field name="menuOrder" title="MenuBuilder.Order" colSpan="3"/>
+      <field name="order" title="MenuBuilder.Order" colSpan="3"/>
       <field name="showAction" colSpan="3" widget="boolean-switch"
         onChange="action-menu-builder-show-action"/>
       <field name="actionBuilder" colSpan="12" showIf="showAction" showTitle="false">

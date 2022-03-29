@@ -13,7 +13,7 @@
         search="self.select.name = :_select and self.value = :value">
         <bind node="title" to="title"/>
         <bind node="value" to="value"/>
-        <bind node="order" to="menuOrder"/>
+        <bind node="order" to="order"/>
       </bind>
     </bind>
 

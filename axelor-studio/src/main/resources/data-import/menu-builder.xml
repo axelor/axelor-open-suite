@@ -13,7 +13,7 @@
       <bind node="title" to="title"/>
       <bind node="icon" to="icon"/>
       <bind node="iconBackground" to="iconBackground"/>
-      <bind node="order" to="menuOrder"/>
+      <bind node="order" to="order"/>
       <bind node="tag" to="tag"/>
       <bind node="tagCount" to="tagCount"/>
       <bind node="tagStyle" to="tagStyle"/>
