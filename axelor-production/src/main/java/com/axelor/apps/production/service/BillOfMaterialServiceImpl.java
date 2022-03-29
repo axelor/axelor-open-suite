@@ -435,9 +435,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
       throws AxelorException {
-    if (company == null) {
-      company = AuthUtils.getUser().getActiveCompany();
-    }
 
     BillOfMaterial defaultBOM = this.getDefaultBOM(originalProduct, company);
     return billOfMaterialRepo
