@@ -860,7 +860,7 @@ public class IrrecoverableService {
             MoveRepository.FUNCTIONAL_ORIGIN_SALE,
             irrecoverableName,
             invoice.getInvoiceId());
-
+    move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -991,6 +991,7 @@ public class IrrecoverableService {
             moveLine.getMove().getFunctionalOriginSelect(),
             irrecoverableName,
             moveLine.getDescription());
+    move.setOriginDate(moveLine.getMove().getDate());
 
     int seq = 1;
 
