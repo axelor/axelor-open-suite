@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.file.ofx.BankStatementFileOfxService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -86,6 +87,10 @@ public class BankStatementService {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
         Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
+        updateStatus(bankStatement);
+        break;
+      case BankStatementFileFormatRepository.FILE_FORMAT_OFX_BANK_STATEMENT_IMPORT:
+        Beans.get(BankStatementFileOfxService.class).process(bankStatement);
         updateStatus(bankStatement);
         break;
 

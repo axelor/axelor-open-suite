@@ -51,6 +51,7 @@
 		public static final String FILE_FORMAT_PAIN_002_001_02_ARA = "pain.002.001.02.ara";
 		public static final String FILE_FORMAT_PAIN_002_001_02_ACK = "pain.002.001.02.ack";
 
+        public static final String FILE_FORMAT_OFX_BANK_STATEMENT_IMPORT = "ofx.file.import";
 
 	]]></extra-code>
 

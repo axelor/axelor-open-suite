@@ -35,3 +35,4 @@
 36;"camt.052.001.02.rep";"camt.052.001.02.rep - Relevé prévisionnel intraday";"Relevé prévisionnel intraday"
 37;"camt.054.001.02.rdd";"camt.054.001.02.rdd - Relevé de SDD rejeté";"Relevé de SDD rejeté"
 38;"camt.054.001.xx.add";"camt.054.001.xx.add - Relevé de SDD reçu";"Relevé de SDD reçu"
+39;"ofx.file.import";"ofx.bank.statement";"Import Bank Statement From Ofx File"
