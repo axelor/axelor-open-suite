@@ -546,10 +546,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || (invoice.getAmountRemaining().signum() == 0
-            && invoice.getExTaxTotal().signum() == 0
-            && CollectionUtils.isEmpty(invoice.getInvoiceLineList()))) {
+        || ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        || (invoice.getInTaxTotal().signum() == 0
+            && invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            && !ObjectUtils.isEmpty(invoice.getInvoiceLineList()))
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getAmountRemaining().signum() > 0) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -731,7 +733,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
     }
 
-    if (financialDiscountDeadlineDate != null) {
+    if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
       if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
       }
