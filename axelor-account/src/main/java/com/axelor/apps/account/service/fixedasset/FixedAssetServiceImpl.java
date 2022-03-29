@@ -383,7 +383,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         disposalQty.divide(fixedAsset.getQty(), CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal remainingProrata =
         BigDecimal.ONE.subtract(prorata).setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
-    System.err.println(prorata + " " + remainingProrata);
     multiplyLinesBy(newFixedAsset, prorata);
     multiplyLinesBy(fixedAsset, remainingProrata);
     multiplyFieldsToSplit(newFixedAsset, prorata);
