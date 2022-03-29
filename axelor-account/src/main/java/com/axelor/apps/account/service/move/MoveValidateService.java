@@ -70,4 +70,6 @@ public interface MoveValidateService {
   void simulateMultiple(List<? extends Move> moveList) throws AxelorException;
 
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
+
+  void checkForCutOffOnMoveLine(Move move) throws AxelorException;
 }

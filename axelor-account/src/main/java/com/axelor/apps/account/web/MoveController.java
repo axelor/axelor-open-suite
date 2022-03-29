@@ -592,4 +592,14 @@ public class MoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkForCutOffOnMoveLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MoveValidateService.class).checkForCutOffOnMoveLine(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

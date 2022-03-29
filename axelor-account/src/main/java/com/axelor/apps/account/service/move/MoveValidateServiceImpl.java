@@ -681,4 +681,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
     return false;
   }
+
+  @Override
+  public void checkForCutOffOnMoveLine(Move move) throws AxelorException {
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()
+        && !moveToolService.checkMoveLinesCutOffDates(move)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
+    }
+  }
 }
