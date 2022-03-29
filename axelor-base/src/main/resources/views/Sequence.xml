@@ -16,7 +16,7 @@
 
   <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence"
     onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs"
-    onSave="action-sequence-validate">
+    onSave="action-sequence-group-onsave">
     <panel name="mainPanel">
       <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         <editor>
@@ -83,6 +83,11 @@
     <action name="action-sequence-attrs"/>
   </action-group>
 
+  <action-group name="action-sequence-group-onsave">
+    <action name="action-sequence-method-is-length-valid"/>
+    <action name="action-sequence-validate"/>
+  </action-group>
+
   <!-- ACTION RECORD -->
   <action-record name="action-sequence-default"
     model="com.axelor.apps.base.db.Sequence">
@@ -113,8 +118,6 @@
     <error
       message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true"
       if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
-    <error message="Total sequence length must be less than 15 characters."
-      if="!com.axelor.apps.base.service.administration.SequenceService.isSequenceLengthValid(__this__)"/>
     <error message="Prefix or suffix must not contain characters forbidden in filenames."
       if="p = ~/^[^\/\\?*:\|&quot;&lt;>]*$/; prefixe &amp;&amp; !(prefixe ==~ p) || suffixe &amp;&amp; !(suffixe ==~ p)"/>
     <error message="Prefix cannot start with #." if="prefixe ==~ /^#.*$/"/>
@@ -126,6 +129,10 @@
 
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
+  </action-method>
+
+  <action-method name="action-sequence-method-is-length-valid">
+    <call class="com.axelor.apps.base.web.SequenceController" method="isLengthValid"/>
   </action-method>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"

@@ -115,11 +115,22 @@ public class SequenceService {
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
-  public static boolean isSequenceLengthValid(Sequence sequence) {
+  public void isSequenceLengthValid(Sequence sequence) throws AxelorException {
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
 
-    return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
+    SequenceVersion sequenceVersion =
+        getVersion(sequence, appBaseService.getTodayDate(sequence.getCompany()));
+    String nextSeq =
+        computeNextSeq(
+            sequenceVersion, sequence, appBaseService.getTodayDate(sequence.getCompany()));
+
+    log.debug("DEBUGGER" + nextSeq.length());
+    if (nextSeq.length() > 14) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SEQUENCE_LENGTH_NOT_VALID));
+    }
   }
 
   public Sequence getSequence(String code, Company company) {
