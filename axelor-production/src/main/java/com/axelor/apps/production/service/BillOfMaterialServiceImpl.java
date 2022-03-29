@@ -431,4 +431,22 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return billOfMaterial;
   }
+
+  @Override
+  public List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
+      throws AxelorException {
+    if (company == null) {
+      company = AuthUtils.getUser().getActiveCompany();
+    }
+
+    BillOfMaterial defaultBOM = this.getDefaultBOM(originalProduct, company);
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.id != ?3",
+            originalProduct,
+            company,
+            defaultBOM != null ? defaultBOM.getId() : 0)
+        .fetch();
+  }
 }
