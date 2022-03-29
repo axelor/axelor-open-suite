@@ -73,9 +73,6 @@ public class SequenceService {
 
   protected final SequenceRepository sequenceRepo;
 
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   @Inject
   public SequenceService(
       SequenceVersionRepository sequenceVersionRepository,
