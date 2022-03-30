@@ -137,6 +137,14 @@
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
       </panel>
+      <panel name="generateRetailInvoiceMovePanel"
+        title="Generate Invoice Retail Move Configuration" hideIf="actionSelect != 25">
+        <field name="retailStartDate" widget="date"/>
+        <field name="retailEndDate" widget="date"/>
+        <field name="cycle"/>
+        <panel-related field="tradingNameSet" name="tradingNameSetPanel"
+          title="Trading Name"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -180,6 +188,9 @@
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
         showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
+      <button name="generateRetailInvoiceMoveBtn" title="Generate Retail Invoice Move Batch"
+        onClick="save,action-method-accounting-batch-generate-retail-invoice-move"
+        showIf="actionSelect == 25" colSpan="12"/>
     </panel>
   </form>
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">
@@ -201,6 +212,11 @@
   <action-group name="action-accounting-batch-group-on-load">
     <action name="action-accounting-batch-attrs-trading-names-management"/>
     <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-generate-retail-invoice-move">
+    <action name="action-accounting-batch-validate-retail-period"/>
+    <action name="action-accounting-batch-method-generate-retail-invoice-move"/>
   </action-group>
 
 
@@ -285,6 +301,11 @@
       method="actionBillOfExchange"/>
   </action-method>
 
+  <action-method name="action-accounting-batch-method-generate-retail-invoice-move">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionGenerateRetailInvoiceMove"/>
+  </action-method>
+
   <!-- ACTION VALIDATE -->
   <action-validate name="action-accounting-batch-validate-batchlist-not-empty">
     <alert
@@ -297,6 +318,10 @@
       if="eval: !updateAllRealizedFixedAssetLines &amp;&amp; startDate &gt; endDate"/>
   </action-validate>
 
+  <action-validate name="action-accounting-batch-validate-retail-period">
+    <error message="Please enter valid start date and end date"
+      if="eval: retailStartDate &gt; retailEndDate"/>
+  </action-validate>
 
   <!-- ACTION ATTRS -->
 

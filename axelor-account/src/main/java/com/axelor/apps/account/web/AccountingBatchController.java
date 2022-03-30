@@ -116,6 +116,10 @@ public class AccountingBatchController {
     runBatch(AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS, request, response);
   }
 
+  public void actionGenerateRetailInvoiceMove(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_GENERATE_RETAIL_INVOICE_MOVE, request, response);
+  }
+
   public void runBatch(Integer actionSelect, ActionRequest request, ActionResponse response) {
     try {
 
