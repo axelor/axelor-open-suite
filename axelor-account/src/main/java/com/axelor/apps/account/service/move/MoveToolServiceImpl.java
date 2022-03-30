@@ -432,4 +432,21 @@ public class MoveToolServiceImpl implements MoveToolService {
       moveLine.setOrigin(move.getOrigin());
     }
   }
+
+  @Override
+  public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAccount().getUseForPartnerBalance()) {
+          moveLineList.add(moveLine);
+        }
+      }
+    }
+
+    return moveLineList;
+  }
 }

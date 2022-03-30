@@ -43,7 +43,8 @@
     <many-to-one name="creditNoteJournalType"
       ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
-		<many-to-one name="supplierAdvancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
+    <many-to-one name="supplierAdvancePaymentAccount"
+      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
 
     <!-- ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"

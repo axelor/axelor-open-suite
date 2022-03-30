@@ -414,7 +414,9 @@
       <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
       <field name="operationSubTypeSelect"
         hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
-			<field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || operationTypeSelect != 1 || $readonly()" showTitle="true" selection-in="[1,2]"/>
+      <field name="operationSubTypeSelect"
+        hideIf="statusSelect &gt; 1 || operationTypeSelect != 1 || $readonly()" showTitle="true"
+        selection-in="[1,2]"/>
       <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
@@ -489,18 +491,24 @@
         </field>
       </panel>
 
-            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
-		    <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
-              <viewer>
+      <field name="supplierInvoiceNb"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+        onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
+      <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false"
+        readonly="true">
+        <viewer>
                 <![CDATA[
                	  <h4>
                	    <span class="label label-warning" style="color: #FFFFFF;" x-translate>Watch out, an invoice was already created for this supplier invoice number.</span>
                   </h4>
               	]]>
-              </viewer>    
-            </field>
-            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
-        </panel>
+        </viewer>
+      </field>
+      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+        onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+    </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
       showIf="$contains([6, 7],operationSubTypeSelect)">

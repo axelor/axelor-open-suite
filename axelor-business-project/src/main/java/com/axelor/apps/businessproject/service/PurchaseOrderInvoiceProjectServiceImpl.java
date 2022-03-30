@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -47,12 +46,10 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -83,8 +80,18 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       PriceListService priceListService,
       PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl,
       AppBusinessProjectService appBusinessProjectService,
-      ProductCompanyService productCompanyService) {
-    super(invoiceService, invoiceRepo, timetableRepo, appSupplychainService);
+      ProductCompanyService productCompanyService,
+      AccountConfigService accountConfigService,
+      CommonInvoiceService commonInvoiceService,
+      AddressService addressService) {
+    super(
+        invoiceService,
+        invoiceRepo,
+        timetableRepo,
+        appSupplychainService,
+        accountConfigService,
+        commonInvoiceService,
+        addressService);
     this.priceListService = priceListService;
     this.purchaseOrderLineServiceImpl = purchaseOrderLineServiceImpl;
     this.appBusinessProjectService = appBusinessProjectService;

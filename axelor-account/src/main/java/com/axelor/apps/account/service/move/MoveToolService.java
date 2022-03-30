@@ -152,47 +152,9 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
-  public boolean isDebitMoveLine(MoveLine moveLine) {
-
-    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 1) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
-    List<MoveLine> moveLineList = new ArrayList<>();
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLineList.add(moveLine);
-        }
-      }
-    }
-
-    return moveLineList;
-  }
-
-  public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
-    List<MoveLine> moveLineList = new ArrayList<>();
-    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLineList.add(moveLine);
-        }
-      }
-    }
-
-    return moveLineList;
-  }
 }

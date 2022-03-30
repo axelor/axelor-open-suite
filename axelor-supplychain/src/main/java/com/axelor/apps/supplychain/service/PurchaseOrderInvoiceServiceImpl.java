@@ -22,23 +22,21 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -80,14 +78,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected TimetableRepository timetableRepo;
   protected AppSupplychainService appSupplychainService;
 
-  @Inject private InvoiceRepository invoiceRepo;
-
   protected AccountConfigService accountConfigService;
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
+
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
-      InvoiceService invoiceService,
+      InvoiceServiceSupplychainImpl invoiceService,
       InvoiceRepository invoiceRepo,
       TimetableRepository timetableRepo,
       AppSupplychainService appSupplychainService,
