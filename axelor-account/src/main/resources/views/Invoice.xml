@@ -494,7 +494,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
+        onChange="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
       <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false"
         readonly="true">
         <viewer>
@@ -507,7 +507,7 @@
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+        onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
