@@ -1,5 +1,5 @@
 "module";"object";"view";"field";"help"
-"axelor-production";"ProdProcess";"prod-process-form";"isConsProOnOperation";"Case à cocher permettant de déclencher une consommation par phase sur les ordres de fabrication rattachés à cette gamme. Cette option permettra de paramétrer une liste de produit à consommer sur chaque phase de la gamme."
+"axelor-production";"ProdProcess";"prod-process-form";"isConsProOnOperation";"Case à cocher permettant de déclencher une consommation par phase sur les ordres de fabrication rattachés à cette gamme. Cette option permettra de paramétrer une liste de produits à consommer sur chaque phase de la gamme."
 "axelor-production";"ProdProcess";"prod-process-form";"outsourcing";"Cette case permet d'indiquer si cette gamme sera sous-traitée."
 "axelor-production";"ProdProcessLine";"prod-process-line-form";"outsourcing";"Cette case permet d'indiquer si cette phase sera sous-traitée."
 "axelor-production";"ProdProcessLine";"prod-process-line-form";"minCapacityPerCycle";"Capacité minimum par cycle de réalisation de la phase."

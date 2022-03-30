@@ -40,6 +40,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +100,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         }
 
         if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
         }
 
         saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
@@ -153,12 +155,11 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(false);
     }
 
+    Collections.sort(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getProduct() != null) {
-        purchaseOrder.addPurchaseOrderLineListItem(
-            purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
-                purchaseOrder, saleOrderLine));
-      }
+      purchaseOrder.addPurchaseOrderLineListItem(
+          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
+              purchaseOrder, saleOrderLine));
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

@@ -80,6 +80,9 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
           throw new IllegalArgumentException("Invalid data type");
         }
 
+      case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_SEND_BILLING:
+        return Beans.get(BatchBillOfExchangeSendBilling.class).run(accountingBatch);
+
       case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION:
         return Beans.get(BatchBankOrderGenerationBillOfExchange.class).run(accountingBatch);
       default:

@@ -54,4 +54,6 @@ public interface MoveLineToolService {
   MoveLine setCurrencyAmount(MoveLine moveLine);
 
   boolean checkCutOffDates(MoveLine moveLine);
+
+  boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
 }

@@ -74,6 +74,7 @@
           action="action-customer-invoice-line-menu"/>
       </menu>
     </menubar>
+    <hilite if="operationTypeSelect == 4" color="orange"/>
     <hilite color="danger" if="billOfExchangeBlockingOk"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
@@ -82,6 +83,7 @@
       if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
+    <field name="operationTypeSelect"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
     <field name="exTaxTotal" aggregate="sum" width="120"/>
@@ -779,12 +781,12 @@ InvoiceSet.length > 0))"
         </panel>
         <panel name="financialDiscountPanel" colSpan="12"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount" colSpan="6"
+          <field name="financialDiscount"
             onChange="action-record-invoice-set-financial-discount-informations"
             showIf="statusSelect &gt;=3"/>
-          <field name="financialDiscountRate" colSpan="6"
+          <field name="financialDiscountRate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
-          <field name="financialDiscountDeadlineDate" colSpan="6"
+          <field name="financialDiscountDeadlineDate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
         </panel>
 
@@ -952,7 +954,6 @@ InvoiceSet.length > 0))"
 		         </dl>]]>
         </viewer>
       </field>
-      <field name="amountRemaining"></field>
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
@@ -1635,7 +1636,7 @@ InvoiceSet.length > 0))"
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
