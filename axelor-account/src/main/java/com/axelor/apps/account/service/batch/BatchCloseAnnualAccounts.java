@@ -368,22 +368,17 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
       query =
           query.concat(
-              "self.move.statusSelect = "
+              "self.move.statusSelect in ("
+                  + MoveRepository.STATUS_DAYBOOK
+                  + ","
                   + MoveRepository.STATUS_ACCOUNTED
-                  + " AND self.move.period.year = "
+                  + ") AND self.move.period.year = "
                   + accountingBatch.getYear().getId());
-
       BigDecimal incomeAmount =
-          moveLineToolService.getMoveLineSumAmount(
-              accountingBatch.getClosureAccountSet(),
-              AccountTypeRepository.TYPE_INCOME,
-              accountingBatch.getYear());
+          moveLineToolService.getMoveLineSumAmount(AccountTypeRepository.TYPE_INCOME, query);
       if (incomeAmount != null) {
         BigDecimal chargeAmount =
-            moveLineToolService.getMoveLineSumAmount(
-                accountingBatch.getClosureAccountSet(),
-                AccountTypeRepository.TYPE_CHARGE,
-                accountingBatch.getYear());
+            moveLineToolService.getMoveLineSumAmount(AccountTypeRepository.TYPE_CHARGE, query);
         if (chargeAmount != null) {
           return incomeAmount.subtract(chargeAmount);
         }
