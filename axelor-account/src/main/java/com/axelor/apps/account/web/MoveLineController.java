@@ -377,8 +377,7 @@ public class MoveLineController {
     }
   }
 
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -392,13 +391,12 @@ public class MoveLineController {
     }
   }
 
-  public void setAxisDomains(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      List<Long> analyticAccountList = new ArrayList<Long>();
+      List<Long> analyticAccountList;
       MoveLineComputeAnalyticService moveLineComputeAnalyticService =
           Beans.get(MoveLineComputeAnalyticService.class);
 
@@ -412,8 +410,9 @@ public class MoveLineController {
             if (moveLine.getMove().getCompany() != null) {
               String idList =
                   analyticAccountList.stream()
-                      .map(id -> id.toString())
+                      .map(Object::toString)
                       .collect(Collectors.joining(","));
+
               response.setAttr(
                   "axis" + i + "AnalyticAccount",
                   "domain",
@@ -461,8 +460,7 @@ public class MoveLineController {
     }
   }
 
-  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       if (moveLine.getMove() != null
@@ -479,7 +477,7 @@ public class MoveLineController {
     }
   }
 
-  public void manageAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().getParent() != null) {
         Move move = request.getContext().getParent().asType(Move.class);

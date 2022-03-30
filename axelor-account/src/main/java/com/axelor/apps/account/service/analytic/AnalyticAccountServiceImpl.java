@@ -59,13 +59,8 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   @Override
   public boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList) {
-    if (!CollectionUtils.isEmpty(childrenList)) {
-      for (AnalyticAccount children : childrenList) {
-        if (children.getCompany() != null && children.getCompany() != company) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return !CollectionUtils.isEmpty(childrenList)
+        && childrenList.stream()
+            .anyMatch(it -> it.getCompany() != null && !it.getCompany().equals(company));
   }
 }

@@ -91,11 +91,14 @@ public class AnalyticAccountController {
       AnalyticAccount analyticAccount = request.getContext().asType(AnalyticAccount.class);
       AnalyticAccountRepository analyticAccountRepository =
           Beans.get(AnalyticAccountRepository.class);
+
       if (analyticAccount.getCompany() != null
-          && analyticAccount.getCompany()
-              != analyticAccountRepository.find(analyticAccount.getId()).getCompany()) {
+          && !analyticAccount
+              .getCompany()
+              .equals(analyticAccountRepository.find(analyticAccount.getId()).getCompany())) {
         List<AnalyticAccount> childrenList =
             analyticAccountRepository.findByParent(analyticAccount).fetch();
+
         if (Beans.get(AnalyticAccountService.class)
             .checkChildrenAccount(analyticAccount.getCompany(), childrenList)) {
           response.setError(I18n.get(IExceptionMessage.ANALYTIC_ACCOUNT_ERROR_ON_COMPANY));

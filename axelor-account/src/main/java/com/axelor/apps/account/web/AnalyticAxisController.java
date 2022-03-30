@@ -116,11 +116,17 @@ public class AnalyticAxisController {
   public void checkAnalyticAccountCompany(ActionRequest request, ActionResponse response) {
     try {
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
+
       if (analyticAxis.getCompany() != null
-          && analyticAxis.getCompany()
-              != Beans.get(AnalyticAxisRepository.class).find(analyticAxis.getId()).getCompany()) {
+          && !analyticAxis
+              .getCompany()
+              .equals(
+                  Beans.get(AnalyticAxisRepository.class)
+                      .find(analyticAxis.getId())
+                      .getCompany())) {
         List<AnalyticAccount> childrenList =
             Beans.get(AnalyticAccountRepository.class).findByAnalyticAxis(analyticAxis).fetch();
+
         if (Beans.get(AnalyticAccountService.class)
             .checkChildrenAccount(analyticAxis.getCompany(), childrenList)) {
           response.setError(I18n.get(IExceptionMessage.ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY));
