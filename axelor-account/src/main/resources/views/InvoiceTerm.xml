@@ -310,9 +310,7 @@
           onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
         <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
-        <field name="paymentMode"
-          requiredIf="invoice != null || [1,2].indexOf(moveLine?.move?.journal?.journalType?.technicalTypeSelect) != -1"/>
-        <field name="moveLine.move.journal.journalTypeSelect" hidden="true"/>
+        <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
