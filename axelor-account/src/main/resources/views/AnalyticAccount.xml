@@ -46,12 +46,13 @@
       <field name="name"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         required="true" onChange="action-group-analytic-account-onchange-axis"/>
-      <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"
-        onSelect="action-method-set-domain-parent-level-analytic-account"/>
-      <field name="company" onChange="action-method-analytic-account-check-children-company"
-        readonlyIf="analyticAxis != null &amp;&amp; analyticAxis.company != null"/>
       <field name="analyticLevel" form-view="analytic-level-form"
         grid-view="analytic-level-grid" required="true"/>
+      <field name="company" onChange="action-method-analytic-account-check-children-company"
+        readonlyIf="analyticAxis != null &amp;&amp; analyticAxis.company != null"/>
+      <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"
+        showIf="analyticAxis &amp;&amp; analyticLevel"
+        onSelect="action-method-set-domain-parent-level-analytic-account"/>
       <field name="analyticAxis.company" hidden="true"/>
     </panel>
     <panel name="groupingValuePanel" hidden="true">
