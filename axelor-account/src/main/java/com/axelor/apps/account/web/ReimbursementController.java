@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReimbursementService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,14 +32,17 @@ import com.google.inject.Singleton;
 public class ReimbursementController {
 
   public void validateReimbursement(ActionRequest request, ActionResponse response) {
+    try {
+      Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
+      Beans.get(ReimbursementService.class).updatePartnerCurrentRIB(reimbursement);
 
-    Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-    Beans.get(ReimbursementService.class).updatePartnerCurrentRIB(reimbursement);
-
-    if (reimbursement.getBankDetails() != null) {
-      response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
-    } else {
-      response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
+      if (reimbursement.getBankDetails() != null) {
+        response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.REIMBURSEMENT_4));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
