@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -24,9 +25,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -38,6 +42,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
@@ -351,5 +359,37 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
       }
     }
+  }
+
+  @Override
+  public BigDecimal getMoveLineSumAmount(
+      Set<Account> accountSet, String technicalTypeSelect, Year year) {
+    String query = "";
+    if (!CollectionUtils.isEmpty(accountSet)) {
+      String idListStr =
+          accountSet.stream()
+              .map(account -> account.getId())
+              .map(id -> id.toString())
+              .collect(Collectors.joining(","));
+      query = "self.account in (" + idListStr + ") AND ";
+    }
+    query =
+        query.concat(
+            "self.move.statusSelect in ("
+                + MoveRepository.STATUS_DAYBOOK
+                + ","
+                + MoveRepository.STATUS_ACCOUNTED
+                + ") AND self.move.period.year = "
+                + year.getId());
+    Query moveLineQuery =
+        JPA.em()
+            .createQuery(
+                "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                    + query
+                    + " AND self.account.accountType.technicalTypeSelect = '"
+                    + technicalTypeSelect
+                    + "'",
+                BigDecimal.class);
+    return (BigDecimal) moveLineQuery.getSingleResult();
   }
 }

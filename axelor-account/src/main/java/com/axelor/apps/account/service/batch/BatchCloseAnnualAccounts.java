@@ -24,12 +24,14 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
@@ -51,7 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected AccountingCloseAnnualService accountingCloseAnnualService;
   protected AccountConfigService accountConfigService;
   protected MoveCreateService moveCreateService;
+  protected MoveLineToolService moveLineToolService;
   protected boolean end = false;
 
   @Inject
@@ -74,13 +76,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountRepository accountRepository,
       AccountingCloseAnnualService accountingCloseAnnualService,
       AccountConfigService accountConfigService,
-      MoveCreateService moveCreateService) {
+      MoveCreateService moveCreateService,
+      MoveLineToolService moveLineToolService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
     this.accountingCloseAnnualService = accountingCloseAnnualService;
     this.accountConfigService = accountConfigService;
     this.moveCreateService = moveCreateService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -106,7 +110,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
   protected void testCloseAnnualBatchFields(BigDecimal resultMoveAmount) throws AxelorException {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
-    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
+    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())
+        || CollectionUtils.isEmpty(accountingBatch.getOpeningAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
@@ -217,11 +222,17 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           map.put(accountByPartner, value);
         }
       }
-      generateMoves(map);
+      try {
+        generateMoves(map);
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(e);
+      }
     }
   }
 
-  protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
+  protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map)
+      throws AxelorException {
     Map<Boolean, Boolean> value = new HashMap<Boolean, Boolean>();
     boolean close = false;
     boolean open = false;
@@ -242,30 +253,36 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           open = value.containsValue(true);
           List<Move> generatedMoves = new ArrayList<Move>();
           if (close && !open) {
-            generatedMoves =
-                accountingCloseAnnualService.generateCloseAnnualAccount(
+            Move closeMove =
+                accountingCloseAnnualService.generateCloseOrOpenAnnualAccountMove(
                     yearRepository.find(year.getId()),
                     accountByPartner.account,
-                    accountByPartner.partner,
                     endOfYearDate,
                     reportedBalanceDate,
                     origin,
                     moveDescription,
+                    accountByPartner.partner,
                     closeYear,
                     allocatePerPartner);
+            if (closeMove != null) {
+              generatedMoves.add(closeMove);
+            }
 
           } else if (open && !close) {
-            generatedMoves =
-                accountingCloseAnnualService.generateOpenAnnualAccount(
+            Move openMove =
+                accountingCloseAnnualService.generateCloseOrOpenAnnualAccountMove(
                     yearRepository.find(year.getId()),
                     accountByPartner.account,
-                    accountByPartner.partner,
                     endOfYearDate,
                     reportedBalanceDate,
                     origin,
                     moveDescription,
+                    accountByPartner.partner,
                     openYear,
                     allocatePerPartner);
+            if (openMove != null) {
+              generatedMoves.add(openMove);
+            }
 
           } else if (open && close) {
             generatedMoves =
@@ -355,26 +372,22 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                   + MoveRepository.STATUS_ACCOUNTED
                   + " AND self.move.period.year = "
                   + accountingBatch.getYear().getId());
-      Query qIncome =
-          JPA.em()
-              .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
-                      + query
-                      + " AND self.account.accountType.technicalTypeSelect = 'income'",
-                  BigDecimal.class);
-      if (qIncome.getSingleResult() != null) {
-        Query qCharge =
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
-                        + query
-                        + " AND self.account.accountType.technicalTypeSelect = 'charge'",
-                    BigDecimal.class);
-        if (qCharge.getSingleResult() != null) {
-          return ((BigDecimal) qIncome.getSingleResult())
-              .subtract((BigDecimal) qCharge.getSingleResult());
+
+      BigDecimal incomeAmount =
+          moveLineToolService.getMoveLineSumAmount(
+              accountingBatch.getClosureAccountSet(),
+              AccountTypeRepository.TYPE_INCOME,
+              accountingBatch.getYear());
+      if (incomeAmount != null) {
+        BigDecimal chargeAmount =
+            moveLineToolService.getMoveLineSumAmount(
+                accountingBatch.getClosureAccountSet(),
+                AccountTypeRepository.TYPE_CHARGE,
+                accountingBatch.getYear());
+        if (chargeAmount != null) {
+          return incomeAmount.subtract(chargeAmount);
         }
-        return (BigDecimal) qIncome.getSingleResult();
+        return incomeAmount;
       }
     }
     return BigDecimal.ZERO;

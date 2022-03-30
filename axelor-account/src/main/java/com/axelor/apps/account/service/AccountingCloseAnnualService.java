@@ -44,34 +44,20 @@ public interface AccountingCloseAnnualService {
       boolean allocatePerPartner)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateCloseAnnualAccount(
-      Year year,
-      Account account,
-      Partner partner,
-      LocalDate endOfYearDate,
-      LocalDate reportedBalanceDate,
-      String origin,
-      String moveDescription,
-      boolean closeYear,
-      boolean allocatePerPartner)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateOpenAnnualAccount(
-      Year year,
-      Account account,
-      Partner partner,
-      LocalDate endOfYearDate,
-      LocalDate reportedBalanceDate,
-      String origin,
-      String moveDescription,
-      boolean openYear,
-      boolean allocatePerPartner)
-      throws AxelorException;
-
   public List<Long> getAllAccountOfYear(Set<Account> accountSet, Year year);
 
   public List<Pair<Long, Long>> assignPartner(
       List<Long> accountIdList, Year year, boolean allocatePerPartner);
+
+  public Move generateCloseOrOpenAnnualAccountMove(
+      Year find,
+      Account account,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      Partner partner,
+      boolean closeYear,
+      boolean allocatePerPartner)
+      throws AxelorException;
 }

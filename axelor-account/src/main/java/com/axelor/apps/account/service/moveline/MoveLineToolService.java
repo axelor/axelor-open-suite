@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Year;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveLineToolService {
 
@@ -58,4 +62,6 @@ public interface MoveLineToolService {
   boolean isEqualTaxMoveLine(TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
 
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
+
+  BigDecimal getMoveLineSumAmount(Set<Account> accountSet, String technicalTypeSelect, Year year);
 }

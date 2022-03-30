@@ -103,130 +103,49 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     Move closeYearMove = null;
     Move openYearMove = null;
 
-    if (closeYear) {
-      closeYearMove =
-          generateCloseOrOpenAnnualAccountMove(
-              year,
-              account,
-              endOfYearDate,
-              endOfYearDate,
-              origin,
-              moveDescription,
-              partner,
-              false,
-              allocatePerPartner);
+    closeYearMove =
+        closeYear
+            ? generateCloseOrOpenAnnualAccountMove(
+                year,
+                account,
+                endOfYearDate,
+                endOfYearDate,
+                origin,
+                moveDescription,
+                partner,
+                false,
+                allocatePerPartner)
+            : null;
 
-      if (closeYearMove == null) {
-        return null;
-      }
+    openYearMove =
+        openYear
+            ? generateCloseOrOpenAnnualAccountMove(
+                year,
+                account,
+                reportedBalanceDate,
+                endOfYearDate,
+                origin,
+                moveDescription,
+                partner,
+                true,
+                allocatePerPartner)
+            : null;
+
+    if (closeYearMove != null) {
       moveList.add(closeYearMove);
     }
-
-    if (openYear) {
-      openYearMove =
-          generateCloseOrOpenAnnualAccountMove(
-              year,
-              account,
-              reportedBalanceDate,
-              endOfYearDate,
-              origin,
-              moveDescription,
-              partner,
-              true,
-              allocatePerPartner);
-
-      if (openYearMove == null) {
-        return null;
-      }
+    if (openYearMove != null) {
       moveList.add(openYearMove);
     }
 
     if (closeYearMove != null && openYearMove != null) {
       reconcile(closeYearMove, openYearMove);
     }
-
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateCloseAnnualAccount(
-      Year year,
-      Account account,
-      Partner partner,
-      LocalDate endOfYearDate,
-      LocalDate reportedBalanceDate,
-      String origin,
-      String moveDescription,
-      boolean closeYear,
-      boolean allocatePerPartner)
-      throws AxelorException {
-
-    List<Move> moveList = new ArrayList<>();
-
-    Move closeYearMove = null;
-
-    if (closeYear) {
-      closeYearMove =
-          generateCloseOrOpenAnnualAccountMove(
-              year,
-              account,
-              endOfYearDate,
-              endOfYearDate,
-              origin,
-              moveDescription,
-              partner,
-              false,
-              allocatePerPartner);
-
-      if (closeYearMove == null) {
-        return null;
-      }
-      moveList.add(closeYearMove);
-    }
-
-    return moveList;
-  }
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateOpenAnnualAccount(
-      Year year,
-      Account account,
-      Partner partner,
-      LocalDate endOfYearDate,
-      LocalDate reportedBalanceDate,
-      String origin,
-      String moveDescription,
-      boolean openYear,
-      boolean allocatePerPartner)
-      throws AxelorException {
-
-    List<Move> moveList = new ArrayList<>();
-
-    Move openYearMove = null;
-
-    if (openYear) {
-      openYearMove =
-          generateCloseOrOpenAnnualAccountMove(
-              year,
-              account,
-              reportedBalanceDate,
-              endOfYearDate,
-              origin,
-              moveDescription,
-              partner,
-              true,
-              allocatePerPartner);
-
-      if (openYearMove == null) {
-        return null;
-      }
-      moveList.add(openYearMove);
-    }
-
-    return moveList;
-  }
-
-  protected Move generateCloseOrOpenAnnualAccountMove(
+  @Override
+  public Move generateCloseOrOpenAnnualAccountMove(
       Year year,
       Account account,
       LocalDate moveDate,
