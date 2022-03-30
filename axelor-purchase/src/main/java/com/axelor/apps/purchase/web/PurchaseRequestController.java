@@ -40,38 +40,6 @@ import java.util.stream.Collectors;
 @Singleton
 public class PurchaseRequestController {
 
-  public void confirmCart(ActionRequest request, ActionResponse response) {
-    try {
-      Beans.get(PurchaseRequestService.class).confirmCart();
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void acceptRequest(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().get("_ids") == null) {
-        return;
-      }
-      List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
-
-      if (!requestIds.isEmpty()) {
-        List<PurchaseRequest> purchaseRequests =
-            Beans.get(PurchaseRequestRepository.class)
-                .all()
-                .filter("self.id in (?1)", requestIds)
-                .fetch();
-
-        Beans.get(PurchaseRequestService.class).acceptRequest(purchaseRequests);
-
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void generatePo(ActionRequest request, ActionResponse response) {
     @SuppressWarnings("unchecked")
     List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
