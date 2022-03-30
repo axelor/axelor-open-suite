@@ -131,38 +131,6 @@
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
   </action-method>
 
-  <!-- demandeur menus -->
-
-  <!-- <menuitem name="sc-purchase-request" title="Purchase requests" order="-105" if="__config__.app.isApp('purchase')"
-    icon="fa-shopping-cart" groups="demandeur" icon-background="#b6473f"/> <menuitem name="sc-root-purchase-request-my-request-new"
-    parent="sc-purchase-request" title="New Request" action="sc.root.purchase.request.my.request.new" order="2"
-    groups="demandeur" /> <action-view name="sc.root.purchase.request.my.request.new" model="com.axelor.apps.purchase.db.PurchaseRequest"
-    title="New Request "> <view type="form" name="purchase-request-form"/> <view type="grid" name="purchase-request-grid"/>
-    <domain>self.createdBy = :__user__</domain> </action-view> <menuitem name="sc-root-purchase-request-my-current-cart"
-    parent="sc-purchase-request" title="My current cart" action="sc.root.purchase.request.my.current.cart"
-    order="3" groups="demandeur" /> <action-view name="sc.root.purchase.request.my.current.cart" model="com.axelor.apps.purchase.db.PurchaseRequest"
-    title="My current cart"> <view type="grid" name="my-current-cart-purchase-request-grid"/> <view type="form"
-    name="purchase-request-form"/> <domain>self.createdBy = :__user__ and self.statusSelect = 1</domain>
-    </action-view> <menuitem name="sc-root-purchase-request-my-sent" parent="sc-purchase-request" groups="demandeur"
-    title="My sent requests" action="sc.root.purchase.request.my.sent" order="4" /> <action-view name="sc.root.purchase.request.my.sent"
-    model="com.axelor.apps.purchase.db.PurchaseRequest" title="My sent requests"> <view type="grid" name="sent-purchase-request-grid"/>
-    <view type="form" name="purchase-request-form"/> <domain>self.createdBy = :__user__ and self.statusSelect
-    = 2</domain> </action-view> <menuitem name="sc-root-purchase-request-my-accepted" parent="sc-purchase-request"
-    groups="demandeur" title="My accepted requests" action="sc.root.purchase.request.my.accepted" order="5"
-    /> <action-view name="sc.root.purchase.request.my.accepted" model="com.axelor.apps.purchase.db.PurchaseRequest"
-    title="My accepted requests"> <view type="grid" name="purchase-request-grid"/> <view type="form" name="purchase-request-form"/>
-    <domain>self.createdBy = :__user__ and self.statusSelect = 3</domain> </action-view> <menuitem name="sc-root-purchase-request-my-refused"
-    parent="sc-purchase-request" groups="demandeur" title="My refused requests" action="sc.root.purchase.request.my.refused"
-    order="6" /> <action-view name="sc.root.purchase.request.my.refused" model="com.axelor.apps.purchase.db.PurchaseRequest"
-    title="My refused requestes"> <view type="grid" name="purchase-request-grid"/> <view type="form" name="purchase-request-form"/>
-    <domain>self.createdBy = :__user__ and self.statusSelect = 7</domain> </action-view> <menuitem name="sc-root-purchase-request-my"
-    parent="sc-purchase-request" title="All my requests" action="sc.root.purchase.request.my" order="7" groups="demandeur"
-    /> <action-view name="sc.root.purchase.request.my" model="com.axelor.apps.purchase.db.PurchaseRequest"
-    title="All my requests"> <view type="grid" name="purchase-request-grid"/> <view type="form" name="purchase-request-form"/>
-    <domain>self.createdBy = :__user__</domain> </action-view> -->
-
-  <!--demandeur menus end -->
-
   <menuitem name="sc-root-purchase-conf" parent="sc-root-purchase" title="Configuration"
     order="300" icon="fa-cog"/>
 
