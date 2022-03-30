@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,13 +25,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
@@ -64,7 +65,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileSequenceService reconcileSequenceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
-  protected MoveLineService moveLineService;
+  protected MoveLineTaxService moveLineTaxService;
   protected AppBaseService appBaseService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
 
@@ -78,7 +79,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      MoveLineService moveLineService,
+      MoveLineTaxService moveLineTaxService,
       AppBaseService appBaseService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService) {
 
@@ -90,7 +91,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileSequenceService = reconcileSequenceService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
-    this.moveLineService = moveLineService;
+    this.moveLineTaxService = moveLineTaxService;
     this.appBaseService = appBaseService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
   }
@@ -332,13 +333,14 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   public void updateInvoicePayments(Reconcile reconcile) throws AxelorException {
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
     Move debitMove = debitMoveLine.getMove();
     Move creditMove = creditMoveLine.getMove();
-    Invoice debitInvoice = debitMove.getInvoice();
-    Invoice creditInvoice = creditMove.getInvoice();
+    Invoice debitInvoice = invoiceRepository.findByMove(debitMove);
+    Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
     BigDecimal amount = reconcile.getAmount();
 
     if (debitInvoice != null
@@ -364,11 +366,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = creditMove.getInvoice();
 
     if (debitInvoice != null && creditInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getCreditMoveLine(), debitInvoice, reconcile);
     }
     if (creditInvoice != null && debitInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getDebitMoveLine(), creditInvoice, reconcile);
     }
   }
@@ -437,10 +439,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     if (debitInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
     }
     if (creditInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
     }
   }
 

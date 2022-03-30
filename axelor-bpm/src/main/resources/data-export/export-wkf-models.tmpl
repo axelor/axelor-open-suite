@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bpm>
+<%	allWkfModels = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.WkfModelRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		allWkfModels = allWkfModels.filter('self.id in ?1',__ids__)
+	}
+	
+	wkfModels = ""
+	allWkfModels.fetch().each({
+		wkfModel -> 
+					wkfModels += """\n\t\t<wkfModel>
+								\n\t\t\t<code>${wkfModel.code}</code>
+								\n\t\t\t<name>${wkfModel.name}</name>
+								\n\t\t\t<isActive>${wkfModel.isActive}</isActive>
+								\n\t\t\t<diagramXml><![CDATA[""" + wkfModel.diagramXml + """]]></diagramXml>
+								\n\t\t\t<versionTag>${wkfModel.versionTag}</versionTag>
+								\n\t\t\t<previousVersion>${wkfModel.previousVersion?.code}</previousVersion>
+								\n\t\t\t<description>${wkfModel.description}</description>
+								\n\t\t\t<appBuilder>${wkfModel.appBuilder?.code}</appBuilder>
+								\n\t\t</wkfModel>"""
+	})
+	
+	out << 
+	"""
+	<wkfModels>
+		$wkfModels
+	</wkfModels>
+	
+	"""
+%>
+</bpm>

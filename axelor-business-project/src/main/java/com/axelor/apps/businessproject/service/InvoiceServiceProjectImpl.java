@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,8 +35,11 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -66,7 +69,10 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      IntercoService intercoService,
+      TaxService taxService,
+      StockMoveRepository stockMoveRepository) {
     super(
         validateFactory,
         ventilateFactory,
@@ -79,7 +85,10 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
-        appBaseService);
+        appBaseService,
+        intercoService,
+        taxService,
+        stockMoveRepository);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

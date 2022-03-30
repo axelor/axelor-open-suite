@@ -9,13 +9,16 @@
     <![CDATA[
     This object store the detail of export data
     ]]>
-    <string name="modelSelect" title="Model" selection="object.data.config.model.select" required="true"/>
+    <string name="modelSelect" title="Model" selection="object.data.config.model.select"
+      required="true"/>
     <long name="modelSelectId"/>
     <string name="recordName" title="Record name"/>
-    <string name="exportFormatSelect" title="Export format" selection="object.data.export.format.select" />
-    <string name="langSelect" title="Language" selection="select.language" />
-    <many-to-one name="objectDataConfig" ref="com.axelor.apps.base.db.ObjectDataConfig" title="Object data config"/>
-    
+    <string name="exportFormatSelect" title="Export format"
+      selection="object.data.export.format.select"/>
+    <string name="langSelect" title="Language" selection="select.language"/>
+    <many-to-one name="objectDataConfig" ref="com.axelor.apps.base.db.ObjectDataConfig"
+      title="Object data config"/>
+
   </entity>
 
 </domain-models>

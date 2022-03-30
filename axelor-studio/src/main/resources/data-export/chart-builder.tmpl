@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class).all()
 	
@@ -52,9 +53,8 @@
 				\n\t\t\t<appBuilder>${chart.appBuilder?.code}</appBuilder>
 				\n\t\t</chart-builder>""" 
 	})
-	
 	if (!chartBuilders.isEmpty()) {
-		chartBuilders = """<?xml version="1.0" encoding="utf-8"?>\n<chart-builders>\n""" +  chartBuilders + """\n</chart-builders>"""
+		chartBuilders = """<chart-builders>\n""" +  chartBuilders + """\n</chart-builders>"""
 	}
 	
 	

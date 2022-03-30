@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu-builders>
+
+  <menu-builder>
+
+    <name>studio-men-purchase-req-root</name>
+
+    <xmlId>studio-men-purchase-req-root</xmlId>
+
+    <title>Demande d&apos;achat</title>
+
+    <icon>fa-columns</icon>
+
+    <iconBackground>blue</iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>false</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu></parentMenu>
+
+    <actionBuilder></actionBuilder>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-menu-purchasereq</name>
+
+    <xmlId>studio-menu-purchasereq</xmlId>
+
+    <title>Demande d&apos;achat</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-men-purchase-req-root</parentMenu>
+
+    <actionBuilder>studio-menu-purchasereq</actionBuilder>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-menu-purchase-req-file</name>
+
+    <xmlId>studio-menu-purchase-req-file</xmlId>
+
+    <title>Dossier</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-men-purchase-req-root</parentMenu>
+
+    <actionBuilder>studio-menu-purchase-req-file</actionBuilder>
+
+    <appBuilder>BPM-1</appBuilder>
+
+  </menu-builder>
+</menu-builders>

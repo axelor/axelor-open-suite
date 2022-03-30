@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -563,7 +563,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional
   public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId) {
 
     MultiRelated multiRelated =
@@ -583,6 +582,5 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     multiRelated.setRelatedToSelect(relatedToSelect);
     multiRelated.setRelatedToSelectId(relatedToSelectId);
     message.addMultiRelatedListItem(multiRelated);
-    Beans.get(MultiRelatedRepository.class).save(multiRelated);
   }
 }

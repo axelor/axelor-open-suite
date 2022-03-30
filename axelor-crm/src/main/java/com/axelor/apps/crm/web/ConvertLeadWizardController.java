@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -209,7 +209,7 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
-    if (lead.getUser() != null) {
+    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_CUSTOMER) {
         response.setAttr("isCustomer", "value", true);

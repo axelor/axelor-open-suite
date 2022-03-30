@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="bpm" package="com.axelor.apps.bpm.db"/>
+
+  <entity name="WkfInstance" cacheable="true">
+
+    <string name="name" title="Name"/>
+    <string name="instanceId" title="Instance id"/>
+    <string name="currentStatus" large="true" title="Current status"/>
+    <long name="modelId"/>
+    <string name="modelName"/>
+    <many-to-one name="wkfProcess" ref="WkfProcess"/>
+
+    <finder-method name="findByInstnaceId" using="instanceId"/>
+
+  </entity>
+
+</domain-models>

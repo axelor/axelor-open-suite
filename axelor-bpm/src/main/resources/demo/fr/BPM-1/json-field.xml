@@ -1,0 +1,3530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jason-fields>
+
+  <json-field>
+
+    <name>fileManager</name>
+
+    <title>Gestionnaire du dossier</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.auth.db.User</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>File</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>creationDate</name>
+
+    <title>Date de création</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>File</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "validIf": null,
+      "itemSpan": 6, "collapseIf": "", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "validIf": null,
+      "itemSpan": 6, "collapseIf": "", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>File</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>name</name>
+
+    <title>Libellé du dossier</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>true</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>File</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>requestNumber</name>
+
+    <title>RequestN°</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>true</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>requestType</name>
+
+    <title>Type de demande</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>save,action-refresh-record</onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection>custom-json-select-PurchaseReq-requestType</selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>true</isSelectionField>
+
+    <selectionText>Demande courante:Demande courante
+      Demande fournitures:Demande fournitures
+      Demande
+      matériel informatique:Demande matériel informatique
+      Demande logiciel:Demande logiciel
+      Demande
+      prestation:Demande prestation
+    </selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>statusSelect</name>
+
+    <title>Status</title>
+
+    <type>string</type>
+
+    <defaultValue>draft</defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection>custom-json-select-PurchaseReq-statusSelect</selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget>NavSelect</widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>true</isSelectionField>
+
+    <selectionText>draft:Brouillon
+      budgeting:Budgété
+      pending:En attente
+      requested:A demander
+      validated:Validée
+      refused:Refusée
+    </selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>file</name>
+
+    <title>Dossier</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.bankpayment.db.BankOrderFileFormat
+    </targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel>File</targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>buyerValidation</name>
+
+    <title>Validation acheteur</title>
+
+    <type>boolean</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>responsible</name>
+
+    <title>Responsable</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.auth.db.User</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>managerValidation</name>
+
+    <title>Validation Responsable</title>
+
+    <type>boolean</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>2</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>directorValidation</name>
+
+    <title>Validation direction</title>
+
+    <type>boolean</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>3</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>purchaseRequest</name>
+
+    <title>Demande d&apos;achat</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.purchase.db.PurchaseOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-1&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel>PurchaseReq</targetJsonModel>
+
+    <appBuilder>BPM-1</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panel2</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>4</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "sidebar": "true",
+      "itemSpan": 6, "showTitle": "undefined", "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>assignedTo</name>
+
+    <title>Assigné à</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>5</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.auth.db.User</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>file</name>
+
+    <title>Dossier</title>
+
+    <type>json-many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>6</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel>File</targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>nextBtn</name>
+
+    <title>Suivant</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>7</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createBudgetBtn</name>
+
+    <title>Créer budget</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record,action-create-budget-from-purchase-request
+    </onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>8</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>openPurchaseOrder</name>
+
+    <title>Open purchase order</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-open-purchase-order-from-purchase-request</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>12</sequence>
+
+    <showIf>statusSelect == &apos;validated&apos;</showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"colSpan": "12"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>requestBtn</name>
+
+    <title>Demander</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf>office == null</readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>9</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createQuotationBtn</name>
+
+    <title>Créer devis</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record,action-open-purchase-order-from-purchase-request
+    </onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>10</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>putOnHoldBtn</name>
+
+    <title>Mettre en attente</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>true</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>11</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": "12", "showTitle":
+      "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panelTab1</name>
+
+    <title>1- Rens. administratifs</title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>13</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "true", "width": "default", "colSpan": 12, "itemSpan": 6,
+      "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>requester</name>
+
+    <title>Demandeur</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>14</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.auth.db.User</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>beneficiary</name>
+
+    <title>Bénéficiaire</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>15</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.auth.db.User</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>office</name>
+
+    <title>Bureau</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection>custom-json-select-PurchaseReq-office</selection>
+
+    <sequence>16</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText>Paris
+      Lyon
+      Marseille
+      Lille
+    </selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>service</name>
+
+    <title>Service.</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>17</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.base.db.CompanyDepartment</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>urgent</name>
+
+    <title>Urgent</title>
+
+    <type>boolean</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>18</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>phone</name>
+
+    <title>Tél</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>19</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>dueDate</name>
+
+    <title>Echéance le</title>
+
+    <type>date</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>20</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panelTab2</name>
+
+    <title>2- Produit</title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>21</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "true", "width": "default", "colSpan": 12, "itemSpan": 6,
+      "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>supplier</name>
+
+    <title>Fournisseur</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain>self.isSupplier = true</domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>22</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.base.db.Partner</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>product</name>
+
+    <title>Produit</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange>action-purchase-request-update-purchase-price</onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>23</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.base.db.Product</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>unitPrice</name>
+
+    <title>Prix unitaire</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>24</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>qty</name>
+
+    <title>Quantité</title>
+
+    <type>integer</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>25</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "6", "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>amountTotal</name>
+
+    <title>Montant</title>
+
+    <type>decimal</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>26</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr>unitPrice != null &amp;&amp; qty != null ? unitPrice*qty :
+      0</valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>description</name>
+
+    <title>Description</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>27</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget>Html</widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": "12", "multiline": true,
+      "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panelTab3</name>
+
+    <title>3- Rens. budgétaire</title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>28</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "true", "width": "default", "colSpan": 12, "itemSpan": 6,
+      "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>existingBudgetSelect</name>
+
+    <title>Budget existant</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection>custom-json-select-PurchaseReq-existingBudgetSelect</selection>
+
+    <sequence>29</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText>yes:Oui
+      no:Non
+    </selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>eligible</name>
+
+    <title>Eligible ?</title>
+
+    <type>string</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection>custom-json-select-PurchaseReq-eligible</selection>
+
+    <sequence>30</sequence>
+
+    <showIf>existingBudget != true</showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 2, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>true</isSelectionField>
+
+    <selectionText>yes:Oui
+      no:Non
+    </selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>budget</name>
+
+    <title>Budget</title>
+
+    <type>many-to-one</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.meta.db.MetaJsonRecord</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>true</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf></includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>31</sequence>
+
+    <showIf></showIf>
+
+    <targetModel>com.axelor.apps.account.db.Budget</targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel>PurchaseReq</jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder></appBuilder>
+
+    <modelAppBuilder>BPM-1</modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+</jason-fields>

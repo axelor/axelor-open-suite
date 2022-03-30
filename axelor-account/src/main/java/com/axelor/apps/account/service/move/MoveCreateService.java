@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
@@ -41,14 +43,17 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
       Partner partner,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -64,15 +69,19 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -90,18 +99,22 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
-      boolean autoYearClosureMove)
+      boolean autoYearClosureMove,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -117,14 +130,51 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMoveWithPaymentVoucher(
+  Move createMoveWithPaymentVoucher(
       Journal journal,
       Company company,
       PaymentVoucher paymentVoucher,
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
+      throws AxelorException;
+
+  /**
+   * Creating a new generic accounting move and set paymentVoucher and invoice
+   *
+   * @param journal
+   * @param company
+   * @param currency
+   * @param partner
+   * @param date
+   * @param paymentMode
+   * @param technicalOriginSelect
+   * @param ignoreInDebtRecoveryOk
+   * @param ignoreInAccountingOk
+   * @return
+   * @throws AxelorException
+   */
+  Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      boolean ignoreInDebtRecoveryOk,
+      boolean ignoreInAccountingOk,
+      boolean autoYearClosureMove,
+      String origin,
+      String description,
+      Invoice invoice,
+      PaymentVoucher paymentVoucher)
       throws AxelorException;
 }

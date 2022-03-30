@@ -19,6 +19,8 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,17 +33,25 @@ public class PaymentMoveLineDistributionController {
 
     PaymentMoveLineDistribution paymentMoveLineD =
         request.getContext().asType(PaymentMoveLineDistribution.class);
-    Beans.get(PaymentMoveLineDistributionService.class)
-        .updateMoveInclusionInDas2Report(paymentMoveLineD.getMove(), true);
-    response.setReload(true);
+    try {
+      Beans.get(PaymentMoveLineDistributionService.class)
+          .updateMoveInclusionInDas2Report(paymentMoveLineD.getMove(), true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void includeLineInDas2(ActionRequest request, ActionResponse response) {
 
     PaymentMoveLineDistribution paymentMoveLineD =
         request.getContext().asType(PaymentMoveLineDistribution.class);
-    Beans.get(PaymentMoveLineDistributionService.class)
-        .updateMoveInclusionInDas2Report(paymentMoveLineD.getMove(), false);
-    response.setReload(true);
+    try {
+      Beans.get(PaymentMoveLineDistributionService.class)
+          .updateMoveInclusionInDas2Report(paymentMoveLineD.getMove(), false);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

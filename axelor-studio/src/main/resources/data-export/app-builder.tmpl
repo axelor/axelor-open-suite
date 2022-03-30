@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.AppBuilderRepository' as Class).all()
 
@@ -22,7 +23,7 @@
 	})
 	
 	if (!appBuilders.isEmpty()) {
-		appBuilders = """<?xml version="1.0" encoding="utf-8"?>\n<app-builders>\n""" +  appBuilders + """\n</app-builders>"""
+		appBuilders = """<app-builders>\n""" +  appBuilders + """\n</app-builders>"""
 	}
 	
 	out << """$appBuilders"""

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu-builders>
+
+  <menu-builder>
+
+    <name>studio-pizza-root</name>
+
+    <xmlId>studio-pizza-root</xmlId>
+
+    <title>Pizza</title>
+
+    <icon>fa-pie-chart</icon>
+
+    <iconBackground>blue</iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>false</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu></parentMenu>
+
+    <actionBuilder></actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-ask-pizza</name>
+
+    <xmlId>studio-ask-pizza</xmlId>
+
+    <title>Ask Pizza</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-pizza-root</parentMenu>
+
+    <actionBuilder>studio-ask-pizza</actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-pizza</name>
+
+    <xmlId>studio-pizza</xmlId>
+
+    <title>Pizza</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-pizza-root</parentMenu>
+
+    <actionBuilder>studio-pizza</actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-hungry-pizza</name>
+
+    <xmlId>studio-hungry-pizza</xmlId>
+
+    <title>Hungry Pizza</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-pizza-root</parentMenu>
+
+    <actionBuilder>studio-hungry-pizza</actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-pizza-order</name>
+
+    <xmlId>studio-pizza-order</xmlId>
+
+    <title>Pizza order</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-pizza-root</parentMenu>
+
+    <actionBuilder>studio-pizza-order</actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-pizza-calm-customer</name>
+
+    <xmlId>studio-pizza-calm-customer</xmlId>
+
+    <title>Calm customer</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-pizza-root</parentMenu>
+
+    <actionBuilder>studio-pizza-calm-customer</actionBuilder>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </menu-builder>
+</menu-builders>

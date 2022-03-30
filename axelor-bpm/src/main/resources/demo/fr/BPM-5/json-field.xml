@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-fields>
+
+
+  <json-field>
+
+    <name>panel1</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>true</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.stock.db.Inventory</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-5&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 12, "sidebar": "false",
+      "itemSpan": 6, "canCollapse": "false"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-5</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createInventoryBpm</name>
+
+    <title>Create Inventory From BPM</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.stock.db.Inventory</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>save,action-refresh-record</onClick>
+
+    <precision>0</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-5&apos;)</includeIf>
+
+    <scale>0</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs>{"col": 1, "tab": "false", "width": "default", "colSpan": 6, "showTitle": "true"}</widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-5</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+
+
+</json-fields>

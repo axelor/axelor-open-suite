@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -41,7 +40,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
@@ -97,6 +95,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected AppSaleService appSaleService;
   protected AccountManagementService accountManagementService;
   protected SaleOrderLineRepository saleOrderLineRepo;
+  protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -106,7 +105,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo) {
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -114,6 +114,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.appSaleService = appSaleService;
     this.accountManagementService = accountManagementService;
     this.saleOrderLineRepo = saleOrderLineRepo;
+    this.saleOrderService = saleOrderService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
@@ -145,7 +146,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
-    computePricingScale(saleOrder, saleOrderLine);
+    if (appSaleService.getAppSale().getEnablePricingScale()) {
+      computePricingScale(saleOrder, saleOrderLine);
+    }
 
     fillTaxInformation(saleOrderLine, saleOrder);
     saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
@@ -229,13 +232,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
       saleOrderLine.setTaxLine(taxLine);
 
-      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
 
-      Tax tax =
-          accountManagementService.getProductTax(
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
               saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
-
-      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
 
       saleOrderLine.setTaxEquiv(taxEquiv);
     } else {
@@ -339,8 +340,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
-   * @param quantity The quantity.
-   * @param price The unit price.
    * @return The excluded tax total amount.
    */
   @Override
@@ -427,7 +426,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCreationDate(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
-            saleOrder.getClientPartner().getFiscalPosition(),
+            saleOrder.getFiscalPosition(),
             false);
   }
 
@@ -1411,5 +1410,37 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                         scriptHelper.eval(resultPricingRule.getFormula()));
               }
             });
+  }
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return null;
+    } else {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+
+        FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+        saleOrderLine.setTaxLine(taxLine);
+
+        TaxEquiv taxEquiv =
+            accountManagementService.getProductTaxEquiv(
+                saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setTaxEquiv(taxEquiv);
+
+        saleOrderLine.setInTaxTotal(
+            saleOrderLine
+                .getExTaxTotal()
+                .multiply(saleOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        saleOrderLine.setCompanyInTaxTotal(
+            saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+      }
+    }
+    return saleOrderLineList;
   }
 }

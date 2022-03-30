@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -35,6 +37,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
@@ -383,6 +386,12 @@ public class SaleOrderController {
     Company commonCompany = null;
     Partner commonContactPartner = null;
     Team commonTeam = null;
+    TaxNumber commonTaxNumber = null;
+    // Useful to determine if a difference exists between tax number of all sale orders
+    boolean existTaxNumberDiff = false;
+    FiscalPosition commonFiscalPosition = null;
+    // Useful to determine if a difference exists between fiscal positions of all sale orders
+    boolean existFiscalPositionDiff = false;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
     // Useful to determine if a difference exists between contact partners of all sale orders
@@ -403,6 +412,8 @@ public class SaleOrderController {
         commonContactPartner = saleOrderTemp.getContactPartner();
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
+        commonTaxNumber = saleOrderTemp.getTaxNumber();
+        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -427,6 +438,18 @@ public class SaleOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+          commonTaxNumber = null;
+          existTaxNumberDiff = true;
+        }
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
+          commonFiscalPosition = null;
+          existFiscalPositionDiff = true;
+        }
       }
       count++;
     }
@@ -446,6 +469,25 @@ public class SaleOrderController {
         fieldErrors.append("<br/>");
       }
       fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+
+    if (existTaxNumberDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
+
+    if (existFiscalPositionDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -516,7 +558,9 @@ public class SaleOrderController {
                   commonCompany,
                   commonContactPartner,
                   commonPriceList,
-                  commonTeam);
+                  commonTeam,
+                  commonTaxNumber,
+                  commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
@@ -803,12 +847,68 @@ public class SaleOrderController {
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form")
             .add("grid", "sale-order-grid")
             .param("forceEdit", "true")
             .context("_showRecord", copiedSO.getId())
             .map());
+  }
+
+  /**
+   * Empty the fiscal position field if its value is no longer compatible with the new taxNumber
+   * after a change
+   *
+   * @param request
+   * @param response
+   */
+  public void emptyFiscalPositionIfNotCompatible(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      FiscalPosition soFiscalPosition = saleOrder.getFiscalPosition();
+      if (soFiscalPosition == null) {
+        return;
+      }
+      if (saleOrder.getTaxNumber() == null) {
+        if (saleOrder.getClientPartner() != null
+            && saleOrder.getFiscalPosition() == saleOrder.getClientPartner().getFiscalPosition()) {
+          return;
+        }
+      } else {
+        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+          if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
+            return;
+          }
+        }
+      }
+      response.setValue("fiscalPosition", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
+   * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
+   * SaleOrderLineService#computeProductInformation(SaleOrderLine, SaleOrder)} and {@link
+   * SaleOrderLineService#computeValues(SaleOrder, SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      if (saleOrder.getSaleOrderLineList() != null) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
+        }
+        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

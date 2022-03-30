@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-12</code>
+
+    <name>Boundary Event(Expense)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-12" camunda:diagramName="Boundary Event(Expense)" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-12">
+  <bpmn2:process id="Process_Boundary_Event" name="Boundary Event" isExecutable="false">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Expense" metaModelLabel="Expense (Expense)" isStartModel="true" model="com.axelor.apps.hr.db.Expense" metaModelFullName="com.axelor.apps.hr.db.Expense" title="Expense" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>Flow_0a15fke</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_0a15fke" sourceRef="StartEvent_1" targetRef="Activity_0fahoug" />
+    <bpmn2:subProcess id="Activity_1knkqzx" name="Waiting validation">
+      <bpmn2:incoming>Flow_1445fms</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_09e8qu2</bpmn2:outgoing>
+      <bpmn2:userTask id="Activity_1ik1f8h" name="Wait" camunda:completedIf="expense?.exTaxTotal &#62; 0 &#38;&#38; expense?.statusSelect != 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;exTaxTotal&#34;,&#34;operator&#34;:&#34;&#62;&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DECIMAL&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;defaultValue&#34;:&#34;0&#34;,&#34;precision&#34;:20,&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;scale&#34;:2,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total W.T.&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;defaultValue&#34;:&#34;0&#34;,&#34;precision&#34;:20,&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;scale&#34;:2,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total W.T.&#34;}]},{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+        <bpmn2:incoming>Flow_10m276g</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1aeyqj0</bpmn2:outgoing>
+      </bpmn2:userTask>
+      <bpmn2:startEvent id="Event_0lrhfx7">
+        <bpmn2:outgoing>Flow_10m276g</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="Flow_10m276g" sourceRef="Event_0lrhfx7" targetRef="Activity_1ik1f8h" />
+      <bpmn2:exclusiveGateway id="Gateway_0ljmtlh" default="Flow_0edi9op">
+        <bpmn2:incoming>Flow_1aeyqj0</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1qazqou</bpmn2:outgoing>
+        <bpmn2:outgoing>Flow_1jg1mu3</bpmn2:outgoing>
+        <bpmn2:outgoing>Flow_0edi9op</bpmn2:outgoing>
+      </bpmn2:exclusiveGateway>
+      <bpmn2:sequenceFlow id="Flow_1aeyqj0" sourceRef="Activity_1ik1f8h" targetRef="Gateway_0ljmtlh" />
+      <bpmn2:sequenceFlow id="Flow_1qazqou" name="Refused button" sourceRef="Gateway_0ljmtlh" targetRef="Event_1dyf2mg" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;5&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+        <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">expense?.statusSelect == 5</bpmn2:conditionExpression>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="Flow_1jg1mu3" name="Cancel button" sourceRef="Gateway_0ljmtlh" targetRef="Event_1b0x7c2" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;6&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+        <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">expense?.statusSelect == 6</bpmn2:conditionExpression>
+      </bpmn2:sequenceFlow>
+      <bpmn2:endEvent id="Event_1dyf2mg" name="Refused">
+        <bpmn2:incoming>Flow_1qazqou</bpmn2:incoming>
+        <bpmn2:escalationEventDefinition id="EscalationEventDefinition_0bcg1pj" escalationRef="Escalation_2cfv8gs" />
+      </bpmn2:endEvent>
+      <bpmn2:endEvent id="Event_1b0x7c2" name="Cancel">
+        <bpmn2:incoming>Flow_1jg1mu3</bpmn2:incoming>
+        <bpmn2:errorEventDefinition id="ErrorEventDefinition_1442veo" errorRef="Error_390uhvr" />
+      </bpmn2:endEvent>
+      <bpmn2:endEvent id="Event_16uqhm0" name="Validated">
+        <bpmn2:incoming>Flow_0edi9op</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="Flow_0edi9op" sourceRef="Gateway_0ljmtlh" targetRef="Event_16uqhm0" />
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="Flow_1445fms" sourceRef="Activity_0fahoug" targetRef="Activity_1knkqzx" />
+    <bpmn2:boundaryEvent id="Event_13lu7at" attachedToRef="Activity_1knkqzx">
+      <bpmn2:outgoing>Flow_08oe0ud</bpmn2:outgoing>
+      <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_0lkxmx6" camunda:variableName="expense" camunda:scriptValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;exTaxTotal&#34;,&#34;operator&#34;:&#34;&#60;&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DECIMAL&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;defaultValue&#34;:&#34;0&#34;,&#34;precision&#34;:20,&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;scale&#34;:2,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total W.T.&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;defaultValue&#34;:&#34;0&#34;,&#34;precision&#34;:20,&#34;name&#34;:&#34;exTaxTotal&#34;,&#34;scale&#34;:2,&#34;type&#34;:&#34;DECIMAL&#34;,&#34;title&#34;:&#34;Total W.T.&#34;}]}]}]}]" camunda:combinator="and">
+        <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">expense?.exTaxTotal &lt; 0</bpmn2:condition>
+      </bpmn2:conditionalEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:boundaryEvent id="Event_075x12p" attachedToRef="Activity_1knkqzx">
+      <bpmn2:outgoing>Flow_1fceave</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_1aak1nt" errorRef="Error_390uhvr" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_1fceave" sourceRef="Event_075x12p" targetRef="Activity_1cba9tv" />
+    <bpmn2:sequenceFlow id="Flow_1u7pwkp" sourceRef="Event_1s89d8x" targetRef="Activity_1a2wfjf" />
+    <bpmn2:userTask id="Activity_1cba9tv" name="Cancelled" camunda:buttonLabels="Return to draft status" camunda:buttons="draftBtn">
+      <bpmn2:incoming>Flow_1fceave</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_18kmd6q</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1a2wfjf" name="Refused" camunda:buttonLabels="Return to draft status" camunda:buttons="draftBtn">
+      <bpmn2:incoming>Flow_1u7pwkp</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_18qiw8w</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:boundaryEvent id="Event_1s89d8x" attachedToRef="Activity_1knkqzx">
+      <bpmn2:outgoing>Flow_1u7pwkp</bpmn2:outgoing>
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_0zvsny9" escalationRef="Escalation_2cfv8gs" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:exclusiveGateway id="Gateway_1ih2w2h">
+      <bpmn2:incoming>Flow_18kmd6q</bpmn2:incoming>
+      <bpmn2:incoming>Flow_18qiw8w</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0icskm2</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_18kmd6q" sourceRef="Activity_1cba9tv" targetRef="Gateway_1ih2w2h" />
+    <bpmn2:sequenceFlow id="Flow_18qiw8w" sourceRef="Activity_1a2wfjf" targetRef="Gateway_1ih2w2h" />
+    <bpmn2:sequenceFlow id="Flow_0icskm2" sourceRef="Gateway_1ih2w2h" targetRef="Activity_0fahoug" />
+    <bpmn2:task id="Activity_1omqaxo" name="Validated">
+      <bpmn2:incoming>Flow_09e8qu2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0i8gy05</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="Flow_09e8qu2" sourceRef="Activity_1knkqzx" targetRef="Activity_1omqaxo" />
+    <bpmn2:sequenceFlow id="Flow_0i8gy05" sourceRef="Activity_1omqaxo" targetRef="Event_1nfw90i" />
+    <bpmn2:endEvent id="Event_1nfw90i" name="End">
+      <bpmn2:incoming>Flow_0i8gy05</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Activity_0fahoug" name="Draft" camunda:completedIf="expense?.statusSelect == 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Expense&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;hrs.expenses.status.select&#34;,&#34;defaultValue&#34;:1,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Waiting validation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Validated&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reimbursed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Refused&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0a15fke</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0icskm2</bpmn2:incoming>
+      <bpmn2:incoming>Flow_01a930z</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1445fms</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_08oe0ud" sourceRef="Event_13lu7at" targetRef="Activity_1evqrwc" />
+    <bpmn2:sequenceFlow id="Flow_01a930z" sourceRef="Activity_1evqrwc" targetRef="Activity_0fahoug" />
+    <bpmn2:scriptTask id="Activity_1evqrwc" name="Reset" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[27]&#34;,&#34;type&#34;:&#34;INTEGER&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;1&#34;},&#34;from&#34;:&#34;none&#34;},&#34;name&#34;:&#34;statusSelect&#34;}],&#34;targetModel&#34;:&#34;Expense&#34;,&#34;newRecord&#34;:false,&#34;createVariable&#34;:false,&#34;isJson&#34;:false}">
+      <bpmn2:incoming>Flow_08oe0ud</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_01a930z</bpmn2:outgoing>
+      <bpmn2:script>def rec = $ctx.find('Expense',expenseId)
+rec.statusSelect = 1
+return $ctx.save(rec)</bpmn2:script>
+    </bpmn2:scriptTask>
+  </bpmn2:process>
+  <bpmn2:escalation id="Escalation_2cfv8gs" name="Escalation_0o34j83" escalationCode="refused" />
+  <bpmn2:error id="Error_390uhvr" name="Error_0fkf420" errorCode="Error_1csu63f" />
+  <bpmn2:message id="Message_1j0ubk1" name="HighExpense" />
+  <bpmn2:message id="Message_1wksfx0" name="refused" />
+  <bpmn2:message id="Message_17xgvif" name="HighExpense" />
+  <bpmn2:message id="Message_104cuod" name="HighExpense" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Boundary_Event">
+      <bpmndi:BPMNEdge id="Flow_01a930z_di" bpmnElement="Flow_01a930z" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="330" y="510" />
+        <di:waypoint x="330" y="260" />
+        <di:waypoint x="290" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08oe0ud_di" bpmnElement="Flow_08oe0ud" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="442" y="458" />
+        <di:waypoint x="442" y="550" />
+        <di:waypoint x="380" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0i8gy05_di" bpmnElement="Flow_0i8gy05" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1070" y="290" />
+        <di:waypoint x="1112" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09e8qu2_di" bpmnElement="Flow_09e8qu2" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="890" y="290" />
+        <di:waypoint x="970" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0icskm2_di" bpmnElement="Flow_0icskm2" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="720" y="735" />
+        <di:waypoint x="720" y="770" />
+        <di:waypoint x="240" y="770" />
+        <di:waypoint x="240" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18qiw8w_di" bpmnElement="Flow_18qiw8w" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="830" y="630" />
+        <di:waypoint x="830" y="710" />
+        <di:waypoint x="745" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18kmd6q_di" bpmnElement="Flow_18kmd6q" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="630" y="630" />
+        <di:waypoint x="630" y="710" />
+        <di:waypoint x="695" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u7pwkp_di" bpmnElement="Flow_1u7pwkp" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="830" y="458" />
+        <di:waypoint x="830" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fceave_di" bpmnElement="Flow_1fceave" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="630" y="458" />
+        <di:waypoint x="630" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1445fms_di" bpmnElement="Flow_1445fms" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="290" y="240" />
+        <di:waypoint x="380" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0a15fke_di" bpmnElement="Flow_0a15fke" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="108" y="240" />
+        <di:waypoint x="190" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="72" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sudkwk_di" bpmnElement="Activity_1knkqzx" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="380" y="140" width="510" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0edi9op_di" bpmnElement="Flow_0edi9op" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="670" y="305" />
+        <di:waypoint x="670" y="340" />
+        <di:waypoint x="782" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jg1mu3_di" bpmnElement="Flow_1jg1mu3" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="280" />
+        <di:waypoint x="782" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="705" y="262" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qazqou_di" bpmnElement="Flow_1qazqou" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="670" y="255" />
+        <di:waypoint x="670" y="230" />
+        <di:waypoint x="782" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="670" y="203" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aeyqj0_di" bpmnElement="Flow_1aeyqj0" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="600" y="280" />
+        <di:waypoint x="645" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10m276g_di" bpmnElement="Flow_10m276g" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="448" y="280" />
+        <di:waypoint x="500" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1bk8fex_di" bpmnElement="Activity_1ik1f8h" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="500" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lrhfx7_di" bpmnElement="Event_0lrhfx7" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="411.6666666666667" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ljmtlh_di" bpmnElement="Gateway_0ljmtlh" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="645" y="255" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ixga5b_di" bpmnElement="Event_1dyf2mg" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="782" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="789" y="183" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13zhf09_di" bpmnElement="Event_1b0x7c2" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="782" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="782" y="303" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yshrcr_di" bpmnElement="Event_16uqhm0" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="782" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="777" y="363" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jgv9lo_di" bpmnElement="Activity_1cba9tv" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="580" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rajz5q_di" bpmnElement="Activity_1a2wfjf" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="780" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ih2w2h_di" bpmnElement="Gateway_1ih2w2h" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="695" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1omqaxo_di" bpmnElement="Activity_1omqaxo" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="970" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nfw90i_di" bpmnElement="Event_1nfw90i" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1112" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1121" y="315" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uo06c6_di" bpmnElement="Activity_0fahoug" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="190" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1t909nn_di" bpmnElement="Activity_1evqrwc" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="280" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1hp8tvg_di" bpmnElement="Event_1s89d8x" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="812" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ru2dwy_di" bpmnElement="Event_075x12p" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="612" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1t9r0cf_di" bpmnElement="Event_13lu7at" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="424" y="422" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-12</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>
