@@ -214,13 +214,25 @@ public interface InvoiceTermService {
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  void createInvoiceTerm(
-      MoveLine creditMoveLine,
+  InvoiceTerm createInvoiceTerm(
+      MoveLine moveLine,
       BankDetails bankDetails,
       User pfpUser,
       PaymentMode paymentMode,
-      LocalDate todayDate,
-      BigDecimal amountRemaining);
+      LocalDate date,
+      BigDecimal amount);
+
+  InvoiceTerm createInvoiceTerm(
+      Invoice invoice,
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      LocalDate estimatedPaymentDate,
+      BigDecimal amount,
+      BigDecimal percentage,
+      boolean isHoldBack);
 
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
