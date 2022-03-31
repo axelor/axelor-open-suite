@@ -177,6 +177,19 @@ public class ReconcileServiceImpl implements ReconcileService {
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException {
 
+    reconcile = initReconcileConfirmation(reconcile);
+
+    if (updateInvoicePayments) {
+      this.updatePayments(reconcile);
+    }
+    this.addToReconcileGroup(reconcile);
+
+    return reconcileRepository.save(reconcile);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Reconcile initReconcileConfirmation(Reconcile reconcile) throws AxelorException {
+
     this.reconcilePreconditions(reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -204,12 +217,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updatePaymentTax(reconcile);
     this.updatePaymentMoveLineDistribution(reconcile);
-    if (updateInvoicePayments) {
-      this.updatePayments(reconcile);
-    }
-    this.addToReconcileGroup(reconcile);
-
-    return reconcileRepository.save(reconcile);
+    return reconcile;
   }
 
   @Override
@@ -380,7 +388,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount)
       throws AxelorException {
     InvoicePayment invoicePayment = null;
-    if (invoice != null) {
+    if (invoice != null
+        && otherMove.getFunctionalOriginSelect()
+            != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
 
       if (invoicePayment == null) {
@@ -557,7 +567,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
+    if (purchaseMove.getJournal().getJournalType() != null
+        && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
       return;
     }
     paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(

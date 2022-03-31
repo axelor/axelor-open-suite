@@ -159,6 +159,10 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
+import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
+import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
@@ -518,6 +522,8 @@ public class AccountModule extends AxelorModule {
 
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
 
+    bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
+
     bind(InvoiceTermRepository.class).to(InvoiceTermAccountRepository.class);
 
     bind(InvoiceVisibilityService.class).to(InvoiceVisibilityServiceImpl.class);
@@ -537,5 +543,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineInvoiceTermService.class).to(MoveLineInvoiceTermServiceImpl.class);
 
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
+
+    bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
   }
 }

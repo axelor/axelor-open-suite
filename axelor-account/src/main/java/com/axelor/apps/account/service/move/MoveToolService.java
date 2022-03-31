@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
@@ -181,7 +182,8 @@ public interface MoveToolService {
   void setOriginAndDescriptionOnMoveLineList(Move move);
 
   @CallMethod
-  boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+  boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException;
 
   boolean getEditAuthorization(Move move) throws AxelorException;
 
