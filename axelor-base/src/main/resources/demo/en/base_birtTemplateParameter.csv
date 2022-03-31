@@ -115,3 +115,6 @@
 113;33;"__locale";"en_EN";"string"
 114;33;"Locale";"en";"string"
 115;33;"DebtRecoveryHistoryID";"$DebtRecoveryHistory.id$";"decimal"
+116;34;"__locale";"en_EN";"string"
+117;34;"Locale";"en";"string"
+118;34;"NoteBillsId";"$NoteBills.id$";"decimal"

@@ -113,9 +113,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    super.computeProductInformation(saleOrderLine, saleOrder);
+    String pricingName = super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
     if (Beans.get(AppAccountService.class).isApp("supplychain")) {
@@ -123,6 +123,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
       this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
     }
+    return pricingName;
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
@@ -326,9 +327,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
     BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) < 0 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
-    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) < 0) {
       return deliveredQty;
     }
 

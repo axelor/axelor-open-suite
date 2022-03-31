@@ -209,7 +209,7 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
-    if (lead.getUser() != null) {
+    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_CUSTOMER) {
         response.setAttr("isCustomer", "value", true);

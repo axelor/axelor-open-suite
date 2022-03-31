@@ -18,7 +18,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -41,7 +40,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
@@ -126,7 +124,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected PricingService pricingService;
 
   @Override
-  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     // Reset fields which are going to recalculate in this method
@@ -141,15 +139,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
-    fillPrice(saleOrderLine, saleOrder);
+    String pricingName = fillPrice(saleOrderLine, saleOrder);
     fillComplementaryProductList(saleOrderLine);
+    return pricingName;
   }
 
   @Override
-  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+  public String fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
+    String pricingName = null;
     // Populate fields from pricing scale before starting process of fillPrice
-    computePricingScale(saleOrder, saleOrderLine);
+    if (appSaleService.getAppSale().getEnablePricingScale()) {
+      pricingName = computePricingScale(saleOrder, saleOrderLine);
+    }
 
     fillTaxInformation(saleOrderLine, saleOrder);
     saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
@@ -171,6 +173,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
     }
+    return pricingName;
   }
 
   @Override
@@ -235,11 +238,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
       FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
 
-      Tax tax =
-          accountManagementService.getProductTax(
-              saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
-      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
       saleOrderLine.setTaxEquiv(taxEquiv);
     } else {
       saleOrderLine.setTaxLine(null);
@@ -1034,10 +1036,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
+  public String computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
     if (orderLine.getProduct() == null) {
-      return;
+      return null;
     }
 
     // (1) Get the Pricing
@@ -1052,7 +1054,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             .fetchOne();
 
     if (defaultPricing == null) {
-      return;
+      return null;
     }
 
     Context scripContext = null;
@@ -1065,10 +1067,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       TraceBackService.trace(e);
     }
 
-    this.computePricing(defaultPricing, saleOrder, orderLine, scripContext, 0);
+    return this.computePricing(defaultPricing, saleOrder, orderLine, scripContext, 0);
   }
 
-  private PricingLine computePricing(
+  private String computePricing(
       Pricing pricing,
       SaleOrder saleOrder,
       SaleOrderLine orderLine,
@@ -1107,7 +1109,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     PricingLine pricingLine = searchPricingLine(pricing, classifications);
 
     if (pricingLine == null) {
-      return null;
+      return pricing.getName();
     }
 
     // (4) Compute the result formulas
@@ -1137,7 +1139,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     if (totalChildPricing == 0) {
       orderLine.setPricingScaleLogs(pricingScaleLogs);
-      return pricingLine;
+      return null;
     } else if (totalChildPricing > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1227,47 +1229,48 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (CollectionUtils.isEmpty(pricingLines)) {
       return null;
     }
+    List<PricingLine> newPricingLines = new ArrayList<>();
 
     if (ruleValue4 != null) {
-      pricingLines =
+      newPricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule3(
               pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule4(
               pricingLines, fieldTypeAndOpList.get(3)[0], fieldTypeAndOpList.get(3)[1], ruleValue4);
 
     } else if (ruleValue3 != null) {
-      pricingLines =
+      newPricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule3(
               pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
 
     } else if (ruleValue2 != null) {
-      pricingLines =
+      newPricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
-      pricingLines =
+      newPricingLines =
           checkClassificationRule2(
               pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
 
     } else if (ruleValue1 != null) {
-      pricingLines =
+      newPricingLines =
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
     }
 
-    Optional<PricingLine> pricingLineValue = pricingLines.stream().findFirst();
+    Optional<PricingLine> pricingLineValue = newPricingLines.stream().findFirst();
     return pricingLineValue.isPresent() ? pricingLineValue.get() : null;
   }
 
@@ -1491,11 +1494,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
         saleOrderLine.setTaxLine(taxLine);
 
-        Tax tax =
-            accountManagementService.getProductTax(
-                saleOrderLine.getProduct(), saleOrder.getCompany(), null, false);
+        TaxEquiv taxEquiv =
+            accountManagementService.getProductTaxEquiv(
+                saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
-        TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
         saleOrderLine.setTaxEquiv(taxEquiv);
 
         saleOrderLine.setTaxEquiv(taxEquiv);
