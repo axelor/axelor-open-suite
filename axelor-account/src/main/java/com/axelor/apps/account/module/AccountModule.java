@@ -211,8 +211,6 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
-import com.axelor.apps.account.service.moveline.MoveLineAnalyticService;
-import com.axelor.apps.account.service.moveline.MoveLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -455,8 +453,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
-
-    bind(MoveLineAnalyticService.class).to(MoveLineAnalyticServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 

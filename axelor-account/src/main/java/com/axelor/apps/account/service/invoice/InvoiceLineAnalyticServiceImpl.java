@@ -76,7 +76,6 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     if (invoiceLine.getAnalyticMoveLineList() != null) {
       invoiceLine.getAnalyticMoveLineList().clear();
     }
-
     return this.computeAnalyticDistribution(invoiceLine);
   }
 
@@ -84,17 +83,16 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   public List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
-
+    LocalDate date =
+        appAccountService.getTodayDate(
+            invoiceLine.getInvoice() != null
+                ? invoiceLine.getInvoice().getCompany()
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null));
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      LocalDate date =
-          appAccountService.getTodayDate(
-              invoiceLine.getInvoice() != null
-                  ? invoiceLine.getInvoice().getCompany()
-                  : Optional.ofNullable(AuthUtils.getUser())
-                      .map(User::getActiveCompany)
-                      .orElse(null));
       if (invoiceLine.getAnalyticMoveLineList() != null) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
@@ -107,17 +105,19 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
 
   @Override
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
+    LocalDate date =
+        appAccountService.getTodayDate(
+            invoiceLine.getInvoice() != null
+                ? invoiceLine.getInvoice().getCompany()
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null));
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
             invoiceLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate(
-                invoiceLine.getInvoice() != null
-                    ? invoiceLine.getInvoice().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
+            date);
 
     return analyticMoveLineList;
   }
@@ -145,20 +145,19 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   }
 
   @Override
-  public List<Long> getAxisDomains(InvoiceLine invoiceLine, Invoice invoice, int position)
+  public List<Long> getAxisDomains(InvoiceLine invoiceLine, Company company, int position)
       throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<>();
     List<Long> analyticAccountListByRules = new ArrayList<>();
 
     AnalyticAxis analyticAxis = new AnalyticAxis();
 
-    if (analyticToolService.isPositionUnderAnalyticAxisSelect(invoice.getCompany(), position)
-        && invoice != null) {
+    if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
+        && company != null) {
 
       analyticAxis =
           (AnalyticAxis)
-              accountConfigService.getAccountConfig(invoice.getCompany())
-                  .getAnalyticAxisByCompanyList().stream()
+              accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
                   .filter(a -> a.getOrderSelect() == position)
                   .map(AnalyticAxisByCompany::getAnalyticAxis);
 

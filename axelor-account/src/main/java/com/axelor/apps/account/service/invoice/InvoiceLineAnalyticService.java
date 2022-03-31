@@ -20,7 +20,7 @@ public interface InvoiceLineAnalyticService {
 
   InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine, Company company) throws AxelorException;
 
-  List<Long> getAxisDomains(InvoiceLine invoiceLine, Invoice invoice, int position)
+  List<Long> getAxisDomains(InvoiceLine invoiceLine, Company company, int position)
       throws AxelorException;
 
   List<AnalyticMoveLine> getAndComputeAnalyticDistribution(InvoiceLine invoiceLine, Invoice invoice)

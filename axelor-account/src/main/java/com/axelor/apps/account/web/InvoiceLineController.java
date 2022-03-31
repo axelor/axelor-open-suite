@@ -80,7 +80,6 @@ public class InvoiceLineController {
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-
     response.setValue(
         "analyticMoveLineList",
         Beans.get(InvoiceLineAnalyticService.class)
@@ -434,9 +433,10 @@ public class InvoiceLineController {
             Beans.get(InvoiceLineAnalyticService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
           if (invoice != null
+              && invoice.getCompany() != null
               && analyticToolService.isPositionUnderAnalyticAxisSelect(invoice.getCompany(), i)) {
             analyticAccountList =
-                invoiceLineAnalyticService.getAxisDomains(invoiceLine, invoice, i);
+                invoiceLineAnalyticService.getAxisDomains(invoiceLine, invoice.getCompany(), i);
             if (CollectionUtils.isEmpty(analyticAccountList)) {
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
