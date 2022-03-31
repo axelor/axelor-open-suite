@@ -116,7 +116,6 @@ public class AnalyticAxisController {
   public void checkAnalyticAccountCompany(ActionRequest request, ActionResponse response) {
     try {
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
-
       if (analyticAxis.getId() != null
           && analyticAxis.getCompany() != null
           && !analyticAxis
