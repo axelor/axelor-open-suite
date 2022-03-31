@@ -49,4 +49,7 @@ public interface ITranslation {
   public static final String BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION =
       /*$$(*/
       "Connection has failed"; /*)*/
+  public static final String BASE_IMPORT_BATCH_FILES_IMPORTED =
+      /*$$(*/
+      " %s files imported "; /*)*/
 }

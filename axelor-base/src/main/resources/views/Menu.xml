@@ -946,5 +946,13 @@
     <view type="form" name="file-source-connector-parameters-form"/>
   </action-view>
 
+  <menuitem name="admin-root-batch-import-batch" parent="admin-root-batch"
+    title="Import batch" action="admin.root.batch.import.batch"/>
+
+  <action-view name="admin.root.batch.import.batch" title="Import batch"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <view type="grid" name="import-batch-grid"/>
+    <view type="form" name="import-batch-form"/>
+  </action-view>
 
 </object-views>

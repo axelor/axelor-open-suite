@@ -30,6 +30,8 @@
         onClick="action-batch-show-trace-back,close"/>
       <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4"
         onClick="action-batch-show-invoice" if-module="axelor-account,close"/>
+      <button name="showImportHistoryBtn" title="Import Histories" hidden="true" colspan="4"
+        onClick="action-view-import-histories,close"/>
       <button name="showLcrAccountedInvoiceBtn" title="Invoices" hidden="true" colspan="4"
         onClick="action-view-accounting-batch-lcr-accounted-invoices,close"
         if-module="axelor-account"/>
@@ -118,6 +120,9 @@
     <attribute name="hidden" for="showLcrAccountedInvoiceBtn"
       expr="eval: !(__parent__?.actionSelect == 24)"
       if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
+    <attribute name="hidden" for="showImportHistoryBtn"
+      expr="eval: __parent__?.actionSelect == 1"
+      if="__parent__?._model == 'com.axelor.apps.base.db.ImportBatch'"/>
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -213,6 +218,14 @@
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
     <domain>self.lcrAccounted = 'true' AND :batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-view-import-histories" title="Import histories"
+    model="com.axelor.apps.base.db.ImportHistory">
+    <view type="grid" name="import-history-grid"/>
+    <view type="form" name="import-history-form"/>
+    <domain>:batch = self.batch</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>
 

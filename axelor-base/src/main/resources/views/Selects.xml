@@ -431,6 +431,7 @@
     id="base.meta.schedule.batch.service.select">
     <option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
     <option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
+    <option value="com.axelor.apps.base.service.batch.ImportBatchService">com.axelor.apps.base.service.batch.ImportBatchService</option>
   </selection>
 
   <selection name="team.type.select">
@@ -656,6 +657,11 @@
 
   <selection name="base.file.source.connector.connection.type.select">
     <option value="1">SFTP</option>
+  </selection>
+
+  <selection name="import.batch.action.select">
+    <option value="0">Import</option>
+    <option value="1">Advanced Import</option>
   </selection>
 
 </object-views>

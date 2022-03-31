@@ -23,7 +23,7 @@
 
     <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="importBatch" title="Import batch"
-      ref="com.axelor.apps.base.db.ImportBatch"/>    
+      ref="com.axelor.apps.base.db.ImportBatch"/>
 
   </entity>
 
