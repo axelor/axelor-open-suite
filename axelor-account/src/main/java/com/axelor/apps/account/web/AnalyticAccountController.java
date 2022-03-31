@@ -45,8 +45,6 @@ public class AnalyticAccountController {
                 + analyticAccount.getAnalyticAxis().getId();
         if (analyticAccount.getCompany() != null) {
           domain = domain.concat(" AND self.company.id = " + analyticAccount.getCompany().getId());
-        } else {
-          domain = domain.concat(" AND self.company IS NULL");
         }
         response.setAttr("parent", "domain", domain);
       }
@@ -86,6 +84,22 @@ public class AnalyticAccountController {
     }
   }
 
+  public void setCompanyOnParentChange(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticAccount analyticAccount = request.getContext().asType(AnalyticAccount.class);
+      if (analyticAccount.getParent() != null && analyticAccount.getParent().getCompany() != null) {
+        response.setAttr("company", "readonly", true);
+        response.setValue("company", analyticAccount.getParent().getCompany());
+      } else {
+        response.setAttr("company", "readonly", false);
+        response.setValue("company", null);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkChildrenCompany(ActionRequest request, ActionResponse response) {
     try {
       AnalyticAccount analyticAccount = request.getContext().asType(AnalyticAccount.class);
@@ -93,6 +107,7 @@ public class AnalyticAccountController {
           Beans.get(AnalyticAccountRepository.class);
 
       if (analyticAccount.getCompany() != null
+          && analyticAccount.getId() != null
           && !analyticAccount
               .getCompany()
               .equals(analyticAccountRepository.find(analyticAccount.getId()).getCompany())) {

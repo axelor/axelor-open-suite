@@ -46,6 +46,11 @@
       <field name="name"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         required="true" onChange="action-group-analytic-account-onchange-axis"/>
+      <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"
+        onSelect="action-method-set-domain-parent-level-analytic-account"
+        readonlyIf="!analyticLevel" onChange="action-method-set-company-change-parent"/>
+      <field name="company" onChange="action-method-analytic-account-check-children-company"
+        readonlyIf="(analyticAxis != null &amp;&amp; analyticAxis.company != null) || parent != null &amp;&amp; parent.company != null)"/>
       <field name="analyticLevel" form-view="analytic-level-form"
         grid-view="analytic-level-grid" required="true"/>
       <field name="company" onChange="action-method-analytic-account-check-children-company"
@@ -214,6 +219,11 @@
   <action-method name="action-method-set-company-change-axis">
     <call class="com.axelor.apps.account.web.AnalyticAccountController"
       method="setCompanyOnAxisChange"/>
+  </action-method>
+
+  <action-method name="action-method-set-company-change-parent">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setCompanyOnParentChange"/>
   </action-method>
 
   <action-record name="action-record-analytic-account-set-values"
