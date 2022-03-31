@@ -290,6 +290,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.checkPreconditions(move);
 
+    log.debug("Precondition check of move {} OK", move.getReference());
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
         && !move.getAutoYearClosureMove()) {
       throw new AxelorException(
@@ -301,6 +302,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
 
+    log.debug("dayBookMode {}", dayBookMode);
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
     }
@@ -312,9 +314,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveInvoiceTermService.generateInvoiceTerms(move);
 
     this.completeMoveLines(move);
-
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
-
     this.updateValidateStatus(move, dayBookMode);
 
     moveRepository.save(move);
