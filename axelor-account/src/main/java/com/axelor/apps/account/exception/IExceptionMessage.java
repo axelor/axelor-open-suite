@@ -40,6 +40,8 @@ public interface IExceptionMessage {
       /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+  static final String Capital_Depreciation_Derogatory_Account =
+          /*$$(*/ "Capital Depreciation Derogatory Account" /*)*/;
   static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =

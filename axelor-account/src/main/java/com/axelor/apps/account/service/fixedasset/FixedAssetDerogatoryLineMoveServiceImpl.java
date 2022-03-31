@@ -238,7 +238,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            "Compte de provision pour amortissement dérogatoire");
+            I18n.get(IExceptionMessage.Capital_Depreciation_Derogatory_Account));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
