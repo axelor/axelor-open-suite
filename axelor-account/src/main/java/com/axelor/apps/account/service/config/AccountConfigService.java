@@ -19,8 +19,6 @@ package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.DebtRecoveryConfigLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
@@ -28,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -41,24 +38,17 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 
 public class AccountConfigService {
 
   protected MoveRepository moveRepo;
   protected JournalRepository journalRepo;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
-  public AccountConfigService(
-      MoveRepository moveRepo,
-      JournalRepository journalRepo,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+  public AccountConfigService(MoveRepository moveRepo, JournalRepository journalRepo) {
     this.moveRepo = moveRepo;
     this.journalRepo = journalRepo;
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
@@ -659,86 +649,5 @@ public class AccountConfigService {
     }
 
     return accountConfig.getDasContactPartner();
-  }
-
-  public void checkChangesInAnalytic(
-      List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList)
-      throws AxelorException {
-    if (checkChangesInAnalyticConfig(initialList, modifiedList)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG));
-    }
-  }
-
-  public boolean checkChangesInAnalyticConfig(
-      List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList)
-      throws AxelorException {
-    if (!CollectionUtils.isEmpty(initialList)) {
-      List<AnalyticAxis> analyticAxisUsedList = getUsedAnalyticAxis(initialList);
-      if (initialList.size() < modifiedList.size()
-          && !CollectionUtils.isEmpty(analyticAxisUsedList)) {
-        return true;
-      } else if (initialList.size() > modifiedList.size()
-          && !CollectionUtils.isEmpty(analyticAxisUsedList)) {
-        return true;
-      } else if (initialList.size() == modifiedList.size()) {
-        if (axisChangedInConfig(initialList, modifiedList) != null
-            && analyticAxisUsedList.contains(axisChangedInConfig(initialList, modifiedList))) {
-          return true;
-        } else if (orderChangedInConfig(initialList, modifiedList)
-            && !CollectionUtils.isEmpty(analyticAxisUsedList)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public List<AnalyticAxis> getUsedAnalyticAxis(List<AnalyticAxisByCompany> initialList) {
-    List<AnalyticAxis> analyticAxisList = new ArrayList<AnalyticAxis>();
-    for (AnalyticAxisByCompany analyticAxisByCompany : initialList) {
-      if (!CollectionUtils.isEmpty(
-          analyticMoveLineRepository
-              .findByAnalyticAxis(analyticAxisByCompany.getAnalyticAxis())
-              .fetch())) {
-        analyticAxisList.add(analyticAxisByCompany.getAnalyticAxis());
-      }
-    }
-    return analyticAxisList;
-  }
-
-  public AnalyticAxis axisChangedInConfig(
-      List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
-    List<AnalyticAxis> analyticAxisList = new ArrayList<AnalyticAxis>();
-    initialList.forEach((axis) -> analyticAxisList.add(axis.getAnalyticAxis()));
-    boolean isIn = false;
-    for (AnalyticAxis analyticAxis : analyticAxisList) {
-      isIn = false;
-      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
-        if (analyticAxisByCompany.getAnalyticAxis().equals(analyticAxis)) {
-          isIn = true;
-        }
-      }
-      if (!isIn) {
-        return analyticAxis;
-      }
-    }
-    return null;
-  }
-
-  public boolean orderChangedInConfig(
-      List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
-    for (AnalyticAxisByCompany analyticAxisByCompanyInit : initialList) {
-      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
-        if (analyticAxisByCompanyInit.getOrderSelect() == analyticAxisByCompany.getOrderSelect()
-            && !analyticAxisByCompanyInit
-                .getAnalyticAxis()
-                .equals(analyticAxisByCompany.getAnalyticAxis())) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 }

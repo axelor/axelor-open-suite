@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service.config;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -33,11 +32,8 @@ import javax.inject.Inject;
 public class AccountConfigSupplychainService extends AccountConfigService {
 
   @Inject
-  public AccountConfigSupplychainService(
-      MoveRepository moveRepo,
-      JournalRepository journalRepo,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
-    super(moveRepo, journalRepo, analyticMoveLineRepository);
+  public AccountConfigSupplychainService(MoveRepository moveRepo, JournalRepository journalRepo) {
+    super(moveRepo, journalRepo);
   }
 
   public Account getForecastedInvCustAccount(AccountConfig accountConfig) throws AxelorException {

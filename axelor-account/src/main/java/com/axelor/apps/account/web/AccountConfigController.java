@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -46,7 +47,8 @@ public class AccountConfigController {
               .find(accountConfig.getId())
               .getAnalyticAxisByCompanyList();
       List<AnalyticAxisByCompany> modifiedList = accountConfig.getAnalyticAxisByCompanyList();
-      Beans.get(AccountConfigService.class).checkChangesInAnalytic(initialList, modifiedList);
+      Beans.get(AccountConfigAnalyticService.class)
+          .checkChangesInAnalytic(initialList, modifiedList);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
