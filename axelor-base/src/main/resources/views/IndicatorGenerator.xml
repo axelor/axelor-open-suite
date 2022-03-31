@@ -20,7 +20,10 @@
       <field name="request" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
       <button name="runBtn" title="Execute"
         onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run"/>
-      <field name="result" colSpan="12"/>
+      <button name="exportCsvBtn" title="Export CSV"
+        onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:exportCsv"
+        readonlyIf="!result" icon="fa-reply"/>
+      <field name="result" colSpan="12" widget="html" x-lite="true"/>
       <field name="log" colSpan="12"/>
     </panel>
   </form>

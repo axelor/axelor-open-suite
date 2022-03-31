@@ -24,6 +24,8 @@ import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -40,6 +42,34 @@ public class IndicatorGeneratorController {
           .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void exportCsv(ActionRequest request, ActionResponse response) {
+    IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
+
+    try {
+      indicatorGenerator =
+          Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId());
+
+      MetaFile csvFile =
+          Beans.get(IndicatorGeneratorService.class).getQueryResultCsvFile(indicatorGenerator);
+
+      if (csvFile != null) {
+        response.setView(
+            ActionView.define(I18n.get("Export file"))
+                .model(IndicatorGenerator.class.getName())
+                .add(
+                    "html",
+                    "ws/rest/com.axelor.meta.db.MetaFile/"
+                        + csvFile.getId()
+                        + "/content/download?v="
+                        + csvFile.getVersion())
+                .param("download", "true")
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
