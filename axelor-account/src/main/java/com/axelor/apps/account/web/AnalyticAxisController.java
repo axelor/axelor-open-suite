@@ -117,8 +117,12 @@ public class AnalyticAxisController {
     try {
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
       if (analyticAxis.getCompany() != null
-          && analyticAxis.getCompany()
-              != Beans.get(AnalyticAxisRepository.class).find(analyticAxis.getId()).getCompany()) {
+          && !analyticAxis
+              .getCompany()
+              .equals(
+                  Beans.get(AnalyticAxisRepository.class)
+                      .find(analyticAxis.getId())
+                      .getCompany())) {
         List<AnalyticAccount> childrenList =
             Beans.get(AnalyticAccountRepository.class).findByAnalyticAxis(analyticAxis).fetch();
         if (Beans.get(AnalyticAccountService.class)

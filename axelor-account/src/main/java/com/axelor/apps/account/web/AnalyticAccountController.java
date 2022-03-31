@@ -92,8 +92,10 @@ public class AnalyticAccountController {
       AnalyticAccountRepository analyticAccountRepository =
           Beans.get(AnalyticAccountRepository.class);
       if (analyticAccount.getCompany() != null
-          && analyticAccount.getCompany()
-              != analyticAccountRepository.find(analyticAccount.getId()).getCompany()) {
+          && analyticAccount.getId() != null
+          && !analyticAccount
+              .getCompany()
+              .equals(analyticAccountRepository.find(analyticAccount.getId()).getCompany())) {
         List<AnalyticAccount> childrenList =
             analyticAccountRepository.findByParent(analyticAccount).fetch();
         if (Beans.get(AnalyticAccountService.class)

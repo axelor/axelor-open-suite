@@ -1046,7 +1046,7 @@ public interface IExceptionMessage {
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
   static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
-      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic account which have as parent this account will be either shared or assigned to this specific company" /*)*/;
+      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
 
   static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
       "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;

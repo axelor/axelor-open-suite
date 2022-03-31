@@ -61,7 +61,7 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
   public boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList) {
     if (!CollectionUtils.isEmpty(childrenList)) {
       for (AnalyticAccount children : childrenList) {
-        if (children.getCompany() != null && children.getCompany() != company) {
+        if (children.getCompany() != null && !children.getCompany().equals(company)) {
           return true;
         }
       }
