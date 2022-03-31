@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -921,6 +922,31 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
     return invoiceTermRepo.save(newInvoiceTerm);
+  }
+
+  public void createInvoiceTerm(
+      MoveLine creditMoveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate todayDate,
+      BigDecimal amountRemaining) {
+    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
+    newInvoiceTerm.setIsCustomized(true);
+    newInvoiceTerm.setIsPaid(false);
+    newInvoiceTerm.setDueDate(todayDate);
+    newInvoiceTerm.setIsHoldBack(false);
+    newInvoiceTerm.setEstimatedPaymentDate(null);
+    newInvoiceTerm.setAmount(amountRemaining);
+    newInvoiceTerm.setAmountRemaining(amountRemaining);
+    newInvoiceTerm.setPaymentMode(paymentMode);
+    newInvoiceTerm.setBankDetails(bankDetails);
+    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    newInvoiceTerm.setPfpValidatorUser(pfpUser);
+    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
+    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
   }
 
   @Transactional

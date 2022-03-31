@@ -17,7 +17,13 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -29,20 +35,16 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.Query;
@@ -61,6 +63,7 @@ public class DoubtfulCustomerService {
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
+  protected DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService;
   protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepo;
 
@@ -74,6 +77,7 @@ public class DoubtfulCustomerService {
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
+      DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService,
       AppBaseService appBaseService,
       InvoiceTermRepository invoiceTermRepo) {
 
@@ -85,6 +89,7 @@ public class DoubtfulCustomerService {
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
+    this.doubtfulCustomerInvoiceTermService = doubtfulCustomerInvoiceTermService;
     this.appBaseService = appBaseService;
     this.invoiceTermRepo = invoiceTermRepo;
   }
@@ -211,141 +216,16 @@ public class DoubtfulCustomerService {
             debtPassReason);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    // Generate Invoice Term and update old ones
-    PaymentMode paymentMode = null;
-    BankDetails bankDetails = null;
-    User pfpUser = null;
-    List<InvoiceTerm> invoiceTermToAdd = Lists.newArrayList();
-    List<InvoiceTerm> invoiceTermToRemove = Lists.newArrayList();
-    List<InvoiceTerm> invoiceTermToAddToInvoicePartnerMoveLine = Lists.newArrayList();
-    List<InvoiceTerm> invoiceTermToAddToDebitMoveLine = Lists.newArrayList();
-
-    for (InvoiceTerm invoiceTerm : invoicePartnerMoveLine.getInvoiceTermList()) {
-      paymentMode = invoiceTerm.getPaymentMode();
-      bankDetails = invoiceTerm.getBankDetails();
-      pfpUser = invoiceTerm.getPfpValidatorUser();
-
-      if (invoiceTerm.getAmountRemaining().signum() > 0
-          && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
-
-        // Copy invoice term on put it on new move line
-        InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
-        invoiceTermToAddToDebitMoveLine.add(copy);
-        invoiceTermToAdd.add(copy);
-
-        // Remove invoice from old invoice term
-        invoiceTermToRemove.add(invoiceTerm);
-      }
-
-      if (invoiceTerm.getAmountRemaining().signum() > 0
-          && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0) {
-        BigDecimal amount = invoiceTerm.getAmount();
-        BigDecimal remainingAmount = invoiceTerm.getAmountRemaining();
-        BigDecimal percentage = invoiceTerm.getPercentage();
-        // Create new invoice term on new move line with amount remaining
-        InvoiceTerm copyOnNewMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
-        copyOnNewMoveLine.setAmount(remainingAmount);
-        BigDecimal newPercentage =
-            remainingAmount
-                .multiply(percentage)
-                .divide(amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        copyOnNewMoveLine.setPercentage(newPercentage);
-        invoiceTermToAddToDebitMoveLine.add(copyOnNewMoveLine);
-        invoiceTermToAdd.add(copyOnNewMoveLine);
-
-        InvoiceTerm copyOnOldMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
-        copyOnOldMoveLine.setAmount(remainingAmount);
-        copyOnOldMoveLine.setAmountRemaining(remainingAmount);
-        copyOnOldMoveLine.setPercentage(newPercentage);
-        invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
-        invoice.addInvoiceTermListItem(copyOnOldMoveLine);
-        invoiceTermToRemove.add(copyOnOldMoveLine);
-        // Update current invoice term
-        invoiceTerm.setAmount(amount.subtract(remainingAmount));
-        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setIsPaid(true);
-        invoiceTerm.setPercentage(percentage.subtract(newPercentage));
-      }
-    }
-
-    for (InvoiceTerm it : invoiceTermToAddToInvoicePartnerMoveLine) {
-      invoicePartnerMoveLine.addInvoiceTermListItem(it);
-    }
-
-    if (creditMoveLine != null) {
-      // Create invoice term on new credit move line
-      this.createInvoiceTerm(
-          creditMoveLine, bankDetails, pfpUser, paymentMode, todayDate, amountRemaining);
-
-      newMove.getMoveLineList().add(debitMoveLine);
-      newMove.getMoveLineList().add(creditMoveLine);
-
-      moveValidateService.accounting(newMove);
-      moveRepo.save(newMove);
-
-      Reconcile reconcile =
-          reconcileService.createReconcile(
-              invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
-
-      if (reconcile != null) {
-        reconcileService.confirmReconcile(reconcile, true);
-      }
-    }
-    if (debitMoveLine.getInvoiceTermList() != null) {
-      for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
-        invoiceTermRepo.remove(it);
-      }
-      debitMoveLine.clearInvoiceTermList();
-    }
-    for (InvoiceTerm it : invoiceTermToAddToDebitMoveLine) {
-      debitMoveLine.addInvoiceTermListItem(it);
-    }
-    // Recalculate percentage on debit moveline
-    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
-      it.setPercentage(
-          it.getAmount()
-              .multiply(BigDecimal.valueOf(100))
-              .divide(
-                  amountRemaining, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-    }
-
-    if (invoice != null) {
-      for (InvoiceTerm it : invoiceTermToAdd) {
-        invoice.addInvoiceTermListItem(it);
-      }
-
-      for (InvoiceTerm it : invoiceTermToRemove) {
-        invoice.removeInvoiceTermListItem(it);
-        it.setInvoice(null);
-      }
-    }
+    doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
+        invoice,
+        newMove,
+        invoicePartnerMoveLine,
+        creditMoveLine,
+        debitMoveLine,
+        todayDate,
+        amountRemaining);
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
-  }
-
-  protected void createInvoiceTerm(
-      MoveLine creditMoveLine,
-      BankDetails bankDetails,
-      User pfpUser,
-      PaymentMode paymentMode,
-      LocalDate todayDate,
-      BigDecimal amountRemaining) {
-    InvoiceTerm newInvoiceTerm = new InvoiceTerm();
-    newInvoiceTerm.setIsCustomized(true);
-    newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setDueDate(todayDate);
-    newInvoiceTerm.setIsHoldBack(false);
-    newInvoiceTerm.setEstimatedPaymentDate(null);
-    newInvoiceTerm.setAmount(amountRemaining);
-    newInvoiceTerm.setAmountRemaining(amountRemaining);
-    newInvoiceTerm.setPaymentMode(paymentMode);
-    newInvoiceTerm.setBankDetails(bankDetails);
-    newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    newInvoiceTerm.setPfpValidatorUser(pfpUser);
-    newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
-    newInvoiceTerm.setPercentage(BigDecimal.valueOf(100));
-    creditMoveLine.addInvoiceTermListItem(newInvoiceTerm);
   }
 
   public void createDoubtFulCustomerRejectMove(
