@@ -87,7 +87,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
+      if (user != null && user.getEmployee() != null) {
         Employee employee = employeeRepository.find(user.getEmployee().getId());
 
         log.debug("Employee: {}", employee);
