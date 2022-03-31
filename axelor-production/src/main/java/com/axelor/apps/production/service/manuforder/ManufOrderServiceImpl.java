@@ -142,7 +142,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOrigin)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -168,10 +168,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             plannedStartDateT,
             plannedEndDateT);
 
-    if (originType == ORIGIN_TYPE_SALE_ORDER
+    if (manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER)
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
-        || originType == ORIGIN_TYPE_MRP
-        || originType == ORIGIN_TYPE_OTHER) {
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
     }
 
@@ -316,12 +316,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    if (!manufOrder.getIsConsProOnOperation()) {
-      this.createToConsumeProdProductList(manufOrder);
-    }
-
-    this.createToProduceProdProductList(manufOrder);
 
     return manufOrder;
   }
@@ -901,7 +895,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 childBom,
                 null,
                 manufOrder.getPlannedStartDateT(),
-                ORIGIN_TYPE_OTHER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
         moList.add(manufOrder);
         productManufactured.add(childBom.getProduct());
