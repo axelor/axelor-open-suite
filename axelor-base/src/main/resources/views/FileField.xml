@@ -69,10 +69,10 @@
 
   <action-attrs name="action-file-field-attrs-domain-on-import-field">
     <attribute name="domain" for="importField"
-      expr="eval: (__parent__ != null &amp;&amp; __parent__.metaModel != null) ? &quot; self.metaModel = ${__parent__.metaModel.id} AND (self.relationship IS NULL OR self.relationship != 'OneToMany') &quot; : &quot; self.id IN (null) &quot;"
+      expr="eval: (__parent__ != null &amp;&amp; __parent__.metaModel != null) ? &quot; self.metaModel = ${__parent__.metaModel.id} AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.name NOT IN ('id','version') &quot; : &quot; self.id IN (null) &quot;"
       if="isMatchWithFile"/>
     <attribute name="domain" for="importField"
-      expr="eval: (__parent__ != null &amp;&amp; __parent__.metaModel != null) ? &quot; self.metaModel = ${__parent__.metaModel.id} AND (self.relationship IS NULL OR (self.relationship != 'OneToMany' AND self.relationship != 'ManyToMany')) &quot; : &quot; self.id IN (null) &quot;"
+      expr="eval: (__parent__ != null &amp;&amp; __parent__.metaModel != null) ? &quot; self.metaModel = ${__parent__.metaModel.id} AND (self.relationship IS NULL OR (self.relationship != 'OneToMany' AND self.relationship != 'ManyToMany')) AND self.name NOT IN ('id','version') &quot; : &quot; self.id IN (null) &quot;"
       if="!isMatchWithFile"/>
   </action-attrs>
 

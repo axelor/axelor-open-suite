@@ -31,6 +31,7 @@ import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -408,9 +409,12 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     } else {
       ignoreFields.add(index);
     }
-    fileFieldList.add(fileField);
-    fileField = fileFieldRepository.save(fileField);
-    fileTab.addFileFieldListItem(fileField);
+
+    if (fileField.getImportField() != null) {
+      fileFieldList.add(fileField);
+      fileField = fileFieldRepository.save(fileField);
+      fileTab.addFileFieldListItem(fileField);
+    }
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)
@@ -428,7 +432,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
                 mapper.getBeanClass().getSimpleName()));
       }
 
-      if (parentProp.getType().name().equals("ONE_TO_MANY")) {
+      if ("id".equals(parentProp.getName())
+          || "version".equals(parentProp.getName())
+          || PropertyType.ONE_TO_MANY.equals(parentProp.getType())) {
         return false;
       }
 

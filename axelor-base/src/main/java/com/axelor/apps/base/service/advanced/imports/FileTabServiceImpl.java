@@ -20,11 +20,15 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.common.Inflector;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -32,6 +36,7 @@ import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +47,8 @@ public class FileTabServiceImpl implements FileTabService {
   @Inject MetaFieldRepository metaFieldRepo;
 
   @Inject FileFieldService fileFieldService;
+
+  @Inject TranslationService translationService;
 
   @Override
   public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException {
@@ -54,20 +61,32 @@ public class FileTabServiceImpl implements FileTabService {
 
     Beans.get(ValidatorService.class).sortFileFieldList(fileTab.getFileFieldList());
 
+    Map<String, MetaField> fieldMap = new HashMap<>();
+
+    Inflector instance = Inflector.getInstance();
+
+    for (MetaField field : model.getMetaFields()) {
+      String label = null;
+      if (StringUtils.isBlank(field.getLabel())) {
+        label = instance.titleize(field.getName());
+      } else {
+        label = field.getLabel();
+      }
+      fieldMap.put(
+          translationService.getTranslation(label, fileTab.getAdvancedImport().getLanguageSelect()),
+          field);
+    }
+
     for (FileField fileField : fileTab.getFileFieldList()) {
 
-      MetaField importField =
-          metaFieldRepo
-              .all()
-              .filter(
-                  "self.label = ?1 AND self.metaModel.id = ?2",
-                  fileField.getColumnTitle(),
-                  model.getId())
-              .fetchOne();
+      MetaField importField = fieldMap.get(fileField.getColumnTitle());
 
       if (importField != null) {
+
         String relationship = importField.getRelationship();
-        if (!Strings.isNullOrEmpty(relationship) && relationship.equals("OneToMany")) {
+        if ("id".equals(importField.getName())
+            || "version".equals(importField.getName())
+            || "OneToMany".equals(relationship)) {
           continue;
         }
 
@@ -78,11 +97,12 @@ public class FileTabServiceImpl implements FileTabService {
         }
         fileField = fileFieldService.fillType(fileField);
 
-        if (!Strings.isNullOrEmpty(relationship) && !fileField.getTargetType().equals("MetaFile")) {
+        if (!Strings.isNullOrEmpty(relationship)
+            && !MetaFile.class.getName().equals(fileField.getTargetType())) {
           fileField.setImportType(FileFieldRepository.IMPORT_TYPE_FIND);
         } else {
           if (!Strings.isNullOrEmpty(fileField.getTargetType())
-              && fileField.getTargetType().equals("MetaFile")) {
+              && MetaFile.class.getName().equals(fileField.getTargetType())) {
             fileField.setImportType(FileFieldRepository.IMPORT_TYPE_NEW);
           }
         }
