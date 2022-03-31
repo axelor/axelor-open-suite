@@ -24,20 +24,9 @@
         <field name="destinationFolder" colSpan="6"/>
         <field name="fileNamingRule" colSpan="6"/>
 
-        <!-- TODO: To remove (only for test) -->
-        <field name="metaFile" widget="binary-link" form-view="meta-files-form"
-          grid-view="meta-files-grid"/>
       </panel>
     </panel-tabs>
 
-    <panel name="actionPanel" sidebar="true">
-      <button onClick="save,to-remove" name="toRemoveBtn" title="download"/>
-    </panel>
-
   </form>
-
-  <action-method name="to-remove">
-    <call class="com.axelor.apps.base.web.FileSourceConnectorController" method="download"/>
-  </action-method>
 
 </object-views>
