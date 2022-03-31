@@ -1071,7 +1071,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
-  
+
   static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
       "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
 
