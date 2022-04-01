@@ -33,30 +33,4 @@ public interface AnalyticLine {
   public AnalyticAccount getAxis5AnalyticAccount();
 
   public void setAxis5AnalyticAccount(AnalyticAccount axis5AnalyticAccount);
-
-  /*
-
-   Invoice :
-   	 getAxisDomains
-   	 printAnalyticAccount
-   	 checkAnalyticMoveLineForAxis
-   	 isAxisRequired
-
-   Move :
-   	printAnalyticAccount
-   	checkAnalyticMoveLineForAxis
-   	isAxisRequired
-   	getAxisDomains
-
-
-
-  axis1AnalyticAccount (get et set)
-  ..
-  axis5AnalyticAccount (get et set)
-  analyticMoveLineList
-  account
-  analyticDistributionTemplate
-
-
-  */
 }
