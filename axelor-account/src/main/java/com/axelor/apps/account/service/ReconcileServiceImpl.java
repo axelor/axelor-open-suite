@@ -448,7 +448,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO)
             .compareTo(amount)
-        <= 0;
+        < 0;
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
