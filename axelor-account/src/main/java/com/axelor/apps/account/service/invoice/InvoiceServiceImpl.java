@@ -321,8 +321,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (account != null
           && !account.getAnalyticDistributionAuthorized()
           && (invoiceLine.getAnalyticDistributionTemplate() != null
-              || (invoiceLine.getAnalyticMoveLineList() != null
-                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+              || !CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList()))) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
