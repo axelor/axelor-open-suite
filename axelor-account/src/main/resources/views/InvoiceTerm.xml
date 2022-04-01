@@ -283,7 +283,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -430,7 +431,7 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" title="Amount paid / reconciled" readonly="true"
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
