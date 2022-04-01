@@ -853,7 +853,7 @@ public class IrrecoverableService {
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_SALE,
-            irrecoverableName,
+            invoice.getMove().getOrigin(),
             invoice.getInvoiceId());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
@@ -992,7 +992,7 @@ public class IrrecoverableService {
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
-            irrecoverableName,
+            moveLine.getMove().getOrigin(),
             moveLine.getDescription());
     move.setOriginDate(moveLine.getMove().getDate());
 
@@ -1122,6 +1122,8 @@ public class IrrecoverableService {
     invoice.setIrrecoverableStatusSelect(
         InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
 
+    MoveLine moveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
+
     if (generateEvent) {
       Company company = invoice.getCompany();
 
@@ -1132,8 +1134,6 @@ public class IrrecoverableService {
                   accountConfigService.getAccountConfig(company)));
       invoice.setManagementObject(managementObject);
 
-      MoveLine moveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
-
       if (moveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -1143,6 +1143,8 @@ public class IrrecoverableService {
       }
 
       this.passInIrrecoverable(moveLine, managementObject, false);
+    } else if (moveLine != null) {
+      this.passInIrrecoverable(moveLine, false, false);
     }
 
     invoiceRepo.save(invoice);
