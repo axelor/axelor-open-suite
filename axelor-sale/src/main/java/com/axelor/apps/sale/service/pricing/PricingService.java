@@ -23,9 +23,8 @@ public interface PricingService {
       Pricing parentPricing);
 
   /**
-   * Method that get the default pricing of saleOrderLine.
-   *
-   * @return true if it has, else false
+   * Returns an optional containing the default pricing of saleOrderLine, or an empty optional if no
+   * one was found.
    */
   Optional<Pricing> getDefaultPricing(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
