@@ -18,7 +18,14 @@
 package com.axelor.apps.tool.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.tool.service.*;
+import com.axelor.apps.tool.service.ArchivingToolService;
+import com.axelor.apps.tool.service.ArchivingToolServiceImpl;
+import com.axelor.apps.tool.service.CipherService;
+import com.axelor.apps.tool.service.CipherServiceImpl;
+import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
+import com.axelor.apps.tool.service.ConvertBinaryToMetafileServiceImpl;
+import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.apps.tool.service.TranslationServiceImpl;
 
 public class ToolModule extends AxelorModule {
 
