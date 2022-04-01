@@ -1,3 +1,38 @@
+## [6.0.19] (2022-04-01)
+
+#### Fixed
+
+* Production process: Fix french help message in data-init.
+* Product: fix filter on cost type selection.
+* Product Disponibility: add filter to remove products that are not stock managed from product set in product disponibility form.
+* BUDGET: Clear budget when purchase order is cancelled.
+* Lead: Add missing checks for duplicated reference during lead conversion.
+* Lead: Add missing checks for duplicated reference during lead conversion.
+* Lead: fix 'no transaction is in progress' error when trying to convert a lead.
+* Bank Reconciliation Line: Fix errors on account or a partner in a bank reconciliation line.
+* Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list.
+* Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true.
+* Docusign: remove extra status selections from Envelop status.
+* Sale Order: Fix transaction issue when generating production order from sale order.
+* Purchase Order: when generating a purchase order from a sale order, generated purchase order lines order is now correctly retrieved from sale order lines.
+* Exception: fix message display when an error occurs on save.
+
+For example, the message 'Invoice type missing on invoice' is now correctly displayed instead of 'com.axelor.exception.AxelorException: Invoice type missing on invoice'
+
+* Partner category: fix french translation.
+* Move, Accounting Period: improve format of displayed dates in error message.
+* Supplier stock move invoicing wizard now correctly opens invoice supplier grid.
+* Invoice: Remove duplicated specific notes copied from tax when we have multiple lines.
+* MetaSchedule: Fix the title for 'Service' field.
+* Contact: fixed duplicate contact name warning not displayed when the contact was not saved.
+* Analytic distribution required on sale order line: Fix french translation.
+* Analytic distribution required on purchase order line: fix french translation.
+* Sale order: when generating a purchase order from a sale order, we now also generate title lines.
+* User: Fix missing "create partner" and "create employee" buttons when creating a new user.
+* Custom state accounting report: Fix typo in french demo data (explotation -> exploitation).
+* YEAR: changed demo data for period on civil year.
+* Object data config: Fix the title of the popup appearing when anonymizing data.
+
 ## [6.0.18] (2022-01-28)
 
 #### Fixed
@@ -666,6 +701,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.19]: https://github.com/axelor/axelor-open-suite/compare/v6.0.18...v6.0.19
 [6.0.18]: https://github.com/axelor/axelor-open-suite/compare/v6.0.17...v6.0.18
 [6.0.17]: https://github.com/axelor/axelor-open-suite/compare/v6.0.16...v6.0.17
 [6.0.16]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.0.16

@@ -1,5 +1,0 @@
----
-title: "Product : Selection filter on onNew"
-type: change
-description: |
-  Filter on the cost type selection is now applied directly on the select menu and not only when we create a new form.
