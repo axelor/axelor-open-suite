@@ -1,3 +1,29 @@
+## [5.4.12] (2022-04-01)
+
+#### Fixed
+
+* Product Disponibility: add filter to remove products that are not stock managed from product set in product disponibility form.
+* Production process: Fix french help message in data-init.
+* BUDGET: Clear budget when purchase order is cancelled
+* CONVERT WIZARD : Fix no check for potential duplicate string field
+* Stock move: add server side check on status before realizing a stock move.
+* Bank Reconciliation Line: Fix of errors in domains for partner and account
+* Manuf Order : Fix issue on consumed products on generated manuf order from SaleOrder
+* Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true
+* Lead: fix loading lead logo when converting a lead to a partner.
+* Partner category: fix french translation.
+* Move, Accounting Period: improve format of displayed dates in error message.
+* Supplier stock move invoicing wizard now correctly opens invoice supplier grid.
+* Invoice: Remove duplicated specific notes copied from tax when we have multiple lines.
+* MetaSchedule: Fix the title for 'Service' field.
+* Contact: fixed duplicate contact name warning not displayed when the contact was not saved.
+* Analytic distribution required on sale order line: Fix french translation.
+* Analytic distribution required on purchase order line: fix french translation.
+* User: Fix missing "create partner" and "create employee" buttons when creating a new user.
+* Custom state accounting report: Fix typo in french demo data (explotation -> exploitation).
+* YEAR: changed demo data for period on civil year.
+* Object data config: Fix the title of the popup appearing when anonymizing data.
+
 ## [5.4.11] (2022-01-26)
 
 #### Fixed
@@ -463,6 +489,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.12]: https://github.com/axelor/axelor-open-suite/compare/v5.4.11...v5.4.12
 [5.4.11]: https://github.com/axelor/axelor-open-suite/compare/v5.4.10...v5.4.11
 [5.4.10]: https://github.com/axelor/axelor-open-suite/compare/v5.4.9...v5.4.10
 [5.4.9]: https://github.com/axelor/axelor-open-suite/compare/v5.4.8...v5.4.9
