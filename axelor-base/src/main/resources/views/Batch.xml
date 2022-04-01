@@ -120,8 +120,7 @@
     <attribute name="hidden" for="showLcrAccountedInvoiceBtn"
       expr="eval: !(__parent__?.actionSelect == 24)"
       if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
-    <attribute name="hidden" for="showImportHistoryBtn"
-      expr="eval: __parent__?.actionSelect == 1"
+    <attribute name="hidden" for="showImportHistoryBtn" expr="eval: false"
       if="__parent__?._model == 'com.axelor.apps.base.db.ImportBatch'"/>
   </action-attrs>
 
@@ -222,9 +221,9 @@
   </action-view>
 
   <action-view name="action-view-import-histories" title="Import histories"
-    model="com.axelor.apps.base.db.ImportHistory">
-    <view type="grid" name="import-history-grid"/>
-    <view type="form" name="import-history-form"/>
+    model="com.axelor.apps.base.db.BatchImportHistory">
+    <view type="grid" name="batch-import-history-grid"/>
+    <view type="form" name="batch-import-history-form"/>
     <domain>:batch = self.batch</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>

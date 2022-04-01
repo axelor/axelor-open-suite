@@ -3,8 +3,7 @@ package com.axelor.apps.base.service.batch;
 import com.axelor.apps.base.db.ImportBatch;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
-import com.axelor.apps.base.db.repo.ImportHistoryRepository;
+import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
@@ -14,9 +13,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BatchImportData extends AbstractImportBatch {
@@ -25,27 +22,20 @@ public class BatchImportData extends AbstractImportBatch {
   protected ImportService importService;
 
   protected FactoryImporter factoryImporter;
-  protected ImportHistoryRepository importHistoryRepository;
   protected MetaFileRepository metaFileRepository;
-  protected ImportConfigurationRepository importConfigurationRepository;
-  protected UserRepository userRepository;
 
   @Inject
   public BatchImportData(
       FileSourceConnectorService fileSourceConnectorService,
       ImportService importService,
       FactoryImporter factoryImporter,
-      ImportHistoryRepository importHistoryRepository,
+      BatchImportHistoryRepository batchImportHistoryRepository,
       MetaFileRepository metaFileRepository,
-      ImportConfigurationRepository importConfigurationRepository,
       UserRepository userRepository) {
-    super(fileSourceConnectorService);
+    super(fileSourceConnectorService, batchImportHistoryRepository, userRepository);
     this.importService = importService;
     this.factoryImporter = factoryImporter;
-    this.importHistoryRepository = importHistoryRepository;
     this.metaFileRepository = metaFileRepository;
-    this.importConfigurationRepository = importConfigurationRepository;
-    this.userRepository = userRepository;
   }
 
   @Override
@@ -56,7 +46,10 @@ public class BatchImportData extends AbstractImportBatch {
     // In this case it is just using import service on importConfig
     if (!importBatch.getImportFromConnector()) {
       try {
-        importService.run(importBatch.getImportConfig());
+        ImportHistory importHistory = importService.run(importBatch.getImportConfig());
+        createBatchHistory(
+            metaFileRepository.find(importHistory.getDataMetaFile().getId()),
+            metaFileRepository.find(importHistory.getLogMetaFile().getId()));
         incrementDone();
       } catch (AxelorException | IOException e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
@@ -65,9 +58,7 @@ public class BatchImportData extends AbstractImportBatch {
     } else {
       try {
         List<MetaFile> files = downloadFiles(importBatch.getFileSourceConnectorParameters());
-        List<ImportHistory> histories =
-            importFiles(files, importBatch.getImportConfig().getBindMetaFile());
-        addBatch(histories);
+        importFiles(files, importBatch.getImportConfig().getBindMetaFile());
       } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
@@ -75,42 +66,23 @@ public class BatchImportData extends AbstractImportBatch {
     }
   }
 
-  @Transactional
-  protected void addBatch(List<ImportHistory> histories) {
+  protected void importFiles(List<MetaFile> files, MetaFile bindMetaFile) {
 
-    for (ImportHistory history : histories) {
-      history.setBatch(this.getBatch());
-      // If we don't do this we will get a Detached entity exception
-      if (history.getDataMetaFile() != null) {
-        history.setDataMetaFile(metaFileRepository.find(history.getDataMetaFile().getId()));
-      }
-      if (history.getLogMetaFile() != null) {
-        history.setLogMetaFile(metaFileRepository.find(history.getLogMetaFile().getId()));
-      }
-      history.setImportConfiguration(
-          importConfigurationRepository.find(batch.getImportBatch().getImportConfig().getId()));
-      history.setUser(userRepository.find(batch.getCreatedBy().getId()));
-      importHistoryRepository.save(history);
-    }
-  }
-
-  protected List<ImportHistory> importFiles(List<MetaFile> files, MetaFile bindMetaFile) {
-
-    ArrayList<ImportHistory> importHistories = new ArrayList<>();
     ImportConfiguration importConfiguration = batch.getImportBatch().getImportConfig();
 
     for (MetaFile file : files) {
       try {
         importConfiguration.setBindMetaFile(bindMetaFile);
         importConfiguration.setDataMetaFile(file);
-        importHistories.add(factoryImporter.createImporter(importConfiguration).run());
+        ImportHistory importHistory = factoryImporter.createImporter(importConfiguration).run();
+        createBatchHistory(
+            metaFileRepository.find(importHistory.getDataMetaFile().getId()),
+            metaFileRepository.find(importHistory.getLogMetaFile().getId()));
         incrementDone();
       } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
       }
     }
-
-    return importHistories;
   }
 }

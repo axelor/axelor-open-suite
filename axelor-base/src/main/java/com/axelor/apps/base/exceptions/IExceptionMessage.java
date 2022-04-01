@@ -477,4 +477,9 @@ public interface IExceptionMessage {
       "Download failed: %s" /*)*/;
   public static final String FILE_TRANSFERT_SESSION_UPLOAD_FAILED = /*$$(*/
       "Upload failed: %s" /*)*/;
+
+  public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
+      "Advanced import is not validated" /*)*/;
+  public static final String BATCH_ADVANCED_IMPORT_FILE_NOT_IMPORTED = /*$$(*/
+      "File %s could not be imported" /*)*/;
 }

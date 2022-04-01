@@ -5,15 +5,14 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ImportHistory" lang="java">
+  <entity name="BatchImportHistory" lang="java">
 
-    <many-to-one name="importConfiguration"
-      ref="com.axelor.apps.base.db.ImportConfiguration"/>
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
       initParam="true" column="user_id"/>
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)"
-      required="true" initParam="true"/>
+      required="true"/>
     <many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="batch"/>
 
   </entity>
 
