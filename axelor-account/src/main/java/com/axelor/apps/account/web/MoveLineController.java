@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -410,13 +411,11 @@ public class MoveLineController {
       Move move = request.getContext().getParent().asType(Move.class);
       List<Long> analyticAccountList = new ArrayList<Long>();
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
-          Beans.get(MoveLineComputeAnalyticService.class);
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         if (move != null
             && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
-          analyticAccountList =
-              moveLineComputeAnalyticService.getAxisDomains(moveLine, move.getCompany(), i);
+          analyticAccountList = analyticLineService.getAxisDomains(moveLine, move.getCompany(), i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(
                 "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
@@ -446,13 +445,12 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
-          Beans.get(MoveLineComputeAnalyticService.class);
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         response.setAttr(
             "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
             "required",
-            moveLineComputeAnalyticService.isAxisRequired(
+            analyticLineService.isAxisRequired(
                 moveLine, move != null ? move.getCompany() : null, i));
       }
     } catch (Exception e) {
@@ -571,8 +569,7 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
       if (moveLine != null && move != null) {
-        Beans.get(MoveLineComputeAnalyticService.class)
-            .printAnalyticAccount(moveLine, move.getCompany());
+        Beans.get(AnalyticLineService.class).printAnalyticAccount(moveLine, move.getCompany());
         response.setValues(moveLine);
       }
     } catch (Exception e) {
@@ -584,7 +581,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       if (moveLine != null) {
-        Beans.get(MoveLineComputeAnalyticService.class).checkAnalyticMoveLineForAxis(moveLine);
+        Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(moveLine);
         response.setValues(moveLine);
       }
     } catch (Exception e) {

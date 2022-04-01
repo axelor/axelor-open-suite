@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -429,14 +430,13 @@ public class InvoiceLineController {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         List<Long> analyticAccountList = new ArrayList<Long>();
         AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
-        InvoiceLineAnalyticService invoiceLineAnalyticService =
-            Beans.get(InvoiceLineAnalyticService.class);
+        AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
           if (invoice != null
               && invoice.getCompany() != null
               && analyticToolService.isPositionUnderAnalyticAxisSelect(invoice.getCompany(), i)) {
             analyticAccountList =
-                invoiceLineAnalyticService.getAxisDomains(invoiceLine, invoice.getCompany(), i);
+                analyticLineService.getAxisDomains(invoiceLine, invoice.getCompany(), i);
             if (CollectionUtils.isEmpty(analyticAccountList)) {
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
@@ -463,15 +463,16 @@ public class InvoiceLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      InvoiceLineAnalyticService invoiceLineAnalyticService =
-          Beans.get(InvoiceLineAnalyticService.class);
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        response.setAttr(
-            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-            "required",
-            invoiceLineAnalyticService.isAxisRequired(invoiceLine, i));
+      if (request.getContext().getParentContext() != null) {
+        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+        AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
+        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+          response.setAttr(
+              "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+              "required",
+              analyticLineService.isAxisRequired(invoiceLine, invoice.getCompany(), i));
+        }
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -514,7 +515,7 @@ public class InvoiceLineController {
       if (request.getContext().getParentContext() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         if (invoiceLine != null && invoice != null) {
-          Beans.get(InvoiceLineAnalyticService.class)
+          Beans.get(AnalyticLineService.class)
               .printAnalyticAccount(invoiceLine, invoice.getCompany());
           response.setValues(invoiceLine);
         }
@@ -528,7 +529,7 @@ public class InvoiceLineController {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (invoiceLine != null) {
-        Beans.get(InvoiceLineAnalyticService.class).checkAnalyticMoveLineForAxis(invoiceLine);
+        Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
         response.setValues(invoiceLine);
       }
     } catch (Exception e) {

@@ -1,8 +1,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -15,19 +13,16 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
@@ -145,42 +140,6 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   }
 
   @Override
-  public List<Long> getAxisDomains(InvoiceLine invoiceLine, Company company, int position)
-      throws AxelorException {
-    List<Long> analyticAccountListByAxis = new ArrayList<>();
-    List<Long> analyticAccountListByRules = new ArrayList<>();
-
-    AnalyticAxis analyticAxis = new AnalyticAxis();
-
-    if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
-        && company != null) {
-
-      analyticAxis =
-          (AnalyticAxis)
-              accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
-                  .filter(a -> a.getOrderSelect() == position)
-                  .map(AnalyticAxisByCompany::getAnalyticAxis);
-
-      for (AnalyticAccount analyticAccount :
-          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-        analyticAccountListByAxis.add(analyticAccount.getId());
-      }
-      if (invoiceLine.getAccount() != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(invoiceLine.getAccount());
-        if (!analyticAccountList.isEmpty()) {
-          for (AnalyticAccount analyticAccount : analyticAccountList) {
-            analyticAccountListByRules.add(analyticAccount.getId());
-          }
-          analyticAccountListByAxis =
-              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
-        }
-      }
-    }
-    return analyticAccountListByAxis;
-  }
-
-  @Override
   public InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine, Invoice invoice)
       throws AxelorException {
     if (invoiceLine != null && invoice != null) {
@@ -236,90 +195,5 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
         .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
     invoiceLine.getAnalyticMoveLineList().clear();
     return invoiceLine;
-  }
-
-  @Override
-  public InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine, Company company)
-      throws AxelorException {
-    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList()) && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = new ArrayList();
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
-            analyticMoveLineList.add(analyticMoveLine);
-          }
-        }
-        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-        if (analyticMoveLineList.size() == 1
-            && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-          AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-          switch (analyticAxisByCompany.getOrderSelect()) {
-            case 1:
-              invoiceLine.setAxis1AnalyticAccount(analyticAccount);
-              break;
-            case 2:
-              invoiceLine.setAxis2AnalyticAccount(analyticAccount);
-              break;
-            case 3:
-              invoiceLine.setAxis3AnalyticAccount(analyticAccount);
-              break;
-            case 4:
-              invoiceLine.setAxis4AnalyticAccount(analyticAccount);
-              break;
-            case 5:
-              invoiceLine.setAxis5AnalyticAccount(analyticAccount);
-              break;
-            default:
-              break;
-          }
-        }
-        analyticMoveLineList.clear();
-      }
-    }
-    return invoiceLine;
-  }
-
-  @Override
-  public InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine) {
-    if (analyticToolService.isAnalyticAxisFilled(
-        invoiceLine.getAxis1AnalyticAccount(), invoiceLine.getAnalyticMoveLineList())) {
-      invoiceLine.setAxis1AnalyticAccount(null);
-    }
-    if (analyticToolService.isAnalyticAxisFilled(
-        invoiceLine.getAxis2AnalyticAccount(), invoiceLine.getAnalyticMoveLineList())) {
-      invoiceLine.setAxis2AnalyticAccount(null);
-    }
-    if (analyticToolService.isAnalyticAxisFilled(
-        invoiceLine.getAxis3AnalyticAccount(), invoiceLine.getAnalyticMoveLineList())) {
-      invoiceLine.setAxis3AnalyticAccount(null);
-    }
-    if (analyticToolService.isAnalyticAxisFilled(
-        invoiceLine.getAxis4AnalyticAccount(), invoiceLine.getAnalyticMoveLineList())) {
-      invoiceLine.setAxis4AnalyticAccount(null);
-    }
-    if (analyticToolService.isAnalyticAxisFilled(
-        invoiceLine.getAxis5AnalyticAccount(), invoiceLine.getAnalyticMoveLineList())) {
-      invoiceLine.setAxis5AnalyticAccount(null);
-    }
-    return invoiceLine;
-  }
-
-  @Override
-  public boolean isAxisRequired(InvoiceLine invoiceLine, int position) throws AxelorException {
-    if (invoiceLine != null
-        && invoiceLine.getAccount() != null
-        && invoiceLine.getAccount().getCompany() != null) {
-      Integer nbrAxis =
-          accountConfigService
-              .getAccountConfig(invoiceLine.getAccount().getCompany())
-              .getNbrOfAnalyticAxisSelect();
-      return invoiceLine.getAccount() != null
-          && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
-          && invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines()
-          && invoiceLine.getAnalyticDistributionTemplate() == null
-          && (position <= nbrAxis);
-    }
-    return false;
   }
 }

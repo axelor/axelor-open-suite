@@ -42,14 +42,5 @@ public interface MoveLineComputeAnalyticService {
 
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
 
-  MoveLine printAnalyticAccount(MoveLine moveLine, Company company) throws AxelorException;
-
-  MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine);
-
-  boolean isAxisRequired(MoveLine moveLine, Company company, int position) throws AxelorException;
-
-  List<Long> getAxisDomains(MoveLine moveLine, Company company, int position)
-      throws AxelorException;
-
   boolean checkManageAnalytic(Company company) throws AxelorException;
 }
