@@ -813,12 +813,12 @@ public class IrrecoverableService {
     if (isInvoiceReject) {
       prorataRate =
           (invoice.getRejectMoveLine().getAmountRemaining())
-              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_UP);
+              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
           invoice
               .getCompanyInTaxTotalRemaining()
-              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_UP);
+              .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     }
 
     log.debug("Invoice unpaid rate {} : {}", invoice.getInvoiceId(), prorataRate);
@@ -861,6 +861,7 @@ public class IrrecoverableService {
     BigDecimal amount = BigDecimal.ZERO;
     BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
+    MoveLine lastDebitMoveLine = null;
     BigDecimal creditAmount = null;
     BigDecimal debitAmount = null;
     if (isInvoiceReject) {
@@ -922,6 +923,13 @@ public class IrrecoverableService {
       seq++;
 
       debitAmount = debitAmount.subtract(amountExTax);
+      lastDebitMoveLine = debitMoveLine;
+    }
+
+    if (debitAmount != null
+        && BigDecimal.ZERO.compareTo(debitAmount) != 0
+        && lastDebitMoveLine != null) {
+      lastDebitMoveLine.setDebit(lastDebitMoveLine.getDebit().add(debitAmount));
     }
 
     // Getting customer MoveLine from Facture
