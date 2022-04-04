@@ -394,7 +394,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
 
       if (invoicePayment == null) {
-        invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+        invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.addReconcileListItem(reconcile);
       }
     }
