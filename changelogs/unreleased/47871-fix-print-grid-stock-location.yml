@@ -1,0 +1,8 @@
+---
+title: fix print button on StockLocation grid view not working
+type: fix
+description: |
+  When pushing print button on stock location grid view, linked action did not open the print wizard
+  
+  Corrected problem and made the button work again
+  When pushing print button on stock location grid view, you can now print the selected locations.
