@@ -910,7 +910,7 @@ InvoiceSet.length > 0))"
 		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
-					<dt x-translate>Total Amount Remaining</dt>
+					<dt x-translate>Amount due</dt>
 		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
