@@ -22,11 +22,36 @@ import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderWorkflowService {
 
+  /**
+   * Set the purchase order status to draft.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   void draftPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
+  /**
+   * Set the the validator and the validation date to the purchase and change the order status to
+   * validated.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
+  /**
+   * Set the purchase order status to finished.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   void finishPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
+  /**
+   * Set the purchase order status to canceled.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
   void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 }
