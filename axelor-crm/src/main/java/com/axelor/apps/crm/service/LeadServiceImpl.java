@@ -194,11 +194,6 @@ public class LeadServiceImpl implements LeadService {
     return urlMap;
   }
 
-  @Transactional
-  public void saveLead(Lead lead) {
-    leadRepo.save(lead);
-  }
-
   @SuppressWarnings("rawtypes")
   public Object importLead(Object bean, Map values) {
 
@@ -271,7 +266,7 @@ public class LeadServiceImpl implements LeadService {
     if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW) {
       lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
     }
-    saveLead(lead);
+    leadRepo.save(lead);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -55,9 +55,6 @@ public interface LeadService {
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName, String companyName);
 
-  @Transactional
-  public void saveLead(Lead lead);
-
   @SuppressWarnings("rawtypes")
   public Object importLead(Object bean, Map values);
 
@@ -78,7 +75,7 @@ public interface LeadService {
   void startLead(Lead lead) throws AxelorException;
 
   /**
-   * Set the lead status to In Process.
+   * Set the lead to the current user and change status to Assigned.
    *
    * @param lead
    * @throws AxelorException
@@ -86,7 +83,7 @@ public interface LeadService {
   void assignToMeLead(Lead lead) throws AxelorException;
 
   /**
-   * Set the lead status to In Process.
+   * Recycle the lead if it was lost, change the status to In Process.
    *
    * @param lead
    * @throws AxelorException
