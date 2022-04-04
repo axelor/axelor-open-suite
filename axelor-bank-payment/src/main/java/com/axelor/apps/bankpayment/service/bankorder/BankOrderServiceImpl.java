@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.event.BankOrderValidated;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
@@ -52,6 +53,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.event.Event;
+import com.axelor.event.NamedLiteral;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -87,6 +90,8 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderMoveService bankOrderMoveService;
   protected AppBaseService appBaseService;
+
+  @Inject private Event<BankOrderValidated> bankOrderValidatedEvent;
 
   @Inject
   public BankOrderServiceImpl(
@@ -280,6 +285,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         }
       }
     }
+
+    bankOrderValidatedEvent
+        .select(NamedLiteral.of("validatePayment"))
+        .fire(new BankOrderValidated(bankOrder));
   }
 
   @Override
@@ -294,6 +303,10 @@ public class BankOrderServiceImpl implements BankOrderService {
         invoicePaymentCancelService.cancel(invoicePayment);
       }
     }
+
+    bankOrderValidatedEvent
+        .select(NamedLiteral.of("cancelPayment"))
+        .fire(new BankOrderValidated(bankOrder));
   }
 
   @Override
@@ -340,6 +353,10 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
+
+    bankOrderValidatedEvent
+        .select(NamedLiteral.of("validate"))
+        .fire(new BankOrderValidated(bankOrder));
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
