@@ -99,9 +99,10 @@
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
-          showIf="useForPartnerBalance"
+          showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
+        <field name="accountType.technicalTypeSelect" hidden="true"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="compatibleAccountSet" widget="TagSelect"
             showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>

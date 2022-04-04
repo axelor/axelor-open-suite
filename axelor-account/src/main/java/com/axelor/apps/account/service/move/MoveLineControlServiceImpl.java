@@ -131,4 +131,29 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   private boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
     return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
   }
+
+  @Override
+  public boolean displayInvoiceTermWarningMessage(MoveLine moveLine) {
+    boolean hasInvoiceTermAndInvoice =
+        ObjectUtils.notEmpty(moveLine.getMove().getInvoice())
+            && moveLine.getAccount().getHasInvoiceTerm();
+    boolean containsInvoiceTerm =
+        moveLine.getMove().getMoveLineList().stream()
+                .filter(
+                    ml ->
+                        ObjectUtils.notEmpty(ml.getInvoiceTermList())
+                            && ml.getInvoiceTermList().stream()
+                                .anyMatch(InvoiceTerm::getIsHoldBack))
+                .count()
+            > 0;
+    boolean hasInvoiceTermMoveLines =
+        moveLine.getMove().getMoveLineList().stream()
+                .filter(
+                    ml ->
+                        ObjectUtils.notEmpty(ml.getAccount())
+                            && ml.getAccount().getHasInvoiceTerm())
+                .count()
+            >= 2;
+    return (hasInvoiceTermAndInvoice && containsInvoiceTerm) || hasInvoiceTermMoveLines;
+  }
 }

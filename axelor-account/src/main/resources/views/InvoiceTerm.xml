@@ -19,8 +19,8 @@
     <field name="name"/>
     <field name="invoice"/>
     <field name="dueDate"/>
-    <field name="amount"/>
-    <field name="amountRemaining"/>
+    <field name="amount" title="To pay / To use"/>
+    <field name="amountRemaining" title="Left to pay / to use"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
@@ -150,7 +150,8 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
+        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
@@ -160,7 +161,7 @@
           onChange="action-invoice-term-record-update-customized-true"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
-
+          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
@@ -282,7 +283,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -301,25 +303,26 @@
         <field name="invoice" readonly="true" form-view="invoice-form"
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
-        <field name="isPaid" readonly="true"/>
+        <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
+        readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
-          validIf="amount > 0"/>
+        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
+          validIf="amount > 0"
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
           onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
-        <field name="amountRemaining" readonly="true"/>
-        <field name="paymentMode" required="true"/>
+        <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
+        <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
@@ -428,7 +431,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">

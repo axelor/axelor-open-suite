@@ -124,12 +124,6 @@
         onClick="save,action-payment-session-method-send-emails"/>
       <field name="hasEmailsSent" readonly="true"/>
     </panel>
-    <panel name="bankOrderPanel" title="Bank order"
-      showIf="paymentMode != null &amp;&amp; paymentMode.generateBankOrder &amp;&amp; statusSelect > 1"
-      sidebar="true">
-      <field name="bankOrder" readonly="true" colSpan="12"/>
-      <field name="paymentMode.generateBankOrder" hidden="true" colSpan="12"/>
-    </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <field name="accountingMethodSelect"/>
