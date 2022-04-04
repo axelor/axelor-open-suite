@@ -150,8 +150,7 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
@@ -161,7 +160,7 @@
           onChange="action-invoice-term-record-update-customized-true"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
-          readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
+
           onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
@@ -307,14 +306,13 @@
           grid-view="move-line-grid"/>
       </panel>
       <separator colSpan="12"/>
-      <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
+      <panel name="amountDatePanel" colSpan="12" itemSpan="4">
         <field name="dueDate" requiredIf="isCustomized"
           onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" readonlyIf="pfpValidateStatusSelect > 1"
+        <field name="amount"
           onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
           validIf="amount > 0"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
