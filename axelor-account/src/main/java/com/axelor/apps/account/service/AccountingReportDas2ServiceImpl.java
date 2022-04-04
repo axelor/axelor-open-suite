@@ -100,6 +100,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
             + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNT ACCOUNT ON MOVELINE.ACCOUNT = ACCOUNT.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
             + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
             + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
@@ -117,8 +118,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND ACCOUNT.SERVICE_TYPE IS NOT NULL  "
+            + "AND PARTNER.DAS2ACTIVITY IS NOT NULL  "
             + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()
@@ -145,6 +146,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
             + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNT ACCOUNT ON MOVELINE.ACCOUNT = ACCOUNT.ID "
             + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
             + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
             + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
@@ -161,8 +163,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND ACCOUNT.SERVICE_TYPE IS NOT NULL  "
+            + "AND PARTNER.DAS2ACTIVITY IS NOT NULL  "
             + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()

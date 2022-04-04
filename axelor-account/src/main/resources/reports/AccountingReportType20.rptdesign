@@ -671,7 +671,7 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
 AND (
   ((MoveLine.service_type IS NULL OR ServiceType.code = 'NDAS') AND MoveLine.das2activity IS NOT NULL)
-  OR (MoveLine.das2activity IS NULL AND MoveLine.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
+  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
 )
 AND Move.status_select = 3
 AND JournalType.code = 'ACH'
