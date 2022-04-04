@@ -273,7 +273,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
+    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }
