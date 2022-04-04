@@ -119,8 +119,7 @@
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-payment-session-group-validate"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; &amp;&amp; $hasUnselectedInvoiceTerm"
-        onClick="action-payment-session-group-cancel"/>
+        showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
