@@ -101,7 +101,7 @@ public interface IExceptionMessage {
       "%s : You must configure an overpayment account clearance journal for the company %s" /*)*/;
   static final String ACCOUNT_CLEARANCE_7 = /*$$(*/ "Move lines generated" /*)*/;
   static final String ACCOUNT_CLEARANCE_VALIDATE_WRONG_STATUS = /*$$(*/
-      "Can only validate a drafted account cleanrance." /*)*/;
+      "Can only validate a drafted account clearance." /*)*/;
 
   /** Account customer service */
   static final String ACCOUNT_CUSTOMER_1 = /*$$(*/
