@@ -15,20 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.studio.service.ws;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.db.Query;
+import com.axelor.studio.db.WsAuthenticator;
+import javax.ws.rs.core.Response;
 
-public interface PricingService {
+public interface WsAuthenticatorService {
 
-  public Query<Pricing> getPricing(
-      Product product,
-      ProductCategory productCategory,
-      Company company,
-      String modelName,
-      Pricing parentPricing);
+  public String generatAuthUrl(WsAuthenticator wsAuthenticator);
+
+  public void authenticate(WsAuthenticator wsAuthenticator);
+
+  public Response refereshToken(WsAuthenticator wsAuthenticator);
 }

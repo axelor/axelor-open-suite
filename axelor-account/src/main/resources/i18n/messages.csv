@@ -188,6 +188,7 @@
 "A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity.",,,
 "A payment mode already exists with the same information.",,,
 "A previous result can be used with the following syntax : rules[""code""] where code is the ""code"" field of a previous config line.",,,
+"A sequence already exists on this code for this company and this sequence have to be unique",,,
 "A tax line is missing",,,
 "A transmitted or a accounted subrogation release already exist for the invoices %s.",,,
 "Acc. Clearance",,,
