@@ -81,6 +81,8 @@
 "Calculation ended","Calcul terminé",,
 "Calculation in progress","Calcul en cours",,
 "Calculation started","Calcul démarré",,
+"Can only go back to confirmed if completed.","Vous pouvez seulement retourner au statut confirmé depuis une commande complétée",,
+"Can only return to validated from finished purchase order.","Vous pouvez seulement retourner au statut validé depuis une commande terminée",,
 "Can't remove delivered detail line %s.","Impossible de supprimer la ligne de détail livrée %s.",,
 "Cancel","Annuler",,
 "Cancel reason on changing sale order","Raison d'annulation sur une commande client modifiée",,
