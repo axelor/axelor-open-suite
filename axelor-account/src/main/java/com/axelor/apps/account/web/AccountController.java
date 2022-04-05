@@ -123,12 +123,14 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
+      if (account.getAnalyticDistributionTemplate() == null
           && account.getAnalyticDistributionAuthorized()) {
         AnalyticDistributionTemplate analyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
                 .createDistributionTemplateFromAccount(account);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+        if (analyticDistributionTemplate != null) {
+          response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
