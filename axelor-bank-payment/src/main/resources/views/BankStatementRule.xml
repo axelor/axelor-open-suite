@@ -60,14 +60,14 @@
 
   <action-record name="account-bank-statement-rule-record-set-temp-company"
     model="com.axelor.apps.bankpayment.db.BankStatementRule">
-    <field name="$company" expr="eval: accountManagement.company"/>
+    <field name="$company" expr="eval: accountManagement?.company"/>
   </action-record>
 
   <action-record
     name="account-bank-statement-rule-record-set-main-panel-fields-nullable"
     model="com.axelor.apps.bankpayment.db.BankStatementRule">
     <field name="ruleTypeSelect,partner,bankStatementQuery,counterpartAccount,searchLabel"
-      expr="eval: null" if="counterpartAccount?.company?.id == accountManagement?.company?.id"/>
+      expr="eval: null" if="counterpartAccount?.company?.id != accountManagement?.company?.id"/>
   </action-record>
 
 </object-views>
