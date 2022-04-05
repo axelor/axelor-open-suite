@@ -33,7 +33,7 @@
         <field name="name"/>
         <field name="bankStatement" domain="self.statusSelect = 2"/>
         <field name="company" canEdit="false" widget="SuggestBox"
-          onChange="action-bank-reconciliation-set-currency" form-view="company-form"
+          onChange="action-bank-reconciliation-group-onchange-company" form-view="company-form"
           grid-view="company-grid" required="true"/>
         <field name="currency" canEdit="false" form-view="currency-form"
           grid-view="currency-grid" required="true"/>
@@ -135,6 +135,11 @@
     <action name="action-bank-reconciliation-set-currency"/>
   </action-group>
 
+  <action-group name="action-bank-reconciliation-group-onchange-company">
+    <action name="action-bank-reconciliation-set-currency"/>
+    <action name="action-bank-reconciliation-remove-fields-company"/>
+  </action-group>
+
   <action-group name="action-group-bankreconciliation-validate-click">
     <action name="save"/>
     <action name="action-bank-reconciliation-method-compute"/>
@@ -165,6 +170,13 @@
   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation"
     name="action-bank-reconciliation-set-currency">
     <field name="currency" expr="eval: company?.currency"/>
+  </action-record>
+
+  <action-record name="action-bank-reconciliation-remove-fields-company"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    <field name="bankDetails" expr="eval: null"/>
+    <field name="journal" expr="eval: null"/>
+    <field name="cashAccount" expr="eval: null"/>
   </action-record>
 
   <action-method name="action-bank-reconciliation-method-set-bank-details-domain">
