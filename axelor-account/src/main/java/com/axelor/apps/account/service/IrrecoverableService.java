@@ -864,6 +864,14 @@ public class IrrecoverableService {
     MoveLine lastDebitMoveLine = null;
     BigDecimal creditAmount = null;
     BigDecimal debitAmount = null;
+    String originStr = null;
+    if (invoice.getMove().getOrigin() != null && irrecoverableName != null) {
+      originStr = invoice.getMove().getOrigin() + ":" + irrecoverableName;
+    } else if (invoice.getMove().getOrigin() == null && irrecoverableName != null) {
+      originStr = irrecoverableName;
+    } else if (invoice.getMove().getOrigin() != null && irrecoverableName == null) {
+      originStr = invoice.getMove().getOrigin();
+    }
     if (isInvoiceReject) {
       creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
       debitAmount = creditAmount;
@@ -892,7 +900,7 @@ public class IrrecoverableService {
               invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
-              invoice.getMove().getOrigin() + ":" + irrecoverableName,
+              originStr,
               invoice.getInvoiceId());
 
       debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
@@ -916,7 +924,7 @@ public class IrrecoverableService {
               invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
-              invoice.getMove().getOrigin() + ":" + irrecoverableName,
+              originStr,
               invoice.getInvoiceId());
 
       move.getMoveLineList().add(debitMoveLine);
@@ -952,7 +960,7 @@ public class IrrecoverableService {
             false,
             appAccountService.getTodayDate(company),
             seq,
-            invoice.getMove().getOrigin() + ":" + irrecoverableName,
+            originStr,
             invoice.getInvoiceId());
     move.getMoveLineList().add(creditMoveLine);
 
@@ -981,6 +989,15 @@ public class IrrecoverableService {
 
     AccountConfig accountConfig = company.getAccountConfig();
 
+    String originStr = null;
+    if (moveLine.getMove().getOrigin() != null && irrecoverableName != null) {
+      originStr = moveLine.getMove().getOrigin() + ":" + irrecoverableName;
+    } else if (moveLine.getMove().getOrigin() == null && irrecoverableName != null) {
+      originStr = irrecoverableName;
+    } else if (moveLine.getMove().getOrigin() != null && irrecoverableName == null) {
+      originStr = moveLine.getMove().getOrigin();
+    }
+
     // Move
     Move move =
         moveCreateService.createMove(
@@ -992,7 +1009,7 @@ public class IrrecoverableService {
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
-            moveLine.getMove().getOrigin(),
+            originStr,
             moveLine.getDescription());
     move.setOriginDate(moveLine.getMove().getDate());
 
@@ -1008,7 +1025,7 @@ public class IrrecoverableService {
             false,
             appAccountService.getTodayDate(company),
             seq,
-            moveLine.getMove().getOrigin() + ":" + irrecoverableName,
+            originStr,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine);
 
@@ -1036,7 +1053,7 @@ public class IrrecoverableService {
             true,
             appAccountService.getTodayDate(company),
             2,
-            moveLine.getMove().getOrigin() + ":" + irrecoverableName,
+            originStr,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine1);
 
