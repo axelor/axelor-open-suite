@@ -167,7 +167,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       } else {
         return InvoicePaymentRepository.TYPE_REFUND_INVOICE;
       }
-    } else if (move.getPaymentVoucher() != null) {
+    } else if (move.getPaymentVoucher() != null || move.getPaymentSession() != null) {
       return InvoicePaymentRepository.TYPE_PAYMENT;
     } else {
       return InvoicePaymentRepository.TYPE_OTHER;
