@@ -70,7 +70,7 @@ public interface LeadService {
    * Set the lead status to In Process.
    *
    * @param lead
-   * @throws AxelorException
+   * @throws AxelorException if the lead wasn't new nor assigned.
    */
   void startLead(Lead lead) throws AxelorException;
 
@@ -78,7 +78,7 @@ public interface LeadService {
    * Set the lead to the current user and change status to Assigned.
    *
    * @param lead
-   * @throws AxelorException
+   * @throws AxelorException if the lead wasn't new nor assigned.
    */
   void assignToMeLead(Lead lead) throws AxelorException;
 
@@ -86,7 +86,7 @@ public interface LeadService {
    * Recycle the lead if it was lost, change the status to In Process.
    *
    * @param lead
-   * @throws AxelorException
+   * @throws AxelorException if the lead wasn't lost.
    */
   void recycleLead(Lead lead) throws AxelorException;
 
