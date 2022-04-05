@@ -1,3 +1,34 @@
+## [6.1.8] (2022-04-01)
+
+#### Changes
+
+* BPM Manager: display version tag with name of the bpm.
+
+#### Fixed
+
+* Product Disponibility: missing filter on products set
+
+Add filter to remove products that are not stock managed from product set in product disponibility form
+
+* Lead: Add missing checks for duplicated reference during lead conversion.
+* Lead: Fix 'NullPointerException' error when an user linked to a lead does not have an active company during lead conversion.
+* Lead: fix loading lead logo when converting a lead to a partner.
+* SALEORDER: added missing french translation for the warning message appearing when the total amount is equal to zero.
+* Chart Builder: Fix tag support on on-click open records.
+* Purchase Order: when generating a purchase order from a sale order, generated purchase order lines order is now correctly retrieved from sale order lines.
+* Move, Accounting Period: improve format of displayed dates in error message.
+* FixedAsset: validation of a fixed asset is now correctly prevented when the validation is done from a grid view and the fixed asset does not have a positive gross value.
+* Supplier stock move invoicing wizard now correctly opens invoice supplier grid.
+* Invoice: Remove duplicated specific notes copied from tax when we have multiple lines.
+* Contact: fixed duplicate contact name warning not displayed when the contact was not saved.
+* Studio: Fix call to action-view in dashlet generated from dashlet builder.
+* User: Fix missing "create partner" and "create employee" buttons when creating a new user.
+* App Management: Fix typo in french translation in warning message before installation.
+
+#### Removed
+
+* ObjectDataConfig : Delete status select
+
 ## [6.1.7] (2022-03-08)
 
 #### Changes
@@ -433,6 +464,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.8]: https://github.com/axelor/axelor-open-suite/compare/v6.1.7...v6.1.8
 [6.1.7]: https://github.com/axelor/axelor-open-suite/compare/v6.1.6...v6.1.7
 [6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6
 [6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5

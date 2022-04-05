@@ -264,11 +264,19 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
+    return this.createInvoicePayment(invoice, companyBankDetails, null);
+  }
+
+  @Override
+  @Transactional
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
             invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-            appBaseService.getTodayDate(invoice.getCompany()),
+            paymentDate == null ? appBaseService.getTodayDate(invoice.getCompany()) : paymentDate,
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);

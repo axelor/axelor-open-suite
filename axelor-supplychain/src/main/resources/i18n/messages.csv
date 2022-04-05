@@ -616,6 +616,7 @@
 "The company %s doesn't have any configured sequence for MRP",,,
 "The company is required and must be the same for all purchase orders",,,
 "The company is required and must be the same for all sale orders",,,
+"The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP.",,,
 "The currency is required and must be the same for all sale orders",,,
 "The customer account is blocked because he has late payments.",,,
 "The execution of MRP n°%s is now finished, you can click above to see the results.",,,
