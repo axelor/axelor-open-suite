@@ -153,6 +153,8 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -187,6 +189,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
@@ -377,6 +381,8 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceLineService.class).to(InvoiceLineServiceImpl.class);
 
+    bind(InvoiceLineAnalyticService.class).to(InvoiceLineAnalyticServiceImpl.class);
+
     bind(TemplateMessageAccountService.class).to(TemplateMessageAccountServiceImpl.class);
 
     PartnerAddressRepository.modelPartnerFieldMap.put(Invoice.class.getName(), "partner");
@@ -543,6 +549,8 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineInvoiceTermService.class).to(MoveLineInvoiceTermServiceImpl.class);
 
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
+
+    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
     bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
   }
