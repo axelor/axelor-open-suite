@@ -354,6 +354,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
 
+    // this event is used in AOS PRO module axelor-ebics-ts
     bankOrderValidatedEvent
         .select(NamedLiteral.of("validate"))
         .fire(new BankOrderValidated(bankOrder));
