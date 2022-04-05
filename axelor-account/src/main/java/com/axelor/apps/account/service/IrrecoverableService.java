@@ -853,7 +853,7 @@ public class IrrecoverableService {
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_SALE,
-            invoice.getMove().getOrigin(),
+            invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
@@ -892,7 +892,7 @@ public class IrrecoverableService {
               invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
-              irrecoverableName,
+              invoice.getMove().getOrigin() + ":" + irrecoverableName,
               invoice.getInvoiceId());
 
       debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
@@ -916,7 +916,7 @@ public class IrrecoverableService {
               invoiceLineTax.getTaxLine(),
               appAccountService.getTodayDate(company),
               seq,
-              irrecoverableName,
+              invoice.getMove().getOrigin() + ":" + irrecoverableName,
               invoice.getInvoiceId());
 
       move.getMoveLineList().add(debitMoveLine);
@@ -952,7 +952,7 @@ public class IrrecoverableService {
             false,
             appAccountService.getTodayDate(company),
             seq,
-            irrecoverableName,
+            invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId());
     move.getMoveLineList().add(creditMoveLine);
 
@@ -1008,7 +1008,7 @@ public class IrrecoverableService {
             false,
             appAccountService.getTodayDate(company),
             seq,
-            irrecoverableName,
+            moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine);
 
@@ -1036,7 +1036,7 @@ public class IrrecoverableService {
             true,
             appAccountService.getTodayDate(company),
             2,
-            irrecoverableName,
+            moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine1);
 
@@ -1052,7 +1052,7 @@ public class IrrecoverableService {
             true,
             appAccountService.getTodayDate(company),
             3,
-            irrecoverableName,
+            moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine2);
 
