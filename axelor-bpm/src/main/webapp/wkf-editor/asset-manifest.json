@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "./static/css/main.4e427609.chunk.css",
-    "main.js": "./static/js/main.b7a5d775.chunk.js",
+    "main.js": "./static/js/main.b2a11ffd.chunk.js",
     "runtime-main.js": "./static/js/runtime-main.75c3601e.js",
     "static/css/2.c4daa5fe.chunk.css": "./static/css/2.c4daa5fe.chunk.css",
     "static/js/2.d8d78ed6.chunk.js": "./static/js/2.d8d78ed6.chunk.js",
     "static/css/3.24a5c644.chunk.css": "./static/css/3.24a5c644.chunk.css",
     "static/js/3.ef50a943.chunk.js": "./static/js/3.ef50a943.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.8bb7e758d04fa1c16bc2770bdc7a8abb.js": "./precache-manifest.8bb7e758d04fa1c16bc2770bdc7a8abb.js",
+    "precache-manifest.cc96fd085e27bb8653a7085ca061dadf.js": "./precache-manifest.cc96fd085e27bb8653a7085ca061dadf.js",
     "service-worker.js": "./service-worker.js",
     "static/js/2.d8d78ed6.chunk.js.LICENSE.txt": "./static/js/2.d8d78ed6.chunk.js.LICENSE.txt",
     "static/media/bpmn-embedded.css": "./static/media/bpmn.1381b44e.svg"
@@ -18,6 +18,6 @@
     "static/css/2.c4daa5fe.chunk.css",
     "static/js/2.d8d78ed6.chunk.js",
     "static/css/main.4e427609.chunk.css",
-    "static/js/main.b7a5d775.chunk.js"
+    "static/js/main.b2a11ffd.chunk.js"
   ]
 }
