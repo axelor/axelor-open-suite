@@ -378,15 +378,16 @@
       <panel name="irrecoverablePanel" title="Irrecoverable"
         showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
         <panel name="irrecoverableDetailsPanel" colSpan="12">
-          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
+          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"
+            title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
           <field name="interbankCodeLine" showIf="interbankCodeLine"
             form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="6"/>
-          <field name="irrecoverableStatusSelect" colSpan="12"/>
+            canEdit="false" colSpan="12"/>
+          <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
-            grid-view="management-object-grid" colSpan="12"/>
+            grid-view="management-object-grid" colSpan="6"/>
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
@@ -631,15 +632,16 @@
       <panel name="irrecoverablePanel" title="Irrecoverable"
         showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
         <panel name="irrecoverableDetailsPanel" colSpan="12">
-          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
+          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"
+            title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
           <field name="interbankCodeLine" showIf="interbankCodeLine"
             form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="6"/>
-          <field name="irrecoverableStatusSelect" colSpan="12"/>
+            canEdit="false" colSpan="12"/>
+          <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
-            grid-view="management-object-grid" colSpan="12"/>
+            grid-view="management-object-grid" colSpan="6"/>
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
