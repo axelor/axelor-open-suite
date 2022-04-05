@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -41,15 +42,14 @@ public class PurchaseOrderInvoiceController {
 
     try {
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
-
       if (invoice != null) {
         response.setReload(true);
         response.setView(
             ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
-                .add("grid", "invoice-grid")
-                .param("search-filters", "customer-invoices-filters")
+                .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
+                .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
                 .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
                 .domain(
                     "self.operationTypeSelect = "
