@@ -25,7 +25,6 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,16 +44,12 @@ public interface LeaveService {
       LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageValidateLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageCancelLeaves(LeaveRequest leave) throws AxelorException;
 
   public double computeStartDateWithSelect(
@@ -62,37 +57,62 @@ public interface LeaveService {
 
   public double computeEndDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning);
 
-  @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException;
 
   public BigDecimal computeLeaveDaysByLeaveRequest(
       LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  /**
+   * Set the leave request status to canceled.
+   *
+   * @param leaveRequest
+   * @throws AxelorException if the leave request was already canceled.
+   */
   public void cancel(LeaveRequest leaveRequest) throws AxelorException;
 
+  /**
+   * Set the leave request status to draft.
+   *
+   * @param leaveRequest
+   * @throws AxelorException if the leave request wasn't refused nor canceled.
+   */
   void backToDraft(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  /**
+   * Set the leave request status to confirmed.
+   *
+   * @param leaveRequest
+   * @throws AxelorException if the leave request wasn't drafted.
+   */
   public void confirm(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  /**
+   * Set the leave request status to validated.
+   *
+   * @param leaveRequest
+   * @throws AxelorException if the leave request wasn't awaiting for a validation.
+   */
   public void validate(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  /**
+   * Set the leave request refusal date, the user who refused and change the status to refused.
+   *
+   * @param leaveRequest
+   * @throws AxelorException if the leave request wasn't awaiting for a validation.
+   */
   public void refuse(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
@@ -101,7 +121,6 @@ public interface LeaveService {
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
-  @Transactional(rollbackOn = {Exception.class})
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException;
 
