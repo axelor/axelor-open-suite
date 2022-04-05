@@ -35,14 +35,14 @@ public class BankOrderHRObserver {
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
-            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .filter("self.bankOrder.id = :bankOrderId AND self.statusSelect != :statusReimbursed")
+            .bind("bankOrderId", bankOrder.getId())
+            .bind("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED)
             .fetch();
     for (Expense expense : expenseList) {
-      if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expenseService.createMoveForExpensePayment(expense);
-      }
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expenseService.createMoveForExpensePayment(expense);
     }
   }
 
@@ -57,13 +57,13 @@ public class BankOrderHRObserver {
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
-            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .filter(
+                "self.bankOrder.id = :bankOrderId AND self.paymentStatusSelect != :paymentStatusSelect ")
+            .bind("bankOrderId", bankOrder.getId())
+            .bind("paymentStatusSelect", InvoicePaymentRepository.STATUS_CANCELED)
             .fetch();
     for (Expense expense : expenseList) {
-      if (expense != null
-          && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        expenseService.cancelPayment(expense);
-      }
+      expenseService.cancelPayment(expense);
     }
   }
 }
