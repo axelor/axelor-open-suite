@@ -279,5 +279,5 @@ public interface IExceptionMessage {
   static final String EXTRA_HOURS_CANCEL_WRONG_STATUS = /*$$(*/
       "Can not cancel already canceled extra hours." /*)*/;
   static final String EXTRA_HOURS_DRAFT_WRONG_STATUS = /*$$(*/
-      "Can only return to cancel from refused and canceled extra hours." /*)*/;
+      "Can only return to draft from refused and canceled extra hours." /*)*/;
 }
