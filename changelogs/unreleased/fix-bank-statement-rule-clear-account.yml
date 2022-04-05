@@ -1,0 +1,3 @@
+---
+title: BankStatementRule - need to clear account when we change accountManagement + add of a removed function
+type: fix
