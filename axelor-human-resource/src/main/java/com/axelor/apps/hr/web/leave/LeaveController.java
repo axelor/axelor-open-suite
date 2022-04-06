@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.hr.web.leave;
 
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Wizard;
@@ -27,7 +30,6 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -51,8 +53,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class LeaveController {
@@ -265,13 +265,7 @@ public class LeaveController {
         return;
       }
 
-      LeaveLine leaveLine =
-          Beans.get(LeaveLineRepository.class)
-              .all()
-              .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-              .bind("leaveReason", leaveRequest.getLeaveReason())
-              .bind("employee", leaveRequest.getUser().getEmployee())
-              .fetchOne();
+      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
       if (leaveLine != null
           && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
         if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
@@ -296,6 +290,9 @@ public class LeaveController {
       }
 
       leaveService.confirm(leaveRequest);
+      if (leaveLine != null) {
+    	  leaveService.updateDaysToValidate(leaveLine);
+      }
 
       Message message = leaveService.sendConfirmationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -327,6 +324,10 @@ public class LeaveController {
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.validate(leaveRequest);
+      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
+      if (leaveLine != null) {
+    	  leaveService.updateDaysToValidate(leaveLine);
+      }
 
       Message message = leaveService.sendValidationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -363,6 +364,11 @@ public class LeaveController {
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.refuse(leaveRequest);
+      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
+      if (leaveLine != null) {
+    	  leaveService.updateDaysToValidate(leaveLine);
+      }
+	  
 
       Message message = leaveService.sendRefusalEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -386,6 +392,11 @@ public class LeaveController {
       LeaveService leaveService = Beans.get(LeaveService.class);
 
       leaveService.cancel(leave);
+      LeaveLine leaveLine = leaveService.getLeaveLine(leave);
+      if (leaveLine != null) {
+    	  leaveService.updateDaysToValidate(leaveLine);
+      }
+      
 
       Message message = leaveService.sendCancellationEmail(leave);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
