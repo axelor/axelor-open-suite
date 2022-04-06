@@ -91,7 +91,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderMoveService bankOrderMoveService;
   protected AppBaseService appBaseService;
 
-  @Inject private Event<BankOrderValidated> bankOrderValidatedEvent;
+  protected Event<BankOrderValidated> bankOrderValidatedEvent;
 
   @Inject
   public BankOrderServiceImpl(
@@ -104,7 +104,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderMoveService bankOrderMoveService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      Event<BankOrderValidated> bankOrderValidatedEvent) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -116,6 +117,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderMoveService = bankOrderMoveService;
     this.appBaseService = appBaseService;
+
+    this.bankOrderValidatedEvent = bankOrderValidatedEvent;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -287,7 +290,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrderValidatedEvent
-        .select(NamedLiteral.of("validatePayment"))
+        .select(NamedLiteral.of(BankOrderValidated.VALIDATE_PAYMENT))
         .fire(new BankOrderValidated(bankOrder));
   }
 
@@ -305,7 +308,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrderValidatedEvent
-        .select(NamedLiteral.of("cancelPayment"))
+        .select(NamedLiteral.of(BankOrderValidated.CANCEL_PAYMENT))
         .fire(new BankOrderValidated(bankOrder));
   }
 
@@ -355,7 +358,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     // this event is used in AOS PRO module axelor-ebics-ts
     bankOrderValidatedEvent
-        .select(NamedLiteral.of("validate"))
+        .select(NamedLiteral.of(BankOrderValidated.VALIDATE))
         .fire(new BankOrderValidated(bankOrder));
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
