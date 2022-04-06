@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -26,12 +34,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.mail.MessagingException;
+
 import wslite.json.JSONException;
 
 public interface LeaveService {
@@ -120,4 +123,17 @@ public interface LeaveService {
    * @return
    */
   public List<LeaveRequest> getLeaves(User user, LocalDate date);
+
+  /**
+   * Get the LeaveLine associated with the leaveRequest
+   * @param leaveRequest
+   * @return
+   */
+  LeaveLine getLeaveLine(LeaveRequest leaveRequest);
+
+  /**
+   * Update daysToValidate field of leaveLine
+   * @param leaveLine
+   */
+  void updateDaysToValidate(LeaveLine leaveLine);
 }
