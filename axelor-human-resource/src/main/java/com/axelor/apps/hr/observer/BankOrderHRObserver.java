@@ -2,7 +2,7 @@ package com.axelor.apps.hr.observer;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.event.BankOrderValidated;
+import com.axelor.apps.bankpayment.event.BankOrderEvent;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -25,8 +25,7 @@ public class BankOrderHRObserver {
   }
 
   @Transactional(rollbackOn = Exception.class)
-  void onValidatePayment(
-      @Observes @Named(BankOrderValidated.VALIDATE_PAYMENT) BankOrderValidated event)
+  void onValidatePayment(@Observes @Named(BankOrderEvent.VALIDATE_PAYMENT) BankOrderEvent event)
       throws AxelorException {
 
     BankOrder bankOrder = event.getBankOrder();
@@ -48,7 +47,7 @@ public class BankOrderHRObserver {
   }
 
   @Transactional(rollbackOn = Exception.class)
-  void onCancelPayment(@Observes @Named(BankOrderValidated.CANCEL_PAYMENT) BankOrderValidated event)
+  void onCancelPayment(@Observes @Named(BankOrderEvent.CANCEL_PAYMENT) BankOrderEvent event)
       throws AxelorException {
 
     BankOrder bankOrder = event.getBankOrder();

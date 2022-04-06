@@ -2,7 +2,7 @@ package com.axelor.apps.bankpayment.event;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 
-public class BankOrderValidated {
+public class BankOrderEvent {
 
   public static final String VALIDATE_PAYMENT = "validatePayment";
   public static final String CANCEL_PAYMENT = "cancelPayment";
@@ -10,7 +10,7 @@ public class BankOrderValidated {
 
   private BankOrder bankOrder;
 
-  public BankOrderValidated(BankOrder bankOrder) {
+  public BankOrderEvent(BankOrder bankOrder) {
     this.bankOrder = bankOrder;
   }
 
