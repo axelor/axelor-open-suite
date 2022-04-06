@@ -981,6 +981,11 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public LeaveLine getLeaveLine(LeaveRequest leaveRequest) {
+
+    if (leaveRequest.getUser() == null || leaveRequest.getUser().getEmployee() == null) {
+      return null;
+    }
+
     return leaveLineRepo
         .all()
         .filter(
