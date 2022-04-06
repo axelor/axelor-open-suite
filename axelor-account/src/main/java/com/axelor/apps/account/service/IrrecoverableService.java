@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableCustomerLineRepository;
 import com.axelor.apps.account.db.repo.IrrecoverableRepository;
@@ -842,6 +843,8 @@ public class IrrecoverableService {
     Partner payerPartner = invoice.getPartner();
 
     AccountConfig accountConfig = company.getAccountConfig();
+
+    Move invoiceMove = invoice.getMove();
     // Move
     Move move =
         moveCreateService.createMove(
@@ -859,11 +862,11 @@ public class IrrecoverableService {
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
-    BigDecimal amountExTax;
     MoveLine debitMoveLine = null;
     MoveLine lastDebitMoveLine = null;
     BigDecimal creditAmount = null;
-    BigDecimal debitAmount = null;
+
+    BigDecimal debitAmount = BigDecimal.ZERO;
     String originStr = null;
     if (invoice.getMove().getOrigin() != null && irrecoverableName != null) {
       originStr = invoice.getMove().getOrigin() + ":" + irrecoverableName;
@@ -872,102 +875,87 @@ public class IrrecoverableService {
     } else if (invoice.getMove().getOrigin() != null && irrecoverableName == null) {
       originStr = invoice.getMove().getOrigin();
     }
+
     if (isInvoiceReject) {
       creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
-      debitAmount = creditAmount;
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
-      debitAmount = creditAmount;
     }
 
     // Debits MoveLines Tva
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+    for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
 
-      amount =
-          (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
-      // do not generate move line with amount equal to zero
-      if (amount.signum() == 0) {
-        continue;
+      if (invoiceMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+        amount = invoiceMoveLine.getAmountRemaining();
+
+        // Credit MoveLine Customer account (411, 416, ...)
+        MoveLine creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                payerPartner,
+                invoiceMoveLine.getAccount(),
+                amount,
+                false,
+                appAccountService.getTodayDate(company),
+                seq,
+                originStr,
+                invoice.getInvoiceId());
+        move.getMoveLineList().add(creditMoveLine);
+
+        Reconcile reconcile =
+            reconcileService.createReconcile(invoiceMoveLine, creditMoveLine, amount, false);
+        if (reconcile != null) {
+          reconcileService.confirmReconcile(reconcile, true);
+        }
+      } else {
+        amount =
+            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
+        if (invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect()
+            == AccountTypeRepository.TYPE_TAX) {
+          debitMoveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  taxAccountService.getAccount(
+                      invoiceMoveLine.getTaxLine().getTax(), company, false, false),
+                  amount,
+                  true,
+                  invoiceMoveLine.getTaxLine(),
+                  appAccountService.getTodayDate(company),
+                  seq,
+                  originStr,
+                  invoice.getInvoiceId());
+
+          debitMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
+
+        } else {
+          // Debit MoveLine 654 (irrecoverable account)
+          debitMoveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  accountConfig.getIrrecoverableAccount(),
+                  amount,
+                  true,
+                  invoiceMoveLine.getTaxLine(),
+                  appAccountService.getTodayDate(company),
+                  seq,
+                  originStr,
+                  invoice.getInvoiceId());
+        }
+        move.getMoveLineList().add(debitMoveLine);
+        seq++;
+
+        debitAmount = debitAmount.add(amount);
+        lastDebitMoveLine = debitMoveLine;
       }
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              payerPartner,
-              taxAccountService.getAccount(
-                  invoiceLineTax.getTaxLine().getTax(), company, false, false),
-              amount,
-              true,
-              invoiceLineTax.getTaxLine(),
-              appAccountService.getTodayDate(company),
-              seq,
-              originStr,
-              invoice.getInvoiceId());
-
-      debitMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-
-      move.getMoveLineList().add(debitMoveLine);
-      seq++;
-
-      debitAmount = debitAmount.subtract(amount);
-
-      amountExTax =
-          (invoiceLineTax.getExTaxBase().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
-
-      // Debit MoveLine 654 (irrecoverable account)
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              payerPartner,
-              accountConfig.getIrrecoverableAccount(),
-              amountExTax,
-              true,
-              invoiceLineTax.getTaxLine(),
-              appAccountService.getTodayDate(company),
-              seq,
-              originStr,
-              invoice.getInvoiceId());
-
-      move.getMoveLineList().add(debitMoveLine);
-      seq++;
-
-      debitAmount = debitAmount.subtract(amountExTax);
-      lastDebitMoveLine = debitMoveLine;
     }
 
     if (debitAmount != null
-        && BigDecimal.ZERO.compareTo(debitAmount) != 0
+        && BigDecimal.ZERO.compareTo(creditAmount) != 0
         && lastDebitMoveLine != null) {
-      lastDebitMoveLine.setDebit(lastDebitMoveLine.getDebit().add(debitAmount));
-    }
-
-    // Getting customer MoveLine from Facture
-    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
-    if (customerMoveLine == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          invoice.getInvoiceId());
-    }
-
-    // Credit MoveLine Customer account (411, 416, ...)
-    MoveLine creditMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            payerPartner,
-            customerMoveLine.getAccount(),
-            creditAmount,
-            false,
-            appAccountService.getTodayDate(company),
-            seq,
-            originStr,
-            invoice.getInvoiceId());
-    move.getMoveLineList().add(creditMoveLine);
-
-    Reconcile reconcile =
-        reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
-    if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      lastDebitMoveLine.setDebit(
+          lastDebitMoveLine.getDebit().add(creditAmount.subtract(debitAmount)));
     }
 
     return move;
