@@ -31,7 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
-import com.axelor.apps.bankpayment.event.BankOrderValidated;
+import com.axelor.apps.bankpayment.event.BankOrderEvent;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
@@ -91,7 +91,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderMoveService bankOrderMoveService;
   protected AppBaseService appBaseService;
 
-  protected Event<BankOrderValidated> bankOrderValidatedEvent;
+  protected Event<BankOrderEvent> bankOrderValidatedEvent;
 
   @Inject
   public BankOrderServiceImpl(
@@ -105,7 +105,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderMoveService bankOrderMoveService,
       AppBaseService appBaseService,
-      Event<BankOrderValidated> bankOrderValidatedEvent) {
+      Event<BankOrderEvent> bankOrderValidatedEvent) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -290,8 +290,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrderValidatedEvent
-        .select(NamedLiteral.of(BankOrderValidated.VALIDATE_PAYMENT))
-        .fire(new BankOrderValidated(bankOrder));
+        .select(NamedLiteral.of(BankOrderEvent.VALIDATE_PAYMENT))
+        .fire(new BankOrderEvent(bankOrder));
   }
 
   @Override
@@ -308,8 +308,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrderValidatedEvent
-        .select(NamedLiteral.of(BankOrderValidated.CANCEL_PAYMENT))
-        .fire(new BankOrderValidated(bankOrder));
+        .select(NamedLiteral.of(BankOrderEvent.CANCEL_PAYMENT))
+        .fire(new BankOrderEvent(bankOrder));
   }
 
   @Override
@@ -358,8 +358,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     // this event is used in AOS PRO module axelor-ebics-ts
     bankOrderValidatedEvent
-        .select(NamedLiteral.of(BankOrderValidated.VALIDATE))
-        .fire(new BankOrderValidated(bankOrder));
+        .select(NamedLiteral.of(BankOrderEvent.VALIDATE))
+        .fire(new BankOrderEvent(bankOrder));
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
