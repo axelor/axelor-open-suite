@@ -18,9 +18,12 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectWorkflowService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,6 +47,50 @@ public class ProjectController {
       if (Beans.get(ProjectService.class).checkIfResourceBooked(project)) {
         response.setError(I18n.get(IExceptionMessage.RESOURCE_ALREADY_BOOKED_ERROR_MSG));
       }
+    }
+  }
+
+  public void startProject(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      Beans.get(ProjectWorkflowService.class).startProject(project);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void finishProject(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      Beans.get(ProjectWorkflowService.class).finishProject(project);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelProject(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      Beans.get(ProjectWorkflowService.class).cancelProject(project);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void backToNewProject(ActionRequest request, ActionResponse response) {
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      Beans.get(ProjectWorkflowService.class).backToNewProject(project);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

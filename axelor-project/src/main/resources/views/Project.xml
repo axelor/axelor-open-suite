@@ -489,15 +489,15 @@
     </panel>
     <panel name="actionsPanel" colSpan="2" sidebar="true">
       <button name="startBtn" title="Start" hidden="true" showIf="statusSelect == 1"
-        colSpan="12" icon="fa-play" onClick="action-project-record-status-in-progress,save"/>
+        colSpan="12" icon="fa-play" onClick="action-project-method-start-project,save"/>
       <button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
-        colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save"/>
+        colSpan="12" icon="fa-check" onClick="action-project-method-finish-project,save"/>
       <button name="cancelBtn" title="Cancel" hidden="true" showIf="statusSelect != 4"
         colSpan="12" css="btn-danger" icon="fa-times-circle"
-        onClick="action-project-record-status-canceled,save"/>
+        onClick="action-project-method-cancel-project,save"/>
       <button name="newStatusBtn" title="Reset to New" hidden="true"
         showIf="statusSelect == 4" colSpan="12" css="btn-danger" icon="fa-file"
-        onClick="action-project-record-status-new,save"/>
+        onClick="action-project-method-back-to-new-project,save"/>
     </panel>
     <panel name="characteristicsPanel" title="Characteristics" colSpan="12" sidebar="true"
       canCollapse="true">
@@ -964,25 +964,21 @@
     <call class="com.axelor.apps.project.web.ProjectController" method="importMembers"/>
   </action-method>
 
-  <action-record name="action-project-record-status-in-progress"
-    model="com.axelor.apps.project.db.Project">
-    <field name="statusSelect" expr="eval: __repo__(Project).STATE_IN_PROGRESS"/>
-  </action-record>
+  <action-method name="action-project-method-start-project">
+    <call class="com.axelor.apps.project.web.ProjectController" method="startProject"/>
+  </action-method>
 
-  <action-record name="action-project-record-status-finished"
-    model="com.axelor.apps.project.db.Project">
-    <field name="statusSelect" expr="eval: __repo__(Project).STATE_FINISHED"/>
-  </action-record>
+  <action-method name="action-project-method-finish-project">
+    <call class="com.axelor.apps.project.web.ProjectController" method="finishProject"/>
+  </action-method>
 
-  <action-record name="action-project-record-status-canceled"
-    model="com.axelor.apps.project.db.Project">
-    <field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
-  </action-record>
+  <action-method name="action-project-method-cancel-project">
+    <call class="com.axelor.apps.project.web.ProjectController" method="cancelProject"/>
+  </action-method>
 
-  <action-record name="action-project-record-status-new"
-    model="com.axelor.apps.project.db.Project">
-    <field name="statusSelect" expr="eval: __repo__(Project).STATE_NEW"/>
-  </action-record>
+  <action-method name="action-project-method-back-to-new-project">
+    <call class="com.axelor.apps.project.web.ProjectController" method="backToNewProject"/>
+  </action-method>
 
   <action-validate name="action-wizard-validate-user-select">
     <error message="Please select user" if="eval: userSet == null || userSet  == 0"/>

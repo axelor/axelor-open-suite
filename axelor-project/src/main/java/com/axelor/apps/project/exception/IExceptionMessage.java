@@ -39,6 +39,14 @@ public interface IExceptionMessage {
 
   static final String PROJECT_TASK_FILL_TASK_DATE = /*$$(*/ "Please fill in task date." /*)*/;
 
+  static final String PROJECT_START_WRONG_STATUS = /*$$(*/ "Can only start drafted project." /*)*/;
+  static final String PROJECT_FINISH_WRONG_STATUS = /*$$(*/
+      "Can only finish ongoing project." /*)*/;
+  static final String PROJECT_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already cancelled project." /*)*/;
+  static final String PROJECT_BACK_NEW_WRONG_STATUS = /*$$(*/
+      "Can only go back to new from cancelled project." /*)*/;
+
   static final String TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP = /*$$(*/
       "The parent task creates a loop in the task tree." /*)*/;
   static final String RESOURCE_ALREADY_BOOKED_ERROR_MSG = /*$$(*/

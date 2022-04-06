@@ -97,6 +97,14 @@ public class InvoicingProjectService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
+
+    if (invoicingProject.getStatusSelect() == null
+        || invoicingProject.getStatusSelect() != InvoicingProjectRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_GENERATE_WRONG_STATUS));
+    }
+
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
     Partner customerContact = project.getContactPartner();
