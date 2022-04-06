@@ -33,6 +33,8 @@
       title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
+    <many-to-one name="paymentSession" title="Payment session"
+      ref="com.axelor.apps.account.db.PaymentSession"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
       title="Company currency"/>
     <string name="companyCurrencyCode" title="Company currency code"/>
