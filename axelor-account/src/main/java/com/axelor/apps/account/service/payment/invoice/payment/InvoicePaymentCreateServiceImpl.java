@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -141,8 +142,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
+    PaymentSession paymentSession = paymentMove.getPaymentSession();
+
     if (paymentVoucher != null) {
       invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
+    } else if (paymentSession != null) {
+      invoicePayment.setCompanyBankDetails(paymentSession.getBankDetails());
     } else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
