@@ -70,6 +70,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setPaymentVoucher(null);
       copy.setRejectOk(false);
       copy.setInvoice(null);
+      copy.setPaymentSession(null);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 

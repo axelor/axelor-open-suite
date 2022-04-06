@@ -331,15 +331,6 @@
       <field name="account.manageCutOffPeriod" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
-        <field name="fixedAssetCategory"
-          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-        <field name="account.hasInvoiceTerm" hidden="true"/>
-        <field name="move.invoice" hidden="true"/>
-        <field name="move.period.statusSelect" hidden="true"/>
-      </panel>
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
@@ -353,9 +344,24 @@
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
+        <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
+          showTitle="false" readonly="true">
+          <viewer>
+          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          </viewer>
+        </field>
         <field name="invoiceTermList" colSpan="12"
           form-view="invoice-term-move-line-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
+      </panel>
+      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
+          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+        <field name="fixedAssetCategory"
+          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
+        <field name="account.hasInvoiceTerm" hidden="true"/>
+        <field name="move.invoice" hidden="true"/>
+        <field name="move.period.statusSelect" hidden="true"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
@@ -372,15 +378,16 @@
       <panel name="irrecoverablePanel" title="Irrecoverable"
         showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
         <panel name="irrecoverableDetailsPanel" colSpan="12">
-          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
+          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"
+            title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
           <field name="interbankCodeLine" showIf="interbankCodeLine"
             form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="6"/>
-          <field name="irrecoverableStatusSelect" colSpan="12"/>
+            canEdit="false" colSpan="12"/>
+          <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
-            grid-view="management-object-grid" colSpan="12"/>
+            grid-view="management-object-grid" colSpan="6"/>
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
@@ -578,15 +585,6 @@
         onChange="action-move-line-method-check-analytic-account-on-move-line"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
-        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
-        <field name="fixedAssetCategory"
-          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-        <field name="account.hasInvoiceTerm" hidden="true"/>
-        <field name="move.invoice" hidden="true"/>
-        <field name="move.period.statusSelect" hidden="true"/>
-      </panel>
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
@@ -600,9 +598,24 @@
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
+        <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
+          showTitle="false" readonly="true">
+          <viewer>
+          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          </viewer>
+        </field>
         <field name="invoiceTermList" colSpan="12"
           form-view="invoice-term-move-line-invoice-form"
           grid-view="invoice-term-move-line-invoice-grid"/>
+      </panel>
+      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
+          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+        <field name="fixedAssetCategory"
+          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
+        <field name="account.hasInvoiceTerm" hidden="true"/>
+        <field name="move.invoice" hidden="true"/>
+        <field name="move.period.statusSelect" hidden="true"/>
       </panel>
       <panel-related name="debitReconcileListPanel"
         showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
@@ -619,15 +632,16 @@
       <panel name="irrecoverablePanel" title="Irrecoverable"
         showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
         <panel name="irrecoverableDetailsPanel" colSpan="12">
-          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
+          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"
+            title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
           <field name="interbankCodeLine" showIf="interbankCodeLine"
             form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="6"/>
-          <field name="irrecoverableStatusSelect" colSpan="12"/>
+            canEdit="false" colSpan="12"/>
+          <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
-            grid-view="management-object-grid" colSpan="12"/>
+            grid-view="management-object-grid" colSpan="6"/>
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
@@ -739,6 +753,7 @@
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
+    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"
@@ -746,6 +761,7 @@
   </action-group>
 
   <action-group name="action-account-moveline-move-onload-group">
+    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-line-method-description-required"/>
@@ -1029,6 +1045,12 @@
 
   <action-method name="action-account-move-line-method-update-tax-move-line">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxMoveLine"/>
+  </action-method>
+
+  <action-method
+    name="action-account-move-line-method-display-invoice-term-warning-message">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="displayInvoiceTermWarningMessage"/>
   </action-method>
 
   <search-filters name="move-line-filters"

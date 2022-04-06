@@ -348,7 +348,7 @@ public class DataImportServiceImpl implements DataImportService {
     Property parentProp = mapper.getProperty(fileField.getImportField().getName());
 
     if (Strings.isNullOrEmpty(fileField.getSubImportField())) {
-      if (!Strings.isNullOrEmpty(parentProp.getSelection())) {
+      if (parentProp != null && !Strings.isNullOrEmpty(parentProp.getSelection())) {
         this.writeSelectionData(
             parentProp.getSelection(), dataCell, fileField.getForSelectUse(), dataList);
 

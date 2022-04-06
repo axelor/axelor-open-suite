@@ -46,6 +46,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
 import org.slf4j.Logger;
@@ -130,18 +131,19 @@ public class DoubtfulCustomerService {
     }
   }
 
-  public MoveLine getInvoicePartnerMoveLine(Move move, Account doubtfulCustomerAccount) {
+  public List<MoveLine> getInvoicePartnerMoveLines(Move move, Account doubtfulCustomerAccount) {
+    List<MoveLine> moveLineList = new ArrayList<MoveLine>();
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount() != null
           && moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getAmountRemaining().signum() > 0
           && !moveLine.getAccount().equals(doubtfulCustomerAccount)
           && moveLine.getDebit().signum() > 0) {
-        return moveLine;
+        moveLineList.add(moveLine);
       }
     }
 
-    return null;
+    return moveLineList;
   }
 
   /**
@@ -178,28 +180,31 @@ public class DoubtfulCustomerService {
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
-    MoveLine invoicePartnerMoveLine = this.getInvoicePartnerMoveLine(move, doubtfulCustomerAccount);
+    List<MoveLine> invoicePartnerMoveLines =
+        this.getInvoicePartnerMoveLines(move, doubtfulCustomerAccount);
 
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
-    MoveLine creditMoveLine = null;
-    if (invoicePartnerMoveLine != null) {
-      amountRemaining = invoicePartnerMoveLine.getAmountRemaining();
+    List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
+    if (invoicePartnerMoveLines != null) {
+      for (MoveLine moveLine : invoicePartnerMoveLines) {
+        amountRemaining = amountRemaining.add(moveLine.getAmountRemaining());
+        // Credit move line on partner account
+        MoveLine creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                newMove,
+                partner,
+                moveLine.getAccount(),
+                moveLine.getAmountRemaining(),
+                false,
+                todayDate,
+                1,
+                move.getOrigin(),
+                debtPassReason);
 
-      // Credit move line on partner account
-      creditMoveLine =
-          moveLineCreateService.createMoveLine(
-              newMove,
-              partner,
-              invoicePartnerMoveLine.getAccount(),
-              amountRemaining,
-              false,
-              todayDate,
-              1,
-              move.getOrigin(),
-              debtPassReason);
-
-      origin = creditMoveLine.getOrigin();
+        origin = creditMoveLine.getOrigin();
+        creditMoveLines.add(creditMoveLine);
+      }
     }
 
     // Debit move line on doubtful customer account
@@ -219,8 +224,8 @@ public class DoubtfulCustomerService {
     doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
         invoice,
         newMove,
-        invoicePartnerMoveLine,
-        creditMoveLine,
+        invoicePartnerMoveLines,
+        creditMoveLines,
         debitMoveLine,
         todayDate,
         amountRemaining);

@@ -34,4 +34,6 @@ public interface MoveLineControlService {
   void validateMoveLine(MoveLine moveLine) throws AxelorException;
 
   boolean isInvoiceTermReadonly(MoveLine moveLine, User user);
+
+  boolean displayInvoiceTermWarningMessage(MoveLine moveLine);
 }
