@@ -28,4 +28,6 @@ public interface InvoiceLineProjectService {
 
   public List<AnalyticMoveLine> setProjectToAnalyticDistribution(
       InvoiceLine invoiceLine, List<AnalyticMoveLine> analyticMoveLines);
+
+  List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine);
 }
