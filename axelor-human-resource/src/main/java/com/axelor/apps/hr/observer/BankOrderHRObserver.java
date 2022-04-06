@@ -24,8 +24,9 @@ public class BankOrderHRObserver {
     this.expenseService = expenseService;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  void onValidatePayment(@Observes @Named("validatePayment") BankOrderValidated event)
+  @Transactional(rollbackOn = Exception.class)
+  void onValidatePayment(
+      @Observes @Named(BankOrderValidated.VALIDATE_PAYMENT) BankOrderValidated event)
       throws AxelorException {
 
     BankOrder bankOrder = event.getBankOrder();
@@ -46,8 +47,8 @@ public class BankOrderHRObserver {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  void onCancelPayment(@Observes @Named("cancelPayment") BankOrderValidated event)
+  @Transactional(rollbackOn = Exception.class)
+  void onCancelPayment(@Observes @Named(BankOrderValidated.CANCEL_PAYMENT) BankOrderValidated event)
       throws AxelorException {
 
     BankOrder bankOrder = event.getBankOrder();
