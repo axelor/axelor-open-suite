@@ -616,6 +616,7 @@
 "The company %s doesn't have any configured sequence for MRP","La séquence MRP n’a pas été configurée sur la société %s .",,
 "The company is required and must be the same for all purchase orders","La société est obligatoire et doit être la même pour toutes les cmdes d'achat",,
 "The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les cmdes client",,
+"The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP.","Le composant %s - %s non répertorié dans la liste des produits sélectionnés sur le CBN ou via le parcours de nomenclature devrait être ajouté sur le CBN.",,
 "The currency is required and must be the same for all sale orders","La devise est obligatoire et doit être la même pour toutes les cmdes client",,
 "The customer account is blocked because he has late payments.","Le client est bloqué parce qu'il a des paiements en retard.",,
 "The execution of MRP n°%s is now finished, you can click above to see the results.","L'exécution du CBN n°%s est maintenant terminée, vous pouvez cliquer ci-dessus pour accéder aux résultats.",,

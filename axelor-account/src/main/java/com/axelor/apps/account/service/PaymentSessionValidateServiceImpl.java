@@ -284,20 +284,24 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   protected Move createMove(PaymentSession paymentSession, Partner partner) throws AxelorException {
+    Move move =
+        moveCreateService.createMove(
+            paymentSession.getJournal(),
+            paymentSession.getCompany(),
+            paymentSession.getCurrency(),
+            partner,
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentMode(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            paymentSession.getSequence(),
+            "");
 
-    return moveCreateService.createMove(
-        paymentSession.getJournal(),
-        paymentSession.getCompany(),
-        paymentSession.getCurrency(),
-        partner,
-        paymentSession.getPaymentDate(),
-        paymentSession.getPaymentDate(),
-        paymentSession.getPaymentMode(),
-        null,
-        MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-        paymentSession.getSequence(),
-        "");
+    move.setPaymentSession(paymentSession);
+
+    return move;
   }
 
   protected String getMoveDescription(PaymentSession paymentSession, BigDecimal amount) {

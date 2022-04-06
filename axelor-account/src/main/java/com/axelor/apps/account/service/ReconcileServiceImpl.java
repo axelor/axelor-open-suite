@@ -395,14 +395,15 @@ public class ReconcileServiceImpl implements ReconcileService {
       invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
 
       if (invoicePayment == null) {
-        invoicePayment = invoicePaymentCreateService.createInvoicePayment(invoice, amount, move);
+        invoicePayment =
+            invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.addReconcileListItem(reconcile);
       }
     }
 
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (moveLine.getAccount().getHasInvoiceTerm()) {
-      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, move, moveLine);
+      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
 
       if (invoiceTermList != null) {
         if (this.checkAvailableTotalAmount(invoiceTermList, amount)) {
@@ -461,7 +462,20 @@ public class ReconcileServiceImpl implements ReconcileService {
             .map(PayVoucherElementToPay::getInvoiceTerm)
             .collect(Collectors.toList());
       } else {
-        return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+        List<InvoiceTerm> invoiceTermsToPay =
+            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+
+        if (move != null && move.getPaymentSession() != null) {
+          invoiceTermsToPay =
+              invoiceTermsToPay.stream()
+                  .filter(
+                      it ->
+                          it.getPaymentSession() != null
+                              && it.getPaymentSession().equals(move.getPaymentSession()))
+                  .collect(Collectors.toList());
+        }
+
+        return invoiceTermsToPay;
       }
     } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());

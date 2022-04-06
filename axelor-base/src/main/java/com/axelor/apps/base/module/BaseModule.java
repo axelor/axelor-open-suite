@@ -89,8 +89,6 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
-import com.axelor.apps.base.service.PricingService;
-import com.axelor.apps.base.service.PricingServiceImpl;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateLineService;
@@ -247,7 +245,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
     bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
-    bind(PricingService.class).to(PricingServiceImpl.class);
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);

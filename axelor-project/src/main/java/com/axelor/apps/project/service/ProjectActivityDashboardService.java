@@ -22,9 +22,9 @@ import java.util.Map;
 
 public interface ProjectActivityDashboardService {
 
-  Map<String, Object> getData(LocalDate fromDate, LocalDate toDate);
+  Map<String, Object> getData(LocalDate fromDate, LocalDate toDate, Long projectId);
 
-  Map<String, Object> getPreviousData(String date);
+  Map<String, Object> getPreviousData(String date, Long projectId);
 
-  Map<String, Object> getNextData(String date);
+  Map<String, Object> getNextData(String date, Long projectId);
 }
