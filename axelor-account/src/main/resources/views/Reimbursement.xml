@@ -45,10 +45,14 @@
     <panel sidebar="true" name="infoPanel" title="Info">
       <field name="statusSelect"/>
       <button name="validateReimbursementBtn" title="Validate"
-        onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save"
-        showIf="statusSelect == 2"/>
+        onClick="save,action-reimbursement-method-validate,save" showIf="statusSelect == 2"/>
     </panel>
   </form>
+
+  <action-method name="action-reimbursement-method-validate">
+    <call class="com.axelor.apps.account.web.ReimbursementController"
+      method="validateReimbursement"/>
+  </action-method>
 
   <action-record name="action-reimbursement-set-default"
     model="com.axelor.apps.account.db.Reimbursement">

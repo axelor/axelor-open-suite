@@ -72,7 +72,12 @@ public class ChequeRejectionService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void validateChequeRejection(ChequeRejection chequeRejection) throws AxelorException {
-
+    if (chequeRejection.getStatusSelect() == null
+        || chequeRejection.getStatusSelect() != ChequeRejectionRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CHECK_REJECTION_VALIDATE_WRONG_STATUS));
+    }
     Company company = chequeRejection.getCompany();
 
     this.testCompanyField(company);

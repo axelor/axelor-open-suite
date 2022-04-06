@@ -378,7 +378,12 @@ public class IrrecoverableService {
    * @throws AxelorException
    */
   public int passInIrrecoverable(Irrecoverable irrecoverable) throws AxelorException {
-
+    if (irrecoverable.getStatusSelect() == null
+        || irrecoverable.getStatusSelect() != IrrecoverableRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IRRECOVERABLE_PASS_IN_WRONG_STATUS));
+    }
     irrecoverable.setMoveSet(new HashSet<Move>());
 
     EntityTransaction transaction = JPA.em().getTransaction();

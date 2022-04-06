@@ -229,6 +229,17 @@ public class InvoiceController {
     response.setReload(true);
   }
 
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+      Beans.get(InvoiceService.class).backToDraft(invoice);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Function returning both the paymentMode and the paymentCondition
    *

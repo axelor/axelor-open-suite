@@ -18,10 +18,15 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.ReimbursementRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -54,5 +59,16 @@ public class ReimbursementService {
       partner.addBankDetailsListItem(bankDetails);
       partnerRepository.save(partner);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateReimbursement(Reimbursement reimbursement) throws AxelorException {
+    if (reimbursement.getStatusSelect() == null
+        || reimbursement.getStatusSelect() != ReimbursementRepository.STATUS_TO_VALIDATE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.REIMBURSEMENT_VALIDATE_WRONG_STATUS));
+    }
+    reimbursement.setStatusSelect(ReimbursementRepository.STATUS_VALIDATED);
   }
 }

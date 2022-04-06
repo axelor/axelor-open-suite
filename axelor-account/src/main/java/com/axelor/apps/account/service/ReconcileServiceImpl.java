@@ -147,7 +147,12 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException {
-
+    if (reconcile.getStatusSelect() == null
+        || reconcile.getStatusSelect() != ReconcileRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.RECONCILE_RECONCILE_WRONG_STATUS));
+    }
     this.reconcilePreconditions(reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -400,7 +405,12 @@ public class ReconcileServiceImpl implements ReconcileService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
-
+    if (reconcile.getStatusSelect() == null
+        || reconcile.getStatusSelect() != ReconcileRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.RECONCILE_UNRECONCILE_WRONG_STATUS));
+    }
     log.debug("unreconcile : reconcile : {}", reconcile);
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();

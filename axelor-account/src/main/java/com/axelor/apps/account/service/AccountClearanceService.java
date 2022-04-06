@@ -134,6 +134,12 @@ public class AccountClearanceService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validateAccountClearance(AccountClearance accountClearance) throws AxelorException {
+    if (accountClearance.getStatusSelect() == null
+        || accountClearance.getStatusSelect() != AccountClearanceRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_VALIDATE_WRONG_STATUS));
+    }
     Company company = accountClearance.getCompany();
     AccountConfig accountConfig = company.getAccountConfig();
 

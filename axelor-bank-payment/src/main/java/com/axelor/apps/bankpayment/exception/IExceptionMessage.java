@@ -32,7 +32,8 @@ public interface IExceptionMessage {
       "%s : MoveLine amount is not equals with bank statement line %s" /*)*/;
   static final String BANK_STATEMENT_3 = /*$$(*/
       "%s : Bank statement line %s amount can't be null" /*)*/;
-
+  static final String BANK_STATEMENT_RUN_IMPORT_WRONG_STATUS = /*$$(*/
+      "Can only import received bank statement." /*)*/;
   /** Account config Bank Payment Service */
   static final String ACCOUNT_CONFIG_41 = /*$$(*/
       "%s : Please, configure a default signer for the company %s" /*)*/;
@@ -227,4 +228,8 @@ public interface IExceptionMessage {
 
   static final String INVOICE_PAYMENT_MODE_MISSING = /*$$(*/
       "Payment mode is missing on the invoice %s" /*)*/;
+
+  /** Bank reconciliation service * */
+  static final String BANK_RECONCILIATION_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a drafted bank reconciliation" /*)*/;
 }

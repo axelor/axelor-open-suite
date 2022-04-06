@@ -156,6 +156,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
       throws AxelorException {
 
+    if (fixedAsset.getStatusSelect() == null
+        || fixedAsset.getStatusSelect() != FixedAssetRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_WRONG_STATUS));
+    }
+
     Map<Integer, List<FixedAssetLine>> fixedAssetLineMap =
         fixedAsset.getFixedAssetLineList().stream()
             .collect(Collectors.groupingBy(FixedAssetLine::getStatusSelect));
@@ -302,6 +309,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(FixedAsset fixedAsset) throws AxelorException {
+
+    if (fixedAsset.getStatusSelect() == null
+        || fixedAsset.getStatusSelect() != FixedAssetRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_VALIDATE_WRONG_STATUS));
+    }
+
     if (fixedAsset.getGrossValue() == null || fixedAsset.getGrossValue().signum() <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

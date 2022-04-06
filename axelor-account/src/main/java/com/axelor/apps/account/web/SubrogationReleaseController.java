@@ -104,6 +104,32 @@ public class SubrogationReleaseController {
     }
   }
 
+  public void cancelRelease(ActionRequest request, ActionResponse response) {
+    try {
+      SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
+      subrogationRelease =
+          Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
+      Beans.get(SubrogationReleaseService.class).cancelRelease(subrogationRelease);
+      response.setReload(true);
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void renewRelease(ActionRequest request, ActionResponse response) {
+    try {
+      SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
+      subrogationRelease =
+          Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
+      Beans.get(SubrogationReleaseService.class).renewRelease(subrogationRelease);
+      response.setReload(true);
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(e);
+    }
+  }
+
   public void displayMoveLines(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);

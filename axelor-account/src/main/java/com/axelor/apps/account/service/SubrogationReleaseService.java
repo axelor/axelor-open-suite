@@ -43,6 +43,22 @@ public interface SubrogationReleaseService {
   void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException;
 
   /**
+   * Cancel a subrogation release (change status).
+   *
+   * @param subrogationRelease
+   * @throws AxelorException
+   */
+  void cancelRelease(SubrogationRelease subrogationRelease) throws AxelorException;
+
+  /**
+   * Renew a subrogation release (change status).
+   *
+   * @param subrogationRelease
+   * @throws AxelorException
+   */
+  void renewRelease(SubrogationRelease subrogationRelease) throws AxelorException;
+
+  /**
    * Generate a PDF export.
    *
    * @param subrogationRelease
