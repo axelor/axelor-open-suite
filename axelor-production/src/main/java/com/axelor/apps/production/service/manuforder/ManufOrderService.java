@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
@@ -244,6 +245,9 @@ public interface ManufOrderService {
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
+      throws AxelorException;
+
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException;
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
