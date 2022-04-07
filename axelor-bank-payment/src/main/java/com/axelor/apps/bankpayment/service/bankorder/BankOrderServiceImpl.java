@@ -55,6 +55,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.event.Event;
 import com.axelor.event.NamedLiteral;
+import com.axelor.event.ObserverException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -79,6 +80,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderServiceImpl implements BankOrderService {
+
+  protected static final String AXELOR_EXCEPTION_PREFIX = "com.axelor.exception.AxelorException: ";
 
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
@@ -357,9 +360,21 @@ public class BankOrderServiceImpl implements BankOrderService {
   public void validate(BankOrder bankOrder) throws AxelorException {
 
     // this event is used in AOS PRO module axelor-ebics-ts
-    bankOrderValidatedEvent
-        .select(NamedLiteral.of(BankOrderEvent.VALIDATE))
-        .fire(new BankOrderEvent(bankOrder));
+    try {
+      bankOrderValidatedEvent
+          .select(NamedLiteral.of(BankOrderEvent.VALIDATE))
+          .fire(new BankOrderEvent(bankOrder));
+    } catch (ObserverException e) {
+      String msg = e.getMessage();
+      if (e.getCause() instanceof AxelorException) {
+        throw new AxelorException(
+            bankOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            msg.replace(AXELOR_EXCEPTION_PREFIX, ""));
+      } else {
+        throw new RuntimeException(msg, e);
+      }
+    }
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
