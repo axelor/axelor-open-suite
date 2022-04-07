@@ -243,14 +243,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             .filter(it -> !it.getInvoiceTermList().get(0).getIsHoldBack())
             .collect(Collectors.toList());
 
-    this.temp(invoice, debitMoveLines, debitMoveLinesHoldback);
-
-    return move;
-  }
-
-  protected void temp(
-      Invoice invoice, List<MoveLine> debitMoveLines, List<MoveLine> debitMoveLinesHoldback)
-      throws AxelorException {
     List<MoveLine> invoiceCustomerMoveLineList =
         this.sortMoveLinesByHoldback(moveToolService.getInvoiceCustomerMoveLines(invoice));
 
@@ -276,6 +268,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       debitMoveLines = debitMoveLinesHoldback;
     }
+
+    return move;
   }
 
   @Override
