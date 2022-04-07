@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.base.db.SearchConfiguration;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
@@ -37,6 +38,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -65,11 +67,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -130,6 +134,7 @@ public class DataBackupCreateService {
       DataBackup dataBackup,
       Boolean isBackUp,
       Map<MetaModel, String> metaModelIdListMap,
+      Set<SearchConfiguration> searchConfigSet,
       Map<String, String> metaModelSearchConfigMap)
       throws InterruptedException {
     File tempDir = Files.createTempDir();
@@ -191,12 +196,15 @@ public class DataBackupCreateService {
                   tempDirectoryPath,
                   isBackUp,
                   metaModelIdListMap,
+                  searchConfigSet,
+                  metaModelSearchConfigMap,
                   search);
           csvWriter.close();
-
           if (notNullReferenceFlag) {
+        	  csvInput.setUpdate(true);
             notNullReferenceCsvs.add(csvInput);
           } else if (referenceFlag) {
+        	  csvInput.setUpdate(false);
             refernceCsvs.add(csvInput);
             CSVInput temcsv = new CSVInput();
             temcsv.setFileName(csvInput.getFileName());
@@ -243,10 +251,10 @@ public class DataBackupCreateService {
       }
 
       CSVConfig csvConfig = new CSVConfig();
-      csvConfig.setInputs(simpleCsvs);
+      //csvConfig.setInputs(simpleCsvs);
       csvConfig.getInputs().addAll(notNullReferenceCsvs);
       csvConfig.getInputs().addAll(refernceCsvs);
-      csvConfig.getInputs().addAll(notNullReferenceCsvs);
+      //csvConfig.getInputs().addAll(notNullReferenceCsvs);
       generateConfig(tempDirectoryPath, csvConfig);
 
       fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
@@ -440,6 +448,8 @@ public class DataBackupCreateService {
       String dirPath,
       Boolean isBackup,
       Map<MetaModel, String> metaModelIdListMap,
+      Set<SearchConfiguration> searchConfigSet,
+      Map<String, String> metaModelSearchConfigMap,
       String search) {
 
     CSVInput csvInput = new CSVInput();
@@ -453,12 +463,11 @@ public class DataBackupCreateService {
       Property[] pro = metaModelMapper.getProperties();
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
-      boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean updateImportId = dataBackup.getUpdateImportId(); //set to false to avoid duplicate error while import
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
-
       if (totalRecord > 0) {
         for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
@@ -471,8 +480,16 @@ public class DataBackupCreateService {
               for (Property property : pro) {
                 if (isPropertyExportable(property)) {
                   if (headerFlag) {
-                    String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
+                    String headerStr =
+                        getMetaModelHeader(
+                            property, csvInput, isRelativeDate, metaModelSearchConfigMap,searchConfigSet);
                     headerArr.add(headerStr);
+                    if (!ObjectUtils.isEmpty(metaModelSearchConfigMap)
+                        && property.getTarget() != null
+                        && metaModelSearchConfigMap.containsKey(property.getTarget().getName())) {
+                      getMetaModelReferenceHeader(property, headerArr, searchConfigSet);
+
+                    }
                   }
                   dataArr.add(
                       getMetaModelData(
@@ -483,6 +500,20 @@ public class DataBackupCreateService {
                           dirPath,
                           isRelativeDate,
                           updateImportId));
+
+                  if (!ObjectUtils.isEmpty(metaModelSearchConfigMap)
+                      && property.getTarget() != null
+                      && metaModelSearchConfigMap.containsKey(property.getTarget().getName())) {
+                    getMetaModelReferenceData(
+                        metaModelMapper,
+                        property,
+                        dataObject,
+                        dataArr,
+                        isRelativeDate,
+                        updateImportId,
+                        searchConfigSet);
+
+                  }
                 }
               }
 
@@ -502,7 +533,8 @@ public class DataBackupCreateService {
       } else {
         for (Property property : pro) {
           if (isPropertyExportable(property)) {
-            String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
+            String headerStr =
+                getMetaModelHeader(property, csvInput, isRelativeDate, metaModelSearchConfigMap,searchConfigSet);
             headerArr.add(headerStr);
           }
         }
@@ -546,7 +578,11 @@ public class DataBackupCreateService {
 
   /* Get Header For csv File */
   protected String getMetaModelHeader(
-      Property property, CSVInput csvInput, boolean isRelativeDate) {
+      Property property,
+      CSVInput csvInput,
+      boolean isRelativeDate,
+      Map<String, String> metaModelSearchConfigMap,
+      Set<SearchConfiguration> searchConfigSet) {
     String propertyTypeStr = property.getType().toString();
     String propertyName = property.getName();
     switch (propertyTypeStr) {
@@ -563,12 +599,39 @@ public class DataBackupCreateService {
         return "byte_" + propertyName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationalFieldHeader(property, csvInput, "ONE");
+        String bindSearch = null;
+        if (property.getTarget() != null) {
+          bindSearch = metaModelSearchConfigMap.get(property.getTarget().getName());
+        }
+        return getRelationalFieldHeader(property, csvInput, "ONE", bindSearch,searchConfigSet);
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
-        return getRelationalFieldHeader(property, csvInput, "MANY");
+        return getRelationalFieldHeader(
+            property, csvInput, "MANY", null,searchConfigSet); // TODO : generate search self.field IN :field
       default:
         return propertyName;
+    }
+  }
+
+  protected void getMetaModelReferenceHeader(
+      Property property, List<String> headerArr, Set<SearchConfiguration> searchConfigSet) {
+
+    if (ObjectUtils.isEmpty(searchConfigSet)) {
+      return;
+    }
+
+    Optional<SearchConfiguration> searchConfigOpt =
+        searchConfigSet.stream()
+            .filter(
+                item ->
+                    property.getTarget() != null
+                        && item.getMetaModel().getFullName().equals(property.getTarget().getName()))
+            .findFirst();
+    if (searchConfigOpt.isPresent()) {
+      SearchConfiguration searchConfig = searchConfigOpt.get();
+      for (MetaField metaField : searchConfig.getMetaFieldSet()) {
+        headerArr.add(String.format("%s_%s", property.getName(), metaField.getName()));
+      }
     }
   }
 
@@ -590,31 +653,57 @@ public class DataBackupCreateService {
   }
 
   protected String getRelationalFieldHeader(
-      Property property, CSVInput csvInput, String relationship) {
+      Property property, CSVInput csvInput, String relationship, String bindSearch, Set<SearchConfiguration> searchConfigSet) {
     csvInput.setSearch("self.importId = :importId");
-    CSVBind csvBind = new CSVBind();
+    
     String columnName = property.getName() + "_importId";
-    String search =
-        relationship.equalsIgnoreCase("ONE")
-            ? "self.importId = :" + columnName
-            : "self.importId in :" + columnName;
-    if (property.getTarget() != null
-        && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
-        && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
-      columnName = property.getName() + "_name";
+
+    String search = bindSearch;
+    if (StringUtils.isBlank(search)) {
       search =
           relationship.equalsIgnoreCase("ONE")
-              ? "self.name = :" + columnName
-              : "self.name in :" + columnName;
+              ? "self.importId = :" + columnName
+              : "self.importId in :" + columnName;
+      if (property.getTarget() != null
+          && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
+          && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+        columnName = property.getName() + "_name";
+        search =
+            relationship.equalsIgnoreCase("ONE")
+                ? "self.name = :" + columnName
+                : "self.name in :" + columnName;
+      }
     }
-    csvBind.setColumn(columnName);
-    csvBind.setField(property.getName());
-    csvBind.setSearch(search);
-    csvBind.setUpdate(true);
-    if (relationship.equalsIgnoreCase("MANY")) {
-      csvBind.setExpression(columnName + ".split('\\\\|') as List");
+   
+    for(SearchConfiguration currentSearchConfig : searchConfigSet) {
+    	if(currentSearchConfig.getMetaModel().getName().equalsIgnoreCase(property.getName())) {
+    		 CSVBind csvBind = new CSVBind();
+    		 csvBind.setColumn(columnName);
+    		 csvBind.setField(property.getName());
+    		 csvBind.setSearch(search);
+    		 csvBind.setUpdate(false);
+    		String metaModelNameInSearch = currentSearchConfig.getMetaModel().getName().toLowerCase();
+    		for(MetaField currentField : currentSearchConfig.getMetaFieldSet()) {
+    			CSVBind nestedCsvBind = new CSVBind();
+    			nestedCsvBind.setColumn(metaModelNameInSearch+"_"+currentField.getName());
+    			nestedCsvBind.setField(currentField.getName());
+    			if(csvBind.getBindings() == null) {
+    				csvBind.setBindings(new ArrayList<>());
+    			}
+    			nestedCsvBind.setUpdate(true);
+    			csvBind.getBindings().add(nestedCsvBind);
+    		}
+    		csvInput.getBindings().add(csvBind);
+    		 if (relationship.equalsIgnoreCase("MANY")) {
+    		      csvBind.setExpression(columnName + ".split('\\\\|') as List");
+    		    }
+    		break;
+    	}
+    	
     }
-    csvInput.getBindings().add(csvBind);
+   
+    
+    
     referenceFlag = true;
     if (property.isRequired()) {
       notNullReferenceFlag = true;
@@ -638,7 +727,10 @@ public class DataBackupCreateService {
       return "";
     }
     String propertyTypeStr = property.getType().toString();
-
+    if(property.getName().equals("id")) {
+    	value="";
+    }
+    
     switch (propertyTypeStr) {
       case "LONG":
         if (updateImportId) {
@@ -681,6 +773,62 @@ public class DataBackupCreateService {
         return getRelationalFieldData(property, value, updateImportId);
       default:
         return value.toString();
+    }
+    
+  }
+
+  protected void getMetaModelReferenceData(
+      Mapper metaModelMapper,
+      Property property,
+      Object dataObject,
+      List<String> dataArr,
+      boolean isRelativeDate,
+      boolean updateImportId,
+      Set<SearchConfiguration> searchConfigSet) {
+
+    if (ObjectUtils.isEmpty(searchConfigSet)) {
+      return;
+    }
+
+    Optional<SearchConfiguration> searchConfigOpt =
+        searchConfigSet.stream()
+            .filter(
+                item ->
+                    property.getTarget() != null
+                        && item.getMetaModel().getFullName().equals(property.getTarget().getName()))
+            .findFirst();
+    if (searchConfigOpt.isPresent()) {
+      try {
+        Object value = metaModelMapper.get(dataObject, property.getName());
+        SearchConfiguration searchConfig = searchConfigOpt.get();
+        if (value == null) {
+          String[] array = new String[searchConfig.getMetaFieldSet().size()];
+          Arrays.fill(array, "");
+          dataArr.addAll(Arrays.asList(array));
+        } else {
+          Mapper referenceMapper = Mapper.of(Class.forName(property.getTarget().getName()));
+          List<Property> pros = Arrays.asList(referenceMapper.getProperties());
+          for (MetaField metaField : searchConfig.getMetaFieldSet()) {
+            Optional<Property> referenceProOpt =
+                pros.stream().filter(pro -> pro.getName().equals(metaField.getName())).findFirst();
+            if (referenceProOpt.isPresent()) {
+              Property referenceProperty = referenceProOpt.get();
+              String referenceValue =
+                  getMetaModelData(
+                      property.getTarget().getName(),
+                      referenceMapper,
+                      referenceProperty,
+                      value,
+                      null,
+                      isRelativeDate,
+                      updateImportId);
+              dataArr.add(referenceValue);
+            }
+          }
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
   }
 
@@ -767,16 +915,20 @@ public class DataBackupCreateService {
   }
 
   protected String getRelationalFieldValue(Property property, Object val, boolean updateImportId) {
+	 
     if (property.getTarget() != null
         && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
         && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
       try {
+    	  
         return Mapper.of(val.getClass()).get(val, "name").toString();
       } catch (Exception e) {
-        return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
+    	  return "";
+        //return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
       }
     } else {
-      return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
+    	return "";
+      //return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
     }
   }
 
@@ -853,7 +1005,17 @@ public class DataBackupCreateService {
                   SEPARATOR,
                   QUOTE_CHAR);
           writeCSVData(
-              metaModel, csvWriter, dataBackup, 1, subClasses, tempDirectoryPath, true, null, null);
+              metaModel,
+              csvWriter,
+              dataBackup,
+              1,
+              subClasses,
+              tempDirectoryPath,
+              true,
+              null,
+              null,
+              null,
+              null);
           csvWriter.close();
         }
       } catch (ClassNotFoundException e) {

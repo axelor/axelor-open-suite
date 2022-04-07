@@ -39,8 +39,8 @@ public class RecordingImportController {
               .find(request.getContext().asType(RecordingImport.class).getId());
       File file =
           Beans.get(DataBackupRestoreService.class).restore(recordingImport.getRecordingData());
-      response.setValue("logFile", Beans.get(MetaFiles.class).upload(file));
-    } catch (IOException e) {
+      if(file!=null) response.setValue("logFile", Beans.get(MetaFiles.class).upload(file));
+      } catch (IOException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }

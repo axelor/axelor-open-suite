@@ -42,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -150,34 +149,23 @@ public class RecordingServiceImpl implements RecordingService {
       Set<String> metaModelFNSet = jsonObject.keySet();
       if (metaModelFNSet != null && !metaModelFNSet.isEmpty()) {
         Map<MetaModel, String> metaModelIdListMap = new HashMap<>();
-        List<String> searchWarningModelList = new ArrayList<>();
         Map<String, String> metaModelSearchConfigMap = new HashMap<>();
         Set<SearchConfiguration> searchConfigSet = recording.getSearchConfigurationSet();
 
         for (MetaModel metaModel :
             metaModelRepo.all().filter("self.fullName IN ?", metaModelFNSet).fetch()) {
           metaModelIdListMap.put(metaModel, jsonObject.getString(metaModel.getFullName()));
-          manageSearchConfig(
-              recording,
-              metaModel,
-              searchConfigSet,
-              metaModelSearchConfigMap,
-              searchWarningModelList);
+          manageSearchConfig(recording, metaModel, searchConfigSet, metaModelSearchConfigMap);
         }
+        
 
         dataBackup =
             dataBackUpService.create(
-                dataBackup, false, metaModelIdListMap, metaModelSearchConfigMap);
+                dataBackup, false, metaModelIdListMap, searchConfigSet, metaModelSearchConfigMap);
         recording.setRecordingData(dataBackup.getBackupMetaFile());
-        recording.setStopDateTime(LocalDateTime.now());
-        recording.setModelIds(null);
+        // recording.setStopDateTime(LocalDateTime.now());
+        // recording.setModelIds(null);
         recordingRepo.save(recording);
-        if (!recording.getIsIgnoreRecordsHavingIssues()
-            && ObjectUtils.notEmpty(searchWarningModelList)) {
-          return String.format(
-              I18n.get(IExceptionMessages.RECORDING_SEARCH_CONFIGURATION_WARNING),
-              String.join("\n", searchWarningModelList));
-        }
       }
     } else {
       throw new AxelorException(
@@ -192,35 +180,39 @@ public class RecordingServiceImpl implements RecordingService {
       Recording recording,
       MetaModel metaModel,
       Set<SearchConfiguration> searchConfigSet,
-      Map<String, String> metaModelSearchConfigMap,
-      List<String> searchWarningModelList) {
-
+      Map<String, String> metaModelSearchConfigMap) {
+	 
     if (ObjectUtils.isEmpty(searchConfigSet)) {
       return;
     }
 
-    String search = null;
-    Optional<SearchConfiguration> searchConfigurationOpt =
-        searchConfigSet.stream()
-            .filter(searchConfig -> searchConfig.getMetaModel().equals(metaModel))
-            .findFirst();
-    if (searchConfigurationOpt.isPresent()) {
-      search = getSearchFromSearchConfiguration(searchConfigurationOpt.get());
-    } else {
-      search = getSearchFromFieldConfiguration(metaModel);
-    }
+    
+	/*
+	 * Optional<SearchConfiguration> searchConfigurationOpt =
+	 * searchConfigSet.stream() .filter(searchConfig ->
+	 * searchConfig.getMetaModel().equals(metaModel)) .findFirst();
+	 */
+   
+    searchConfigSet.stream().forEach((searchConfig) ->
+    {
+    	      String search = getSearchFromSearchConfiguration(searchConfig);
+    	      
+		/*
+		 * else { search = getSearchFromFieldConfiguration(metaModel);
+		  }
+		 */
 
-    if (StringUtils.notBlank(search)) {
-      metaModelSearchConfigMap.put(metaModel.getFullName(), search);
-    } else if (recording.getIsIgnoreRecordsHavingIssues()) {
-      recording.addExcludeModelSetItem(metaModel);
-    } else {
-      searchWarningModelList.add(metaModel.getFullName());
+    	    if (StringUtils.notBlank(search)) {
+    	      metaModelSearchConfigMap.put(searchConfig.getMetaModel().getFullName(), search);
+    	    }
+    	
     }
+    );
+    
   }
 
   protected String getSearchFromSearchConfiguration(SearchConfiguration searchConfiguration) {
-
+	String metaModelNameInSearch = searchConfiguration.getMetaModel().getName().toLowerCase();
     Set<MetaField> searchFields = searchConfiguration.getMetaFieldSet();
     List<String> searchArr = new ArrayList<>();
 
@@ -231,13 +223,14 @@ public class RecordingServiceImpl implements RecordingService {
       }
 
       String fieldSearch = null;
-      String relationship = metaField.getRelationship();
+      /*String relationship = metaField.getRelationship();
       if (StringUtils.isBlank(relationship)) {
-        fieldSearch = String.format("self.%s = :%s", fieldName, fieldName);
+        fieldSearch = String.format("self.%s = :"+metaModelNameInSearch+"_%s", fieldName, fieldName);
       } else if (relationship.equalsIgnoreCase("OneToOne")
           || relationship.equalsIgnoreCase("ManyToOne")) {
         fieldSearch = String.format("self.%s = :%s_importId", fieldName, fieldName);
-      }
+      } */
+      fieldSearch = String.format("self.%s = :"+metaModelNameInSearch+"_%s", fieldName, fieldName);
       if (StringUtils.notBlank(fieldSearch)) {
         searchArr.add(fieldSearch);
       }
@@ -313,6 +306,10 @@ public class RecordingServiceImpl implements RecordingService {
       List<Field> fields =
           Arrays.asList(Class.forName(metaModel.getFullName()).getDeclaredFields());
       Field field = getNameColumnField(fields);
+      if (field == null) {
+        return null;
+      }
+
       metaField =
           Beans.get(MetaFieldRepository.class)
               .all()
