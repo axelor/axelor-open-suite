@@ -42,14 +42,8 @@ import java.util.List;
 
 public class AccountConfigService {
 
-  protected MoveRepository moveRepo;
-  protected JournalRepository journalRepo;
-
-  @Inject
-  public AccountConfigService(MoveRepository moveRepo, JournalRepository journalRepo) {
-    this.moveRepo = moveRepo;
-    this.journalRepo = journalRepo;
-  }
+  @Inject protected MoveRepository moveRepo;
+  @Inject protected JournalRepository journalRepo;
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 

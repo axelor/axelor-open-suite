@@ -126,8 +126,6 @@ import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearControlServiceImpl;
-import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
-import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAccountServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
@@ -499,8 +497,6 @@ public class AccountModule extends AxelorModule {
     bind(ClosureAssistantLineService.class).to(ClosureAssistantLineServiceImpl.class);
 
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
-
-    bind(AccountConfigAnalyticService.class).to(AccountConfigAnalyticServiceImpl.class);
 
     bind(SequenceBaseRepository.class).to(SequenceAccountManagementRepository.class);
 
