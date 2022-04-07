@@ -44,7 +44,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,16 +234,25 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     // Récupération des dûs
     List<MoveLine> debitMoveLines =
         moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
-    List<MoveLine> debitMoveLinesHoldback = debitMoveLines.stream().filter(it -> it.getInvoiceTermList().get(0).getIsHoldBack()).collect(Collectors.toList());
-    debitMoveLines = debitMoveLines.stream().filter(it -> !it.getInvoiceTermList().get(0).getIsHoldBack()).collect(Collectors.toList());
+    List<MoveLine> debitMoveLinesHoldback =
+        debitMoveLines.stream()
+            .filter(it -> it.getInvoiceTermList().get(0).getIsHoldBack())
+            .collect(Collectors.toList());
+    debitMoveLines =
+        debitMoveLines.stream()
+            .filter(it -> !it.getInvoiceTermList().get(0).getIsHoldBack())
+            .collect(Collectors.toList());
 
     this.temp(invoice, debitMoveLines, debitMoveLinesHoldback);
 
     return move;
   }
 
-  protected void temp(Invoice invoice, List<MoveLine> debitMoveLines, List<MoveLine> debitMoveLinesHoldback) throws AxelorException {
-    List<MoveLine> invoiceCustomerMoveLineList = this.sortMoveLinesByHoldback(moveToolService.getInvoiceCustomerMoveLines(invoice));
+  protected void temp(
+      Invoice invoice, List<MoveLine> debitMoveLines, List<MoveLine> debitMoveLinesHoldback)
+      throws AxelorException {
+    List<MoveLine> invoiceCustomerMoveLineList =
+        this.sortMoveLinesByHoldback(moveToolService.getInvoiceCustomerMoveLines(invoice));
 
     for (MoveLine invoiceCustomerMoveLine : invoiceCustomerMoveLineList) {
       // Si c'est le même compte sur les trop-perçus et sur la facture, alors on
@@ -287,7 +295,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
-      List<MoveLine> invoiceCustomerMoveLineList = this.sortMoveLinesByHoldback(moveToolService.getInvoiceCustomerMoveLines(invoice));
+      List<MoveLine> invoiceCustomerMoveLineList =
+          this.sortMoveLinesByHoldback(moveToolService.getInvoiceCustomerMoveLines(invoice));
 
       Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
@@ -303,23 +312,23 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       else {
         for (MoveLine invoiceCustomerMoveLine : invoiceCustomerMoveLineList) {
           log.debug(
-                  "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
-                  new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
+              "Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})",
+              new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
           Move move =
-                  moveCreateService.createMove(
-                          journal,
-                          company,
-                          null,
-                          partner,
-                          invoice.getInvoiceDate(),
-                          invoice.getInvoiceDate(),
-                          null,
-                          invoice.getFiscalPosition(),
-                          MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                          MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                          origin,
-                          null);
+              moveCreateService.createMove(
+                  journal,
+                  company,
+                  null,
+                  partner,
+                  invoice.getInvoiceDate(),
+                  invoice.getInvoiceDate(),
+                  null,
+                  invoice.getFiscalPosition(),
+                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                  origin,
+                  null);
 
           if (move != null) {
             BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -327,37 +336,37 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
             // Création de la ligne au crédit
             MoveLine creditMoveLine =
-                    moveLineCreateService.createMoveLine(
-                            move,
-                            partner,
-                            account,
-                            amount,
-                            false,
-                            appAccountService.getTodayDate(company),
-                            1,
-                            origin,
-                            null);
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    account,
+                    amount,
+                    false,
+                    appAccountService.getTodayDate(company),
+                    1,
+                    origin,
+                    null);
             move.getMoveLineList().add(creditMoveLine);
 
             // Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de
             // l'eau
             paymentService.useExcessPaymentWithAmountConsolidated(
-                    creditMoveLineList,
-                    amount,
-                    move,
-                    2,
-                    partner,
-                    company,
-                    account,
-                    invoice.getInvoiceDate(),
-                    invoice.getDueDate());
+                creditMoveLineList,
+                amount,
+                move,
+                2,
+                partner,
+                company,
+                account,
+                invoice.getInvoiceDate(),
+                invoice.getDueDate());
 
             moveValidateService.accounting(move);
 
             // Création de la réconciliation
             Reconcile reconcile =
-                    reconcileService.createReconcile(
-                            invoiceCustomerMoveLine, creditMoveLine, amount, false);
+                reconcileService.createReconcile(
+                    invoiceCustomerMoveLine, creditMoveLine, amount, false);
             if (reconcile != null) {
               reconcileService.confirmReconcile(reconcile, true);
             }
@@ -374,18 +383,21 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       return moveLineList;
     }
 
-    return moveLineList.stream().sorted((t1, t2) -> {
-      boolean holdback1 = t1.getInvoiceTermList().get(0).getIsHoldBack();
-      boolean holdback2 = t2.getInvoiceTermList().get(0).getIsHoldBack();
+    return moveLineList.stream()
+        .sorted(
+            (t1, t2) -> {
+              boolean holdback1 = t1.getInvoiceTermList().get(0).getIsHoldBack();
+              boolean holdback2 = t2.getInvoiceTermList().get(0).getIsHoldBack();
 
-      if (holdback1 == holdback2) {
-        return 0;
-      } else if (holdback1) {
-        return 1;
-      } else {
-        return -1;
-      }
-    }).collect(Collectors.toList());
+              if (holdback1 == holdback2) {
+                return 0;
+              } else if (holdback1) {
+                return 1;
+              } else {
+                return -1;
+              }
+            })
+        .collect(Collectors.toList());
   }
 
   @Override
