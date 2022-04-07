@@ -1075,6 +1075,9 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
+  static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
+
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing partner." /*)*/;
 
