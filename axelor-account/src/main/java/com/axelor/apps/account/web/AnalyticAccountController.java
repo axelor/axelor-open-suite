@@ -45,6 +45,8 @@ public class AnalyticAccountController {
                 + analyticAccount.getAnalyticAxis().getId();
         if (analyticAccount.getCompany() != null) {
           domain = domain.concat(" AND self.company.id = " + analyticAccount.getCompany().getId());
+        } else {
+          domain = domain.concat(" AND self.company IS NULL");
         }
         response.setAttr("parent", "domain", domain);
       }

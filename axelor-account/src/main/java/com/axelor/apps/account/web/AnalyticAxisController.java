@@ -117,7 +117,8 @@ public class AnalyticAxisController {
     try {
       AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
 
-      if (analyticAxis.getCompany() != null
+      if (analyticAxis.getId() != null
+          && analyticAxis.getCompany() != null
           && !analyticAxis
               .getCompany()
               .equals(
