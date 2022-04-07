@@ -18,8 +18,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;

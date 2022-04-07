@@ -52,6 +52,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected AccountConfigRepository accountConfigRepository;
+  protected CurrencyService currencyService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -59,11 +60,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public InvoicePaymentToolServiceImpl(
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      CurrencyService currencyService) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -72,9 +75,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+    invoice.setCompanyInTaxTotalRemaining(
+        getAmountInInvoiceCompanyCurrency(invoice.getAmountRemaining(), invoice));
     updateHasPendingPayments(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
+  }
+
+  protected BigDecimal getAmountInInvoiceCompanyCurrency(BigDecimal amount, Invoice invoice)
+      throws AxelorException {
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        invoice.getCurrency(),
+        invoice.getCompany().getCurrency(),
+        amount,
+        invoice.getInvoiceDate());
   }
 
   @Override
@@ -90,8 +105,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     if (invoice.getInvoicePaymentList() == null) {
       return amountPaid;
     }
-
-    CurrencyService currencyService = Beans.get(CurrencyService.class);
 
     Currency invoiceCurrency = invoice.getCurrency();
 

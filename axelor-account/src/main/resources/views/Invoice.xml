@@ -910,10 +910,17 @@ InvoiceSet.length > 0))"
 		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
-					<dt x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
+      </field>
+      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3">
+        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
+		         <dl class="dl-horizontal">
+				   <dt class="order-subtotal-total" x-translate>Amount due</dt>
+		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
+		         </dl>]]>
+        </viewer>
       </field>
     </panel>
 
