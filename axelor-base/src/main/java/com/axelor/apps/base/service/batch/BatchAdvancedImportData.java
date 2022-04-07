@@ -44,22 +44,12 @@ public class BatchAdvancedImportData extends AbstractImportBatch {
     ImportBatch importBatch = batch.getImportBatch();
 
     // In this case it is just using import service on importConfig
-    if (!importBatch.getImportFromConnector()) {
-      try {
-        importData(importBatch.getAdvancedImport());
-        incrementDone();
-      } catch (Exception e) {
-        TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
-        incrementAnomaly();
-      }
-    } else {
-      try {
-        List<MetaFile> files = downloadFiles(importBatch.getFileSourceConnectorParameters());
-        importFiles(files);
-      } catch (Exception e) {
-        TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
-        incrementAnomaly();
-      }
+    try {
+      importData(importBatch.getAdvancedImport());
+      incrementDone();
+    } catch (Exception e) {
+      TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
+      incrementAnomaly();
     }
   }
 

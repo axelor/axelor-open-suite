@@ -26,14 +26,13 @@
         <panel name="importConfigPanel" colSpan="12" showIf="actionSelect == 0">
           <field name="importConfig" form-view="import-configuration-form"
             grid-view="import-configuration-grid" requiredIf="actionSelect == 0"/>
-
+          <field name="importFromConnector"/>
+          <field name="dataFileName" hidden="true" showIf="importFromConnector"/>
         </panel>
         <panel name="advanceImportPanel" showIf="actionSelect == 1" colSpan="12">
           <field name="advancedImport" form-view="advanced-import-form"
             grid-view="advanced-import-grid" requiredIf="actionSelect == 1"/>
-          <field name="dataFileName"/>
         </panel>
-        <field name="importFromConnector"/>
         <field name="fileSourceConnectorParameters"
           form-view="file-source-connector-parameters-form"
           grid-view="file-source-connector-parameters-grid" requiredIf="importFromConnector"

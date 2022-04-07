@@ -25,7 +25,8 @@
       title="File source connector parameters"
       ref="com.axelor.apps.base.db.FileSourceConnectorParameters"/>
     <string name="dataFileName" title="Data file name"
-      help="This field is used to enter the name of the data file used in the XML binding file. This will be used to rename the data files imported from the FTP server."/>
+      help="This field is used to enter the name of the data file used in the XML binding file.
+       This will be used to temporaly rename all the data files imported from the FTP server in order to use them with a binding file."/>
 
 
     <extra-code><![CDATA[
