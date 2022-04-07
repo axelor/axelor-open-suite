@@ -63,7 +63,7 @@ public class BankOrderController {
     response.setReload(true);
   }
 
-  public void sign(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void sign(ActionRequest request, ActionResponse response) {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
@@ -99,26 +99,28 @@ public class BankOrderController {
 
       if (ebicsUser == null) {
         response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
-      } else {
-        if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
-            == EbicsPartnerRepository.EBICS_TYPE_TS) {
-          bankOrderService.validate(bankOrder);
-        } else {
-          if (context.get("password") == null) {
-            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
-          }
-          if (context.get("password") != null) {
-            String password = (String) context.get("password");
-            if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
-              response.setValue("password", "");
-              response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
-            } else {
-              bankOrderService.validate(bankOrder);
-            }
-          }
-          response.setReload(true);
-        }
+        return;
       }
+
+      if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
+          == EbicsPartnerRepository.EBICS_TYPE_TS) {
+        bankOrderService.validate(bankOrder);
+      } else {
+        if (context.get("password") == null) {
+          response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+        }
+        if (context.get("password") != null) {
+          String password = (String) context.get("password");
+          if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
+            response.setValue("password", "");
+            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+          } else {
+            bankOrderService.validate(bankOrder);
+          }
+        }
+        response.setReload(true);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -156,7 +158,7 @@ public class BankOrderController {
             .generate()
             .getFileLink();
 
-    log.debug("Printing " + name);
+    log.debug("Printing {}", name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
