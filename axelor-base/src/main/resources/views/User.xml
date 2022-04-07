@@ -31,11 +31,10 @@
           readonly="true"/>
         <panel name="buttonPanel" colSpan="12">
           <button name="previousBtn" icon="fa-caret-left"
-            onClick="validate,action-user-record-step-status-previous"
-            readonlyIf="stepStatusSelect &lt; 1" colSpan="1"/>
+            onClick="action-user-group-previous-button" readonlyIf="stepStatusSelect &lt; 1"
+            colSpan="1"/>
           <button name="nextBtn" icon="fa-caret-right"
-            onClick="validate,action-user-record-step-status-next"
-            readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
+            onClick="action-user-group-next-button" readonlyIf="stepStatusSelect &gt; 3" colSpan="1"/>
           <button name="validateBtn" title="Validate"
             onClick="action-user-record-step-status-next,save" showIf="stepStatusSelect == 4"/>
         </panel>
@@ -521,6 +520,18 @@
       :userId)</domain>
     <context name="userId" expr="eval: id"/>
   </action-view>
+
+  <action-group name="action-user-group-previous-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-previous"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-user-group-next-button">
+    <action name="validate"/>
+    <action name="action-user-record-step-status-next"/>
+    <action name="save"/>
+  </action-group>
 
   <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
     <attribute name="hidden"

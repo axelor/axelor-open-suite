@@ -115,20 +115,27 @@ public class AnalyticDistributionTemplateServiceImpl
 
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
-    Company company = account.getCompany();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    AnalyticDistributionTemplate analyticDistributionTemplate = new AnalyticDistributionTemplate();
-    analyticDistributionTemplate.setName(account.getName());
-    analyticDistributionTemplate.setCompany(account.getCompany());
-    analyticDistributionTemplate.setArchived(true);
-    analyticDistributionTemplate.setAnalyticDistributionLineList(
-        new ArrayList<AnalyticDistributionLine>());
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfig.getAnalyticAxisByCompanyList()) {
-      analyticDistributionTemplate.addAnalyticDistributionLineListItem(
-          analyticDistributionLineService.createAnalyticDistributionLine(
-              analyticAxisByCompany.getAnalyticAxis(), null, null, BigDecimal.valueOf(100)));
+    if (account.getCompany() != null && account.getName() != null) {
+      Company company = account.getCompany();
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          new AnalyticDistributionTemplate();
+      analyticDistributionTemplate.setName(account.getName());
+      analyticDistributionTemplate.setCompany(account.getCompany());
+      analyticDistributionTemplate.setArchived(true);
+      analyticDistributionTemplate.setAnalyticDistributionLineList(
+          new ArrayList<AnalyticDistributionLine>());
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfig.getAnalyticAxisByCompanyList()) {
+        analyticDistributionTemplate.addAnalyticDistributionLineListItem(
+            analyticDistributionLineService.createAnalyticDistributionLine(
+                analyticAxisByCompany.getAnalyticAxis(),
+                null,
+                accountConfig.getAnalyticJournal(),
+                BigDecimal.valueOf(100)));
+      }
+      return analyticDistributionTemplate;
     }
-    return analyticDistributionTemplate;
+    return null;
   }
 }

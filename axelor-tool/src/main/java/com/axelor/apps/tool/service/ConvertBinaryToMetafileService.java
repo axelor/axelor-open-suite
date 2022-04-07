@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -15,20 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.tool.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.db.Query;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 
-public interface PricingService {
-
-  public Query<Pricing> getPricing(
-      Product product,
-      ProductCategory productCategory,
-      Company company,
-      String modelName,
-      Pricing parentPricing);
+public interface ConvertBinaryToMetafileService {
+  public MetaFile convertByteTabPictureInMetafile(byte[] bytePicture) throws IOException;
 }
