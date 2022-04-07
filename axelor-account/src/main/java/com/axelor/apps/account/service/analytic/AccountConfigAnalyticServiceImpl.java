@@ -10,6 +10,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticService {
@@ -52,7 +53,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
   }
 
   public List<AnalyticAxis> getUsedAnalyticAxis(List<AnalyticAxisByCompany> initialList) {
-    List<AnalyticAxis> analyticAxisList = new ArrayList<AnalyticAxis>();
+    List<AnalyticAxis> analyticAxisList = new ArrayList<>();
     for (AnalyticAxisByCompany analyticAxisByCompany : initialList) {
       if (analyticAxisByCompany.getAnalyticAxis() != null
           && analyticMoveLineRepository
@@ -67,8 +68,8 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
 
   public AnalyticAxis axisChangedInConfig(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
-    List<AnalyticAxis> analyticAxisList = new ArrayList<AnalyticAxis>();
-    initialList.forEach((axis) -> analyticAxisList.add(axis.getAnalyticAxis()));
+    List<AnalyticAxis> analyticAxisList =
+        initialList.stream().map(aa -> aa.getAnalyticAxis()).collect(Collectors.toList());
     boolean isIn = false;
     for (AnalyticAxis analyticAxis : analyticAxisList) {
       isIn = false;

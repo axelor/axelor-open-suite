@@ -503,7 +503,7 @@ public class AccountModule extends AxelorModule {
     bind(AccountConfigAnalyticService.class).to(AccountConfigAnalyticServiceImpl.class);
 
     bind(SequenceBaseRepository.class).to(SequenceAccountManagementRepository.class);
-    
+
     bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
 
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
