@@ -11,9 +11,9 @@ import com.axelor.event.Observes;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import javax.inject.Named;
 
 public class BankOrderHRObserver {
 
