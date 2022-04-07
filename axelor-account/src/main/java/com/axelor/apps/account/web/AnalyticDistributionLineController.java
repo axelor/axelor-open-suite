@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -32,7 +30,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -67,12 +64,18 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (moveLine != null)
+      if (moveLine != null
+          && moveLine.getAccount() != null
+          && moveLine.getAccount().getCompany() != null
+          && Beans.get(AccountConfigService.class)
+                  .getAccountConfig(moveLine.getAccount().getCompany())
+              != null) {
         response.setValue(
             "analyticJournal",
             Beans.get(AccountConfigService.class)
                 .getAccountConfig(moveLine.getAccount().getCompany())
                 .getAnalyticJournal());
+      }
       if (moveLine.getDate() != null) {
         response.setValue("date", moveLine.getDate());
       } else {
@@ -95,29 +98,6 @@ public class AnalyticDistributionLineController {
             "amount",
             Beans.get(MoveLineComputeAnalyticService.class)
                 .getAnalyticAmount(moveLine, analyticMoveLine));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setAccountDomain(ActionRequest request, ActionResponse response) {
-    try {
-      AnalyticDistributionLine analyticDistributionLine =
-          request.getContext().asType(AnalyticDistributionLine.class);
-      Context parentContext = request.getContext().getParentContext();
-      if (AnalyticDistributionTemplate.class
-          .toString()
-          .equals(parentContext.getContextClass().toString())) {
-        Company company = parentContext.asType(AnalyticDistributionTemplate.class).getCompany();
-        if (company != null) {
-          response.setAttr(
-              "analyticAccount",
-              "domain",
-              "((:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR :analyticAxis IS NULL) AND ((:company IS NOT NULL AND self.company.id = "
-                  + company.getId()
-                  + ") OR :company IS NULL)");
-        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
