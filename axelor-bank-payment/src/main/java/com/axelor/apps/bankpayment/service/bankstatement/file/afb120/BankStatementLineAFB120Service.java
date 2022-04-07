@@ -29,15 +29,15 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineServic
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
-import javax.persistence.Query;
+import java.util.function.Predicate;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
   protected BankPaymentBankStatementLineAFB120Repository
@@ -186,21 +186,20 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
 
   public BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(
       BankDetails bankDetails) {
-    String queryStr =
-        "SELECT line.id FROM BANKPAYMENT_BANK_STATEMENT_LINE line "
-            + "WHERE line.BANK_DETAILS = "
-            + bankDetails.getId()
-            + " AND line.LINE_TYPE_SELECT = "
-            + BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE
-            + " AND line.OPERATION_DATE IN "
-            + "(SELECT MAX(l.OPERATION_DATE) "
-            + "      FROM BANKPAYMENT_BANK_STATEMENT_LINE l WHERE l.BANK_DETAILS = "
-            + bankDetails.getId()
-            + ")";
-    System.err.println(queryStr);
-    Query query = JPA.em().createNativeQuery(queryStr);
-    System.err.println(query);
-    System.err.println(query.getSingleResult());
-    return query != null ? (BankStatementLineAFB120) query.getSingleResult() : null;
+    Predicate<BankStatementLineAFB120> predicate =
+        l ->
+            l.getBankDetails().getId() == bankDetails.getId()
+                && l.getLineTypeSelect()
+                    == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
+    Long id =
+        bankPaymentBankStatementLineAFB120Repository
+            .all()
+            .fetchStream()
+            .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
+            .filter(predicate)
+            .findFirst()
+            .get()
+            .getId();
+    return id != null ? bankPaymentBankStatementLineAFB120Repository.find(id) : null;
   }
 }
