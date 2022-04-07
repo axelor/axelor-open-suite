@@ -410,13 +410,14 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
       List<Long> analyticAccountList;
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
-          Beans.get(MoveLineComputeAnalyticService.class);
+      AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
 
       for (int i = 1; i <= 5; i++) {
 
-        if (moveLineComputeAnalyticService.compareNbrOfAnalyticAxisSelect(i, move)) {
-          analyticAccountList = moveLineComputeAnalyticService.setAxisDomains(moveLine, move, i);
+        if (move != null
+            && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
+          analyticAccountList = analyticLineService.getAxisDomains(moveLine, move.getCompany(), i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(
                 "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
