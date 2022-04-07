@@ -330,6 +330,7 @@ public class BankStatementService {
     // delete imported
     if (deleteLines) {
       deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
+      updateBankDetailsBalanceAndDate(bankDetails);
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
