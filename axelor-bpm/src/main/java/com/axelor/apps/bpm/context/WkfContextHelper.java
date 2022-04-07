@@ -100,6 +100,12 @@ public class WkfContextHelper {
 
   public static ObjectValue createVariable(Object variable) {
 
+    if (variable instanceof byte[]) {
+      return Variables.objectValue(variable, true)
+          .serializationDataFormat(SerializationDataFormats.JAVA)
+          .create();
+    }
+
     return Variables.objectValue(variable, true)
         .serializationDataFormat(SerializationDataFormats.JSON)
         .create();

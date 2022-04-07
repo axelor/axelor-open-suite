@@ -17,6 +17,7 @@
       width="150"/>
     <field name="analyticAccount" form-view="analytic-account-form"
       grid-view="analytic-account-grid"/>
+    <field name="analyticAccount.parent"/>
     <field name="accountType"/>
     <field name="date" width="120"/>
     <field name="originalPieceAmount" aggregate="sum"/>
@@ -213,7 +214,7 @@
   <action-condition
     name="action-analytic-move-line-condition-valid-analytic-move-line-list">
     <check
-      error="Invalid Analytic moveLines, some axes percentage values are different than 100%."
+      error="Invalid analytic move lines, some axes percentage values are different than 100%."
       field="analyticMoveLineList" if="!isValidAnalyticMoveLineList"/>
   </action-condition>
 

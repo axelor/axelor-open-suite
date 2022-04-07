@@ -247,11 +247,18 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   @Override
   @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
+    return this.createInvoicePayment(invoice, companyBankDetails, null);
+  }
+
+  @Override
+  @Transactional
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
             invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-            appBaseService.getTodayDate(invoice.getCompany()),
+            paymentDate == null ? appBaseService.getTodayDate(invoice.getCompany()) : paymentDate,
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);

@@ -769,7 +769,7 @@
         target="com.axelor.apps.stock.db.StockLocation" required="true"/>
       <field name="productSet" title="Products" type="many-to-many"
         target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"
-        domain="self.dtype = 'Product'"/>
+        domain="self.dtype = 'Product' AND self.stockManaged = 'true'"/>
     </panel>
   </form>
 
@@ -1019,7 +1019,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="statusSelect" expr="eval: 1"/>
     <field name="estimatedDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>

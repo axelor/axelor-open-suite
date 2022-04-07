@@ -45,7 +45,7 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
@@ -275,6 +275,8 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
+  static final String MOVE_LINE_8 = /*$$(*/
+      "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
 
   static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
@@ -299,6 +301,8 @@ public interface IExceptionMessage {
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
   static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
+  static final String MOVE_13 = /*$$(*/
+      "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
@@ -966,7 +970,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -974,6 +978,18 @@ public interface IExceptionMessage {
 
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_3 = /*$$(*/
+      "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
+      "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_6 = /*$$(*/
+      "%s : Error : You must configure a result loss account and a year opening account in the account configuration" /*)*/;
 
   static final String BATCH_DOES_NOT_EXIST = /*$$(*/ "The batch does not exist." /*)*/;
 
@@ -1046,6 +1062,9 @@ public interface IExceptionMessage {
   static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
+  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
+      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
@@ -1057,29 +1076,41 @@ public interface IExceptionMessage {
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing partner." /*)*/;
+      "Tax lines can't be computed due to missing partner." /*)*/;
 
   static final String ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
 
   static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
 
   static final String COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
 
   static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
-      "Tax move lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
+      "At least one tax accounting move line associated to this move is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
 
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 
   static final String NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
       "Error in the analytic distribution template. Please for each line give a value to analytic axis, analytic account and analytic journal." /*)*/;
+
+  static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
+      "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
 }

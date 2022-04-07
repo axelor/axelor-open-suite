@@ -164,7 +164,14 @@
         <field name="tax" form-view="tax-form" grid-view="tax-grid"
           requiredIf="typeSelect == 2"/>
       </panel>
-
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        showIf="typeSelect == 2">
+        <field name="financialDiscountAccount"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          canEdit="false"/>
+      </panel>
     </panel>
   </form>
 
@@ -174,7 +181,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-attrs name="action-account-management-attrs-hide-sale">

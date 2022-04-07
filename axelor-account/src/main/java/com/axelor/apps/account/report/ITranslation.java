@@ -351,6 +351,60 @@ public interface ITranslation {
       "AccountingReportType15.taxRate"; /*)*/
   public static final String ACCOUNTING_REPORT_15_FISCAL_POSITION_CODE = /*$$(*/
       "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.paymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PARTNER = /*$$(*/
+      "AccountingReportType15.partner"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ORIGIN = /*$$(*/
+      "AccountingReportType15.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_RECONCILED_AMOUNT = /*$$(*/
+      "AccountingReportType15.reconciledAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_AMOUNT_TO_RECONCILE = /*$$(*/
+      "AccountingReportType15.amountToReconcile"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
+      "AccountingReportType15.advancePaymentNotLettered"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_12_TITLE = /*$$(*/
+      "AccountingReportType12.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_COMPANY = /*$$(*/
+      "AccountingReportType12.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_FROM = /*$$(*/
+      "AccountingReportType12.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TO = /*$$(*/ "AccountingReportType12.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_YEAR = /*$$(*/
+      "AccountingReportType12.year"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_CURRENCY = /*$$(*/
+      "AccountingReportType12.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TAX_CODE = /*$$(*/
+      "AccountingReportType12.taxCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_NAME = /*$$(*/
+      "AccountingReportType12.name"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_MOVE_LINE = /*$$(*/
+      "AccountingReportType12.moveLine"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_DATE = /*$$(*/
+      "AccountingReportType12.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_ACCOUNT_NAME = /*$$(*/
+      "AccountingReportType12.accountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_BASE = /*$$(*/
+      "AccountingReportType12.base"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_PAYABLE_VAT = /*$$(*/
+      "AccountingReportType12.payableVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_DEDUCTIBLE_VAT = /*$$(*/
+      "AccountingReportType12.deductibleVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_REPORT_DATE_EDITION = /*$$(*/
+      "AccountingReportType12.reportDateEdition"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TOTAL = /*$$(*/
+      "AccountingReportType12.total"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_BALANCE = /*$$(*/
+      "AccountingReportType12.balance"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_AMOUNT = /*$$(*/
+      "AccountingReportType12.amount"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_TAX_RATE = /*$$(*/
+      "AccountingReportType12.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_FISCAL_POSITION_CODE = /*$$(*/
+      "AccountingReportType15.fiscalPositionCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_12_VAT_ON_DEBIT = /*$$(*/
+      "AccountingReportType15.vatOnDebit"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/

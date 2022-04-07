@@ -171,4 +171,9 @@
     <option value="2">Consider only late sales</option>
   </selection>
 
+  <selection id="supplychain.account.closure.assistant.line.action.select"
+    name="account.closure.assistant.line.action.select">
+    <option value="1">Cut off generation</option>
+  </selection>
+
 </object-views>

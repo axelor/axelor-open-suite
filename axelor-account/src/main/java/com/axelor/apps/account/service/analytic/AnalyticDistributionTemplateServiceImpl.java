@@ -77,22 +77,25 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  public boolean validateTemplatePercentages(
-      AnalyticDistributionTemplate analyticDistributionTemplate) {
+  public void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     List<AnalyticDistributionLine> analyticDistributionLineList =
         analyticDistributionTemplate.getAnalyticDistributionLineList();
-    List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
-    BigDecimal sum;
-    for (AnalyticAxis analyticAxis : axisList) {
-      sum = BigDecimal.ZERO;
-      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
-      }
-      if (sum.intValue() != 100) {
-        return false;
+    if (!CollectionUtils.isEmpty(analyticDistributionLineList)) {
+      List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
+      BigDecimal sum;
+      for (AnalyticAxis analyticAxis : axisList) {
+        sum = BigDecimal.ZERO;
+        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+          sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
+        }
+        if (sum.compareTo(new BigDecimal(100)) != 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+        }
       }
     }
-    return true;
   }
 
   @Override
@@ -125,9 +128,10 @@ public class AnalyticDistributionTemplateServiceImpl
   @Override
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
-    if (analyticDistributionTemplate.getCompany() != null) {
-      List<AnalyticDistributionLine> analyticDistributionLineList =
-          analyticDistributionTemplate.getAnalyticDistributionLineList();
+    List<AnalyticDistributionLine> analyticDistributionLineList =
+        analyticDistributionTemplate.getAnalyticDistributionLineList();
+    if (analyticDistributionTemplate.getCompany() != null
+        && !CollectionUtils.isEmpty(analyticDistributionLineList)) {
       boolean checkAxis = false;
       boolean checkJournal = false;
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
@@ -169,29 +173,29 @@ public class AnalyticDistributionTemplateServiceImpl
   @Transactional
   public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException {
-    Company company = account.getCompany();
-    if (company == null) {
-      return null;
+    if (account.getCompany() != null && account.getName() != null) {
+      Company company = account.getCompany();
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          new AnalyticDistributionTemplate();
+      analyticDistributionTemplate.setName(account.getName());
+      analyticDistributionTemplate.setCompany(account.getCompany());
+      analyticDistributionTemplate.setIsSpecific(true);
+      analyticDistributionTemplate.setAnalyticDistributionLineList(
+          new ArrayList<AnalyticDistributionLine>());
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfig.getAnalyticAxisByCompanyList()) {
+        analyticDistributionTemplate.addAnalyticDistributionLineListItem(
+            analyticDistributionLineService.createAnalyticDistributionLine(
+                analyticAxisByCompany.getAnalyticAxis(),
+                null,
+                accountConfig.getAnalyticJournal(),
+                BigDecimal.valueOf(100)));
+      }
+      analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
+      return analyticDistributionTemplate;
     }
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    AnalyticJournal analyticJournal = accountConfig.getAnalyticJournal();
-    AnalyticDistributionTemplate analyticDistributionTemplate = new AnalyticDistributionTemplate();
-    analyticDistributionTemplate.setName(account.getName());
-    analyticDistributionTemplate.setCompany(company);
-    analyticDistributionTemplate.setIsSpecific(true);
-    analyticDistributionTemplate.setAnalyticDistributionLineList(
-        new ArrayList<AnalyticDistributionLine>());
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfig.getAnalyticAxisByCompanyList()) {
-      analyticDistributionTemplate.addAnalyticDistributionLineListItem(
-          analyticDistributionLineService.createAnalyticDistributionLine(
-              analyticAxisByCompany.getAnalyticAxis(),
-              null,
-              analyticJournal,
-              BigDecimal.valueOf(100)));
-    }
-    analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
-    return analyticDistributionTemplate;
+    return null;
   }
 
   @Override
