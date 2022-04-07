@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -53,18 +54,21 @@ public class BankStatementService {
       bankPaymentBankStatementLineAFB120Repository;
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankStatementLineAFB120Service bankStatementLineAFB120Service;
+  protected BankDetailsRepository bankDetailsRepository;
 
   @Inject
   public BankStatementService(
       BankStatementRepository bankStatementRepository,
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineRepository bankStatementLineRepository,
-      BankStatementLineAFB120Service bankStatementLineAFB120Service) {
+      BankStatementLineAFB120Service bankStatementLineAFB120Service,
+      BankDetailsRepository bankDetailsRepository) {
     this.bankStatementRepository = bankStatementRepository;
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementLineAFB120Service = bankStatementLineAFB120Service;
+    this.bankDetailsRepository = bankDetailsRepository;
   }
 
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
@@ -385,6 +389,7 @@ public class BankStatementService {
         bankDetail.setBalance(BigDecimal.ZERO);
         bankDetail.setBalanceUpdatedDate(null);
       }
+      bankDetailsRepository.save(bankDetail);
     }
   }
 }
