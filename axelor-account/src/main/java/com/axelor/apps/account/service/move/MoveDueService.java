@@ -29,6 +29,8 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,18 +46,14 @@ public class MoveDueService {
     this.moveLineRepository = moveLineRepository;
   }
 
-  public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
+  public List<MoveLine> getOrignalInvoiceFromRefund(Invoice invoice) {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
     if (originalInvoice != null && originalInvoice.getMove() != null) {
-      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
-        if (moveLine.getAccount().getUseForPartnerBalance()
-            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-          return moveLine;
-        }
-      }
+      return originalInvoice.getMove().getMoveLineList().stream().filter(it -> it.getAccount().getUseForPartnerBalance()
+              && it.getDebit().compareTo(BigDecimal.ZERO) > 0
+              && it.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0).collect(Collectors.toList());
     }
 
     return null;
@@ -66,14 +64,8 @@ public class MoveDueService {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();
 
-    List<MoveLine> debitMoveLines = Lists.newArrayList();
-
     // Ajout de la facture d'origine
-    MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
-
-    if (originalInvoice != null) {
-      debitMoveLines.add(originalInvoice);
-    }
+    List<MoveLine> debitMoveLines = Lists.newArrayList(this.getOrignalInvoiceFromRefund(invoice));
 
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
     List<? extends MoveLine> othersDebitMoveLines = null;

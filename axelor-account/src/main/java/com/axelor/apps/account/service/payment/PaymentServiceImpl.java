@@ -248,7 +248,7 @@ public class PaymentServiceImpl implements PaymentService {
       BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
 
       // Afin de pouvoir arrêter si il n'y a plus rien pour payer
-      if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0) {
+      if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0 || amountRemaining.signum() == 0) {
         break;
       }
       BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
@@ -285,14 +285,8 @@ public class PaymentServiceImpl implements PaymentService {
       Reconcile reconcile = null;
 
       // Gestion du passage en 580
-      if (i == 0) {
-        log.debug("last loop");
-        reconcile =
-            reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true);
-      } else {
-        reconcile =
-            reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
-      }
+      reconcile =
+          reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, i == 0);
       // End gestion du passage en 580
 
       if (reconcile != null) {
