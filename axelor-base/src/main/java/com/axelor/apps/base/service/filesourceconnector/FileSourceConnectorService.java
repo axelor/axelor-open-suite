@@ -27,12 +27,37 @@ public interface FileSourceConnectorService {
   FileTransfertSession createSession(FileSourceConnector fileSourceConnector)
       throws AxelorException;
 
+  /**
+   * Upload files using the fileTransfertSession and parameter. This method will automatically
+   * connect and disconnect the session for the operation.
+   *
+   * <p>So if you want to do multiple operations it might be better to directly use the methods of
+   * fileTransfertSession to manage the connection and disconnection manually.
+   *
+   * @param fileTransfertSession
+   * @param parameter
+   * @param files
+   * @throws AxelorException
+   */
   void upload(
       FileTransfertSession fileTransfertSession,
       FileSourceConnectorParameters parameter,
       List<MetaFile> files)
       throws AxelorException;
 
+  /**
+   * Download files using the fileTransfertSession and parameter. This method will automatically
+   * connect and disconnect the session for the operation.
+   *
+   * <p>So if you want to do multiple operations it might be better to directly use the methods of
+   * fileTransfertSession to manage the connection and disconnection manually.
+   *
+   * @param fileTransfertSession
+   * @param parameter
+   * @param files
+   * @return download files: List of {@link MetaFile}
+   * @throws AxelorException
+   */
   List<MetaFile> download(
       FileTransfertSession fileTransfertSession, FileSourceConnectorParameters parameter)
       throws AxelorException;
