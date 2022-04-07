@@ -1,5 +1,5 @@
 ---
-title: #48044: Improve irrecoverable process 
+title: Improve irrecoverable process 
 type: change
 description: |
   Improve views and rollback batch when anomaly
