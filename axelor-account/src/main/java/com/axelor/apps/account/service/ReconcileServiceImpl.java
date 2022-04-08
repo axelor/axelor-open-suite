@@ -435,6 +435,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           && move.getPaymentVoucher() != null
           && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
         return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+            .filter(it -> !it.getInvoiceTerm().getIsPaid())
             .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
             .map(PayVoucherElementToPay::getInvoiceTerm)
             .collect(Collectors.toList());
@@ -485,7 +486,11 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
     return invoice.getInvoicePaymentList().stream()
-        .filter(it -> it.getMove() != null && it.getMove().equals(move))
+        .filter(
+            it ->
+                it.getMove() != null
+                    && it.getMove().equals(move)
+                    && it.getReconcileList().isEmpty())
         .findFirst()
         .orElse(null);
   }
