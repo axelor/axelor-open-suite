@@ -443,23 +443,6 @@ public class DataBackupCreateService {
           for (Object dataObject : dataList) {
             dataArr = new ArrayList<>();
 
-            /*if (anonymizeData) {
-              for (Property property : pro) {
-                if (metaFieldsToAnonymize != null && dataObject != null) {
-                  for (MetaField metaField : metaFieldsToAnonymize) {
-                    if (property.getName().equals(metaField.getName())) {
-                      // metaModelMapper.set(dataObject, property.getName(), "anonymousService");
-                      metaModelMapper.set(
-                          dataObject,
-                          property.getName(),
-                          dataBackupAnonymizeService.anonymizeValue(
-                              property, dataObject, metaModelMapper));
-                    }
-                  }
-                }
-              }
-            }*/
-
             for (Property property : pro) {
 
               if (isPropertyExportable(property)) {
