@@ -1081,6 +1081,9 @@ public interface IExceptionMessage {
   static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
       "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;
 
+  static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
+
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing partner." /*)*/;
 
