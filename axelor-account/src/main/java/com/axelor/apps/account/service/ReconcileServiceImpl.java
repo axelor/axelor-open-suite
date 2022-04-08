@@ -406,7 +406,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
 
       if (invoiceTermList != null) {
-        if (this.checkAvailableTotalAmount(invoiceTermList, amount)) {
+        if ((otherMove == null
+                || (otherMove.getPaymentVoucher() == null && otherMove.getPaymentSession() == null))
+            && this.checkAvailableTotalAmount(invoiceTermList, amount)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
@@ -461,21 +463,15 @@ public class ReconcileServiceImpl implements ReconcileService {
             .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
             .map(PayVoucherElementToPay::getInvoiceTerm)
             .collect(Collectors.toList());
+      } else if (move != null && move.getPaymentSession() != null) {
+        return invoice.getInvoiceTermList().stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null
+                        && it.getPaymentSession().equals(move.getPaymentSession()))
+            .collect(Collectors.toList());
       } else {
-        List<InvoiceTerm> invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
-
-        if (move != null && move.getPaymentSession() != null) {
-          invoiceTermsToPay =
-              invoiceTermsToPay.stream()
-                  .filter(
-                      it ->
-                          it.getPaymentSession() != null
-                              && it.getPaymentSession().equals(move.getPaymentSession()))
-                  .collect(Collectors.toList());
-        }
-
-        return invoiceTermsToPay;
+        return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
       }
     } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
