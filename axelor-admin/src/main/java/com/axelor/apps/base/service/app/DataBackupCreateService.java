@@ -430,7 +430,6 @@ public class DataBackupCreateService {
           if (dataBackupConfigAnonymizeLine.getMetaModel().getId() == metaModel.getId()) {
             metaFieldsToAnonymize =
                 new ArrayList<>(dataBackupConfigAnonymizeLine.getMetaFieldSet());
-            LOG.debug("fields list size" + metaFieldsToAnonymize.size());
           }
         }
       }
@@ -444,7 +443,6 @@ public class DataBackupCreateService {
             dataArr = new ArrayList<>();
 
             for (Property property : pro) {
-
               if (isPropertyExportable(property)) {
                 if (headerFlag) {
                   String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);

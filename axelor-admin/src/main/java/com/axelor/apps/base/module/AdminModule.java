@@ -28,10 +28,10 @@ import com.axelor.apps.base.service.app.AccessConfigImportService;
 import com.axelor.apps.base.service.app.AccessConfigImportServiceImpl;
 import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AccessTemplateServiceImpl;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.base.service.app.AppServiceImpl;
 import com.axelor.apps.base.service.app.AnonymizeService;
 import com.axelor.apps.base.service.app.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.app.AppServiceImpl;
 import com.axelor.apps.base.service.app.DataBackupService;
 import com.axelor.apps.base.service.app.DataBackupServiceImpl;
 
