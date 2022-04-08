@@ -1126,6 +1126,15 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
 
+  static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
+
+  static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;
+
+  static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
+
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing partner." /*)*/;
 

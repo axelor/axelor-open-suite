@@ -64,12 +64,18 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (moveLine != null)
+      if (moveLine != null
+          && moveLine.getAccount() != null
+          && moveLine.getAccount().getCompany() != null
+          && Beans.get(AccountConfigService.class)
+                  .getAccountConfig(moveLine.getAccount().getCompany())
+              != null) {
         response.setValue(
             "analyticJournal",
             Beans.get(AccountConfigService.class)
                 .getAccountConfig(moveLine.getAccount().getCompany())
                 .getAnalyticJournal());
+      }
       if (moveLine.getDate() != null) {
         response.setValue("date", moveLine.getDate());
       } else {
