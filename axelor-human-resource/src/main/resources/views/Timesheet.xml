@@ -459,8 +459,8 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-product-visibility">
-    <attribute name="hidden" for="timesheetLineList.product" expr="eval: !$showActivity"/>
-    <attribute name="hidden" for="$product" expr="eval: !$showActivity"/>
+    <attribute name="hidden" for="timesheetLineList.product" expr="eval: !showActivity"/>
+    <attribute name="hidden" for="$product" expr="eval: !showActivity"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-set-visible-duration-title">

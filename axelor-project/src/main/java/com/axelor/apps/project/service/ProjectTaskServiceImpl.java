@@ -26,10 +26,12 @@ import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -204,7 +206,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Override
   public ProjectPriority getPriority(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
+    if (project == null) {
+      return null;
+    }
+
+    project = Beans.get(ProjectRepository.class).find(project.getId());
+
+    return ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
         ? null
         : project.getProjectTaskPrioritySet().stream()
             .filter(

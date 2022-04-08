@@ -282,7 +282,6 @@
 
   <action-group name="action-group-account-accounting-report-reporttype-onchange">
     <action name="action-accounting-report-record-reset"/>
-    <action name="action-accounting-report-method-get-journal-type"/>
     <action name="action-accounting-report-record-default-global"/>
     <action name="action-accounting-report-method-get-account"/>
     <action
@@ -509,11 +508,6 @@
   <action-method name="action-accounting-report-method-search-move-line">
     <call class="com.axelor.apps.account.web.AccountingReportController"
       method="searchMoveLine"/>
-  </action-method>
-
-  <action-method name="action-accounting-report-method-get-journal-type">
-    <call class="com.axelor.apps.account.web.AccountingReportController"
-      method="getJournalType"/>
   </action-method>
 
   <action-method name="action-accounting-report-method-set-bank-details-domain">

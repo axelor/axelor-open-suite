@@ -160,6 +160,7 @@
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 8" x-translate>Doubtful customer</span>
                       </h4>
                     ]]>
           </viewer>
@@ -262,6 +263,8 @@
         <field name="paymentVoucher" readonlyIf="$validatePeriod"
           domain="self.company = :company" canNew="false" form-view="payment-voucher-form"
           grid-view="payment-voucher-grid"/>
+        <field name="paymentSession" readonly="true" form-view="payment-session-form"
+          grid-view="payment-session-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
           onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
         <panel-dashlet name="relatedCutOffMovesPanel" title="Related cut off moves"
@@ -776,7 +779,7 @@
   <action-record name="action-record-initialize-permission-validation-move"
     model="com.axelor.apps.account.db.Move">
     <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__user__)"/>
+      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.period,__this__.journal,__user__)"/>
   </action-record>
 
   <action-record name="action-move-record-check-period-and-status"

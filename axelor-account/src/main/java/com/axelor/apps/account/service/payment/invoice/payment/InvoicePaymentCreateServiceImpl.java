@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -141,8 +142,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
+    PaymentSession paymentSession = paymentMove.getPaymentSession();
+
     if (paymentVoucher != null) {
       invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
+    } else if (paymentSession != null) {
+      invoicePayment.setCompanyBankDetails(paymentSession.getBankDetails());
     } else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
@@ -167,7 +172,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       } else {
         return InvoicePaymentRepository.TYPE_REFUND_INVOICE;
       }
-    } else if (move.getPaymentVoucher() != null) {
+    } else if (move.getPaymentVoucher() != null || move.getPaymentSession() != null) {
       return InvoicePaymentRepository.TYPE_PAYMENT;
     } else {
       return InvoicePaymentRepository.TYPE_OTHER;
@@ -264,16 +269,24 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
+    return this.createInvoicePayment(invoice, companyBankDetails, null);
+  }
+
+  @Override
+  @Transactional
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
+      throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
             invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-            appBaseService.getTodayDate(invoice.getCompany()),
+            paymentDate == null ? appBaseService.getTodayDate(invoice.getCompany()) : paymentDate,
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
+    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }
