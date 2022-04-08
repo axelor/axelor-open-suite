@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -184,13 +184,6 @@
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">pdf_header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">pdf_header</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">user_name</property>
                     <property name="alias">user_name</property>
                     <property name="analysis">dimension</property>
@@ -369,7 +362,7 @@
                     <structure>
                         <property name="position">13</property>
                         <property name="name">company_cb_select</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">14</property>
@@ -400,102 +393,119 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">payment_period_name</property>
                     <property name="nativeName">payment_period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">total_amount</property>
                     <property name="nativeName">total_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">validated_user_name</property>
                     <property name="nativeName">validated_user_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">validation_date</property>
                     <property name="nativeName">validation_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">advance_amount</property>
                     <property name="nativeName">advance_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">withdrawn_cash</property>
                     <property name="nativeName">withdrawn_cash</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">personal_expense_amount</property>
                     <property name="nativeName">personal_expense_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">company_cb_select</property>
                     <property name="nativeName">company_cb_select</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">multiple_users</property>
                     <property name="nativeName">multiple_users</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">sent_date</property>
                     <property name="nativeName">sent_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">payment_amount</property>
                     <property name="nativeName">payment_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Expense.id, 
@@ -510,7 +520,7 @@
 	Expense.advance_amount,
 	Expense.withdrawn_cash,
 	Expense.personal_expense_amount,
-	select_item.title  AS company_cb_select,
+	Expense.company_cb_select,
 	Expense.multiple_users,
 	Expense.sent_date,
 	Currency.code AS currency,
@@ -522,8 +532,6 @@ LEFT JOIN base_currency AS Currency ON Company.currency = Currency.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN base_period AS PaymentPeriod ON (Expense.period = PaymentPeriod.id)
 LEFT JOIN auth_user AS ValidatedUser ON (Expense.validated_by = ValidatedUser.id)
-LEFT JOIN meta_select AS selection ON selection.name = 'hr.expense.company.cb.payment'
-LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( Expense.company_cb_select AS text ) AND select_item.select_id = selection.id)
 WHERE Expense.id = ?
 
 
@@ -1204,7 +1212,7 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
                     <structure>
                         <property name="position">8</property>
                         <property name="name">kilometric_expense_type</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
@@ -1273,8 +1281,8 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
                     <property name="position">8</property>
                     <property name="name">kilometric_expense_type</property>
                     <property name="nativeName">kilometric_expense_type</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
@@ -1298,13 +1306,11 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
 	Currency.code as "currencyCode",
 	ExpenseLine.distance,
 	param.name AS kilometric_allow_param,
-	select_item.title  AS kilometric_expense_type,
+	ExpenseLine.kilometric_type_select  AS kilometric_expense_type,
 	Task.full_name AS project,
 	ExpenseLine.to_invoice
 FROM hr_expense_line AS ExpenseLine
 LEFT JOIN project_project as Task on (ExpenseLine.project = Task.id)
-LEFT JOIN meta_select AS selection ON selection.name = 'hr.kilometric.allowance.type.select'
-LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( ExpenseLine.kilometric_type_select AS text ) AND select_item.select_id = selection.id)
 LEFT JOIN hr_kilometric_allow_param AS param ON ExpenseLine.kilometric_allow_param = param.id
 LEFT JOIN hr_expense AS Expense ON (Expense.id = ExpenseLine.kilometric_expense)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
@@ -1576,6 +1582,188 @@ WHERE ExpenseLine.kilometric_expense = ?
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MetaSelectItemTranslateDS" id="5090">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT LangTranslate.message_key, LangTranslate.message_value AS "translation" 
+FROM meta_translation AS LangTranslate 
+WHERE LangTranslate.language = ? AND LangTranslate.message_key = (
+SELECT msi.title
+FROM meta_select_item AS msi
+JOIN meta_select AS ms ON msi.select_id = ms.id
+WHERE ms.name = ? AND msi.value = ?)]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>3</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>message_key</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>message_key</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>message_key</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>translation</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>translation</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>translation</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <styles>
         <style name="report" id="4">
@@ -1691,7 +1879,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <property name="name">company_cb_select</property>
                             <text-property name="displayName">company_cb_select</text-property>
                             <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
-                            <property name="dataType">string</property>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">multiple_users</property>
@@ -1813,7 +2001,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                         <property name="name">company_cb_select</property>
                                         <text-property name="displayName">company_cb_select</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
-                                        <property name="dataType">string</property>
+                                        <property name="dataType">integer</property>
                                     </structure>
                                     <structure>
                                         <property name="name">multiple_users</property>
@@ -2000,7 +2188,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="name">company_cb_select</property>
                     <text-property name="displayName">company_cb_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">multiple_users</property>
@@ -2268,10 +2456,16 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
                         <property name="display">inline</property>
-                        <property name="dataSet">TranslateDS</property>
+                        <property name="dataSet">MetaSelectItemTranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
-                                <property name="paramName">param_1</property>
+                                <property name="paramName">param_2</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'hr.expense.company.cb.payment'</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="paramName">param_3</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">row["company_cb_select"]</value>
                                 </simple-property-list>
@@ -2292,7 +2486,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["company_cb_select"] }</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null &amp;&amp; row["translation"] != ""){
+				row["translation"]
+			} else {
+				row["message_key"]
+			}
+</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4582">
@@ -3725,7 +3924,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="name">kilometric_expense_type</property>
                     <text-property name="displayName">kilometric_expense_type</text-property>
                     <expression name="expression" type="javascript">dataSetRow["kilometric_expense_type"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">Aggregation</property>
@@ -4405,10 +4604,16 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <property name="marginTop">1pt</property>
                             <property name="marginLeft">2pt</property>
                             <property name="textAlign">center</property>
-                            <property name="dataSet">TranslateDS</property>
+                            <property name="dataSet">MetaSelectItemTranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
-                                    <property name="paramName">param_1</property>
+                                    <property name="paramName">param_2</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'hr.kilometric.allowance.type.select'</value>
+                                    </simple-property-list>
+                                </structure>
+                                <structure>
+                                    <property name="paramName">param_3</property>
                                     <simple-property-list name="expression">
                                         <value type="javascript">row["kilometric_expense_type"]</value>
                                     </simple-property-list>
@@ -4429,7 +4634,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null &amp;&amp; row["translation"] != ""){ row["translation"]} else { row._outer["kilometric_expense_type"] }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null &amp;&amp; row["translation"] != ""){
+				row["translation"]
+			} else {
+				row["message_key"]
+			}
+</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4090">
@@ -4738,7 +4948,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="name">company_cb_select</property>
                     <text-property name="displayName">company_cb_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">multiple_users</property>
