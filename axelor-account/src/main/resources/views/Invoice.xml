@@ -1635,9 +1635,9 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-partner-onchange">
+    <action name="action-record-invoice-set-discount-values"/>
     <action name="action-group-account-invoice-partner-onchange"/>
     <action name="action-method-invoice-address-str"/>
-    <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
