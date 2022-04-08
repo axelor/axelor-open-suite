@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
@@ -36,6 +37,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -86,6 +88,7 @@ public class DataBackupCreateService {
 
   @Inject protected MetaModelRepository metaModelRepo;
   @Inject private MetaFiles metaFiles;
+  @Inject private AnonymizeService anonymizeService;
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -412,10 +415,25 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean anonymizeData = dataBackup.getAnonymizeData();
+      List<MetaField> metaFieldsToAnonymize = null;
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
+
+      if (anonymizeData) {
+        List<DataBackupConfigAnonymizeLine> dataBackupConfigAnonymizeLineList =
+            dataBackup.getDataBackupConfigAnonymizeLineList();
+        for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
+            dataBackupConfigAnonymizeLineList) {
+          if (dataBackupConfigAnonymizeLine.getMetaModel().getId() == metaModel.getId()) {
+            metaFieldsToAnonymize =
+                new ArrayList<>(dataBackupConfigAnonymizeLine.getMetaFieldSet());
+            LOG.debug("fields list size" + metaFieldsToAnonymize.size());
+          }
+        }
+      }
 
       for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
@@ -425,7 +443,25 @@ public class DataBackupCreateService {
           for (Object dataObject : dataList) {
             dataArr = new ArrayList<>();
 
+            /*if (anonymizeData) {
+              for (Property property : pro) {
+                if (metaFieldsToAnonymize != null && dataObject != null) {
+                  for (MetaField metaField : metaFieldsToAnonymize) {
+                    if (property.getName().equals(metaField.getName())) {
+                      // metaModelMapper.set(dataObject, property.getName(), "anonymousService");
+                      metaModelMapper.set(
+                          dataObject,
+                          property.getName(),
+                          dataBackupAnonymizeService.anonymizeValue(
+                              property, dataObject, metaModelMapper));
+                    }
+                  }
+                }
+              }
+            }*/
+
             for (Property property : pro) {
+
               if (isPropertyExportable(property)) {
                 if (headerFlag) {
                   String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
@@ -439,7 +475,9 @@ public class DataBackupCreateService {
                         dataObject,
                         dirPath,
                         isRelativeDate,
-                        updateImportId));
+                        updateImportId,
+                        anonymizeData,
+                        metaFieldsToAnonymize));
               }
             }
 
@@ -568,7 +606,9 @@ public class DataBackupCreateService {
       Object dataObject,
       String dirPath,
       boolean isRelativeDate,
-      boolean updateImportId) {
+      boolean updateImportId,
+      boolean anonymizeData,
+      List<MetaField> metaFieldsToAnonymize) {
 
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -576,6 +616,16 @@ public class DataBackupCreateService {
       return "";
     }
     String propertyTypeStr = property.getType().toString();
+
+    if (anonymizeData) {
+      if (metaFieldsToAnonymize != null) {
+        for (MetaField metaField : metaFieldsToAnonymize) {
+          if (property.getName().equals(metaField.getName())) {
+            return (String) anonymizeService.anonymizeValue(value, property);
+          }
+        }
+      }
+    }
 
     switch (propertyTypeStr) {
       case "LONG":

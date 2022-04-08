@@ -30,6 +30,8 @@ import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AccessTemplateServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.app.AnonymizeService;
+import com.axelor.apps.base.service.app.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.app.DataBackupService;
 import com.axelor.apps.base.service.app.DataBackupServiceImpl;
 
@@ -45,5 +47,6 @@ public class AdminModule extends AxelorModule {
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(ObjectDataConfigExportRepository.class)
         .to(ObjectDataConfigExportManagementRepository.class);
+    bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
   }
 }
