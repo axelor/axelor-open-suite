@@ -602,7 +602,7 @@ public class DataBackupCreateService {
       if (metaFieldsToAnonymize != null) {
         for (MetaField metaField : metaFieldsToAnonymize) {
           if (property.getName().equals(metaField.getName())) {
-            return (String) anonymizeService.anonymizeValue(value, property);
+            return anonymizeService.anonymizeValue(value, property).toString();
           }
         }
       }
