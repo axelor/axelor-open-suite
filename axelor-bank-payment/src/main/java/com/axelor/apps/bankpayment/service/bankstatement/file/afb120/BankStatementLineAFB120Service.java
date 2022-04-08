@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
@@ -191,15 +192,15 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
             l.getBankDetails().getId() == bankDetails.getId()
                 && l.getLineTypeSelect()
                     == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
-    Long id =
+    Optional<BankStatementLineAFB120> id =
         bankPaymentBankStatementLineAFB120Repository
             .all()
             .fetchStream()
             .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
             .filter(predicate)
-            .findFirst()
-            .get()
-            .getId();
-    return id != null ? bankPaymentBankStatementLineAFB120Repository.find(id) : null;
+            .findFirst();
+    return id.isPresent()
+        ? bankPaymentBankStatementLineAFB120Repository.find(id.get().getId())
+        : null;
   }
 }
