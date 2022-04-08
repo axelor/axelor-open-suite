@@ -299,6 +299,11 @@
     <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
       ref="com.axelor.apps.account.db.Account"/>
 
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultProfitAccount"
+      title="Result account (profit)"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
+      title="Result account (loss)"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -440,6 +445,9 @@
       <field name="invoiceMessageTemplate" on="UPDATE"/>
 
       <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
+
+      <field name="resultProfitAccount" on="UPDATE"/>
+      <field name="resultLossAccount" on="UPDATE"/>
     </track>
 
   </entity>

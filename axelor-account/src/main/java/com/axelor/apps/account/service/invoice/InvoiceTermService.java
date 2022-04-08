@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -212,9 +214,29 @@ public interface InvoiceTermService {
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public void select(InvoiceTerm invoiceTerm) throws AxelorException;
+  InvoiceTerm createInvoiceTerm(
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      BigDecimal amount);
 
-  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException;
+  InvoiceTerm createInvoiceTerm(
+      Invoice invoice,
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      LocalDate estimatedPaymentDate,
+      BigDecimal amount,
+      BigDecimal percentage,
+      boolean isHoldBack);
+
+  public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
+
+  public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
   public void retrieveEligibleTerms(PaymentSession paymentSession);
 
@@ -235,5 +257,5 @@ public interface InvoiceTermService {
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm);
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 }

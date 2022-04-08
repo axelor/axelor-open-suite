@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -38,7 +39,7 @@
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
-    <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
+    <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"

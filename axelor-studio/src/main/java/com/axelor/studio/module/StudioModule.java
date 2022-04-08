@@ -42,6 +42,10 @@ import com.axelor.studio.service.loader.AppLoaderImportService;
 import com.axelor.studio.service.loader.AppLoaderImportServiceImpl;
 import com.axelor.studio.service.mapper.MapperScriptGeneratorService;
 import com.axelor.studio.service.mapper.MapperScriptGeneratorServiceImpl;
+import com.axelor.studio.service.ws.WsAuthenticatorService;
+import com.axelor.studio.service.ws.WsAuthenticatorServiceImpl;
+import com.axelor.studio.service.ws.WsConnectoServiceImpl;
+import com.axelor.studio.service.ws.WsConnectorService;
 
 public class StudioModule extends AxelorModule {
 
@@ -59,5 +63,7 @@ public class StudioModule extends AxelorModule {
     bind(AppLoaderImportService.class).to(AppLoaderImportServiceImpl.class);
     bind(AppLoaderExportService.class).to(AppLoaderExportServiceImpl.class);
     bind(ChartRecordViewService.class).to(ChartRecordViewServiceImpl.class);
+    bind(WsConnectorService.class).to(WsConnectoServiceImpl.class);
+    bind(WsAuthenticatorService.class).to(WsAuthenticatorServiceImpl.class);
   }
 }

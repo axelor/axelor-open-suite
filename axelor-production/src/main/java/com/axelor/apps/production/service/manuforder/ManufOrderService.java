@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
@@ -37,24 +38,14 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
-  public static int ORIGIN_TYPE_MRP = 1;
-  public static int ORIGIN_TYPE_SALE_ORDER = 2;
-  public static int ORIGIN_TYPE_OTHER = 3;
+  public interface ManufOrderOriginType {}
 
-  /**
-   * @param product
-   * @param qtyRequested
-   * @param priority
-   * @param isToInvoice
-   * @param billOfMaterial
-   * @param plannedStartDateT
-   * @param originType
-   *     <li>1 : MRP
-   *     <li>2 : Sale order
-   *     <li>3 : Other
-   * @return
-   * @throws AxelorException
-   */
+  public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
+    ORIGIN_TYPE_MRP,
+    ORIGIN_TYPE_SALE_ORDER,
+    ORIGIN_TYPE_OTHER;
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
@@ -64,7 +55,7 @@ public interface ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
@@ -244,6 +235,9 @@ public interface ManufOrderService {
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
+      throws AxelorException;
+
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException;
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
