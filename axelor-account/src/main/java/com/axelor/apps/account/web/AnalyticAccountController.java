@@ -37,18 +37,10 @@ public class AnalyticAccountController {
       if (analyticAccount != null
           && analyticAccount.getAnalyticAxis() != null
           && analyticAccount.getAnalyticLevel() != null) {
-        Integer level = analyticAccount.getAnalyticLevel().getNbr() + 1;
-        String domain =
-            "self.analyticLevel.nbr = "
-                + level
-                + " AND self.analyticAxis.id = "
-                + analyticAccount.getAnalyticAxis().getId();
-        if (analyticAccount.getCompany() != null) {
-          domain = domain.concat(" AND self.company.id = " + analyticAccount.getCompany().getId());
-        } else {
-          domain = domain.concat(" AND self.company IS NULL");
-        }
-        response.setAttr("parent", "domain", domain);
+        response.setAttr(
+            "parent",
+            "domain",
+            Beans.get(AnalyticAccountService.class).getParentDomain(analyticAccount));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

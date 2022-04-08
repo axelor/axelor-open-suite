@@ -26,4 +26,6 @@ public interface AnalyticAccountService {
   void toggleStatusSelect(AnalyticAccount analyticAccount);
 
   boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList);
+
+  String getParentDomain(AnalyticAccount analyticAccount);
 }

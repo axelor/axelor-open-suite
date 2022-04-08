@@ -63,4 +63,25 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
         && childrenList.stream()
             .anyMatch(it -> it.getCompany() != null && !it.getCompany().equals(company));
   }
+
+  @Override
+  public String getParentDomain(AnalyticAccount analyticAccount) {
+    if (analyticAccount != null
+        && analyticAccount.getAnalyticAxis() != null
+        && analyticAccount.getAnalyticLevel() != null) {
+      Integer level = analyticAccount.getAnalyticLevel().getNbr() + 1;
+      String domain =
+          "self.analyticLevel.nbr = "
+              + level
+              + " AND self.analyticAxis.id = "
+              + analyticAccount.getAnalyticAxis().getId();
+      if (analyticAccount.getCompany() != null) {
+        domain = domain.concat(" AND self.company.id = " + analyticAccount.getCompany().getId());
+      } else {
+        domain = domain.concat(" AND self.company IS NULL");
+      }
+      return domain;
+    }
+    return null;
+  }
 }

@@ -1,5 +1,5 @@
 ---
-title: "AnalyticAccount :  add of a company"
+title: "AnalyticAccount :  add of a company field"
 type: feature
 description: |
   Allow an analytic account to be linked to a company in order to be able either that an analytic account be shared or if not that can be assigned to a specific company. Obviously additionnal controls need to be added wherever the analytic account is used in order to take into account this specificity.
