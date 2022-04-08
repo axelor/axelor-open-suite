@@ -30,6 +30,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
@@ -37,9 +38,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -57,9 +60,7 @@ public class InvoiceTermController {
 
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
-        BigDecimal amount =
-            Beans.get(InvoiceTermService.class)
-                .getCustomizedAmount(request.getContext().getParent(), invoiceTerm);
+        BigDecimal amount = this.getCustomizedAmount(request.getContext().getParent(), invoiceTerm);
 
         if (amount.signum() > 0) {
           response.setValue("amount", amount);
@@ -78,8 +79,7 @@ public class InvoiceTermController {
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        BigDecimal total =
-            invoiceTermService.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
 
         if (total.compareTo(BigDecimal.ZERO) == 0) {
           return;
@@ -100,6 +100,26 @@ public class InvoiceTermController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm) {
+    if (parentContext.get("_model").equals(Invoice.class.getName())) {
+      Invoice invoice = parentContext.asType(Invoice.class);
+      return invoice.getInTaxTotal();
+    } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
+      MoveLine moveLine = parentContext.asType(MoveLine.class);
+      return moveLine.getDebit().max(moveLine.getCredit());
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  protected BigDecimal getCustomizedAmount(Context parentContext, InvoiceTerm invoiceTerm) {
+    return invoiceTerm
+        .getPercentage()
+        .multiply(this.getCustomizedTotal(parentContext, invoiceTerm))
+        .divide(
+            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {

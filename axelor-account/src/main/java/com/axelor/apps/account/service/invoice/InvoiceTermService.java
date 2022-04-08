@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -260,8 +259,4 @@ public interface InvoiceTermService {
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
-
-  BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm);
-
-  BigDecimal getCustomizedAmount(Context parentContext, InvoiceTerm invoiceTerm);
 }
