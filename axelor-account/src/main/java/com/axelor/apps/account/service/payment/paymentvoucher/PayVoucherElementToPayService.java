@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,29 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PayVoucherElementToPayService {
+
+  protected CurrencyService currencyService;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
+
+  @Inject
+  public PayVoucherElementToPayService(
+      CurrencyService currencyService,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
+    this.currencyService = currencyService;
+    this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
+  }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -38,24 +55,24 @@ public class PayVoucherElementToPayService {
    * @return
    */
   public PayVoucherElementToPay createPayVoucherElementToPay(
-      PaymentVoucher paymentVoucher,
+      PaymentVoucher pv,
       int seq,
       Invoice invoice,
-      MoveLine moveLine,
+      MoveLine ml,
       BigDecimal totalAmount,
       BigDecimal remainingAmount,
       BigDecimal amountToPay) {
 
     log.debug("In  createPayVoucherElementToPay....");
 
-    if (paymentVoucher != null && moveLine != null) {
+    if (pv != null && ml != null) {
       PayVoucherElementToPay piToPay = new PayVoucherElementToPay();
       piToPay.setSequence(seq);
-      piToPay.setMoveLine(moveLine);
+      piToPay.setMoveLine(ml);
       piToPay.setTotalAmount(totalAmount);
       piToPay.setRemainingAmount(remainingAmount);
       piToPay.setAmountToPay(amountToPay);
-      piToPay.setPaymentVoucher(paymentVoucher);
+      piToPay.setPaymentVoucher(pv);
 
       log.debug("End createPayVoucherElementToPay IF.");
 
@@ -64,5 +81,21 @@ public class PayVoucherElementToPayService {
       log.debug("End createPayVoucherElementToPay ELSE.");
       return null;
     }
+  }
+
+  @Transactional(rollbackOn = AxelorException.class)
+  public void updateAmountToPayCurrency(PayVoucherElementToPay elementToPay)
+      throws AxelorException {
+    Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
+    BigDecimal amountToPayCurrency =
+        currencyService.getAmountCurrencyConvertedAtDate(
+            elementToPay.getCurrency(),
+            paymentVoucherCurrency,
+            elementToPay.getAmountToPay(),
+            elementToPay.getPaymentVoucher().getPaymentDate());
+    elementToPay.setAmountToPayCurrency(amountToPayCurrency);
+    elementToPay.setRemainingAmountAfterPayment(
+        elementToPay.getRemainingAmount().subtract(elementToPay.getAmountToPay()));
+    payVoucherElementToPayRepo.save(elementToPay);
   }
 }

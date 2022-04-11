@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -35,7 +36,8 @@ public class PartnerBaseRepository extends PartnerRepository {
       Beans.get(PartnerService.class).onSave(partner);
       return super.save(partner);
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

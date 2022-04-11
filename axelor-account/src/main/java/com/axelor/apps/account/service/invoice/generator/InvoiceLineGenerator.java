@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -42,7 +42,6 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -118,7 +117,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.product = product;
     this.productName = productName;
     this.description = description;
-    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
@@ -189,7 +188,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           accountManagementService.getProductAccount(
               product,
               company,
-              partner.getFiscalPosition(),
+              invoice.getFiscalPosition(),
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
@@ -210,11 +209,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (product != null) {
-      Tax tax =
-          Beans.get(AccountManagementService.class)
-              .getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class).getTaxEquiv(partner.getFiscalPosition(), tax);
+          Beans.get(AccountManagementService.class)
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }
@@ -249,14 +246,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
       taxLine =
           accountManagementService.getTaxLine(
-              today,
-              product,
-              company,
-              partner.getFiscalPosition(),
-              InvoiceToolService.isPurchase(invoice));
+              today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
 
@@ -273,10 +267,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     if (!invoice.getInAti()) {
       exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_EVEN);
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_UP);
     } else {
       inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_EVEN);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
   }
 
@@ -375,7 +369,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    * Récupérer la bonne unité.
    *
    * @param unit Unité de base.
-   * @param unitDisplay Unité à afficher.
+   * @param displayUnit Unité à afficher.
    * @return L'unité à utiliser.
    */
   protected Unit unit(Unit unit, Unit displayUnit) {
@@ -408,7 +402,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (value == null || startUnit == null || endUnit == null || startUnit.equals(endUnit)) {
       return value;
     } else {
-      return value.multiply(convertCoef(startUnit, endUnit)).setScale(6, RoundingMode.HALF_EVEN);
+      return value.multiply(convertCoef(startUnit, endUnit)).setScale(6, RoundingMode.HALF_UP);
     }
   }
 

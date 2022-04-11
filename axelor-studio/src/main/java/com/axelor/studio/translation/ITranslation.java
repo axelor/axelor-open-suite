@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,10 +71,6 @@ public interface ITranslation {
   public static final String EDITOR_UI_OPTIONS = /*$$(*/ "UI options"; /*)*/
   public static final String EDITOR_IS_JSON_RELATIONAL_FIELD = /*$$(*/
       "Is Json Relational Field"; /*)*/
-
-  public static final String WKF_TRACK = /*$$(*/ "Track flow"; /*)*/
-  public static final String WKF_EDIT_NODE = /*$$(*/ "Edit Node"; /*)*/
-  public static final String WKF_EDIT_TRANSITION = /*$$(*/ "Edit Transition"; /*)*/
 
   public static final String BPM_APP_NAME = /*$$(*/ "value:BPM"; /*)*/
   public static final String PRODUCT_APP_NAME = /*$$(*/ "value:Product App"; /*)*/

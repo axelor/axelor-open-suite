@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -155,8 +156,8 @@ public class CampaignServiceImpl implements CampaignService {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
-    message.setRelatedTo1Select(Campaign.class.getCanonicalName());
-    message.setRelatedTo1SelectId(campaign.getId());
+    Beans.get(MessageService.class)
+        .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());
   }
 
   protected MetaFile generateLog(

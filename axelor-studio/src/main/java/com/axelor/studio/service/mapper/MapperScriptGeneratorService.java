@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,14 @@
 package com.axelor.studio.service.mapper;
 
 import com.axelor.meta.CallMethod;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public interface MapperScriptGeneratorService {
 
   @CallMethod
   public String generate(String mapperJson);
+
+  public MapperRecord getMapperRecord(String mapperJson);
+
+  public void registerDeserializer(SimpleModule mapper);
 }

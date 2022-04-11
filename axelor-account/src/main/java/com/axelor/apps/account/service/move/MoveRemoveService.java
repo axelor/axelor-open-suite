@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -182,7 +182,8 @@ public class MoveRemoveService {
     for (Move move : moveList) {
       try {
         move = moveRepo.find(move.getId());
-        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
           this.archiveDaybookMove(move);

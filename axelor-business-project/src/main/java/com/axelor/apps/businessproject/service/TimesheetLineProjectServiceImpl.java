@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,12 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -36,7 +37,6 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,17 +54,24 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   @Inject
   public TimesheetLineProjectServiceImpl(
       TimesheetService timesheetService,
-      TimesheetHRRepository timesheetHRRepository,
-      TimesheetRepository timesheetRepository,
+      TimesheetRepository timesheetRepo,
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
       ProjectTaskRepository projectTaskaRepo,
-      TimesheetLineRepository timesheetLineRepo) {
-    super(timesheetService, timesheetHRRepository, timesheetRepository, employeeRepository);
+      TimesheetLineRepository timesheetLineRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserHrService userHrService) {
+    super(
+        timesheetService,
+        employeeRepository,
+        timesheetRepo,
+        appHumanResourceService,
+        userHrService);
 
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
+    this.timesheetRepo = timesheetRepo;
   }
 
   @Override
@@ -119,7 +126,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLine;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
@@ -129,7 +136,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   @Transactional
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
     Timesheet timesheet =
-        timesheetRepository
+        timesheetRepo
             .all()
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
@@ -140,7 +147,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             .fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
-          timesheetRepository
+          timesheetRepo
               .all()
               .filter(
                   "self.user = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
@@ -155,7 +162,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
                   ? lastTimesheet.getToDate().plusDays(1)
                   : timesheetLine.getDate(),
               null);
-      timesheet = timesheetRepository.save(timesheet);
+      timesheet = timesheetRepo.save(timesheet);
     }
     timesheetLine.setTimesheet(timesheet);
     return timesheetLine;

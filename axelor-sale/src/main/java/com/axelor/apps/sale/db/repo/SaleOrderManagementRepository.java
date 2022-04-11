@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,15 +28,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
-
-  @Inject SaleOrderComputeService saleOrderComputeService;
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -80,6 +78,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   public SaleOrder save(SaleOrder saleOrder) {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+      SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
       } else {
@@ -96,7 +95,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -113,7 +113,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
 
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -127,7 +127,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrder.setFullName(fullName);
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,15 +51,14 @@ public class StockMoveLineController {
     if (moveLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (StockMoveLine line : moveLines) {
-          qty =
-              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN)).multiply(newKitQty);
-          line.setQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
+          qty = (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP)).multiply(newKitQty);
+          line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
         }
       } else {
         for (StockMoveLine line : moveLines) {
-          line.setQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
+          line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
         }
       }
     }
@@ -80,13 +79,13 @@ public class StockMoveLineController {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (StockMoveLine line : moveLines) {
           qty =
-              (line.getRealQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN))
+              (line.getRealQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
                   .multiply(newKitQty);
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
+          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
         }
       } else {
         for (StockMoveLine line : moveLines) {
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_EVEN));
+          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
         }
       }
     }

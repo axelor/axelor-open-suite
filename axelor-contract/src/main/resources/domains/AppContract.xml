@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db" />
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppContract" lang="java" extends="App">
+  <entity name="AppContract" lang="java">
 
-		<boolean name="isUnchangableContract" title="Unchangable contract" />
-		<boolean name="isAmendmentManagement" title="Amendment management" />
-		<boolean name="isRenewalManagement" title="Renewal management" />
+    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-		<boolean name="isInvoicingManagement" title="Invoicing management" />
-		<boolean name="isConsumptionManagement" title="Consumption management" />
-		<boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management" />
+    <boolean name="isUnchangableContract" title="Unchangable contract"/>
+    <boolean name="isAmendmentManagement" title="Amendment management"/>
+    <boolean name="isRenewalManagement" title="Renewal management"/>
 
-		<boolean name="isConfigContract" title="Configurable contract" />
+    <boolean name="isInvoicingManagement" title="Invoicing management"/>
+    <boolean name="isConsumptionManagement" title="Consumption management"/>
+    <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"/>
 
-		<track>
-			<field name="isUnchangableContract" on="UPDATE"/>
-			<field name="isAmendmentManagement" on="UPDATE"/>
-			<field name="isRenewalManagement" on="UPDATE"/>
-			<field name="isInvoicingManagement" on="UPDATE"/>
-			<field name="isConsumptionManagement" on="UPDATE"/>
-			<field name="isAdditionalBenefitManagement" on="UPDATE"/>
-			<field name="isConfigContract" on="UPDATE"/>
-		</track>
-	</entity>
+    <boolean name="isConfigContract" title="Configurable contract"/>
+
+    <track>
+      <field name="isUnchangableContract" on="UPDATE"/>
+      <field name="isAmendmentManagement" on="UPDATE"/>
+      <field name="isRenewalManagement" on="UPDATE"/>
+      <field name="isInvoicingManagement" on="UPDATE"/>
+      <field name="isConsumptionManagement" on="UPDATE"/>
+      <field name="isAdditionalBenefitManagement" on="UPDATE"/>
+      <field name="isConfigContract" on="UPDATE"/>
+    </track>
+  </entity>
 
 </domain-models>

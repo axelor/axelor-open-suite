@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,9 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperField {
 
   private String dataPath = null;
@@ -32,8 +35,6 @@ public class MapperField {
   private String parent = null;
 
   private MapperValue value = null;
-
-  private String field = null;
 
   public String getDataPath() {
     return dataPath;
@@ -91,16 +92,13 @@ public class MapperField {
     this.jsonModel = jsonModel;
   }
 
-  public String getField() {
-    return field;
-  }
-
   public String toScript(String parent) {
 
     this.parent = parent;
     StringBuilder stb = new StringBuilder();
 
-    field = parent + "." + name;
+    String field = parent + "." + name;
+
     stb.append(field + " = " + value.toScript(this));
 
     return stb.toString();

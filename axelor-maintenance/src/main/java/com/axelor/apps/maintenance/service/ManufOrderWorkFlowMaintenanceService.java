@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,7 +61,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
         productionConfigRepo);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
@@ -132,7 +132,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
         .collect(Collectors.toList());
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {

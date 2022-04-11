@@ -1,50 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-    <entity name="BankPaymentConfig" cacheable="true">
-        <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+  <entity name="BankPaymentConfig" cacheable="true">
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
 
-        <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
-        <boolean name="generateMoveOnBankOrderValidation" title="Generate move when validating a bank order"/>
-        <many-to-one name="internalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for internal order (unique company)"/>
-        <many-to-one name="externalBankToBankAccount" ref="com.axelor.apps.account.db.Account" title="Bank to bank account for external order (multiple company)"/>
+    <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User"
+      title="Default signatory"/>
+    <boolean name="generateMoveOnBankOrderValidation"
+      title="Generate move when validating a bank order"/>
+    <many-to-one name="internalBankToBankAccount"
+      ref="com.axelor.apps.account.db.Account"
+      title="Bank to bank account for internal order (unique company)"/>
+    <many-to-one name="externalBankToBankAccount"
+      ref="com.axelor.apps.account.db.Account"
+      title="Bank to bank account for external order (multiple company)"/>
 
-        <many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA credit transfers"/>
-        <many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="SEPA direct debits"/>
-        <many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International credit transfers"/>
-        <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence" title="International direct debits"/>
+    <many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="SEPA credit transfers"/>
+    <many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="SEPA direct debits"/>
+    <many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="International credit transfers"/>
+    <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="International direct debits"/>
 
-        <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="International treasury transfers"/>
-        <many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="National treasury transfer"/>
-        <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types"/>
+    <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="International treasury transfers"/>
+    <many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="National treasury transfer"/>
+    <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Other bank order types"/>
 
-        <!-- SEPA Direct Debit -->
-        <string name="icsNumber" title="ICS Number" min="13" max="13"/>
-        
-        <track>
-        	<field name="company" on="UPDATE"/>
-        	
-        	<field name="defaultSignatoryUser" on="UPDATE"/>
-        	<field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
-        	<field name="internalBankToBankAccount" on="UPDATE"/>
-        	<field name="externalBankToBankAccount" on="UPDATE"/>
-        	
-        	<field name="sepaCreditTransSequence" on="UPDATE"/>
-        	<field name="sepaDirectDebitSequence" on="UPDATE"/>
-        	<field name="intCreditTransSequence" on="UPDATE"/>
-        	<field name="intDirectDebitSequence" on="UPDATE"/>
-        	
-        	<field name="intTreasuryTransSequence" on="UPDATE"/>
-        	<field name="natTreasuryTransSequence" on="UPDATE"/>
-        	<field name="otherBankOrderSequence" on="UPDATE"/>
-        	
-        	<field name="icsNumber" on="UPDATE"/>
-        </track>
-        
-    </entity>
+    <boolean name="hasAutomaticReconciliation" title="Automatic pointing"
+      help="Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete"/>
+    <boolean name="hasAutoMoveFromStatementRule" title="Automatic accounting ?"
+      help="If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed"/>
+
+    <decimal name="bnkStmtAutoReconcileAmountMargin"
+      title="Amount of the semi-interval of confidence for the amounts" min="0.00" max="1000.00"/>
+    <integer name="bnkStmtAutoReconcileDateMargin"
+      title="Duration (days) of the semi-interval of convidence for the dates" min="0" max="90"/>
+
+    <!-- SEPA Direct Debit -->
+    <string name="icsNumber" title="ICS Number" min="13" max="13"/>
+
+    <track>
+      <field name="company" on="UPDATE"/>
+
+      <field name="defaultSignatoryUser" on="UPDATE"/>
+      <field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
+      <field name="internalBankToBankAccount" on="UPDATE"/>
+      <field name="externalBankToBankAccount" on="UPDATE"/>
+
+      <field name="sepaCreditTransSequence" on="UPDATE"/>
+      <field name="sepaDirectDebitSequence" on="UPDATE"/>
+      <field name="intCreditTransSequence" on="UPDATE"/>
+      <field name="intDirectDebitSequence" on="UPDATE"/>
+
+      <field name="intTreasuryTransSequence" on="UPDATE"/>
+      <field name="natTreasuryTransSequence" on="UPDATE"/>
+      <field name="otherBankOrderSequence" on="UPDATE"/>
+
+      <field name="icsNumber" on="UPDATE"/>
+    </track>
+
+  </entity>
 
 </domain-models>

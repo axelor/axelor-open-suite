@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -357,7 +357,8 @@ public class OperationOrderWorkflowService {
             .fetchOne();
 
     if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
+      if (lastOperationOrder.getPriority() != null
+          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
         if (lastOperationOrder.getPlannedStartDateT() != null
             && lastOperationOrder
                 .getPlannedStartDateT()
@@ -653,8 +654,17 @@ public class OperationOrderWorkflowService {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
 
-    BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
     BigDecimal nbCycles;
     if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
@@ -684,7 +694,7 @@ public class OperationOrderWorkflowService {
               .longValue();
     }
 
-    BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
     duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;

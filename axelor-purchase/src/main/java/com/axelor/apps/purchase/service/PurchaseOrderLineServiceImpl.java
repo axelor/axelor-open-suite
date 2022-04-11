@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -34,7 +34,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -44,7 +43,6 @@ import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Preconditions;
@@ -54,8 +52,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +147,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal amount =
         quantity
             .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
         "Calcul du montant HT avec une quantité de {} pour {} : {}",
@@ -287,13 +287,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
-    Tax tax =
-        accountManagementService.getProductTax(
-            product, purchaseOrder.getCompany(), supplierPartner.getFiscalPosition(), true);
-
     TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(supplierPartner.getFiscalPosition(), tax);
+        accountManagementService.getProductTaxEquiv(
+            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
@@ -376,7 +372,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrder.getOrderDate(),
               purchaseOrderLine.getProduct(),
               purchaseOrder.getCompany(),
-              purchaseOrder.getSupplierPartner().getFiscalPosition(),
+              purchaseOrder.getFiscalPosition(),
               false);
 
       BigDecimal price;
@@ -427,7 +423,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         purchaseOrder.getOrderDate(),
         purchaseOrderLine.getProduct(),
         purchaseOrder.getCompany(),
-        purchaseOrder.getSupplierPartner().getFiscalPosition(),
+        purchaseOrder.getFiscalPosition(),
         true);
   }
 
@@ -495,7 +491,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (product != null) {
       purchaseOrderLine.setProduct(product);
       fill(purchaseOrderLine, purchaseOrder);
-      compute(purchaseOrderLine, purchaseOrder);
     }
 
     if (description != null) {
@@ -517,6 +512,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (productName != null) {
       purchaseOrderLine.setProductName(productName);
     }
+
+    compute(purchaseOrderLine, purchaseOrder);
 
     return purchaseOrderLine;
   }
@@ -701,5 +698,38 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     } else {
       response.setAttr("differentSupplierLabel", "hidden", true);
     }
+  }
+
+  public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return null;
+    } else {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+
+        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
+        purchaseOrderLine.setTaxLine(taxLine);
+
+        TaxEquiv taxEquiv =
+            accountManagementService.getProductTaxEquiv(
+                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
+
+        purchaseOrderLine.setTaxEquiv(taxEquiv);
+
+        purchaseOrderLine.setInTaxTotal(
+            purchaseOrderLine
+                .getExTaxTotal()
+                .multiply(purchaseOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+        purchaseOrderLine.setCompanyInTaxTotal(
+            purchaseOrderLine
+                .getCompanyExTaxTotal()
+                .multiply(purchaseOrderLine.getTaxLine().getValue())
+                .setScale(2, RoundingMode.HALF_UP));
+      }
+    }
+    return purchaseOrderLineList;
   }
 }

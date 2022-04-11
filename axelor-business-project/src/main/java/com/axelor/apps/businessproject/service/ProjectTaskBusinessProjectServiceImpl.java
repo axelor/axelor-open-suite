@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -47,6 +48,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -59,8 +61,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -137,6 +138,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
+  public ProjectTask create(String subject, Project project, User assignedTo) {
+    ProjectTask task = super.create(subject, project, assignedTo);
+    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
+    return task;
+  }
+
+  @Override
   public ProjectTask updateDiscount(ProjectTask projectTask) {
     PriceList priceList = projectTask.getProject().getPriceList();
     if (priceList == null) {
@@ -204,7 +212,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal amount =
         price
             .multiply(quantity)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     return amount;
   }
@@ -328,25 +336,19 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_PACKAGE
         && !projectTask.getIsTaskRefused()) {
 
-      Pattern pattern = Pattern.compile(", ");
-
       switch (projectTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
           projectTask.setToInvoice(
-              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
-                  && pattern
-                      .splitAsStream(appBusinessProject.getPreTaskStatusSet())
-                      .collect(Collectors.toList())
-                      .contains(projectTask.getStatus()));
+              ObjectUtils.notEmpty(preTaskStatusSet)
+                  && preTaskStatusSet.contains(projectTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
           projectTask.setToInvoice(
-              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
-                  && pattern
-                      .splitAsStream(appBusinessProject.getPostTaskStatusSet())
-                      .collect(Collectors.toList())
-                      .contains(projectTask.getStatus()));
+              ObjectUtils.notEmpty(postTaskStatusSet)
+                  && postTaskStatusSet.contains(projectTask.getStatus()));
           break;
       }
     } else {

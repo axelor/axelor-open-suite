@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,4 +41,14 @@ public interface IExceptionMessage {
   /** Pdf Tool */
   static final String BAD_COPY_NUMBER_ARGUMENT = /*$$(*/
       "The parameter copyNumber should be superior to 0." /*)*/;
+
+  // Meta tool
+  static final String ERROR_CONVERT_TYPE_TO_JSON_TYPE = /*$$(*/
+      "Type %s could not be converted to json type." /*)*/;
+
+  static final String ERROR_CONVERT_JSON_TYPE_TO_TYPE = /*$$(*/
+      "Meta json field type %s could not be converted to a meta field type." /*)*/;
+
+  // Callable Tool
+  String PROCESS_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
 }

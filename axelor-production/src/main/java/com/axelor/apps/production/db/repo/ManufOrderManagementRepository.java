@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,10 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -65,8 +67,12 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
           && entity.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT) {
         entity.setManufOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
       }
+      if (entity.getBarCode() == null) {
+        Beans.get(ManufOrderService.class).createBarcode(entity);
+      }
     } catch (AxelorException e) {
-      throw new PersistenceException(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     if (entity.getOperationOrderList() != null) {

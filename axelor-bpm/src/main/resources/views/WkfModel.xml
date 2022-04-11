@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="wkf-model-grid" title="BPM Model" model="com.axelor.apps.bpm.db.WkfModel"
+    orderBy="code" edit-icon="false">
+    <toolbar>
+      <button name="btnTerminateAll" title="Terminate all process"
+        prompt="Are you sure wants to terminate all process ?"
+        onClick="com.axelor.apps.bpm.web.WkfModelController:terminateAll"/>
+      <button name="exportBtn" title="Export" onClick="action-wkf-model-export-wkf-models"/>
+      <button name="importBtn" title="Import"
+        onClick="action-wkf-model-view-import-wkf-model-form"/>
+      <button name="importStandardBpmBtn" title="Import standard BPM"
+        onClick="action-wkf-model-method-import-standard-wkf-model"/>
+    </toolbar>
+    <button name="openEditorBtn" title="wkf.open.editor"
+      onClick="action-wkf-view-open-editor" icon="fa-edit"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="versionTag"/>
+    <field name="statusSelect"/>
+    <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
+      if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+  </grid>
+
+  <form name="wkf-model-form" title="BPM Model" model="com.axelor.apps.bpm.db.WkfModel"
+    width="large" onLoad="action-wlf-model-method-onload">
+    <panel name="mainPanel" colSpan="12">
+      <field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        readonlyIf="generatedFromCallActivity"/>
+      <field name="name" required="true"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
+        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      <field name="versionTag"/>
+      <field name="wkfStatusColor" widget="SingleSelect"/>
+    </panel>
+    <panel-tabs>
+      <panel name="allProcessPanel" title="All Processes">
+        <panel-dashlet action="custom:wkf-model-process-per-status-custom"
+          name="wkfModelProcessPerStatusPanel" height="400" colSpan="12"/>
+      </panel>
+      <panel name="myProcessPanel" title="My processes">
+        <panel-dashlet action="custom:wkf-model-process-per-user-custom"
+          name="wkfModelProcessPerUserPanel" height="400" colSpan="12"/>
+      </panel>
+      <panel name="permissionPanel" title="Permissions">
+        <panel name="adminPanel" title="Admins" groups="admins" colSpan="12" itemSpan="6">
+          <field name="adminUserSet"/>
+          <field name="adminRoleSet"/>
+        </panel>
+        <panel name="managerPanel" title="Managers" colSpan="12" itemSpan="6">
+          <field name="managerUserSet"/>
+          <field name="managerRoleSet"/>
+        </panel>
+        <panel name="userPanel" title="Users" colSpan="12" itemSpan="6">
+          <field name="userSet"/>
+          <field name="roleSet"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+    <panel name="extraPanel">
+      <field name="wkfProcessList" colSpan="12" canNew="false" canRemove="true" hidden="true"/>
+      <field name="description" colSpan="12"/>
+      <panel-dashlet hidden="true" action="action-wkf-model-method-show-versions"
+        name="wkfModelVersionDashlet" title="Previous Versions" colSpan="12"/>
+      <field name="isActive" hidden="true"/>
+      <field name="previousVersion" hidden="true"/>
+      <field name="generatedFromCallActivity" hidden="true"/>
+      <field name="previousVersion.statusSelect" hidden="true"/>
+      <panel-related field="wkfTaskConfigList" colSpan="12" hidden="true"/>
+      <panel-related field="dmnFileSet" colSpan="12" hidden="true"/>
+    </panel>
+    <panel name="actionPanelBtn" sidebar="true" stacked="true">
+      <!-- <button name="startBtn" title="Start" onClick="save,action-wkf-model-method-start" showIf="statusSelect
+        == 1 &amp;&amp; isActive &amp;&amp; (previousVersion == null || previousVersion.statusSelect == 3)"/> -->
+      <!-- <button name="startBtn" title="Start" onClick="save,action-wkf-model-method-start" prompt="It
+        will terminate previous version. Are you sure wants to start?" showIf="statusSelect == 1 &amp;&amp; isActive
+        &amp;&amp; previousVersion != null &amp;&amp; previousVersion.statusSelect != 3"/> -->
+      <button name="terminateBtn" title="wkf.terminate.btn"
+        onClick="save,action-wkf-model-method-terminate"
+        showIf="statusSelect == 2 &amp;&amp; isActive"/>
+      <button name="backToDraftBtn" title="Back to Draft"
+        onClick="save,action-wkf-model-method-back-to-draft"
+        showIf="statusSelect == 3  &amp;&amp; isActive"/>
+      <button name="openEditorBtn" title="wkf.open.editor"
+        onClick="save,action-wkf-view-open-editor"/>
+      <button name="openWkfStateBtn" title="BPM State"
+        onClick="save,action-wkf-model-display-wkf-state"/>
+      <button name="openDashboardBtn" title="Dashboard"
+        onClick="save,action-wkf-model-method-show-dashboard" showIf="id"/>
+      <button name="openInstanceBtn" title="All instances"
+        onClick="save,action-wkf-model-view-show-instance" showIf="id"/>
+    </panel>
+  </form>
+
+  <form name="import-wkf-model-form" title="Import wkf model"
+    model="com.axelor.apps.bpm.db.WkfModel">
+    <panel name="mainPanel">
+      <field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile"
+        widget="binary-link" title="Data file" colSpan="5"/>
+      <field name="isTranslate" title="Translate" type="boolean"
+        onChange="action-wkf-model-record-set-source-language"/>
+      <field name="sourceLanguageSelect" type="string" selection="select.language"
+        title="Source language" selection-in="['en','fr']" requiredIf="isTranslate"
+        showIf="isTranslate"/>
+      <field name="targetLanguageSelect" type="string" selection="select.language"
+        title="Target language" selection-in="['en','fr']" requiredIf="isTranslate"
+        showIf="isTranslate"/>
+      <button name="importUsersBtn" title="Import"
+        onClick="action-wkf-model-method-import-wkf-model"
+        showIf="(dataFile != null &amp;&amp; !isTranslate) || (dataFile != null &amp;&amp; isTranslate &amp;&amp; sourceLanguageSelect != null &amp;&amp; targetLanguageSelect != null)"
+        colSpan="4"/>
+      <field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
+    </panel>
+  </form>
+
+  <form name="wfk-model-select-process-wizard-form" title="Select process"
+    model="com.axelor.apps.base.db.Wizard">
+    <panel>
+      <field name="process" onSelect="action-select-process-wizard-attrs-set-process-domain"
+        title="Process" type="string" widget="ref-text" x-target="com.axelor.apps.bpm.db.WkfProcess"
+        x-target-name="name"/>
+      <button onClick="action-wkf-model-view-dashboard,close" name="showDashboardBtn"
+        title="Show" showIf="process != null"/>
+    </panel>
+  </form>
+
+  <custom name="wkf-model-process-per-status-custom" title="">
+    <dataset type="rpc">
+			<![CDATA[
+				com.axelor.apps.bpm.web.WkfModelController:getProcessPerStatus
+			]]>
+    </dataset>
+    <template>
+			<![CDATA[
+	 			<table ng-repeat="process in data" class="table" style="margin-bottom:0px">
+	 				<thead>
+	 					<tr>
+	 						<th>{{process.title}}</th>
+	 					</tr>
+	 				</thead>
+	 				<tbody>
+	 					<tr ng-repeat="item in process.itemList">
+	 						<td ng-if="item.type == 'model'" style="padding-left: 20px;">
+	 							<a style="font-weight:bold;" href="" ui-action-context="item" ui-action-click="action-wkf-model-method-model-per-view">{{_t('value:' + item.title) == 'value:'+item.title ? item.title : _t('value:' + item.title)}} ({{item.modelRecordCount}})</a>
+	 							<div style="padding:8px 8px 8px 25px;display: flex;border: 1px solid #ddd;border-left: none;border-right: none;margin-top: 8px;">
+	 								<div style="flex:1;">
+	 									<p style="display:list-item" ng-repeat="status in item.statuses">
+	 										<a href="" ui-action-context="status" ui-action-click="action-wkf-model-method-status-per-view">{{_t('value:' + status.title) == 'value:'+status.title ? status.title : _t('value:' + status.title)}} ({{status.statusCount}})</a>
+	 									</p>
+	 								</div>
+	 								<div style="flex:1;">
+	 									<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-task-today"><span x-translate>Tasks to do today</span> ({{item.tasks.taskTodayIds.length}})</a></p>
+		 								<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-task-next"><span x-translate>Tasks to do for the next 7 days</span> ({{item.tasks.taskNextIds.length}})</a></p>
+		 								<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-late-task"><span x-translate>Late tasks</span> ({{item.tasks.lateTaskIds.length}})</a></p>
+	 								</div>
+	 							</div>
+	 						</td>
+	 					</tr>
+	 				</tbody>
+	 			</table>
+	 		]]>
+    </template>
+  </custom>
+
+  <custom name="wkf-model-process-per-user-custom" title="">
+    <dataset type="rpc">
+			<![CDATA[
+				com.axelor.apps.bpm.web.WkfModelController:getProcessPerUser
+			]]>
+    </dataset>
+    <template>
+			<![CDATA[
+	 			<table ng-repeat="process in data" class="table" style="margin-bottom:0px">
+	 				<thead>
+	 					<tr>
+	 						<th>{{process.title}}</th>
+	 					</tr>
+	 					<tr>
+	 						<td><span x-translate>Tasks assigned to me</span> ({{process.taskAssignedToMe}})</td>
+	 					</tr>
+	 				</thead>
+	 				<tbody>
+	 					<tr ng-repeat="item in process.itemList">
+	 						<td ng-if="item.type == 'model'" style="padding-left: 20px;">
+	 							<a style="font-weight:bold;" href="" ui-action-context="item" ui-action-click="action-wkf-model-method-model-per-view">{{_t('value:' + item.title) == 'value:'+item.title ? item.title : _t('value:' + item.title)}} ({{item.modelRecordCount}})</a>
+	 							<div style="padding:8px 8px 8px 25px;display: flex;border-top: 1px solid #ddd;margin-top: 8px;">
+	 								<div style="flex:1;">
+	 									<p style="display:list-item" ng-repeat="status in item.statuses">
+	 										<a href="" ui-action-context="status" ui-action-click="action-wkf-model-method-status-per-view">{{_t('value:' + status.title) == 'value:'+status.title ? status.title : _t('value:' + status.title)}} ({{status.statusCount}})</a>
+	 									</p>
+	 								</div>
+	 								<div style="flex:1;">
+	 									<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-task-today"><span x-translate>My Tasks to do today</span> ({{item.tasks.taskTodayIds.length}})</a></p>
+		 								<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-task-next"><span x-translate>My Tasks to do for the next 7 days</span> ({{item.tasks.taskNextIds.length}})</a></p>
+		 								<p style="display:list-item"><a href="" ui-action-context="item.tasks" ui-action-click="action-wkf-model-method-open-late-task"><span x-translate>My Late tasks</span> ({{item.tasks.lateTaskIds.length}})</a></p>
+	 								</div>
+	 							</div>
+	 						</td>
+	 						<td ng-if="item.type == 'button' &amp;&amp; item.isDirectCreation" style="padding-left: 16px;font-weight:bold"><a class="btn btn-small btn-info" href="" ui-action-context="item" ui-action-click="action-wkf-model-method-open-new-record" x-translate>New record</a></td>
+	 					</tr>
+	 					<tr>
+	 						<td ng-if="process.processConfig != null" style="font-weight:bold;"><a class="btn btn-small btn-primary" href="" ui-action-context="process" ui-action-click="action-wkf-model-method-open-new-instance" x-translate>New instance</a></td>
+	 					</tr>
+	 				</tbody>
+	 			</table>
+	 		]]>
+    </template>
+  </custom>
+
+  <action-attrs name="action-select-process-wizard-attrs-set-process-domain">
+    <attribute name="domain" for="process"
+      expr="eval: _wkf?.wkfProcessList?.size() &gt; 0 ? &quot; self.id IN (${_wkf.wkfProcessList.collect{it.id}?.join(',')}) &quot; : &quot; self.id IN (0) &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-wkf-model-record-set-source-language"
+    model="com.axelor.apps.bpm.db.WkfModel">
+    <field name="sourceLanguageSelect" expr="eval: __user__.language"/>
+  </action-record>
+
+  <action-view name="action-wkf-view-open-editor" title="BPM Studio">
+    <view type="html" name="wkf-editor?id={{_id}}&amp;timerTask={{_timerTask}}"/>
+    <context name="_timerTask"
+      expr="eval: !com.axelor.app.AppSettings.get().getBoolean('application.multi_tenancy', false)"/>
+  </action-view>
+
+  <action-view name="action-wkf-model-view-import-wkf-model-form"
+    title="Import wkf model" model="com.axelor.apps.bpm.db.WkfModel">
+    <view type="form" name="import-wkf-model-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <action-view name="action-wkf-model-display-wkf-state" title="BPM State">
+    <view type="html" name="{{$imageUrl}}"/>
+    <context name="$imageUrl"
+      expr="call:com.axelor.apps.bpm.service.WkfDisplayService:getWkfNodeCountUrl(__self__)"/>
+  </action-view>
+
+  <action-view name="action-wkf-model-view-show-instance" title="All instances"
+    model="com.axelor.apps.bpm.db.WkfInstance">
+    <view type="grid" name="wkf-instance-grid"/>
+    <view type="form" name="wkf-instance-form"/>
+    <domain>self.id IN (:ids)</domain>
+    <context name="ids"
+      expr="eval: wkfProcessList?.collect{it.id}?.size() &gt; 0 ? __repo__(WkfInstance).all().filter('self.wkfProcess.id IN ?', wkfProcessList.collect{it.id}?.flatten()).fetch()?.collect{it.id}?.flatten() : 0"/>
+  </action-view>
+
+  <action-method name="action-wlf-model-method-onload">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="changeAttrs"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-deploy">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="deploy"/>
+  </action-method>
+
+  <action-method name="action-refresh-record">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="refreshRecord"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-start">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="start"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-terminate">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="terminate"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-back-to-draft">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-create-new-version">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="createNewVersion"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-show-versions">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showVersions"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-import-wkf-model">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="importWkfModels"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-import-standard-wkf-model">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="importStandardBPM"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-show-dashboard">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showDashboard"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-status-per-view">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="getStatusPerView"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-model-per-view">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="getModelPerView"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-open-new-record">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="newRecord"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-open-new-instance">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="newInstance"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-open-task-today">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="openTaskToday"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-open-task-next">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="openTaskNext"/>
+  </action-method>
+
+  <action-method name="action-wkf-model-method-open-late-task">
+    <call class="com.axelor.apps.bpm.web.WkfModelController" method="openLateTask"/>
+  </action-method>
+
+  <action-export name="action-wkf-model-export-wkf-models" output="${date}${time}"
+    download="true">
+    <export
+      name="WkfModels-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
+      template="data-export/export-wkf-models.tmpl" engine="groovy"/>
+  </action-export>
+
+  <action-view name="action-wkf-model-view-dashboard" title="Workflow dashboard">
+    <view type="dashboard" name="dasbhoard-wkf-model"/>
+    <context name="_wkfId" expr="eval:_wkf?.id"/>
+    <context name="_process" expr="eval: process"/>
+  </action-view>
+
+</object-views>

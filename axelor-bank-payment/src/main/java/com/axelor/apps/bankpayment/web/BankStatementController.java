@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,11 +36,14 @@ import java.util.List;
 public class BankStatementController {
 
   public void runImport(ActionRequest request, ActionResponse response) {
-
     try {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      Beans.get(BankStatementService.class).runImport(bankStatement, true);
+
+      BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
+      BankStatementService bankStatementService = Beans.get(BankStatementService.class);
+      bankStatement = bankStatementRepo.find(bankStatement.getId());
+      bankStatementService.runImport(bankStatement, true);
+      bankStatementService.checkImport(bankStatement);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

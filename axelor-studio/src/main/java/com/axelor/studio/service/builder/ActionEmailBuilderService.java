@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,8 +66,8 @@ public class ActionEmailBuilderService {
     String xml =
         "<action-method name=\""
             + name
-            + "\" id=\"studio-"
-            + name
+            + "\" id=\""
+            + builder.getXmlId()
             + "\">\n\t"
             + "<call class=\"com.axelor.studio.service.builder.ActionEmailBuilderService\" method=\"sendEmail(id, '"
             + (builder.getIsJson()
@@ -85,7 +85,7 @@ public class ActionEmailBuilderService {
             + "if=\"id != null\"/>\n"
             + "</action-method>";
 
-    return studioMetaService.updateMetaAction(name, "action-method", xml, null);
+    return studioMetaService.updateMetaAction(name, "action-method", xml, null, builder.getXmlId());
   }
 
   @CallMethod

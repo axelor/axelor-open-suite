@@ -6,57 +6,65 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrderLine" lang="java">
-  
-  	<integer name="saleSupplySelect" title="Supply method" selection="product.sale.supply.select"/>
-  	
-  	<date name="invoicingDate" title="Invoicing Date"/>
-  	
-  	<decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
-  	
-  	
-<!-- Bon de livraison -->
-  	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
-  	
-  	<one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines" mappedBy="saleOrderLine"/>
-  	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-	<boolean name="invoiced" readonly="true"/>
 
-	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
-	
-	<string name="availableStatus" title="Available status" transient="true"/>
-  	<integer name="availableStatusSelect" title="Available status" transient="true" selection="supplychain.sale.order.line.available.status.select"/>
+    <integer name="saleSupplySelect" title="Supply method"
+      selection="product.sale.supply.select"/>
 
-	<decimal name="reservedQty" title="Allocated qty" precision="20" scale="10" min="0"/>
-	<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10" min="0"/>
-  <boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
+    <date name="invoicingDate" title="Invoicing Date"/>
 
-  	<integer name="deliveryState" title="Delivery state" selection="sale.order.delivery.state" readonly="true" default="0"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
 
-	<integer name="standardDelay" title="Standard delay (days)" default="0"  />
-  	<extra-code>
+
+    <!-- Bon de livraison -->
+    <boolean name="isInvoiceControlled" title="Invoice controlled"/>
+
+    <one-to-many name="analyticMoveLineList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines"
+      mappedBy="saleOrderLine"/>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <boolean name="invoiced" readonly="true"/>
+
+    <string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
+
+    <string name="availableStatus" title="Available status" transient="true"/>
+    <integer name="availableStatusSelect" title="Available status" transient="true"
+      selection="supplychain.sale.order.line.available.status.select"/>
+
+    <decimal name="reservedQty" title="Allocated qty" precision="20" scale="10" min="0"/>
+    <decimal name="requestedReservedQty" title="Requested reserved qty" precision="20"
+      scale="10" min="0"/>
+    <boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
+
+    <integer name="deliveryState" title="Delivery state"
+      selection="sale.order.delivery.state" readonly="true" default="0"/>
+
+    <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+    <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT
 	  		public static final int SALE_SUPPLY_NONE = 0;
 	  		public static final int SALE_SUPPLY_FROM_STOCK = 1;
 	  		public static final int SALE_SUPPLY_PURCHASE = 2;
 	  		public static final int SALE_SUPPLY_PRODUCE = 3;
-	  		
+
 	        // DELIVERY STATE SELECT
             public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
             public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
             public static final int DELIVERY_STATE_DELIVERED = 3;
-            
+
             // AVAILABLE STATUS SELECT
 			public static final int STATUS_AVAILABLE = 1;
 			public static final int STATUS_MISSING = 2;
 	  	]]>
-  	</extra-code>
-  	
-  	
-		<track on="UPDATE">
-			<field name="requestedReservedQty"/>
-			<field name="reservedQty"/>
-		</track>
+    </extra-code>
+
+
+    <track on="UPDATE">
+      <field name="requestedReservedQty"/>
+      <field name="reservedQty"/>
+    </track>
 
   </entity>
 

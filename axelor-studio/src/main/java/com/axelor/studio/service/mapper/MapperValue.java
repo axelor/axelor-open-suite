@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,23 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import groovy.json.StringEscapeUtils;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperValue {
+
+  public static final List<String> MANY_TO_ONE_TYPE =
+      Arrays.asList(
+          new String[] {"MANY_TO_ONE", "many-to-one", "json-many-to-one", "json-one-to-one"});
 
   private MapperSelected selected = null;
 
   private MapperField parentField = null;
 
   private String from = null;
-
-  private List<MapperField> fields = new ArrayList<MapperField>();
 
   public MapperSelected getSelected() {
     return selected;
@@ -39,45 +43,41 @@ public class MapperValue {
     this.selected = selected;
   }
 
-  public List<MapperField> getFields() {
-    return fields;
+  public MapperField getParentField() {
+    return parentField;
   }
 
-  public void setFields(List<MapperField> fields) {
-    this.fields = fields;
+  public void setParentField(MapperField parentField) {
+    this.parentField = parentField;
   }
 
   public String toScript(MapperField parentField) {
 
-    this.parentField = parentField;
+    setParentField(parentField);
 
     StringBuilder stb = new StringBuilder();
 
     switch (from) {
       case "none":
-        processNone(stb);
+        mapNone(stb);
         break;
       case "context":
-        processContext(stb);
+        mapContext(stb);
         break;
       case "self":
-        processSelf(stb);
+        mapSelf(stb);
         break;
       case "source":
-        processSource(stb);
+        mapSource(stb);
         break;
       default:
         break;
     }
 
-    for (MapperField field : fields) {
-      stb.append("?" + field.toScript(parentField.getField()) + "\n");
-    }
-
     return stb.toString();
   }
 
-  private String getSelectedScript() {
+  protected String getSelectedScript() {
     if (selected != null) {
       return selected.toScript();
     }
@@ -93,34 +93,32 @@ public class MapperValue {
     this.from = from;
   }
 
-  private void processNone(StringBuilder stb) {
+  protected void mapNone(StringBuilder stb) {
 
     String target = parentField.getTarget();
-    String jsonModel = parentField.getJsonModel();
+    String targetJsonModel = parentField.getJsonModel();
 
     String value = getSelectedScript();
 
-    if (target != null || jsonModel != null) {
+    if (target != null || targetJsonModel != null) {
 
-      String model = jsonModel != null ? jsonModel : target;
+      String model = targetJsonModel != null ? targetJsonModel : target;
       model = "'" + model + "'";
 
       if (value != null) {
-        stb.append("$ctx.filterOne(" + model + "," + prepareQuery(jsonModel, value) + ")");
+        stb.append("$ctx.filterOne(" + model + "," + prepareQuery(targetJsonModel, value) + ")");
       } else {
         stb.append("$ctx.create(" + model + ")");
       }
 
-      if (fields.isEmpty()) {
-        stb.append("?.getTarget()");
-      }
+      stb.append("?.getTarget()");
 
     } else {
       stb.append(getTypedValue(value, false));
     }
   }
 
-  private String prepareQuery(String jsonModel, String fieldValue) {
+  protected String prepareQuery(String jsonModel, String fieldValue) {
 
     String[] queryParts = fieldValue.split(",");
 
@@ -138,13 +136,14 @@ public class MapperValue {
     return query;
   }
 
-  private String getTypedValue(String value, boolean isString) {
+  protected String getTypedValue(String value, boolean isString) {
 
     String type = parentField.getType();
 
     if (isString) {
       type = "STRING";
     }
+    type = type.toUpperCase();
 
     switch (type) {
       case "STRING":
@@ -167,13 +166,11 @@ public class MapperValue {
     return value;
   }
 
-  private void processContext(StringBuilder stb) {
+  protected void mapContext(StringBuilder stb) {
 
     String value = getSelectedScript();
 
-    String parentType = parentField.getType();
-    if ((fields == null || fields.isEmpty())
-        && (parentType.equals("MANY_TO_ONE") || parentType.equals("many-to-one"))) {
+    if (MANY_TO_ONE_TYPE.contains(parentField.getType())) {
       if (value != null && !value.endsWith(".id")) {
         value += "?.id";
       }
@@ -183,23 +180,21 @@ public class MapperValue {
     }
   }
 
-  private void processSelf(StringBuilder stb) {
+  private void mapSelf(StringBuilder stb) {
 
     stb.append(getSelectedScript());
   }
 
-  private void processSource(StringBuilder stb) {
+  protected void mapSource(StringBuilder stb) {
 
-    if ((fields == null || fields.isEmpty()) && parentField.getType().equals("MANY_TO_ONE")) {
-      stb.append(
-          "$ctx.find('"
-              + parentField.getTarget()
-              + "',"
-              + "src."
-              + getSelectedScript()
-              + "?.id)?.getTarget()");
+    String selected = "src." + getSelectedScript();
+    if (MANY_TO_ONE_TYPE.contains(parentField.getType())) {
+      if (selected.equals("src.SOURCE")) {
+        selected = "src";
+      }
+      stb.append("$ctx.find('" + parentField.getTarget() + "'," + selected + "?.id)?.getTarget()");
     } else {
-      stb.append("src." + getSelectedScript());
+      stb.append(selected);
     }
   }
 }

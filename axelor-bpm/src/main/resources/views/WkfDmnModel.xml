@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="wkf-dmn-model-grid" title="DMN" model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <button name="openEditorBtn" title="Open editor"
+      onClick="action-wkf-dmn-view-open-editor" icon="fa-edit"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="wkf-dmn-model-form" title="DMN" model="com.axelor.apps.bpm.db.WkfDmnModel"
+    width="large">
+    <toolbar>
+      <button name="exportBtn" title="Export"
+        onClick="save,action-dmn-model-method-export-dmn-table"/>
+      <button name="importBtn" title="Import"
+        onClick="save,action-wkf-dmn-view-import-dmn-table-form"/>
+    </toolbar>
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" required="true"/>
+      <button name="openEditorBtn" title="Open editor"
+        onClick="save,action-wkf-dmn-view-open-editor" colSpan="3"/>
+      <button name="deployBtn" title="Deploy"
+        onClick="save,action-wkf-dmn-model-method-deploy" colSpan="3"/>
+      <field name="description" colSpan="12"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
+        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      <field name="metaModel"/>
+      <field name="jsonModel"/>
+      <field name="dmnTableList" colSpan="12" canNew="false">
+        <editor>
+          <field name="name"/>
+          <field name="decisionId"/>
+          <spacer/>
+          <field name="outputDmnFieldList" grid-view="dmn-field-grid"
+            form-view="dmn-field-form" colSpan="12"/>
+        </editor>
+      </field>
+    </panel>
+  </form>
+
+  <form name="wkf-dmn-wizard-form" title="Select DMN"
+    model="com.axelor.apps.bpm.db.WkfDmnModel" width="large"
+    onNew="action-wkf-dmn-attrs-wizard-on-new">
+    <panel name="mainPanel" colSpan="12">
+      <field name="dmnTable" title="Decision" type="many-to-one"
+        target="com.axelor.apps.bpm.db.DmnTable"
+        domain="self.wkfDmnModel.metaModel.fullName = :ctxModel OR self.wkfDmnModel.jsonModel.name = :ctxJsonModel"/>
+      <button name="executeBtn" readonlyIf="dmnTable == null" title="Execute" colSpan="3"
+        onClick="com.axelor.apps.bpm.web.WkfDmnModelController:executeDmn"/>
+      <field name="ctxModel" hidden="true"/>
+      <field name="ctxRecordId" hidden="true" type="long"/>
+      <field name="ctxJsonModel" hidden="true"/>
+      <field name="dmnTable.decisionId" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="wkf-dmn-table-import-form" title="Import"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <panel name="mainPanel">
+      <field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile"
+        widget="binary-link" title="Data file"/>
+      <button name="importBtn" title="Import"
+        onClick="action-dmn-model-method-import-dmn-table" showIf="dataFile != null" colSpan="4"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-wkf-dmn-attrs-wizard-on-new">
+    <attribute name="value" for="ctxModel" expr="eval:ctxModel"/>
+    <attribute name="value" for="ctxRecordId" expr="eval:ctxRecordId"/>
+    <attribute name="value" for="ctxJsonModel" expr="eval:ctxJsonModel"/>
+  </action-attrs>
+
+  <action-view name="action-wkf-dmn-view-open-editor" title="DMN Editor">
+    <view type="html" name="wkf-editor?type=dmn&amp;id={{_id}}"/>
+  </action-view>
+
+  <action-view name="action-wkf-dmn-view-wizard" title="Select DMN"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <view type="form" name="wkf-dmn-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="ctxModel" expr="eval:_model"/>
+    <context name="ctxRecordId" expr="eval:id"/>
+    <context name="ctxJsonModel" expr="eval:jsonModel"/>
+  </action-view>
+
+  <action-view name="action-wkf-dmn-view-import-dmn-table-form" title="Import"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <view type="form" name="wkf-dmn-table-import-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_dmnModelId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-wkf-dmn-model-method-deploy">
+    <call class="com.axelor.apps.bpm.web.WkfDmnModelController" method="deploy"/>
+  </action-method>
+
+  <action-method name="action-wkf-dmn-model-method-create-output-to-field-script">
+    <call class="com.axelor.apps.bpm.web.WkfDmnModelController"
+      method="createOutputToFieldScript"/>
+  </action-method>
+
+  <action-method name="action-dmn-model-method-export-dmn-table">
+    <call class="com.axelor.apps.bpm.web.WkfDmnModelController" method="exportDmnTable"/>
+  </action-method>
+
+  <action-method name="action-dmn-model-method-import-dmn-table">
+    <call class="com.axelor.apps.bpm.web.WkfDmnModelController" method="importDmnTable"/>
+  </action-method>
+
+</object-views>

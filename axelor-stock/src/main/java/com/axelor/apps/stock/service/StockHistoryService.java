@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,8 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,4 +40,9 @@ public interface StockHistoryService {
   List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException;
+
+  MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList, String fileName)
+      throws IOException;
+
+  public String getStockHistoryLineExportName(String productName);
 }

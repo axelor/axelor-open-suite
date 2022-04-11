@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,25 +18,45 @@
 package com.axelor.studio.service.mapper;
 
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorService {
 
   @Override
   public String generate(String mapperJson) {
 
-    ObjectMapper mapper = Beans.get(ObjectMapperProvider.class).get();
+    MapperRecord mapperRecord = getMapperRecord(mapperJson);
     try {
-      MapperRecord mapperRecord = mapper.readValue(mapperJson.getBytes(), MapperRecord.class);
-      return mapperRecord.toScript();
-
-    } catch (IOException e) {
+      if (mapperRecord != null) {
+        return mapperRecord.toScript();
+      }
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
 
     return null;
   }
+
+  @Override
+  public MapperRecord getMapperRecord(String mapperJson) {
+
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    registerDeserializer(module);
+    mapper.registerModule(module);
+
+    try {
+      MapperRecord mapperRecord = mapper.readValue(mapperJson.getBytes(), MapperRecord.class);
+      return mapperRecord;
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public void registerDeserializer(SimpleModule module) {}
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -181,6 +183,7 @@ public class SaleOrderController {
         Partner supplierPartner = null;
         List<Long> saleOrderLineIdSelected = new ArrayList<>();
         Boolean isDirectOrderLocation = false;
+        Boolean noProduct = true;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
         supplierPartner = (Partner) values.get("supplierPartner");
         saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
@@ -193,11 +196,14 @@ public class SaleOrderController {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
               }
+              if (saleOrderLine.getProduct() != null) {
+                noProduct = false;
+              }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
           }
 
-          if (saleOrderLineIdSelected.isEmpty()) {
+          if (saleOrderLineIdSelected.isEmpty() || noProduct) {
             response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
@@ -254,6 +260,7 @@ public class SaleOrderController {
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
     Map<String, Object> values = new HashMap<String, Object>();
     Boolean isDirectOrderLocation = false;
+    Boolean noProduct = true;
 
     if (saleOrder.getDirectOrderLocation()
         && saleOrder.getStockLocation() != null
@@ -263,6 +270,9 @@ public class SaleOrderController {
 
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.isSelected()) {
+          if (saleOrderLine.getProduct() != null) {
+            noProduct = false;
+          }
           saleOrderLineIdSelected.add(saleOrderLine.getId());
         }
       }
@@ -270,7 +280,7 @@ public class SaleOrderController {
       isDirectOrderLocation = true;
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
-      if (saleOrderLineIdSelected.isEmpty()) {
+      if (saleOrderLineIdSelected.isEmpty() || noProduct) {
         throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
@@ -414,6 +424,12 @@ public class SaleOrderController {
     Partner commonClientPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
+    TaxNumber commonTaxNumber = null;
+    // Useful to determine if a difference exists between tax number of all sale orders
+    boolean existTaxNumberDiff = false;
+    FiscalPosition commonFiscalPosition = null;
+    // Useful to determine if a difference exists between fiscal positions of all sale orders
+    boolean existFiscalPositionDiff = false;
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
@@ -442,6 +458,8 @@ public class SaleOrderController {
         commonTeam = saleOrderTemp.getTeam();
         commonPriceList = saleOrderTemp.getPriceList();
         commonLocation = saleOrderTemp.getStockLocation();
+        commonTaxNumber = saleOrderTemp.getTaxNumber();
+        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
       } else {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -470,6 +488,18 @@ public class SaleOrderController {
           commonLocation = null;
           existLocationDiff = true;
         }
+        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
+            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
+                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
+          commonTaxNumber = null;
+          existTaxNumberDiff = true;
+        }
+        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
+            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
+                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
+          commonFiscalPosition = null;
+          existFiscalPositionDiff = true;
+        }
       }
       count++;
     }
@@ -496,6 +526,25 @@ public class SaleOrderController {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
+    }
+
+    if (existTaxNumberDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
+    }
+
+    if (existFiscalPositionDiff) {
+      if (fieldErrors.length() > 0) {
+        fieldErrors.append("<br/>");
+      }
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.sale.exception.IExceptionMessage
+                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
 
     if (fieldErrors.length() > 0) {
@@ -577,7 +626,9 @@ public class SaleOrderController {
                   commonLocation,
                   commonContactPartner,
                   commonPriceList,
-                  commonTeam);
+                  commonTeam,
+                  commonTaxNumber,
+                  commonFiscalPosition);
       if (saleOrder != null) {
         // Open the generated sale order in a new tab
         response.setView(
@@ -637,9 +688,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
-    }
+    response.setAttr(
+        "operationSelect",
+        "value",
+        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+
     response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
@@ -983,9 +1036,10 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
+          Beans.get(SaleOrderLineServiceSupplyChain.class);
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderLineServiceSupplyChain.class)
-            .updateStockMoveReservationDateTime(saleOrderLine);
+        saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

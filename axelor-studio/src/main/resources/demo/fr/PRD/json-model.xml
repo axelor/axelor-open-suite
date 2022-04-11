@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<json-models>
+
+
+  <json-model>
+
+    <name>ProductCategory</name>
+
+    <title>Catégorie de produit</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductCategory' title='Catégorie de produit'
+      xmlId='menu-json-model-ProductCategory'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>Product</name>
+
+    <title>Produit</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-Product' title='Produits'
+      xmlId='menu-json-model-Product'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>ProductOrderLine</name>
+
+    <title>Ligne de commande produit</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductOrderLine'
+      title='Ligne de commande produit' xmlId='menu-json-model-ProductOrderLine'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+  <json-model>
+
+    <name>ProductOrder</name>
+
+    <title>Commande produit</title>
+
+    <onNew></onNew>
+
+    <onSave></onSave>
+
+    <formWidth>large</formWidth>
+
+    <isGenerateMenu>true</isGenerateMenu>
+
+    <menuBuilder name='menu-json-model-ProductOrder' title='Commande produit'
+      xmlId='menu-json-model-ProductOrder'/>
+
+    <menuTitle></menuTitle>
+
+    <menuIcon></menuIcon>
+
+    <menuBackground></menuBackground>
+
+    <menuOrder>0</menuOrder>
+
+    <menuTop>false</menuTop>
+
+    <menuParent></menuParent>
+
+    <appBuilder>PRD</appBuilder>
+
+  </json-model>
+
+
+</json-models>

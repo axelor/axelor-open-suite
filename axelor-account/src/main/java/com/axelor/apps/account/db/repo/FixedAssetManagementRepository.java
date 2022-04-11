@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,8 +35,8 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       computeDepreciation(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new PersistenceException(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -48,7 +48,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
             Beans.get(SequenceService.class).getDraftSequenceNumber(fixedAsset));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

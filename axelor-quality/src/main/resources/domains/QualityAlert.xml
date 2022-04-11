@@ -3,38 +3,43 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-  	<module name="quality" package="com.axelor.apps.quality.db"/>
+  <module name="quality" package="com.axelor.apps.quality.db"/>
 
-  	<entity name="QualityAlert">
-  		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true" />
-    	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center" />
-    	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" required="true"/>
-    	<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
-    	<many-to-many name="qualityTagSet" ref="QualityTag" title="Tags" />
-    	<many-to-one name="rootCause" ref="RootCause" title="Root cause" />
-    	<string name="reference" readonly="true"/> 
-    	<string name="fullName" title="Full name" namecolumn="true">
+  <entity name="QualityAlert">
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter"
+      title="Work center"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" required="true"/>
+    <many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee"
+      title="quality.responsible"/>
+    <many-to-many name="qualityTagSet" ref="QualityTag" title="Tags"/>
+    <many-to-one name="rootCause" ref="RootCause" title="Root cause"/>
+    <string name="reference" readonly="true"/>
+    <string name="fullName" title="Full name" namecolumn="true">
     		<![CDATA[
                        String fullName = "";
     				   if (reference != null && reference != "") {
                             if(product.getCode() != null)
     						fullName +=  reference + "[" + product.getCode() + "]";
-                            else 
+                            else
                               fullName += reference;
-    				    }else if(product.getCode() != null) 
+    				    }else if(product.getCode() != null)
                               fullName += "[" + product.getCode() + "]";
-    					return fullName; 
-                    
+    					return fullName;
+
     		]]>
-    	</string>
-    	<integer name="prioritySelect" selection="quality.alert.priority.select" title="Priority" />
-    	<integer name="statusSelect" title="Status" selection="quality.alert.status.select" readonly="true"/>
-    	<date name="startDate" title="Start date" />
-    	<date name="endDate" title="End date" />
-    	<date name="deadLineDate" title="Deadline"/>
-   		<string name="description" title="Description" large="true"/>
-    	<string name="correctiveActions" title="Corrective actions" large="true"/>
-    	<string name="preventiveActions" title="Preventive actions" large="true"/>
-  	</entity>
-  
+    </string>
+    <integer name="prioritySelect" selection="quality.alert.priority.select"
+      title="Priority"/>
+    <integer name="statusSelect" title="Status" selection="quality.alert.status.select"
+      readonly="true"/>
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
+    <date name="deadLineDate" title="Deadline"/>
+    <string name="description" title="Description" large="true"/>
+    <string name="correctiveActions" title="Corrective actions" large="true"/>
+    <string name="preventiveActions" title="Preventive actions" large="true"/>
+  </entity>
+
 </domain-models>

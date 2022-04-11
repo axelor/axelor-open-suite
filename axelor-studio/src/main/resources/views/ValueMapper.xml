@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="value-mapper-grid" title="Mapper" model="com.axelor.studio.db.ValueMapper">
+    <button name="btnOpenMapper" onClick="action-value-mapper-open-mapper"
+      title="Open mapper" icon="fa-edit"/>
+    <field name="name"/>
+    <field name="targetField"/>
+    <field name="sourceField"/>
+  </grid>
+
+  <form name="value-mapper-form" title="Mapper" model="com.axelor.studio.db.ValueMapper"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <button name="btnOpenMapper" onClick="save,action-value-mapper-open-mapper"
+        title="Open mapper" colSpan="2" icon="fa-edit" showIf="id != null"/>
+      <field name="targetField" readonly="true"/>
+      <field name="sourceField" readonly="true"/>
+      <field name="script" colSpan="12" readonly="true" widget="CodeEditor"
+        x-code-syntax="groovy"/>
+      <field name="scriptMeta" colSpan="12" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="value-mapper-select-wizard-form" title="Select Mapper"
+    model="com.axelor.studio.db.ValueMapper" width="large"
+    onNew="action-value-mapper-select-wizard-on-new">
+    <panel name="mainPanel" colSpan="12">
+      <field name="valueMapper" type="many-to-one" target="com.axelor.studio.db.ValueMapper"
+        title="Mapper"/>
+      <button name="btnExecute" title="Execute" onClick="action-value-mapper-method-execute"/>
+      <field name="modelName" hidden="true"/>
+      <field name="recordId" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-value-mapper-select-wizard-on-new">
+    <attribute name="value" for="modelName" expr="eval:_modelName"/>
+    <attribute name="value" for="recordId" expr="eval:_recordId"/>
+  </action-attrs>
+
+  <action-view name="action-value-mapper-open-mapper" title="Mapper">
+    <view type="html"
+      name="mapper/?id={{_id}}&amp;model=com.axelor.studio.db.ValueMapper&amp;resultField=script&amp;resultMetaField=scriptMeta&amp;targetField=targetField&amp;sourceField=sourceField"/>
+  </action-view>
+
+  <action-view name="action-value-mapper-select-wizard" title="Select Mapper"
+    model="com.axelor.studio.db.ValueMapper">
+    <view type="form" name="value-mapper-select-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_modelName" expr="eval:_model"/>
+    <context name="_recordId" expr="eval:id"/>
+  </action-view>
+
+  <action-method name="action-value-mapper-method-execute">
+    <call class="com.axelor.studio.web.ValueMapperController" method="execute"/>
+  </action-method>
+
+</object-views>

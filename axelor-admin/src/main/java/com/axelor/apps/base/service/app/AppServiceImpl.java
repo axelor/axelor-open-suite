@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,11 +24,16 @@ import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
+import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -36,7 +41,6 @@ import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -46,12 +50,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +91,7 @@ public class AppServiceImpl implements AppService {
   @Inject private MetaModelRepository metaModelRepo;
 
   @Override
-  public App importDataDemo(App app) throws AxelorException {
+  public App importDataDemo(App app) throws AxelorException, IOException {
 
     if (app.getDemoDataLoaded()) {
       return app;
@@ -114,7 +121,7 @@ public class AppServiceImpl implements AppService {
     return appRepo.save(app);
   }
 
-  private void importData(App app, String dataDir, boolean useLang) {
+  private void importData(App app, String dataDir, boolean useLang) throws IOException {
 
     String modules = app.getModules();
     if (modules == null) {
@@ -169,7 +176,7 @@ public class AppServiceImpl implements AppService {
     return lang;
   }
 
-  private void importParentData(App app) throws AxelorException {
+  private void importParentData(App app) throws AxelorException, IOException {
 
     List<App> depends = getDepends(app, true);
 
@@ -181,7 +188,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private App importDataInit(App app) {
+  private App importDataInit(App app) throws IOException {
 
     String lang = getLanguage(app);
     if (lang == null) {
@@ -227,7 +234,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private File extract(String module, String dirName, String lang, String code) {
+  private File extract(String module, String dirName, String lang, String code) throws IOException {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<>();
     files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
@@ -243,7 +250,7 @@ public class AppServiceImpl implements AppService {
       files.addAll(fetchUrls(module, dirPath + lang));
     }
 
-    final File tmp = Files.createTempDir();
+    final File tmp = Files.createTempDirectory(null).toFile();
     final String dir = dirName.replace("\\", "/");
 
     for (URL file : files) {
@@ -272,7 +279,7 @@ public class AppServiceImpl implements AppService {
 
   private void copy(InputStream in, File toDir, String name) throws IOException {
     File dst = FileUtils.getFile(toDir, name);
-    Files.createParentDirs(dst);
+    com.google.common.io.Files.createParentDirs(dst);
     FileOutputStream out = new FileOutputStream(dst);
     try {
       ByteStreams.copy(in, out);
@@ -293,13 +300,21 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public App getApp(String code) {
-    return appRepo.findByCode(code);
+  public Model getApp(String code) {
+
+    App app = appRepo.findByCode(code);
+    if (app != null) {
+      return (Model) Mapper.toMap(app).get("app" + Inflector.getInstance().camelize(code));
+    }
+
+    return null;
   }
 
   @Override
   public boolean isApp(String code) {
-    App app = getApp(code);
+
+    App app = appRepo.findByCode(code);
+
     if (app == null) {
       return false;
     }
@@ -349,7 +364,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public App installApp(App app, String language) throws AxelorException {
+  public App installApp(App app, String language) throws AxelorException, IOException {
 
     app = appRepo.find(app.getId());
 
@@ -412,7 +427,7 @@ public class AppServiceImpl implements AppService {
   @Override
   public void refreshApp() throws IOException {
 
-    File dataDir = Files.createTempDir();
+    File dataDir = Files.createTempDirectory(null).toFile();
     File imgDir = new File(dataDir, "img");
     imgDir.mkdir();
 
@@ -427,16 +442,24 @@ public class AppServiceImpl implements AppService {
                 App.class.getPackage().getName())
             .fetch();
 
+    final List<String> appFieldTargetList =
+        Stream.of(JPA.fields(App.class))
+            .filter(p -> p.getType() == PropertyType.ONE_TO_ONE)
+            .filter(p -> p.getName().startsWith("app"))
+            .map(Property::getTarget)
+            .map(Class::getName)
+            .collect(Collectors.toList());
+
     log.debug("Total app models: {}", metaModels.size());
     for (MetaModel metaModel : metaModels) {
+      if (!appFieldTargetList.contains(metaModel.getFullName())) {
+        log.debug("Not a App class : {}", metaModel.getName());
+        continue;
+      }
       Class<?> klass;
       try {
         klass = Class.forName(metaModel.getFullName());
       } catch (ClassNotFoundException e) {
-        continue;
-      }
-      if (!App.class.isAssignableFrom(klass)) {
-        log.debug("Not a App class : {}", metaModel.getName());
         continue;
       }
       Object obj = null;
@@ -451,13 +474,29 @@ public class AppServiceImpl implements AppService {
       log.debug("App without app record: {}", metaModel.getName());
       String csvName = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
       String pngName = inflector.dasherize(klass.getSimpleName()) + ".png";
+
       CSVInput input = new CSVInput();
       input.setFileName(csvName);
-      input.setTypeName(klass.getName());
+      input.setTypeName(App.class.getName());
       input.setCallable("com.axelor.csv.script.ImportApp:importApp");
       input.setSearch("self.code =:code");
       input.setSeparator(';');
       csvConfig.getInputs().add(input);
+
+      CSVInput appInput = new CSVInput();
+      appInput.setFileName(csvName);
+      appInput.setTypeName(klass.getName());
+      appInput.setSearch("self.app.code =:code");
+      appInput.setSeparator(';');
+
+      CSVBind appBind = new CSVBind();
+      appBind.setColumn("code");
+      appBind.setField("app");
+      appBind.setSearch("self.code = :code");
+      appInput.getBindings().add(appBind);
+
+      csvConfig.getInputs().add(appInput);
+
       InputStream stream = klass.getResourceAsStream("/data-init/input/" + csvName);
       copyStream(stream, new File(dataDir, csvName));
       stream = klass.getResourceAsStream("/data-init/input/img/" + pngName);
@@ -495,7 +534,7 @@ public class AppServiceImpl implements AppService {
 
   @Override
   public void bulkInstall(Collection<App> apps, Boolean importDemo, String language)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     apps = sortApps(apps);
 
@@ -508,7 +547,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public App importRoles(App app) throws AxelorException {
+  public App importRoles(App app) throws AxelorException, IOException {
 
     if (app.getIsRolesImported()) {
       return app;
@@ -525,7 +564,7 @@ public class AppServiceImpl implements AppService {
     return saveApp(app);
   }
 
-  private void importParentRoles(App app) throws AxelorException {
+  private void importParentRoles(App app) throws AxelorException, IOException {
 
     List<App> depends = getDepends(app, true);
 
@@ -538,7 +577,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public void importRoles() throws AxelorException {
+  public void importRoles() throws AxelorException, IOException {
 
     List<App> apps = appRepo.all().filter("self.isRolesImported = false").fetch();
     apps = sortApps(apps);

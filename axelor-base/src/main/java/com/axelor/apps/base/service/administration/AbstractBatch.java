@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -124,7 +124,7 @@ public abstract class AbstractBatch {
   }
 
   protected void start() throws IllegalAccessException {
-    LOG.info("Début batch {} ::: {}", model, batch.getStartDate());
+    LOG.info("Starting batch {} ::: {}", model, batch.getStartDate());
 
     model.setArchived(true);
     associateModel();
@@ -143,7 +143,7 @@ public abstract class AbstractBatch {
 
     checkPoint();
 
-    LOG.info("Fin batch {} ::: {}", model, batch.getEndDate());
+    LOG.info("Ending batch {} ::: {}", model, batch.getEndDate());
   }
 
   protected void incrementDone() {
@@ -198,7 +198,7 @@ public abstract class AbstractBatch {
   }
 
   private Long getDuring() {
-    return ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate());
+    return ChronoUnit.SECONDS.between(batch.getStartDate(), batch.getEndDate());
   }
 
   private void associateModel() throws IllegalAccessException {

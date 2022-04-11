@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,8 +22,8 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
-import com.axelor.apps.base.service.readers.DataReaderFactory;
-import com.axelor.apps.base.service.readers.DataReaderService;
+import com.axelor.apps.tool.reader.DataReaderFactory;
+import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -437,8 +437,9 @@ public class DataImportServiceImpl implements DataImportService {
     boolean update = false;
     String searchCall = fileTab.getSearchCall();
 
-    if (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
-        || StringUtils.notBlank(searchCall)) {
+    if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_FIND_NEW
+        && (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
+            || StringUtils.notBlank(searchCall))) {
       update = true;
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,9 @@ public class InventoryLineService {
       Product product,
       BigDecimal currentQty,
       String rack,
-      TrackingNumber trackingNumber) {
+      TrackingNumber trackingNumber,
+      StockLocation stockLocation,
+      StockLocation detailsStockLocation) {
 
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
@@ -44,6 +46,10 @@ public class InventoryLineService {
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setStockLocation(stockLocation);
+    if (stockLocation == null) {
+      inventoryLine.setStockLocation(detailsStockLocation);
+    }
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;
@@ -97,7 +103,7 @@ public class InventoryLineService {
               ? inventoryLine
                   .getCurrentQty()
                   .subtract(inventoryLine.getRealQty())
-                  .setScale(2, RoundingMode.HALF_EVEN)
+                  .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
 
@@ -115,13 +121,26 @@ public class InventoryLineService {
           break;
       }
 
-      inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_EVEN));
+      inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_UP));
       inventoryLine.setRealValue(
           inventoryLine.getRealQty() != null
-              ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_EVEN)
+              ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO);
     }
 
     return inventoryLine;
+  }
+
+  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product) {
+    BigDecimal currentQty = BigDecimal.ZERO;
+
+    if (stockLocation != null && product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+      if (stockLocationLine != null) {
+        currentQty = stockLocationLine.getCurrentQty();
+      }
+    }
+    return currentQty;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -156,7 +156,8 @@ public interface SaleOrderLineService {
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence);
+      Integer sequence)
+      throws AxelorException;
 
   /**
    * Get unique values of type field from pack lines
@@ -300,14 +301,16 @@ public interface SaleOrderLineService {
   /**
    * To manage Complementary Product sale order line.
    *
-   * @param saleOrderLine
+   * @param complementaryProduct
    * @param saleOrder
-   * @param complementaryProducts
+   * @param saleOrderLine
+   * @return New complementary sales order lines
    * @throws AxelorException
    */
   public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      List<ComplementaryProduct> complementaryProducts)
+      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException;
 }

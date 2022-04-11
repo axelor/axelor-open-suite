@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.app.AccessConfigImportService;
 import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -48,7 +49,7 @@ import java.util.Set;
 public class AppController {
 
   public void importDataDemo(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
@@ -59,7 +60,8 @@ public class AppController {
     response.setReload(true);
   }
 
-  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void installApp(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
     app = Beans.get(AppRepository.class).find(app.getId());
@@ -71,24 +73,31 @@ public class AppController {
 
   public void configure(ActionRequest request, ActionResponse response) {
 
-    App app = request.getContext().asType(App.class);
+    Context context = request.getContext();
 
-    String code = app.getCode();
+    MetaView formView = null;
+    String code = (String) context.get("code");
     String appName = Inflector.getInstance().camelize(code);
+    Model config = (Model) context.get("app" + appName);
     String model = "com.axelor.apps.base.db.App" + appName;
-    MetaView formView =
-        Beans.get(MetaViewRepository.class)
-            .all()
-            .filter("self.type='form' AND self.model=?", model)
-            .fetchOne();
+
+    if (config != null) {
+      formView =
+          Beans.get(MetaViewRepository.class)
+              .all()
+              .filter(
+                  "self.type = 'form' AND self.model = ? AND self.name like '%-config-form'", model)
+              .fetchOne();
+    }
+
     if (formView == null) {
       response.setFlash(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
     } else {
       response.setView(
-          ActionView.define(I18n.get("Configure") + ": " + app.getName())
+          ActionView.define(I18n.get("Configure") + ": " + context.get("name"))
               .add("form", formView.getName())
               .model(model)
-              .context("_showRecord", app.getId())
+              .context("_showRecord", config.getId())
               .param("forceEdit", "true")
               .map());
     }
@@ -104,11 +113,12 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
-  public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void bulkInstall(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     Context context = request.getContext();
 
-    Set<Map<String, Object>> apps = new HashSet<Map<String, Object>>();
+    Set<Map<String, Object>> apps = new HashSet<>();
     Collection<Map<String, Object>> appsSet =
         (Collection<Map<String, Object>>) context.get("appsSet");
     if (appsSet != null) {
@@ -119,7 +129,7 @@ public class AppController {
     String language = (String) context.get("languageSelect");
     AppRepository appRepository = Beans.get(AppRepository.class);
 
-    List<App> appList = new ArrayList<App>();
+    List<App> appList = new ArrayList<>();
     for (Map<String, Object> appData : apps) {
       App app = appRepository.find(Long.parseLong(appData.get("id").toString()));
       appList.add(app);
@@ -165,7 +175,8 @@ public class AppController {
             .map());
   }
 
-  public void importRoles(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void importRoles(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
 
     App app = request.getContext().asType(App.class);
 
@@ -177,7 +188,7 @@ public class AppController {
   }
 
   public void importAllRoles(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     Beans.get(AppService.class).importRoles();
 
