@@ -618,6 +618,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
+
 [5.3.17]: https://github.com/axelor/axelor-open-suite/compare/v5.3.16...v5.3.17
 [5.3.16]: https://github.com/axelor/axelor-open-suite/compare/v5.3.15...v5.3.16
 [5.3.15]: https://github.com/axelor/axelor-open-suite/compare/v5.3.14...v5.3.15
