@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -99,6 +99,8 @@ public interface IExceptionMessage {
       "You now have a negative amount of leave available for the reason %s" /*)*/;
   static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
+  static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
+      "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
 
   static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s" /*)*/;
   static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/
@@ -155,6 +157,15 @@ public interface IExceptionMessage {
 
   static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/
       "There is no year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_CIVIL_YEAR = /*$$(*/
+      "There is no civil year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_FISCAL_YEAR = /*$$(*/
+      "There is no fiscal year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_PAYROLL_YEAR = /*$$(*/
+      "There is no payroll for society %s which includes date %s" /*)*/;
 
   static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/
       "There is no matching condition for the allowance %s" /*)*/;

@@ -17,6 +17,7 @@
     <boolean name="hasZipOnRight" title="Zip On Right" />
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country" />
     
+    <finder-method name="findByZipAndCountry" using="zip,country" all="true"/>
   </entity>
 
 </domain-models>

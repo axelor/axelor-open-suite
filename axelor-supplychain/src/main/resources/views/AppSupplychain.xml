@@ -16,9 +16,9 @@
 			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
 			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
-			<field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4"/>
 			<field name="isSaleOrderWithoutOutgoingStockMove" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-customer-stock-move-generation-auto"/>
 			<field name="manageAdvancePaymentsFromPaymentConditions" widget="boolean-switch" colSpan="4"/>
+			<field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4" showIf="manageStockReservation"/>
 		</panel>
 		<panel name="purchaseOrderPanel" title="Purchase order">
 			<field name="supplStockMoveMgtOnPO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>

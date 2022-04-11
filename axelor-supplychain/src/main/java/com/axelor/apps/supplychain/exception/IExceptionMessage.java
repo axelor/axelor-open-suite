@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -128,6 +128,9 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
 
+  static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
+      "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
@@ -248,7 +251,7 @@ public interface IExceptionMessage {
       "The invoice's unit is different and inconvertible into the stock move's unit." /*)*/;
 
   static final String STOCK_MOVE_PARTIAL_INVOICE_ERROR = /*$$(*/
-      "Stock move has already been invoiced." /*)*/;
+      "Stock move %s has already been invoiced." /*)*/;
 
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,7 +54,10 @@ public interface StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
+      Invoice invoice,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
 
   public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)

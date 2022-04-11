@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,7 +48,7 @@ public class ReturnCode {
    * @throws EbicsException
    */
   public void throwException() throws AxelorException {
-    throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(text));
+    throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(text));
   }
 
   /**

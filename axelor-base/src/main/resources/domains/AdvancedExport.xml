@@ -12,6 +12,7 @@
   	 <integer name="maxExportLimit" title="Maximum export limit" default="1000" help="Maximum number of records to export by using this advance export."/>
   	 <integer name="queryFetchSize" title="Query fetch size" default="100" 
   	 	help="Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'."/>
+  	 <boolean name="includeArchivedRecords" title="Include archived records"/>	
   </entity>
   
 </domain-models>

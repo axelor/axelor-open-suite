@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,11 +31,13 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -55,6 +57,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +77,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected PurchaseOrderRepository purchaseOrderRepo;
+
+  @Inject protected CurrencyService currencyService;
+
+  @Inject protected AppBaseService appBaseService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -294,7 +301,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       String reason =
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }
@@ -397,10 +404,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          product.setPurchasePrice(
-              purchaseOrder.getInAti()
-                  ? purchaseOrderLine.getInTaxPrice()
-                  : purchaseOrderLine.getPrice());
+          BigDecimal convertedPrice =
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      purchaseOrder.getCurrency(),
+                      product.getPurchaseCurrency(),
+                      purchaseOrder.getInAti()
+                          ? purchaseOrderLine.getInTaxPrice()
+                          : purchaseOrderLine.getPrice(),
+                      purchaseOrder.getOrderDate())
+                  .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          product.setPurchasePrice(convertedPrice);
           if (product.getDefShipCoefByPartner()) {
             Unit productPurchaseUnit =
                 product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
@@ -424,10 +438,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             }
           }
           if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
-            product.setCostPrice(
-                purchaseOrder.getInAti()
-                    ? purchaseOrderLine.getInTaxPrice()
-                    : purchaseOrderLine.getPrice());
+            product.setCostPrice(convertedPrice);
             if (product.getAutoUpdateSalePrice()) {
               Beans.get(ProductService.class).updateSalePrice(product);
             }

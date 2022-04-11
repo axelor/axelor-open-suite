@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -277,6 +277,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             plannedStartDateT,
             plannedEndDateT,
             ManufOrderRepository.STATUS_DRAFT);
+    manufOrder = manufOrderRepo.save(manufOrder);
 
     if (appProductionService.getAppProduction().getManageWorkshop()) {
       manufOrder.setWorkshopStockLocation(billOfMaterial.getWorkshopStockLocation());
@@ -290,12 +291,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    if (!manufOrder.getIsConsProOnOperation()) {
-      this.createToConsumeProdProductList(manufOrder);
-    }
-
-    this.createToProduceProdProductList(manufOrder);
 
     return manufOrder;
   }
@@ -329,6 +324,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  @Transactional
+  public void updateOperationsName(ManufOrder manufOrder) {
+    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+      operationOrder.setName(
+          operationOrderService.computeName(
+              manufOrder, operationOrder.getPriority(), operationOrder.getOperationName()));
+    }
   }
 
   /**

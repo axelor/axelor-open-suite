@@ -6,7 +6,7 @@
     <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
+        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-category-grid"/>
     </grid>
     
     <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" width="large">
@@ -16,7 +16,7 @@
 		<panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
+	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 		</panel>
    		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  
@@ -53,5 +53,5 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_productCategoryId" expr="eval:__this__.id" />
 	</action-view>
-	
+
 </object-views>

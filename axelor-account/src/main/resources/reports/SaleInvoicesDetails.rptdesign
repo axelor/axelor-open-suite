@@ -501,7 +501,7 @@ Group by SaleOrder.expected_realisation_date,Product.full_name, ProductCategory.
 UNION
 
 SELECT  Timetable.estimated_date as "date",
-SUM(Timetable.amount * Timetable.qty - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
+SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
 		'Ordered' as type, 
 		LangTranslate1.message_value as "translation",
 		Product.full_name as product,
@@ -1163,7 +1163,7 @@ Group by date_trunc('month',SaleOrder.expected_realisation_date)::date,LangTrans
 UNION
 
 SELECT  date_trunc('month',Timetable.estimated_date)::date as "date",
-SUM(Timetable.amount * Timetable.qty - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
+SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
 		'Ordered' as type,
 		LangTranslate1.message_value as "translation"
 FROM sale_sale_order_line as SaleOrderLine

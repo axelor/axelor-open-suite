@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -182,7 +182,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -197,7 +197,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -217,19 +217,20 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected StockMoveLine convertUnitPrice(StockMoveLine stockMoveLine, Unit fromUnit, Unit toUnit)
       throws AxelorException {
-    // convert units
+    // convert unit price, meaning the conversion is reversed : Box of 12 pieces => 12 pieces but
+    // 1/12 the price
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceUntaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);
       BigDecimal unitPriceTaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceTaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);

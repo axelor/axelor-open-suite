@@ -63,7 +63,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<domain>self.salesStageSelect not in (6)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 

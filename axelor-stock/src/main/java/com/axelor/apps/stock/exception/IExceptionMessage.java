@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -198,7 +198,8 @@ public interface IExceptionMessage {
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
 
-  String TRACK_NUMBER_DATE_MISSING = /*$$(*/ "Please filled estimated delivery date" /*)*/;
+  String TRACK_NUMBER_DATE_MISSING = /*$$(*/
+      "Please fill estimated delivery date for product %s from %s" /*)*/;
 
   /** Stock correction service and controller */
   public static final String STOCK_CORRECTION_1 = /*$$(*/

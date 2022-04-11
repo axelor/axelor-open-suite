@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1479,10 +1479,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
 
-    for (String[] iteams : allMoveData) {
-      for (String iteam : iteams) {
-        if (iteam != null) {
-          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+    for (String[] items : allMoveData) {
+      for (int i = 0; i < items.length; i++) {
+        if (items[i] != null) {
+          items[i] = items[i].replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
         }
       }
     }

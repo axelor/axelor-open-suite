@@ -22,7 +22,9 @@
         	<field name="host"/>
         	<field name="securitySelect" onChange="action-mail-account-onchange-security-select"/>
         	<field name="port"/>
-        </panel>
+					<field name="fromName"/>
+					<field name="fromAddress"/>
+				</panel>
         <panel name="loginPanel" title="Login" readonlyIf="isValid" >
        	 	<field name="login"/>
         	<field name="password" widget="password"/>

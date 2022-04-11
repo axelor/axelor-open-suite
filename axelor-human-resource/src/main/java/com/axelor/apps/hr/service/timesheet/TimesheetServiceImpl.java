@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1168,15 +1168,23 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             user, date, timesheet, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
 
       } else if (appTimesheet.getCreateLinesForLeaves()) {
-        LeaveRequest leave = leaveService.getLeave(user, date);
-        if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave, date, date);
-          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
-              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-            hours = hours.multiply(dayValueInHours);
+        List<LeaveRequest> leaveList = leaveService.getLeaves(user, date);
+        BigDecimal totalLeaveHours = BigDecimal.ZERO;
+        if (ObjectUtils.notEmpty(leaveList)) {
+          for (LeaveRequest leave : leaveList) {
+            BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+            if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
+                == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+              leaveHours = leaveHours.multiply(dayValueInHours);
+            }
+            totalLeaveHours = totalLeaveHours.add(leaveHours);
           }
           timesheetLineService.createTimesheetLine(
-              user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+              user,
+              date,
+              timesheet,
+              totalLeaveHours,
+              I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
       }
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -75,6 +75,7 @@ public class TaxInvoiceLine extends TaxGenerator {
                 .filter(Objects::nonNull)
                 .map(TaxEquiv::getSpecificNote)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.joining("\n")));
       }
     } else {
@@ -169,7 +170,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     if (!invoiceLine.getFixedAssets()) {
       invoiceLineTax.setSubTotalExcludingFixedAssets(
-          invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
+          invoiceLine.getExTaxTotal().setScale(2, RoundingMode.HALF_UP));
       invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
           invoiceLineTax
               .getCompanySubTotalExcludingFixedAssets()

@@ -8,7 +8,7 @@
     <integer name="sequence" title="Sequence"/>
     <integer name="elementSelect" title="Element" selection="forecast.recap.line.type.element.select"></integer>
 	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"/>
-    <integer name="operationTypeSelect" title="Operaton Type" selection="iinvoice.operation.type.select"/>  
+    <integer name="operationTypeSelect" title="Operation type" selection="iinvoice.operation.type.select"/>  
     <integer name="payDaySelect" title="Pay Day" selection="forecast.recap.line.type.pay.day.select"/>
     <string name="statusSelect" title="Statuses to take into account" />
     <integer name="estimatedDuration" title="Estimated duration after order creation (in days)" min="0"/>

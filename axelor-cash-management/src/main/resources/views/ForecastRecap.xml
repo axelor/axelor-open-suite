@@ -2,14 +2,14 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-    
+
 	<grid name="forecast-recap-grid" title="Forecast Recaps" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
 	</grid>
- 
+
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
 	 	onNew="action-forecast-recap-group-on-new" width="large">
 	 	<toolbar>
@@ -27,8 +27,7 @@
        		   <field name="toDate" onChange="action-forecast-recap-validate-dates" colSpan="3"/>
        		   <field name="opportunitiesTypeSelect"/>
        		   <field name="startingBalance" colSpan="3"/>
-       		   <field name="company.defaultBankDetails.balance.UpdatedDate" showIf="company.defaultBankDetails.balanceUpdatedDate &amp;&amp;!bankDetails" colSpan="3"/>
-       		   <field type="date" name="company.defaultBankDetails.balanceUpdatedDate" showIf="company?.defaultBankDetails?.balanceUpdatedDate" colSpan="3"/>
+       		   <field  type="date" name="company.defaultBankDetails.balanceUpdatedDate" showIf="$get('company.defaultBankDetails.balanceUpdatedDate')" colSpan="3"/>
        		   <button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
        		   <panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
        		   <field name="endingBalance" readonly="true" colSpan="4"/>
@@ -37,7 +36,7 @@
        		   <field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>
-	 
+
 	 <form model="com.axelor.apps.base.db.Wizard" title="Reports" name="forecast-recap-print-wizard-form">
 		<panel name="mainPanel">
 			<field name="$reportTypeSelect" title="Format" selection="forecast.recap.report.type.select" colSpan="3" type="string"/>
@@ -51,7 +50,7 @@
        <field name="fromDate"/>
        <field name="toDate"/>
     </grid>
- 
+
 	 <form name="forecast-report-form" title="Forecast Report" model="com.axelor.apps.cash.management.db.ForecastRecap"
 	 	onNew="action-forecast-report-record-default-on-new">
 	 	<panel name="mainPanel" >
@@ -64,33 +63,33 @@
        		<field name="displayTypeSelect"/>
        		<field name="isComplete" hidden="true"/>
        		<button name="completeBtn" title="Populate" onClick="save,action-forecast-report-method-complete" hideIf="isComplete"/>
-       		<button name="updateBtn" title="Update" onClick="save,action-forecast-report-complete,action-forecast-report-refresh" showIf="isComplete"/>		
+       		<button name="updateBtn" title="Update" onClick="save,action-forecast-report-complete,action-forecast-report-refresh" showIf="isComplete"/>
        		<panel-dashlet name="reportDashletSalesPanel" action="forecast.report.sales.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect == 2"/>
        		<panel-dashlet name="reportDashletSpendingPanel" action="forecast.report.spending.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect == 1"/>
        		<panel-dashlet name="reportDashletMargesPanel" action="forecast.report.marges.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect != 3"/>
        		<field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>
-	 
+
 	 <action-method name="action-forecast-report-method-complete">
 	 	<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="populate"/>
 	 </action-method>
-	 
+
 	 <action-view title="Sales" name="forecast.report.sales.dashlet">
 	  <view type="chart" name="chart.forecast.report.sales"/>
 	  <context name="_id" expr="eval: id" />
 	</action-view>
-	
+
 	<action-view title="Spending" name="forecast.report.spending.dashlet">
 	  <view type="chart" name="chart.forecast.report.spending"/>
 	  <context name="_id" expr="eval: id" />
 	</action-view>
-	
+
 	<action-view title="Marges" name="forecast.report.marges.dashlet">
 	  <view type="chart" name="chart.forecast.report.marges"/>
 	  <context name="_id" expr="eval: id" />
 	</action-view>
-	
+
 	<action-view name="action-forecast-recap-view-show-forecast-recap-line-list" title="Details" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
 		<view type="grid" name="forecast-recap-line-grid"/>
 		<view type="form" name="forecast-recap-line-form"/>
@@ -98,58 +97,58 @@
 		<domain>self.forecastRecap.id = :forecastRecap</domain>
 		<context name="forecastRecap" expr="eval: __self__?.id"/>
 	</action-view>
-	 
+
 	 <action-attrs name="action-forecast-report-refresh">
 	  <attribute for="reportDashlet" name="refresh" expr="true"/>
 	</action-attrs>
-	 
+
 	 <action-record name="action-forecast-recap-record-currency" model="com.axelor.apps.cash.management.db.ForecastRecap">
 	 	<field name="currency" expr="company?.currency"/>
 	 </action-record>
-	 
+
 	 <action-group name="action-forecast-recap-group-on-new">
 	 	<action name="action-forecast-recap-record-default-on-new"/>
 	 	<action name="action-forecast-recap-method-starting-balance"/>
 	 </action-group>
-	  
+
 	 <action-method name="action-forecast-recap-method-starting-balance">
 	 	<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="fillStartingBalance"/>
 	 </action-method>
-	  
+
 	 <action-record name="action-forecast-recap-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastRecap">
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
 	 	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
 	 	<field name="isReport" expr="eval: false"/>
 	 	<field name="fromDate" expr="eval: __date__"/>
 	 </action-record>
-	 
+
 	 <action-record name="action-forecast-report-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastRecap">
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
 	 	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
 	 	<field name="isReport" expr="eval: true"/>
 	 </action-record>
-	 
+
 	 <action-validate name="action-forecast-recap-validate-dates">
 	    <error message="Starting date should not be in the past" if="fromDate != null &amp;&amp; fromDate &lt; __date__" action="action-forecast-recap-null-fromDate"/>
 		<error message="Invalid dates" if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate" action="action-forecast-recap-null-toDate"/>
 	</action-validate>
-	
+
 	<action-record name="action-forecast-recap-null-toDate" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="toDate" expr="eval: null"/>
 	</action-record>
-	
+
 	<action-record name="action-forecast-recap-null-fromDate" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="fromDate" expr="eval: null"/>
 	</action-record>
-	
+
 	<action-validate name="action-forecast-recap-validate-dates-before-populate">
 		<error message="Invalid dates" if="toDate == null || fromDate == null"/>
 	</action-validate>
-	
+
 	<action-method name="action-forecast-recap-method-populate">
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="populate"/>
 	</action-method>
-	
+
 	<action-view name="action-forecast-recap-view-reports-wizard" title="Reports"
 		model="com.axelor.apps.cash.management.db.ForecastRecap" >
 		<view type="form" name="forecast-recap-print-wizard-form" />
@@ -163,7 +162,7 @@
     <action-method name="action-forecast-recap-method-print">
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
     </action-method>
-    
+
     <search-filters name="forecast-recap-filters" model="com.axelor.apps.cash.management.db.ForecastRecap" title="Forecast recap filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
         <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>

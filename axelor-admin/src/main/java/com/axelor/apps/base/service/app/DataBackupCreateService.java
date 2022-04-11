@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -123,11 +123,6 @@ public class DataBackupCreateService {
 
     for (MetaModel metaModel : metaModelList) {
 
-      /*Checking and ByPassing non-persistable Classes MetaModel*/
-      if (metaModel.getTableName() == null) {
-        continue;
-      }
-
       try {
         List<String> subClasses = subClassesMap.get(metaModel.getFullName());
         long totalRecord = getMetaModelDataCount(metaModel, subClasses);
@@ -210,7 +205,7 @@ public class DataBackupCreateService {
   /* Get All MetaModels */
   private List<MetaModel> getMetaModels() {
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
+        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));

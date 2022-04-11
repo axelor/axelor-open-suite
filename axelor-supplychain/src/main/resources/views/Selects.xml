@@ -116,5 +116,10 @@
 		<option value="1">Partially invoiced</option>
 		<option value="2">Invoiced</option>
 	</selection>
+	
+	<selection name='supplychain.declaration.of.exchanges.product.type.select'>
+		<option value='service'>declarationOfExchanges.Service</option>
+		<option value='storable'>declarationOfExchanges.ProductType.product</option>
+	</selection>
 
 </object-views>

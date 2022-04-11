@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,12 +70,14 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
       PayrollPreparationService payrollPreparationService,
       CompanyRepository companyRepository,
       PeriodRepository periodRepository,
-      HrBatchRepository hrBatchRepository) {
+      HrBatchRepository hrBatchRepository,
+      PayrollPreparationRepository payrollPreparationRepository) {
     super();
     this.payrollPreparationService = payrollPreparationService;
     this.companyRepository = companyRepository;
     this.periodRepository = periodRepository;
     this.hrBatchRepository = hrBatchRepository;
+    this.payrollPreparationRepository = payrollPreparationRepository;
   }
 
   @Override

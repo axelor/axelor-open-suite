@@ -22,9 +22,9 @@
 		
 		<extra-code>
 			<![CDATA[
-				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;
-				public static final Integer INVOICING_TYPE_PACKAGE = 2;
-				public static final Integer INVOICING_TYPE_NO_INVOICING = 3;
+				public static final int INVOICING_TYPE_TIME_SPENT= 1;
+				public static final int INVOICING_TYPE_PACKAGE = 2;
+				public static final int INVOICING_TYPE_NO_INVOICING = 3;
 	        ]]>
 		</extra-code>
 		

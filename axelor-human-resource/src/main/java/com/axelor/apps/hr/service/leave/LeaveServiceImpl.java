@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,6 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -53,6 +52,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
 
@@ -390,9 +390,9 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getLeaveLine().getLeaveReason().getLeaveReason());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
     }
   }
 
@@ -439,11 +439,11 @@ public class LeaveServiceImpl implements LeaveService {
             I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
             leave.getLeaveLine().getLeaveReason().getLeaveReason());
       }
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
     } else {
       leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -474,9 +474,9 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getLeaveLine().getLeaveReason().getLeaveReason());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -515,9 +515,9 @@ public class LeaveServiceImpl implements LeaveService {
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
     } else if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
       if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-      } else {
         leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      } else {
+        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
       }
     }
   }
@@ -771,6 +771,9 @@ public class LeaveServiceImpl implements LeaveService {
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
     LeaveLine leaveLine = leaveRequest.getLeaveLine();
+    if (leaveLine.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+      isOverlapped(leaveRequest);
+    }
     if (leaveLine.getLeaveReason().getManageAccumulation()) {
       manageValidateLeaves(leaveRequest);
     }
@@ -890,12 +893,14 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   public boolean isLeaveDay(User user, LocalDate date) {
-    return getLeave(user, date) != null;
+    return ObjectUtils.notEmpty(getLeaves(user, date));
   }
 
-  public LeaveRequest getLeave(User user, LocalDate date) {
+  public List<LeaveRequest> getLeaves(User user, LocalDate date) {
+    List<LeaveRequest> leavesList = new ArrayList<>();
     List<LeaveRequest> leaves =
-        JPA.all(LeaveRequest.class)
+        leaveRequestRepo
+            .all()
             .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
             .bind("userId", user)
             .bind("awaitingValidation", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
@@ -907,10 +912,53 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate from = leave.getFromDateT().toLocalDate();
         LocalDate to = leave.getToDateT().toLocalDate();
         if ((from.isBefore(date) && to.isAfter(date)) || from.isEqual(date) || to.isEqual(date)) {
-          return leave;
+          leavesList.add(leave);
         }
       }
     }
-    return null;
+    return leavesList;
+  }
+
+  protected void isOverlapped(LeaveRequest leaveRequest) throws AxelorException {
+    List<LeaveRequest> leaveRequestList =
+        leaveRequestRepo
+            .all()
+            .filter(
+                "self.user = ?1 AND self.statusSelect = ?2",
+                leaveRequest.getUser(),
+                LeaveRequestRepository.STATUS_VALIDATED)
+            .fetch();
+    for (LeaveRequest leaveRequest2 : leaveRequestList) {
+      if (isOverlapped(leaveRequest, leaveRequest2)) {
+        throw new AxelorException(
+            leaveRequest,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+      }
+    }
+  }
+
+  protected boolean isOverlapped(LeaveRequest request1, LeaveRequest request2) {
+
+    if (isDatesNonOverlapped(request1, request2)
+        || isSelectsNonOverlapped(request1, request2)
+        || isSelectsNonOverlapped(request2, request1)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  protected boolean isDatesNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
+    return request2.getToDateT().isBefore(request1.getFromDateT())
+        || request1.getToDateT().isBefore(request2.getFromDateT())
+        || request1.getToDateT().isBefore(request1.getFromDateT())
+        || request2.getToDateT().isBefore(request2.getFromDateT());
+  }
+
+  protected boolean isSelectsNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
+    return request1.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING
+        && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
+        && request1.getToDateT().isEqual(request2.getFromDateT());
   }
 }

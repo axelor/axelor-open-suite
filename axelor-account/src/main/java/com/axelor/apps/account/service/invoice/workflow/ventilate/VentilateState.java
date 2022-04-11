@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -213,25 +213,28 @@ public class VentilateState extends WorkflowInvoice {
       query += "AND EXTRACT (year from self.invoiceDate) = :year ";
       params.put("year", invoice.getInvoiceDate().getYear());
     }
-
     if (invoiceRepo.all().filter(query).bind(params).count() > 0) {
+      Invoice lastInvoice =
+          invoiceRepo.all().filter(query).bind(params).order("invoiceDate").fetchOne();
       if (sequence.getMonthlyResetOk()) {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_2));
+            I18n.get(IExceptionMessage.VENTILATE_STATE_2),
+            lastInvoice.getInvoiceDate().getMonth().toString());
       }
       if (sequence.getYearlyResetOk()) {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_3));
+            I18n.get(IExceptionMessage.VENTILATE_STATE_3),
+            Integer.toString(lastInvoice.getInvoiceDate().getYear()));
       }
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.VENTILATE_STATE_1),
-          invoice.getInvoiceId());
+          lastInvoice.getInvoiceDate().toString());
     }
   }
 

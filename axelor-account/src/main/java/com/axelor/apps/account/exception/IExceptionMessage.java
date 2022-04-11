@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -633,12 +633,12 @@ public interface IExceptionMessage {
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
-      "%s - Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
 
   static final String VENTILATE_STATE_2 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date : %s" /*)*/;
   static final String VENTILATE_STATE_3 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date : %s" /*)*/;
   static final String VENTILATE_STATE_4 = /*$$(*/
       "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
   static final String VENTILATE_STATE_5 = /*$$(*/

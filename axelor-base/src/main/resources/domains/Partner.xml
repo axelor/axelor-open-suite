@@ -94,6 +94,8 @@
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 
+	<finder-method name="findByPartnerSeq" using="partnerSeq"/>
+
 	<extra-code>
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;

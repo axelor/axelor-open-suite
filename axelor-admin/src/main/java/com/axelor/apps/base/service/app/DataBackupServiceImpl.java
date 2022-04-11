@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -161,29 +161,34 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  public boolean SeuencesExist() {
-    return restoreService.SeuencesExist();
+  public boolean sequencesOrMrpLineTypesExist() {
+    return restoreService.sequencesOrMrpLineTypesExist();
   }
 
   @Transactional
   public void updateImportId() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
+        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModelList.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
 
     for (MetaModel metaModel : metaModelList) {
-      String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
-      String query =
-          "Update "
-              + metaModel.getName()
-              + " self SET self.importId = CONCAT(CAST(self.id as text),"
-              + currentDateTimeStr
-              + ") WHERE self.importId=null";
-      JPA.execute(query);
+      try {
+        Class.forName(metaModel.getFullName());
+        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
+        String query =
+            "Update "
+                + metaModel.getName()
+                + " self SET self.importId = CONCAT(CAST(self.id as text),"
+                + currentDateTimeStr
+                + ") WHERE self.importId=null";
+        JPA.execute(query);
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e);
+      }
     }
   }
 }

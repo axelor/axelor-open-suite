@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -102,6 +103,16 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
     int available = 0, availableForProduct = 0, missing = 0;
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+      if (stockMoveLine != null
+          && stockMoveLine.getProduct() != null
+          && stockMoveLine.getProduct().getProductTypeSelect() != null
+          && stockMoveLine
+              .getProduct()
+              .getProductTypeSelect()
+              .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
+        continue;
+      }
       Beans.get(StockMoveLineService.class)
           .updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
       Product product = stockMoveLine.getProduct();

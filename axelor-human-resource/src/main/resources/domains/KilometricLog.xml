@@ -11,6 +11,7 @@
         <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" />
         <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" />
         <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Kilometric allowance list"/>
-        
+
+        <unique-constraint columns="employee,year"/>
     </entity>
 </domain-models>

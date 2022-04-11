@@ -5,7 +5,7 @@
 	
 	<form name="sale-json-field-form" onLoad="action-configurator-json-field-onload" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-configurator-set-json-field-default">
 	    <panel name="overviewPanel" title="Overview">
-	      <field name="$simpleName" onChange="action-configurator-json-field-record-name" title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
+	      <field name="$simpleName" onChange="action-configurator-json-field-record-name,action-condition-sale-meta-json-field-check-duplicate-name" title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 		  <field readonly="true" name="name" title="Name to use in scripts"/>
 	      <field name="type" selection-in="['string', 'integer', 'decimal', 'boolean', 'datetime', 'date', 'time', 'panel', 'enum', 'button', 'separator', 'many-to-one', 'many-to-many', 'json-many-to-one', 'json-many-to-many']"/>
 	      <field name="title" />
@@ -107,7 +107,14 @@
 	</action-record>
 
 	<action-record name="action-configurator-record-meta-on-change" model="com.axelor.meta.db.MetaJsonField">
-		<field name="onChange" if="showedOnChange &amp;&amp; showedOnChange != ''" expr="eval: showedOnChange + ',save, action-configurator-update-indicators,save' "/>
+		<field name="onChange" if="showedOnChange &amp;&amp; showedOnChange != ''" expr="eval: showedOnChange + ',save,action-configurator-update-indicators,save' "/>
+		<field name="onChange" if="!showedOnChange || showedOnChange == ''" expr="eval: 'save,action-configurator-update-indicators,save' "/>
 	</action-record>
+
+	<action-condition name="action-condition-sale-meta-json-field-check-duplicate-name">
+		<check field="$simpleName"
+			if="__repo__(MetaJsonField).all().filter(&quot;self.name = :name AND self.id != :ownId&quot;).bind('name', name).bind('ownId', id?:0).count() >= 1"
+			error="An attribute with the same name already exists."/>
+	</action-condition>
     
 </object-views>
