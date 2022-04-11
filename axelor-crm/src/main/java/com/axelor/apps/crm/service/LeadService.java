@@ -22,6 +22,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 import java.util.Map;
 
 public interface LeadService {
@@ -81,6 +82,14 @@ public interface LeadService {
    * @throws AxelorException if the lead wasn't new nor assigned.
    */
   void assignToMeLead(Lead lead) throws AxelorException;
+
+  /**
+   * Set multiple leads to the current user and change status to Assigned.
+   *
+   * @param leadList
+   * @throws AxelorException if the lead wasn't new nor assigned.
+   */
+  void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException;
 
   /**
    * Recycle the lead if it was lost, change the status to In Process.

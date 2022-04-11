@@ -271,6 +271,14 @@ public class LeadServiceImpl implements LeadService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
+  public void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException {
+    for (Lead lead : leadList) {
+      assignToMeLead(lead);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void recycleLead(Lead lead) throws AxelorException {
     if (lead.getStatusSelect() == null
         || lead.getStatusSelect() != LeadRepository.LEAD_STATUS_LOST) {
