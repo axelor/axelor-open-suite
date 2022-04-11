@@ -145,6 +145,8 @@ public class NotificationServiceImpl implements NotificationService {
       return null;
     }
 
+    boolean isInvoice = amountPaid.signum() > 0;
+
     Move paymentMove =
         moveService
             .getMoveCreateService()
@@ -167,8 +169,8 @@ public class NotificationServiceImpl implements NotificationService {
                 paymentMove,
                 invoice.getPartner(),
                 account,
-                amountPaid,
-                true,
+                amountPaid.abs(),
+                isInvoice,
                 notification.getPaymentDate(),
                 null,
                 1,
@@ -182,8 +184,8 @@ public class NotificationServiceImpl implements NotificationService {
                 paymentMove,
                 invoice.getPartner(),
                 invoice.getPartnerAccount(),
-                amountPaid,
-                false,
+                amountPaid.abs(),
+                !isInvoice,
                 notification.getPaymentDate(),
                 null,
                 2,
@@ -197,14 +199,23 @@ public class NotificationServiceImpl implements NotificationService {
     moveService.getMoveValidateService().validate(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
-    MoveLine subrogationReleaseMoveLine = findSubrogationReleaseAccountMoveLine(invoice, account);
+    MoveLine subrogationReleaseMoveLine =
+        findSubrogationReleaseAccountMoveLine(invoice, account, isInvoice);
 
     if (invoiceMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
-      reconcileService.reconcile(invoiceMoveLine, partnerMoveLine, true, true);
+      if (amountPaid.signum() > 0) {
+        reconcileService.reconcile(invoiceMoveLine, partnerMoveLine, true, true);
+      } else {
+        reconcileService.reconcile(partnerMoveLine, invoiceMoveLine, true, true);
+      }
       if (subrogationReleaseMoveLine != null
           && notificationItem.getTypeSelect()
               == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE) {
-        reconcileService.reconcile(notificationMoveLine, subrogationReleaseMoveLine, true, false);
+        if (amountPaid.signum() > 0) {
+          reconcileService.reconcile(notificationMoveLine, subrogationReleaseMoveLine, true, false);
+        } else {
+          reconcileService.reconcile(subrogationReleaseMoveLine, notificationMoveLine, true, false);
+        }
       }
     }
 
@@ -254,11 +265,13 @@ public class NotificationServiceImpl implements NotificationService {
     throw new NoSuchElementException();
   }
 
-  protected MoveLine findSubrogationReleaseAccountMoveLine(Invoice invoice, Account account)
-      throws AxelorException {
+  protected MoveLine findSubrogationReleaseAccountMoveLine(
+      Invoice invoice, Account account, boolean isInvoice) throws AxelorException {
     if (invoice.getSubrogationReleaseMove() != null) {
       for (MoveLine moveLine : invoice.getSubrogationReleaseMove().getMoveLineList()) {
-        if (moveLine.getAccount().equals(account)) {
+        if (moveLine.getAccount().equals(account)
+            && ((!isInvoice && moveLine.getDebit().signum() > 0)
+                || (isInvoice && moveLine.getCredit().signum() > 0))) {
           return moveLine;
         }
       }
