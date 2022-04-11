@@ -54,14 +54,8 @@
   </action-attrs>
 
   <action-group name="action-bank-statement-rule-group-onchange-account-management">
-    <action name="account-bank-statement-rule-record-set-temp-company"/>
     <action name="account-bank-statement-rule-record-set-main-panel-fields-nullable"/>
   </action-group>
-
-  <action-record name="account-bank-statement-rule-record-set-temp-company"
-    model="com.axelor.apps.bankpayment.db.BankStatementRule">
-    <field name="$company" expr="eval: accountManagement?.company"/>
-  </action-record>
 
   <action-record
     name="account-bank-statement-rule-record-set-main-panel-fields-nullable"
