@@ -1180,4 +1180,7 @@ public interface IExceptionMessage {
 
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND = /*$$(*/
+      "Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue." /*)*/;
 }

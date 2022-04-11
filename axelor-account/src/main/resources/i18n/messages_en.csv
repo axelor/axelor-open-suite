@@ -1564,6 +1564,7 @@
 "History",,,
 "Holdback",,,
 "Holdback Customer account",,,
+"Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue.",,,
 "Holdback Supplier account",,,
 "ID",,,
 "IFRS",,,

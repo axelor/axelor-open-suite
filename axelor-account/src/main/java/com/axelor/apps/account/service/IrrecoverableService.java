@@ -967,7 +967,7 @@ public class IrrecoverableService {
     Reconcile reconcile =
         reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     return move;
@@ -1031,7 +1031,7 @@ public class IrrecoverableService {
 
     Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();

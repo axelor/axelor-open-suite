@@ -1564,6 +1564,7 @@
 "History","Historique",,
 "Holdback","Retenue de garantie",,
 "Holdback Customer account","Compte client - Retenue de garantie",,
+"Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue.","Une échéance de retenue de garenti ne peut pas être réconciliée avec une échéance d'avoir, veuillez désélectionner les échéances d'avoir pour pouvoir continuer.",,
 "Holdback Supplier account","Compte fournisseur - Retenue de garantie",,
 "ID","ID",,
 "IFRS",,,

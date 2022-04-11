@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
@@ -36,6 +37,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.BankDetails;
@@ -58,6 +60,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermServiceImpl implements InvoiceTermService {
@@ -69,6 +72,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceToolService invoiceToolService;
   protected InvoiceVisibilityService invoiceVisibilityService;
   protected AccountConfigService accountConfigService;
+  protected ReconcileService reconcileService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -78,7 +82,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AppAccountService appAccountService,
       InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      ReconcileService reconcileService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
@@ -86,6 +91,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceToolService = invoiceToolService;
     this.invoiceVisibilityService = invoiceVisibilityService;
     this.accountConfigService = accountConfigService;
+    this.reconcileService = reconcileService;
   }
 
   @Override
@@ -1079,10 +1085,79 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public InvoiceTerm updatePaymentAmountAndAmountPaidAfterReconciliation(InvoiceTerm invoiceTerm)
+  public void reconcileAndUpdateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund)
       throws AxelorException {
-    this.fillEligibleTerm(invoiceTerm.getPaymentSession(), invoiceTerm);
+    BigDecimal reconciledAmount =
+        invoiceTermFromInvoice.getAmountRemaining().min(invoiceTermFromRefund.getAmountRemaining());
 
+    MoveLine creditMoveLine = null;
+    MoveLine debitMoveLine = null;
+    if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
+        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+      creditMoveLine = invoiceTermFromRefund.getMoveLine();
+      debitMoveLine = invoiceTermFromInvoice.getMoveLine();
+    } else if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
+        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+      creditMoveLine = invoiceTermFromInvoice.getMoveLine();
+      debitMoveLine = invoiceTermFromRefund.getMoveLine();
+    }
+    Reconcile invoiceTermsReconcile =
+        reconcileService.createReconcile(debitMoveLine, creditMoveLine, reconciledAmount, true);
+    reconcileService.confirmReconcile(invoiceTermsReconcile, true, false);
+
+    updateInvoiceTermsAmounts(invoiceTermFromInvoice, reconciledAmount);
+    updateInvoiceTermsAmounts(invoiceTermFromRefund, reconciledAmount);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
+      List<InvoiceTerm> invoiceTermList) throws AxelorException {
+
+    List<InvoiceTerm> invoiceTermFromInvoiceList =
+        getInvoiceTermsInvoiceOrRefundSortedByDueDate(invoiceTermList, true);
+    List<InvoiceTerm> invoiceTermFromRefundList =
+        getInvoiceTermsInvoiceOrRefundSortedByDueDate(invoiceTermList, false);
+    int invoiceCounter = 0;
+    int refundCounter = 0;
+    InvoiceTerm invoiceTermFromInvoice = null;
+    InvoiceTerm invoiceTermFromRefund = null;
+    while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
+        && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
+        && invoiceCounter < invoiceTermFromInvoiceList.size()
+        && refundCounter < invoiceTermFromRefundList.size()) {
+      invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
+      invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
+      this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
+      if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
+        invoiceCounter++;
+      }
+      if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+        refundCounter++;
+      }
+    }
+    return invoiceTermList;
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDate(
+      List<InvoiceTerm> invoiceTermList, boolean isInvoice) {
+    return invoiceTermList.stream()
+        .filter(
+            it ->
+                (it.getAmountPaid().signum() > 0 && isInvoice)
+                    || (it.getAmountPaid().signum() < 0 && !isInvoice))
+        .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
+        .collect(Collectors.toList());
+  }
+
+  protected InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm, BigDecimal reconciledAmount) {
+
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(reconciledAmount));
+    if (invoiceTerm.getPaymentSession() != null && invoiceTerm.getIsSelectedOnPaymentSession()) {
+      this.fillEligibleTerm(invoiceTerm.getPaymentSession(), invoiceTerm);
+    }
     return invoiceTerm;
   }
 }

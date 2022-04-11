@@ -35,7 +35,8 @@ public interface ReconcileService {
       boolean canBeZeroBalanceOk);
 
   @Transactional(rollbackOn = {Exception.class})
-  public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
+  public Reconcile confirmReconcile(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException;
 
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;

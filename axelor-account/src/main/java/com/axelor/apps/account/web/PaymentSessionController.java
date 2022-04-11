@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -156,7 +157,7 @@ public class PaymentSessionController {
       Beans.get(PaymentSessionValidateService.class).reconciledInvoiceTermMoves(paymentSession);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -180,8 +181,16 @@ public class PaymentSessionController {
                 partnerFullNames.toString(),
                 paymentSession.getPaymentMode().getCode()));
       }
+
+      boolean isHoldBackWithRefund =
+          Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
+      if (isHoldBackWithRefund) {
+        response.setError(
+            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
+      }
+
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -178,7 +178,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
 
-    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+        && paymentSession.getPaymentMode().getAutoConfirmBankOrder()
+        && paymentSession.getBankOrder() != null) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }

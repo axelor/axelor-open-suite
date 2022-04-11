@@ -174,7 +174,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     Reconcile reconcile =
         reconcileService.createReconcile(
             debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
-    reconcileService.confirmReconcile(reconcile, false);
+    reconcileService.confirmReconcile(reconcile, false, false);
   }
 
   /**

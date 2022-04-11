@@ -17,7 +17,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,7 +30,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -184,7 +182,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession AND self.amountRemaining > 0")
+            .filter("self.paymentSession = :paymentSession")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -193,9 +191,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
 
         if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+          offset++;
           this.processInvoiceTerm(
               paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
         } else {
@@ -624,41 +622,55 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException {
 
-    TypedQuery<MoveLine> moveLineQuery =
+    TypedQuery<InvoiceTerm> invoiceTermQuery =
         JPA.em()
             .createQuery(
-                "SELECT MoveLine FROM MoveLine MoveLine "
-                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
                     + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
-                MoveLine.class);
+                InvoiceTerm.class);
+    invoiceTermQuery.setParameter("paymentSession", paymentSession);
 
-    moveLineQuery.setParameter("paymentSession", paymentSession);
+    List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
 
-    List<MoveLine> moveLineList = moveLineQuery.getResultList();
-    if (!ObjectUtils.isEmpty(moveLineList)) {
-      Beans.get(MoveLineService.class).reconcileMoveLinesWithFullRollBack(moveLineList);
-
-      TypedQuery<InvoiceTerm> invoiceTermQuery =
-          JPA.em()
-              .createQuery(
-                  "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
-                      + " WHERE InvoiceTerm.paymentSession = :paymentSession "
-                      + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
-                  InvoiceTerm.class);
-      invoiceTermQuery.setParameter("paymentSession", paymentSession);
-
-      List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
-
-      this.updatePaymentAmountAndAmountPaidAfterReconciliation(invoiceTermList);
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      invoiceTermList =
+          invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(invoiceTermList);
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  protected void updatePaymentAmountAndAmountPaidAfterReconciliation(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException {
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      invoiceTermService.updatePaymentAmountAndAmountPaidAfterReconciliation(invoiceTerm);
+  @Override
+  public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException {
+    boolean isHoldBackWithRefund = false;
+    TypedQuery<InvoiceTerm> holdbackInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.isHoldBack = true ",
+                InvoiceTerm.class);
+    holdbackInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> holdbackInvoiceTermList = holdbackInvoiceTermQuery.getResultList();
+
+    TypedQuery<InvoiceTerm> refundInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.amountPaid < 0",
+                InvoiceTerm.class);
+    refundInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> refundInvoiceTermList = refundInvoiceTermQuery.getResultList();
+
+    if (!ObjectUtils.isEmpty(holdbackInvoiceTermList)
+        && !ObjectUtils.isEmpty(refundInvoiceTermList)) {
+      isHoldBackWithRefund = true;
     }
+
+    return isHoldBackWithRefund;
   }
 }

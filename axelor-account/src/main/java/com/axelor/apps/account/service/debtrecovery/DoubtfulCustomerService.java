@@ -294,7 +294,7 @@ public class DoubtfulCustomerService {
     Reconcile reconcile =
         reconcileService.createReconcile(moveLine, creditMoveLine, amountRemaining, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     // Ecriture au débit sur le 416 (client douteux)

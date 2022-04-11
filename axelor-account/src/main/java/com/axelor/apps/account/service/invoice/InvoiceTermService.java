@@ -259,6 +259,9 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
-  public InvoiceTerm updatePaymentAmountAndAmountPaidAfterReconciliation(InvoiceTerm invoiceTerm)
-      throws AxelorException;
+  public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
+      List<InvoiceTerm> invoiceTermList) throws AxelorException;
+
+  void reconcileAndUpdateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
 }
