@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -52,6 +53,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -155,7 +157,9 @@ public class PaymentVoucherConfirmService {
     AppAccountService appAccountService = Beans.get(AppAccountService.class);
 
     if (appAccountService.getAppAccount().getPaymentVouchersOnInvoice()
-        && paymentVoucher.getPaymentMode().getValidatePaymentByDepositSlipPublication()) {
+        && Objects.equal(
+            PaymentModeRepository.ACCOUNTING_TRIGGER_VALUE_FOR_COLLECTION,
+            paymentVoucher.getPaymentMode().getAccountingTriggerSelect())) {
       waitForDepositSlip(paymentVoucher);
     } else {
       createMoveAndConfirm(paymentVoucher);
