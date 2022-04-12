@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.ImportBatch;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
@@ -15,6 +16,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +25,7 @@ public class BatchImportData extends AbstractImportBatch {
 
   private static final String TRACE_ORIGIN = "Import Batch";
   protected ImportService importService;
+  protected ImportConfigurationRepository importConfigurationRepository;
 
   protected FactoryImporter factoryImporter;
   protected MetaFileRepository metaFileRepository;
@@ -36,12 +39,14 @@ public class BatchImportData extends AbstractImportBatch {
       BatchImportHistoryRepository batchImportHistoryRepository,
       MetaFileRepository metaFileRepository,
       UserRepository userRepository,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      ImportConfigurationRepository importConfigurationRepository) {
     super(fileSourceConnectorService, batchImportHistoryRepository, userRepository);
     this.importService = importService;
     this.factoryImporter = factoryImporter;
     this.metaFileRepository = metaFileRepository;
     this.metaFiles = metaFiles;
+    this.importConfigurationRepository = importConfigurationRepository;
   }
 
   @Override
@@ -64,7 +69,7 @@ public class BatchImportData extends AbstractImportBatch {
     } else {
       try {
         List<MetaFile> files = downloadFiles(importBatch.getFileSourceConnectorParameters());
-        importFiles(files, importBatch.getImportConfig().getBindMetaFile());
+        importFiles(files);
       } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
@@ -72,32 +77,30 @@ public class BatchImportData extends AbstractImportBatch {
     }
   }
 
-  protected void importFiles(List<MetaFile> files, MetaFile bindMetaFile) {
+  protected void importFiles(List<MetaFile> files) {
 
     ImportConfiguration importConfiguration = batch.getImportBatch().getImportConfig();
     ImportBatch importBatch = batch.getImportBatch();
+    MetaFile originalFile = importConfiguration.getDataMetaFile();
 
     for (MetaFile file : files) {
       try {
-        importFile(bindMetaFile, importConfiguration, importBatch, file);
+        importFile(importConfiguration, importBatch, file, originalFile);
         incrementDone();
       } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
-      } finally {
-
       }
     }
   }
 
   protected void importFile(
-      MetaFile bindMetaFile,
       ImportConfiguration importConfiguration,
       ImportBatch importBatch,
-      MetaFile file)
+      MetaFile file,
+      MetaFile originalFile)
       throws IOException, AxelorException {
 
-    importConfiguration.setBindMetaFile(bindMetaFile);
     MetaFile tmpFile = createTemporaryFile(importBatch, file);
     if (tmpFile != null) {
       importConfiguration.setDataMetaFile(tmpFile);
@@ -108,9 +111,18 @@ public class BatchImportData extends AbstractImportBatch {
     createBatchHistory(
         metaFileRepository.find(file.getId()),
         metaFileRepository.find(importHistory.getLogMetaFile().getId()));
+    resetImportConfiguration(importConfiguration, originalFile);
     if (tmpFile != null) {
-      metaFiles.delete(importConfiguration.getDataMetaFile());
+      metaFiles.delete(tmpFile);
     }
+  }
+
+  @Transactional
+  protected void resetImportConfiguration(
+      ImportConfiguration importConfiguration, MetaFile originalFile) {
+    importConfiguration = importConfigurationRepository.find(importConfiguration.getId());
+    importConfiguration.setDataMetaFile(metaFileRepository.find(originalFile.getId()));
+    importConfigurationRepository.save(importConfiguration);
   }
 
   /**
