@@ -131,6 +131,12 @@ public interface IExceptionMessage {
   static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
 
+  //  Mrp Forecast
+  static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only be confirmed from drafted forecast." /*)*/;
+  static final String MRP_FORECAST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only be cancelled from drafted or confirmed forecast." /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;

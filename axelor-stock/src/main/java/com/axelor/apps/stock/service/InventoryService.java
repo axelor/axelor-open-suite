@@ -314,14 +314,96 @@ public class InventoryService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public void validateInventory(Inventory inventory) throws AxelorException {
+  public void planInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_PLAN_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_PLANNED);
+  }
 
+  @Transactional(rollbackOn = {Exception.class})
+  public void startInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_START_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void completeInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_COMPLETE_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_COMPLETED);
+    inventory.setCompletedBy(AuthUtils.getUser());
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_COMPLETED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
+    }
     inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);
     generateStockMove(inventory, false);
     storeLastInventoryData(inventory);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void draftInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_DRAFT_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_DRAFT);
+    inventory.setValidatedBy(null);
+    inventory.setValidatedOn(null);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancel(Inventory inventory) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InventoryRepository.STATUS_DRAFT);
+    authorizedStatus.add(InventoryRepository.STATUS_PLANNED);
+    authorizedStatus.add(InventoryRepository.STATUS_IN_PROGRESS);
+    authorizedStatus.add(InventoryRepository.STATUS_COMPLETED);
+    authorizedStatus.add(InventoryRepository.STATUS_VALIDATED);
+
+    if (inventory.getStatusSelect() == null
+        || !authorizedStatus.contains(inventory.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));
+    }
+    List<StockMove> stockMoveList =
+        stockMoveRepo
+            .all()
+            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
+            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
+            .bind("originId", inventory.getId())
+            .fetch();
+
+    for (StockMove stockMove : stockMoveList) {
+      stockMoveService.cancel(stockMove);
+    }
+
+    inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
   private void storeLastInventoryData(Inventory inventory) {
@@ -502,23 +584,6 @@ public class InventoryService {
         stockMoveLine.setTrackingNumber(trackingNumber);
       }
     }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancel(Inventory inventory) throws AxelorException {
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
-            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
-            .bind("originId", inventory.getId())
-            .fetch();
-
-    for (StockMove stockMove : stockMoveList) {
-      stockMoveService.cancel(stockMove);
-    }
-
-    inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
   @Transactional(rollbackOn = {Exception.class})
