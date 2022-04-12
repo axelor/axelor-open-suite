@@ -103,7 +103,7 @@
   </form>
 
   <cards name="message-cards" title="Emails" css="rect-image"
-    model="com.axelor.apps.message.db.Message" width="100%" orderBy="-sentDateT">
+    model="com.axelor.apps.message.db.Message" width="50%" orderBy="-sentDateT">
     <field name="statusSelect"/>
     <field name="typeSelect"/>
     <field name="mediaTypeSelect"/>
