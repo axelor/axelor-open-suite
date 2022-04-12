@@ -132,6 +132,8 @@
 "Status","Statut",,
 "Tab name","Nom de l'onglet",,
 "Technical maintenance","Maintenance technique",,
+"The 'Query' of the line '%s' cannot be empty.","La ""Requête"" de la ligne ""%s"" ne doit pas être vide.",,
+"The 'Relational field' of the line '%s' cannot be empty.","Le ""Champ relationnel"" de la ligne ""%s"" ne doit pas être vide.",,
 "This app is used by %s. Please deactivate them before continue.","Cette application est utilisée par %s. Veuillez les désactiver avent de continuer",,
 "Title","Titre",,
 "Type",,,
