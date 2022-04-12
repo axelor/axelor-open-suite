@@ -661,7 +661,7 @@
 
   <selection name="import.batch.action.select">
     <option value="0">Import</option>
-    <option value="1">Advanced Import</option>
+    <option value="1">Advanced import</option>
   </selection>
 
 </object-views>

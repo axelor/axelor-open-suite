@@ -13,7 +13,8 @@
   </grid>
 
   <form name="import-batch-form" title="Import batch"
-    model="com.axelor.apps.base.db.ImportBatch" width="large">
+    model="com.axelor.apps.base.db.ImportBatch" width="large"
+    onNew="action-import-batch-record-on-new">
     <panel name="mainPanel">
       <field name="actionSelect"/>
       <field name="code"/>
@@ -60,5 +61,13 @@
   <action-method name="action-base-method-batch-advanced-import-data">
     <call class="com.axelor.apps.base.web.ImportBatchController" method="advancedImportData"/>
   </action-method>
+
+  <action-record name="action-import-batch-record-on-new"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
 
 </object-views>

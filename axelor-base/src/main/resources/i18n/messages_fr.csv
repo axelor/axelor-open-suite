@@ -16,7 +16,7 @@
 "%s cell is not valid.","La cellule %s n’est pas valide.",,
 "%s configuration file is not exist.","La configuration %s est inexistante.",,
 "%s file not found in %s.",,,
-"%s files imported",,,
+"%s files imported","%s fichiers importés",,
 "%s module does not exist.","Le module %s n’est pas installé.",,
 "%s row must not be empty.","La colonne %s ne peut pas être vide.",,
 "'%s' field for '%s' is invalid.",,,

@@ -62,15 +62,9 @@ public class BatchAdvancedImportData extends AbstractImportBatch {
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_NOT_VALIDATED));
     }
     MetaFile logFile = dataImportService.importData(advancedImport);
-    if (logFile == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.BATCH_ADVANCED_IMPORT_FILE_NOT_IMPORTED),
-          advancedImport.getImportFile().getFileName());
-    }
     createBatchHistory(
         metaFileRepository.find(advancedImport.getImportFile().getId()),
-        metaFileRepository.find(logFile.getId()));
+        logFile != null ? metaFileRepository.find(logFile.getId()) : null);
   }
 
   protected void importFiles(List<MetaFile> files) {

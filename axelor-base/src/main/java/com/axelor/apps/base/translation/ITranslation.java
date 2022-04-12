@@ -51,5 +51,5 @@ public interface ITranslation {
       "Connection has failed"; /*)*/
   public static final String BASE_IMPORT_BATCH_FILES_IMPORTED =
       /*$$(*/
-      " %s files imported "; /*)*/
+      "%s files imported"; /*)*/
 }

@@ -79,36 +79,62 @@ public class BatchImportData extends AbstractImportBatch {
 
     for (MetaFile file : files) {
       try {
-        importConfiguration.setBindMetaFile(bindMetaFile);
-        setDataMetaFile(importConfiguration, importBatch, file);
-        ImportHistory importHistory = factoryImporter.createImporter(importConfiguration).run();
-        createBatchHistory(
-            metaFileRepository.find(file.getId()),
-            metaFileRepository.find(importHistory.getLogMetaFile().getId()));
-        if (!StringUtils.isBlank(importBatch.getDataFileName())) {
-          metaFiles.delete(importConfiguration.getDataMetaFile());
-        }
+        importFile(bindMetaFile, importConfiguration, importBatch, file);
         incrementDone();
       } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
+      } finally {
+
       }
     }
   }
 
-  protected void setDataMetaFile(
-      ImportConfiguration importConfiguration, ImportBatch importBatch, MetaFile file)
-      throws IOException {
-    if (!StringUtils.isBlank(importBatch.getDataFileName())) {
-      // If dataFileName is set, we will create a temporary file with the desired name
-      // and use this name for the import
-      try (FileInputStream fileInputStream =
-          new FileInputStream(MetaFiles.getPath(file).toFile())) {
-        importConfiguration.setDataMetaFile(
-            metaFiles.upload(fileInputStream, importBatch.getDataFileName()));
-      }
+  protected void importFile(
+      MetaFile bindMetaFile,
+      ImportConfiguration importConfiguration,
+      ImportBatch importBatch,
+      MetaFile file)
+      throws IOException, AxelorException {
+
+    importConfiguration.setBindMetaFile(bindMetaFile);
+    MetaFile tmpFile = createTemporaryFile(importBatch, file);
+    if (tmpFile != null) {
+      importConfiguration.setDataMetaFile(tmpFile);
     } else {
       importConfiguration.setDataMetaFile(file);
     }
+    ImportHistory importHistory = factoryImporter.createImporter(importConfiguration).run();
+    createBatchHistory(
+        metaFileRepository.find(file.getId()),
+        metaFileRepository.find(importHistory.getLogMetaFile().getId()));
+    if (tmpFile != null) {
+      metaFiles.delete(importConfiguration.getDataMetaFile());
+    }
+  }
+
+  /**
+   * Methods that created a tmp file if necessary. meaning if the file name imported is different
+   * than the desired file name.
+   *
+   * @param importConfiguration
+   * @param importBatch
+   * @param file
+   * @return MetaFile
+   * @throws IOException
+   */
+  protected MetaFile createTemporaryFile(ImportBatch importBatch, MetaFile file)
+      throws IOException {
+    if (!StringUtils.isBlank(importBatch.getDataFileName())
+        && !file.getFileName().equals(importBatch.getDataFileName())) {
+      // If dataFileName is set and is different than the file name, we will create a temporary file
+      // with the desired name
+      // and use this name for the import
+      try (FileInputStream fileInputStream =
+          new FileInputStream(MetaFiles.getPath(file).toFile())) {
+        return metaFiles.upload(fileInputStream, importBatch.getDataFileName());
+      }
+    }
+    return null;
   }
 }
