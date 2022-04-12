@@ -63,6 +63,7 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void createBackUp(DataBackup dataBackup) {
     DataBackup obj = setStatus(dataBackup);
     setTodayDate(obj);
+    emptyLogfile(obj);
     if (dataBackup.getUpdateImportId()) {
       updateImportId();
     }
@@ -179,6 +180,12 @@ public class DataBackupServiceImpl implements DataBackupService {
   protected void setTodayDate(DataBackup dataBackup) {
     DataBackup obj = dataBackupRepository.find(dataBackup.getId());
     obj.setBackupDate(LocalDateTime.now());
+  }
+
+  @Transactional
+  protected void emptyLogfile(DataBackup dataBackup) {
+    DataBackup obj = dataBackupRepository.find(dataBackup.getId());
+    obj.setLogMetaFile(null);
   }
 
   @Transactional
