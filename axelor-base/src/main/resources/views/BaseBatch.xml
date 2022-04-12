@@ -40,8 +40,7 @@
     </panel-tabs>
     <panel name="synchronizeBtnPanel" sidebar="true">
       <button name="synchronizeBtn" showIf="actionSelect == 2"
-        title="Batch calendar synchronization"
-        onClick="save,action-base-batch-method-synchronize-calendars"/>
+        title="Batch calendar synchronization" onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>
 
@@ -59,12 +58,12 @@
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -72,9 +71,8 @@
     <call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
   </action-method>
 
-  <action-method name="action-base-batch-method-synchronize-calendars">
-    <call class="com.axelor.apps.base.web.BaseBatchController"
-      method="actionSynchronizeCalendars"/>
+  <action-method name="action-base-batch-method-run-batch">
+    <call class="com.axelor.apps.base.web.BaseBatchController" method="runBatch"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

@@ -21,11 +21,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -80,7 +78,7 @@ public class MoveManagementRepository extends MoveRepository {
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
 
     return copy;
@@ -131,18 +129,10 @@ public class MoveManagementRepository extends MoveRepository {
         }
       }
 
-      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
-          && move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
-          && !Beans.get(MoveToolService.class).checkMoveLinesCutOffDates(move)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
-      }
-
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
@@ -156,7 +146,7 @@ public class MoveManagementRepository extends MoveRepository {
             I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
-        throw new PersistenceException(e);
+        throw new PersistenceException(e.getMessage(), e);
       }
     } else {
       super.remove(entity);

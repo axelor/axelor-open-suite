@@ -27,6 +27,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +59,10 @@ public class ConvertWizardService {
 
         if (value != null) {
 
-          if (value instanceof String && p.isUnique()) {
-            value = ((String) value) + " (" + random + ")";
+          if (value instanceof String
+              && p.isUnique()
+              && this.exist(mapper.getBeanClass(), p.getName(), value)) {
+            value += " (" + random + ")";
           }
 
           if (value instanceof Map) {
@@ -90,5 +96,17 @@ public class ConvertWizardService {
     }
 
     return null;
+  }
+
+  protected boolean exist(Class<?> klass, String field, Object value) {
+    EntityManager entityManager = JPA.em();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    criteriaBuilder.createQuery(klass);
+    CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+    Root<?> root = criteriaQuery.from(klass);
+    criteriaQuery.select(criteriaBuilder.count(root));
+    criteriaQuery.where(criteriaBuilder.equal(root.get(field), value));
+
+    return entityManager.createQuery(criteriaQuery).getSingleResult() > 0;
   }
 }

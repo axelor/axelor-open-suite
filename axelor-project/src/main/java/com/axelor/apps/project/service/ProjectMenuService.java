@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Project;
 import java.util.Map;
 
 public interface ProjectMenuService {
@@ -26,4 +27,8 @@ public interface ProjectMenuService {
   public Map<String, Object> getAllOpenProjectTickets();
 
   public Map<String, Object> getAllProjects();
+
+  public Map<String, Object> getAllProjectTasks();
+
+  public Map<String, Object> getAllProjectRelatedTasks(Project project);
 }

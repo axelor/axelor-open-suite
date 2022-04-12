@@ -55,11 +55,12 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
   public void resetLeaveManagementLines(List<Employee> employeeList) {
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
-        resetLeaveManagement(employeeRepository.find(employee.getId()));
+        resetLeaveManagement(employee);
       } catch (AxelorException e) {
         TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();

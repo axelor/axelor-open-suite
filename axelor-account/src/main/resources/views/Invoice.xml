@@ -74,6 +74,7 @@
           action="action-customer-invoice-line-menu"/>
       </menu>
     </menubar>
+    <hilite if="operationTypeSelect == 4" color="orange"/>
     <hilite color="danger" if="billOfExchangeBlockingOk"/>
     <field name="invoiceId" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
@@ -82,6 +83,7 @@
       if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
     <field name="operationSubTypeSelect" width="160"/>
+    <field name="operationTypeSelect"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
     <field name="exTaxTotal" aggregate="sum" width="120"/>
@@ -219,6 +221,8 @@
           action="action-supplier-invoice-line-menu"/>
         <item title="See budget distribution lines"
           action="action-invoice-see-budget-distribution-lines"/>
+        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
+          action="action-invoice-mergesupplinvoices"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -276,6 +280,8 @@
           action="action-supplier-invoice-line-menu"/>
         <item title="See budget distribution lines"
           action="action-invoice-see-budget-overview-lines"/>
+        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
+          action="action-invoice-mergesupplinvoices"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -556,11 +562,13 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="$cutOffStartDate" type="date" title="From date"/>
-          <field name="$cutOffEndDate" type="date" title="To date"/>
+          <field name="$cutOffStartDate" type="date" title="From date"
+            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
+          <field name="$cutOffEndDate" type="date" title="To date"
+            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-invoice-method-apply-cut-off-dates"
-            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null"/>
+            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
@@ -773,12 +781,12 @@ InvoiceSet.length > 0))"
         </panel>
         <panel name="financialDiscountPanel" colSpan="12"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount" colSpan="6"
+          <field name="financialDiscount"
             onChange="action-record-invoice-set-financial-discount-informations"
             showIf="statusSelect &gt;=3"/>
-          <field name="financialDiscountRate" colSpan="6"
+          <field name="financialDiscountRate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
-          <field name="financialDiscountDeadlineDate" colSpan="6"
+          <field name="financialDiscountDeadlineDate" readonly="true"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
         </panel>
 
@@ -820,10 +828,10 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
-        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+        onClick="action-invoice-group-validate-and-ventilate"/>
       <button name="passedForPaymentValidationBtn" css="btn-success"
         showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
         title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
@@ -946,7 +954,6 @@ InvoiceSet.length > 0))"
 		         </dl>]]>
         </viewer>
       </field>
-      <field name="amountRemaining"></field>
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
@@ -988,6 +995,7 @@ InvoiceSet.length > 0))"
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')" colSpan="12"/>
+        <field name="paymentDelay" readonly="true" colSpan="12"/>
       </panel>
     </panel-stack>
 
@@ -1252,7 +1260,6 @@ InvoiceSet.length > 0))"
   </form>
 
 
-
   <!-- invoice-account -->
   <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
     <field name="invoiceId"/>
@@ -1319,38 +1326,106 @@ InvoiceSet.length > 0))"
       domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
-        onClick="action-validate-invoice-check-selection,action-group-invoice-merge-action"/>
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
     </panel>
   </form>
 
   <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
-    title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-invoice">
-    <panel name="mainPanel" colSpan="6" colOffset="3">
-      <field name="contactPartnerToCheck" hidden="true" colOffset="12"/>
-      <field name="priceListToCheck" hidden="true" colOffset="12"/>
-      <field name="paymentModeToCheck" hidden="true" colOffset="12"/>
-      <field name="paymentConditionToCheck" hidden="true" colOffset="12"/>
+    title="Management of merge conflicts"
+    onNew="action-record-load-dummy-field-confirm-merge-invoice">
+    <panel name="mainPanel" colSpan="12">
+      <field name="contactPartnerToCheck" hidden="true" colOffset="3"/>
+      <field name="priceListToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
         domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
-        colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
+        colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="$priceList" title="Price List" type="many-to-one"
+        target="com.axelor.apps.base.db.PriceList" colOffset="3"
+        domain="self.typeSelect = 1 and self.isActive = true" showIf="priceListToCheck"
+        canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+      <field name="$paymentMode" title="Payment Mode" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.account.db.PaymentMode" widget="SuggestBox"
+        showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+      <field name="$paymentCondition" title="Payment Condition" type="many-to-one"
+        colOffset="3" target="com.axelor.apps.account.db.PaymentCondition" widget="SuggestBox"
+        showIf="paymentConditionToCheck" form-view="payment-condition-form"
+        grid-view="payment-condition-grid"/>
+      <field name="$tradingName" title="Trading name" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.base.db.TradingName" widget="SuggestBox" showIf="tradingNameToCheck"
+        form-view="trading-name-form" grid-view="trading-name-grid"/>
+      <field name="$fiscalPosition" title="Fiscal position" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.account.db.FiscalPosition" widget="SuggestBox"
+        showIf="fiscalPositionToCheck" form-view="fiscal-position-form"
+        grid-view="fiscal-position-grid"/>
+      <button name="confirmBtn" title="Confirm" colOffset="3"
+        onClick="action-invoice-method-merge-from-popup"/>
+    </panel>
+    <panel-related name="$invoiceToMergePanel" hidden="true" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"/>
+  </form>
+
+  <!-- SUPPLIER INVOICES MERGE -->
+  <form name="supplier-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+    title="Merge Suppl. Invoices" width="large">
+    <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+    </panel>
+  </form>
+
+  <form name="supplier-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+    title="Management of merge conflicts"
+    onNew="action-record-load-dummy-field-confirm-merge-invoice">
+    <panel name="mainPanel" colSpan="12">
+      <field name="contactPartnerToCheck" hidden="true" colOffset="3"/>
+      <field name="priceListToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentModeToCheck" hidden="true" colOffset="3"/>
+      <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
+      <field name="supplierInvoiceNbToCheck" hidden="true" colOffset="3"/>
+      <field name="originDateToCheck" hidden="true" colOffset="3"/>
+      <field name="$contactPartner" title="Contact partner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        widget="SuggestBox" showIf="contactPartnerToCheck" colOffset="3"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
-        domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
-        width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
+        domain="self.typeSelect = 2 and self.isActive = true" colOffset="3"
+        showIf="priceListToCheck" canSelect="true" form-view="price-list-form"
         grid-view="price-list-grid"/>
       <field name="$paymentMode" title="Payment Mode" type="many-to-one"
-        target="com.axelor.apps.account.db.PaymentMode" colSpan="6" colOffset="3" width="200px"
-        widget="SuggestBox" showIf="paymentModeToCheck" form-view="payment-mode-form"
-        grid-view="payment-mode-grid"/>
+        target="com.axelor.apps.account.db.PaymentMode" colOffset="3" widget="SuggestBox"
+        showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
       <field name="$paymentCondition" title="Payment Condition" type="many-to-one"
-        target="com.axelor.apps.account.db.PaymentCondition" colSpan="6" colOffset="3" width="200px"
-        widget="SuggestBox" showIf="paymentConditionToCheck" form-view="payment-condition-form"
+        target="com.axelor.apps.account.db.PaymentCondition" colOffset="3" widget="SuggestBox"
+        showIf="paymentConditionToCheck" form-view="payment-condition-form"
         grid-view="payment-condition-grid"/>
-      <button name="confirmBtn" title="Confirm" onClick="action-group-invoice-merge-action"
-        colSpan="12" width="200px"/>
+      <field name="$tradingName" title="Trading name" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.base.db.TradingName" widget="SuggestBox" showIf="tradingNameToCheck"
+        form-view="trading-name-form" grid-view="trading-name-grid"/>
+      <field name="$fiscalPosition" title="Fiscal position" type="many-to-one" colOffset="3"
+        target="com.axelor.apps.account.db.FiscalPosition" widget="SuggestBox"
+        showIf="fiscalPositionToCheck" form-view="fiscal-position-form"
+        grid-view="fiscal-position-grid"/>
+      <field name="$supplierInvoiceNb" title="Supplier invoice number" type="string"
+        showIf="supplierInvoiceNbToCheck" colOffset="3"/>
+      <field name="$originDate" title="Origin date" type="date"
+        showIf="supplierInvoiceNbToCheck" colOffset="3"/>
+      <button name="confirmBtn" title="Confirm" colOffset="3"
+        onClick="action-suppl-invoice-method-merge-from-popup"/>
     </panel>
+    <panel-related name="$invoiceToMergePanel" hidden="true" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"/>
   </form>
 
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
@@ -1365,16 +1440,6 @@ InvoiceSet.length > 0))"
         colOffset="4" colSpan="4"/>
     </panel>
   </form>
-
-  <action-group name="action-group-invoice-merge-action">
-    <action name="action-invoice-method-merge-account"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-    <action name="action-invoice-method-merge-supplychain"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == true &amp;&amp; __repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == false"/>
-    <action name="action-invoice-method-merge-business-project"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-business-project').fetchOne()?.installed == true"/>
-
-  </action-group>
 
   <action-group name="action-account-invoice-onnew-group">
     <action name="action-invoice-record-default"/>
@@ -1489,6 +1554,26 @@ InvoiceSet.length > 0))"
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
+  <action-group name="action-invoice-group-ventilate">
+    <action name="save"/>
+    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
+    <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-ventilate"/>
+    <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-validate-and-ventilate">
+    <action name="save"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
+    <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-validate-and-ventilate"/>
+  </action-group>
+
   <action-attrs name="action-invoice-attrs-in-ati">
     <attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     <attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -1551,7 +1636,7 @@ InvoiceSet.length > 0))"
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
@@ -1607,11 +1692,23 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-load-dummy-field-confirm-merge-invoice"
     model="com.axelor.apps.base.db.Wizard">
-    <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
-    <field name="partnerId" expr="eval: contextPartnerId"/>
-    <field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
-    <field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
-    <field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
+    <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"
+      if="contextContactPartnerToCheck"/>
+    <field name="partnerId" expr="eval: contextPartnerId" if="contextPartnerId"/>
+    <field name="priceListToCheck" expr="eval: contextPriceListToCheck"
+      if="contextPriceListToCheck"/>
+    <field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"
+      if="contextPaymentModeToCheck"/>
+    <field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"
+      if="contextPaymentConditionToCheck"/>
+    <field name="tradingNameToCheck" expr="eval: contextTradingNameToCheck"
+      if="contextTradingNameToCheck"/>
+    <field name="fiscalPositionToCheck" expr="eval: contextFiscalPositionToCheck"
+      if="contextFiscalPositionToCheck"/>
+    <field name="supplierInvoiceNbToCheck" expr="eval: contextSupplierInvoiceNbToCheck"
+      if="contextSupplierInvoiceNbToCheck"/>
+    <field name="originDateToCheck" expr="eval: contextOriginDateToCheck"
+      if="contextOriginDateToCheck"/>
   </action-record>
 
   <action-record name="action-invoice-record-interco-supplychain"
@@ -1893,16 +1990,18 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="fillCompanyBankDetails"/>
   </action-method>
 
-  <action-method name="action-invoice-method-merge-account">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="mergeInvoice"/>
+  <action-method name="action-invoice-method-merge">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController" method="mergeInvoice"/>
   </action-method>
 
-  <action-method name="action-invoice-method-merge-supplychain">
-    <call class="com.axelor.apps.supplychain.web.InvoiceController" method="mergeInvoice"/>
+  <action-method name="action-invoice-method-merge-from-popup">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="mergeInvoiceFromPopup"/>
   </action-method>
 
-  <action-method name="action-invoice-method-merge-business-project">
-    <call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
+  <action-method name="action-suppl-invoice-method-merge-from-popup">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
@@ -1990,6 +2089,11 @@ InvoiceSet.length > 0))"
       method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
+  <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkInvoiceLinesCutOffDates"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2014,6 +2118,11 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="customer-invoices-merge-form"/>
+  </action-view>
+
+  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"

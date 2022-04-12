@@ -111,13 +111,11 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
   protected void stop() {
 
     String comment =
-        String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION) + "\n",
-            batch.getDone());
-
+        String.format(I18n.get(IExceptionMessage.BATCH_COMPUTE_VALUATION), batch.getDone());
+    comment += "\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
             batch.getAnomaly());
 
     addComment(comment);

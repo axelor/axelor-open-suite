@@ -35,6 +35,8 @@
       <button name="showLcrAccountedInvoiceBtn" title="Invoices" hidden="true" colspan="4"
         onClick="action-view-accounting-batch-lcr-accounted-invoices,close"
         if-module="axelor-account"/>
+      <button name="showNoteBillsBtn" title="Note bills" hidden="true" colspan="4"
+        onClick="action-view-accounting-batch-lcr-note-bills,close" if-module="axelor-account"/>
       <button name="showReimbursementBtn" title="Reimbursements" hidden="true" colSpan="4"
         onClick="action-batch-show-reimbursement,close" if-module="axelor-account"/>
       <button name="showPaymentScheduleLineBtn" title="Schedule lines" hidden="true"
@@ -112,12 +114,16 @@
     <attribute name="hidden" for="showStockMoveLinesBtn"
       expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
     <attribute name="hidden" for="showAccountMoveBtn"
-      expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
+      expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' &amp;&amp; accountingBatch == null)"/>
 
     <attribute name="hidden" for="showStockHistoryLinesBtn"
       expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
 
     <attribute name="hidden" for="showLcrAccountedInvoiceBtn"
+      expr="eval: !(__parent__?.actionSelect == 24)"
+      if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
+
+    <attribute name="hidden" for="showNoteBillsBtn"
       expr="eval: !(__parent__?.actionSelect == 24)"
       if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
     <attribute name="hidden" for="showImportHistoryBtn" expr="eval: false"
@@ -218,6 +224,15 @@
     <view type="form" name="invoice-form"/>
     <domain>self.lcrAccounted = 'true' AND :batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+
+  <action-view name="action-view-accounting-batch-lcr-note-bills" title="Note Bills"
+    model="com.axelor.apps.account.db.NoteBills">
+    <view type="grid" name="note-bills-grid"/>
+    <view type="form" name="note-bills-form"/>
+    <domain>self.batch = :_batch</domain>
+    <context name="_batch" expr="eval: __self__"/>
   </action-view>
 
   <action-view name="action-view-import-histories" title="Import histories"

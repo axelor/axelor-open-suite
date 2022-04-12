@@ -19,7 +19,9 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface MoveLineComputeAnalyticService {
@@ -34,9 +36,11 @@ public interface MoveLineComputeAnalyticService {
 
   MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
 
-  List<Long> setAxisDomains(MoveLine moveline, int position) throws AxelorException;
+  MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
 
-  boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) throws AxelorException;
+  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
 
-  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException;
+  MoveLine clearAnalyticAccounting(MoveLine moveLine);
+
+  boolean checkManageAnalytic(Company company) throws AxelorException;
 }

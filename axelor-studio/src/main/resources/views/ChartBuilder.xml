@@ -99,8 +99,7 @@
     </panel>
     <panel hideIf="model == null" name="filterListPanel">
       <label name="userDetailLabel"
-        title="&lt;b&gt;Tags:&lt;/b&gt; $user: Current user, $date: Today's date, $time: Current time"
-        colSpan="12"/>
+        title="&lt;b&gt;Tags:&lt;/b&gt;$date: Today's date, $time: Current time" colSpan="12"/>
       <panel-related name="filterListPanel" field="filterList" colSpan="12"
         editable="true" edit-window="self" grid-view="chart-builder-filter-grid"/>
     </panel>

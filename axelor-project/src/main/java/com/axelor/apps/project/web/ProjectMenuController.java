@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,5 +37,20 @@ public class ProjectMenuController {
 
   public void allProjects(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjects());
+  }
+
+  public void allProjectTasks(ActionRequest request, ActionResponse response) {
+    response.setView(Beans.get(ProjectMenuService.class).getAllProjectTasks());
+  }
+
+  public void allProjectRelatedTasks(ActionRequest request, ActionResponse response) {
+
+    try {
+      Project project = request.getContext().asType(Project.class);
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      response.setView(Beans.get(ProjectMenuService.class).getAllProjectRelatedTasks(project));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
