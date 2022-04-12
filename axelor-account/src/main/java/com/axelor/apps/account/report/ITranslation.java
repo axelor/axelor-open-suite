@@ -259,6 +259,8 @@ public interface ITranslation {
       "AccountingReportType4.ageOfTheDebt"; /*)*/
   public static final String ACCOUNTING_REPORT_4_INVOICE_REMAINING_AMOUNT = /*$$(*/
       "AccountingReportType4.invoiceRemainingAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_N = /*$$(*/
+      "AccountingReportType4.termN"; /*)*/
 
   public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
       "AccountingReportType7.title"; /*)*/
