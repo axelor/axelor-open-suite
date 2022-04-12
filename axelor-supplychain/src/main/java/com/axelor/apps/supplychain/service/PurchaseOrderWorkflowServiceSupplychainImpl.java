@@ -88,8 +88,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
     super.cancelPurchaseOrder(purchaseOrder);
 
-    if (appSupplychainService.isApp("supplychain")
-        && appAccountService.isApp("budget")) {
+    if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
