@@ -66,7 +66,7 @@
   </selection>
 
   <selection name="batch.batch.type.select" id="business.project.batch.batch.type.select">
-    <option value="800">Project invoicing assistant batch</option>
+    <option value="1000">Project invoicing assistant batch</option>
   </selection>
 
 </object-views>

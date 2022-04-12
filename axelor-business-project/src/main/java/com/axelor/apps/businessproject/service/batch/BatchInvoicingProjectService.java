@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
@@ -115,5 +116,9 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     addComment(comment);
     super.stop();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH);
   }
 }
