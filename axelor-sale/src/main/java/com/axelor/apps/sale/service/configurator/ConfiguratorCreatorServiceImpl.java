@@ -344,7 +344,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   protected void updateIndicatorAttrs(
       ConfiguratorCreator creator, MetaJsonField indicator, ConfiguratorFormula formula) {
 
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    int scale = appBaseService.getNbDecimalDigitForUnitPrice();
     String fieldName = indicator.getName();
     fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 

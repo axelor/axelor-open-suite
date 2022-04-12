@@ -63,7 +63,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+    if (appBusinessProjectService.isApp("business-project")) {
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
     }
   }

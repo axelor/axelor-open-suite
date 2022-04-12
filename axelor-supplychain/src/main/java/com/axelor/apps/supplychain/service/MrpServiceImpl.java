@@ -524,8 +524,7 @@ public class MrpServiceImpl implements MrpService {
 
     Partner supplierPartner = product.getDefaultSupplierPartner();
 
-    if (supplierPartner != null
-        && Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
+    if (supplierPartner != null && appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
 
