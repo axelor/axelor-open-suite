@@ -5,11 +5,17 @@
 
   <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
-    <field name="id"/>
+    <hilite color="red" if="_dashboard &amp;&amp; anomaly != 0"/>
+    <hilite color="green" if="_dashboard &amp;&amp; anomaly == 0 &amp;&amp; done != 0"/>
+    <hilite color="orange" if="_dashboard &amp;&amp; endDate == null"/>
+    <field name="companyCode"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="startDate"/>
     <field name="endDate"/>
+    <field name="actionLaunchOrigin"/>
+    <field name="batchTypeSelect"/>
+    <field name="actionName"/>
     <field name="done"/>
     <field name="anomaly"/>
   </grid>
@@ -18,8 +24,10 @@
     onNew="action-batch-attrs" onLoad="action-batch-attrs" canEdit="false" canDelete="false"
     canNew="false" canCopy="false" canSave="false" width="large">
     <panel name="mainPanel">
-      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+      <field name="batchTypeSelect"/>
+      <field name="actionName"/>
       <field name="duration" widget="duration" x-big="true"/>
+      <spacer/>
       <field name="startDate" required="true"/>
       <field name="endDate"/>
       <field name="done"/>
@@ -67,6 +75,11 @@
       <button name="showStockHistoryLinesBtn" title="Stock history line" hidden="true"
         colSpan="4" onClick="action-batch-show-stock-history-lines,close"
         if-module="axelor-supplychain"/>
+    </panel>
+    <panel name="originPanel" title="Origin" sidebar="true" itemSpan="12">
+      <field name="companyCode"/>
+      <field name="actionLaunchOrigin"/>
+      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     </panel>
   </form>
 
