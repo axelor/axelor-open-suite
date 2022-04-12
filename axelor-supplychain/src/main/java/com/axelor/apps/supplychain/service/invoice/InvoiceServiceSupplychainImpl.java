@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
@@ -131,9 +132,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     }
 
     SaleOrder saleOrder = invoice.getSaleOrder();
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
-    if (company == null || saleOrder == null) {
+    if (company == null || (saleOrder == null && purchaseOrder == null)) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
@@ -142,7 +144,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .getGenerateMoveForInvoicePayment();
 
     String filter = writeGeneralFilterForAdvancePayment();
-    filter += " AND self.saleOrder = :_saleOrder";
+    if (saleOrder != null) {
+      filter += " AND self.saleOrder = :_saleOrder";
+    } else if (purchaseOrder != null) {
+      filter += " AND self.purchaseOrder = :_purchaseOrder";
+    }
 
     if (!generateMoveForInvoicePayment) {
       filter += " AND self.currency = :_currency";
@@ -152,9 +158,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
-            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("_saleOrder", saleOrder);
-
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+    if (saleOrder != null) {
+      query.bind("_saleOrder", saleOrder);
+    } else if (purchaseOrder != null) {
+      query.bind("_purchaseOrder", purchaseOrder);
+    }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {
         return new HashSet<>();
