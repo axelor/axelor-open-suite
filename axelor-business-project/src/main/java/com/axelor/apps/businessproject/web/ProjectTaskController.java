@@ -84,9 +84,11 @@ public class ProjectTaskController {
     ProjectTask task = request.getContext().asType(ProjectTask.class);
     ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      task = Beans.get(ProjectTaskBusinessProjectService.class).resetProjectTaskValues(task);
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
+          Beans.get(ProjectTaskBusinessProjectService.class);
+      task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = Beans.get(ProjectTaskBusinessProjectService.class).computeDefaultInformation(task);
+        task = projectTaskBusinessProjectService.computeDefaultInformation(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
