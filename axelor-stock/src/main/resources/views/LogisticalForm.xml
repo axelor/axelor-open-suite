@@ -65,7 +65,7 @@
           css="btn btn-success" colSpan="12"
           prompt="Are you sure you want to change status to  &quot;Collected &quot; ?"/>
         <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1"
-          icon="fa-cubes" onClick="action-logistical-form-record-back-to-provision" colSpan="12"
+          icon="fa-cubes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
           prompt="Are you sure you want to go back to provision ?"/>
       </panel>
     </panel>
@@ -128,7 +128,7 @@
     <action name="action-group-logistical-form-save"/>
     <action name="save"/>
     <action name="action-logistical-form-validate-mass"/>
-    <action name="action-logistical-form-record-change-status"/>
+    <action name="action-logistical-form-method-carrier-validate"/>
     <action name="save"/>
   </action-group>
 
@@ -164,16 +164,6 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <field name="logisticalFormLineList" expr="eval: null"/>
     <field name="$stockMove" expr="eval: null"/>
-  </action-record>
-
-  <action-record name="action-logistical-form-record-change-status"
-    model="com.axelor.apps.stock.db.LogisticalForm">
-    <field name="statusSelect" expr="eval: ++statusSelect"/>
-  </action-record>
-
-  <action-record name="action-logistical-form-record-back-to-provision"
-    model="com.axelor.apps.stock.db.LogisticalForm">
-    <field name="statusSelect" expr="eval: __repo__(LogisticalForm).STATUS_PROVISION"/>
   </action-record>
 
   <action-group name="action-group-logistical-form-add-stock-move">
@@ -215,6 +205,14 @@
   <action-method name="action-logistical-form-method-refresh-net-mass">
     <call class="com.axelor.apps.stock.web.LogisticalFormController"
       method="refreshProductNetMass"/>
+  </action-method>
+
+  <action-method name="action-logistical-form-method-carrier-validate">
+    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="carrierValidate"/>
+  </action-method>
+
+  <action-method name="action-logistical-form-method-back-to-provision">
+    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="backToProvision"/>
   </action-method>
 
   <search-filters name="logistical-form-filters"
