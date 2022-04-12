@@ -269,8 +269,10 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null) {
-        return;
+      if (invoice.getPaymentCondition() == null
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        invoice.getInvoiceTermList().clear();
+        response.setValues(invoice);
       }
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
