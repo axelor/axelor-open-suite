@@ -10,6 +10,8 @@
       title="Model to anonymize" required="true"/>
     <many-to-many name="metaFieldSet" ref="com.axelor.meta.db.MetaField"
       title="Fields to anonymize"/>
+    <many-to-one name="dataBackup" ref="com.axelor.apps.base.db.DataBackup"
+      title="Data backup"/>
   </entity>
 
 </domain-models>

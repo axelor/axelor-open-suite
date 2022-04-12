@@ -97,11 +97,11 @@
   <action-group name="action-data-backup-group-create-button">
     <action name="save"/>
     <action name="action.data.backup.call.createbackup"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-data-backup-group-on-new">
     <action name="action-data-backup-record-set-default-fetch-limit"/>
+    <action name="action-data-backup-record-set-today-datetime"/>
   </action-group>
 
   <action-method name="action.data.backup.call.createbackup">

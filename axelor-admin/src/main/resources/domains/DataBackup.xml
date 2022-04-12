@@ -12,7 +12,8 @@
       default="0"/>
     <many-to-one name="logMetaFile" ref="com.axelor.meta.db.MetaFile" title="Log"/>
     <one-to-many name="dataBackupConfigAnonymizeLineList"
-      ref="DataBackupConfigAnonymizeLine" title="Models to anonymize"/>
+      ref="com.axelor.apps.base.db.DataBackupConfigAnonymizeLine" title="Models to anonymize"
+      mappedBy="dataBackup"/>
     <datetime name="backupDate" title="Backup On"/>
     <datetime name="restoreDate" title="Restored On"/>
     <integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
