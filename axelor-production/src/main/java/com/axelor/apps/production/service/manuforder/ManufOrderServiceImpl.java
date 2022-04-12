@@ -37,9 +37,11 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
@@ -57,6 +59,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -74,15 +77,17 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -141,7 +146,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOrigin)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -167,10 +172,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             plannedStartDateT,
             plannedEndDateT);
 
-    if (originType == ORIGIN_TYPE_SALE_ORDER
+    if (manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER)
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
-        || originType == ORIGIN_TYPE_MRP
-        || originType == ORIGIN_TYPE_OTHER) {
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
+        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
     }
 
@@ -315,12 +320,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
       }
     }
-
-    if (!manufOrder.getIsConsProOnOperation()) {
-      this.createToConsumeProdProductList(manufOrder);
-    }
-
-    this.createToProduceProdProductList(manufOrder);
 
     return manufOrder;
   }
@@ -869,54 +868,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    */
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {
+    Integer depth = 0;
     List<ManufOrder> moList = new ArrayList<>();
-    Set<Product> productManufactured = new HashSet<>();
     List<Pair<BillOfMaterial, BigDecimal>> childBomList =
         getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-    // prevent infinite loop
-    int depth = 0;
-    while (!childBomList.isEmpty()) {
-      if (depth >= 25) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
-      }
-      List<Pair<BillOfMaterial, BigDecimal>> tempChildBomList = new ArrayList<>();
-
-      for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
-        BillOfMaterial childBom = childBomPair.getLeft();
-        BigDecimal qtyRequested = childBomPair.getRight();
-
-        if (productManufactured.contains(childBom.getProduct())) {
-          continue;
-        }
-
-        manufOrder =
-            generateManufOrder(
-                childBom.getProduct(),
-                qtyRequested.multiply(childBom.getQty()),
-                childBom.getPriority(),
-                IS_TO_INVOICE,
-                childBom,
-                null,
-                manufOrder.getPlannedStartDateT(),
-                ORIGIN_TYPE_OTHER);
-
-        moList.add(manufOrder);
-        productManufactured.add(childBom.getProduct());
-
-        tempChildBomList.addAll(getToConsumeSubBomList(childBom, manufOrder, null));
-      }
-      childBomList.clear();
-      childBomList.addAll(tempChildBomList);
-      tempChildBomList.clear();
-      depth++;
-    }
+    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
     return moList;
   }
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList) {
+      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
+      throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
     for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
@@ -934,17 +896,45 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
+        BillOfMaterial defaultBOM =
+            Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
+
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
                 || product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
-            && product.getDefaultBillOfMaterial() != null
-            && product.getDefaultBillOfMaterial().getProdProcess() != null) {
-          bomList.add(Pair.of(product.getDefaultBillOfMaterial(), qtyReq));
+            && defaultBOM != null
+            && defaultBOM.getProdProcess() != null) {
+          bomList.add(Pair.of(defaultBOM, qtyReq));
         }
       }
     }
     return bomList;
+  }
+
+  protected ManufOrder createDraftManufOrder(
+      Product product,
+      BigDecimal qtyRequested,
+      int priority,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT) {
+
+    ProdProcess prodProcess = billOfMaterial.getProdProcess();
+    Company company = billOfMaterial.getCompany();
+    return new ManufOrder(
+        qtyRequested,
+        company,
+        null,
+        priority,
+        false,
+        billOfMaterial,
+        product,
+        prodProcess,
+        plannedStartDateT,
+        plannedEndDateT,
+        ManufOrderRepository.STATUS_DRAFT,
+        prodProcess.getOutsourcing());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -989,7 +979,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
       /*
-       * If unit are the same, then add the qty If not, convert the unit and get the converted qty
+       * If unit are the same, then add the qty If not, convert the unit and get the
+       * converted qty
        */
       if (manufOrder.getUnit().equals(unit)) {
         qty = qty.add(manufOrder.getQty());
@@ -1046,8 +1037,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     mergedManufOrder.setNote(note);
 
     /*
-     * Check the config to see if you directly plan the created manuf order or just prefill the
-     * operations
+     * Check the config to see if you directly plan the created manuf order or just
+     * prefill the operations
      */
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getIsManufOrderPlannedAfterMerge()) {
@@ -1158,5 +1149,120 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } catch (AxelorException e) {
       throw new ValidationException(e.getMessage());
     }
+  }
+
+  @Override
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
+      throws AxelorException {
+    List<Long> ids = new ArrayList<>();
+    Map<String, String> sequenceParentSeqMap = new HashMap<>();
+    Map<String, ManufOrder> seqMOMap = new HashMap<>();
+    List<ManufOrder> generatedMOList = new ArrayList<>();
+
+    for (Map<String, Object> manufOrderMap : manufOrders) {
+      ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
+      Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
+
+      String backupSeq = manufOrder.getManualMOSeq();
+
+      if (manufOrder.getParentMO().getId() != null) {
+        if (!seqMOMap.containsKey(manufOrder.getParentMO().getId().toString())) {
+          seqMOMap.put(manufOrder.getParentMO().getId().toString(), manufOrder.getParentMO());
+        }
+        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getId().toString());
+      } else {
+        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getManualMOSeq());
+      }
+
+      if ((boolean) manufOrderMap.get("selected")) {
+        BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+        billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+
+        manufOrder =
+            generateManufOrder(
+                product,
+                manufOrder.getQty().multiply(billOfMaterial.getQty()),
+                billOfMaterial.getPriority(),
+                IS_TO_INVOICE,
+                billOfMaterial,
+                null,
+                manufOrder.getPlannedStartDateT(),
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+
+        manufOrder.setManualMOSeq(backupSeq);
+        seqMOMap.put(backupSeq, manufOrder);
+        ids.add(manufOrder.getId());
+        generatedMOList.add(manufOrder);
+      }
+    }
+    this.setParentMos(sequenceParentSeqMap, seqMOMap, generatedMOList);
+    return ids;
+  }
+
+  protected List<ManufOrder> generateChildMOs(
+      ManufOrder parentMO, List<Pair<BillOfMaterial, BigDecimal>> childBomList, Integer depth)
+      throws AxelorException {
+    List<ManufOrder> manufOrderList = new ArrayList<>();
+
+    // prevent infinite loop
+    if (depth >= 25) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+    }
+    depth++;
+
+    for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
+      BillOfMaterial childBom = childBomPair.getLeft();
+      BigDecimal qtyRequested = childBomPair.getRight();
+
+      ManufOrder childMO =
+          createDraftManufOrder(
+              childBom.getProduct(),
+              qtyRequested,
+              childBom.getPriority(),
+              childBom,
+              null,
+              parentMO.getPlannedStartDateT());
+
+      childMO.setManualMOSeq(this.getManualSequence());
+      childMO.setParentMO(parentMO);
+      manufOrderList.add(childMO);
+
+      manufOrderList.addAll(
+          this.generateChildMOs(
+              childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
+    }
+    return manufOrderList;
+  }
+
+  protected String getManualSequence() {
+    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+  }
+
+  @Transactional
+  protected void setParentMos(
+      Map<String, String> sequenceParentSeqMap,
+      Map<String, ManufOrder> seqMOMap,
+      List<ManufOrder> generatedMOList) {
+    for (ManufOrder mo : generatedMOList) {
+      String seq = mo.getManualMOSeq();
+      ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
+      mo.setParentMO(parentMO);
+    }
+  }
+
+  protected ManufOrder getParentMO(
+      Map<String, String> sequenceParentSeqMap, Map<String, ManufOrder> seqMOMap, String seq) {
+    ManufOrder parentMO = null;
+    String parentSeq = sequenceParentSeqMap.get(seq);
+
+    if (seqMOMap.containsKey(parentSeq)) {
+      parentMO = seqMOMap.get(parentSeq);
+      parentMO = manufOrderRepo.find(parentMO.getId());
+    } else {
+      parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
+    }
+    return parentMO;
   }
 }

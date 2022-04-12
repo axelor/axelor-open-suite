@@ -694,7 +694,7 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-method-update-sale-order-line-list" showIf="statusSelect == 1"
-        if="__config__.app.getApp('sale').getIsEnableCalculationEntireQuatationUsingPricing()"/>
+        if="__config__.app.getApp('sale').getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale').getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -1703,7 +1703,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="salespersonUser" expr="eval:__user__"
       if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"

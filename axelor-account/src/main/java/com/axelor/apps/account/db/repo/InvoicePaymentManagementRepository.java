@@ -32,7 +32,7 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
       return super.save(invoicePayment);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

@@ -40,6 +40,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.pricing.PricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -96,7 +97,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PricingService pricingService) {
     super(
         currencyService,
         priceListService,
@@ -105,7 +107,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
-        saleOrderService);
+        saleOrderService,
+        pricingService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -326,9 +329,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
     BigDecimal invoicedQty = getInvoicedQty(saleOrderLine);
 
-    if (qty.compareTo(invoicedQty) == -1 && invoicedQty.compareTo(deliveredQty) > 0) {
+    if (qty.compareTo(invoicedQty) < 0 && invoicedQty.compareTo(deliveredQty) > 0) {
       return invoicedQty;
-    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) < 0) {
       return deliveredQty;
     }
 

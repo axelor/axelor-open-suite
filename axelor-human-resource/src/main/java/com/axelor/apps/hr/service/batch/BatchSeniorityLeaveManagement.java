@@ -148,11 +148,12 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
-        createLeaveManagement(employeeRepository.find(employee.getId()));
+        createLeaveManagement(employee);
       } catch (AxelorException e) {
         TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();

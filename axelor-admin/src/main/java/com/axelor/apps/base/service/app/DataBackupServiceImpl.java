@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -113,7 +113,7 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   @Override
   public void restoreBackUp(DataBackup dataBackup) {
-    DataBackup obj = setStatus(dataBackup);
+    setStatus(dataBackup);
 
     try {
       executor.submit(
@@ -187,7 +187,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     for (MetaModel metaModel : metaModelList) {
       try {
         Class.forName(metaModel.getFullName());
-        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
+        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter) + "'";
         String query =
             "Update "
                 + metaModel.getName()

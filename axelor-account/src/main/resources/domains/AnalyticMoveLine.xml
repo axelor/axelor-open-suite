@@ -33,6 +33,8 @@
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
+    <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT

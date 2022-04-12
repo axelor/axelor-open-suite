@@ -72,7 +72,9 @@ public class InventoryController {
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
 
       String fileLink =
-          ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
+          ReportFactory.createReport(
+                  IReport.INVENTORY,
+                  Beans.get(InventoryService.class).computeExportFileName(inventory))
               .addParam("InventoryId", inventory.getId())
               .addParam(
                   "Timezone",

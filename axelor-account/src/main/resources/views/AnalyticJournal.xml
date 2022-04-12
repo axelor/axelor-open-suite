@@ -40,7 +40,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <search-filters name="analytic-journal-filters"
@@ -58,7 +58,7 @@
   <action-attrs name="action-attrs-analytic-journal-on-load">
     <attribute name="readonly" for="company"
       expr="eval: __repo__(AccountConfig).findByCompany(company).analyticJournal == __this__"
-      if="company != null"/>
+      if="company != null &amp;&amp; __repo__(AccountConfig).findByCompany(company)"/>
   </action-attrs>
 
   <action-validate name="action-validate-for-analytic-journal-without-company">

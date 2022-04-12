@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
   @Inject
   public ProductTaskTemplateServiceImpl(
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
-      ProjectTaskRepository projectTaskRepo) {
+      ProjectTaskRepository projectTaskRepo,
+      ProductCompanyService productCompanyService) {
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
