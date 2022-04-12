@@ -145,4 +145,17 @@ public interface MoveLineService {
       throws AxelorException;
 
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      boolean isDebit,
+      LocalDate date,
+      int counter,
+      String origin,
+      String description,
+      BigDecimal currencyRate,
+      BigDecimal amountInCompanyCurrency)
+      throws AxelorException;
 }

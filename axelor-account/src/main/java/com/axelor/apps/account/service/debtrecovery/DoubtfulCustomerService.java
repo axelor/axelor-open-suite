@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.Query;
@@ -160,7 +161,11 @@ public class DoubtfulCustomerService {
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
     MoveLine creditMoveLine = null;
+    BigDecimal currencyRate = BigDecimal.ONE;
     if (invoicePartnerMoveLine != null) {
+      currencyRate =
+          BigDecimal.ONE.divide(invoicePartnerMoveLine.getCurrencyRate(), 10, RoundingMode.HALF_UP);
+
       amountRemaining = invoicePartnerMoveLine.getAmountRemaining();
 
       // Debit move line on partner account
@@ -169,12 +174,13 @@ public class DoubtfulCustomerService {
               newMove,
               partner,
               invoicePartnerMoveLine.getAccount(),
-              amountRemaining,
               false,
               todayDate,
               1,
               move.getInvoice().getInvoiceId(),
-              debtPassReason);
+              debtPassReason,
+              currencyRate,
+              amountRemaining);
       newMove.getMoveLineList().add(creditMoveLine);
 
       origin = creditMoveLine.getOrigin();
@@ -186,12 +192,13 @@ public class DoubtfulCustomerService {
             newMove,
             partner,
             doubtfulCustomerAccount,
-            amountRemaining,
             true,
             todayDate,
             2,
             origin,
-            debtPassReason);
+            debtPassReason,
+            currencyRate,
+            amountRemaining);
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
 
