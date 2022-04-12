@@ -71,7 +71,7 @@
 "Can only complete a started inventory.","Vous pouvez seulement compléter un inventaire en cours.",,
 "Can only plan a draft inventory.","Vous pouvez seulement planifier un inventaire brouillon.",,
 "Can only plan a drafted stock move.","Vous pouvez seulement planifier un mouvement de stock brouillon.",,
-"Can only return to draft if cancelled.","Vous pouvez seulement retourner au status brouillon depuis le status annulé.",,
+"Can only return to draft if cancelled.","Vous pouvez seulement retourner au statut brouillon depuis le statut annulé.",,
 "Can only return to provision if was validated or collected","Vous pouvez seulement retourner au statut 'Mis à disposition' depuis le statut 'Validé' ou 'Enlevé'",,
 "Can only start a draft inventory.","Vous pouvez seulement débuter un inventaire brouillon.",,
 "Can only validate a drafted stock correction.","Vous pouvez seulement valider une correction de stock brouillonne.",,
