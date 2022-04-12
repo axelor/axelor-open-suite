@@ -318,7 +318,7 @@
   </form>
 
   <cards name="opportunity-cards" model="com.axelor.apps.crm.db.Opportunity"
-    title="Opportunities" css="rect-image" width="100%" orderBy="-expectedCloseDate">
+    title="Opportunities" css="rect-image" width="50%" orderBy="-expectedCloseDate">
     <field name="name"/>
     <field name="salesStageSelect"/>
     <field name="amount"/>
