@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -63,12 +64,11 @@ public class PeriodServiceImpl implements PeriodService {
 
     Period period = this.getPeriod(date, company, typeSelect);
     if (period == null || (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)) {
-      String dateStr = date != null ? date.toString() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PERIOD_1),
           company.getName(),
-          dateStr);
+          L10n.getInstance().format(date));
     }
     LOG.debug("Period : {}", period);
     return period;

@@ -747,7 +747,7 @@ public class PartnerServiceImpl implements PartnerService {
     String filter =
         "lower(self.simpleFullName) = lower(:newName) "
             + "and self.partnerTypeSelect = :_partnerTypeSelect ";
-    if (partner != null) {
+    if (partnerId != null) {
       filter += "and self.id != :partnerId ";
     }
     if (isInArchived) {
@@ -762,7 +762,7 @@ public class PartnerServiceImpl implements PartnerService {
             .filter(filter)
             .bind("newName", newName)
             .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
-    if (partner != null) {
+    if (partnerId != null) {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
