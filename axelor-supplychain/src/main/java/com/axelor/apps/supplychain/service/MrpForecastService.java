@@ -1,4 +1,4 @@
-package com.axelor.apps.production.service;
+package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.exception.AxelorException;

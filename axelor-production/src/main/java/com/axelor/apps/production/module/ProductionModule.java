@@ -46,8 +46,6 @@ import com.axelor.apps.production.service.MpsWeeklyScheduleService;
 import com.axelor.apps.production.service.MpsWeeklyScheduleServiceImpl;
 import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
-import com.axelor.apps.production.service.MrpForecastService;
-import com.axelor.apps.production.service.MrpForecastServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -158,6 +156,5 @@ public class ProductionModule extends AxelorModule {
     bind(MachineRepository.class).to(MachineToolManagementRepository.class);
     bind(PurchaseOrderServiceSupplychainImpl.class).to(PurchaseOrderServiceProductionImpl.class);
     bind(SopService.class).to(SopServiceImpl.class);
-    bind(MrpForecastService.class).to(MrpForecastServiceImpl.class);
   }
 }

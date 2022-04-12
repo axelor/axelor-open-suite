@@ -77,11 +77,11 @@
   </action-record>
 
   <action-method name="action-mrp-forecast-method-confirm">
-    <call class="com.axelor.apps.production.web.MrpForecastController" method="confirm"/>
+    <call class="com.axelor.apps.supplychain.web.MrpForecastController" method="confirm"/>
   </action-method>
 
   <action-method name="action-mrp-forecast-method-cancel">
-    <call class="com.axelor.apps.production.web.MrpForecastController" method="cancel"/>
+    <call class="com.axelor.apps.supplychain.web.MrpForecastController" method="cancel"/>
   </action-method>
 
   <action-group name="action-mrp-forecast-group-confirm-button">

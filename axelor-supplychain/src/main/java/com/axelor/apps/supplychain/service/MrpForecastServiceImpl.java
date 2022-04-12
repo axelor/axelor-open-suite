@@ -1,8 +1,8 @@
-package com.axelor.apps.production.service;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;

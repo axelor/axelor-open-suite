@@ -204,10 +204,4 @@ public interface IExceptionMessage {
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
-
-  //  Mrp Forecast
-  static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
-      "Can only be confirmed from drafted forecast." /*)*/;
-  static final String MRP_FORECAST_CANCEL_WRONG_STATUS = /*$$(*/
-      "Can only be cancelled from drafted or confirmed forecast." /*)*/;
 }
