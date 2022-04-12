@@ -283,7 +283,7 @@
     </panel-mail>
   </form>
 
-  <cards name="event-cards" title="Events" css="rect-image" width="100%"
+  <cards name="event-cards" title="Events" css="rect-image" width="50%"
     model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     <field name="subject"/>
     <field name="typeSelect"/>
