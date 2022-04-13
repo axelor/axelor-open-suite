@@ -66,11 +66,15 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   public List<AnalyticAxis> getAllAxis(AnalyticDistributionTemplate analyticDistributionTemplate) {
-    List<AnalyticAxis> axisList = new ArrayList<AnalyticAxis>();
-    for (AnalyticDistributionLine analyticDistributionLine :
-        analyticDistributionTemplate.getAnalyticDistributionLineList()) {
-      if (!axisList.contains(analyticDistributionLine.getAnalyticAxis())) {
-        axisList.add(analyticDistributionLine.getAnalyticAxis());
+    List<AnalyticAxis> axisList = new ArrayList<>();
+    if (analyticDistributionTemplate != null
+        && !CollectionUtils.isEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (!axisList.contains(analyticDistributionLine.getAnalyticAxis())) {
+          axisList.add(analyticDistributionLine.getAnalyticAxis());
+        }
       }
     }
     return axisList;
@@ -128,26 +132,28 @@ public class AnalyticDistributionTemplateServiceImpl
   @Override
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
-    List<AnalyticDistributionLine> analyticDistributionLineList =
-        analyticDistributionTemplate.getAnalyticDistributionLineList();
-    if (analyticDistributionTemplate.getCompany() != null
-        && !CollectionUtils.isEmpty(analyticDistributionLineList)) {
-      boolean checkAxis = false;
-      boolean checkJournal = false;
-      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        if (analyticDistributionLine.getAnalyticAxis() != null
-            && (analyticDistributionTemplate.getCompany()
-                    != analyticDistributionLine.getAnalyticAxis().getCompany()
-                || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
-          checkAxis = true;
+    if (analyticDistributionTemplate != null) {
+      List<AnalyticDistributionLine> analyticDistributionLineList =
+          analyticDistributionTemplate.getAnalyticDistributionLineList();
+      if (analyticDistributionTemplate.getCompany() != null
+          && !CollectionUtils.isEmpty(analyticDistributionLineList)) {
+        boolean checkAxis = false;
+        boolean checkJournal = false;
+        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+          if (analyticDistributionLine.getAnalyticAxis() != null
+              && (analyticDistributionTemplate.getCompany()
+                      != analyticDistributionLine.getAnalyticAxis().getCompany()
+                  || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
+            checkAxis = true;
+          }
+          if (analyticDistributionTemplate.getCompany()
+                  != analyticDistributionLine.getAnalyticJournal().getCompany()
+              || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+            checkJournal = true;
+          }
         }
-        if (analyticDistributionTemplate.getCompany()
-                != analyticDistributionLine.getAnalyticJournal().getCompany()
-            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
-          checkJournal = true;
-        }
+        printCheckAnalyticDistributionTemplateCompany(checkAxis, checkJournal);
       }
-      printCheckAnalyticDistributionTemplateCompany(checkAxis, checkJournal);
     }
   }
 
