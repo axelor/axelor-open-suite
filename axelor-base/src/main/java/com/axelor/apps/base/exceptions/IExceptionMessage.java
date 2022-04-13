@@ -349,7 +349,7 @@ public interface IExceptionMessage {
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
   public static final String ABC_ANALYSIS_ALREADY_STARTED = /*$$(*/
-		  "Analysis is already on going." /*)*/; 
+      "Analysis is already on going." /*)*/;
 
   /* DMS Import */
   public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
