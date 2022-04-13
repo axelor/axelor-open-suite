@@ -664,6 +664,7 @@
     <option value="100">Base batch</option>
     <option value="101">Alarm engine batch</option>
     <option value="102">Mail batch</option>
+    <option value="103">Import batch</option>
   </selection>
 
   <selection name="base.file.source.connector.connection.type.select">
