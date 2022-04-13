@@ -7,8 +7,8 @@
 
   <entity name="BatchImportHistory" lang="java">
 
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
-      initParam="true" column="user_id"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" initParam="true"
+      column="user_id"/>
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)"
       required="true"/>
     <many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile"/>

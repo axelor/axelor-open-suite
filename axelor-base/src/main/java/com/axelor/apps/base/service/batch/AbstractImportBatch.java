@@ -8,7 +8,6 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
 import com.axelor.apps.base.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -67,8 +66,6 @@ public abstract class AbstractImportBatch extends AbstractBatch {
     batchImportHistory.setLogMetaFile(logMetaFile);
     if (batch.getCreatedBy() != null) {
       batchImportHistory.setUser(userRepository.find(batch.getCreatedBy().getId()));
-    } else {
-      batchImportHistory.setUser(userRepository.find(AuthUtils.getUser().getId()));
     }
     batchImportHistoryRepository.save(batchImportHistory);
   }
