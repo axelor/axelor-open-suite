@@ -655,6 +655,17 @@
     <option value="1">Left</option>
   </selection>
 
+  <selection name="batch.action.launch.origin.select">
+    <option value="1">batch.manual</option>
+    <option value="2">Scheduled</option>
+  </selection>
+
+  <selection name="batch.batch.type.select">
+    <option value="100">Base batch</option>
+    <option value="101">Alarm engine batch</option>
+    <option value="102">Mail batch</option>
+  </selection>
+
   <selection name="base.file.source.connector.connection.type.select">
     <option value="1">SFTP</option>
   </selection>
