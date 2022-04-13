@@ -952,7 +952,7 @@ public class IrrecoverableService {
     }
 
     if (debitAmount != null
-        && BigDecimal.ZERO.compareTo(creditAmount) != 0
+        && debitAmount.compareTo(creditAmount) != 0
         && lastDebitMoveLine != null) {
       lastDebitMoveLine.setDebit(
           lastDebitMoveLine.getDebit().add(creditAmount.subtract(debitAmount)));
