@@ -397,7 +397,6 @@ public class InvoiceLineController {
       InvoiceLineAnalyticService invoiceLineAnalyticService =
           Beans.get(InvoiceLineAnalyticService.class);
       invoiceLine = invoiceLineAnalyticService.selectDefaultDistributionTemplate(invoiceLine);
-
       response.setValue(
           "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
       response.setValue(
