@@ -31,6 +31,14 @@
 
     <string name="languageSelect" title="Selection language" selection="select.language"/>
     <string name="fileExtension" title="File extension"/>
+
+    <extra-code><![CDATA[
+
+	   	// STATUS SELECT
+		public static final int STATUS_SELECT_DRAFT = 0;
+		public static final int STATUS_SELECT_VALIDATED = 1;
+
+	]]></extra-code>
   </entity>
 
 </domain-models>

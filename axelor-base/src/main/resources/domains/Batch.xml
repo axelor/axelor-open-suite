@@ -27,6 +27,8 @@
 
 
     <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="importBatch" title="Import batch"
+      ref="com.axelor.apps.base.db.ImportBatch"/>
 
     <extra-code><![CDATA[
       // Batch type select
@@ -34,6 +36,7 @@
 		public static final int BATCH_TYPE_BASE_BATCH = 100;
 		public static final int BATCH_TYPE_ALARM_ENGINE_BATCH = 101;
 		public static final int BATCH_TYPE_MAIL_BATCH = 102;
+		public static final int BATCH_TYPE_IMPORT_BATCH = 103;
 		public static final int BATCH_TYPE_ACCOUNTING_BATCH = 200;
 		public static final int BATCH_TYPE_INVOICE_BATCH = 201;
 		public static final int BATCH_TYPE_BANK_PAYMENT_BATCH = 300;
