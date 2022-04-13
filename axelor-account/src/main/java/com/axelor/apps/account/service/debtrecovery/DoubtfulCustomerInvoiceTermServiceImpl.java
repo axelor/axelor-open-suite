@@ -12,6 +12,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -28,6 +29,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
   protected ReconcileService reconcileService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
+  protected CurrencyService currencyService;
 
   @Inject
   public DoubtfulCustomerInvoiceTermServiceImpl(
@@ -35,12 +37,14 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
       MoveValidateService moveValidateService,
       ReconcileService reconcileService,
       InvoiceTermRepository invoiceTermRepo,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      CurrencyService currencyService) {
     this.invoiceTermService = invoiceTermService;
     this.moveValidateService = moveValidateService;
     this.reconcileService = reconcileService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
+    this.currencyService = currencyService;
   }
 
   public void createOrUpdateInvoiceTerms(
@@ -50,7 +54,8 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
       List<MoveLine> creditMoveLines,
       MoveLine debitMoveLine,
       LocalDate todayDate,
-      BigDecimal amountRemaining)
+      BigDecimal amountRemainingInCompanyCurrency,
+      BigDecimal currencyRate)
       throws AxelorException {
     PaymentMode paymentMode = null;
     BankDetails bankDetails = null;
@@ -58,6 +63,14 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
     List<InvoiceTerm> invoiceTermToAdd = new ArrayList<>();
     List<InvoiceTerm> invoiceTermToRemove = new ArrayList<>();
     List<InvoiceTerm> invoiceTermToAddToDebitMoveLine = new ArrayList<>();
+
+    /*
+     * Invoice term must be in invoice move currency.
+     * If invoice is in $ then invoice term amount must be in $
+     */
+    BigDecimal amountRemaining =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            amountRemainingInCompanyCurrency, currencyRate);
 
     for (MoveLine invoicePartnerMoveLine : invoicePartnerMoveLines) {
 
@@ -118,6 +131,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
     if (creditMoveLines != null) {
       // Create invoice term on new credit move line
       for (MoveLine creditMoveLine : creditMoveLines) {
+
         invoiceTermService.createInvoiceTerm(
             creditMoveLine,
             bankDetails,
