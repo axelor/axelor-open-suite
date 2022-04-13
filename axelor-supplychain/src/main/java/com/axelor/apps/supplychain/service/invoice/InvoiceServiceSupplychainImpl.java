@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,9 +117,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
-        Beans.get(AccountConfigService.class)
-            .getAccountConfig(company)
-            .getGenerateMoveForInvoicePayment();
+        accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment();
 
     String filter = writeGeneralFilterForAdvancePayment();
     filter += " AND self.saleOrder = :_saleOrder";
@@ -128,7 +126,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       filter += " AND self.currency = :_currency";
     }
     Query<Invoice> query =
-        Beans.get(InvoiceRepository.class)
+        invoiceRepo
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)

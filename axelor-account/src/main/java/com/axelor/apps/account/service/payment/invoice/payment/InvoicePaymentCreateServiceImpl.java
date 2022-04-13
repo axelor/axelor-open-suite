@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,7 +206,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     if (moveLineList == null || moveLineList.size() != 2) {
       return null;
     }
-    InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
     for (MoveLine moveLine : moveLineList) {
       // search for the reconcile between the debit line
       if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
@@ -226,7 +225,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         }
         Move candidatePaymentMove = reconcile.getCreditMoveLine().getMove();
         InvoicePayment invoicePayment =
-            invoicePaymentRepo
+            invoicePaymentRepository
                 .all()
                 .filter("self.move = :_move")
                 .bind("_move", candidatePaymentMove)

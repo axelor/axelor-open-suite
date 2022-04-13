@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -227,13 +227,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     if (soLines != null && !soLines.isEmpty()) {
       try {
-        saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-        Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
 
-      Beans.get(SaleOrderRepository.class).save(saleOrder);
+      saleOrderRepo.save(saleOrder);
     }
     return saleOrder;
   }
@@ -260,8 +260,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (originSoLine != null
         && originSoLine.getProduct() != null
         && originSoLine.getSelectedComplementaryProductList() != null) {
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       for (ComplementaryProductSelected compProductSelected :
           originSoLine.getSelectedComplementaryProductList()) {
         // Search if there is already a line for this product to modify or remove
@@ -297,7 +295,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
             newSoLine.setParentId(originSoLine.getManualId());
 
-            saleOrderLineList.add(newSoLine);
+            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
+            saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
           newSoLine.setQty(
@@ -311,6 +310,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
       originSoLine.setIsComplementaryProductsUnhandledYet(false);
+    }
+
+    for (int i = 0; i < saleOrderLineList.size(); i++) {
+      saleOrderLineList.get(i).setSequence(i);
     }
 
     return saleOrderLineList;
@@ -392,6 +395,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
               saleOrderLine, saleOrder, complementaryProducts));
     }
     newComplementarySOLines.stream().forEach(line -> saleOrder.addSaleOrderLineListItem(line));
-    Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
   }
 }

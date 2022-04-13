@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,6 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainImpl {
@@ -68,8 +67,7 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
 
   @Override
   public void checkExpirationDates(StockMove stockMove) throws AxelorException {
-    if (stockMove.getInManufOrder() != null
-        && Beans.get(AppBaseService.class).isApp("production")) {
+    if (stockMove.getInManufOrder() != null && appBaseService.isApp("production")) {
       stockMoveLineService.checkExpirationDates(stockMove);
     } else {
       super.checkExpirationDates(stockMove);

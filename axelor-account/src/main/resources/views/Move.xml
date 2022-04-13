@@ -81,7 +81,7 @@
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3">
-        <field name="$viewerTags" showTitle="false">
+        <field name="$viewerTags" showTitle="false" readonly="true" colSpan="4">
           <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -99,14 +99,29 @@
             <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
           </editor>
         </field>
-        <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
+        <field name="$technicalOriginTags" showTitle="false" readonly="true" colSpan="4">
           <viewer depends="technicalOriginSelect">
                     <![CDATA[
-                      <h4 class="text-right">
+                      <h4 class="text-center">
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Entry</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Automatic</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 3" x-translate>Template</span>
 	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 4" x-translate>Import</span>
+                      </h4>
+                    ]]>
+          </viewer>
+        </field>
+        <field name="$functionalOriginTags" showTitle="false" readonly="true" colSpan="4">
+          <viewer depends="functionalOriginSelect">
+            <![CDATA[
+                      <h4 class="text-left">
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 1" x-translate>Opening</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 2" x-translate>Closure</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 3" x-translate>Sale</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 4" x-translate>Purchase</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
+	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
                       </h4>
                     ]]>
           </viewer>
@@ -295,14 +310,14 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
     <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
       if="date == null &amp;&amp; __user__.activeCompany != null"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>

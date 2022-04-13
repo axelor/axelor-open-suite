@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -225,7 +225,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           public Invoice generate() throws AxelorException {
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-            invoiceLines.addAll(invoice.getInvoiceLineList());
+            if (invoice.getInvoiceLineList() != null) {
+              invoiceLines.addAll(invoice.getInvoiceLineList());
+            }
 
             populate(invoice, invoiceLines);
 
@@ -973,5 +975,29 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
+  }
+
+  @Override
+  public boolean getIsDuplicateInvoiceNbr(Invoice invoice) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      return false;
+    }
+    if (invoice.getId() != null) {
+      return invoiceRepo
+              .all()
+              .filter(
+                  "self.supplierInvoiceNb = :supplierInvoiceNb AND self.id <> :id AND (self.originalInvoice.id <> :id OR self.originalInvoice is null) AND (self.refundInvoiceList is empty OR :id NOT IN self.refundInvoiceList.id)")
+              .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+              .bind("id", invoice.getId())
+              .fetchOne()
+          != null;
+    }
+    return invoiceRepo
+            .all()
+            .filter("self.supplierInvoiceNb = :supplierInvoiceNb")
+            .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
+            .fetchOne()
+        != null;
   }
 }

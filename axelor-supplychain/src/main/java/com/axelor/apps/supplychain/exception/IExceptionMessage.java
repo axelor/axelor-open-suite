@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -127,6 +127,12 @@ public interface IExceptionMessage {
 
   static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+
+  //  Mrp Forecast
+  static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only be confirmed from drafted forecast." /*)*/;
+  static final String MRP_FORECAST_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only be cancelled from drafted or confirmed forecast." /*)*/;
 
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -301,7 +301,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(FixedAsset fixedAsset) {
+  public void validate(FixedAsset fixedAsset) throws AxelorException {
+    if (fixedAsset.getGrossValue() == null || fixedAsset.getGrossValue().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_GROSS_VALUE_0),
+          fixedAsset.getReference());
+    }
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
       if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
@@ -317,7 +323,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public int massValidation(List<Long> fixedAssetIds) {
+  public int massValidation(List<Long> fixedAssetIds) throws AxelorException {
     int count = 0;
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);

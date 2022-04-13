@@ -423,14 +423,13 @@
 
   <form name="multi-level-planing-wizard-form" title="Multi-level planning"
     model="com.axelor.apps.production.db.ManufOrder"
-    onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
+    onLoad="action-manuf-order-method-multi-level-on-load">
     <panel name="mainPanel" colSpan="12">
       <field name="$components" title="Products" type="one-to-many" canView="false"
         readonly="true" target="com.axelor.apps.production.db.ProdProduct"
         grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
       <button name="generateMO" title="Generate MO"
-        onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
-        colSpan="4" colOffset="8"/>
+        onClick="action-manuf-order-method-generate-multi-level" colSpan="4" colOffset="8"/>
     </panel>
   </form>
 
@@ -497,6 +496,16 @@
       method="propagateIsToInvoice"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-multi-level-on-load">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="multiLevelManufOrderOnLoad"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-generate-multi-level">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="generateMultiLevelManufOrder"/>
+  </action-method>
+
   <action-record name="action-manuf-order-record-isConsProOnOperation"
     model="com.axelor.apps.production.db.ManufOrder">
     <field name="isConsProOnOperation" expr="eval: prodProcess?.isConsProOnOperation"/>
@@ -544,7 +553,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="typeSelect"
       expr="eval: _createPermanent ? __repo__(ManufOrder).TYPE_PERMANENT : __repo__(ManufOrder).TYPE_PRODUCTION"/>
     <field name="qty" expr="eval: 0" if="_createPermanent"/>

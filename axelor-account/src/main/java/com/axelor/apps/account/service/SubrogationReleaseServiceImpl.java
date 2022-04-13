@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -232,7 +232,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     MoveService moveService = Beans.get(MoveService.class);
     MoveRepository moveRepository = Beans.get(MoveRepository.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     Company company = subrogationRelease.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);

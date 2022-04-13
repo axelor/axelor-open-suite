@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -301,12 +301,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    if (!manufOrder.getIsConsProOnOperation()) {
-      this.createToConsumeProdProductList(manufOrder);
-    }
-
-    this.createToProduceProdProductList(manufOrder);
-
     return manufOrder;
   }
 
@@ -448,7 +442,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
@@ -518,7 +511,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
-        Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
+        operationOrderService.updateDiffProdProductList(operationOrder);
       }
     }
 

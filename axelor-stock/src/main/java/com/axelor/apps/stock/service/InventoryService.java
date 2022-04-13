@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,9 +206,10 @@ public class InventoryService {
       String rack = line[headers.indexOf(RACK)].replace("\"", "");
       String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
 
-      BigDecimal realQty;
+      BigDecimal realQty = null;
       try {
-        realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)].replace("\"", ""));
+        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
+          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
       } catch (NumberFormatException e) {
         throw new AxelorException(
             new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
@@ -219,12 +220,13 @@ public class InventoryService {
 
       String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
 
-      int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
+      int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
       String key = code + trackingNumberSeq;
 
       if (inventoryLineMap.containsKey(key)) {
         InventoryLine inventoryLine = inventoryLineMap.get(key);
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
 
         if (inventoryLine.getTrackingNumber() != null) {
@@ -268,7 +270,8 @@ public class InventoryService {
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
         inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        if (realQty != null)
+          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(
             this.getTrackingNumber(trackingNumberSeq, product, realQty));
@@ -345,14 +348,96 @@ public class InventoryService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public void validateInventory(Inventory inventory) throws AxelorException {
+  public void planInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_PLAN_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_PLANNED);
+  }
 
+  @Transactional(rollbackOn = {Exception.class})
+  public void startInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_START_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void completeInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_COMPLETE_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_COMPLETED);
+    inventory.setCompletedBy(AuthUtils.getUser());
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_COMPLETED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_VALIDATE_WRONG_STATUS));
+    }
     inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);
     generateStockMove(inventory, false);
     storeLastInventoryData(inventory);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void draftInventory(Inventory inventory) throws AxelorException {
+    if (inventory.getStatusSelect() == null
+        || inventory.getStatusSelect() != InventoryRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_DRAFT_WRONG_STATUS));
+    }
+    inventory.setStatusSelect(InventoryRepository.STATUS_DRAFT);
+    inventory.setValidatedBy(null);
+    inventory.setValidatedOn(null);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancel(Inventory inventory) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InventoryRepository.STATUS_DRAFT);
+    authorizedStatus.add(InventoryRepository.STATUS_PLANNED);
+    authorizedStatus.add(InventoryRepository.STATUS_IN_PROGRESS);
+    authorizedStatus.add(InventoryRepository.STATUS_COMPLETED);
+    authorizedStatus.add(InventoryRepository.STATUS_VALIDATED);
+
+    if (inventory.getStatusSelect() == null
+        || !authorizedStatus.contains(inventory.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVENTORY_CANCEL_WRONG_STATUS));
+    }
+    List<StockMove> stockMoveList =
+        stockMoveRepo
+            .all()
+            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
+            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
+            .bind("originId", inventory.getId())
+            .fetch();
+
+    for (StockMove stockMove : stockMoveList) {
+      stockMoveService.cancel(stockMove);
+    }
+
+    inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
   private void storeLastInventoryData(Inventory inventory) {
@@ -536,23 +621,6 @@ public class InventoryService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public void cancel(Inventory inventory) throws AxelorException {
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
-            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
-            .bind("originId", inventory.getId())
-            .fetch();
-
-    for (StockMove stockMove : stockMoveList) {
-      stockMoveService.cancel(stockMove);
-    }
-
-    inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
   public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
     if (inventory.getStockLocation() == null) {
@@ -573,12 +641,13 @@ public class InventoryService {
             == null) { // if no tracking number on stockLocationLine, check if there is a tracking
           // number on the product
           long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
+              stockLocationLineList.stream()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
+                      sll ->
+                          stockLocationLine.getProduct() != null
+                              && stockLocationLine.getProduct().equals(sll.getProduct())
+                              && sll.getTrackingNumber() != null
+                              && inventory.getStockLocation().equals(sll.getDetailsStockLocation()))
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
@@ -714,7 +783,7 @@ public class InventoryService {
           }
         });
 
-    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq();
+    String fileName = computeExportFileName(inventory);
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
@@ -733,8 +802,18 @@ public class InventoryService {
     CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, file.getName());
+      return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
     }
+  }
+
+  public String computeExportFileName(Inventory inventory) {
+    return I18n.get("Inventory")
+        + "_"
+        + inventory.getInventorySeq()
+        + "_"
+        + appBaseService
+            .getTodayDate(inventory.getCompany())
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {

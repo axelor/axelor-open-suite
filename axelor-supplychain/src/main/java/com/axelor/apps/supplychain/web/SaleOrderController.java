@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -181,6 +181,7 @@ public class SaleOrderController {
         Partner supplierPartner = null;
         List<Long> saleOrderLineIdSelected = new ArrayList<>();
         Boolean isDirectOrderLocation = false;
+        Boolean noProduct = true;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
         supplierPartner = (Partner) values.get("supplierPartner");
         saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
@@ -189,15 +190,18 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
+            if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
+              }
+              if (saleOrderLine.getProduct() != null) {
+                noProduct = false;
               }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
           }
 
-          if (saleOrderLineIdSelected.isEmpty()) {
+          if (saleOrderLineIdSelected.isEmpty() || noProduct) {
             response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
@@ -254,6 +258,7 @@ public class SaleOrderController {
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
     Map<String, Object> values = new HashMap<String, Object>();
     Boolean isDirectOrderLocation = false;
+    Boolean noProduct = true;
 
     if (saleOrder.getDirectOrderLocation()
         && saleOrder.getStockLocation() != null
@@ -263,6 +268,9 @@ public class SaleOrderController {
 
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.isSelected()) {
+          if (saleOrderLine.getProduct() != null) {
+            noProduct = false;
+          }
           saleOrderLineIdSelected.add(saleOrderLine.getId());
         }
       }
@@ -270,7 +278,7 @@ public class SaleOrderController {
       isDirectOrderLocation = true;
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
-      if (saleOrderLineIdSelected.isEmpty()) {
+      if (saleOrderLineIdSelected.isEmpty() || noProduct) {
         throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {

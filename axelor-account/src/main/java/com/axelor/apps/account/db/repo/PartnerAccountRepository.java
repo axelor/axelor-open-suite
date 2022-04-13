@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,11 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import javax.persistence.PersistenceException;
@@ -35,13 +33,13 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 
   private AppService appService;
 
-  private AccountingSituationService accountingSituationService;
+  private AccountingSituationInitService accountingSituationInitService;
 
   @Inject
   public PartnerAccountRepository(
-      AppService appService, AccountingSituationService accountingSituationService) {
+      AppService appService, AccountingSituationInitService accountingSituationInitService) {
     this.appService = appService;
-    this.accountingSituationService = accountingSituationService;
+    this.accountingSituationInitService = accountingSituationInitService;
   }
 
   @Override
@@ -55,14 +53,13 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       if (appService.isApp("account")) {
         if (partner.getIsContact() == false || partner.getIsEmployee()) {
           // Create & fill
-          Beans.get(AccountingSituationService.class)
-              .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
+          accountingSituationInitService.createAccountingSituation(this.find(partner.getId()));
         }
 
         // We do this for contacts too as it seems this is the way employees are handled
         if (CollectionUtils.isNotEmpty(partner.getAccountingSituationList())) {
           for (AccountingSituation situation : partner.getAccountingSituationList()) {
-            accountingSituationService.createPartnerAccounts(situation);
+            accountingSituationInitService.createPartnerAccounts(situation);
           }
         }
       }
@@ -70,7 +67,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       return super.save(partner);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

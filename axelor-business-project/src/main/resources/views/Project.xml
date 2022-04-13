@@ -222,7 +222,7 @@
   </action-view>
 
   <action-view name="action-project-view-show-purchase-order-lines"
-    title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    title="Purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-project-grid"/>
     <view type="form" name="purchase-order-line-project-form"/>
     <domain>self.project.id in (:_projectIds)</domain>
@@ -242,7 +242,7 @@
   </action-view>
 
   <action-view name="action-project-view-show-confirmed-purchase-order-lines"
-    title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    title="Purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-project-grid"/>
     <view type="form" name="purchase-order-line-project-form"/>
     <view-param name="popup" value="true"/>
