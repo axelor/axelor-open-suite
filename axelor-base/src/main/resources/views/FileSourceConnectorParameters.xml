@@ -19,7 +19,7 @@
     <panel-tabs>
       <panel
         showIf="fileSourceConnector != null &amp;&amp; fileSourceConnector.connectionType == 1"
-        name="FTPPanel" title="FTP informations">
+        name="FTPPanel" title="FTP information">
         <field name="sourceFolder" colSpan="6"/>
         <field name="destinationFolder" colSpan="6"/>
         <field name="fileNamingRule" colSpan="6"/>

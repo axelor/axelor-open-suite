@@ -57,14 +57,11 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
 
       try {
         for (MetaFile file : files) {
-          SFTPUtils.put(
-              channel,
-              new FileInputStream(MetaFiles.getPath(file).toFile()),
-              file.getFileName(),
-              monitor);
+          try (FileInputStream inputStream =
+              new FileInputStream(MetaFiles.getPath(file).toFile())) {
+            SFTPUtils.put(channel, inputStream, file.getFileName(), monitor);
+          }
         }
-      } catch (Exception e) {
-        throw e;
       } finally {
         if (channel != null) {
           channel.disconnect();
@@ -103,10 +100,9 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
                         && SFTPUtils.isFile(lsEntry))
             .map(
                 lsEntry -> {
-                  try {
-                    String absoluthPath =
-                        String.format("%s/%s", parameter.getSourceFolder(), lsEntry.getFilename());
-                    InputStream inputStream = SFTPUtils.get(channel, absoluthPath, monitor);
+                  String absoluthPath =
+                      String.format("%s/%s", parameter.getSourceFolder(), lsEntry.getFilename());
+                  try (InputStream inputStream = SFTPUtils.get(channel, absoluthPath, monitor)) {
                     return metaFiles.upload(inputStream, lsEntry.getFilename());
                   } catch (Exception e) {
                     TraceBackService.trace(e);

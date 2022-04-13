@@ -62,7 +62,7 @@ public class BatchImportData extends AbstractImportBatch {
             metaFileRepository.find(importHistory.getDataMetaFile().getId()),
             metaFileRepository.find(importHistory.getLogMetaFile().getId()));
         incrementDone();
-      } catch (AxelorException | IOException e) {
+      } catch (Exception e) {
         TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
         incrementAnomaly();
       }
