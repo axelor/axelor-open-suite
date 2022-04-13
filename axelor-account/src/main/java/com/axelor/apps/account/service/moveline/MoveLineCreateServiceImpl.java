@@ -350,9 +350,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    moveLines.addAll(
-        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
-    int moveLineId = moveLines.size() + 1;
+    int moveLineId = 1;
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -528,6 +526,22 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
+    BigDecimal total = BigDecimal.ZERO;
+    for (MoveLine moveLine : moveLines) {
+      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+        total = total.add(moveLine.getCredit());
+      } else {
+        total = total.add(moveLine.getDebit());
+      }
+    }
+
+    moveLineId = moveLines.size() + 1;
+
+    moveLines.addAll(
+        addInvoiceTermMoveLines(
+            invoice, partnerAccount, move, partner, isDebitCustomer, origin, moveLineId, total));
+
+
     if (consolidate) {
       moveLineConsolidateService.consolidateMoveLines(moveLines);
     }
@@ -541,9 +555,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Move move,
       Partner partner,
       boolean isDebitCustomer,
-      String origin)
+      String origin,
+      int moveLineId,
+      BigDecimal totalToMatch)
       throws AxelorException {
-    int moveLineId = 1;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
@@ -640,7 +655,39 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       moveLines.add(moveLine);
     }
 
+    moveLine = updateMoveLineRoundValueIfNecessary(moveLine, moveLines, totalToMatch);
+
     return moveLines;
+  }
+
+  public MoveLine updateMoveLineRoundValueIfNecessary(
+      MoveLine moveLine, List<MoveLine> moveLines, BigDecimal totalToMatch) {
+    BigDecimal total = BigDecimal.ZERO;
+    boolean isCredit = true;
+    for (MoveLine ml : moveLines) {
+      if (ml.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+        total = total.add(ml.getCredit());
+      } else {
+        isCredit = false;
+        total = total.add(ml.getDebit());
+      }
+    }
+    BigDecimal difference = total.subtract(totalToMatch);
+    if (difference.compareTo(BigDecimal.ZERO) > 0) {
+      if (isCredit) {
+        moveLine.setCredit(moveLine.getCredit().subtract(difference));
+      } else {
+        moveLine.setDebit(moveLine.getDebit().subtract(difference));
+      }
+    } else {
+      if (isCredit) {
+        moveLine.setCredit(moveLine.getCredit().add(difference));
+      } else {
+        moveLine.setDebit(moveLine.getDebit().add(difference));
+      }
+    }
+
+    return moveLine;
   }
 
   @Override
