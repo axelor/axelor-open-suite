@@ -3,6 +3,7 @@ package com.axelor.apps.base.service.batch;
 import com.axelor.apps.base.db.BatchImportHistory;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
@@ -65,5 +66,10 @@ public abstract class AbstractImportBatch extends AbstractBatch {
     batchImportHistory.setLogMetaFile(logMetaFile);
     batchImportHistory.setUser(userRepository.find(batch.getCreatedBy().getId()));
     batchImportHistoryRepository.save(batchImportHistory);
+  }
+
+  @Override
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_IMPORT_BATCH);
   }
 }
