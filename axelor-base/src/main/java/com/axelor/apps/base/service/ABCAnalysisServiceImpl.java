@@ -19,6 +19,14 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
@@ -41,13 +49,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   protected ABCAnalysisLineRepository abcAnalysisLineRepository;
@@ -122,6 +123,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
   @Override
   public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+	checkOnGoing(abcAnalysis);
     reset(abcAnalysis);
     start(abcAnalysis);
     getAbcAnalysisClassList(abcAnalysis);
@@ -130,11 +132,21 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     finish(abcAnalysisRepository.find(abcAnalysis.getId()));
   }
 
-  @Transactional
+  protected void checkOnGoing(ABCAnalysis abcAnalysis) throws AxelorException {
+	if (abcAnalysis.getStatusSelect() == ABCAnalysisRepository.STATUS_ANALYZING) {
+		throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
+				I18n.get(IExceptionMessage.ABC_ANALYSIS_ALREADY_STARTED));
+	}
+	
+}
+
+@Transactional
   protected void start(ABCAnalysis abcAnalysis) {
     abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_ANALYZING);
     abcAnalysisRepository.save(abcAnalysis);
   }
+  
+  
 
   private void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
     Query<ABCAnalysisClass> abcAnalysisClassQuery =

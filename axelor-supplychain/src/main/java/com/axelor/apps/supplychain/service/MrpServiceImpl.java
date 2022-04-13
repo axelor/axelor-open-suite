@@ -19,6 +19,21 @@ package com.axelor.apps.supplychain.service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -69,19 +84,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MrpServiceImpl implements MrpService {
 
@@ -145,6 +147,7 @@ public class MrpServiceImpl implements MrpService {
   @Override
   public void runCalculation(Mrp mrp) throws AxelorException {
 
+	this.checkOnGoing(mrpRepository.find(mrp.getId()));
     this.reset(mrp);
 
     this.startMrp(mrpRepository.find(mrp.getId()));
@@ -153,7 +156,14 @@ public class MrpServiceImpl implements MrpService {
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
-  @Transactional
+  protected void checkOnGoing(Mrp mrp) throws AxelorException {
+	if (mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED) {
+		throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
+				I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
+	}
+  }
+
+@Transactional
   protected void startMrp(Mrp mrp) {
 
     mrp.setStartDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
