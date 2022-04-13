@@ -93,8 +93,8 @@
           <field name="chequeOwner"
             requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
           <field name="chequeDueDate" title="Due date"
-            validIf="paymentMode.typeSelect != 7 || paymentMode.inOutSelect != 1 || chequeDueDate >= paymentDate" hidden="true"
-            showIf="paymentMode.inOutSelect == 1"/>
+            validIf="paymentMode.typeSelect != 7 || paymentMode.inOutSelect != 1 || chequeDueDate >= paymentDate"
+            hidden="true" showIf="paymentMode.inOutSelect == 1"/>
         </panel>
       </panel>
       <field name="depositSlip" showIf="depositSlip" colSpan="12"/>

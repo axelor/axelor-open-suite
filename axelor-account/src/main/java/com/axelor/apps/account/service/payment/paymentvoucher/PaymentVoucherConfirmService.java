@@ -234,7 +234,10 @@ public class PaymentVoucherConfirmService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void createMoveAndConfirm(
-      PaymentVoucher paymentVoucher, Journal journal, Account paymentModeAccount, boolean valueForCollection)
+      PaymentVoucher paymentVoucher,
+      Journal journal,
+      Account paymentModeAccount,
+      boolean valueForCollection)
       throws AxelorException {
 
     boolean scheduleToBePaid = false;
@@ -423,13 +426,13 @@ public class PaymentVoucherConfirmService {
 
     deleteUnPaidLines(paymentVoucher);
   }
-  
-  protected void setMove(PaymentVoucher paymentVoucher, Move move, boolean valueForCollection ) {
-      if ( valueForCollection ) {
-          paymentVoucher.setValueForCollectionMove(move);
-          return;
-      }
-      paymentVoucher.setGeneratedMove(move);
+
+  protected void setMove(PaymentVoucher paymentVoucher, Move move, boolean valueForCollection) {
+    if (valueForCollection) {
+      paymentVoucher.setValueForCollectionMove(move);
+      return;
+    }
+    paymentVoucher.setGeneratedMove(move);
   }
 
   /*
