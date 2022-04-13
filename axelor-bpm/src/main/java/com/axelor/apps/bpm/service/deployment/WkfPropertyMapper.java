@@ -60,6 +60,7 @@ public class WkfPropertyMapper {
     FIELD_MAP.put("callModel", "model");
     FIELD_MAP.put("callLink", "parentPath");
     FIELD_MAP.put("callLinkCondition", "condition");
+    FIELD_MAP.put("teamPath", "teamFieldPath");
   }
 
   protected static final Map<String, String> PROCESS_DISPLAY_PROPERTIES =

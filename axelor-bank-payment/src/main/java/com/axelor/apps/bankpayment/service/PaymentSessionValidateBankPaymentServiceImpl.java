@@ -3,6 +3,7 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -71,7 +72,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoicePaymentRepository invoicePaymentRepo) {
     super(
         appBaseService,
         moveCreateService,
@@ -83,7 +85,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
-        partnerRepo);
+        partnerRepo,
+        invoicePaymentRepo);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -177,10 +180,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     paymentSession =
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-
-    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+    if (paymentSession.getBankOrder() != null
         && paymentSession.getPaymentMode().getAutoConfirmBankOrder()
-        && paymentSession.getBankOrder() != null) {
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }
