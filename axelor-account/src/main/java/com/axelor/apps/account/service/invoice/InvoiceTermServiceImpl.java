@@ -1131,9 +1131,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
       this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
       if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
+        invoiceTermFromInvoice.setIsPaid(true);
         invoiceCounter++;
       }
       if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+        invoiceTermFromRefund.setIsPaid(true);
         refundCounter++;
       }
     }
