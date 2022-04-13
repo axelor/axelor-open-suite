@@ -813,6 +813,7 @@ public class InvoiceController {
         Boolean isDuplicate = Beans.get(InvoiceControlService.class).isDuplicate(invoice);
         response.setAttr("$duplicateInvoiceNbrSameYear", "hidden", !isDuplicate);
         response.setAttr("$duplicateInvoiceNbrSameYear", "value", isDuplicate);
+        response.setAttr("$previousSupplierInvoiceNb", "value", invoice.getSupplierInvoiceNb());
       }
 
     } catch (Exception e) {
