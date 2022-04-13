@@ -12,13 +12,8 @@
     title="Data backup config anonymize line" name="data-backup-config-anonymize-line-form">
     <panel name="mainPanel">
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
-      <panel-related grid-view="meta-field-details-grid" field="metaFieldSet"
-        name="metaFieldListPanel" canNew="false" canEdit="false" colSpan="12"
-        domain="self.typeName = 'String' and self.metaModel = :metaModel">
-        <field name="name"/>
-        <field name="label"/>
-        <field name="typeName"/>
-      </panel-related>
+      <field name="metaFieldSet" grid-view="meta-field-details-grid"
+        domain="self.typeName = 'String' and self.metaModel = :metaModel" widget="TagSelect"/>
     </panel>
   </form>
 </object-views>
