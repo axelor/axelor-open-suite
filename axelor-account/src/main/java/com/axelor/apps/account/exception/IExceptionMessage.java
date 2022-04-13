@@ -928,6 +928,12 @@ public interface IExceptionMessage {
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
+
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
       "The import failed: the move %s already exist." /*)*/;
