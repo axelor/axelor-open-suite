@@ -132,7 +132,6 @@ public class AccountController {
         specificAnalyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
                 .createDistributionTemplateFromAccount(account);
-        System.err.println(specificAnalyticDistributionTemplate);
       } else if (account.getAnalyticDistributionAuthorized()
           && analyticDistributionTemplate != null) {
         specificAnalyticDistributionTemplate =
