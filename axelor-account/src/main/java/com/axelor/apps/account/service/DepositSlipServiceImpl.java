@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -162,7 +161,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     queryBuilder.add("self.depositSlip IS NULL");
 
     queryBuilder.add("self.statusSelect = :statusSelect");
-    queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
+    //    queryBuilder.bind("statusSelect",
+    // PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
 
     return queryBuilder.build().fetch();
   }

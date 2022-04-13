@@ -58,8 +58,13 @@
       return name;
       ]]>
     </string>
+
     <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode"/>
     <unique-constraint columns="paymentMode,bankDetails,company"/>
+
+    <finder-method name="find" using="paymentMode,bankDetails,company"
+      cacheable="true"/>
+
   </entity>
 
 </domain-models>
