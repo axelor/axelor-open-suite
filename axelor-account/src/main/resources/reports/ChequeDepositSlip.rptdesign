@@ -2070,6 +2070,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="rowSpan">1</property>
                     <property name="fontFamily">serif</property>
                     <data id="4510">
+                        <property name="marginTop">15pt</property>
+                        <property name="marginLeft">15pt</property>
+                        <property name="marginRight">15pt</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
