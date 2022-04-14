@@ -547,7 +547,7 @@
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
-    <action name="action-purchase-order-dispaly-price"/>
+    <action name="action-purchase-order-record-display-price"/>
     <action name="action-contract-purchase-order-record-new"
       if="__config__.app.isApp('contract')"/>
     <action name="action-purchase-order-record-payment-mode"/>
@@ -577,6 +577,7 @@
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
     <action name="action-purchase-order-record-update-info-company"/>
+    <action name="action-purchase-order-record-display-price"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -655,7 +656,7 @@
       if="company"/>
   </action-record>
 
-  <action-record name="action-purchase-order-dispaly-price"
+  <action-record name="action-purchase-order-record-display-price"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="displayPriceOnQuotationRequest"
       expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"
