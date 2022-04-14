@@ -532,4 +532,9 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setAmountRemaining(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    response.setValue("amountRemaining", moveLine.getAmountRemaining());
+  }
 }

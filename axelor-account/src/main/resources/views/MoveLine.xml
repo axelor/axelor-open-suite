@@ -689,6 +689,7 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-set-amount-remaining"/>
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
@@ -883,8 +884,6 @@
     <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
     <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
     <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0)"/>
-    <field name="amountRemaining" expr="eval: credit - amountPaid" if="credit != 0"/>
-    <field name="amountRemaining" expr="eval: debit - amountPaid" if="debit != 0"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-amount"
@@ -1042,6 +1041,10 @@
 
   <action-method name="action-method-move-line-hide-axis-analytic-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-set-amount-remaining">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="setAmountRemaining"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
