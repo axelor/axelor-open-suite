@@ -81,11 +81,7 @@ public class AdvancedImportController {
       ImportHistory importHistory = Beans.get(DataImportService.class).importData(advancedImport);
       if (importHistory != null) {
         response.setAttr("importHistoryList", "value:add", importHistory);
-      } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
-        response.setSignal("refresh-app", true);
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
