@@ -55,6 +55,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -799,10 +800,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
-    return invoiceTerm.getApplyFinancialDiscount()
-            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
-        ? invoiceTerm.getAmountRemainingAfterFinDiscount()
-        : invoiceTerm.getAmountRemaining();
+    return Optional.of(
+            invoiceTerm.getApplyFinancialDiscount()
+                    && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+                    && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
+                ? invoiceTerm.getAmountRemainingAfterFinDiscount()
+                : invoiceTerm.getAmountRemaining())
+        .orElse(BigDecimal.ZERO);
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {

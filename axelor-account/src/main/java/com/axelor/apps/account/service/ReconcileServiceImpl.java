@@ -384,11 +384,16 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePayment(
-      Reconcile reconcile, MoveLine moveLine, Invoice invoice, Move move, Move otherMove, BigDecimal amount)
+      Reconcile reconcile,
+      MoveLine moveLine,
+      Invoice invoice,
+      Move move,
+      Move otherMove,
+      BigDecimal amount)
       throws AxelorException {
     InvoicePayment invoicePayment = null;
-    if (invoice != null && move.getFunctionalOriginSelect()
-            != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
+    if (invoice != null
+        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       invoicePayment = reconcile.getInvoicePayment();
 
       if (invoicePayment == null) {
