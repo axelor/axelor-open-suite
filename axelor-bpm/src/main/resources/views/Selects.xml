@@ -5,7 +5,7 @@
 
   <selection name="bpm.model.status.select">
     <option value="1">New</option>
-    <option value="2">On Going</option>
+    <option value="2">On going</option>
     <option value="3">Terminated</option>
   </selection>
 

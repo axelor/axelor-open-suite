@@ -14,7 +14,7 @@
     <string name="messages" title="Send messages"/>
     <many-to-one name="wkfModel" ref="WkfModel"/>
     <boolean name="createTask" title="Create user action"/>
-    <string name="taskEmailTitle" title="Action/Email Title"/>
+    <string name="taskEmailTitle" title="Action/Email title"/>
     <string name="userPath" title="User field path"/>
     <string name="deadlineFieldPath" title="Deadline field path"/>
     <boolean name="notificationEmail" title="Email notification"/>
@@ -25,7 +25,7 @@
     <string name="positionMenuName" title="Position menu"/>
     <string name="formView" title="Form view"/>
     <string name="gridView" title="Grid view"/>
-    <boolean name="displayTagCount" title="Display tag count"/>
+    <boolean name="displayTagCount" title="Display tag count ?"/>
     <boolean name="userNewMenu" title="New user menu"/>
     <string name="userMenuName" title="User menu name"/>
     <string name="userParentMenuName" title="User Parent menu"/>
@@ -36,9 +36,9 @@
     <string name="processId" title="Process id"/>
     <string name="userFormView" title="Form view"/>
     <string name="userGridView" title="Grid view"/>
-    <boolean name="userDisplayTagCount" title="Display tag count"/>
+    <boolean name="userDisplayTagCount" title="Display tag count ?"/>
     <boolean name="displayStatus" title="Display status"/>
-    <string name="displayOnModels" title="Display for models" large="true"/>
+    <string name="displayOnModels" title="Display on models" large="true"/>
     <string name="defaultForm" title="Default form"/>
     <string name="templateName" title="Email template"/>
     <string name="type" title="Type"/>

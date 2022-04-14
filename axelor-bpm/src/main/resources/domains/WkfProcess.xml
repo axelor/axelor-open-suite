@@ -16,7 +16,7 @@
       title="Process configs" mappedBy="wkfProcess"/>
     <many-to-one name="wkfModel" ref="WkfModel"/>
     <boolean name="displayStatus"/>
-    <string name="displayOnModels" title="Display for models" large="true"/>
+    <string name="displayOnModels" title="Display on models" large="true"/>
     <string name="description" title="Description" large="true"/>
 
   </entity>
