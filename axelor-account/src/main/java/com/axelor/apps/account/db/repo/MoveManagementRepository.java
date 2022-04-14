@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -38,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -102,6 +104,35 @@ public class MoveManagementRepository extends MoveRepository {
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
     }
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(this::resetInvoiceTerm);
+    }
+  }
+
+  public void resetInvoiceTerm(InvoiceTerm invoiceTerm) {
+    invoiceTerm.setIsPaid(false);
+    invoiceTerm.setApplyFinancialDiscount(false);
+    invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
+    invoiceTerm.setIsSelectedOnPaymentSession(false);
+    invoiceTerm.setDebtRecoveryBlockingOk(false);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
+    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+    invoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
+    invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+    invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
+    invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
+    invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
+    invoiceTerm.setImportId(null);
+    invoiceTerm.setPaymentSession(null);
+    invoiceTerm.setPfpPartialReason(null);
+    invoiceTerm.setReasonOfRefusalToPay(null);
+    invoiceTerm.setReasonOfRefusalToPayStr(null);
+    invoiceTerm.setPfpValidatorUser(null);
+    invoiceTerm.setFinancialDiscount(null);
+    invoiceTerm.setDecisionPfpTakenDate(null);
   }
 
   @Override
