@@ -471,7 +471,13 @@ public class ReconcileServiceImpl implements ReconcileService {
                         && it.getPaymentSession().equals(move.getPaymentSession()))
             .collect(Collectors.toList());
       } else {
-        return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+        return invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice).stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() == null
+                        || it.getPaymentSession().getStatusSelect()
+                            == PaymentSessionRepository.STATUS_CLOSED)
+            .collect(Collectors.toList());
       }
     } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
