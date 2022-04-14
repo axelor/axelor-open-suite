@@ -125,25 +125,21 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      AnalyticDistributionTemplate specificAnalyticDistributionTemplate = null;
       AnalyticDistributionTemplate analyticDistributionTemplate =
           account.getAnalyticDistributionTemplate();
-      if (analyticDistributionTemplate == null && account.getAnalyticDistributionAuthorized()) {
-        specificAnalyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-      } else if (account.getAnalyticDistributionAuthorized()
-          && analyticDistributionTemplate != null) {
-        specificAnalyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .personalizeAnalyticDistributionTemplate(
-                    analyticDistributionTemplate, account.getCompany());
-      }
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .createOrPersonalizeTemplate(
+                  account.getAnalyticDistributionAuthorized(),
+                  account.getCompany(),
+                  account.getName(),
+                  analyticDistributionTemplate);
+
       if ((analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific())
           && specificAnalyticDistributionTemplate != null) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
-            ActionView.define(I18n.get("Specific Analytic Distribution Template"))
+            ActionView.define(I18n.get(IExceptionMessage.SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE))
                 .model(AnalyticDistributionTemplate.class.getName())
                 .add("form", "analytic-distribution-template-account-form")
                 .param("popup", "true")

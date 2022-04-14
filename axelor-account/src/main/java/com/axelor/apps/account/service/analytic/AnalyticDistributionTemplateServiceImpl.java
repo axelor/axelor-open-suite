@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -32,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -99,7 +99,7 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class})
   public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
       AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
       throws AxelorException {
@@ -171,15 +171,14 @@ public class AnalyticDistributionTemplateServiceImpl
 
   @Override
   @Transactional
-  public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
-      throws AxelorException {
-    if (account.getCompany() != null && account.getName() != null) {
-      Company company = account.getCompany();
+  public AnalyticDistributionTemplate createSpecificDistributionTemplate(
+      Company company, String name) throws AxelorException {
+    if (company != null && name != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       AnalyticDistributionTemplate analyticDistributionTemplate =
           new AnalyticDistributionTemplate();
-      analyticDistributionTemplate.setName(account.getName());
-      analyticDistributionTemplate.setCompany(account.getCompany());
+      analyticDistributionTemplate.setName(name);
+      analyticDistributionTemplate.setCompany(company);
       analyticDistributionTemplate.setIsSpecific(true);
       analyticDistributionTemplate.setAnalyticDistributionLineList(
           new ArrayList<AnalyticDistributionLine>());
@@ -326,5 +325,24 @@ public class AnalyticDistributionTemplateServiceImpl
         }
       }
     }
+  }
+
+  @Override
+  public AnalyticDistributionTemplate createOrPersonalizeTemplate(
+      boolean isAnalyticDistributionAuthorized,
+      Company company,
+      String name,
+      AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate == null && isAnalyticDistributionAuthorized) {
+      return Beans.get(AnalyticDistributionTemplateService.class)
+          .createSpecificDistributionTemplate(company, name);
+    } else if (company != null
+        && isAnalyticDistributionAuthorized
+        && analyticDistributionTemplate != null) {
+      return Beans.get(AnalyticDistributionTemplateService.class)
+          .personalizeAnalyticDistributionTemplate(analyticDistributionTemplate, company);
+    }
+    return null;
   }
 }

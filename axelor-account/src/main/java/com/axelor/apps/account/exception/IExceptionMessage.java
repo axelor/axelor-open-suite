@@ -1113,4 +1113,7 @@ public interface IExceptionMessage {
 
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Specific Analytic Distribution Template" /*)*/;
 }
