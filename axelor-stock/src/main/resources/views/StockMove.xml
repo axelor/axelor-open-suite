@@ -769,7 +769,7 @@
         target="com.axelor.apps.stock.db.StockLocation" required="true"/>
       <field name="productSet" title="Products" type="many-to-many"
         target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"
-        domain="self.dtype = 'Product'"/>
+        domain="self.dtype = 'Product' AND self.stockManaged = 'true'"/>
     </panel>
   </form>
 

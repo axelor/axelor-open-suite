@@ -1021,7 +1021,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1113,6 +1113,9 @@ public interface IExceptionMessage {
   static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
+  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
+      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
@@ -1122,6 +1125,15 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
+
+  static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
+
+  static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;
+
+  static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
 
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing partner." /*)*/;
@@ -1168,4 +1180,10 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
       "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
 }

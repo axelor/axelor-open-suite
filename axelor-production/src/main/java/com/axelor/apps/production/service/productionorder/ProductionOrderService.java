@@ -61,11 +61,10 @@ public interface ProductionOrderService {
    * @param billOfMaterial
    * @param qtyRequested
    * @param startDate
+   * @param endDate
    * @param saleOrder
-   * @param originType
-   *     <li>1 : MRP
-   *     <li>2 : Sale order
-   *     <li>3 : Other
+   * @param saleOrderLine
+   * @param manufOrderOriginType
    * @return
    * @throws AxelorException
    */

@@ -146,8 +146,6 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
 
-    int i = 0;
-
     for (Move move : moveList) {
       try {
 
@@ -155,13 +153,15 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
             moveRepo.find(move.getId()),
             accountRepo.find(doubtfulCustomerAccount.getId()),
             debtPassReason);
-        updateInvoice(moveRepo.find(move.getId()).getInvoice());
+        Move myMove = moveRepo.find(move.getId());
+        if (myMove.getInvoice() != null) {
+          updateInvoice(myMove.getInvoice());
+        }
 
       } catch (AxelorException e) {
 
         TraceBackService.trace(
-            new AxelorException(
-                e, e.getCategory(), I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()),
+            new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
         incrementAnomaly();
@@ -169,22 +169,13 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
       } catch (Exception e) {
 
         TraceBackService.trace(
-            new Exception(
-                String.format(I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()), e),
+            new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
 
-        log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
-            moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-
-      } finally {
-
-        if (i % 10 == 0) {
-          JPA.clear();
-        }
+        log.error("Bug(Anomalie) généré(e) pour la pièce {}", move.getOrigin());
       }
     }
   }

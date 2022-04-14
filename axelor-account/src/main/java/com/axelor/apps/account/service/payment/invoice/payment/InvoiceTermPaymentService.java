@@ -55,7 +55,8 @@ public interface InvoiceTermPaymentService {
    * @param invoicePayment
    * @return
    */
-  public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException;
+  public void createInvoicePaymentTerms(
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermToPayList) throws AxelorException;
 
   /**
    * Method to create new InvoiceTermPayment usign invoiceTerm amountRemaining

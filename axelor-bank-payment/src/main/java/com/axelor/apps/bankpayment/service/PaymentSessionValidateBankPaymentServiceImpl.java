@@ -2,8 +2,8 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -70,7 +70,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoicePaymentRepository invoicePaymentRepo) {
     super(
         appBaseService,
         moveCreateService,
@@ -82,7 +83,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
-        partnerRepo);
+        partnerRepo,
+        invoicePaymentRepo);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -96,7 +98,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
     if (paymentSession.getPaymentMode() != null
-        && paymentSession.getPaymentMode().getGenerateBankOrder()) {
+        && paymentSession.getPaymentMode().getGenerateBankOrder()
+        && paymentSession.getBankOrder() == null) {
       this.generateBankOrderFromPaymentSession(paymentSession);
     }
 
@@ -118,7 +121,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       bankOrderService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
-      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
+      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
+          && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
           bankOrderService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
@@ -152,7 +156,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             paymentSession.getSequence(),
             this.getLabel(paymentSession),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
+            paymentSession.getAccountingTriggerSelect());
 
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);
@@ -167,7 +172,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<Partner, List<Move>> moveMap,
       Map<Move, BigDecimal> paymentAmountMap,
-      Map<Move, MoveLine> financialDiscountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -175,7 +179,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
 
-    if (paymentSession.getBankOrder() != null) {
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }

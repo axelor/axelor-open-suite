@@ -2,12 +2,14 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -50,6 +52,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
   protected PartnerRepository partnerRepo;
+  protected InvoicePaymentRepository invoicePaymentRepo;
   protected int counter = 0;
 
   @Inject
@@ -64,7 +67,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
-      PartnerRepository partnerRepo) {
+      PartnerRepository partnerRepo,
+      InvoicePaymentRepository invoicePaymentRepo) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -76,6 +80,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
     this.partnerRepo = partnerRepo;
+    this.invoicePaymentRepo = invoicePaymentRepo;
   }
 
   @Override
@@ -160,6 +165,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
+    this.updateStatus(paymentSession);
     this.generateCashMoveAndLines(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
     this.generateTaxMoveLines(moveMap);
     this.updateStatuses(paymentSession, moveMap, paymentAmountMap);
@@ -202,7 +208,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
@@ -212,17 +217,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean isGlobal)
       throws AxelorException {
     if (paymentSession.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
-      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
-      paymentSession.setValidatedByUser(AuthUtils.getUser());
-      paymentSession.setValidatedDate(
-          appBaseService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
-
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.generateMoveFromInvoiceTerm(
           paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-    } else {
-      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
-      paymentSessionRepo.save(paymentSession);
     }
 
     return paymentSession;
@@ -291,20 +289,24 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   protected Move createMove(PaymentSession paymentSession, Partner partner) throws AxelorException {
+    Move move =
+        moveCreateService.createMove(
+            paymentSession.getJournal(),
+            paymentSession.getCompany(),
+            paymentSession.getCurrency(),
+            partner,
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentMode(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            paymentSession.getSequence(),
+            "");
 
-    return moveCreateService.createMove(
-        paymentSession.getJournal(),
-        paymentSession.getCompany(),
-        paymentSession.getCurrency(),
-        partner,
-        paymentSession.getPaymentDate(),
-        paymentSession.getPaymentDate(),
-        paymentSession.getPaymentMode(),
-        null,
-        MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-        paymentSession.getSequence(),
-        "");
+    move.setPaymentSession(paymentSession);
+
+    return move;
   }
 
   protected String getMoveDescription(PaymentSession paymentSession, BigDecimal amount) {
@@ -492,6 +494,24 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.save(invoiceTerm);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updateStatus(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+
+    if (paymentSession.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
+      paymentSession.setValidatedByUser(AuthUtils.getUser());
+      paymentSession.setValidatedDate(
+          appBaseService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
+    } else {
+      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    }
+
+    paymentSessionRepo.save(paymentSession);
+  }
+
   protected void updateStatuses(
       PaymentSession paymentSession,
       Map<Partner, List<Move>> moveMap,
@@ -505,6 +525,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         move.setDescription(this.getMoveDescription(paymentSession, paymentAmountMap.get(move)));
 
         this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
+        this.updatePaymentDescription(move);
       }
     }
   }
@@ -516,6 +537,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
       moveValidateService.accounting(move);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updatePaymentDescription(Move move) {
+    for (InvoicePayment invoicePayment :
+        invoicePaymentRepo.all().filter("self.move = ?", move).fetch()) {
+      invoicePayment.setDescription(move.getDescription());
+      invoicePaymentRepo.save(invoicePayment);
     }
   }
 
