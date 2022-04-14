@@ -313,7 +313,13 @@ public class PartnerController {
     }
     if (!ibanInError.isEmpty()) {
 
-      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
+      Function<String, String> addLi =
+          new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+              return "<li>".concat(s).concat("</li>").toString();
+            }
+          };
 
       response.setAlert(
           String.format(
