@@ -145,7 +145,6 @@ public class MrpServiceImpl implements MrpService {
   @Override
   public void runCalculation(Mrp mrp) throws AxelorException {
 
-    this.checkOnGoing(mrpRepository.find(mrp.getId()));
     this.reset(mrp);
 
     this.startMrp(mrpRepository.find(mrp.getId()));
@@ -154,12 +153,10 @@ public class MrpServiceImpl implements MrpService {
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
-  protected void checkOnGoing(Mrp mrp) throws AxelorException {
-    if (mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
-    }
+  @Override
+  public boolean isOnGoing(Mrp mrp) throws AxelorException {
+
+    return mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED;
   }
 
   @Transactional
