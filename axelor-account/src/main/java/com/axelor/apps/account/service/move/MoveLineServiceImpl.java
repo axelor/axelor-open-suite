@@ -234,9 +234,12 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
-        new Object[] {
-          account.getName(), amountInSpecificMoveCurrency, isDebit, date, counter, origin
-        });
+        account.getName(),
+        amountInSpecificMoveCurrency,
+        isDebit,
+        date,
+        counter,
+        origin);
 
     Currency currency = move.getCurrency();
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
@@ -296,7 +299,12 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
-        new Object[] {account.getName(), amountInCompanyCurrency, isDebit, date, counter, origin});
+        account.getName(),
+        amountInCompanyCurrency,
+        isDebit,
+        date,
+        counter,
+        origin);
 
     BigDecimal amountConvertedInMoveCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
@@ -357,9 +365,12 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
-        new Object[] {
-          account.getName(), amountInSpecificMoveCurrency, isDebit, date, counter, origin
-        });
+        account.getName(),
+        amountInSpecificMoveCurrency,
+        isDebit,
+        date,
+        counter,
+        origin);
 
     if (partner != null) {
       account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
@@ -536,7 +547,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         log.debug(
             "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
-            new Object[] {account.getName(), companyExTaxTotal});
+            account.getName(),
+            companyExTaxTotal);
 
         if (invoiceLine.getAnalyticDistributionTemplate() == null
             && (invoiceLine.getAnalyticMoveLineList() == null
