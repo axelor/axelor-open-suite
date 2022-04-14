@@ -81,6 +81,8 @@
 "Calculation ended","Calcul terminé",,
 "Calculation in progress","Calcul en cours",,
 "Calculation started","Calcul démarré",,
+"Can only be cancelled from drafted or confirmed forecast.","Vous pouvez seulement annuler des prévisions brouillonnes ou confirmées.",,
+"Can only be confirmed from drafted forecast.","Vous pouvez seulement confirmer des prévisions brouillonnes.",,
 "Can't remove delivered detail line %s.","Impossible de supprimer la ligne de détail livrée %s.",,
 "Cancel","Annuler",,
 "Cancel reason on changing sale order","Raison d'annulation sur une commande client modifiée",,

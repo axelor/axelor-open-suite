@@ -132,6 +132,8 @@
 "Status",,,
 "Tab name",,,
 "Technical maintenance",,,
+"The 'Query' of the line '%s' cannot be empty.",,,
+"The 'Relational field' of the line '%s' cannot be empty.",,,
 "This app is used by %s. Please deactivate them before continue.",,,
 "Title",,,
 "Type",,,

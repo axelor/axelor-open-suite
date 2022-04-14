@@ -181,7 +181,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     String fileName =
         I18n.get("Invoices")
             + " - "
-            + Beans.get(AppBaseService.class)
+            + appBaseService
                 .getTodayDate(
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)

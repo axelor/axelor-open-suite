@@ -33,7 +33,6 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
 
-    if (!Beans.get(AppAccountService.class).isApp("business-project")) {
+    if (!appAccountService.isApp("business-project")) {
       return super.createInvoiceLines(invoice, expenseLineList, priority);
     }
 

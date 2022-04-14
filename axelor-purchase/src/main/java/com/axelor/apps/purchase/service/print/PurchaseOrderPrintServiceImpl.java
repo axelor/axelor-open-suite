@@ -129,7 +129,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)
