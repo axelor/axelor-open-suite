@@ -91,6 +91,7 @@
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"
       mappedBy="fiscalFixedAsset"/>
+    <date name="depreciationEndDate" title="Depreciation end date"/>
 
     <boolean name="isIfrsEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
     <string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select"
@@ -117,6 +118,15 @@
     <one-to-many name="fixedAssetDerogatoryLineList"
       ref="com.axelor.apps.account.db.FixedAssetDerogatoryLine" title="Fiscal Fixed Asset Line List"
       mappedBy="fixedAsset"/>
+    <date name="failOverDepreciationEndDate" title="Fail over depreciation end date"/>
+    <date name="fiscalFailOverDepreciationEndDate"
+      title="FailOver Fiscal depreciation end date"/>
+    <date name="ifrsFailOverDepreciationEndDate" title="FailOver Ifrs depreciation end date"/>
+
+    <decimal name="depreciatedAmountCurrentYear" title="Depreciated amount current Year"/>
+    <decimal name="fiscalDepreciatedAmountCurrentYear"
+      title="Depreciated amount current Year"/>
+    <decimal name="ifrsDepreciatedAmountCurrentYear" title="Depreciated amount current Year"/>
 
     <string name="serialNumber" title="Serial Nbr"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="barcode" title="Barcode"/>

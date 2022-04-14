@@ -23,7 +23,8 @@
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="parentProductCategory" form-view="product-category-form"
-        grid-view="product-category-grid"/>
+        grid-view="product-category-grid"
+        onSelect="action-method-product-category-filter-parent-category"/>
       <field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
       <field name="maxDiscount" onChange="action-group-product-category-max-discount-onchange"/>
       <field name="growthCoef"/>
@@ -93,6 +94,11 @@
   <action-method name="action-method-product-category-show-existing-discounts">
     <call class="com.axelor.apps.base.web.ProductCategoryController"
       method="showExistingDiscounts"/>
+  </action-method>
+
+  <action-method name="action-method-product-category-filter-parent-category">
+    <call class="com.axelor.apps.base.web.ProductCategoryController"
+      method="filterParentCategory"/>
   </action-method>
 
 </object-views>

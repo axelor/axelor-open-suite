@@ -323,7 +323,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
-
+      fixedAsset.setPurchaseAccountMove(invoice.getMove());
       this.generateAndComputeLines(fixedAsset);
 
       fixedAssetList.add(fixedAssetRepo.save(fixedAsset));

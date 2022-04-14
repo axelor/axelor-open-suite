@@ -311,9 +311,6 @@ public interface SaleOrderLineService {
       ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
-      throws ClassNotFoundException, AxelorException;
-
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException;
 }

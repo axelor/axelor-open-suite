@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -49,32 +49,33 @@ import java.util.Map;
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   protected PurchaseProductService purchaseProductService;
-
-  @Inject protected SupplierCatalogService supplierCatalogService;
+  protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public InvoiceLineSupplychainService(
       CurrencyService currencyService,
       PriceListService priceListService,
       AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      PurchaseProductService purchaseProductService,
+      SupplierCatalogService supplierCatalogService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
-        analyticMoveLineService,
         accountManagementAccountService,
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        invoiceLineAnalyticService);
     this.purchaseProductService = purchaseProductService;
+    this.supplierCatalogService = supplierCatalogService;
   }
 
   @Override

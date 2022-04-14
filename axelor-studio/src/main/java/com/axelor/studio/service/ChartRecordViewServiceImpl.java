@@ -21,6 +21,7 @@ import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.QueryBinder;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -42,6 +43,7 @@ import com.axelor.meta.schema.views.ChartView;
 import com.axelor.meta.schema.views.ChartView.ChartSeries;
 import com.axelor.meta.schema.views.Search.SearchField;
 import com.axelor.meta.schema.views.Selection.Option;
+import com.axelor.script.ScriptBindings;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
@@ -160,7 +162,13 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     String queryString = prepareQuery(chartBuilder, params);
     Query query = JPA.em().createNativeQuery(queryString);
     params.forEach(query::setParameter);
-    List<BigInteger> resultList = query.getResultList();
+
+    QueryBinder queryBinder = QueryBinder.of(query);
+    ScriptBindings binding = new ScriptBindings(null); // handle special variables
+    binding.keySet().forEach(key -> queryBinder.bind(key, binding.get(key)));
+
+    List<BigInteger> resultList = queryBinder.getQuery().getResultList();
+
     resultList.add(BigInteger.ZERO);
     return resultList
         .parallelStream()
@@ -246,7 +254,7 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
       return Arrays.asList(filter);
     }
 
-    List<Filter> dateFilters = getFiltersForDateType(chartBuilder, params, filter, false);
+    List<Filter> dateFilters = getFiltersForDateType(chartBuilder, params, filter, isForGroup);
     return dateFilters;
   }
 
@@ -394,7 +402,7 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
       if (Integer.class.getSimpleName().toLowerCase().equals(jsonField.getType())) {
         targetType = Integer.class;
       }
-    } else {
+    } else if (!isJson) {
       try {
         Mapper mapper = Mapper.of(Class.forName(chartBuilder.getModel()));
         Property p = mapper.getProperty(target.getName());

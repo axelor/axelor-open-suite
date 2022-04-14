@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -409,8 +410,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (invoiceLine.getAnalyticMoveLineList() != null
-            && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
+        if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
                 analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
@@ -550,24 +550,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     Company company = move.getCompany();
     Account newAccount = null;
 
-    if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
-    } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
-    } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
-    }
-
-    if (newAccount == null) {
-      throw new AxelorException(
-          move,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_6),
-          taxLine.getName(),
-          company.getName());
-    }
-
     FiscalPosition fiscalPosition = null;
     if (move.getInvoice() != null) {
       fiscalPosition = move.getInvoice().getFiscalPosition();
@@ -577,17 +559,47 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else {
       if (ObjectUtils.notEmpty(move.getPartner())
           && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
-        fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
+        fiscalPosition = move.getPartner().getFiscalPosition();
       }
     }
 
     if (fiscalPosition != null) {
-      newAccount =
-          fiscalPositionAccountService.getAccount(
-              move.getPartner().getFiscalPosition(), newAccount);
+      newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
     }
+
+    if (newAccount == null) {
+
+      if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+          || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
+      } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
+      } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+        newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
+      }
+    }
+
+    if (newAccount == null) {
+      if (fiscalPosition != null) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_8),
+            taxLine.getName(),
+            fiscalPosition.getName(),
+            company.getName());
+      } else {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_LINE_6),
+            taxLine.getName(),
+            company.getName());
+      }
+    }
+
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
     Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
-    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     MoveLine newOrUpdatedMoveLine = new MoveLine();
 
     newOrUpdatedMoveLine.setAccount(newAccount);
