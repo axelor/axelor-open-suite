@@ -284,10 +284,11 @@
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
-            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"/>
+            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"
+            showIf="irrecoverableStatusSelect == 0"/>
           <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
             onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"
-            colSpan="6"/>
+            colSpan="6" showIf="irrecoverableStatusSelect == 1"/>
         </panel>
       </panel>
       <panel name="currency" title="Currency">
@@ -482,10 +483,11 @@
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
-            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"/>
+            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"
+            showIf="irrecoverableStatusSelect == 0"/>
           <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
             onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"
-            colSpan="6"/>
+            showIf="irrecoverableStatusSelect == 1" colSpan="6"/>
         </panel>
       </panel>
       <panel name="currency" title="Currency">

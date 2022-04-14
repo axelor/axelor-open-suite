@@ -91,7 +91,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       TradingName tradingName)
       throws AxelorException {
 
-    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
+    if (!appSaleService.isApp("supplychain")) {
       return super.createSaleOrder(
           salespersonUser,
           company,

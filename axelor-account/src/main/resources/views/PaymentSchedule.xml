@@ -84,10 +84,10 @@
         grid-view="management-object-grid"/>
       <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
         onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"
-        colSpan="6"/>
+        colSpan="6" showIf="irrecoverableStatusSelect == 0"/>
       <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
         onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"
-        colSpan="6"/>
+        colSpan="6" showIf="irrecoverableStatusSelect == 1"/>
     </panel>
 
   </form>

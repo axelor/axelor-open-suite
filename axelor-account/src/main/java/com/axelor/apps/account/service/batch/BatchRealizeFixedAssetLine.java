@@ -29,7 +29,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
@@ -63,7 +62,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       query += " AND self.depreciationDate < :dateNow";
     }
     List<FixedAssetLine> fixedAssetLineList =
-        Beans.get(FixedAssetLineRepository.class)
+        fixedAssetLineRepo
             .all()
             .filter(query)
             .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
