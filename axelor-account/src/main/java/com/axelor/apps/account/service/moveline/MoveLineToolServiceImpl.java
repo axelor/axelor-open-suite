@@ -295,10 +295,12 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
-    if (move == null
-        || move.getPeriod() == null
-        || !moveLine.getDate().isAfter(move.getPeriod().getFromDate())
-        || !moveLine.getDate().isBefore(move.getPeriod().getToDate())) {
+    if (move != null
+        && move.getPeriod() != null
+        && moveLine != null
+        && moveLine.getDate() != null
+        && (!moveLine.getDate().isAfter(move.getPeriod().getFromDate())
+            || !moveLine.getDate().isBefore(move.getPeriod().getToDate()))) {
       if (move.getCurrency() != null
           && move.getCurrency().getSymbol() != null
           && moveLine.getAccount() != null) {
