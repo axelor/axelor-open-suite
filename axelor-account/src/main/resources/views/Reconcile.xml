@@ -43,13 +43,15 @@
     </panel>
     <panel name="mainPanel">
       <field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        onChange="action-reconcile-record-set-debit-move-line-amount-remaining"
         onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form"
         grid-view="move-line-grid"/>
       <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        onChange="action-reconcile-record-set-credit-move-line-amount-remaining"
         onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form"
         grid-view="move-line-grid"/>
-      <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-      <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+      <field name="debitMoveLineAmountRemaining"/>
+      <field name="creditMoveLineAmountRemaining"/>
     </panel>
     <panel-related field="paymentMoveLineDistributionList"
       grid-view="payment-move-line-distribution-grid"
@@ -87,6 +89,18 @@
       expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;"
       for="creditMoveLine"/>
   </action-attrs>
+
+  <action-record name="action-reconcile-record-set-debit-move-line-amount-remaining"
+    model="com.axelor.apps.account.db.Reconcile">
+    <field name="debitMoveLineAmountRemaining"
+      expr="eval: debitMoveLine ? debitMoveLine.amountRemaining.abs() : 0"/>
+  </action-record>
+
+  <action-record name="action-reconcile-record-set-credit-move-line-amount-remaining"
+    model="com.axelor.apps.account.db.Reconcile">
+    <field name="creditMoveLineAmountRemaining"
+      expr="eval: creditMoveLine ? creditMoveLine.amountRemaining.abs() : 0"/>
+  </action-record>
 
   <action-method name="action-reconcile-method-reconcile">
     <call class="com.axelor.apps.account.web.ReconcileController" method="reconcile"/>

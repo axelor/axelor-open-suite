@@ -186,6 +186,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
     this.addToReconcileGroup(reconcile);
 
+    reconcile.setDebitMoveLineAmountRemaining(
+        reconcile.getDebitMoveLine().getAmountRemaining().abs());
+    reconcile.setCreditMoveLineAmountRemaining(
+        reconcile.getCreditMoveLine().getAmountRemaining().abs());
+
     return reconcileRepository.save(reconcile);
   }
 
