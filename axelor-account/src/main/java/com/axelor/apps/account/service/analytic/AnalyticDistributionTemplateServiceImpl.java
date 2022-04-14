@@ -99,7 +99,7 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
       AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
       throws AxelorException {
@@ -170,7 +170,7 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public AnalyticDistributionTemplate createSpecificDistributionTemplate(
       Company company, String name) throws AxelorException {
     if (company != null && name != null) {
