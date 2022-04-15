@@ -410,10 +410,12 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
-      List<Long> analyticAccountList = new ArrayList<Long>();
+      List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+
+      for (int i = 1; i <= 5; i++) {
+
         if (move != null
             && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
           analyticAccountList = analyticLineService.getAxisDomains(moveLine, move.getCompany(), i);
@@ -423,17 +425,23 @@ public class MoveLineController {
                 "domain",
                 "self.id IN (0)");
           } else {
-            String idList =
-                analyticAccountList.stream()
-                    .map(id -> id.toString())
-                    .collect(Collectors.joining(","));
-            response.setAttr(
-                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                "domain",
-                "self.id IN ("
-                    + idList
-                    + ") AND self.statusSelect = "
-                    + AnalyticAccountRepository.STATUS_ACTIVE);
+            if (moveLine.getMove().getCompany() != null) {
+              String idList =
+                  analyticAccountList.stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(","));
+
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "domain",
+                  "self.id IN ("
+                      + idList
+                      + ") AND self.statusSelect = "
+                      + AnalyticAccountRepository.STATUS_ACTIVE
+                      + " AND (self.company is null OR self.company.id = "
+                      + moveLine.getMove().getCompany().getId()
+                      + ")");
+            }
           }
         }
       }

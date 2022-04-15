@@ -13,14 +13,15 @@
   <form name="analytic-axis-form" title="Analytic Axis"
     model="com.axelor.apps.account.db.AnalyticAxis"
     onLoad="action-attrs-analytic-axis-hide-grouping,action-method-account-analytic-axis-readonly-if-in-analytic-move-line"
-    onSave="action-method-account-analytic-axis-control-unicity">
+    onSave="action-method-account-analytic-axis-control-unicity,action-method-axis-check-company-on-analytic-account">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="nbrOfAnalyticGrouping" readonlyIf="!id"
         onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
       <field name="manageParentAccount"/>
-      <field name="company" colSpan="12" onChange="action-method-axis-change-company"/>
+      <field name="company" colSpan="12"
+        onChange="action-method-axis-change-company,action-method-axis-check-company-on-analytic-account"/>
       <field name="analyticGrouping1" onChange="action-validate-analytic-axis-check-1"
         onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
         requiredIf="1 &lt;= nbrOfAnalyticGrouping"/>
@@ -255,6 +256,11 @@
   <action-method
     name="action-method-account-analytic-axis-readonly-if-in-analytic-move-line">
     <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setReadOnly"/>
+  </action-method>
+
+  <action-method name="action-method-axis-check-company-on-analytic-account">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="checkAnalyticAccountCompany"/>
   </action-method>
 
 </object-views>
