@@ -1,5 +1,0 @@
----
-title: Improve irrecoverable process 
-type: change
-description: |
-  Improve views and rollback batch when anomaly
