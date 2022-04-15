@@ -167,14 +167,11 @@ public abstract class AbstractBatch {
 
     if (actionSelectGetter != null) {
       int actionSelect = (int) actionSelectGetter.invoke(model);
+      String actionSelection = modelMapper.getProperty("actionSelect").getSelection();
+      String actionTitle = metaSelectTool.getSelectTitle(actionSelection, actionSelect);
 
-      if (actionSelect > 0) {
-        String actionSelection = modelMapper.getProperty("actionSelect").getSelection();
-        String actionTitle = metaSelectTool.getSelectTitle(actionSelection, actionSelect);
-
-        if (!StringUtils.isEmpty(actionTitle)) {
-          actionNamePartList.add(actionTitle);
-        }
+      if (!StringUtils.isEmpty(actionTitle)) {
+        actionNamePartList.add(actionTitle);
       }
     }
 
