@@ -1211,6 +1211,8 @@
 "Disposal date can not be before the first service date of the fixed asset",,,
 "Disposal date must be after the date of the last depreciation.",,,
 "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal.",,,
+"Disposal quantity can not be equal to 0",,,
+"Disposal quantity can not be equal to the fixed asset max quantity (%s)",,,
 "Disposal quantity can not be greater than the fixed asset quantity (%s)",,,
 "Disposal value",,,
 "Do not export",,,
