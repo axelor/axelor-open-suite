@@ -267,8 +267,7 @@ public class SequenceService {
 
   protected SequenceVersion getVersionByMonth(Sequence sequence, LocalDate refDate) {
 
-    SequenceVersion sequenceVersion =
-        sequenceVersionRepository.findByMonth(sequence, refDate.getMonthValue(), refDate.getYear());
+    SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
     if (sequenceVersion == null) {
       sequenceVersion =
           new SequenceVersion(
@@ -283,14 +282,14 @@ public class SequenceService {
 
   protected SequenceVersion getVersionByYear(Sequence sequence, LocalDate refDate) {
 
-    SequenceVersion sequenceVersion =
-        sequenceVersionRepository.findByYear(sequence, refDate.getYear());
+    SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
+
     if (sequenceVersion == null) {
       sequenceVersion =
           new SequenceVersion(
               sequence,
-              refDate.withDayOfMonth(1),
-              refDate.withDayOfMonth(refDate.lengthOfMonth()),
+              LocalDate.of(refDate.getYear(), 1, 1),
+              LocalDate.of(refDate.getYear(), 12, 31),
               1L);
     }
 
