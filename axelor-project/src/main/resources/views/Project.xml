@@ -606,7 +606,7 @@
 		<![CDATA[
 		<h4>{{fullName}}</h4>
 		<div class="card-body">
-		{{description}}
+		 <div ng-bind-html="description"></div>
 	    </div>
 		]]>
     </template>
