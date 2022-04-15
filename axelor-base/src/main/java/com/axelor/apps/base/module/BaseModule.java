@@ -142,6 +142,8 @@ import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -248,5 +250,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
         .to(ProductCategoryDomainCreatorServiceImpl.class);
+    bind(PricingService.class).to(PricingServiceImpl.class);
   }
 }

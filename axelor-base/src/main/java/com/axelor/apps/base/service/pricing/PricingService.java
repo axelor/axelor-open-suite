@@ -1,12 +1,11 @@
 package com.axelor.apps.base.service.pricing;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import java.util.List;
+import java.util.Optional;
 
 public interface PricingService {
 
@@ -45,5 +44,4 @@ public interface PricingService {
       ProductCategory productCategory,
       String modelName,
       Pricing previousPricing);
-
 }
