@@ -259,4 +259,6 @@ public interface InvoiceTermService {
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
+
+  BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
 }

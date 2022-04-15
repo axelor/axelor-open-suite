@@ -30,7 +30,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
@@ -42,7 +41,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -60,7 +58,9 @@ public class InvoiceTermController {
 
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
-        BigDecimal amount = this.getCustomizedAmount(request.getContext().getParent(), invoiceTerm);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+        BigDecimal amount =
+            Beans.get(InvoiceTermService.class).getCustomizedAmount(invoiceTerm, total);
 
         if (amount.signum() > 0) {
           response.setValue("amount", amount);
@@ -112,14 +112,6 @@ public class InvoiceTermController {
     } else {
       return BigDecimal.ZERO;
     }
-  }
-
-  protected BigDecimal getCustomizedAmount(Context parentContext, InvoiceTerm invoiceTerm) {
-    return invoiceTerm
-        .getPercentage()
-        .multiply(this.getCustomizedTotal(parentContext, invoiceTerm))
-        .divide(
-            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
