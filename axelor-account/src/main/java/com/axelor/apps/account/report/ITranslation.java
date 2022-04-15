@@ -655,6 +655,12 @@ public interface ITranslation {
   public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/
       "ChequeDepositSlip.chequeDate"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_CURRENCY_CODE = /*$$(*/
+      "ChequeDepositSlip.currencyCode"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_SIGNATURE = /*$$(*/
+      "ChequeDepositSlip.signature"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_REMINDER_NOTE = /*$$(*/
+      "ChequeDepositSlip.reminderNote"; /*)*/
 
   public static final String ACCOUNTING_REPORT_16_TITLE =
       /*$$(*/ "AccountingReportType16.title"; /*)*/
