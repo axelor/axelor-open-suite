@@ -391,6 +391,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
@@ -498,6 +499,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
+    invoice.setIncoterm(dummyInvoice.getIncoterm());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -616,6 +618,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
       dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }
@@ -652,6 +655,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());
       dummyInvoice.setAddressStr(stockMove.getFromAddressStr());
+      dummyInvoice.setIncoterm(stockMove.getIncoterm());
     }
     return dummyInvoice;
   }
