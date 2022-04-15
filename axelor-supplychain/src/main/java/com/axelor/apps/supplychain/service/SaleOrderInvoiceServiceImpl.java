@@ -192,8 +192,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
-    invoice.setIncoterm(saleOrder.getIncoterm());
-
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
