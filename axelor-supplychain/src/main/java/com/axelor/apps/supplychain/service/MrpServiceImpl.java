@@ -154,7 +154,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public boolean isOnGoing(Mrp mrp) throws AxelorException {
+  public boolean isOnGoing(Mrp mrp) {
 
     return mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED;
   }
