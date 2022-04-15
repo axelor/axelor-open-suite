@@ -1,11 +1,15 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.db.mapper.Property;
-import com.axelor.db.mapper.PropertyType;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,17 +19,40 @@ public class AnonymizeServiceImpl implements AnonymizeService {
 
   @Override
   public Object anonymizeValue(Object object, Property property) {
-    Object value = null;
-    if (property.getType() == PropertyType.STRING) {
-      byte[] shaInBytes = hashString(object.toString());
+    switch (property.getType()) {
+      case TEXT:
+      case STRING:
+        byte[] shaInBytes = hashString(object.toString());
 
-      if (property.getMaxSize() != null && shaInBytes.length > (int) property.getMaxSize()) {
-        value = bytesToHex(shaInBytes).substring(0, (int) property.getMaxSize());
-      } else {
-        value = bytesToHex(shaInBytes);
-      }
+        if (property.getMaxSize() != null && shaInBytes.length > (int) property.getMaxSize()) {
+          return bytesToHex(shaInBytes).substring(0, (int) property.getMaxSize());
+        } else {
+          return bytesToHex(shaInBytes);
+        }
+
+      case LONG:
+      case DOUBLE:
+        return 0;
+
+      case INTEGER:
+        return BigInteger.ZERO;
+
+      case DECIMAL:
+        return BigDecimal.ZERO;
+
+      case DATE:
+        return LocalDate.of(1970, 1, 1);
+
+      case TIME:
+        return LocalTime.of(0, 0, 0);
+
+      case DATETIME:
+        return LocalDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0));
+
+      case BINARY:
+      default:
+        return null;
     }
-    return value;
   }
 
   protected byte[] hashString(String data) {
