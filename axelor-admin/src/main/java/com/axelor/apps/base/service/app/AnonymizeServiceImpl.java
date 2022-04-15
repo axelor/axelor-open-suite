@@ -48,7 +48,6 @@ public class AnonymizeServiceImpl implements AnonymizeService {
         return LocalTime.of(0, 0, 0);
 
       case DATETIME:
-        Random randomDateTime = new Random();
         return LocalDateTime.of(LocalDate.of(1970, 1, 1), LocalTime.of(0, 0, 0));
 
       case BINARY:
