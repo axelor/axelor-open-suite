@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
@@ -31,6 +32,7 @@ import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -73,6 +75,7 @@ public class DataBackupCreateService {
   private static final int BUFFER_SIZE = 1000;
 
   @Inject private MetaModelRepository metaModelRepo;
+  @Inject private AnonymizeService anonymizeService;
 
   private Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -113,14 +116,15 @@ public class DataBackupCreateService {
   public File create(DataBackup dataBackup) throws InterruptedException {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
+    boolean anonymizeData = dataBackup.getAnonymizeData();
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels();
+    List<MetaModel> metaModelList = getMetaModels(anonymizeData);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap();
+    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData);
 
     for (MetaModel metaModel : metaModelList) {
 
@@ -204,17 +208,23 @@ public class DataBackupCreateService {
   }
 
   /* Get All MetaModels */
-  private List<MetaModel> getMetaModels() {
-    String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+  private List<MetaModel> getMetaModels(boolean anonymizeData) {
+    String filterStr = "";
+    if (anonymizeData) {
+      filterStr =
+          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
+    } else {
+      filterStr =
+          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+    }
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  private Map<String, List<String>> getSubClassesMap() {
-    List<MetaModel> metaModels = getMetaModels();
+  private Map<String, List<String>> getSubClassesMap(boolean anonymizeData) {
+    List<MetaModel> metaModels = getMetaModels(anonymizeData);
     List<String> subClasses;
     Map<String, List<String>> subClassMap = new HashMap<String, List<String>>();
     for (MetaModel metaModel : metaModels) {
@@ -308,10 +318,24 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean anonymizeData = dataBackup.getAnonymizeData();
+      List<MetaField> metaFieldsToAnonymize = null;
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
+
+      if (anonymizeData) {
+        List<DataBackupConfigAnonymizeLine> dataBackupConfigAnonymizeLineList =
+            dataBackup.getDataBackupConfigAnonymizeLineList();
+        for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
+            dataBackupConfigAnonymizeLineList) {
+          if (dataBackupConfigAnonymizeLine.getMetaModel().getId() == metaModel.getId()) {
+            metaFieldsToAnonymize =
+                new ArrayList<>(dataBackupConfigAnonymizeLine.getMetaFieldSet());
+          }
+        }
+      }
 
       for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
@@ -336,7 +360,9 @@ public class DataBackupCreateService {
                         dataObject,
                         dirPath,
                         isRelativeDate,
-                        updateImportId));
+                        updateImportId,
+                        anonymizeData,
+                        metaFieldsToAnonymize));
               }
             }
 
@@ -466,7 +492,9 @@ public class DataBackupCreateService {
       Object dataObject,
       String dirPath,
       boolean isRelativeDate,
-      boolean updateImportId) {
+      boolean updateImportId,
+      boolean anonymizeData,
+      List<MetaField> metaFieldsToAnonymize) {
 
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -474,6 +502,16 @@ public class DataBackupCreateService {
       return "";
     }
     String propertyTypeStr = property.getType().toString();
+
+    if (anonymizeData) {
+      if (metaFieldsToAnonymize != null) {
+        for (MetaField metaField : metaFieldsToAnonymize) {
+          if (property.getName().equals(metaField.getName())) {
+            return anonymizeService.anonymizeValue(value, property).toString();
+          }
+        }
+      }
+    }
 
     switch (propertyTypeStr) {
       case "LONG":
