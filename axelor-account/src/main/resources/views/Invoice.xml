@@ -1635,9 +1635,9 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-partner-onchange">
-    <action name="action-record-invoice-set-discount-values"/>
     <action name="action-group-account-invoice-partner-onchange"/>
     <action name="action-method-invoice-address-str"/>
+    <action name="action-record-invoice-set-discount-values"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
@@ -2514,9 +2514,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
     <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !partner"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
