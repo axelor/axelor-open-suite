@@ -1,0 +1,3 @@
+---
+title: "INVOICE: Fix ClassNotFoundException on partner change."
+type: fix
