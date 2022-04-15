@@ -1,3 +1,21 @@
+## [5.4.13] (2022-04-15)
+
+#### Changes
+
+* Add an anonymization feature to the data backup feature.
+
+Add an anonymization option to allow the person making the data backup to get a backup with the selected fields anonymized.
+For the moment fields are anonymized using an hash function, a call to an API to get fake data is not implemented yet.
+
+#### Fixed
+
+* BankReconciliation: On company change, empty fields related to company in bank reconciliation form view.
+* Account Config: Remove account clearance editor view and instead use a standard panel.
+* Leave: filter out leave reasons that do not manage accumulation.
+* PaymentAssistantReport: fix empty columns when ticket is printed.
+* Stock and MRP: Add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* StockLocation: fix print button on stock location grid view.
+
 ## [5.4.12] (2022-04-01)
 
 #### Fixed
@@ -489,6 +507,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.13]: https://github.com/axelor/axelor-open-suite/compare/v5.4.12...v5.4.13
 [5.4.12]: https://github.com/axelor/axelor-open-suite/compare/v5.4.11...v5.4.12
 [5.4.11]: https://github.com/axelor/axelor-open-suite/compare/v5.4.10...v5.4.11
 [5.4.10]: https://github.com/axelor/axelor-open-suite/compare/v5.4.9...v5.4.10
