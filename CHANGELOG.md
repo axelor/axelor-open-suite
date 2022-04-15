@@ -1,3 +1,22 @@
+## [6.0.20] (2022-04-15)
+
+#### Changes
+
+* Add an anonymization feature to the data backup feature.
+
+Add an anonymization option to allow the person making the data backup to get a backup with the selected fields anonymized.
+For the moment fields are anonymized using an hash function, a call to an API to get fake data is not implemented yet.
+
+#### Fixed
+
+* BankReconciliation: On company change, empty fields related to company in bank reconciliation form view.
+* Account Config: Remove account clearance editor view and instead use a standard panel.
+* Leave: filter out leave reasons that do not manage accumulation.
+* PaymentAssistantReport: fix empty columns when ticket is printed.
+* Product: fix products full name translation on cards view.
+* Stock and MRP: Add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* StockLocation: fix print button on stock location grid view.
+
 ## [6.0.19] (2022-04-01)
 
 #### Fixed
@@ -701,6 +720,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.20]: https://github.com/axelor/axelor-open-suite/compare/v6.0.19...v6.0.20
 [6.0.19]: https://github.com/axelor/axelor-open-suite/compare/v6.0.18...v6.0.19
 [6.0.18]: https://github.com/axelor/axelor-open-suite/compare/v6.0.17...v6.0.18
 [6.0.17]: https://github.com/axelor/axelor-open-suite/compare/v6.0.16...v6.0.17
