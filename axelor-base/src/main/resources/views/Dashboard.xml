@@ -21,7 +21,8 @@
   </dashboard>
 
   <dashboard title="Batches dashboard" name="base.batch.dashboard">
-    <dashlet action="dashlet.batch.batch.history" colSpan="12" canSearch="true"/>
+    <dashlet action="dashlet.batch.batch.history" colSpan="12" canSearch="true"
+      readonly="true"/>
   </dashboard>
 
 
