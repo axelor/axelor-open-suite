@@ -28,5 +28,6 @@ public interface WeightedAveragePriceService {
   @Transactional
   public void computeAvgPriceForProduct(Product product) throws AxelorException;
 
-  public BigDecimal computeAvgPriceForCompany(Product product, Company company);
+  public BigDecimal computeAvgPriceForCompany(Product product, Company company)
+      throws AxelorException;
 }
