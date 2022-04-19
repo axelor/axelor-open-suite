@@ -79,15 +79,15 @@
     <extend
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
       <attribute name="showIf"
-        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1)"/>
+        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
       <attribute name="requiredIf"
-        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1))"/>
+        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
           domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 3"
           form-view="journal-form" grid-view="journal-grid" canEdit="false" hidden="true"
-          showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1"
-          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1"/>
+          showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
       </insert>
     </extend>
     <extend
@@ -95,6 +95,7 @@
       <insert position="after">
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="paymentMode.inOutSelect" hidden="true"/>
+        <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
       </insert>
     </extend>
   </form>
