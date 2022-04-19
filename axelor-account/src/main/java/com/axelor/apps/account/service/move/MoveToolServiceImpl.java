@@ -478,4 +478,30 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return result;
   }
+
+  @Override
+  public List<MoveLine> getAllUnreconciledMoveLine(Move paymentMove, Move invoiceMove) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    if(paymentMove != null && invoiceMove != null){
+      for(MoveLine item: paymentMove.getMoveLineList()){
+        moveLineList = this.addToUnreconciledList(item, moveLineList);
+      }
+
+      for(MoveLine item: invoiceMove.getMoveLineList()){
+        moveLineList = this.addToUnreconciledList(item, moveLineList);
+      }
+    }
+    return moveLineList;
+  }
+
+  @Override
+  public List<MoveLine> addToUnreconciledList(MoveLine item, List<MoveLine> moveLineList) {
+    MoveLine moveLine = Beans.get(MoveLineRepository.class).find(item.getId());
+    if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+            || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+      moveLineList.add(moveLine);
+    }
+    return moveLineList;
+  }
 }

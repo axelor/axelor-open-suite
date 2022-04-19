@@ -391,6 +391,12 @@
       </menu>
     </menubar>
 
+    <panel name="infoMessagePanel" hidden="true">
+      <help>
+        There are accounting payments unreconciled to be charged to the invoice.
+      </help>
+    </panel>
+
     <panel name="mainPanel">
       <field name="printedPDF" hidden="true"/><!-- Needed to be able to use it in menu -->
       <panel name="statusSelectPanel" colSpan="7" stacked="true">
@@ -810,6 +816,8 @@ InvoiceSet.length > 0))"
             form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
         </panel>
       </panel>
+      <panel-dashlet name="UnreconciledPaymentsPanel" title="Unreconciled Payments" itemSpan="6" sidebar="true"
+                     hidden="true" action="action-invoice-view-unreconciled-payments" />
     </panel-tabs>
 
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
@@ -1471,6 +1479,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-hide-send-email-pfp-btn"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     <action name="action-invoice-record-set-dummy-field-language"/>
+    <action name="action-invoice-method-check-outstanding-payments"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -2038,6 +2047,10 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="refusalToPay"/>
   </action-method>
 
+  <action-method name="action-invoice-method-check-outstanding-payments">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkOutstandingPayments"/>
+  </action-method>
+
   <action-method name="action-invoice-method-set-pfp-validator-user">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setPfpValidatorUser"/>
   </action-method>
@@ -2364,6 +2377,15 @@ InvoiceSet.length > 0))"
     <domain>self.invoiceLine.id IN :invoiceLineListId</domain>
     <context name="invoiceLineListId"
       expr="call:com.axelor.apps.account.service.invoice.InvoiceService:getInvoiceLineIds(__self__)"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-unreconciled-payments" title="Accounting Not Reconciled"
+               model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="unreconciled-payments-move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>self.partner.id = :partnerId AND self.moveLineList.account.code = '411100' AND self.moveLineList.reconcileGroup.code IS NULL</domain>
+    <context name="partnerId" expr="eval: partner.id"/>
+    <context name="_invoice" expr="eval: __this__"/>
   </action-view>
 
   <action-record name="action-record-invoice-set-discount-values"

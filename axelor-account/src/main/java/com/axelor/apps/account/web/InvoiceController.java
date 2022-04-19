@@ -62,6 +62,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -849,6 +850,22 @@ public class InvoiceController {
           invoiceLineService.compute(invoice, invoiceLine);
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkOutstandingPayments(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice != null
+              && invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+        boolean showOutstandingMessage =
+                Beans.get(InvoiceService.class).checkOutstandingPayments(invoice);
+        response.setAttr("infoMessagePanel", "hidden", !showOutstandingMessage);
+        response.setAttr("UnreconciledPaymentsPanel", "hidden", !showOutstandingMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

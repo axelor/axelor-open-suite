@@ -163,4 +163,8 @@ public interface MoveToolService {
   boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
   boolean getEditAuthorization(Move move) throws AxelorException;
+
+  List<MoveLine> getAllUnreconciledMoveLine(Move paymentMove, Move invoiceMove);
+
+  List<MoveLine> addToUnreconciledList(MoveLine moveLine, List<MoveLine> moveLineList);
 }

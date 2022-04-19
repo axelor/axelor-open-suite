@@ -18,12 +18,10 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -39,6 +37,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -566,6 +565,28 @@ public class MoveController {
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void accountingReconcilePayment(ActionRequest request, ActionResponse response) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    try {
+      Move paymentMove = request.getContext().asType(Move.class);
+      Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
+      Invoice invoice =
+              Beans.get(InvoiceRepository.class).find(Long.valueOf(partialInvoice.get("id").toString()));
+
+      Move invoiceMove = invoice.getMove();
+
+      moveLineList = Beans.get(MoveToolService.class).getAllUnreconciledMoveLine(paymentMove, invoiceMove);
+
+      if (!moveLineList.isEmpty()) {
+        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+        response.setReload(true);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

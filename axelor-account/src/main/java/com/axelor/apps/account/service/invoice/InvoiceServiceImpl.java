@@ -69,6 +69,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -1325,5 +1326,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             .bind("supplierInvoiceNb", invoice.getSupplierInvoiceNb())
             .fetchOne()
         != null;
+  }
+
+  @Override
+  public boolean checkOutstandingPayments(Invoice invoice) {
+    Partner partner = invoice.getPartner();
+
+    Account partnerAccount = null;
+    for(MoveLine moveLine: invoice.getMove().getMoveLineList()){
+      if(moveLine.getAccount().getCode().equals("411100")){
+        partnerAccount = moveLine.getAccount();
+      }
+    }
+
+    long count = 0;
+    if (partner != null && partnerAccount != null) {
+      Query<MoveLine> outstandingPaymentQuery =
+              Query.of(MoveLine.class)
+                      .filter("self.partner = :partnerId " +
+                              "AND self.account = :partnerAccount "+
+                              "AND self.reconcileGroup.code IS NULL ")
+                      .bind("partnerId", partner.getId())
+                      .bind("partnerAccount", partnerAccount);
+      count = outstandingPaymentQuery.count();
+    }
+    return count > 0;
   }
 }

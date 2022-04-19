@@ -44,6 +44,26 @@
     <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
     <field name="statusSelect" width="90"/>
   </grid>
+  
+  <grid name="unreconciled-payments-move-grid" orderBy="-date" title="Accounting Unreconciled Payment Moves"
+        model="com.axelor.apps.account.db.Move">
+    <hilite color="info" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 4"/>
+    <field name="reference" width="200"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+    <field name="period" form-view="period-form" grid-view="period-grid" width="120"
+           canEdit="false" canView="false"/>
+    <field name="date" width="90"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="140"
+           if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+    <field name="tradingName"
+           if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+           form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
+    <field name="statusSelect" width="90"/>
+    <button name="accountingReconcilePayment" onClick="action-invoice-method-accounting-reconcile-payment" icon="fa-link"/>
+  </grid>
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
@@ -830,5 +850,9 @@
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-validate-button-title"/>
   </action-group>
+
+  <action-method name="action-invoice-method-accounting-reconcile-payment">
+    <call class="com.axelor.apps.account.web.MoveController" method="accountingReconcilePayment"/>
+  </action-method>
 
 </object-views>
