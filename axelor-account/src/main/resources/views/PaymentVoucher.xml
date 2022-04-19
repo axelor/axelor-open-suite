@@ -64,7 +64,7 @@
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect > 1">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
         domain=":company member of self.companySet"
-        onChange="action-group-payment-voucher-reset-imputation,action-payment-voucher-reset-due-element-list,action-pv-record-default-partner-inf,action-payment-voucher-record-cheque-owner,action-payment-voucher-record-cheque-due-date"
+        onChange="action-group-payment-voucher-reset-imputation,action-payment-voucher-reset-due-element-list,action-pv-record-default-partner-inf,action-payment-voucher-method-fill-bank-details,action-payment-voucher-record-value-for-collection-account,action-payment-voucher-record-cheque-owner,action-payment-voucher-record-cheque-due-date"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
@@ -82,8 +82,9 @@
         showIf="paymentMode.typeSelect == 7">
         <panel colSpan="12" hidden="true"
           showIf="paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5">
-          <field name="valueForCollectionAccount" title="Value for collection"/>
           <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
+          <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
         </panel>
         <panel colSpan="12">
           <field name="chequeNumber"
