@@ -84,7 +84,7 @@
         value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
-          domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 3"
+          domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
           form-view="journal-form" grid-view="journal-grid" canEdit="false" hidden="true"
           showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
           requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
