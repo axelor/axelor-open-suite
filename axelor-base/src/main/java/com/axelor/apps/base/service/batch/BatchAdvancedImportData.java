@@ -2,6 +2,7 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.ImportBatch;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.BatchImportHistoryRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -61,10 +62,12 @@ public class BatchAdvancedImportData extends AbstractImportBatch {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_NOT_VALIDATED));
     }
-    MetaFile logFile = dataImportService.importData(advancedImport);
+    ImportHistory importHistory = dataImportService.importData(advancedImport);
     createBatchHistory(
-        metaFileRepository.find(advancedImport.getImportFile().getId()),
-        logFile != null ? metaFileRepository.find(logFile.getId()) : null);
+        metaFileRepository.find(importHistory.getDataMetaFile().getId()),
+        importHistory.getLogMetaFile() != null
+            ? metaFileRepository.find(importHistory.getLogMetaFile().getId())
+            : null);
   }
 
   protected void importFiles(List<MetaFile> files) {
