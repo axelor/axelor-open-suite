@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -46,5 +47,9 @@ public abstract class BatchStrategy extends AbstractBatch {
     employee.addBatchSetItem(batchRepo.find(batch.getId()));
 
     incrementDone();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_HR_BATCH);
   }
 }
