@@ -747,7 +747,7 @@
     <option value="0" order="0">None</option>
     <option value="1" order="1">Immediate</option>
   </selection>
-  
+
   <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
     <option value="200">Accounting batch</option>
     <option value="201">Invoice batch</option>
