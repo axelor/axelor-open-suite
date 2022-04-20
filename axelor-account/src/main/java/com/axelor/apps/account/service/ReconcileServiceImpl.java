@@ -440,18 +440,31 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected boolean checkAvailableTotalAmount(
       List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
+    return computeInvoiceTermsAmountRemaining(invoiceTermList).compareTo(amount) < 0;
+  }
+
+  @Override
+  public BigDecimal computeAmountRemaining(MoveLine moveLine) {
+    BigDecimal amountRemaining = moveLine.getAmountRemaining();
+    List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return amountRemaining;
+    }
+
+    return computeInvoiceTermsAmountRemaining(invoiceTermList);
+  }
+
+  protected BigDecimal computeInvoiceTermsAmountRemaining(List<InvoiceTerm> invoiceTermList) {
     return invoiceTermList.stream()
-            .filter(
-                it ->
-                    (!it.getIsPaid() || it.getAmountRemaining().signum() > 0)
-                        && (it.getPaymentSession() == null
-                            || it.getPaymentSession().getStatusSelect()
-                                == PaymentSessionRepository.STATUS_CLOSED))
-            .map(InvoiceTerm::getAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .compareTo(amount)
-        < 0;
+        .filter(
+            it ->
+                (!it.getIsPaid() && it.getAmountRemaining().signum() > 0)
+                    && (it.getPaymentSession() == null
+                        || it.getPaymentSession().getStatusSelect()
+                            == PaymentSessionRepository.STATUS_CLOSED))
+        .map(InvoiceTerm::getAmountRemaining)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {

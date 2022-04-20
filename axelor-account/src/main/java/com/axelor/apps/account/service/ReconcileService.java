@@ -74,4 +74,6 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
+
+  public BigDecimal computeAmountRemaining(MoveLine moveLine);
 }

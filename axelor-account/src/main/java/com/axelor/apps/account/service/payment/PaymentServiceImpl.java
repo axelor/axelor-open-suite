@@ -121,20 +121,17 @@ public class PaymentServiceImpl implements PaymentService {
       for (MoveLine creditMoveLine : creditMoveLines) {
 
         log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
-
+        BigDecimal creditRemaining = reconcileService.computeAmountRemaining(creditMoveLine);
         log.debug(
-            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
-            creditMoveLine.getAmountRemaining());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
+            "Emploie du trop perçu : ligne en crédit (restant à payer): {})", creditRemaining);
+        creditTotalRemaining = creditTotalRemaining.add(creditRemaining);
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
         log.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
-
-        log.debug(
-            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
-            debitMoveLine.getAmountRemaining());
-        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+        BigDecimal debitRemaining = reconcileService.computeAmountRemaining(debitMoveLine);
+        log.debug("Emploie du trop perçu : ligne en débit (restant à payer): {})", debitRemaining);
+        debitTotalRemaining = debitTotalRemaining.add(debitRemaining);
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
@@ -186,7 +183,10 @@ public class PaymentServiceImpl implements PaymentService {
       amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
       debitMoveLine.setMaxAmountToReconcile(null);
     } else {
-      amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+      amount =
+          reconcileService
+              .computeAmountRemaining(creditMoveLine)
+              .min(reconcileService.computeAmountRemaining(debitMoveLine));
     }
     log.debug("amount : {}", amount);
     log.debug("debitTotalRemaining : {}", debitTotalRemaining);
