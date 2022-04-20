@@ -8,11 +8,14 @@
     <field name="name"/>
     <field name="authTypeSelect"/>
     <field name="isAuthenticated"/>
+    <field name="appBuilder"/>
   </grid>
 
   <form name="ws-authenticator-form" model="com.axelor.studio.db.WsAuthenticator"
     title="Authenticator" width="large">
     <panel name="mainPanel">
+      <field name="appBuilder"/>
+      <spacer/>
       <field name="name"/>
       <button name="btnAuthenticate" title="Authenticate"
         onClick="save,action-studio-ws-authenticator-authenticate" colSpan="3"
