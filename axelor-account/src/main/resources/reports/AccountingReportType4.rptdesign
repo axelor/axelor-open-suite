@@ -123,52 +123,19 @@
             <list-property name="computedColumns">
                 <structure>
                     <property name="name">Invoice</property>
-                    <expression name="expression">if(row["invoice_reconciled_name"]!=null)  {
-row["invoice_reconciled_name"]
-}
-else  {
-row["invoice_name"]
-}</expression>
+                    <expression name="expression">row["invoice_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">credit_to_use</property>
-                    <expression name="expression">if(row["amountreconciled"] > 0.00  )  {
-  row["amountreconciled"]
-}
-else  if(row["invoice_name"]==null &amp;&amp; row["countmoveline"] > 1 ){
-row["credit"]/row["countmoveline"]
-}
-else  {
-row["credit"]
-}</expression>
-                    <property name="dataType">float</property>
-                </structure>
-                <structure>
-                    <property name="name">excess_payment</property>
-                    <expression name="expression">if(row["credit"] > 0 &amp;&amp; row["amount_remaining"] > 0 &amp;&amp;row["amount_remaining"]!=row["credit"] &amp;&amp; row["countmoveline"] > 0)  {
-row["amount_remaining"]/row["countmoveline"]
-}
-else  {
-0
-}</expression>
-                    <property name="dataType">float</property>
-                </structure>
-                <structure>
                     <property name="name">date</property>
-                    <expression name="expression">if(row["invoice_reconciled_name"] != null)  {
-row["invoice_reconciled_date"]
-
-}
-else  {
-row["MoveLineDate"]
-}</expression>
+                    <expression name="expression">row["MoveLineDate"]</expression>
                     <property name="dataType">date</property>
                 </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">MoveLineID</property>
+                    <property name="alias">MoveLineID</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineID</text-property>
                     <property name="onColumnLayout">false</property>
@@ -176,6 +143,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">partner_name</property>
+                    <property name="alias">partner_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -183,6 +151,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
+                    <property name="alias">partner_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_seq</text-property>
                     <property name="onColumnLayout">false</property>
@@ -190,6 +159,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
                     <property name="onColumnLayout">false</property>
@@ -197,6 +167,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -204,6 +175,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -211,27 +183,15 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">invoice_name</property>
+                    <property name="alias">invoice_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_name</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">invoice_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">invoice_reconciled_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invoice_reconciled_name</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">invoice_reconciled_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">invoice_reconciled_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">invoice_reconciled_date</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">invoice_reconciled_date</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">ReportedBalanceAmount</property>
+                    <property name="alias">ReportedBalanceAmount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ReportedBalanceAmount</text-property>
                     <property name="onColumnLayout">false</property>
@@ -239,6 +199,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">reported_balance_date</property>
+                    <property name="alias">reported_balance_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reported_balance_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -246,56 +207,48 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
+                    <property name="alias">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">report_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">amountreconciled</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">amountreconciled</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">amountreconciled</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">amount_remaining</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">amount_remaining</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">amount_remaining</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">countmoveline</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">countmoveline</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">countmoveline</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">MoveLineDate</property>
+                    <property name="alias">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">MoveLineDate</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">term_amount_remaining</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">term_amount_remaining</text-property>
-                    <text-property name="heading">term_amount_remaining</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">term_due_date</property>
+                    <property name="alias">term_due_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">term_due_date</text-property>
                     <text-property name="heading">term_due_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">term_sequence</property>
+                    <property name="alias">term_sequence</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">term_sequence</text-property>
                     <text-property name="heading">term_sequence</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">term_amount_remaining</property>
+                    <property name="alias">term_amount_remaining</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">term_amount_remaining</text-property>
+                    <text-property name="heading">term_amount_remaining</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">amount_remaining</property>
+                    <property name="alias">amount_remaining</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">amount_remaining</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">amount_remaining</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -350,81 +303,51 @@ row["MoveLineDate"]
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">invoice_reconciled_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">invoice_reconciled_date</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
                         <property name="name">ReportedBalanceAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">9</property>
                         <property name="name">reported_balance_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">10</property>
                         <property name="name">report_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
-                        <property name="name">amountreconciled</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">amount_remaining</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">countmoveline</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
+                        <property name="position">11</property>
                         <property name="name">MoveLineDate</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
-                        <property name="name">term_amount_remaining</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">18</property>
+                        <property name="position">12</property>
                         <property name="name">term_due_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">13</property>
                         <property name="name">term_sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">14</property>
+                        <property name="name">term_amount_remaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">amount_remaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
-                        <property name="name">credit_to_use</property>
-                        <property name="dataType">float</property>
-                    </structure>
-                    <structure>
-                        <property name="position">22</property>
-                        <property name="name">excess_payment</property>
-                        <property name="dataType">float</property>
-                    </structure>
-                    <structure>
-                        <property name="position">23</property>
+                        <property name="position">17</property>
                         <property name="name">date</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -438,145 +361,105 @@ row["MoveLineDate"]
                     <property name="name">MoveLineID</property>
                     <property name="nativeName">MoveLineID</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">invoice_reconciled_name</property>
-                    <property name="nativeName">invoice_reconciled_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">invoice_reconciled_date</property>
-                    <property name="nativeName">invoice_reconciled_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
                     <property name="name">ReportedBalanceAmount</property>
                     <property name="nativeName">ReportedBalanceAmount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">9</property>
                     <property name="name">reported_balance_date</property>
                     <property name="nativeName">reported_balance_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">10</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
-                    <property name="name">amountreconciled</property>
-                    <property name="nativeName">amountreconciled</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">amount_remaining</property>
-                    <property name="nativeName">amount_remaining</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
-                    <property name="name">countmoveline</property>
-                    <property name="nativeName">countmoveline</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">16</property>
+                    <property name="position">11</property>
                     <property name="name">MoveLineDate</property>
                     <property name="nativeName">MoveLineDate</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
-                    <property name="name">term_amount_remaining</property>
-                    <property name="nativeName">term_amount_remaining</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">18</property>
+                    <property name="position">12</property>
                     <property name="name">term_due_date</property>
                     <property name="nativeName">term_due_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">13</property>
                     <property name="name">term_sequence</property>
                     <property name="nativeName">term_sequence</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">term_amount_remaining</property>
+                    <property name="nativeName">term_amount_remaining</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">amount_remaining</property>
+                    <property name="nativeName">amount_remaining</property>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select STRING_AGG (MoveLine.name, ',') as "MoveLineID", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
 AccountingReport.ref, SUM(MoveLine.credit)  as credit, SUM(MoveLine.debit) as debit,
-Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
-ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
-AccountingReport.date_to as "report_date", Reconcile.amount as amountReconciled, SUM(MoveLine.amount_remaining) as amount_remaining, count(Reconcile.id) as countMoveLine,    
-MoveLine.date_val as "MoveLineDate", InvoiceTerm.due_date as "term_due_date", InvoiceTerm.sequence as "term_sequence",
+Invoice.invoice_id as invoice_name, ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
+AccountingReport.date_to as "report_date",MoveLine.date_val as "MoveLineDate", InvoiceTerm.due_date as "term_due_date",
+InvoiceTerm.sequence as "term_sequence",
 (CASE WHEN Invoice.operation_type_select IN (1,4)
 THEN InvoiceTerm.amount_remaining * -1
 ELSE InvoiceTerm.amount_remaining
-END) as "term_amount_remaining"
+END) as "term_amount_remaining",
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN SUM(MoveLine.amount_remaining) * -1
+ELSE SUM(MoveLine.amount_remaining)
+END) as "amount_remaining"
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -593,10 +476,6 @@ left outer join public.account_account as MoveLineAccount on (MoveLine.account  
 left outer join public.account_accounting_situation as AccountingSituation on (AccountingSituation.partner = MoveLine.partner AND AccountingSituation.company = Company.id)
 left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.accounting_situation = AccountingSituation.id) 
 left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
-left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
-left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
-left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
-left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
 left outer join public.account_invoice_term as InvoiceTerm on (InvoiceTerm.invoice = Invoice.id)
 where
 (AccountingReport.currency = Move.company_currency) AND
@@ -617,8 +496,8 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND (InvoiceTerm.is_paid = false)
 group by MoveLine.partner_full_name,partner_name,MoveLine.partner_seq,AccountingReport.ref,
-Invoice.invoice_id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
-AccountingReport.date_to,Reconcile.amount,MoveLine.date_val, InvoiceTerm.amount_remaining, InvoiceTerm.due_date, InvoiceTerm.sequence,Invoice.operation_type_select
+Invoice.invoice_id,invoice_name,ReportedBalanceLine.amount,YYear.reported_balance_date,
+AccountingReport.date_to,MoveLine.date_val, InvoiceTerm.amount_remaining, InvoiceTerm.due_date, InvoiceTerm.sequence,Invoice.operation_type_select
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -2097,7 +1976,7 @@ row["180&lt;days"]
                             <structure>
                                 <property name="name">amount_remaining</property>
                                 <text-property name="displayName">amount_remaining</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit_to_use"]-dataSetRow["excess_payment"]</expression>
+                                <expression name="expression" type="javascript">((dataSetRow["amount_remaining"] * row["invoiceCountDistinct"]) / row["invoiceCount"])</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2167,18 +2046,6 @@ row["180&lt;days"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">invoice_reconciled_name</property>
-                                <text-property name="displayName">invoice_reconciled_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_reconciled_date</property>
-                                <text-property name="displayName">invoice_reconciled_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ReportedBalanceAmount</property>
                                 <text-property name="displayName">ReportedBalanceAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ReportedBalanceAmount"]</expression>
@@ -2191,21 +2058,9 @@ row["180&lt;days"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">amountreconciled</property>
-                                <text-property name="displayName">amountreconciled</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amountreconciled"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">amount_remaining_1</property>
                                 <text-property name="displayName">amount_remaining</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">countmoveline</property>
-                                <text-property name="displayName">countmoveline</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -2219,18 +2074,6 @@ row["180&lt;days"]
                                 <text-property name="displayName">Invoice</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["Invoice"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">credit_to_use</property>
-                                <text-property name="displayName">credit_to_use</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit_to_use"]</expression>
-                                <property name="dataType">float</property>
-                            </structure>
-                            <structure>
-                                <property name="name">excess_payment</property>
-                                <text-property name="displayName">excess_payment</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["excess_payment"]</expression>
-                                <property name="dataType">float</property>
                             </structure>
                             <structure>
                                 <property name="name">&lt;30 days</property>
@@ -2286,6 +2129,38 @@ row["amount_remaining"]
                                 <property name="name">Ttl&lt;30</property>
                                 <expression name="expression" type="javascript">row["TotalOf&lt;30"]</expression>
                                 <property name="dataType">float</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoiceCount</property>
+                                <text-property name="displayName">invoiceCount</text-property>
+                                <property name="dataType">integer</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["invoice_name"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoiceCountDistinct</property>
+                                <text-property name="displayName">invoiceCountDistinct</text-property>
+                                <property name="dataType">integer</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">COUNTDISTINCT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["invoice_name"]</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -3127,6 +3002,14 @@ row["amount_remaining"]
                                 </row>
                             </header>
                         </group>
+                        <group id="6614">
+                            <property name="groupName">InvoiceGroup</property>
+                            <expression name="keyExpr" type="javascript">row["invoice_name"]</expression>
+                            <structure name="toc">
+                                <expression name="expressionValue" type="javascript">row["invoice_name"]</expression>
+                            </structure>
+                            <property name="hideDetail">false</property>
+                        </group>
                         <footer>
                             <row id="1160">
                                 <property name="backgroundColor">#EFEFEF</property>
@@ -3598,7 +3481,7 @@ row["amount_remaining"]
                             <structure>
                                 <property name="name">amount_remaining</property>
                                 <text-property name="displayName">amount_remaining</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit_to_use"]-dataSetRow["excess_payment"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3667,18 +3550,6 @@ row["amount_remaining"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">invoice_reconciled_name</property>
-                                <text-property name="displayName">invoice_reconciled_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_reconciled_date</property>
-                                <text-property name="displayName">invoice_reconciled_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ReportedBalanceAmount</property>
                                 <text-property name="displayName">ReportedBalanceAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ReportedBalanceAmount"]</expression>
@@ -3691,34 +3562,10 @@ row["amount_remaining"]
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">amountreconciled</property>
-                                <text-property name="displayName">amountreconciled</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amountreconciled"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">countmoveline</property>
-                                <text-property name="displayName">countmoveline</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">MoveLineDate</property>
                                 <text-property name="displayName">MoveLineDate</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["MoveLineDate"]</expression>
                                 <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">credit_to_use</property>
-                                <text-property name="displayName">credit_to_use</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit_to_use"]</expression>
-                                <property name="dataType">float</property>
-                            </structure>
-                            <structure>
-                                <property name="name">excess_payment</property>
-                                <text-property name="displayName">excess_payment</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["excess_payment"]</expression>
-                                <property name="dataType">float</property>
                             </structure>
                             <structure>
                                 <property name="name">term_amount_remaining</property>
@@ -3919,69 +3766,6 @@ row["amount_remaining"]
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">ts&lt;30</property>
-                                <text-property name="displayName">ts&lt;30</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) &lt;= 30){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">30&lt;ts&lt;60</property>
-                                <text-property name="displayName">30&lt;ts&lt;60</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) > 30 &amp;&amp; BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) &lt;= 60){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">60&lt;ts&lt;90</property>
-                                <text-property name="displayName">60&lt;ts&lt;90</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) > 60 &amp;&amp; BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) &lt;= 90){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">90&lt;ts&lt;120</property>
-                                <text-property name="displayName">90&lt;ts&lt;120</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(dataSetRow["term_due_date"], dataSetRow["report_date"]) > 90 &amp;&amp; BirtDateTime.diffDay(dataSetRow["term_due_date"], dataSetRow["report_date"]) &lt;= 120){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">120&lt;ts&lt;150</property>
-                                <text-property name="displayName">120&lt;ts&lt;150</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) > 120 &amp;&amp; BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) &lt;= 150){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">150&lt;ts&lt;180</property>
-                                <text-property name="displayName">150&lt;ts&lt;180</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) > 150 &amp;&amp; BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) &lt;= 180){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ts>180</property>
-                                <text-property name="displayName">ts>180</text-property>
-                                <expression name="expression" type="javascript">if(BirtDateTime.diffDay(row["term_due_date"], dataSetRow["report_date"]) > 180){
-  row["term_sequence"]
-}</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">invoiceCount</property>
                                 <text-property name="displayName">invoiceCount</text-property>
                                 <property name="dataType">integer</property>
@@ -4066,44 +3850,26 @@ row["amount_remaining"]
                         <column id="6594">
                             <property name="width">0.7in</property>
                         </column>
-                        <column id="6381">
+                        <column id="6607">
                             <property name="width">0.2in</property>
                         </column>
                         <column id="6372">
                             <property name="width">0.4in</property>
                         </column>
-                        <column id="6416">
-                            <property name="width">0.2in</property>
-                        </column>
                         <column id="6407">
                             <property name="width">0.5in</property>
-                        </column>
-                        <column id="6434">
-                            <property name="width">0.2in</property>
                         </column>
                         <column id="6425">
                             <property name="width">0.5in</property>
                         </column>
-                        <column id="6452">
-                            <property name="width">0.2in</property>
-                        </column>
                         <column id="6443">
                             <property name="width">0.5in</property>
-                        </column>
-                        <column id="6485">
-                            <property name="width">0.2in</property>
                         </column>
                         <column id="6476">
                             <property name="width">0.5in</property>
                         </column>
-                        <column id="6504">
-                            <property name="width">0.2in</property>
-                        </column>
                         <column id="6495">
                             <property name="width">0.5in</property>
-                        </column>
-                        <column id="6522">
-                            <property name="width">0.2in</property>
                         </column>
                         <column id="6513">
                             <property name="width">0.4in</property>
@@ -4306,8 +4072,57 @@ row["amount_remaining"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="6599">
+                                    <property name="colSpan">1</property>
+                                    <property name="rowSpan">2</property>
+                                    <property name="backgroundColor">#E6E6FA</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">bottom</property>
+                                    <text id="6613">
+                                        <property name="fontSize">xx-small</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType4.termN'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="6299">
-                                    <property name="colSpan">14</property>
+                                    <property name="colSpan">7</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4407,7 +4222,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="6300">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4457,7 +4272,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="6293">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4508,7 +4323,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1630">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4557,7 +4372,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1632">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4606,7 +4421,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1634">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="fontSize">xx-small</property>
@@ -4655,7 +4470,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1636">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4704,7 +4519,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1638">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -4837,7 +4652,7 @@ row["amount_remaining"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
-                                    <cell id="6375">
+                                    <cell id="6601">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -4859,29 +4674,7 @@ row["amount_remaining"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
-                                    <cell id="6410">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
                                     <cell id="6401">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
-                                    <cell id="6428">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -4903,29 +4696,7 @@ row["amount_remaining"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
-                                    <cell id="6446">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
                                     <cell id="6437">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
-                                    <cell id="6479">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -4947,29 +4718,7 @@ row["amount_remaining"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
-                                    <cell id="6498">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
                                     <cell id="6489">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#9C9C9C</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
-                                    <cell id="6516">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -5010,7 +4759,7 @@ row["amount_remaining"]
                             </list-property>
                             <header>
                                 <row id="1738">
-                                    <property name="verticalAlign">middle</property>
+                                    <property name="verticalAlign">top</property>
                                     <property name="height">0.1in</property>
                                     <cell id="1739">
                                         <property name="colSpan">2</property>
@@ -5061,22 +4810,22 @@ row["amount_remaining"]
                                             <property name="resultSetColumn">amount_remaining</property>
                                         </data>
                                     </cell>
-                                    <cell id="6376">
+                                    <cell id="6602">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <table id="6390">
+                                        <table id="6608">
                                             <property name="textAlign">right</property>
-                                            <column id="6397"/>
+                                            <column id="6612"/>
                                             <detail>
-                                                <row id="6393">
-                                                    <cell id="6394">
-                                                        <data id="6398">
+                                                <row id="6609">
+                                                    <cell id="6610">
+                                                        <data id="6611">
                                                             <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">ts&lt;30</property>
+                                                            <property name="resultSetColumn">term_sequence</property>
                                                         </data>
                                                     </cell>
                                                 </row>
@@ -5109,28 +4858,6 @@ row["amount_remaining"]
                                             </detail>
                                         </table>
                                     </cell>
-                                    <cell id="6411">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6453">
-                                            <property name="textAlign">right</property>
-                                            <column id="6457"/>
-                                            <detail>
-                                                <row id="6454">
-                                                    <cell id="6455">
-                                                        <data id="6456">
-                                                            <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">30&lt;ts&lt;60</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
                                     <cell id="6402">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -5151,28 +4878,6 @@ row["amount_remaining"]
                                                             </structure>
                                                             <property name="textAlign">right</property>
                                                             <property name="resultSetColumn">30&lt;term&lt;60</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
-                                    <cell id="6429">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6458">
-                                            <property name="textAlign">right</property>
-                                            <column id="6462"/>
-                                            <detail>
-                                                <row id="6459">
-                                                    <cell id="6460">
-                                                        <data id="6461">
-                                                            <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">60&lt;ts&lt;90</property>
                                                         </data>
                                                     </cell>
                                                 </row>
@@ -5205,28 +4910,6 @@ row["amount_remaining"]
                                             </detail>
                                         </table>
                                     </cell>
-                                    <cell id="6447">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6463">
-                                            <property name="textAlign">right</property>
-                                            <column id="6467"/>
-                                            <detail>
-                                                <row id="6464">
-                                                    <cell id="6465">
-                                                        <data id="6466">
-                                                            <property name="fontSize">8pt</property>
-                                                            <property name="resultSetColumn">90&lt;ts&lt;120</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
                                     <cell id="6438">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -5247,28 +4930,6 @@ row["amount_remaining"]
                                                             </structure>
                                                             <property name="textAlign">right</property>
                                                             <property name="resultSetColumn">90&lt;term&lt;120</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
-                                    <cell id="6480">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6523">
-                                            <property name="textAlign">right</property>
-                                            <column id="6527"/>
-                                            <detail>
-                                                <row id="6524">
-                                                    <cell id="6525">
-                                                        <data id="6526">
-                                                            <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">120&lt;ts&lt;150</property>
                                                         </data>
                                                     </cell>
                                                 </row>
@@ -5301,28 +4962,6 @@ row["amount_remaining"]
                                             </detail>
                                         </table>
                                     </cell>
-                                    <cell id="6499">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6528">
-                                            <property name="textAlign">right</property>
-                                            <column id="6532"/>
-                                            <detail>
-                                                <row id="6529">
-                                                    <cell id="6530">
-                                                        <data id="6531">
-                                                            <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">150&lt;ts&lt;180</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
                                     <cell id="6490">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -5343,28 +4982,6 @@ row["amount_remaining"]
                                                             </structure>
                                                             <property name="textAlign">right</property>
                                                             <property name="resultSetColumn">150&lt;term&lt;180</property>
-                                                        </data>
-                                                    </cell>
-                                                </row>
-                                            </detail>
-                                        </table>
-                                    </cell>
-                                    <cell id="6517">
-                                        <property name="borderLeftColor">#000000</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#000000</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <table id="6533">
-                                            <property name="textAlign">right</property>
-                                            <column id="6537"/>
-                                            <detail>
-                                                <row id="6534">
-                                                    <cell id="6535">
-                                                        <data id="6536">
-                                                            <property name="fontSize">xx-small</property>
-                                                            <property name="resultSetColumn">ts>180</property>
                                                         </data>
                                                     </cell>
                                                 </row>
@@ -5518,7 +5135,7 @@ row["amount_remaining"]
                                         <property name="resultSetColumn">ttl_amount_remaining</property>
                                     </data>
                                 </cell>
-                                <cell id="6377">
+                                <cell id="6603">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5548,37 +5165,7 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6412">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6403">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
-                                <cell id="6430">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5608,37 +5195,7 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6448">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6439">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
-                                <cell id="6481">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5668,37 +5225,7 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6500">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6491">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
-                                <cell id="6518">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5826,7 +5353,7 @@ row["amount_remaining"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6378">
+                                <cell id="6604">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5866,21 +5393,6 @@ row["amount_remaining"]
                                         <property name="resultSetColumn">termTtl&lt;30</property>
                                     </data>
                                 </cell>
-                                <cell id="6413">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6404">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -5905,21 +5417,6 @@ row["amount_remaining"]
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">30&lt;termTtl&lt;60</property>
                                     </data>
-                                </cell>
-                                <cell id="6431">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
                                 </cell>
                                 <cell id="6422">
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -5946,21 +5443,6 @@ row["amount_remaining"]
                                         <property name="resultSetColumn">60&lt;termTtl&lt;90</property>
                                     </data>
                                 </cell>
-                                <cell id="6449">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6440">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -5985,21 +5467,6 @@ row["amount_remaining"]
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">90&lt;termTtl&lt;120</property>
                                     </data>
-                                </cell>
-                                <cell id="6482">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
                                 </cell>
                                 <cell id="6473">
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -6026,21 +5493,6 @@ row["amount_remaining"]
                                         <property name="resultSetColumn">120&lt;termTtl&lt;150</property>
                                     </data>
                                 </cell>
-                                <cell id="6501">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                </cell>
                                 <cell id="6492">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6065,21 +5517,6 @@ row["amount_remaining"]
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">150&lt;termTtl&lt;180</property>
                                     </data>
-                                </cell>
-                                <cell id="6519">
-                                    <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomColor">#000000</property>
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftColor">#000000</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightColor">#000000</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopColor">#000000</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
                                 </cell>
                                 <cell id="6510">
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -6112,7 +5549,7 @@ row["amount_remaining"]
                                 <property name="verticalAlign">middle</property>
                                 <property name="height">0.28125in</property>
                                 <cell id="6324">
-                                    <property name="colSpan">13</property>
+                                    <property name="colSpan">10</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6160,7 +5597,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="1712">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E5E5E5</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6188,7 +5625,7 @@ row["amount_remaining"]
                                     </data>
                                 </cell>
                                 <cell id="1714">
-                                    <property name="colSpan">4</property>
+                                    <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6210,7 +5647,7 @@ row["amount_remaining"]
                                 <property name="verticalAlign">middle</property>
                                 <property name="height">0.28125in</property>
                                 <cell id="6329">
-                                    <property name="colSpan">13</property>
+                                    <property name="colSpan">10</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6258,7 +5695,7 @@ row["amount_remaining"]
                                     </text>
                                 </cell>
                                 <cell id="6338">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E5E5E5</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -6286,7 +5723,7 @@ row["amount_remaining"]
                                     </data>
                                 </cell>
                                 <cell id="6339">
-                                    <property name="colSpan">4</property>
+                                    <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>

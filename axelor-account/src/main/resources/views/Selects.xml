@@ -714,7 +714,6 @@
     <option value="2">vat.Payment</option>
   </selection>
 
-
   <selection name="account.closure.assistant.line.action.select">
     <option value="2">Fixed asset realization</option>
     <option value="3">Move consistency check</option>
@@ -747,6 +746,11 @@
   <selection name="payment.mode.accounting.trigger.select">
     <option value="0" order="0">None</option>
     <option value="1" order="1">Immediate</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
+    <option value="200">Accounting batch</option>
+    <option value="201">Invoice batch</option>
   </selection>
 
 </object-views>
