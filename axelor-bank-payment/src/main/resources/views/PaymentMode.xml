@@ -6,12 +6,16 @@
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" id="bank-payment-payment-mode-form"
     extension="true">
-    <extend target="//field[@name='accountingTriggerSelect']">
+    <extend target="//panel[@name='accountingTriggerPanel']">
       <replace>
         <panel name="accountingTriggerPanel" stacked="true">
-          <field name="accountingTriggerSelect" showIf="generateBankOrder"/>
-          <field name="accountingTriggerSelect" showIf="!generateBankOrder"
+          <field name="accountingTriggerSelect" hidden="true"
+            hideIf="!generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"/>
+          <field name="accountingTriggerSelect" hidden="true"
+            hideIf="generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"
             selection-in="[0,1]"/>
+          <field name="accountingTriggerSelect" hidden="true"
+            showIf="typeSelect == 7 &amp;&amp; inOutSelect == 1" selection-in="[1,5]"/>
         </panel>
       </replace>
     </extend>
@@ -55,8 +59,6 @@
     <field name="generateBankOrder" expr="false"/>
     <field name="automaticTransmission" expr="false"/>
     <field name="bankOrderExportFolderPath" expr=""/>
-    <field name="validatePaymentByDepositSlipPublication" expr="false"
-      if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-record name="action-payment-mode-record-generate-bank-order-onchange"
