@@ -45,7 +45,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -683,6 +682,11 @@ public class LeaveServiceImpl implements LeaveService {
       icalEventRepo.remove(icalEventRepo.find(event.getId()));
     }
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
+    leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -713,6 +717,10 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRequestDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -746,18 +754,14 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setValidatedBy(AuthUtils.getUser());
     leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
-    LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
-            .all()
-            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-            .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getUser().getEmployee())
-            .fetchOne();
+    LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine != null) {
       leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
     }
     leaveRequestRepo.save(leaveRequest);
-
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(leaveLine);
+    }
     createEvents(leaveRequest);
   }
 
@@ -790,6 +794,10 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -818,13 +826,7 @@ public class LeaveServiceImpl implements LeaveService {
         (beginDate.getYear() - todayDate.getYear()) * 12
             + beginDate.getMonthValue()
             - todayDate.getMonthValue();
-    LeaveLine leaveLine =
-        Beans.get(LeaveLineRepository.class)
-            .all()
-            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-            .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getUser().getEmployee())
-            .fetchOne();
+    LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine == null) {
       if (leaveRequest.getLeaveReason() != null
           && !leaveRequest.getLeaveReason().getManageAccumulation()) {

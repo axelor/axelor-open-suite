@@ -289,9 +289,6 @@ public class LeaveController {
       }
 
       leaveService.confirm(leaveRequest);
-      if (leaveLine != null) {
-        leaveService.updateDaysToValidate(leaveLine);
-      }
 
       Message message = leaveService.sendConfirmationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -323,10 +320,6 @@ public class LeaveController {
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.validate(leaveRequest);
-      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
-      if (leaveLine != null) {
-        leaveService.updateDaysToValidate(leaveLine);
-      }
 
       Message message = leaveService.sendValidationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -363,10 +356,6 @@ public class LeaveController {
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.refuse(leaveRequest);
-      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
-      if (leaveLine != null) {
-        leaveService.updateDaysToValidate(leaveLine);
-      }
 
       Message message = leaveService.sendRefusalEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
@@ -390,10 +379,6 @@ public class LeaveController {
       LeaveService leaveService = Beans.get(LeaveService.class);
 
       leaveService.cancel(leave);
-      LeaveLine leaveLine = leaveService.getLeaveLine(leave);
-      if (leaveLine != null) {
-        leaveService.updateDaysToValidate(leaveLine);
-      }
 
       Message message = leaveService.sendCancellationEmail(leave);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
