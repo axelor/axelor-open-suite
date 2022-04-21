@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -32,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -103,7 +103,7 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
       AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
       throws AxelorException {
@@ -175,16 +175,17 @@ public class AnalyticDistributionTemplateServiceImpl
     }
   }
 
-  public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
-      throws AxelorException {
-    if (account.getCompany() != null && account.getName() != null) {
-      Company company = account.getCompany();
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public AnalyticDistributionTemplate createSpecificDistributionTemplate(
+      Company company, String name) throws AxelorException {
+    if (company != null && name != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       AnalyticDistributionTemplate analyticDistributionTemplate =
           new AnalyticDistributionTemplate();
-      analyticDistributionTemplate.setName(account.getName());
-      analyticDistributionTemplate.setCompany(account.getCompany());
-      analyticDistributionTemplate.setArchived(true);
+      analyticDistributionTemplate.setName(name);
+      analyticDistributionTemplate.setCompany(company);
+      analyticDistributionTemplate.setIsSpecific(true);
       analyticDistributionTemplate.setAnalyticDistributionLineList(
           new ArrayList<AnalyticDistributionLine>());
       for (AnalyticAxisByCompany analyticAxisByCompany :
@@ -196,6 +197,7 @@ public class AnalyticDistributionTemplateServiceImpl
                 accountConfig.getAnalyticJournal(),
                 BigDecimal.valueOf(100)));
       }
+      analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
       return analyticDistributionTemplate;
     }
     return null;
@@ -310,5 +312,43 @@ public class AnalyticDistributionTemplateServiceImpl
     newAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
         specificAnalyticDistributionLine);
     return specificAnalyticDistributionLine;
+  }
+
+  @Override
+  public void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && !CollectionUtils.isEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine line :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (line.getAnalyticAxis() == null
+            || line.getAnalyticAccount() == null
+            || line.getAnalyticJournal() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(IExceptionMessage.NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE));
+        }
+      }
+    }
+  }
+
+  @Override
+  public AnalyticDistributionTemplate createOrPersonalizeTemplate(
+      boolean isAnalyticDistributionAuthorized,
+      Company company,
+      String name,
+      AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate == null && isAnalyticDistributionAuthorized) {
+      return Beans.get(AnalyticDistributionTemplateService.class)
+          .createSpecificDistributionTemplate(company, name);
+    } else if (company != null
+        && isAnalyticDistributionAuthorized
+        && analyticDistributionTemplate != null) {
+      return Beans.get(AnalyticDistributionTemplateService.class)
+          .personalizeAnalyticDistributionTemplate(analyticDistributionTemplate, company);
+    }
+    return null;
   }
 }

@@ -230,7 +230,7 @@ public class FixedAssetController {
       if (analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific()) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
-            ActionView.define("Specific Analytic Distribution Template")
+            ActionView.define(I18n.get(IExceptionMessage.SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE))
                 .model(AnalyticDistributionTemplate.class.getName())
                 .add("form", "analytic-distribution-template-fixed-asset-form")
                 .param("popup", "true")
