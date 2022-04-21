@@ -51,7 +51,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -409,13 +408,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public TaxLine getTaxLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    return Beans.get(AccountManagementService.class)
-        .getTaxLine(
-            saleOrder.getCreationDate(),
-            saleOrderLine.getProduct(),
-            saleOrder.getCompany(),
-            saleOrder.getFiscalPosition(),
-            false);
+    return accountManagementService.getTaxLine(
+        saleOrder.getCreationDate(),
+        saleOrderLine.getProduct(),
+        saleOrder.getCompany(),
+        saleOrder.getFiscalPosition(),
+        false);
   }
 
   @Override

@@ -468,7 +468,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   public LocalDate getFromPeriodDate() {
     Timesheet timesheet =
-        Beans.get(TimesheetRepository.class)
+        timeSheetRepository
             .all()
             .filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser())
             .fetchOne();
@@ -482,7 +482,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   public Timesheet getCurrentTimesheet() {
     Timesheet timesheet =
-        Beans.get(TimesheetRepository.class)
+        timeSheetRepository
             .all()
             .filter(
                 "self.statusSelect = ?1 AND self.user.id = ?2",
@@ -1084,8 +1084,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     if (timesheet.getTimesheetLineList() != null) {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
         timesheetLine.setDuration(
-            Beans.get(TimesheetLineService.class)
-                .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false));
+            timesheetLineService.computeHoursDuration(
+                timesheet, timesheetLine.getHoursDuration(), false));
       }
     }
   }

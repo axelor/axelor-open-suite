@@ -277,21 +277,15 @@ public class FixedAssetController {
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
-
+    FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
     try {
-      if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
-            fixedAsset.getQty().toString());
-      }
+      fixedAssetService.checkFixedAssetScissionQty(disposalQty, fixedAsset);
       FixedAsset createdFixedAsset =
-          Beans.get(FixedAssetService.class)
-              .splitAndSaveFixedAsset(
-                  fixedAsset,
-                  disposalQty,
-                  Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
-                  fixedAsset.getComments());
+          fixedAssetService.splitAndSaveFixedAsset(
+              fixedAsset,
+              disposalQty,
+              Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
+              fixedAsset.getComments());
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
@@ -303,7 +297,7 @@ public class FixedAssetController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
