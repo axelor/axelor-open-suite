@@ -155,6 +155,8 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);

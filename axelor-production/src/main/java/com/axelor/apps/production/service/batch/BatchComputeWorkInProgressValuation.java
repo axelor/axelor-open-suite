@@ -85,8 +85,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
-    Query<ManufOrder> manufOrderQuery =
-        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues);
+    Query<ManufOrder> manufOrderQuery = manufOrderRepository.all().filter(domain).bind(bindValues);
 
     int offset = 0;
 

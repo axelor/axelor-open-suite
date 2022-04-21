@@ -610,6 +610,8 @@ public interface IExceptionMessage {
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_46 = /*$$(*/
+      "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -990,6 +992,12 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
 
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
