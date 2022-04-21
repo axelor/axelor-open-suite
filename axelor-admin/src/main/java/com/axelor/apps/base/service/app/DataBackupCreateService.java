@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.tool.date.DateTool;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -44,7 +43,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.github.javafaker.Faker;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -73,7 +71,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -483,8 +480,10 @@ public class DataBackupCreateService {
         csvInput.setSearch("self.importId = :importId");
       }
     } catch (ClassNotFoundException e) {
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     } catch (AxelorException e) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+      throw e;
     }
     return csvInput;
   }
@@ -603,19 +602,16 @@ public class DataBackupCreateService {
     if (anonymizeData) {
       for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
           dataBackupConfigAnonymizeLineList) {
-        if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())) {
-          if (dataBackupConfigAnonymizeLine.getMetaField() != null) {
-            if (property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
-              Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
-              return anonymizeService
-                  .anonymizeValue(
-                      value,
-                      property,
-                      dataBackupConfigAnonymizeLine.getUseFakeData(),
-                      dataBackupConfigAnonymizeLine.getFakerApiField(),
-                      faker)
-                  .toString();
-            }
+        if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())
+            && dataBackupConfigAnonymizeLine.getMetaField() != null) {
+          if (property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
+            return anonymizeService
+                .anonymizeValue(
+                    value,
+                    property,
+                    dataBackupConfigAnonymizeLine.getUseFakeData(),
+                    dataBackupConfigAnonymizeLine.getFakerApiField())
+                .toString();
           }
         }
       }

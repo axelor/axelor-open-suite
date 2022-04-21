@@ -3,7 +3,6 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.github.javafaker.Faker;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,15 +29,11 @@ public class AnonymizeServiceImpl implements AnonymizeService {
 
   @Override
   public Object anonymizeValue(
-      Object object,
-      Property property,
-      boolean useFakeData,
-      FakerApiField fakerApiField,
-      Faker faker)
+      Object object, Property property, boolean useFakeData, FakerApiField fakerApiField)
       throws AxelorException {
 
     if (useFakeData) {
-      return fakerService.generateFakeData(faker, fakerApiField);
+      return fakerService.generateFakeData(fakerApiField);
     }
 
     switch (property.getType()) {

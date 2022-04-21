@@ -2,17 +2,19 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.github.javafaker.Faker;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class FakerServiceImpl implements FakerService {
   @Override
-  public String generateFakeData(Faker faker, FakerApiField fakerApiField) throws AxelorException {
-
+  public String generateFakeData(FakerApiField fakerApiField) throws AxelorException {
+    Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
     Object instance = null;
     try {
 
