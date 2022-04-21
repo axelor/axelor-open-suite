@@ -23,7 +23,7 @@ public class FakerServiceImpl implements FakerService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessages.FAKER_CLASS_DOES_NOT_EXIST),
-          fakerApiField.getMethodName());
+          fakerApiField.getClassName());
 
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
