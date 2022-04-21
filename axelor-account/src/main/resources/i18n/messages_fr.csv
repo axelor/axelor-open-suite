@@ -1211,6 +1211,8 @@
 "Disposal date can not be before the first service date of the fixed asset","La date de sortie ne doit pas être avant la date de mise en service",,
 "Disposal date must be after the date of the last depreciation.","La date de cession doit être après la date du dernier amortissement.",,
 "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal.","La date de cession ne devrait pas être après la prochaine date d'amortissement planifié. Merci de réaliser tous les amortissements antérieurs à la cession.",,
+"Disposal quantity can not be equal to 0","La quantité à sortir ne peut pas être égale à 0",,
+"Disposal quantity can not be equal to the fixed asset max quantity (%s)","La quantité à sortir ne peut pas être égale à la quantité de l'immobilisation (%s)",,
 "Disposal quantity can not be greater than the fixed asset quantity (%s)","La quantité à sortir ne peut pas être plus grande que la quantité de l'immobilisation (%s)",,
 "Disposal value","Valeur cession",,
 "Do not export","Ne pas exporter le contenu",,
