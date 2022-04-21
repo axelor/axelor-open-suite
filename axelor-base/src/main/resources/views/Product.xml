@@ -77,6 +77,8 @@
     <field name="productVariant" width="200"/>
     <field name="costPrice" width="120" x-scale="2"/>
     <field name="salePrice" width="120" x-scale="2"/>
+    <field name="$availableQty" title="Available stock" type="decimal" width="120"
+      sortable="false" if="__config__.app.isApp('stock')"/>
   </grid>
 
   <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product"
