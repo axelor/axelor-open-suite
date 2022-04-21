@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class AnonymizeServiceImpl implements AnonymizeService {
 
-  FakerService fakerService;
+  protected FakerService fakerService;
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 

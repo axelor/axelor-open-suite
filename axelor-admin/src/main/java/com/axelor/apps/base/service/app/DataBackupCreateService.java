@@ -604,16 +604,18 @@ public class DataBackupCreateService {
       for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
           dataBackupConfigAnonymizeLineList) {
         if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())) {
-          if (property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
-            Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
-            return anonymizeService
-                .anonymizeValue(
-                    value,
-                    property,
-                    dataBackupConfigAnonymizeLine.getUseFakeData(),
-                    dataBackupConfigAnonymizeLine.getFakerApiField(),
-                    faker)
-                .toString();
+          if (dataBackupConfigAnonymizeLine.getMetaField() != null) {
+            if (property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
+              Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
+              return anonymizeService
+                  .anonymizeValue(
+                      value,
+                      property,
+                      dataBackupConfigAnonymizeLine.getUseFakeData(),
+                      dataBackupConfigAnonymizeLine.getFakerApiField(),
+                      faker)
+                  .toString();
+            }
           }
         }
       }
