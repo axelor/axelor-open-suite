@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -58,7 +47,15 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class LeaveServiceImpl implements LeaveService {
@@ -483,7 +480,6 @@ public class LeaveServiceImpl implements LeaveService {
       }
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
     }
-    
   }
 
   @Override
@@ -686,6 +682,11 @@ public class LeaveServiceImpl implements LeaveService {
       icalEventRepo.remove(icalEventRepo.find(event.getId()));
     }
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
+    leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -716,6 +717,10 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRequestDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -749,18 +754,15 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setValidatedBy(AuthUtils.getUser());
     leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
-    LeaveLine leaveLine =
-        leaveLineRepo
-            .all()
-            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-            .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getUser().getEmployee())
-            .fetchOne();
+    LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine != null) {
       leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
     }
     leaveRequestRepo.save(leaveRequest);
 
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(leaveLine);
+    }
     createEvents(leaveRequest);
   }
 
@@ -793,6 +795,9 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
+    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+      updateDaysToValidate(getLeaveLine(leaveRequest));
+    }
   }
 
   @Override
@@ -952,38 +957,49 @@ public class LeaveServiceImpl implements LeaveService {
         && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
         && request1.getToDateT().isEqual(request2.getFromDateT());
   }
-  
+
   @Override
   @Transactional
   public void updateDaysToValidate(LeaveLine leaveLine) {
-	  
-	  List<LeaveRequest> leaveRequests = leaveRequestRepo.all()
-	  .filter("self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.user = :user")
-	  .bind("statusSelect", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
-	  .bind("leaveReason", leaveLine.getLeaveReason())
-	  .bind("user", Optional.ofNullable(leaveLine.getEmployee()).map(Employee::getUser).orElse(null))
-	  .fetch();
-	  
-	  BigDecimal daysToValidate = BigDecimal.ZERO;
-	  
-	  for(LeaveRequest request: leaveRequests) {
-		  if (request.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-			  daysToValidate = daysToValidate.add(request.getDuration());
-		  } else {
-			  daysToValidate = daysToValidate.subtract(request.getDuration());
-		  }
-	  }
-	  
-	  leaveLine.setDaysToValidate(daysToValidate);  
+
+    List<LeaveRequest> leaveRequests =
+        leaveRequestRepo
+            .all()
+            .filter(
+                "self.statusSelect = :statusSelect AND self.leaveReason = :leaveReason AND self.user = :user")
+            .bind("statusSelect", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
+            .bind("leaveReason", leaveLine.getLeaveReason())
+            .bind(
+                "user",
+                Optional.ofNullable(leaveLine.getEmployee()).map(Employee::getUser).orElse(null))
+            .fetch();
+
+    BigDecimal daysToValidate = BigDecimal.ZERO;
+
+    for (LeaveRequest request : leaveRequests) {
+      if (request.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
+        daysToValidate = daysToValidate.add(request.getDuration());
+      } else {
+        daysToValidate = daysToValidate.subtract(request.getDuration());
+      }
+    }
+
+    leaveLine.setDaysToValidate(daysToValidate);
   }
-  
+
   @Override
   public LeaveLine getLeaveLine(LeaveRequest leaveRequest) {
-      return leaveLineRepo
-      .all()
-      .filter(
-          "self.employee = ?1 AND self.leaveReason = ?2", leaveRequest.getUser().getEmployee(), leaveRequest.getLeaveReason())
-      .fetchOne();
+
+    if (leaveRequest.getUser() == null || leaveRequest.getUser().getEmployee() == null) {
+      return null;
+    }
+
+    return leaveLineRepo
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.leaveReason = ?2",
+            leaveRequest.getUser().getEmployee(),
+            leaveRequest.getLeaveReason())
+        .fetchOne();
   }
-  
 }
