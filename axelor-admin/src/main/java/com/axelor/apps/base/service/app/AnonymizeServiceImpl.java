@@ -1,6 +1,11 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.db.mapper.Property;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -17,8 +22,24 @@ public class AnonymizeServiceImpl implements AnonymizeService {
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
+  protected MetaSelectRepository metaSelectRepository;
+  protected MetaSelectItemRepository metaSelectItemRepository;
+
+  @Inject
+  public AnonymizeServiceImpl(
+      MetaSelectRepository metaSelectRepository,
+      MetaSelectItemRepository metaSelectItemRepository) {
+    this.metaSelectRepository = metaSelectRepository;
+    this.metaSelectItemRepository = metaSelectItemRepository;
+  }
+
   @Override
   public Object anonymizeValue(Object object, Property property) {
+
+    if (property.getSelection() != null) {
+      return getSelectionFirstValue(property.getSelection());
+    }
+
     switch (property.getType()) {
       case TEXT:
       case STRING:
@@ -80,5 +101,21 @@ public class AnonymizeServiceImpl implements AnonymizeService {
       sb.append(String.format("%02x", b));
     }
     return sb.toString();
+  }
+
+  private String getSelectionFirstValue(String selection) {
+    MetaSelect metaSelect = metaSelectRepository.findByName(selection);
+    if (metaSelect == null) {
+      return null;
+    }
+
+    MetaSelectItem metaSelectItem =
+        metaSelectItemRepository.all().filter("self.select.id = ?1", metaSelect.getId()).fetchOne();
+
+    if (metaSelectItem != null) {
+      return metaSelectItem.getValue();
+    } else {
+      return null;
+    }
   }
 }
