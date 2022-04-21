@@ -71,6 +71,16 @@ public class PricingServiceImpl implements PricingService {
       filter.append("AND self.previousPricing is NULL ");
     }
 
+    appendProductFilter(product, productCategory, filter, bindings);
+    LOG.debug("Filtering pricing with {}", filter.toString());
+    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+  }
+
+  protected void appendProductFilter(
+      Product product,
+      ProductCategory productCategory,
+      StringBuilder filter,
+      Map<String, Object> bindings) {
     StringBuilder productFilter = new StringBuilder();
     productFilter.append("(");
     if (product != null) {
@@ -98,7 +108,5 @@ public class PricingServiceImpl implements PricingService {
       filter.append("AND ");
       filter.append(productFilter);
     }
-    LOG.debug("Filtering pricing with {}", filter.toString());
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 }

@@ -137,41 +137,35 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
-    // It is supposed that only one pricing match those criteria (because of the configuration)
-    // Having more than one pricing matched may result on a unexpected result
-    Pricing pricing =
-        pricingService
-            .getRandomPricing(
-                saleOrder.getCompany(),
-                saleOrderLine.getProduct(),
-                saleOrderLine.getProduct().getProductCategory(),
-                SaleOrderLine.class.getSimpleName(),
-                null)
-            .orElse(null);
-    if (pricing != null) {
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent()) {
       PricingComputer pricingComputer =
           PricingComputer.of(
-                  pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+                  pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
               .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
       pricingComputer.apply();
     }
   }
 
+  protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    // It is supposed that only one pricing match those criteria (because of the configuration)
+    // Having more than one pricing matched may result on a unexpected result
+    return pricingService.getRandomPricing(
+        saleOrder.getCompany(),
+        saleOrderLine.getProduct(),
+        saleOrderLine.getProduct().getProductCategory(),
+        SaleOrderLine.class.getSimpleName(),
+        null);
+  }
+
   @Override
   public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    Pricing pricing =
-        pricingService
-            .getRandomPricing(
-                saleOrder.getCompany(),
-                saleOrderLine.getProduct(),
-                saleOrderLine.getProduct().getProductCategory(),
-                SaleOrderLine.class.getSimpleName(),
-                null)
-            .orElse(null);
-    if (pricing != null) {
+
+    Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
+    if (pricing.isPresent()) {
       return !PricingComputer.of(
-              pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+              pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
           .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
           .getMatchedPricingLines()
           .isEmpty();
