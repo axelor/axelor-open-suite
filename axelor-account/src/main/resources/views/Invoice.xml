@@ -236,6 +236,7 @@
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="originDate"/>
     <field name="invoiceDate"/>
@@ -459,6 +460,9 @@
       <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
       <field name="operationSubTypeSelect"
         hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
+      <field name="operationSubTypeSelect"
+        hideIf="statusSelect &gt; 1 || operationTypeSelect != 1 || $readonly()" showTitle="true"
+        selection-in="[1,2]"/>
       <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
@@ -535,7 +539,7 @@
 
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
@@ -548,7 +552,7 @@
         </viewer>
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     </panel>
 
@@ -972,10 +976,17 @@ InvoiceSet.length > 0))"
 		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
-					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
+      </field>
+      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3">
+        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
+		         <dl class="dl-horizontal">
+				   <dt class="order-subtotal-total" x-translate>Amount due</dt>
+		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
+		         </dl>]]>
+        </viewer>
       </field>
     </panel>
 

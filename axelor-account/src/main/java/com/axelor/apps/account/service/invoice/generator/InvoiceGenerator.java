@@ -444,8 +444,10 @@ public abstract class InvoiceGenerator {
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
+    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());
+
     invoice.setHasPendingPayments(false);
 
     logger.debug(

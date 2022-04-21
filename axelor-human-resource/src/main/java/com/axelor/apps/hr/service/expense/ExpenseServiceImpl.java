@@ -813,7 +813,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Expense getOrCreateExpense(User user) {
     Expense expense =
-        Beans.get(ExpenseRepository.class)
+        expenseRepository
             .all()
             .filter(
                 "self.statusSelect = ?1 AND self.user.id = ?2",

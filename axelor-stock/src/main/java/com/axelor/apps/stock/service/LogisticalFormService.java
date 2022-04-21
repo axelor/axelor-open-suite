@@ -152,4 +152,20 @@ public interface LogisticalFormService {
       throws AxelorException;
 
   void updateProductNetMass(LogisticalForm logisticalForm) throws AxelorException;
+
+  /**
+   * Change logistical form status to carrier validated.
+   *
+   * @param logisticalForm
+   * @throws AxelorException
+   */
+  void carrierValidate(LogisticalForm logisticalForm) throws AxelorException;
+
+  /**
+   * Change logistical form status to provision.
+   *
+   * @param logisticalForm
+   * @throws AxelorException
+   */
+  void backToProvision(LogisticalForm logisticalForm) throws AxelorException;
 }
