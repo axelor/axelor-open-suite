@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
@@ -55,6 +42,18 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 
@@ -136,7 +135,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
         }
         // the line exist and is not already calculated, update it
         else {
-          if (lunchVoucherMgtLine.getStatusSelect().equals(LunchVoucherMgtLineRepository.STATUS_CALCULATED)) {
+          if (lunchVoucherMgtLine
+              .getStatusSelect()
+              .equals(LunchVoucherMgtLineRepository.STATUS_CALCULATED)) {
             lunchVoucherMgtLineService.computeAllAttrs(
                 employee, lunchVoucherMgt, lunchVoucherMgtLine);
           }
