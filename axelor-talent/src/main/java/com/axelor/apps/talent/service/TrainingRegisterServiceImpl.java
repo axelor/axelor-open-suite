@@ -227,7 +227,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
       trainingSession.getTrainingRegisterList().add(trainingRegister);
     }
 
-    Beans.get(TrainingSessionRepository.class).save(trainingSession);
+    trainingSessionRepo.save(trainingSession);
 
     return eventsIds.toString().replace("[", "(").replace("]", ")");
   }

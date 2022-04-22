@@ -1,3 +1,0 @@
----
-title: "Purchase Order: when generating a purchase order from a sale order, generated purchase order lines order is now correctly retrieved from sale order lines."
-type: fix
