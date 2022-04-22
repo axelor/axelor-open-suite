@@ -7,7 +7,7 @@
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
     <toolbar>
       <button name="exportCreatorsBtn" title="Export"
-        onClick="action-configurator-creator-export"/>
+        onClick="action-configurator-creator-group-export-button"/>
       <button name="importCreatorsBtn" title="Import"
         onClick="action-configurator-creator-view-import"/>
     </toolbar>
@@ -173,6 +173,15 @@
     <action name="save"/>
     <action name="action-configurator-creator-method-update-activate"/>
   </action-group>
+
+  <action-group name="action-configurator-creator-group-export-button">
+    <action name="action-configurator-creator-validate-ids-null"/>
+    <action name="action-configurator-creator-export"/>
+  </action-group>
+
+  <action-validate name="action-configurator-creator-validate-ids-null">
+    <error message="No record selected" if="_ids==null"></error>
+  </action-validate>
 
   <action-record name="action-configurator-creator-record-desactivate"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">

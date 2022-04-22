@@ -6,7 +6,7 @@
   <grid name="ebics-user-grid" title="Ebics user"
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
+      <button name="exportUsersBtn" title="Export" onClick="action-ebics-user-group-export-button"/>
       <button name="importUsersBtn" title="Import"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
@@ -26,7 +26,7 @@
     model="com.axelor.apps.bankpayment.db.EbicsUser" groupBy="ebicsPartner.ebicsBank,ebicsPartner"
     orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
+      <button name="exportUsersBtn" title="Export" onClick="action-ebics-user-group-export-button"/>
       <button name="importUsersBtn" title="Import"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
@@ -266,6 +266,15 @@
       name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
       template="data-export/export-ebics-user.txt" engine="groovy"/>
   </action-export>
+
+  <action-validate name="action-ebics-user-validate-ids-null">
+    <error message="No user selected" if="_ids==null"></error>
+  </action-validate>
+
+  <action-group name="action-ebics-user-group-export-button">
+    <action name="action-ebics-user-validate-ids-null"/>
+    <action name="action-export-ebics-user"/>
+  </action-group>
 
 
 </object-views>

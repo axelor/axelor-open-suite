@@ -161,6 +161,8 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_MERGE_SAME_CURRENCY = /*$$(*/
       "Please select some bank orders that have the same currency" /*)*/;
   static final String BANK_ORDER_MERGE_NO_BANK_ORDERS = /*$$(*/ "No bank orders found" /*)*/;
+  static final String BANK_ORDER_MERGE_NOT_SELECTED = /*$$(*/
+          "Please select at least one bank order." /*)*/;
 
   /** BankOrder file */
   static final String BANK_ORDER_FILE_NO_SENDER_ADDRESS = /*$$(*/

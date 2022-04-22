@@ -7,7 +7,7 @@
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-manuf-order-method-print"/>
+        onClick="action-manuf-order-method-print-multiple"/>
       <button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
     </toolbar>
     <hilite color="danger" if="prioritySelect == 4"/>

@@ -7,7 +7,7 @@
     model="com.axelor.apps.base.db.PrintTemplate">
     <toolbar>
       <button name="exportPrintTemplateBtn" title="Export"
-        onClick="action-export-print-template"/>
+        onClick="action-print-template-group-export-button"/>
       <button name="importPrintTemplateBtn" title="btn.import"
         onClick="action-print-template-view-open-import"/>
     </toolbar>
@@ -138,5 +138,14 @@
   <action-method name="action-print-template-method-import-print-template">
     <call class="com.axelor.apps.base.web.PrintTemplateController" method="importPrintTemplate"/>
   </action-method>
+
+  <action-validate name="action-print-template-validate-ids-null">
+    <error message="No template selected" if="_ids==null"></error>
+  </action-validate>
+
+  <action-group name="action-print-template-group-export-button">
+    <action name="action-print-template-validate-ids-null"/>
+    <action name="action-export-print-template"/>
+  </action-group>
 
 </object-views>

@@ -9,7 +9,7 @@
       <button name="btnTerminateAll" title="Terminate all process"
         prompt="Are you sure wants to terminate all process ?"
         onClick="com.axelor.apps.bpm.web.WkfModelController:terminateAll"/>
-      <button name="exportBtn" title="Export" onClick="action-wkf-model-export-wkf-models"/>
+      <button name="exportBtn" title="Export" onClick="action-wkf-model-group-export-button"/>
       <button name="importBtn" title="Import"
         onClick="action-wkf-model-view-import-wkf-model-form"/>
       <button name="importStandardBpmBtn" title="Import standard BPM"
@@ -335,5 +335,14 @@
     <context name="_wkfId" expr="eval:_wkf?.id"/>
     <context name="_process" expr="eval: process"/>
   </action-view>
+
+  <action-validate name="action-wkf-model-validate-ids-null">
+    <error message="No model selected" if="_ids==null"></error>
+  </action-validate>
+
+  <action-group name="action-wkf-model-group-export-button">
+    <action name="action-wkf-model-validate-ids-null"/>
+    <action name="action-wkf-model-export-wkf-models"/>
+  </action-group>
 
 </object-views>

@@ -257,26 +257,49 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrderPrintService manufOrderPrintService = Beans.get(ManufOrderPrintService.class);
+
+      String name = manufOrderPrintService.getFileName(manufOrder);
+      String fileLink = manufOrderPrintService.printManufOrder(manufOrder);
+      LOG.debug("Printing {}", name);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printMultipleManufOrders(ActionRequest request, ActionResponse response) {
+    try {
       @SuppressWarnings("unchecked")
       List<Integer> selectedManufOrderList = (List<Integer>) request.getContext().get("_ids");
+      ManufOrderPrintService manufOrderPrintService = Beans.get(ManufOrderPrintService.class);
+      String name = "";
+      String fileLink = "";
 
       if (selectedManufOrderList != null) {
-        String name = manufOrderPrintService.getManufOrdersFilename();
-        String fileLink =
-            manufOrderPrintService.printManufOrders(
-                selectedManufOrderList.stream()
-                    .map(Integer::longValue)
-                    .collect(Collectors.toList()));
-        LOG.debug("Printing {}", name);
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else if (manufOrder != null) {
-        String name = manufOrderPrintService.getFileName(manufOrder);
-        String fileLink = manufOrderPrintService.printManufOrder(manufOrder);
-        LOG.debug("Printing {}", name);
-        response.setView(ActionView.define(name).add("html", fileLink).map());
+        if (selectedManufOrderList.size() == 1) {
+          ManufOrder manufOrder =
+              Beans.get(ManufOrderRepository.class)
+                  .find(Long.valueOf(selectedManufOrderList.get(0)));
+          name = manufOrderPrintService.getFileName(manufOrder);
+          fileLink = manufOrderPrintService.printManufOrder(manufOrder);
+
+        } else {
+          name = manufOrderPrintService.getManufOrdersFilename();
+          fileLink =
+              manufOrderPrintService.printManufOrders(
+                  selectedManufOrderList.stream()
+                      .map(Integer::longValue)
+                      .collect(Collectors.toList()));
+        }
       } else {
         response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
       }
+      if(name != null && fileLink != null){
+        LOG.debug("Printing {}", name);
+        response.setView(ActionView.define(name).add("html", fileLink).map());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

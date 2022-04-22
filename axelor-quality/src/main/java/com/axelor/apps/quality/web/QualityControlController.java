@@ -23,6 +23,7 @@ import com.axelor.apps.quality.db.QualityProcess;
 import com.axelor.apps.quality.db.repo.ControlPointRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityProcessRepository;
+import com.axelor.apps.quality.exception.IExceptionMessage;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -173,6 +174,8 @@ public class QualityControlController {
       } else if (!ObjectUtils.isEmpty(context.get("id"))) {
         QualityControl qualityControl = context.asType(QualityControl.class);
         qualityControlService.sendEmail(qualityControl);
+      } else if(ObjectUtils.isEmpty(context.get("_ids"))) {
+        response.setAlert(I18n.get(IExceptionMessage.QUALITY_CONTROL_NOT_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

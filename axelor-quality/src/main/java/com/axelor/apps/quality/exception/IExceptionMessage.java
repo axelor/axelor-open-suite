@@ -23,4 +23,6 @@ public interface IExceptionMessage {
 
   static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on quality control" /*)*/;
+  static final String QUALITY_CONTROL_NOT_SELECTED = /*$$(*/
+          "Please select at least one quality control." /*)*/;
 }
