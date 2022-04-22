@@ -78,13 +78,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
             paymentVoucher ->
                 Strings.isNullOrEmpty(paymentVoucher.getChequeBank())
                     || Strings.isNullOrEmpty(paymentVoucher.getChequeOwner())
-                    || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber()))
+                    || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber())
+                    || Objects.isNull(paymentVoucher.getChequeDate()))
         .findAny()
         .isPresent()) {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO);
+          I18n.get(IExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
 
     Set<BankDetails> bankDetailsCollection =
@@ -236,7 +237,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED);
+          I18n.get(IExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
     }
 
     PaymentVoucherConfirmService paymentVoucherConfirmService =

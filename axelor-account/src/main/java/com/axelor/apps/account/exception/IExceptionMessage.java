@@ -949,7 +949,7 @@ public interface IExceptionMessage {
   static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/
       "Unsupported payment mode type" /*)*/;
   static final String DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO = /*$$(*/
-      "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner)." /*)*/;
+      "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner, deposit date)." /*)*/;
   static final String DEPOSIT_SLIP_NOT_PUBLISHED = /*$$(*/
       "The deposit slip is not published." /*)*/;
 

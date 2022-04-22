@@ -24,9 +24,9 @@
       <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
     </panel>
 
-    <panel name="definitionPanel" readonlyIf="publicationDate">
+    <panel name="definitionPanel" readonlyIf="paymentVoucherList.length > 0">
       <field name="depositType"/>
-      <panel name="companyDetailsPanel" readonlyIf="publicationDate" colSpan="12">
+      <panel name="companyDetailsPanel" colSpan="12">
         <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false"
           colSpan="4"/>
         <field name="currency" canEdit="false" colSpan="4"/>
@@ -35,6 +35,7 @@
           <field name="companyBankDetails"
             requiredIf="!companyBankDetails &amp;&amp; !valueForCollectionAccount"
             readonlyIf="valueForCollectionAccount" canEdit="false" canNew="false"
+            onChange="action-deposit-slip-attrs-payment-voucher-list-hide-column"
             onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4"/>
           <panel name="subCompanyBankDetailsPanel" hidden="true" showIf="companyBankDetails"
             colSpan="8">
@@ -44,6 +45,7 @@
         </panel>
         <field name="valueForCollectionAccount"
           domain="self.accountType.technicalTypeSelect = 'cash'"
+          onChange="action-deposit-slip-attrs-payment-voucher-list-hide-column"
           requiredIf="!companyBankDetails &amp;&amp; !valueForCollectionAccount"
           readonlyIf="companyBankDetails" colSpan="4"/>
       </panel>
@@ -66,16 +68,18 @@
         form-view="payment-voucher-deposit-slip-form" colSpan="12" readonly="true"/>
       <button onClick="save,action-cheque-deposit-slip-attrs-load-payment-vouchers,save"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
-        css="btn-success"/>
+        readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
         onClick="save,action-cheque-deposit-slip-attrs-reset-payment-vouchers,save,action-deposit-slip-load-payment-voucher-due-list"
-        name="resetSelectedLinesBtn" title="Reset selected lines" colSpan="3" css="btn-danger"/>
+        name="resetSelectedLinesBtn" title="Reset selected lines" colSpan="3" css="btn-danger"
+        readonlyIf="paymentVoucherList.length == 0"/>
     </panel>
 
     <panel>
       <panel-related name="paymentVoucherListPanel" field="paymentVoucherList"
         grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
-        readonlyIf="publicationDate" canNew="false" canRemove="false" colSpan="12" editable="true"/>
+        readonlyIf="isBankDepositMoveGenerated" canNew="false" canRemove="false" colSpan="12"
+        editable="true"/>
       <panel colSpan="5" hidden="true"
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
         <field name="__depositDate" type="Date" title="Deposit date"/>
@@ -123,9 +127,11 @@
     <attribute name="value:del" for="__paymentVoucherDueList"
       expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
     <attribute name="value" for="totalAmount"
-      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }?.sum{it.paidAmount} as BigDecimal) + totalAmount"/>
+      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }?.sum{it.paidAmount as BigDecimal}) + totalAmount"
+      if="__paymentVoucherDueList?.findAll{ it.selected }"/>
     <attribute name="value" for="chequeCount"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }.size() + chequeCount"/>
+      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }?.size() + chequeCount"
+      if="__paymentVoucherDueList?.findAll{ it.selected }"/>
   </action-attrs>
 
   <action-attrs name="action-cheque-deposit-slip-attrs-reset-payment-vouchers">
@@ -161,6 +167,12 @@
       for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
   </action-attrs>
 
+  <action-attrs name="action-deposit-slip-attrs-payment-voucher-list-hide-column"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <attribute name="hidden" expr="eval: !valueForCollectionAccount"
+      for="valueForCollectionMove.journal,valueForCollectionMove.date"/>
+  </action-attrs>
+
   <action-method name="action-deposit-slip-load-payment-voucher-due-list"
     model="com.axelor.apps.account.db.DepositSlip">
     <call class="com.axelor.apps.account.web.DepositSlipController"
@@ -186,8 +198,8 @@
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="paymentDate" x-selector="checkbox"
     edit-icon="false">
     <field name="ref"/>
-    <field name="valueForCollectionMove.journal"/>
-    <field name="valueForCollectionMove.date"/>
+    <field name="valueForCollectionMove.journal" hidden="true"/>
+    <field name="valueForCollectionMove.date" hidden="true"/>
     <field name="companyBankDetails"/>
     <field name="companybankDetails.bank.bankName"/>
     <field name="chequeDate"/>
@@ -201,11 +213,11 @@
 
   <grid title="Payment vouchers" name="payment-voucher-deposit-slip-grid"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="paymentDate" editable="true">
+    <hilite if="!chequeOwner || !chequeBank || !chequeNumber" color="red"/>
     <field name="ref" readonly="true"/>
-    <field name="valueForCollectionMove.journal"/>
-    <field name="valueForCollectionMove.date"/>
+    <field name="valueForCollectionMove.journal" hidden="true"/>
+    <field name="valueForCollectionMove.date" hidden="true"/>
     <field name="companyBankDetails" readonly="true"/>
-    <field name="companybankDetails.bank.bankName" readonly="true"/>
     <field name="chequeDate" readonly="true"/>
     <field name="chequeOwner" required="true"/>
     <field name="chequeBank" required="true"/>
