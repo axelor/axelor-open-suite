@@ -295,7 +295,7 @@ public class ManufOrderController {
       } else {
         response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
       }
-      if(name != null && fileLink != null){
+      if (!"".equals(name) && !"".equals(fileLink)) {
         LOG.debug("Printing {}", name);
         response.setView(ActionView.define(name).add("html", fileLink).map());
       }

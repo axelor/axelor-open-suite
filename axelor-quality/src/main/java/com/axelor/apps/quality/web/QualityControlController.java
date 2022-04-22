@@ -174,7 +174,7 @@ public class QualityControlController {
       } else if (!ObjectUtils.isEmpty(context.get("id"))) {
         QualityControl qualityControl = context.asType(QualityControl.class);
         qualityControlService.sendEmail(qualityControl);
-      } else if(ObjectUtils.isEmpty(context.get("_ids"))) {
+      } else if (ObjectUtils.isEmpty(context.get("_ids"))) {
         response.setAlert(I18n.get(IExceptionMessage.QUALITY_CONTROL_NOT_SELECTED));
       }
     } catch (Exception e) {

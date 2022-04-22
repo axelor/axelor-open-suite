@@ -6,7 +6,8 @@
   <grid name="ebics-user-grid" title="Ebics user"
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-ebics-user-group-export-button"/>
+      <button name="exportUsersBtn" title="Export"
+        onClick="action-ebics-user-group-export-button"/>
       <button name="importUsersBtn" title="Import"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
@@ -26,7 +27,8 @@
     model="com.axelor.apps.bankpayment.db.EbicsUser" groupBy="ebicsPartner.ebicsBank,ebicsPartner"
     orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-ebics-user-group-export-button"/>
+      <button name="exportUsersBtn" title="Export"
+        onClick="action-ebics-user-group-export-button"/>
       <button name="importUsersBtn" title="Import"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>

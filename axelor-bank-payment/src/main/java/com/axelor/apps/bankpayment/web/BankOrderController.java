@@ -189,7 +189,7 @@ public class BankOrderController {
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(bankOrder.getId()))
                 .map());
-      }else{
+      } else {
         response.setAlert(I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NOT_SELECTED));
       }
 
