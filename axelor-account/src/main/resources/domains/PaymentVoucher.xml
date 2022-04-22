@@ -84,7 +84,8 @@
     <date name="chequeDueDate"/>
     <boolean name="bankEntryGenWithoutValEntryCollectionOk"
       title="Generation of bank entry without value entry at collection"/>
-    <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"/>
+    <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"
+      copy="false"/>
 
     <unique-constraint columns="ref,company"/>
     <unique-constraint columns="receiptNo,company"/>
