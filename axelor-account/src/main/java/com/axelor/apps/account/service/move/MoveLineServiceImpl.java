@@ -1275,7 +1275,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
-    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
+    return moveLineRepository.save(customerMoveLine);
   }
 
   @Override
@@ -1296,7 +1296,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       customerMoveLine.addTaxPaymentMoveLineListItem(reverseTaxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
-    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
+    return moveLineRepository.save(customerMoveLine);
   }
 
   @Override

@@ -397,7 +397,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         break;
@@ -405,7 +405,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         break;
@@ -462,7 +462,7 @@ public class DoubtfulCustomerService {
         // Créance de + 6 mois
       case 0:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         moveLineList =
@@ -483,7 +483,7 @@ public class DoubtfulCustomerService {
         // Créance de + 3 mois
       case 1:
         date =
-            Beans.get(AppBaseService.class)
+            appBaseService
                 .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         moveLineList =

@@ -581,9 +581,8 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-        Beans.get(AppBaseService.class)
-            .getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -625,7 +624,7 @@ public class PartnerServiceImpl implements PartnerService {
       return locale;
     }
 
-    return Beans.get(AppBaseService.class).getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLanguageCode();
   }
 
   /**
@@ -748,7 +747,7 @@ public class PartnerServiceImpl implements PartnerService {
     String filter =
         "lower(self.simpleFullName) = lower(:newName) "
             + "and self.partnerTypeSelect = :_partnerTypeSelect ";
-    if (partner != null) {
+    if (partnerId != null) {
       filter += "and self.id != :partnerId ";
     }
     if (isInArchived) {
@@ -763,7 +762,7 @@ public class PartnerServiceImpl implements PartnerService {
             .filter(filter)
             .bind("newName", newName)
             .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
-    if (partner != null) {
+    if (partnerId != null) {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();

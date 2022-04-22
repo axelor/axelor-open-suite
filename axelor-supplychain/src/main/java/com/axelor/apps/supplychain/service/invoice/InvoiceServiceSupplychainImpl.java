@@ -117,9 +117,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
-        Beans.get(AccountConfigService.class)
-            .getAccountConfig(company)
-            .getGenerateMoveForInvoicePayment();
+        accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment();
 
     String filter = writeGeneralFilterForAdvancePayment();
     filter += " AND self.saleOrder = :_saleOrder";
@@ -128,7 +126,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       filter += " AND self.currency = :_currency";
     }
     Query<Invoice> query =
-        Beans.get(InvoiceRepository.class)
+        invoiceRepo
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)

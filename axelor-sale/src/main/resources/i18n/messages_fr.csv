@@ -530,7 +530,7 @@
 "The sale order was canceled","Le devis ou la commande client a été annulé(e)",,
 "The script must be written in","Le script doit être écrit en",,
 "The syntax of the script is correct.","La syntaxe du script est correcte.",,
-"The total amount of quotation is zero. Do you want to proceed ?",,,
+"The total amount of quotation is zero. Do you want to proceed ?","Le total de la commande vaut zéro. Souhaitez-vous confirmer la commande ?",,
 "There are lines with a discount superior to the maximal authorized discount.","Il y a des lignes avec une remise supérieure à la remise maximale autorisée.",,
 "This Year To Date","Année N",,
 "This sale order is completed.","Cette commande est terminée",,
