@@ -603,16 +603,15 @@ public class DataBackupCreateService {
       for (DataBackupConfigAnonymizeLine dataBackupConfigAnonymizeLine :
           dataBackupConfigAnonymizeLineList) {
         if (metaModelName.equals(dataBackupConfigAnonymizeLine.getMetaModel().getName())
-            && dataBackupConfigAnonymizeLine.getMetaField() != null) {
-          if (property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
-            return anonymizeService
-                .anonymizeValue(
-                    value,
-                    property,
-                    dataBackupConfigAnonymizeLine.getUseFakeData(),
-                    dataBackupConfigAnonymizeLine.getFakerApiField())
-                .toString();
-          }
+            && dataBackupConfigAnonymizeLine.getMetaField() != null
+            && property.getName().equals(dataBackupConfigAnonymizeLine.getMetaField().getName())) {
+          return anonymizeService
+              .anonymizeValue(
+                  value,
+                  property,
+                  dataBackupConfigAnonymizeLine.getUseFakeData(),
+                  dataBackupConfigAnonymizeLine.getFakerApiField())
+              .toString();
         }
       }
     }
