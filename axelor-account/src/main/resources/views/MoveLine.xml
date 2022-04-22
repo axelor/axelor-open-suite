@@ -839,7 +839,7 @@
 
   <action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
     <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
+      expr="eval: &quot; self.company.id = ${__parent__?.company.id} AND self.isSpecific=false &quot;"/>
   </action-attrs>
 
   <action-record name="action-record-initialize-permission-validation-move-line"
