@@ -40,8 +40,7 @@ public class EmployeeAdvanceService {
   @Transactional
   public void fillExpenseWithAdvances(Expense expense) {
 
-    Employee employee =
-        Beans.get(EmployeeRepository.class).find(expense.getUser().getEmployee().getId());
+    Employee employee = Beans.get(EmployeeRepository.class).find(expense.getEmployee().getId());
 
     if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;

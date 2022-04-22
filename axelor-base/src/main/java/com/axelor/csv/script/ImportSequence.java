@@ -51,7 +51,7 @@ public class ImportSequence {
     sequence.setFullName(sequenceService.computeFullName(sequence));
     SequenceVersion seqVersion = sequenceService.getVersion(sequence, LocalDate.now());
     sequenceVersionRepository.save(seqVersion);
-    sequence.setVersion(seqVersion.getId().intValue());
+    sequence.addSequenceVersionListItem(seqVersion);
     sequenceRepository.save(sequence);
     return sequence;
   }
