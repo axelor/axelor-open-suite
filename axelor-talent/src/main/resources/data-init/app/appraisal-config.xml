@@ -5,7 +5,7 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.codeSelect = :codeSelect"
-    call="com.axelor.csv.script.SequenceScript:computeFullname">
+    call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
