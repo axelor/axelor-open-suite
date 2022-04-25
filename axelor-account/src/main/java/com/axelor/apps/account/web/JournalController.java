@@ -85,4 +85,25 @@ public class JournalController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void changeConfig(ActionRequest request, ActionResponse response) {
+    try {
+      Journal journal = request.getContext().asType(Journal.class);
+
+      if (journal.getCompany().getAccountConfig() == null) {
+        response.setValue("authorizeSimulatedMove", false);
+      } else {
+        if (journal.getCompany().getAccountConfig().getIsActivateSimulatedMove() == null
+            || !journal.getCompany().getAccountConfig().getIsActivateSimulatedMove()) {
+          response.setValue("authorizeSimulatedMove", false);
+        }
+        if (!journal.getCompany().getAccountConfig().getAccountingDaybook()
+            || journal.getCompany().getAccountConfig().getAccountingDaybook() == null) {
+          response.setValue("allowAccountingDaybook", false);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

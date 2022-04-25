@@ -28,7 +28,7 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="company" canEdit="false"
         readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-journal-method-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
     </panel>
@@ -73,6 +73,7 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
@@ -154,5 +155,7 @@
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
   </action-method>
-
+  <action-method name="action-journal-method-change-config-values">
+    <call class="com.axelor.apps.account.web.JournalController" method="changeConfig"/>
+  </action-method>
 </object-views>
