@@ -150,6 +150,8 @@
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+
+                      	  <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
                       </h4>
                     ]]>
           </viewer>
