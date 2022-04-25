@@ -187,20 +187,23 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
 
   public BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(
       BankDetails bankDetails) {
-    Predicate<BankStatementLineAFB120> predicate =
-        l ->
-            l.getBankDetails().getId() == bankDetails.getId()
-                && l.getLineTypeSelect()
-                    == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
-    Optional<BankStatementLineAFB120> id =
-        bankPaymentBankStatementLineAFB120Repository
-            .all()
-            .fetchStream()
-            .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
-            .filter(predicate)
-            .findFirst();
-    return id.isPresent()
-        ? bankPaymentBankStatementLineAFB120Repository.find(id.get().getId())
-        : null;
+    if (bankDetails != null) {
+      Predicate<BankStatementLineAFB120> predicate =
+          l ->
+              l.getBankDetails().getId() == bankDetails.getId()
+                  && l.getLineTypeSelect()
+                      == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
+      Optional<BankStatementLineAFB120> id =
+          bankPaymentBankStatementLineAFB120Repository
+              .all()
+              .fetchStream()
+              .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
+              .filter(predicate)
+              .findFirst();
+      return id.isPresent()
+          ? bankPaymentBankStatementLineAFB120Repository.find(id.get().getId())
+          : null;
+    }
+    return null;
   }
 }

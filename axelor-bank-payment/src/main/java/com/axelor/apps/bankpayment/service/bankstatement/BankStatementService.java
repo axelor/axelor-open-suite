@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankStatementService {
 
@@ -376,6 +377,9 @@ public class BankStatementService {
 
   @Transactional
   public void updateBankDetailsBalanceAndDate(List<BankDetails> bankDetails) {
+    if (CollectionUtils.isEmpty(bankDetails)) {
+      return;
+    }
     BankStatementLineAFB120 lastLine;
     for (BankDetails bankDetail : bankDetails) {
       lastLine =
