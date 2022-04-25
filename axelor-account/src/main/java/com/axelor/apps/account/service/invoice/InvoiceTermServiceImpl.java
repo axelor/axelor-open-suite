@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -40,6 +41,8 @@ import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -54,6 +57,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -73,6 +77,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceVisibilityService invoiceVisibilityService;
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
+  protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected InvoicePaymentCreateService invoicePaymentCreateService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -83,7 +89,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      InvoicePaymentCreateService invoicePaymentCreateService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
@@ -92,6 +100,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceVisibilityService = invoiceVisibilityService;
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
+    this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.invoicePaymentCreateService = invoicePaymentCreateService;
   }
 
   @Override
@@ -707,29 +717,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
     LocalDate paymentDate = paymentSession.getPaymentDate();
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
-    boolean isSignedNegative = false;
-
-    if (invoiceTerm.getMoveLine() != null) {
-      if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-          == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
-        isSignedNegative =
-            invoiceTerm
-                    .getMoveLine()
-                    .getDebit()
-                    .subtract(invoiceTerm.getMoveLine().getCredit())
-                    .signum()
-                < 0;
-      } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-          == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
-        isSignedNegative =
-            invoiceTerm
-                    .getMoveLine()
-                    .getCredit()
-                    .subtract(invoiceTerm.getMoveLine().getDebit())
-                    .signum()
-                < 0;
-      }
-    }
+    boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
@@ -835,7 +823,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
-    return invoiceTerm.getApplyFinancialDiscount()
+    return invoiceTerm.getFinancialDiscountDeadlineDate() != null
+            && invoiceTerm.getApplyFinancialDiscount()
             && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
         ? invoiceTerm.getAmountRemainingAfterFinDiscount()
         : invoiceTerm.getAmountRemaining();
@@ -1013,28 +1002,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
-      boolean isSignedNegative = false;
-      if (invoiceTerm.getMoveLine() != null) {
-        if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-            == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
-          isSignedNegative =
-              invoiceTerm
-                      .getMoveLine()
-                      .getDebit()
-                      .subtract(invoiceTerm.getMoveLine().getCredit())
-                      .signum()
-                  < 0;
-        } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-            == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
-          isSignedNegative =
-              invoiceTerm
-                      .getMoveLine()
-                      .getCredit()
-                      .subtract(invoiceTerm.getMoveLine().getDebit())
-                      .signum()
-                  < 0;
-        }
-      }
+      boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
       if (accountConfigService
               .getAccountConfig(invoiceTerm.getInvoice().getCompany())
               .getIsManagePassedForPayment()
@@ -1104,10 +1072,18 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     Reconcile invoiceTermsReconcile =
         reconcileService.createReconcile(debitMoveLine, creditMoveLine, reconciledAmount, true);
-    reconcileService.confirmReconcile(invoiceTermsReconcile, true, false);
+    reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
 
-    updateInvoiceTermsAmounts(invoiceTermFromInvoice, reconciledAmount);
-    updateInvoiceTermsAmounts(invoiceTermFromRefund, reconciledAmount);
+    updateInvoiceTermsAmounts(
+        invoiceTermFromInvoice,
+        reconciledAmount,
+        invoiceTermsReconcile,
+        invoiceTermFromRefund.getMoveLine().getMove());
+    updateInvoiceTermsAmounts(
+        invoiceTermFromRefund,
+        reconciledAmount,
+        invoiceTermsReconcile,
+        invoiceTermFromInvoice.getMoveLine().getMove());
   }
 
   @Override
@@ -1154,12 +1130,58 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm, BigDecimal reconciledAmount) {
+      InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
+      throws AxelorException {
 
-    invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(reconciledAmount));
-    if (invoiceTerm.getPaymentSession() != null && invoiceTerm.getIsSelectedOnPaymentSession()) {
-      this.fillEligibleTerm(invoiceTerm.getPaymentSession(), invoiceTerm);
+    InvoicePayment invoicePayment =
+        invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+    invoicePayment.addReconcileListItem(reconcile);
+
+    List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+
+    invoiceTermList.add(invoiceTerm);
+
+    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+
+    invoiceTermPaymentList =
+        invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+            invoicePayment, invoiceTermList, amount);
+
+    for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+      this.updateInvoiceTermsPaidAmount(
+          invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+
+      if (invoicePayment == null) {
+        invoiceTermPayment.addReconcileListItem(reconcile);
+      }
     }
+
     return invoiceTerm;
+  }
+
+  protected boolean getIsSignedNegative(InvoiceTerm invoiceTerm) {
+    boolean isSignedNegative = false;
+    if (invoiceTerm.getMoveLine() != null) {
+      if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+          == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+        isSignedNegative =
+            invoiceTerm
+                    .getMoveLine()
+                    .getDebit()
+                    .subtract(invoiceTerm.getMoveLine().getCredit())
+                    .signum()
+                < 0;
+      } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+          == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+        isSignedNegative =
+            invoiceTerm
+                    .getMoveLine()
+                    .getCredit()
+                    .subtract(invoiceTerm.getMoveLine().getDebit())
+                    .signum()
+                < 0;
+      }
+    }
+    return isSignedNegative;
   }
 }
