@@ -1,196 +1,219 @@
-package com.axelor.apps.sale.service.pricing;
+package com.axelor.apps.base.service.pricing;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.EntityHelper;
-import com.axelor.db.Query;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
-import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PricingServiceImpl implements PricingService {
+public class PricingComputer extends AbstractObservablePricing {
 
-  protected PricingRepository pricingRepo;
-  protected AppBaseService appBaseService;
+  private final Context context;
+  private final Pricing pricing;
+  private final Model model;
+  private final Product product;
+  private final Class<? extends Model> classModel;
+  private static final int MAX_ITERATION = 100;
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject
-  public PricingServiceImpl(PricingRepository pricingRepo, AppBaseService appBaseService) {
-    this.pricingRepo = pricingRepo;
-    this.appBaseService = appBaseService;
-  }
+  protected PricingService pricingService;
 
-  @Override
-  public Query<Pricing> getPricing(
+  protected PricingComputer(
+      Context context,
+      Pricing pricing,
+      Model model,
       Product product,
-      ProductCategory productCategory,
-      Company company,
-      String modelName,
-      Pricing parentPricing) {
-
-    StringBuilder filter = new StringBuilder();
-
-    filter.append("(self.product = :product ");
-
-    if (product != null && product.getParentProduct() != null) {
-      filter.append("OR self.product = :parentProduct ");
-    }
-
-    filter.append("OR self.productCategory = :productCategory) ");
-
-    if (parentPricing != null) {
-      filter.append("AND self.previousPricing = :parentPricing ");
-    } else {
-      filter.append("AND self.previousPricing IS NULL ");
-    }
-
-    filter.append(
-        "AND self.company = :company "
-            + "AND self.startDate <= :todayDate "
-            + "AND self.concernedModel.name = :modelName");
-
-    return pricingRepo
-        .all()
-        .filter(filter.toString())
-        .bind("product", product)
-        .bind("parentProduct", product != null ? product.getParentProduct() : null)
-        .bind("productCategory", productCategory)
-        .bind("parentPricing", parentPricing)
-        .bind("company", company)
-        .bind("todayDate", appBaseService.getTodayDate(company))
-        .bind("modelName", modelName);
+      Class<? extends Model> classModel) {
+    this.context = Objects.requireNonNull(context);
+    this.pricing = Objects.requireNonNull(pricing);
+    this.product = Objects.requireNonNull(product);
+    this.model = Objects.requireNonNull(model);
+    this.classModel = Objects.requireNonNull(classModel);
+    this.pricingService = Beans.get(PricingService.class);
   }
 
-  @Override
-  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
-      throws AxelorException {
-    if (orderLine.getProduct() == null) {
+  /**
+   * Method to adds in the context (for the groovy script) a pair of key,value. If the key already
+   * exist in the context, the former value will be replaced.
+   *
+   * @param key: non-null
+   * @param value: non-null
+   * @return itself
+   */
+  public PricingComputer putInContext(String key, Object value) {
+    LOG.debug("Putting in context key {} with value {}", key, value);
+    if (context == null) {
+      throw new IllegalStateException("Context has not been initialized");
+    }
+    context.put(key, value);
+    return this;
+  }
+
+  /**
+   * Method that creates a instance of PricingCompute intialized with pricing, model, product and
+   * modelClass
+   *
+   * @param pricing : non-null
+   * @param model: non-null
+   * @param product the concerned product: non-null
+   * @param classModel: non-null
+   * @throws AxelorException
+   */
+  public static <T extends Model> PricingComputer of(
+      Pricing pricing, T model, Product product, Class<T> classModel) throws AxelorException {
+    Objects.requireNonNull(pricing);
+    Objects.requireNonNull(model);
+    LOG.debug(
+        "Creating new instance of PricingComputer with pricing {} and model {} of class {}",
+        pricing,
+        model,
+        classModel.getSimpleName());
+    try {
+      Context context = new Context(Mapper.toMap(model), classModel);
+      return new PricingComputer(context, pricing, model, product, classModel);
+
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  /**
+   * Method that apply the pricing on the model. This methods can only be called with root pricing.
+   *
+   * @throws AxelorException
+   */
+  public void apply() throws AxelorException {
+    if (context == null || pricing == null || model == null || product == null) {
+      throw new IllegalStateException("This instance has not been correctly initialized");
+    }
+    if (pricing.getPreviousPricing() != null) {
+      throw new IllegalStateException(
+          "This method call only be called with root pricing (pricing with not previous pricing)");
+    }
+    LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
+    if (!applyPricing(this.pricing).isPresent()) {
       return;
     }
+    Pricing previousPricing = this.pricing;
+    LOG.debug("Treating pricing childs of {}", this.pricing);
+    for (int counter = 0; counter < MAX_ITERATION; counter++) {
+      List<Pricing> childPricings =
+          pricingService.getPricings(
+              this.pricing.getCompany(),
+              this.product,
+              this.product.getProductCategory(),
+              this.classModel.getSimpleName(),
+              previousPricing);
 
-    // (1) Get the Pricing
-    Pricing defaultPricing = this.getDefaultPricing(saleOrder, orderLine).orElse(null);
-
-    // No pricing found
-    if (defaultPricing == null) {
-      return;
-    }
-
-    this.computePricing(defaultPricing, saleOrder, orderLine, null, 0);
-  }
-
-  protected PricingLine computePricing(
-      Pricing pricing,
-      SaleOrder saleOrder,
-      SaleOrderLine orderLine,
-      PricingLine previousPricingLine,
-      int count)
-      throws AxelorException {
-
-    if (pricing == null
-        || pricing.getClass1PricingRule() == null
-        || pricing.getResult1PricingRule() == null
-        || count == 100) {
-      return null;
-    }
-    Product product = orderLine.getProduct();
-
-    // (2) Compute the classification formulas
-    // (3) Search the Pricing Line
-
-    PricingLine pricingLine =
-        getPricingLine(saleOrder, orderLine, pricing, previousPricingLine).orElse(null);
-
-    if (pricingLine == null) {
-      return null;
-    }
-
-    // (4) Compute the result formulas
-    // (6) Apply the results
-    GroovyScriptHelper scriptHelper =
-        getPricingScriptHelper(saleOrder, orderLine, pricing, pricingLine, previousPricingLine);
-
-    computeResultFormulaAndApply(scriptHelper, pricing, orderLine);
-
-    Query<Pricing> childPricingQry =
-        this.getPricing(
-            product,
-            product.getProductCategory(),
-            saleOrder.getCompany(),
-            SaleOrderLine.class.getSimpleName(),
-            pricing);
-
-    long totalChildPricing = childPricingQry.count();
-
-    if (totalChildPricing == 0) {
-      return pricingLine;
-
-    } else if (totalChildPricing > 1) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(IExceptionMessage.PRICING_2),
-              product.getName() + "/" + product.getProductCategory().getName(),
-              saleOrder.getCompany().getName(),
-              SaleOrderLine.class.getSimpleName()));
-
-    } else {
-      Pricing childPricing = childPricingQry.fetchOne();
-      return computePricing(childPricing, saleOrder, orderLine, pricingLine, ++count);
+      if (childPricings.isEmpty()) {
+        return;
+      }
+      if (childPricings.size() > 1) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(IExceptionMessage.PRICING_2),
+                this.product.getName() + "/" + this.product.getProductCategory().getName(),
+                pricing.getCompany().getName(),
+                classModel.getSimpleName()));
+      } else {
+        Pricing childPricing = childPricings.get(0);
+        if (!applyPricing(childPricing).isPresent()) {
+          return;
+        }
+        previousPricing = childPricing;
+      }
     }
   }
 
-  @Override
-  public Optional<Pricing> getDefaultPricing(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  /**
+   * Apply pricing and return the pricing line applied
+   *
+   * @param pricing
+   * @return optional of the pricing line applied
+   */
+  protected Optional<PricingLine> applyPricing(Pricing pricing) {
+    LOG.debug("Applying pricing {} with model {}", pricing, this.model);
+    if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
 
-    return Optional.ofNullable(
-        this.getPricing(
-                saleOrderLine.getProduct(),
-                saleOrderLine.getProduct().getProductCategory(),
-                saleOrder.getCompany(),
-                SaleOrderLine.class.getSimpleName(),
-                null)
-            .fetchOne());
+      notifyPricing(pricing);
+      List<PricingLine> pricingLines = getMatchedPricingLines(pricing);
+
+      if (!pricingLines.isEmpty()) {
+
+        PricingLine pricingLine = pricingLines.get(0);
+        putInContext("pricingLine", EntityHelper.getEntity(pricingLine));
+        computeResultFormulaAndApply(pricing, pricingLine);
+        putInContext("previousPricingLine", EntityHelper.getEntity(pricingLine));
+        return Optional.ofNullable(pricingLine);
+      }
+    }
+    return Optional.empty();
   }
 
-  @Override
-  public Optional<PricingLine> getPricingLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Pricing pricing) throws AxelorException {
+  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine) {
+    Objects.requireNonNull(pricingLine);
 
-    return getPricingLine(saleOrder, saleOrderLine, pricing, null);
+    GroovyScriptHelper scriptHelper = new GroovyScriptHelper(context);
+
+    List<PricingRule> resultPricingRuleList = new ArrayList<>();
+    resultPricingRuleList.add(pricing.getResult1PricingRule());
+    resultPricingRuleList.add(pricing.getResult2PricingRule());
+    resultPricingRuleList.add(pricing.getResult3PricingRule());
+    resultPricingRuleList.add(pricing.getResult4PricingRule());
+
+    resultPricingRuleList.stream()
+        .filter(Objects::nonNull)
+        .forEach(
+            resultPricingRule -> {
+              MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+              if (fieldToPopulate != null) {
+                Object result = scriptHelper.eval(resultPricingRule.getFormula());
+                notifyResultPricingRule(resultPricingRule, result);
+                notifyFieldToPopulate(fieldToPopulate);
+                Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+              }
+            });
   }
 
-  protected Optional<PricingLine> getPricingLine(
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      Pricing pricing,
-      PricingLine previousPricingLine)
-      throws AxelorException {
+  /**
+   * This method will return every pricing lines that classify the model in the pricing.
+   *
+   * @param pricing: non-null
+   * @param model non-null
+   * @param classModel-null
+   */
+  protected List<PricingLine> getMatchedPricingLines(Pricing pricing) {
+    if (context == null || model == null) {
+      throw new IllegalStateException("This instance has not been correctly initialized");
+    }
+    Objects.requireNonNull(pricing);
 
-    GroovyScriptHelper scriptHelper =
-        getPricingScriptHelper(saleOrder, saleOrderLine, pricing, null, previousPricingLine);
+    GroovyScriptHelper scriptHelper = new GroovyScriptHelper(context);
 
     return searchPricingLine(
         pricing,
@@ -202,35 +225,28 @@ public class PricingServiceImpl implements PricingService {
         });
   }
 
-  protected GroovyScriptHelper getPricingScriptHelper(
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      Pricing pricing,
-      PricingLine pricingLine,
-      PricingLine previousPricingLine)
-      throws AxelorException {
-    Context scriptContext = null;
-    try {
+  /**
+   * This method will return every pricing lines that classify the model in the pricing configured.
+   *
+   * @param pricing: non-null
+   * @param model non-null
+   * @param classModel-null
+   */
+  public List<PricingLine> getMatchedPricingLines() {
 
-      scriptContext =
-          new Context(
-              Mapper.toMap(saleOrderLine),
-              Class.forName(pricing.getConcernedModel().getFullName()));
-    } catch (Exception e) {
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
-
-    scriptContext.put("saleOrder", EntityHelper.getEntity(saleOrder));
-    scriptContext.put("previousPricingLine", EntityHelper.getEntity(previousPricingLine));
-    scriptContext.put("pricingLine", EntityHelper.getEntity(pricingLine));
-
-    return new GroovyScriptHelper(scriptContext);
+    return getMatchedPricingLines(this.pricing);
   }
 
   protected Object computeClassificationFormula(
       GroovyScriptHelper scriptHelper, PricingRule classPricingRule) {
 
-    return classPricingRule != null ? scriptHelper.eval(classPricingRule.getFormula()) : null;
+    if (classPricingRule != null) {
+      Object result = scriptHelper.eval(classPricingRule.getFormula());
+      notifyClassificationPricingRule(classPricingRule, result);
+      return result;
+    }
+
+    return null;
   }
 
   protected List<Integer[]> getFieldTypeAndOperator(Pricing pricing) {
@@ -258,7 +274,7 @@ public class PricingServiceImpl implements PricingService {
         });
   }
 
-  protected Optional<PricingLine> searchPricingLine(Pricing pricing, Object[] ruleValues) {
+  protected List<PricingLine> searchPricingLine(Pricing pricing, Object[] ruleValues) {
     Object ruleValue1 = ruleValues[0];
     Object ruleValue2 = ruleValues[1];
     Object ruleValue3 = ruleValues[2];
@@ -268,7 +284,7 @@ public class PricingServiceImpl implements PricingService {
 
     List<PricingLine> pricingLines = pricing.getPricingLineList();
     if (CollectionUtils.isEmpty(pricingLines)) {
-      return Optional.empty();
+      return Collections.emptyList();
     }
 
     if (ruleValue4 != null) {
@@ -309,10 +325,10 @@ public class PricingServiceImpl implements PricingService {
           checkClassificationRule1(
               pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
     } else {
-      return Optional.empty();
+      return Collections.emptyList();
     }
 
-    return pricingLines.stream().findFirst();
+    return pricingLines;
   }
 
   protected List<PricingLine> checkClassificationRule1(
@@ -483,28 +499,5 @@ public class PricingServiceImpl implements PricingService {
             ? ((int) param) == (new BigDecimal(value.toString())).intValue()
             : ((BigDecimal) param).compareTo((BigDecimal) value) == 0;
     }
-  }
-
-  protected void computeResultFormulaAndApply(
-      GroovyScriptHelper scriptHelper, Pricing pricing, SaleOrderLine orderLine) {
-
-    List<PricingRule> resultPricingRuleList = new ArrayList<>();
-    resultPricingRuleList.add(pricing.getResult1PricingRule());
-    resultPricingRuleList.add(pricing.getResult2PricingRule());
-    resultPricingRuleList.add(pricing.getResult3PricingRule());
-    resultPricingRuleList.add(pricing.getResult4PricingRule());
-
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              if (resultPricingRule.getFieldToPopulate() != null) {
-                Mapper.of(SaleOrderLine.class)
-                    .set(
-                        orderLine,
-                        resultPricingRule.getFieldToPopulate().getName(),
-                        scriptHelper.eval(resultPricingRule.getFormula()));
-              }
-            });
   }
 }
