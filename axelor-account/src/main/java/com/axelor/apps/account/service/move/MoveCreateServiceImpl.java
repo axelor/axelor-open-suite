@@ -26,9 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
@@ -40,6 +38,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -332,5 +331,33 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setInvoice(invoice);
     move.setPaymentVoucher(paymentVoucher);
     return move;
+  }
+
+  @Override
+  @Transactional
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Period period,
+      LocalDate date,
+      TradingName tradingName,
+      PaymentMode paymentMode)
+      throws AxelorException {
+    Move move =
+        createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            null,
+            paymentMode,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            0,
+            null,
+            null);
+    move.setPeriod(period);
+    move.setDate(date);
+    move.setTradingName(tradingName);
+    return moveRepository.save(move);
   }
 }

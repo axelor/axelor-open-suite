@@ -13,6 +13,15 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
+
+  <grid name="lite-batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch"
+    orderBy="-id" canNew="false" canEdit="false" canSave="false" canDelete="false" edit-icon="true">
+    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+    <field name="startDate"/>
+    <field name="done"/>
+    <field name="anomaly"/>
+  </grid>
+
   <form onNew="action-accounting-batch-record-on-new" name="accounting-batch-form"
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch"
     onLoad="action-accounting-batch-group-on-load">
@@ -33,6 +42,10 @@
         readonlyIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
         onChange="action-attrs-accounting-batch-hide-trading-name-set" hidden="true"
         showIf="actionSelect == 14"/>
+      <field name="isMoveGenerationByTradingName"
+        readonlyIf="company.tradingNameSet == null || company.tradingNameSet.length == 0"
+        onChange="action-attrs-accounting-batch-hide-trading-name-set" hidden="true"
+        showIf="actionSelect == 25"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
         form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
         canEdit="false" hidden="true"/>
@@ -137,6 +150,13 @@
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
           widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
       </panel>
+      <panel name="generateMovesPanel" title="Generate Moves" hideIf="actionSelect != 25">
+        <field name="name" readonlyIf="batchList != null &amp;&amp; !batchList.isEmpty()"/>
+        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
+          onChange="action-accounting-batch-record-set-period-dates"/>
+        <panel-related colSpan="12" readonly="true" field="batchList"
+          form-view="batch-form" grid-view="lite-batch-grid"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -180,6 +200,8 @@
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
         showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
+      <button name="generateMovesBatchBtn" title="Generate moves batch"
+        onClick="save,action-accounting-batch-method-generate-moves" showIf="actionSelect == 25"/>
     </panel>
   </form>
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">
@@ -225,6 +247,12 @@
     model="com.axelor.apps.account.db.AccountingBatch">
     <field name="currency" expr="eval: company?.currency"
       if="[11, 12, 15, 19].indexOf(actionSelect) >= 0"/>
+  </action-record>
+
+  <action-record name="action-accounting-batch-record-set-period-dates"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="periodFromDate" expr="eval: period.fromDate"/>
+    <field name="periodToDate" expr="eval: period.toDate"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -285,6 +313,11 @@
       method="actionBillOfExchange"/>
   </action-method>
 
+  <action-method name="action-accounting-batch-method-create-moves-schedule">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionGenerateMoves"/>
+  </action-method>
+
   <!-- ACTION VALIDATE -->
   <action-validate name="action-accounting-batch-validate-batchlist-not-empty">
     <alert
@@ -330,7 +363,9 @@
 
   <action-attrs name="action-attrs-accounting-batch-hide-trading-name-set">
     <attribute name="hidden" for="tradingNameSet"
-      expr="eval: !(__config__?.app?.getApp('base')?.enableTradingNamesManagement &amp;&amp; actionSelect == 14 &amp;&amp; isDebtRecoveryByTradingName)"/>
+      expr="eval: !(__config__?.app?.getApp('base')?.enableTradingNamesManagement
+                  &amp;&amp; (actionSelect == 14 || actionSelect == 25)
+                  &amp;&amp; (isDebtRecoveryByTradingName || isMoveGenerationByTradingName))"/>
   </action-attrs>
 
   <search-filters name="accounting-batch-filters"

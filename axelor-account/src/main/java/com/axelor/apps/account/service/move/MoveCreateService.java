@@ -23,9 +23,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.*;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 
@@ -176,5 +174,14 @@ public interface MoveCreateService {
       String description,
       Invoice invoice,
       PaymentVoucher paymentVoucher)
+      throws AxelorException;
+
+  Move createMove(
+      Journal journal,
+      Company company,
+      Period period,
+      LocalDate date,
+      TradingName tradingName,
+      PaymentMode paymentMode)
       throws AxelorException;
 }
