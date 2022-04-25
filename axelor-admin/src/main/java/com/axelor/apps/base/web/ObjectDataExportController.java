@@ -35,15 +35,15 @@ public class ObjectDataExportController {
 
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    ObjectDataConfigExport objDataConfigExport =
+    ObjectDataConfigExport objectDataConfigExport =
         request.getContext().asType(ObjectDataConfigExport.class);
 
-    Long objectDataconfigId = objDataConfigExport.getObjectDataConfig().getId();
+    Long objectDataConfigId = objectDataConfigExport.getObjectDataConfig().getId();
 
     ObjectDataConfig objectDataConfig =
-        Beans.get(ObjectDataConfigRepository.class).find(objectDataconfigId);
+        Beans.get(ObjectDataConfigRepository.class).find(objectDataConfigId);
     MetaFile dataFile =
-        Beans.get(ObjectDataExportService.class).export(objectDataConfig, objDataConfigExport);
+        Beans.get(ObjectDataExportService.class).export(objectDataConfig, objectDataConfigExport);
 
     if (dataFile != null) {
       response.setView(

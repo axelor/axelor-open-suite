@@ -25,7 +25,7 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
@@ -141,7 +141,7 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(ExtractContextMoveServiceImpl.class).to(ExtractContextMoveServiceBankPaymentImpl.class);
 
-    bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
+    bind(MoveRemoveServiceImpl.class).to(MoveRemoveServiceBankPaymentImpl.class);
 
     bind(EbicsUserRepository.class).to(EbicsUserManagementRepository.class);
 

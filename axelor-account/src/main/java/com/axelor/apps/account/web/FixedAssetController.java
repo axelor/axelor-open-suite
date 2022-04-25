@@ -170,11 +170,6 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
-        if (fixedAsset.getGrossValue().signum() <= 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
-        }
         Beans.get(FixedAssetService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -235,7 +230,7 @@ public class FixedAssetController {
       if (analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific()) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
-            ActionView.define("Specific Analytic Distribution Template")
+            ActionView.define(I18n.get(IExceptionMessage.SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE))
                 .model(AnalyticDistributionTemplate.class.getName())
                 .add("form", "analytic-distribution-template-fixed-asset-form")
                 .param("popup", "true")
@@ -282,21 +277,15 @@ public class FixedAssetController {
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
-
+    FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
     try {
-      if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
-            fixedAsset.getQty().toString());
-      }
+      fixedAssetService.checkFixedAssetScissionQty(disposalQty, fixedAsset);
       FixedAsset createdFixedAsset =
-          Beans.get(FixedAssetService.class)
-              .splitAndSaveFixedAsset(
-                  fixedAsset,
-                  disposalQty,
-                  Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
-                  fixedAsset.getComments());
+          fixedAssetService.splitAndSaveFixedAsset(
+              fixedAsset,
+              disposalQty,
+              Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
+              fixedAsset.getComments());
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
@@ -308,7 +297,7 @@ public class FixedAssetController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

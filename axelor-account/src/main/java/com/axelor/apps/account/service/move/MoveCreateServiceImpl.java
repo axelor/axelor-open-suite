@@ -17,8 +17,13 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
@@ -32,6 +37,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -205,7 +211,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.PERIOD_1),
             company.getName(),
-            date.toString());
+            L10n.getInstance().format(date));
       }
     } else {
       move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));

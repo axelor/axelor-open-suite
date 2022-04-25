@@ -233,6 +233,8 @@
 
     <unique-constraint columns="invoiceId,company"/>
 
+    <finder-method name="findByMove" using="move"/>
+
     <extra-code><![CDATA[
 
 	   	static final int NONE = 0;

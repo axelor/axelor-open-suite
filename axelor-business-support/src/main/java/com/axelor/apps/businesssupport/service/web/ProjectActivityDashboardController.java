@@ -38,6 +38,6 @@ public class ProjectActivityDashboardController {
       toDate = todayDate;
     }
     response.setValues(
-        Beans.get(ProjectActivityDashboardService.class).getData(annoucementDate, toDate));
+        Beans.get(ProjectActivityDashboardService.class).getData(annoucementDate, toDate, null));
   }
 }

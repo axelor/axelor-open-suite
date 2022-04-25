@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -30,8 +31,17 @@ import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
+import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineControlServiceImpl implements MoveLineControlService {
+
+  protected MoveLineToolService moveLineToolService;
+
+  @Inject
+  public MoveLineControlServiceImpl(MoveLineToolService moveLineToolService) {
+    this.moveLineToolService = moveLineToolService;
+  }
 
   @Override
   public void controlAccountingAccount(MoveLine line) throws AxelorException {
@@ -75,5 +85,26 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           moveLine.getAccount().getCode());
     }
     controlAccountingAccount(moveLine);
+  }
+
+  @Override
+  public Move setMoveLineDates(Move move) throws AxelorException {
+    if (move.getDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setDate(move.getDate());
+        moveLineToolService.checkDateInPeriod(move, moveLine);
+      }
+    }
+    return move;
+  }
+
+  @Override
+  public Move setMoveLineOriginDates(Move move) throws AxelorException {
+    if (move.getOriginDate() != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setOriginDate(move.getOriginDate());
+      }
+    }
+    return move;
   }
 }

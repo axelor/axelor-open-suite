@@ -32,7 +32,7 @@ public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
       Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
       return super.save(advancePayment);
     } catch (Exception e) {
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 }

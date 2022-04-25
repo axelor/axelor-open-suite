@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -45,7 +44,6 @@ public class ReconcileSequenceService {
 
   protected String getSequence(Reconcile reconcile) throws AxelorException {
 
-    SequenceService sequenceService = Beans.get(SequenceService.class);
     String seq =
         sequenceService.getSequenceNumber(
             SequenceRepository.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());

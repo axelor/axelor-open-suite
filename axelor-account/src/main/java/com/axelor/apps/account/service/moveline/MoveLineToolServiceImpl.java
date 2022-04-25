@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -40,14 +41,20 @@ import java.util.List;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
+  protected static final int CURRENCY_RATE_SCALE = 5;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
-  public MoveLineToolServiceImpl(TaxService taxService, CurrencyService currencyService) {
+  public MoveLineToolServiceImpl(
+      TaxService taxService,
+      CurrencyService currencyService,
+      MoveLineRepository moveLineRepository) {
     this.taxService = taxService;
     this.currencyService = currencyService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   /**
@@ -287,19 +294,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (move.getMoveLineList().size() == 0) {
       try {
         moveLine.setCurrencyRate(
-            currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompanyCurrency()));
+            currencyService
+                .getCurrencyConversionRate(move.getCurrency(), move.getCompanyCurrency())
+                .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
       }
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
-    if (!move.getCurrency().equals(move.getCompanyCurrency())) {
-      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-      moveLine.setCurrencyAmount(
-          unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
-    }
+    BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+    moveLine.setCurrencyAmount(
+        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
     return moveLine;
   }
 
@@ -319,5 +325,31 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && ml.getAccount().getAccountType() != null
         && AccountTypeRepository.TYPE_TAX.equals(
             ml.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
+    if (move != null
+        && move.getPeriod() != null
+        && moveLine != null
+        && moveLine.getDate() != null
+        && (!moveLine.getDate().isAfter(move.getPeriod().getFromDate())
+            || !moveLine.getDate().isBefore(move.getPeriod().getToDate()))) {
+      if (move.getCurrency() != null
+          && move.getCurrency().getSymbol() != null
+          && moveLine.getAccount() != null) {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE),
+            moveLine.getCurrencyAmount(),
+            move.getCurrency().getSymbol(),
+            moveLine.getAccount().getCode());
+      } else {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
+      }
+    }
   }
 }

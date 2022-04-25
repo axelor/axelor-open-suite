@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -64,12 +64,18 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (moveLine != null)
+      if (moveLine != null
+          && moveLine.getAccount() != null
+          && moveLine.getAccount().getCompany() != null
+          && Beans.get(AccountConfigService.class)
+                  .getAccountConfig(moveLine.getAccount().getCompany())
+              != null) {
         response.setValue(
             "analyticJournal",
             Beans.get(AccountConfigService.class)
                 .getAccountConfig(moveLine.getAccount().getCompany())
                 .getAnalyticJournal());
+      }
       if (moveLine.getDate() != null) {
         response.setValue("date", moveLine.getDate());
       } else {
@@ -90,7 +96,8 @@ public class AnalyticDistributionLineController {
       if (analyticMoveLine != null && moveLine != null) {
         response.setValue(
             "amount",
-            Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
+            Beans.get(MoveLineComputeAnalyticService.class)
+                .getAnalyticAmount(moveLine, analyticMoveLine));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
