@@ -141,16 +141,24 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent()) {
       PricingComputer pricingComputer =
-          PricingComputer.of(
-                  pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+          getPricingComputer(pricing.get(), saleOrderLine)
               .putInContext("saleOrder", EntityHelper.getEntity(saleOrder));
       pricingComputer.subscribe(getSaleOrderLinePricingObserver(saleOrderLine));
       pricingComputer.apply();
+    } else {
+      saleOrderLine.setPricingScaleLogs(I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
     }
   }
 
   protected PricingObserver getSaleOrderLinePricingObserver(SaleOrderLine saleOrderLine) {
     return new SaleOrderLinePricingObserver(saleOrderLine);
+  }
+
+  protected PricingComputer getPricingComputer(Pricing pricing, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    return PricingComputer.of(
+        pricing, saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class);
   }
 
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
@@ -170,8 +178,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent()) {
-      return !PricingComputer.of(
-              pricing.get(), saleOrderLine, saleOrderLine.getProduct(), SaleOrderLine.class)
+      return !getPricingComputer(pricing.get(), saleOrderLine)
           .putInContext("saleOrder", EntityHelper.getEntity(saleOrder))
           .getMatchedPricingLines()
           .isEmpty();
