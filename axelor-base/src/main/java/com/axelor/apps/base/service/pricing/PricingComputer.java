@@ -121,18 +121,18 @@ public class PricingComputer extends AbstractObservablePricing {
       notifyFinished();
       return;
     }
-    Pricing previousPricing = this.pricing;
+    Pricing currentPricing = this.pricing;
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
-      Optional<Pricing> optChildPricing = getNextPricing(previousPricing);
+      Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
       if (optChildPricing.isPresent()) {
         Pricing childPricing = optChildPricing.get();
         if (!applyPricing(childPricing).isPresent()) {
           notifyFinished();
           return;
         }
-        previousPricing = childPricing;
+        currentPricing = childPricing;
       } else {
         notifyFinished();
         return;
