@@ -188,6 +188,7 @@ public class PaymentVoucherController {
     Company company = paymentVoucher.getCompany();
     Partner partner = paymentVoucher.getPartner();
     if (company == null) {
+      response.setValue("companyBankDetails", null);
       return;
     }
     if (partner != null) {

@@ -58,7 +58,7 @@
     <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
         domain=":company member of self.companySet"
-        onChange="action-group-payment-voucher-reset-imputation,action-pv-record-default-partner-inf"
+        onChange="action-account-payment-voucher-group-onchange-partner"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
@@ -152,6 +152,12 @@
     <action name="action-method-account-payment-voucher-ask"/>
     <action name="action-method-account-payment-voucher-confirm"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
+  </action-group>
+
+  <action-group name="action-account-payment-voucher-group-onchange-partner">
+    <action name="action-group-payment-voucher-reset-imputation"/>
+    <action name="action-pv-record-default-partner-inf"/>
+    <action name="action-payment-voucher-method-fill-bank-details"/>
   </action-group>
 
   <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
