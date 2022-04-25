@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,39 +116,54 @@ public class PricingComputer extends AbstractObservablePricing {
           "This method call only be called with root pricing (pricing with not previous pricing)");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
+    notifyStarted();
     if (!applyPricing(this.pricing).isPresent()) {
+      notifyFinished();
       return;
     }
     Pricing previousPricing = this.pricing;
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
-      List<Pricing> childPricings =
-          pricingService.getPricings(
-              this.pricing.getCompany(),
-              this.product,
-              this.product.getProductCategory(),
-              this.classModel.getSimpleName(),
-              previousPricing);
 
-      if (childPricings.isEmpty()) {
-        return;
-      }
-      if (childPricings.size() > 1) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(IExceptionMessage.PRICING_2),
-                this.product.getName() + "/" + this.product.getProductCategory().getName(),
-                pricing.getCompany().getName(),
-                classModel.getSimpleName()));
-      } else {
-        Pricing childPricing = childPricings.get(0);
+      Optional<Pricing> optChildPricing = getNextPricing(previousPricing);
+      if (optChildPricing.isPresent()) {
+        Pricing childPricing = optChildPricing.get();
         if (!applyPricing(childPricing).isPresent()) {
+          notifyFinished();
           return;
         }
         previousPricing = childPricing;
+      } else {
+        notifyFinished();
+        return;
       }
     }
+    notifyFinished();
+  }
+
+  protected Optional<Pricing> getNextPricing(Pricing pricing) throws AxelorException {
+    List<Pricing> childPricings =
+        pricingService.getPricings(
+            this.pricing.getCompany(),
+            this.product,
+            this.product.getProductCategory(),
+            this.classModel.getSimpleName(),
+            pricing);
+
+    if (childPricings.isEmpty()) {
+      return Optional.empty();
+    }
+    if (childPricings.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.PRICING_2),
+              this.product.getName() + "/" + this.product.getProductCategory().getName(),
+              pricing.getCompany().getName(),
+              classModel.getSimpleName()));
+    }
+
+    return Optional.ofNullable(childPricings.get(0));
   }
 
   /**
@@ -195,6 +211,12 @@ public class PricingComputer extends AbstractObservablePricing {
                 Object result = scriptHelper.eval(resultPricingRule.getFormula());
                 notifyResultPricingRule(resultPricingRule, result);
                 notifyFieldToPopulate(fieldToPopulate);
+                if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+                  LOG.debug(
+                      "Adding result temp variable {} in context",
+                      resultPricingRule.getTempVarName());
+                  putInContext(resultPricingRule.getTempVarName(), result);
+                }
                 Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
               }
             });
