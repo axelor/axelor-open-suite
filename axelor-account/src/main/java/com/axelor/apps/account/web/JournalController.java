@@ -92,6 +92,7 @@ public class JournalController {
 
       if (journal.getCompany().getAccountConfig() == null) {
         response.setValue("authorizeSimulatedMove", false);
+        response.setValue("allowAccountingDaybook", false);
       } else {
         if (journal.getCompany().getAccountConfig().getIsActivateSimulatedMove() == null
             || !journal.getCompany().getAccountConfig().getIsActivateSimulatedMove()) {
