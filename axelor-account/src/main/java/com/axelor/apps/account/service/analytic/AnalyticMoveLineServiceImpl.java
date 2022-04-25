@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -49,6 +50,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
@@ -219,5 +222,32 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
     return analyticMoveLine;
+  }
+
+  @Override
+  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getCredit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getDebit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  @Override
+  public BigDecimal getAnalyticAmount(InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
+    if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(invoiceLine.getCompanyExTaxTotal())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
   }
 }

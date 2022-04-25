@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -67,7 +66,7 @@ public class AnalyticDistributionLineController {
     try {
       Context parent = request.getContext().getParent();
       if (MoveLine.class.toString().equals(parent.getContextClass().toString())) {
-        MoveLine line = request.getContext().getParent().asType(MoveLine.class);
+        MoveLine line = parent.asType(MoveLine.class);
         response.setValue(
             "analyticJournal",
             Beans.get(AccountConfigService.class)
@@ -99,11 +98,21 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (analyticMoveLine != null && moveLine != null) {
-        response.setValue(
-            "amount",
-            Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
+      Context parent = request.getContext().getParent();
+      if (MoveLine.class.toString().equals(parent.getContextClass().toString())) {
+        MoveLine line = parent.asType(MoveLine.class);
+        if (analyticMoveLine != null && line != null) {
+          response.setValue(
+              "amount",
+              Beans.get(AnalyticMoveLineService.class).getAnalyticAmount(line, analyticMoveLine));
+        }
+      } else if (InvoiceLine.class.toString().equals(parent.getContextClass().toString())) {
+        InvoiceLine line = parent.asType(InvoiceLine.class);
+        if (analyticMoveLine != null && line != null) {
+          response.setValue(
+              "amount",
+              Beans.get(AnalyticMoveLineService.class).getAnalyticAmount(line, analyticMoveLine));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
