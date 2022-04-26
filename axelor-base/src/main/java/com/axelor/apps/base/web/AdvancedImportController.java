@@ -84,7 +84,7 @@ public class AdvancedImportController {
       } else {
         response.setValue("errorLog", null);
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
-        response.setSignal("refresh-app", true);
+        response.setReload(true);
       }
 
     } catch (Exception e) {
@@ -102,7 +102,7 @@ public class AdvancedImportController {
       boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
       if (isReset) {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
-        response.setSignal("refresh-app", true);
+        response.setReload(true);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
       }
