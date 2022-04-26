@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -96,10 +96,15 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
+            purchaseOrder,
+            saleOrderLine.getProduct(),
+            saleOrderLine.getProductName(),
+            null,
+            qty,
+            unit);
 
     purchaseOrderLine.setIsTitleLine(
-        saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
+        !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
     this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
     return purchaseOrderLine;
   }

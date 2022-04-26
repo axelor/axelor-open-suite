@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import com.axelor.apps.baml.xml.ProcessActionRootNode;
 import com.axelor.apps.bpm.context.WkfContextHelper;
 import com.axelor.apps.bpm.db.BamlModel;
 import com.axelor.apps.bpm.service.WkfCommonService;
-import com.axelor.apps.bpm.translation.ITranslation;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.db.EntityHelper;
@@ -30,9 +29,6 @@ import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
@@ -65,13 +61,7 @@ public class BamlServiceImpl implements BamlService {
   public String generateGroovyCode(String xml) throws AxelorException {
 
     ProcessActionRootNode rootNode = null;
-    try {
-      rootNode = BamlParser.parse(IOUtils.toInputStream(xml, "utf-8"));
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(ITranslation.INVALID_BAML_XML));
-    }
+    rootNode = BamlParser.parse(IOUtils.toInputStream(xml, "utf-8"));
 
     if (rootNode == null) {
       return null;

@@ -122,7 +122,11 @@
     <view type="grid" name="stock-move-grid"/>
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.statusSelect = 2 and self.toStockLocation.id = 5</domain>
+    <domain>self.statusSelect = :_statusSelect and self.toStockLocation.id IN
+      :_productionVirtualStockLocation</domain>
+    <context name="_productionVirtualStockLocation"
+      expr="eval:[0] + __user__.companySet?.stockConfig?.collect{it?.getProductionVirtualStockLocation()?.getId()}.findAll{it != null}"/>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
   </action-view>
 
   <menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
@@ -133,7 +137,11 @@
     <view type="grid" name="stock-move-grid"/>
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 5</domain>
+    <domain>self.statusSelect = :_statusSelect and self.fromStockLocation.id IN
+      :_productionVirtualStockLocation</domain>
+    <context name="_productionVirtualStockLocation"
+      expr="eval:[0] + __user__.companySet?.stockConfig?.collect{it?.getProductionVirtualStockLocation()?.getId()}.findAll{it != null}"/>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
   </action-view>
 
   <menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
@@ -145,7 +153,12 @@
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 3</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect =
+      :_statusSelect</domain>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+    <context name="_isReversion" expr="eval: false"/>
   </action-view>
 
   <menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
@@ -157,7 +170,12 @@
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE AND self.statusSelect =
+      :_statusSelect</domain>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+    <context name="_isReversion" expr="eval: true"/>
   </action-view>
 
   <menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
@@ -169,7 +187,11 @@
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect =
+      :_statusSelect</domain>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_isReversion" expr="eval: false"/>
   </action-view>
 
   <menuitem name="stock-root-incoming-client" parent="stock-root-planned"
@@ -181,7 +203,11 @@
     <view type="calendar" name="stock-move-calendar"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="supplier-arrivals-filters"/>
-    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 2</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE AND self.statusSelect =
+      :_statusSelect</domain>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_isReversion" expr="eval: true"/>
   </action-view>
 
   <!-- END MUST BE DELETED -->

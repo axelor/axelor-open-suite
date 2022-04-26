@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"<b>Tags:</b> $user: Current user, $date: Today's date, $time: Current time",,,
+"<b>Tags:</b>$date: Today's date, $time: Current time",,,
 "AND",,,
 "Action",,,
 "Action builder",,,
@@ -159,6 +159,7 @@
 "Name",,,
 "Name Column",,,
 "Name Field",,,
+"No chart builder found with given chart name",,,
 "None",,,
 "OR",,,
 "Object",,,

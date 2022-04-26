@@ -77,36 +77,31 @@
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-method-create-analytic-distribution"
       onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
-      readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null || axis2AnalyticAccount == null || axis3AnalyticAccount == null || axis4AnalyticAccount == null || axis5AnalyticAccount == null)"/>
+      readonlyIf="!account || !account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
       onSelect="action-attrs-move-line-set-domain-axis"
       onChange="action-group-analytic-axis-onchange"/>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
       onSelect="action-attrs-move-line-set-domain-axis"
       onChange="action-group-analytic-axis-onchange"/>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
       onSelect="action-attrs-move-line-set-domain-axis"
       onChange="action-group-analytic-axis-onchange"/>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
       onSelect="action-attrs-move-line-set-domain-axis"
       onChange="action-group-analytic-axis-onchange"/>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
       onSelect="action-attrs-move-line-set-domain-axis"
       onChange="action-group-analytic-axis-onchange"/>
     <field name="origin" width="120" hidden="true"/>
@@ -289,10 +284,11 @@
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
-            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"/>
+            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"
+            showIf="irrecoverableStatusSelect == 0"/>
           <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
             onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"
-            colSpan="6"/>
+            colSpan="6" showIf="irrecoverableStatusSelect == 1"/>
         </panel>
       </panel>
       <panel name="currency" title="Currency">
@@ -327,8 +323,6 @@
       <panel-include view="incl-analytic-distribution-move-line-form"/>
     </panel-tabs>
     <panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
-      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
-        colSpan="6"/>
       <field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
         <viewer depends="move.statusSelect">
 					<![CDATA[
@@ -342,6 +336,23 @@
 					]]>
         </viewer>
       </field>
+      <field name="$functionalOriginTags" showTitle="false" colSpan="6" readonly="true">
+        <viewer depends="move.functionalOriginSelect">
+          <![CDATA[
+                      <h4>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 1" x-translate>Opening</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 2" x-translate>Closure</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 3" x-translate>Sale</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 4" x-translate>Purchase</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 5" x-translate>Payment</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 6" x-translate>Cut Off</span>
+	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+                      </h4>
+                    ]]>
+        </viewer>
+      </field>
+      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
+        colSpan="6"/>
       <field name="move.company" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
@@ -416,35 +427,30 @@
         onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts"
         onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
         readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null || axis2AnalyticAccount == null || axis3AnalyticAccount == null || axis4AnalyticAccount == null || axis5AnalyticAccount == null)"/>
+        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
       <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
       <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
       <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
       <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
       <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
-        requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
         onSelect="action-attrs-move-line-set-domain-axis"
         onChange="action-group-analytic-axis-onchange"/>
 
@@ -477,10 +483,11 @@
         </panel>
         <panel name="irrecoverableActionPanel" colSpan="12">
           <button name="passInIrrecoverableBtn" title="Shift into irrecoverable"
-            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"/>
+            onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"
+            showIf="irrecoverableStatusSelect == 0"/>
           <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"
             onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"
-            colSpan="6"/>
+            showIf="irrecoverableStatusSelect == 1" colSpan="6"/>
         </panel>
       </panel>
       <panel name="currency" title="Currency">
@@ -601,8 +608,8 @@
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
     <action name="action-method-move-line-hide-axis-analytic-account"/>
-    <action name="action-method-move-line-set-required-analytic-accounts"/>
     <action name="action-method-change-account-set-default-distribution-template"/>
+    <action name="action-method-move-line-set-required-analytic-accounts"/>
   </action-group>
 
   <action-group name="action-group-analytic-axis-onchange">
@@ -695,7 +702,6 @@
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
     <field name="description" expr="eval: __parent__?.description"/>
-    <field name="move" expr="eval:__parent__?"/>
   </action-record>
 
   <action-record name="action-move-line-record-update-due-date"
@@ -842,22 +848,13 @@
     </filter>
   </search-filters>
 
-  <action-validate name="action-move-line-validate-check-date-in-period">
-    <error message="The selected date is out of the accounting period."
-      if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
-			|| (__parent__ &amp;&amp; __parent__.period &amp;&amp; (date &lt; __parent__.period.fromDate || date &gt; __parent__.period.toDate))"
-      action="action-update-move-line-record-update-date-from-move"/>
-  </action-validate>
+  <action-method name="action-move-line-validate-check-date-in-period">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="checkDateInPeriod"/>
+  </action-method>
 
   <action-method name="action-account-move-line-method-set-partner-readonly">
     <call class="com.axelor.apps.account.web.MoveLineController" method="setPartnerReadonlyIf"/>
   </action-method>
-
-  <action-record name="action-update-move-line-record-update-date-from-move"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="date" expr="eval: move.date" if="move"/>
-    <field name="date" expr="eval: __parent__.date" if="__parent__"/>
-  </action-record>
 
   <action-method name="action-method-move-line-axis-create-analytic-line">
     <call class="com.axelor.apps.account.web.MoveLineController"
@@ -867,7 +864,6 @@
   <action-method name="action-attrs-move-line-set-domain-axis">
     <call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains"/>
   </action-method>
-
 
   <action-method name="action-method-move-line-set-required-analytic-accounts">
     <call class="com.axelor.apps.account.web.MoveLineController"

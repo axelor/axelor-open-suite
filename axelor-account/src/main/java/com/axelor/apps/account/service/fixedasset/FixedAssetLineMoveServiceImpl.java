@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -118,6 +118,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
@@ -199,6 +200,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             date,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,

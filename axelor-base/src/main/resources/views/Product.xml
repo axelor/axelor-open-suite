@@ -78,6 +78,8 @@
     <field name="purchasePrice" width="120" x-scale="2"/>
     <field name="costPrice" width="120" x-scale="2"/>
     <field name="salePrice" width="120" x-scale="2"/>
+    <field name="$availableQty" title="Available stock" type="decimal" width="120"
+      sortable="false" if="__config__.app.isApp('stock')"/>
   </grid>
 
   <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product"
@@ -271,8 +273,7 @@
           <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
           <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6"
             form-view="currency-form" grid-view="currency-grid"/>
-          <spacer colSpan="3"/>
-          <field name="lastPurchaseDate" showIf="purchasable" colSpan="3" readonly="true"/>
+          <field name="lastPurchaseDate" showIf="purchasable" colSpan="6" readonly="true"/>
           <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
           <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable"
             colSpan="6" domain="self.isContact = false AND self.isSupplier = true"
@@ -559,7 +560,7 @@
     <field name="internalDescription"/>
     <field name="configurator.id"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{fullName}}</strong></div>
+		    <div class="span12"><strong>{{$fmt('fullName')}}</strong></div>
 			<div>
 			  <div class="span4 card-image" style="width: 128px; height: 64px;">
 			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
@@ -603,12 +604,12 @@
     <action name="action-product-record-sellable"/>
     <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
-    <action name="action-product-attrs-set-cost-type-select"/>
     <action name="action-product-record-set-barcode-type-config"/>
     <action name="action-product-attrs-title-unit"/>
     <action name="action-product-attrs-set-required-productCategory"/>
     <action name="action-product-attrs-enable-product-company-list"/>
     <action name="action-product-record-service-stock-managed"/>
+    <action name="action-product-attrs-set-cost-type-select"/>
   </action-group>
 
   <action-group name="action-group-base-product-producttype-onchange">
@@ -647,6 +648,7 @@
     <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     <action name="action-product-attrs-set-required-productCategory"/>
     <action name="action-product-attrs-enable-product-company-list"/>
+    <action name="action-product-attrs-set-cost-type-select"/>
   </action-group>
 
   <action-group name="action-product-group-cost-type-select-onchange">

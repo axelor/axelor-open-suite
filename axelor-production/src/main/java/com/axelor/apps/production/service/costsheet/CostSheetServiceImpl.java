@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -121,8 +121,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(
-        Beans.get(AppBaseService.class).getTodayDate(billOfMaterial.getCompany()));
+    costSheet.setCalculationDate(appBaseService.getTodayDate(billOfMaterial.getCompany()));
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -172,7 +171,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     costSheet.setCalculationDate(
         calculationDate != null
             ? calculationDate
-            : Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+            : appBaseService.getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
         computeTotalProducedQty(

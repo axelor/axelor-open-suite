@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -123,12 +123,14 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
+      if (account.getAnalyticDistributionTemplate() == null
           && account.getAnalyticDistributionAuthorized()) {
         AnalyticDistributionTemplate analyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
                 .createDistributionTemplateFromAccount(account);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+        if (analyticDistributionTemplate != null) {
+          response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

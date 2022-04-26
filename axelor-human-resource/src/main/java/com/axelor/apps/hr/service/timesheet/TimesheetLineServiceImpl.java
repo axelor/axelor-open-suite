@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -90,7 +90,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
+      if (user != null && user.getEmployee() != null) {
         Employee employee = employeeRepository.find(user.getEmployee().getId());
 
         log.debug("Employee: {}", employee);

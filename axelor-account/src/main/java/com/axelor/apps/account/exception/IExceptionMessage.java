@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -552,6 +552,8 @@ public interface IExceptionMessage {
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_46 = /*$$(*/
+      "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -647,6 +649,8 @@ public interface IExceptionMessage {
       "The company is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_SALEORDER = /*$$(*/
       "The sale order must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_PURCHASEORDER = /*$$(*/
+      "The purchase order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
@@ -912,10 +916,28 @@ public interface IExceptionMessage {
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
 
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL = /*$$(*/
+      "Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS = /*$$(*/
+      "Selected AnalyticAxis doesn't belong to the select company." /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
+      "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
+
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
 
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
       "The import failed: the move %s already exist." /*)*/;
+
+  public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
 }

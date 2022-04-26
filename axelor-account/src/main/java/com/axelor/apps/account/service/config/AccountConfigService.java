@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -330,6 +330,19 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAdvancePaymentAccount();
+  }
+
+  public Account getSupplierAdvancePaymentAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getSupplierAdvancePaymentAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_46),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
   public Account getCashPositionVariationAccount(AccountConfig accountConfig)

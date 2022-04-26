@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -48,6 +49,7 @@ public interface MoveCreateService {
       Currency currency,
       Partner partner,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -75,6 +77,7 @@ public interface MoveCreateService {
       LocalDate date,
       LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -104,6 +107,7 @@ public interface MoveCreateService {
       LocalDate date,
       LocalDate originDate,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
@@ -133,6 +137,7 @@ public interface MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
@@ -161,6 +166,7 @@ public interface MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,

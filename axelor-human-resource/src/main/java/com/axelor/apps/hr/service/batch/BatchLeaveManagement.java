@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -138,12 +138,13 @@ public class BatchLeaveManagement extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      employee = employeeRepository.find(employee.getId());
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
 
       try {
-        createLeaveManagement(employeeRepository.find(employee.getId()));
+        createLeaveManagement(employee);
       } catch (AxelorException e) {
         TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();

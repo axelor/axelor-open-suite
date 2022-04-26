@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,10 +62,11 @@ public class WkfExecutionListener implements ExecutionListener {
     } else if (eventName.equals(EVENTNAME_END)) {
 
       BpmnModelElementInstance modelElementInstance = execution.getBpmnModelElementInstance();
-      String typeName = modelElementInstance.getElementType().getTypeName();
-      if (modelElementInstance != null
-          && typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
-        checkDMNValue(execution);
+      if (modelElementInstance != null) {
+        String typeName = modelElementInstance.getElementType().getTypeName();
+        if (typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
+          checkDMNValue(execution);
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -384,8 +384,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
     messageTemplate = this.getTemplateByModel(entity);
     if (messageTemplate == null) {
-      messageTemplate =
-          Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+      messageTemplate = appBaseService.getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
     if (messageTemplate == null) {
@@ -427,7 +426,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Template getTemplateByModel(Model entity) {
     Class<?> klass = EntityHelper.getEntityClass(entity);
     List<MailTemplateAssociation> mailTemplateAssociationList =
-        Beans.get(AppBaseService.class).getAppBase().getMailTemplateAssociationList();
+        appBaseService.getAppBase().getMailTemplateAssociationList();
     if (mailTemplateAssociationList != null) {
       for (MailTemplateAssociation item : mailTemplateAssociationList) {
         if (item.getModel().getFullName().equals(klass.getName())) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -85,4 +85,7 @@ public interface IExceptionMessage {
       "Missing mapped by: unidirectional one-to-many are not supported by the configurator." /*)*/;
 
   static final String COPY = /*$$(*/ "copy" /*)*/;
+
+  public static final String SALE_ORDER_LINE_PRICING_NOT_APPLIED = /*$$(*/
+      "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 }

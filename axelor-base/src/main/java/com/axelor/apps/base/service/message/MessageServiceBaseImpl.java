@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -240,7 +240,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
-    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+    if (appBaseService.getAppBase().getActivateSendingEmail()) {
       message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       return super.sendByEmail(message);
     }
@@ -251,7 +251,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   @Transactional(rollbackOn = {Exception.class})
   public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
 
-    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+    if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);
     }
     return message;

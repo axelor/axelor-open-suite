@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AdvancedExport;
+import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
@@ -40,6 +41,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
@@ -77,6 +79,14 @@ public class AdvancedExportController {
       for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
         Map<String, Object> allFieldMap = new HashMap<>();
         allFieldMap.put("currentDomain", advancedExport.getMetaModel().getName());
+
+        Class<?> modelClass = Class.forName(advancedExport.getMetaModel().getFullName());
+        Mapper modelMapper = Mapper.of(modelClass);
+
+        if (modelMapper.getProperty(field.getName()) == null
+            || modelMapper.getProperty(field.getName()).isTransient()) {
+          continue;
+        }
 
         if (!Strings.isNullOrEmpty(field.getRelationship())) {
           MetaModel metaModel =
@@ -332,5 +342,27 @@ public class AdvancedExportController {
               .param("download", "true")
               .map());
     }
+  }
+
+  public void metaFieldDomain(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException {
+    AdvancedExportLine adv = request.getContext().asType(AdvancedExportLine.class);
+    MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(adv.getCurrentDomain());
+    List<MetaField> metaFields = metaModel.getMetaFields();
+    List<Long> metaFieldList = new ArrayList<>();
+
+    if (metaFields != null) {
+      Class<?> klass = Class.forName(metaModel.getFullName());
+      Mapper mapper = Mapper.of(klass);
+
+      for (MetaField field : metaFields) {
+        if (!mapper.getProperty(field.getName()).isTransient()) {
+          metaFieldList.add(field.getId());
+        }
+      }
+    }
+    metaFieldList.add(0L);
+    response.setAttr(
+        "metaField", "domain", "self.id in (" + Joiner.on(",").join(metaFieldList) + ")");
   }
 }
