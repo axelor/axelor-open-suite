@@ -366,6 +366,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getDueDate() == null || invoiceTerm.getFinancialDiscount() == null) {
+      return null;
+    }
+
     LocalDate deadlineDate =
         invoiceTerm.getDueDate().minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay());
 
