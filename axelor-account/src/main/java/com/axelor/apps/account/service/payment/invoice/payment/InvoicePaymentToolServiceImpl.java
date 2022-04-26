@@ -62,6 +62,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected AccountConfigRepository accountConfigRepository;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected CurrencyService currencyService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -71,12 +72,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       MoveToolService moveToolService,
       InvoicePaymentRepository invoicePaymentRepo,
       InvoiceTermService invoiceTermService,
-      InvoiceTermPaymentService invoiceTermPaymentService) {
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      CurrencyService currencyService) {
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -85,10 +88,22 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
+    invoice.setCompanyInTaxTotalRemaining(
+        getAmountInInvoiceCompanyCurrency(invoice.getAmountRemaining(), invoice));
     updateHasPendingPayments(invoice);
     updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
+  }
+
+  protected BigDecimal getAmountInInvoiceCompanyCurrency(BigDecimal amount, Invoice invoice)
+      throws AxelorException {
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        invoice.getCurrency(),
+        invoice.getCompany().getCurrency(),
+        amount,
+        invoice.getInvoiceDate());
   }
 
   @Override
@@ -104,8 +119,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     if (invoice.getInvoicePaymentList() == null) {
       return amountPaid;
     }
-
-    CurrencyService currencyService = Beans.get(CurrencyService.class);
 
     Currency invoiceCurrency = invoice.getCurrency();
 
@@ -191,14 +204,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+  public List<MoveLine> getMoveLinesFromPayments(
+      List<InvoicePayment> payments, boolean getCreditLines) {
     List<MoveLine> moveLines = new ArrayList<>();
     for (InvoicePayment payment : payments) {
       Move move = payment.getMove();
       if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
         continue;
       }
-      moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      if (getCreditLines) {
+        moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      } else {
+        moveLines.addAll(moveToolService.getToReconcileDebitMoveLines(move));
+      }
     }
     return moveLines;
   }

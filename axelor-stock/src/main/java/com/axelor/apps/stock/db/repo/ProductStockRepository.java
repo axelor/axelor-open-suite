@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -47,6 +48,8 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Inject private AppStockService appStockService;
 
   @Inject private StockLocationLineService stockLocationLineService;
+
+  @Inject private StockLocationService stockLocationService;
 
   public Product save(Product product) {
     WeightedAveragePriceService weightedAveragePriceService =
@@ -167,6 +170,8 @@ public class ProductStockRepository extends ProductBaseRepository {
 
           json.put("$availableQty", availableQty);
         }
+      } else if (product.getParentProduct() != null) {
+        json.put("$availableQty", stockLocationService.getRealQty(productId, null, null));
       }
     } catch (Exception e) {
       e.printStackTrace();

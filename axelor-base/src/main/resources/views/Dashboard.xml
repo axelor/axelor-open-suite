@@ -20,6 +20,11 @@
       canSearch="true"/>
   </dashboard>
 
+  <dashboard title="Batches dashboard" name="base.batch.dashboard">
+    <dashlet action="dashlet.batch.batch.history" colSpan="12" canSearch="true"
+      readonly="true"/>
+  </dashboard>
+
 
 
   <action-view name="dashlet.my.recent.contacts" title="My Recent Contacts"
@@ -92,6 +97,13 @@
     <view type="chart" name="chart.customers.with.first.sale.order"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <action-view name="dashlet.batch.batch.history" title="Batches"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <context name="_dashboard" expr="eval: true"/>
   </action-view>
 
 </object-views>

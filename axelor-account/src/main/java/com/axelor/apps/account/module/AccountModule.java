@@ -228,6 +228,8 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
+import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -491,6 +493,8 @@ public class AccountModule extends AxelorModule {
     bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
+
+    bind(MoveRemoveService.class).to(MoveRemoveServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
