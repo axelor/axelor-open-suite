@@ -304,5 +304,10 @@ public class InvoiceToolService {
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
     copy.clearInvoiceTermList();
+    copy.setFinancialDiscount(null);
+    copy.setFinancialDiscountDeadlineDate(copy.getDueDate());
+    copy.setFinancialDiscountRate(BigDecimal.ZERO);
+    copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+    copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
   }
 }

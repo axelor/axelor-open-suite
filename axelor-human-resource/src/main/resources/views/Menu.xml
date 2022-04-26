@@ -300,8 +300,9 @@
     <view name="leave-request-grid" type="grid"/>
     <view name="leave-request-form" type="form"/>
     <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
+      :to_justify_leave_reason</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
@@ -335,8 +336,9 @@
     <view name="leave-request-form" type="form"/>
     <view name="leave-request-validate-grid" type="grid"/>
     <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
+      :to_justify_leave_reason</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="to_justify_leave_reason" expr="eval: true"/>
   </action-view>
 
@@ -381,8 +383,8 @@
     <view name="expense-grid" type="grid"/>
     <view name="expense-form" type="form"/>
     <view-param name="search-filters" value="expense-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
@@ -484,8 +486,8 @@
     <view name="my-timesheets-grid" type="grid"/>
     <view name="timesheet-form" type="form"/>
     <view-param name="search-filters" value="timesheet-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem name="validate-timesheet" parent="timesheet-root"
@@ -555,8 +557,8 @@
     <view name="extra-hours-grid" type="grid"/>
     <view name="extra-hours-form" type="form"/>
     <view-param name="search-filters" value="extra-hours-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem name="validate-extra-hours" parent="extra-hours-root"
@@ -620,9 +622,9 @@
   </action-view>
 
   <menuitem name="menu-hr-user-dashboard" parent="hr-report-root"
-    title="Human Resources User" action="hr.user.dashboard.view"/>
+    title="Human Resources Employee" action="hr.user.dashboard.view"/>
 
-  <action-view name="hr.user.dashboard.view" title="Human Resources User">
+  <action-view name="hr.user.dashboard.view" title="Human Resources Employee">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
   </action-view>
 

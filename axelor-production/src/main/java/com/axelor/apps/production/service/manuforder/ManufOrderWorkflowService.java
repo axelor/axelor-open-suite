@@ -358,7 +358,7 @@ public class ManufOrderWorkflowService {
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
-    Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    manufOrderStockMoveService.partialFinish(manufOrder);
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
