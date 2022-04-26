@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -270,24 +271,14 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
-    }
-    return computeSimpleFullName(partner);
+    return ComputeNameTool.computeFullName(
+        partner.getName(), partner.getFirstName(), partner.getPartnerSeq(), partner.getId());
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getName())
-        && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
-    } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
-    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
-    } else {
-      return "" + partner.getId();
-    }
+    return ComputeNameTool.computeSimpleFullName(
+        partner.getName(), partner.getFirstName(), partner.getId());
   }
 
   @Override

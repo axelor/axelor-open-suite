@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
@@ -458,7 +459,6 @@ public class DataBackupCreateService {
                         dataBackup.getDataBackupConfigAnonymizeLineList()));
               }
             }
-
             if (headerFlag) {
               if (byteArrFieldFlag) {
                 csvInput.setCallable(
@@ -467,6 +467,21 @@ public class DataBackupCreateService {
               }
               csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
               headerFlag = false;
+            }
+            if ("Partner".equals(metaModel.getName()) && dataBackup.getAnonymizeData()) {
+              dataArr.set(
+                  headerArr.indexOf("simpleFullName"),
+                  ComputeNameTool.computeSimpleFullName(
+                      dataArr.get(headerArr.indexOf("firstName")),
+                      dataArr.get(headerArr.indexOf("name")),
+                      Long.parseLong(dataArr.get(headerArr.indexOf("importId")))));
+              dataArr.set(
+                  headerArr.indexOf("fullName"),
+                  ComputeNameTool.computeFullName(
+                      dataArr.get(headerArr.indexOf("firstName")),
+                      dataArr.get(headerArr.indexOf("name")),
+                      dataArr.get(headerArr.indexOf("partnerSeq")),
+                      Long.parseLong(dataArr.get(headerArr.indexOf("importId")))));
             }
             csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
           }
