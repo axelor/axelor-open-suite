@@ -28,7 +28,6 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
@@ -83,7 +82,6 @@ public class ProductStockRepository extends ProductBaseRepository {
                 weightedAveragePriceService.computeAvgPriceForCompany(
                     product, stockConfig.getCompany()));
           } catch (Exception e) {
-            TraceBackService.traceExceptionFromSaveMethod(e);
             throw new PersistenceException(e.getMessage(), e);
           }
           productCompany.setCompany(stockConfig.getCompany());
