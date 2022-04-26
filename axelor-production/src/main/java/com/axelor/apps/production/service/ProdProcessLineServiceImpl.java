@@ -28,7 +28,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -115,7 +114,7 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
 
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
-    return Beans.get(ProdProcessLineRepository.class).save(prodProcessLine);
+    return prodProcessLineRepo.save(prodProcessLine);
   }
 
   @Override

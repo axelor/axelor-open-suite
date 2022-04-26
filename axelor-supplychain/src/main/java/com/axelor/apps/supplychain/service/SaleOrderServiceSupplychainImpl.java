@@ -313,7 +313,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
     saleOrderLineService.computeValues(saleOrder, shippingCostLine);
     return shippingCostLine;

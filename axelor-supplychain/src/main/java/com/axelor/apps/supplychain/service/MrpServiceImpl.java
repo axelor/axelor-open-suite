@@ -153,6 +153,12 @@ public class MrpServiceImpl implements MrpService {
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
+  @Override
+  public boolean isOnGoing(Mrp mrp) {
+
+    return mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED;
+  }
+
   @Transactional
   protected void startMrp(Mrp mrp) {
 
@@ -524,8 +530,7 @@ public class MrpServiceImpl implements MrpService {
 
     Partner supplierPartner = product.getDefaultSupplierPartner();
 
-    if (supplierPartner != null
-        && Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
+    if (supplierPartner != null && appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
 

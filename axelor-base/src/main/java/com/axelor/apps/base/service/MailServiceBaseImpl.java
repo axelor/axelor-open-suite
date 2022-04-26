@@ -384,8 +384,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
     messageTemplate = this.getTemplateByModel(entity);
     if (messageTemplate == null) {
-      messageTemplate =
-          Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+      messageTemplate = appBaseService.getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
     if (messageTemplate == null) {
@@ -427,7 +426,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Template getTemplateByModel(Model entity) {
     Class<?> klass = EntityHelper.getEntityClass(entity);
     List<MailTemplateAssociation> mailTemplateAssociationList =
-        Beans.get(AppBaseService.class).getAppBase().getMailTemplateAssociationList();
+        appBaseService.getAppBase().getMailTemplateAssociationList();
     if (mailTemplateAssociationList != null) {
       for (MailTemplateAssociation item : mailTemplateAssociationList) {
         if (item.getModel().getFullName().equals(klass.getName())) {

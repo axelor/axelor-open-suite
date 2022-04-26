@@ -48,7 +48,6 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -193,7 +192,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     SupplyChainConfig supplychainConfig =
-        Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+        supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
 
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
@@ -353,7 +352,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
 
       if (reservationDateTime == null) {
-        reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+        reservationDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
       }
       stockMoveLine.setReservationDateTime(reservationDateTime);
     }
@@ -369,7 +368,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Company company = stockMove.getCompany();
 
     PartnerStockSettings mailSettings =
-        Beans.get(PartnerStockSettingsService.class).getOrCreateMailSettings(partner, company);
+        partnerStockSettingsService.getOrCreateMailSettings(partner, company);
 
     stockMove.setRealStockMoveAutomaticMail(mailSettings.getRealStockMoveAutomaticMail());
     stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
@@ -436,7 +435,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 .getCompanyExTaxTotal()
                 .divide(
                     saleOrderLine.getQty(),
-                    Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                    appBaseService.getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_UP);
       }
 
@@ -478,8 +477,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     Company company = saleOrder.getCompany();
 
-    SupplyChainConfig supplyChainConfig =
-        Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
+    SupplyChainConfig supplyChainConfig = supplyChainConfigService.getSupplyChainConfig(company);
 
     Product product = saleOrderLine.getProduct();
 

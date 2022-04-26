@@ -232,7 +232,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     MoveService moveService = Beans.get(MoveService.class);
     MoveRepository moveRepository = Beans.get(MoveRepository.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     Company company = subrogationRelease.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);

@@ -338,7 +338,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .isBefore(
                 durationService.computeDuration(
                     version.getPriorNoticeDuration(),
-                    Beans.get(AppBaseService.class).getTodayDate(contract.getCompany())))) {
+                    appBaseService.getTodayDate(contract.getCompany())))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));

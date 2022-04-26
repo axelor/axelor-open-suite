@@ -56,4 +56,13 @@ public interface MrpService {
   void onError(Mrp mrp, Exception e);
 
   void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess);
+
+  /**
+   * Methods that checks if mrp is currenctly started.
+   *
+   * @param mrp
+   * @return
+   * @throws AxelorException
+   */
+  boolean isOnGoing(Mrp mrp) throws AxelorException;
 }

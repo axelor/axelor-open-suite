@@ -899,7 +899,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
     boolean allowTimetableInvoicing =
-        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
+        appSupplychainService.getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
     Invoice invoice =

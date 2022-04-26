@@ -24,10 +24,12 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.PersistenceException;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
@@ -47,6 +50,8 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Inject private AppStockService appStockService;
 
   @Inject private StockLocationLineService stockLocationLineService;
+
+  @Inject private StockLocationService stockLocationService;
 
   public Product save(Product product) {
     WeightedAveragePriceService weightedAveragePriceService =
@@ -76,9 +81,14 @@ public class ProductStockRepository extends ProductBaseRepository {
                 mapper.get(product, specificField.getName()));
           }
           // specific case for avgPrice per company
-          productCompany.setAvgPrice(
-              weightedAveragePriceService.computeAvgPriceForCompany(
-                  product, stockConfig.getCompany()));
+          try {
+            productCompany.setAvgPrice(
+                weightedAveragePriceService.computeAvgPriceForCompany(
+                    product, stockConfig.getCompany()));
+          } catch (Exception e) {
+            TraceBackService.traceExceptionFromSaveMethod(e);
+            throw new PersistenceException(e.getMessage(), e);
+          }
           productCompany.setCompany(stockConfig.getCompany());
           productCompany.setProduct(product);
           product.addProductCompanyListItem(productCompany);
@@ -167,6 +177,8 @@ public class ProductStockRepository extends ProductBaseRepository {
 
           json.put("$availableQty", availableQty);
         }
+      } else if (product.getParentProduct() != null) {
+        json.put("$availableQty", stockLocationService.getRealQty(productId, null, null));
       }
     } catch (Exception e) {
       e.printStackTrace();
