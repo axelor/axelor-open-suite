@@ -320,7 +320,7 @@ public class PaymentVoucherConfirmService {
               true);
     }
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     moveValidateService.accounting(move);
   }
