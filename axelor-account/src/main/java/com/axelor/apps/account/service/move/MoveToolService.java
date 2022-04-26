@@ -20,16 +20,19 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveToolService {
 
@@ -174,14 +177,22 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
 
   @CallMethod
-  boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+  boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException;
 
   boolean getEditAuthorization(Move move) throws AxelorException;
 
   boolean checkMoveLinesCutOffDates(Move move);
+
+  List<Move> findDaybookByYear(Set<Year> yearList);
+
+  @CallMethod
+  boolean isSimulatedMovePeriodClosed(Move move);
 }

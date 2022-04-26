@@ -30,12 +30,14 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -44,7 +46,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -161,6 +162,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
+        this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
       }
@@ -191,9 +193,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
-    }
+
+    this.computeFinancialDiscount(invoiceTerm, invoice);
+
     if (getPfpValidatorUserCondition(invoice)) {
       invoiceTerm.setPfpValidatorUser(invoiceService.getPfpValidatorUser(invoice));
     }
@@ -201,6 +203,43 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     invoiceTerm.setBankDetails(invoice.getBankDetails());
     return invoiceTerm;
+  }
+
+  protected void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        invoice.getFinancialDiscount(),
+        invoice.getFinancialDiscountTotalAmount(),
+        invoice.getRemainingAmountAfterFinDiscount());
+  }
+
+  protected void computeFinancialDiscount(
+      InvoiceTerm invoiceTerm,
+      FinancialDiscount financialDiscount,
+      BigDecimal financialDiscountAmount,
+      BigDecimal remainingAmountAfterFinDiscount) {
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      BigDecimal percentage =
+          invoiceTerm.getPercentage().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+
+      invoiceTerm.setApplyFinancialDiscount(financialDiscount != null);
+      invoiceTerm.setFinancialDiscount(financialDiscount);
+      invoiceTerm.setFinancialDiscountAmount(
+          financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+      invoiceTerm.setRemainingAmountAfterFinDiscount(
+          remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+      this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+    }
+  }
+
+  protected void computeAmountRemainingAfterFinDiscount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getAmount().signum() > 0) {
+      invoiceTerm.setAmountRemainingAfterFinDiscount(
+          invoiceTerm
+              .getAmountRemaining()
+              .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
+              .divide(invoiceTerm.getAmount(), 2, RoundingMode.HALF_UP));
+    }
   }
 
   protected boolean getPfpValidatorUserCondition(Invoice invoice) {
@@ -221,9 +260,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
-      invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
-    }
+
     BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
     BigDecimal percentageSum = computePercentageSum(invoice);
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
@@ -240,10 +277,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
+    this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-
-      invoiceTerm.setMoveLine(getExistingInvoiceTermMoveLine(invoice));
+      MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
+      moveLine.addInvoiceTermListItem(invoiceTerm);
     }
 
     return invoiceTerm;
@@ -253,7 +291,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public InvoiceTerm initCustomizedInvoiceTerm(
       MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
 
-    invoiceTerm.setMoveLine(moveLine);
     invoiceTerm.setInvoice(move.getInvoice());
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
@@ -313,11 +350,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         LocalDate dueDate =
             InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
         invoiceTerm.setDueDate(dueDate);
+
+        if (appAccountService.getAppAccount().getManageFinancialDiscount()
+            && invoiceTerm.getApplyFinancialDiscount()
+            && invoiceTerm.getFinancialDiscount() != null) {
+          invoiceTerm.setFinancialDiscountDeadlineDate(
+              this.computeFinancialDiscountDeadlineDate(invoiceTerm));
+        }
       }
     }
 
     initInvoiceTermsSequence(invoice);
     return invoice;
+  }
+
+  protected LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm) {
+    LocalDate deadlineDate =
+        invoiceTerm.getDueDate().minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay());
+
+    if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getInvoiceDate() != null) {
+      LocalDate invoiceDate = invoiceTerm.getInvoice().getInvoiceDate();
+      deadlineDate = deadlineDate.isBefore(invoiceDate) ? invoiceDate : deadlineDate;
+    }
+
+    return deadlineDate;
   }
 
   @Override
@@ -411,42 +467,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.updateInvoiceTermsPaidAmount(
-        invoicePayment.getInvoiceTermPaymentList(),
-        invoicePayment.getPaymentMode(),
-        invoicePayment.getFinancialDiscount(),
-        invoicePayment.getFinancialDiscountTotalAmount(),
-        invoicePayment.getApplyFinancialDiscount());
+        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode());
   }
 
   @Override
   public void updateInvoiceTermsPaidAmount(
-      InvoiceTerm invoiceTermToPay, InvoiceTermPayment invoiceTermPayment) throws AxelorException {
+      InvoicePayment invoicePayment,
+      InvoiceTerm invoiceTermToPay,
+      InvoiceTermPayment invoiceTermPayment)
+      throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
-        Collections.singletonList(invoiceTermPayment),
-        invoiceTermToPay.getPaymentMode(),
-        null,
-        null,
-        false);
+        Collections.singletonList(invoiceTermPayment), invoiceTermToPay.getPaymentMode());
   }
 
   protected void updateInvoiceTermsPaidAmount(
-      List<InvoiceTermPayment> invoiceTermPaymentList,
-      PaymentMode paymentMode,
-      FinancialDiscount financialDiscount,
-      BigDecimal financialDiscountTotalAmount,
-      boolean applyFinancialDiscount)
+      List<InvoiceTermPayment> invoiceTermPaymentList, PaymentMode paymentMode)
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
-
-      if (appAccountService.getAppAccount().getManageFinancialDiscount()
-          && applyFinancialDiscount) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
-        invoiceTerm.setFinancialDiscountAmount(financialDiscountTotalAmount);
-      } else {
-        invoiceTerm.setFinancialDiscount(null);
-      }
+      BigDecimal paidAmount =
+          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       invoiceTerm.setPaymentMode(paymentMode);
@@ -460,6 +500,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
       }
       invoiceTerm.setAmountRemaining(amountRemaining);
+      this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
     }
   }
 
@@ -477,8 +518,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
-      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
+      BigDecimal paidAmount =
+          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
+      this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
         Invoice invoice = invoiceTerm.getInvoice();
@@ -491,24 +534,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
-    FinancialDiscount financialDiscount = invoice.getFinancialDiscount();
-    List<InvoiceTerm> invoiceTerms = Lists.newArrayList();
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getAmount()) == 0) {
-        invoiceTerm.setFinancialDiscount(financialDiscount);
-      }
-      invoiceTerms.add(invoiceTerm);
-    }
-    return invoiceTerms;
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateFinancialDiscount(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+        .forEach(it -> this.computeFinancialDiscount(it, invoice));
+
+    invoiceRepo.save(invoice);
   }
 
   @Override
   public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
 
     if (invoice.getId() == null
-        || invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        || ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        || (invoice.getInTaxTotal().signum() == 0
+            && invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            && !ObjectUtils.isEmpty(invoice.getInvoiceLineList()))
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getAmountRemaining().signum() > 0) {
       return false;
     }
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
@@ -660,46 +704,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   private void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
     LocalDate paymentDate = paymentSession.getPaymentDate();
-    LocalDate financialDiscountDeadlineDate = null;
-    LocalDate dueDate = invoiceTerm.getDueDate();
-    Integer discountDelay = null;
-    if (invoiceTerm.getInvoice() != null) {
-      financialDiscountDeadlineDate = invoiceTerm.getInvoice().getFinancialDiscountDeadlineDate();
-    }
-    if (invoiceTerm.getMoveLine() != null
-        && invoiceTerm.getMoveLine().getPartner() != null
-        && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
-        && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay()
-            != null) {
-      discountDelay =
-          invoiceTerm.getMoveLine().getPartner().getFinancialDiscount().getDiscountDelay();
-    }
+    LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
 
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
-    if (nextSessionDate != null
-        && (financialDiscountDeadlineDate != null
-                && (financialDiscountDeadlineDate.isAfter(nextSessionDate)
-                    || financialDiscountDeadlineDate.isEqual(nextSessionDate))
-            || (dueDate != null
-                && discountDelay != null
-                && (dueDate.minusDays(discountDelay).isAfter(nextSessionDate)
-                    || dueDate.minusDays(discountDelay).isEqual(nextSessionDate))))) {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-    } else if (paymentDate != null
-        && (financialDiscountDeadlineDate != null
-                && (financialDiscountDeadlineDate.isAfter(paymentDate)
-                    || financialDiscountDeadlineDate.isEqual(paymentDate))
-            || dueDate != null
-                && discountDelay != null
-                && (dueDate.minusDays(discountDelay).isAfter(paymentDate)
-                    || dueDate.minusDays(discountDelay).isEqual(paymentDate)))) {
-      invoiceTerm.setPaymentAmount(
-          invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
-    } else {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+
+    if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
+      if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
+        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
+      }
+      if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
+        invoiceTerm.setIsSelectedOnPaymentSession(false);
+      }
     }
-    invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+    computeAmountPaid(invoiceTerm);
   }
 
   @Override
@@ -761,6 +780,32 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return updatedRecords;
+  }
+
+  @Override
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null
+        && invoiceTerm.getFinancialDiscount() != null
+        && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return invoiceTerm
+          .getInvoice()
+          .getTaxTotal()
+          .multiply(invoiceTerm.getPercentage())
+          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
+          .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  @Override
+  public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
+    return invoiceTerm.getApplyFinancialDiscount()
+            && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
+        ? invoiceTerm.getAmountRemainingAfterFinDiscount()
+        : invoiceTerm.getAmountRemaining();
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
@@ -833,33 +878,83 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       PfpPartialReason partialReason) {
     BigDecimal amount = invoiceAmount.subtract(pfpGrantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
-    createNewTerm(originalInvoiceTerm, invoice, amount);
+    createInvoiceTerm(originalInvoiceTerm, invoice, amount);
     updateOriginalTerm(originalInvoiceTerm, pfpGrantedAmount, partialReason, amount, invoice);
 
     initInvoiceTermsSequence(originalInvoiceTerm.getInvoice());
   }
 
   @Transactional
-  protected InvoiceTerm createNewTerm(
+  protected InvoiceTerm createInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) {
+    return invoiceTermRepo.save(
+        this.createInvoiceTerm(
+            invoice,
+            originalInvoiceTerm.getMoveLine(),
+            originalInvoiceTerm.getBankDetails(),
+            originalInvoiceTerm.getPfpValidatorUser(),
+            originalInvoiceTerm.getPaymentMode(),
+            originalInvoiceTerm.getDueDate(),
+            originalInvoiceTerm.getEstimatedPaymentDate(),
+            amount,
+            computeCustomizedPercentage(amount, invoice.getInTaxTotal()),
+            originalInvoiceTerm.getIsHoldBack()));
+  }
+
+  @Override
+  public InvoiceTerm createInvoiceTerm(
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      BigDecimal amount) {
+    return this.createInvoiceTerm(
+        null,
+        moveLine,
+        bankDetails,
+        pfpUser,
+        paymentMode,
+        date,
+        null,
+        amount,
+        BigDecimal.valueOf(100),
+        false);
+  }
+
+  @Override
+  public InvoiceTerm createInvoiceTerm(
+      Invoice invoice,
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      LocalDate estimatedPaymentDate,
+      BigDecimal amount,
+      BigDecimal percentage,
+      boolean isHoldBack) {
     InvoiceTerm newInvoiceTerm = new InvoiceTerm();
+
     newInvoiceTerm.setInvoice(invoice);
     newInvoiceTerm.setIsCustomized(true);
     newInvoiceTerm.setIsPaid(false);
-    newInvoiceTerm.setMoveLine(originalInvoiceTerm.getMoveLine());
-    newInvoiceTerm.setDueDate(originalInvoiceTerm.getDueDate());
-    newInvoiceTerm.setIsHoldBack(originalInvoiceTerm.getIsHoldBack());
-    newInvoiceTerm.setEstimatedPaymentDate(originalInvoiceTerm.getEstimatedPaymentDate());
+    newInvoiceTerm.setDueDate(date);
+    newInvoiceTerm.setIsHoldBack(isHoldBack);
+    newInvoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
     newInvoiceTerm.setAmount(amount);
-    newInvoiceTerm.setPercentage(computeCustomizedPercentage(amount, invoice.getInTaxTotal()));
     newInvoiceTerm.setAmountRemaining(amount);
-    newInvoiceTerm.setPaymentMode(originalInvoiceTerm.getPaymentMode());
-    newInvoiceTerm.setBankDetails(originalInvoiceTerm.getBankDetails());
+    newInvoiceTerm.setPaymentMode(paymentMode);
+    newInvoiceTerm.setBankDetails(bankDetails);
     newInvoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
-    newInvoiceTerm.setPfpValidatorUser(originalInvoiceTerm.getPfpValidatorUser());
+    newInvoiceTerm.setPfpValidatorUser(pfpUser);
     newInvoiceTerm.setPfpGrantedAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPfpRejectedAmount(BigDecimal.ZERO);
-    return invoiceTermRepo.save(newInvoiceTerm);
+    newInvoiceTerm.setPercentage(percentage);
+
+    moveLine.addInvoiceTermListItem(newInvoiceTerm);
+
+    return newInvoiceTerm;
   }
 
   @Transactional
@@ -886,8 +981,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void managePassedForPayment(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getCompany() != null) {
       if (accountConfigService
-          .getAccountConfig(invoiceTerm.getInvoice().getCompany())
-          .getIsManagePassedForPayment()) {
+              .getAccountConfig(invoiceTerm.getInvoice().getCompany())
+              .getIsManagePassedForPayment()
+          && invoiceTerm.getInvoice().getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPfpGrantedAmount());
       } else {
         invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
@@ -897,21 +994,29 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional
-  public void select(InvoiceTerm invoiceTerm) throws AxelorException {
+  public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException {
     if (invoiceTerm != null) {
-      invoiceTerm.setIsSelectedOnPaymentSession(true);
+      invoiceTerm.setIsSelectedOnPaymentSession(value);
       managePassedForPayment(invoiceTerm);
+      computeAmountPaid(invoiceTerm);
       invoiceTermRepo.save(invoiceTerm);
     }
   }
 
   @Override
-  @Transactional
-  public void unselect(InvoiceTerm invoiceTerm) throws AxelorException {
-    if (invoiceTerm != null) {
-      invoiceTerm.setIsSelectedOnPaymentSession(false);
-      managePassedForPayment(invoiceTerm);
-      invoiceTermRepo.save(invoiceTerm);
+  public void computeAmountPaid(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+      if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        BigDecimal financialDiscountAmount =
+            invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) < 0
+                ? invoiceTerm.getFinancialDiscountAmount()
+                : invoiceTerm.getFinancialDiscountAmount().negate();
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount().add(financialDiscountAmount));
+      } else {
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+      }
+    } else {
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
   }
 }

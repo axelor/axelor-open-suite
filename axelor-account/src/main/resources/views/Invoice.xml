@@ -237,6 +237,7 @@
       if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="originDate"/>
     <field name="invoiceDate"/>
@@ -449,6 +450,9 @@
       <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
       <field name="operationSubTypeSelect"
         hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
+      <field name="operationSubTypeSelect"
+        hideIf="statusSelect &gt; 1 || operationTypeSelect != 1 || $readonly()" showTitle="true"
+        selection-in="[1,2]"/>
       <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
@@ -484,7 +488,7 @@
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
       <field name="partner" colSpan="3" canEdit="false"
         readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"
-        onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values,action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
+        onChange="action-invoice-group-partner-onchange"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" colSpan="3" canEdit="false"
@@ -525,7 +529,7 @@
 
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
         type="boolean" readonly="true">
@@ -538,7 +542,7 @@
         </viewer>
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
     </panel>
 
@@ -572,6 +576,9 @@
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
         showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
+        <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
+          onClick="save,action-invoice-view-show-related-invoice-terms"
+          readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"
           colSpan="12" form-view="invoice-term-move-line-invoice-form"
@@ -776,15 +783,16 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <panel name="financialDiscountPanel" colSpan="12"
+        <panel name="financialDiscountPanel" colSpan="12" showIf="statusSelect &gt;=3"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount" colSpan="6"
-            onChange="action-record-invoice-set-financial-discount-informations,action-method-invoice-financial-discount-update-invoice-terms"
-            showIf="statusSelect &gt;=3"/>
-          <field name="financialDiscountRate" colSpan="6"
-            showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
-          <field name="financialDiscountDeadlineDate" colSpan="6"
-            showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
+          <field name="financialDiscount" onChange="action-invoice-group-financial-discount"/>
+          <field name="financialDiscountDeadlineDate" readonly="true"
+            showIf="financialDiscount"/>
+          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+            <field name="financialDiscountRate" readonly="true"/>
+            <field name="financialDiscountTotalAmount" readonly="true"/>
+            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+          </panel>
         </panel>
 
 
@@ -899,12 +907,16 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
 								<font x-translate ng-if="record.typeSelect == 5">On</font>
 								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
+								<font x-translate ng-if="record.typeSelect == 7">Doubtful on</font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
 							</span>
 						</dt>
-						<dd>
+						<dd  ng-if="record.typeSelect == 7">
+							{{$fmt('amount') | currency: record.currency.symbol}}
+						</dd>
+						<dd ng-if="record.typeSelect != 7">
 							-{{$fmt('amount') | currency: record.currency.symbol}}
 						</dd>
 					</dl>
@@ -943,7 +955,6 @@ InvoiceSet.length > 0))"
 		         </dl>]]>
         </viewer>
       </field>
-      <field name="amountRemaining"></field>
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
@@ -962,10 +973,17 @@ InvoiceSet.length > 0))"
 		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
 		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
-					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
+      </field>
+      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3">
+        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
+		         <dl class="dl-horizontal">
+				   <dt class="order-subtotal-total" x-translate>Amount due</dt>
+		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
+		         </dl>]]>
+        </viewer>
       </field>
     </panel>
 
@@ -1541,7 +1559,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1602,7 +1620,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1619,6 +1637,19 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-hide-send-email-pfp-btn"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-method-set-payment-visibility"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-financial-discount">
+    <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="save"/>
+    <action name="action-method-invoice-financial-discount-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-partner-onchange">
+    <action name="action-group-account-invoice-partner-onchange"/>
+    <action name="action-method-invoice-address-str"/>
+    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
@@ -1683,7 +1714,7 @@ InvoiceSet.length > 0))"
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
@@ -2497,6 +2528,12 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: financialDiscountRate * inTaxTotal / 100"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: inTaxTotal - (financialDiscountRate * inTaxTotal / 100)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
@@ -2509,10 +2546,20 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp;  financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+    <field name="financialDiscountTotalAmount"
+      expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount"
+      expr="eval: inTaxTotal - (financialDiscount.discountRate * inTaxTotal / 100)"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
     <field name="legalNotice" expr="eval: null"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
+    <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
@@ -2535,5 +2582,12 @@ InvoiceSet.length > 0))"
       if="duplicateInvoiceNbrSameYear"/>
   </action-validate>
 
+  <action-view name="action-invoice-view-show-related-invoice-terms"
+    title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-move-line-invoice-grid"/>
+    <view type="form" name="invoice-term-move-line-form"/>
+    <domain>self.invoice.id = :_invoiceId</domain>
+    <context name="_invoiceId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

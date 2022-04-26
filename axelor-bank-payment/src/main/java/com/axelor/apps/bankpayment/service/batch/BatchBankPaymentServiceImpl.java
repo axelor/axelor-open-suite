@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -262,7 +263,9 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
             currency,
             senderReference,
             senderLabel,
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_BATCH_DEBIT,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
     bankOrder = JPA.save(bankOrder);
 
     List<PaymentScheduleLine> paymentScheduleLineList;

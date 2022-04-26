@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -141,30 +142,22 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
+    PaymentSession paymentSession = paymentMove.getPaymentSession();
+
     if (paymentVoucher != null) {
       invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
+    } else if (paymentSession != null) {
+      invoicePayment.setCompanyBankDetails(paymentSession.getBankDetails());
     } else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
-
-    this.computeAdvancePaymentImputation(invoicePayment, paymentMove);
-    this.computeFinancialDiscount(invoicePayment, invoice);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    computeAdvancePaymentImputation(invoicePayment, paymentMove, invoice.getOperationTypeSelect());
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);
 
     return invoicePayment;
-  }
-
-  protected void computeFinancialDiscount(InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException {
-    if (invoiceService.applyFinancialDiscount(invoice)) {
-      invoicePayment.setApplyFinancialDiscount(true);
-      invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, true);
-    }
   }
 
   protected int determineType(Move move) {
@@ -178,17 +171,19 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       } else {
         return InvoicePaymentRepository.TYPE_REFUND_INVOICE;
       }
-    } else if (move.getPaymentVoucher() != null) {
+    } else if (move.getPaymentVoucher() != null || move.getPaymentSession() != null) {
       return InvoicePaymentRepository.TYPE_PAYMENT;
     } else {
       return InvoicePaymentRepository.TYPE_OTHER;
     }
   }
 
-  protected void computeAdvancePaymentImputation(InvoicePayment invoicePayment, Move paymentMove) {
+  protected void computeAdvancePaymentImputation(
+      InvoicePayment invoicePayment, Move paymentMove, int operationTypeSelect) {
 
     // check if the payment is an advance payment imputation
-    Invoice advanceInvoice = determineIfReconcileFromInvoice(paymentMove);
+    Invoice advanceInvoice =
+        findAvancePaymentInvoiceFromPaymentInvoice(paymentMove, operationTypeSelect);
     if (advanceInvoice != null) {
       List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
       if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
@@ -228,63 +223,102 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @return the found advance invoice if the move is from a payment that comes from this invoice.
    *     null in other cases
    */
-  protected Invoice determineIfReconcileFromInvoice(Move move) {
+  protected Invoice findAvancePaymentInvoiceFromPaymentInvoice(Move move, int operationTypeSelect) {
     List<MoveLine> moveLineList = move.getMoveLineList();
-    if (moveLineList == null || moveLineList.size() != 2) {
+    if (moveLineList == null || moveLineList.size() < 2) {
       return null;
     }
-    InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
     for (MoveLine moveLine : moveLineList) {
       // search for the reconcile between the debit line
-      if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        Reconcile reconcile =
-            Beans.get(ReconcileRepository.class)
-                .all()
-                .filter("self.debitMoveLine = ?", moveLine)
-                .fetchOne();
-        if (reconcile == null) {
-          return null;
-        }
-        // in the reconcile, search for the credit line to get the
-        // associated payment
-        if (reconcile.getCreditMoveLine() == null
-            || reconcile.getCreditMoveLine().getMove() == null) {
+      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+          || moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+        Invoice invoice =
+            findAdvancePaymentInvoiceFromPaymentMoveLine(moveLine, operationTypeSelect);
+        if (invoice == null) {
           continue;
-        }
-        Move candidatePaymentMove = reconcile.getCreditMoveLine().getMove();
-        InvoicePayment invoicePayment =
-            invoicePaymentRepo
-                .all()
-                .filter("self.move = :_move")
-                .bind("_move", candidatePaymentMove)
-                .fetchOne();
-        // if the invoice linked to the payment is an advance
-        // payment, then return true.
-        if (invoicePayment != null
-            && invoicePayment.getInvoice() != null
-            && invoicePayment.getInvoice().getOperationSubTypeSelect()
-                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-          return invoicePayment.getInvoice();
+        } else {
+          return invoice;
         }
       }
     }
     return null;
   }
 
+  protected Invoice findAdvancePaymentInvoiceFromPaymentMoveLine(
+      MoveLine moveLine, int operationTypeSelect) {
+    Reconcile reconcile =
+        findReconcileFromMoveLine(
+            moveLine, operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+    if (reconcile == null) {
+      return null;
+    }
+    // in the reconcile, search for the credit line to get the
+    // associated payment
+    MoveLine candidateMoveLine;
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      candidateMoveLine = reconcile.getDebitMoveLine();
+    } else {
+      candidateMoveLine = reconcile.getCreditMoveLine();
+    }
+
+    if (candidateMoveLine == null || candidateMoveLine.getMove() == null) {
+      return null;
+    }
+    Move candidatePaymentMove = candidateMoveLine.getMove();
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter("self.move = :_move")
+            .bind("_move", candidatePaymentMove)
+            .fetchOne();
+    // if the invoice linked to the payment is an advance
+    // payment, then return true.
+    if (invoicePayment != null
+        && invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      return invoicePayment.getInvoice();
+    }
+    return null;
+  }
+
+  protected Reconcile findReconcileFromMoveLine(MoveLine moveLine, boolean fromDebitMoveLine) {
+    StringBuilder filterString = new StringBuilder();
+    if (fromDebitMoveLine) {
+      filterString.append("self.debitMoveLine = ?");
+    } else {
+      filterString.append("self.creditMoveLine = ?");
+    }
+    Reconcile reconcile =
+        Beans.get(ReconcileRepository.class)
+            .all()
+            .filter(filterString.toString(), moveLine)
+            .fetchOne();
+    return reconcile;
+  }
+
   @Override
   @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+      throws AxelorException {
+    return this.createInvoicePayment(invoice, companyBankDetails, null);
+  }
+
+  @Override
+  @Transactional
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
       throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
             invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-            appBaseService.getTodayDate(invoice.getCompany()),
+            paymentDate == null ? appBaseService.getTodayDate(invoice.getCompany()) : paymentDate,
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
-    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
+    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }

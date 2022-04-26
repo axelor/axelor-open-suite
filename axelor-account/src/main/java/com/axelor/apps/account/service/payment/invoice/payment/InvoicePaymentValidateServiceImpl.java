@@ -130,8 +130,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
 
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
@@ -215,7 +213,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        customerAccount = accountConfigService.getSupplierAdvancePaymentAccount(accountConfig);
+      } else {
+        customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      }
+
     } else {
       if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;
@@ -258,13 +261,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       }
     }
 
+    invoicePayment.setMove(move);
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       for (MoveLine invoiceMoveLine : invoiceMoveLines) {
         invoicePayment.addReconcileListItem(
-            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false));
+            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, true));
       }
     }
-    invoicePayment.setMove(move);
 
     invoicePaymentRepository.save(invoicePayment);
     return invoicePayment;

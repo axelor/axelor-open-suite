@@ -59,7 +59,7 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
       return super.save(entity);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 

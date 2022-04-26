@@ -304,4 +304,34 @@
     <option value="2">BOR</option>
   </selection>
 
+  <selection name="payment.mode.accounting.trigger.select"
+    id="bank.payment.payment.mode.accounting.trigger.select">
+    <option value="2" order="2">Bank order confirmation</option>
+    <option value="3" order="3">Bank order validation</option>
+    <option value="4" order="4">Bank order realization</option>
+  </selection>
+
+  <selection name="bank.order.accounting.trigger.select">
+    <option value="0">None</option>
+    <option value="1">External origin</option>
+    <option value="2">Bank order confirmation</option>
+    <option value="3">Bank order validation</option>
+    <option value="4">Bank order realization</option>
+  </selection>
+
+  <selection name="bank.order.functional.origin.select">
+    <option value="1">Manual</option>
+    <option value="10">bankorder.invoicePayment</option>
+    <option value="20">Expense</option>
+    <option value="30">Payment session</option>
+    <option value="40">LCR</option>
+    <option value="50">Batch</option>
+    <option value="51">MonthlyPaymentScheduleLines (batch)</option>
+    <option value="52">CreditTransferPartnerReimbursement (batch)</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="bank.payment.batch.batch.type.select">
+    <option value="300">Bank payment batch</option>
+  </selection>
+
 </object-views>

@@ -52,7 +52,7 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setIsSelectedOnPaymentSession(false);
-    invoiceTerm.setApplyFinancialDiscount(false);
+    invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setAmountPaid(BigDecimal.ZERO);
   }

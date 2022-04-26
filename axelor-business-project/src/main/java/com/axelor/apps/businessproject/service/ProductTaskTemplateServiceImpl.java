@@ -41,7 +41,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
   @Inject
   public ProductTaskTemplateServiceImpl(
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
-      ProjectTaskRepository projectTaskRepo) {
+      ProjectTaskRepository projectTaskRepo,
+      ProductCompanyService productCompanyService) {
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;

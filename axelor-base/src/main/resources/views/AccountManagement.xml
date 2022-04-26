@@ -137,21 +137,22 @@
 
       <!-- PAYMENT -->
       <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
+        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
+          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3" colSpan="12"
+          width="50%"/>
         <field name="cashAccount"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
+        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false"
+          requiredIf="typeSelect == 3"/>
         <field if="__config__.app.isApp('account')" if-module="axelor-account"
           name="globalAccountingCashAccount" canEdit="false"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
           showIf="paymentMode.accountingMethodSelect == 3"
           requiredIf="typeSelect == 3 &amp;&amp; paymentMode.accountingMethodSelect == 3 "
           form-view="account-form" grid-view="account-grid"/>
-        <field name="paymentMode" hidden="true" form-view="payment-mode-form"
-          grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3"/>
-        <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
-          form-view="journal-form" grid-view="journal-grid" canEdit="false"
-          requiredIf="typeSelect == 3"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
           onSelect="action-account-management-attrs-bank-details-domain"
           onChange="action-account-management-attrs-bank-details-on-change"
@@ -192,7 +193,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-attrs name="action-account-management-attrs-hide-sale">

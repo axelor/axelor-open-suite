@@ -19,8 +19,8 @@
     <field name="name"/>
     <field name="invoice"/>
     <field name="dueDate"/>
-    <field name="amount"/>
-    <field name="amountRemaining"/>
+    <field name="amount" title="To pay / To use"/>
+    <field name="amountRemaining" title="Left to pay / to use"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
@@ -28,10 +28,43 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="invoice.financialDiscountDeadlineDate"
+    <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+  </grid>
+
+  <grid name="invoice-term-invoice-payment-grid" title="Invoice terms"
+    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    <toolbar>
+      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+        title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+        onClick="action-invoiceterm-view-refusal-to-pay"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    </toolbar>
+    <hilite color="danger"
+      if="!isPaid &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="$amountRemaining" type="decimal" title="Remaining amount"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="paymentMode"/>
+    <field name="financialDiscount.discountRate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountDeadlineDate"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="pfpValidateStatusSelect"
+      if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="applyFinancialDiscount" hidden="true"/>
+    <field name="amountRemaining" hidden="true"/>
+    <field name="amountRemainingAfterFinDiscount" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-move-line-invoice-grid" title="Invoice terms"
@@ -51,7 +84,7 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="invoice.financialDiscountDeadlineDate"
+    <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
@@ -65,10 +98,12 @@
     <field name="moveLine.partner"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
+    <field name="moveLine.origin" title="MoveLine.origin"/>
+    <field name="dueDate"/>
     <field name="moveLine.move.statusSelect"/>
     <field name="isSelectedOnPaymentSession"/>
     <field name="paymentAmount"/>
-    <field name="applyFinancialDiscount"/>
+    <field name="applyFinancialDiscountOnPaymentSession"/>
     <field name="financialDiscountAmount"/>
     <field name="amountPaid" aggregate="sum"/>
     <button name="selectBtn" title="Select"
@@ -89,9 +124,20 @@
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
   </grid>
 
+  <grid name="invoice-term-debt-recovery-grid" model="com.axelor.apps.account.db.InvoiceTerm"
+    title="Invoice term">
+    <field name="moveLine.move.company"/>
+    <field name="moveLine.origin"/>
+    <field name="moveLine.move.originDate"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="amountRemaining"/>
+    <field name="moveLine.description"/>
+  </grid>
+
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
     model="com.axelor.apps.account.db.InvoiceTerm" onNew="action-invoice-term-group-onnew"
-    onLoad="action-invoice-term-group-check-pfp-validator-user">
+    onLoad="action-invoice-term-group-onload">
     <panel name="mainPanel" colSpan="12">
       <panel name="headerPanel" colSpan="12" itemSpan="4" readonlyIf="paymentSession">
         <field name="sequence" readonlyIf="isPaid || !isCustomized"/>
@@ -127,16 +173,23 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+        <field name="applyFinancialDiscount"
+          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null" readonlyIf="paymentSession">
+        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
+        readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
+        <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"/>
-        <field name="invoice.financialDiscountDeadlineDate"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
@@ -225,10 +278,13 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -247,7 +303,7 @@
         <field name="invoice" readonly="true" form-view="invoice-form"
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
-        <field name="isPaid" readonly="true"/>
+        <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
       </panel>
@@ -259,31 +315,31 @@
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" readonlyIf="pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
-          validIf="amount > 0"/>
+        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
+          validIf="amount > 0"
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
           onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
-        <field name="amountRemaining" readonly="true"/>
-        <field name="paymentMode" required="true"/>
+        <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
+        <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
+          onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="financialDiscount != null" readonlyIf="paymentSession">
-        <field name="applyFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
         <field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
         <field name="financialDiscountAmount" readonly="true" showIf="applyFinancialDiscount"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="invoice.financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
+        <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="actionPanel"
@@ -370,10 +426,13 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -410,6 +469,7 @@
   <action-group name="action-invoice-term-group-onnew">
     <action name="action-method-invoice-init-invoice-term"/>
     <action name="action-invoice-term-record-update-customized-true"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -426,6 +486,11 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-invoice-term-group-onload">
+    <action name="action-invoice-term-group-check-pfp-validator-user"/>
+    <action name="action-invoice-term-record-set-show-financial-discount"/>
+  </action-group>
+
   <action-record name="action-invoice-term-record-set-is-payment-condition-free"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="$isPaymentConditionFree"
@@ -436,6 +501,12 @@
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="isCustomized" expr="true"/>
+  </action-record>
+
+  <action-record name="action-invoice-term-record-set-show-financial-discount"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <field name="$showFinancialDiscount"
+      expr="eval: id == null ? __parent__?.statusSelect == 4 : invoice?.statusSelect == 3"/>
   </action-record>
 
   <action-validate name="action-invoice-term-validate-pfp-stock-move">

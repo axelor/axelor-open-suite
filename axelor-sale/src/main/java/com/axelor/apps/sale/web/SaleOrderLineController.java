@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -26,6 +27,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.pricing.PricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
@@ -40,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class SaleOrderLineController {
@@ -86,6 +90,7 @@ public class SaleOrderLineController {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      PricingService pricingService = Beans.get(PricingService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
       Product product = saleOrderLine.getProduct();
@@ -98,6 +103,17 @@ public class SaleOrderLineController {
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
+        Optional<Pricing> defaultPricing =
+            pricingService.getDefaultPricing(saleOrder, saleOrderLine);
+        if (defaultPricing.isPresent()
+            && !pricingService
+                .getPricingLine(saleOrder, saleOrderLine, defaultPricing.get())
+                .isPresent()) {
+          response.setFlash(
+              String.format(
+                  I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
+                  defaultPricing.get().getName()));
+        }
         response.setValue("saleSupplySelect", product.getSaleSupplySelect());
         response.setValues(saleOrderLine);
       } catch (Exception e) {
@@ -368,7 +384,7 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
-      saleOrderLineService.computePricingScale(saleOrder, saleOrderLine);
+      Beans.get(PricingService.class).computePricingScale(saleOrder, saleOrderLine);
 
       response.setValues(saleOrderLine);
 

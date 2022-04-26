@@ -165,7 +165,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throws AxelorException {
 
     // the case when stockMove is null is made in super.
-    if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (stockMove == null || !appBaseService.isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
     }
 
@@ -257,7 +257,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return newStockMoveLine;
     }
     BigDecimal reservedQtyAfterSplit =
@@ -273,7 +273,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   @Override
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.updateAvailableQty(stockMoveLine, stockLocation);
       return;
     }
@@ -403,7 +403,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.setProductInfo(stockMove, stockMoveLine, company);
       return;
     }
