@@ -70,7 +70,8 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
     if (logs.length() == 0) {
       this.saleOrderLine.setPricingScaleLogs(
           I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_NO_PRICING));
+    } else {
+      this.saleOrderLine.setPricingScaleLogs(logs.toString());
     }
-    this.saleOrderLine.setPricingScaleLogs(logs.toString());
   }
 }

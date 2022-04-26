@@ -113,7 +113,7 @@ public class PricingComputer extends AbstractObservablePricing {
     }
     if (pricing.getPreviousPricing() != null) {
       throw new IllegalStateException(
-          "This method call only be called with root pricing (pricing with not previous pricing)");
+          "This method can only be called with root pricing (pricing with not previous pricing)");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
     notifyStarted();
@@ -126,13 +126,8 @@ public class PricingComputer extends AbstractObservablePricing {
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
       Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
-      if (optChildPricing.isPresent()) {
-        Pricing childPricing = optChildPricing.get();
-        if (!applyPricing(childPricing).isPresent()) {
-          notifyFinished();
-          return;
-        }
-        currentPricing = childPricing;
+      if (optChildPricing.flatMap(this::applyPricing).isPresent()) {
+        currentPricing = optChildPricing.get();
       } else {
         notifyFinished();
         return;
