@@ -133,6 +133,7 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPfpValidatorUser(null);
     invoiceTerm.setFinancialDiscount(null);
     invoiceTerm.setDecisionPfpTakenDate(null);
+    invoiceTerm.setInvoice(null);
   }
 
   @Override
