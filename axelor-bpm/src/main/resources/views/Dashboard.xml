@@ -30,7 +30,7 @@
 	  				<table ng-repeat="model in record.$modelList" class="table" style="border-bottom:1px solid #bbb;">
 		 				<thead>
 		 					<tr>
-		 						<th style="font-size:14px;">{{model.title}}</th>
+		 						<th style="font-size:14px;">{{model.title}}{{model.versionTag != null ? ' - '+model.versionTag : ''}}</th>
 		 					</tr>
 		 				</thead>
 		 				<tbody>

@@ -18,9 +18,6 @@
       <field name="typeSelect" required="true" colSpan="3"
         onChange="action-payment-mode-group-empty"/>
       <field name="inOutSelect" required="true" colSpan="3"/>
-      <field name="validatePaymentByDepositSlipPublication"
-        showIf="inOutSelect == 1 &amp;&amp; [5, 7].indexOf(typeSelect) >= 0"
-        if="__config__.app.getApp('account')?.paymentVouchersOnInvoice"/>
     </panel>
   </form>
 
@@ -39,8 +36,6 @@
 
   <search-filters name="payment-mode-filters"
     model="com.axelor.apps.account.db.PaymentMode" title="Payment mode filters">
-    <field name="validatePaymentByDepositSlipPublication" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.paymentVouchersOnInvoice)"/>
     <field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="generateBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
     <field name="autoConfirmBankOrder" hidden="true"

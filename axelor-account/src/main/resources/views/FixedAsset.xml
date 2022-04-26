@@ -258,7 +258,7 @@
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid"/>
       <field name="saleAccountMove" domain="self.company = :company"
-        showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
+        showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
@@ -307,7 +307,7 @@
       <label
         title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
       <button name="splitBtn" title="Split" colSpan="4"
-        onClick="action-method-account-fixed-asset-split"/>
+        onClick="action-method-account-fixed-asset-split,close"/>
     </panel>
   </form>
   <action-method name="action-method-account-fixed-asset-split">

@@ -229,8 +229,12 @@ public interface ITranslation {
       "AccountingReportType4.clientBalance"; /*)*/
   public static final String ACCOUNTING_REPORT_4_PERIOD_TOTAL = /*$$(*/
       "AccountingReportType4.periodTotal"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_PERIOD_TOTAL = /*$$(*/
+      "AccountingReportType4.termPeriodTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_4_CONTROL = /*$$(*/
       "AccountingReportType4.control"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_CONTROL = /*$$(*/
+      "AccountingReportType4.termControl"; /*)*/
   public static final String ACCOUNTING_REPORT_4_EDITION_DATE = /*$$(*/
       "AccountingReportType4.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_4_INVOICE = /*$$(*/
@@ -253,6 +257,10 @@ public interface ITranslation {
       "AccountingReportType4.180days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_AGE_OF_THE_DEBT = /*$$(*/
       "AccountingReportType4.ageOfTheDebt"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_INVOICE_REMAINING_AMOUNT = /*$$(*/
+      "AccountingReportType4.invoiceRemainingAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_N = /*$$(*/
+      "AccountingReportType4.termN"; /*)*/
 
   public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
       "AccountingReportType7.title"; /*)*/
@@ -649,6 +657,12 @@ public interface ITranslation {
   public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/
       "ChequeDepositSlip.chequeDate"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_CURRENCY_CODE = /*$$(*/
+      "ChequeDepositSlip.currencyCode"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_SIGNATURE = /*$$(*/
+      "ChequeDepositSlip.signature"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_REMINDER_NOTE = /*$$(*/
+      "ChequeDepositSlip.reminderNote"; /*)*/
 
   public static final String ACCOUNTING_REPORT_16_TITLE =
       /*$$(*/ "AccountingReportType16.title"; /*)*/
@@ -911,6 +925,7 @@ public interface ITranslation {
       /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
   public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
       /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+  public static final String PAYMENT_REMINDER_TERM_SEQ = /*$$(*/ "PaymentReminder.term_seq"; /*)*/
 
   public static final String NOTE_BILLS_DATE_TO = /*$$(*/ "NoteBills.date_to"; /*)*/
   public static final String NOTE_BILLS_INVOICE_CURRENCY = /*$$(*/ "NoteBills.currency"; /*)*/

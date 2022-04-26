@@ -8,8 +8,8 @@
 
   <selection name='iaccount.payment.voucher.status.select'>
     <option value='1'>Draft</option>
-    <option value='2'>Waiting for deposit slip</option>
-    <option value='3'>Confirmed</option>
+    <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
+    <option value='2'>Confirmed</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>
@@ -90,10 +90,6 @@
     <option order="24" value="24">Personnalized report</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
-    <option value="1006">Export sale -> Acc. Soft.</option>
-    <option value="1007">Export refunds -> Acc. Soft.</option>
-    <option value="1008">Export treasury -> Acc. Soft.</option>
-    <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
     <option value="1011">Export N4DS</option>
     <option order="2000" value="2000">Analytic balance</option>
@@ -104,10 +100,6 @@
   <selection name='accounting.report.type.select.export'>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
-    <option value="1006">Export sale -> Acc. Soft.</option>
-    <option value="1007">Export refunds -> Acc. Soft.</option>
-    <option value="1008">Export treasury -> Acc. Soft.</option>
-    <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
     <option value="1011">Export N4DS</option>
   </selection>
@@ -309,6 +301,7 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
+    <option value="7">Doubtful credit</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -516,6 +509,7 @@
     <option value='5'>Payment</option>
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
+    <option value='8'>Doubtful customer</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -605,7 +599,6 @@
   <selection name="account.deposit.type.select">
     <option value="1">Cheque</option>
     <option value="2">Cash</option>
-    <option value="3">Bill of Exchange</option>
   </selection>
 
   <selection name="account.config.analytic.axis.order.select">
@@ -720,7 +713,6 @@
     <option value="2">vat.Payment</option>
   </selection>
 
-
   <selection name="account.closure.assistant.line.action.select">
     <option value="2">Fixed asset realization</option>
     <option value="3">Move consistency check</option>
@@ -753,6 +745,12 @@
   <selection name="payment.mode.accounting.trigger.select">
     <option value="0" order="0">None</option>
     <option value="1" order="1">Immediate</option>
+    <option value="5" order="5">Value for collection</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
+    <option value="200">Accounting batch</option>
+    <option value="201">Invoice batch</option>
   </selection>
 
 </object-views>

@@ -46,4 +46,8 @@ public abstract class BatchStrategy extends AbstractBatch {
       incrementDone();
     }
   }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_INVOICE_BATCH);
+  }
 }

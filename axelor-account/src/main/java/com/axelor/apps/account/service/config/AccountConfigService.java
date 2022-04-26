@@ -42,8 +42,14 @@ import java.util.List;
 
 public class AccountConfigService {
 
-  @Inject protected MoveRepository moveRepo;
-  @Inject protected JournalRepository journalRepo;
+  protected MoveRepository moveRepo;
+  protected JournalRepository journalRepo;
+
+  @Inject
+  public AccountConfigService(MoveRepository moveRepo, JournalRepository journalRepo) {
+    this.moveRepo = moveRepo;
+    this.journalRepo = journalRepo;
+  }
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -330,6 +336,19 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getAdvancePaymentAccount();
+  }
+
+  public Account getSupplierAdvancePaymentAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getSupplierAdvancePaymentAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_46),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
   public Account getCashPositionVariationAccount(AccountConfig accountConfig)

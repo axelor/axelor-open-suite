@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,9 +51,26 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     this.appAccountService = appAccountService;
   }
 
+  /**
+   * Get cash account from PaymentMode, Company, BankDetails.
+   *
+   * @return
+   */
   @Override
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
+    return getPaymentModeAccount(paymentMode, company, bankDetails, false);
+  }
+
+  /**
+   * Get cash or global accrount from PaymenMode, Company, BankDetails function of boolean global.
+   *
+   * @return
+   */
+  @Override
+  public Account getPaymentModeAccount(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException {
 
     log.debug(
         "Récupération du compte comptable du mode de paiement associé à la société :"
@@ -62,8 +80,13 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement != null && accountManagement.getCashAccount() != null) {
-      return accountManagement.getCashAccount();
+    if (Objects.nonNull(accountManagement)) {
+      if (!global && Objects.nonNull(accountManagement.getCashAccount())) {
+        return accountManagement.getCashAccount();
+      }
+      if (global && Objects.nonNull(accountManagement.getGlobalAccountingCashAccount())) {
+        return accountManagement.getGlobalAccountingCashAccount();
+      }
     }
 
     throw new AxelorException(
@@ -142,14 +165,32 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     return accountManagement.getSequence();
   }
 
+  /**
+   * Get journal from PaymentMode, Company, BankDetails
+   *
+   * @return
+   */
   @Override
   public Journal getPaymentModeJournal(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
+    return getPaymentModeJournal(paymentMode, company, bankDetails, false);
+  }
+
+  /**
+   * Get journal or cheque deposit journal from PaymenMode, Company, BankDetails function of boolean
+   * global.
+   *
+   * @return
+   */
+  @Override
+  public Journal getPaymentModeJournal(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException {
 
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement == null && appAccountService.getAppBase().getManageMultiBanks()) {
+    if (Objects.isNull(accountManagement) && appAccountService.getAppBase().getManageMultiBanks()) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -157,17 +198,24 @@ public class PaymentModeServiceImpl implements PaymentModeService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
-    } else if (accountManagement == null || accountManagement.getJournal() == null) {
-      throw new AxelorException(
-          paymentMode,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          company.getName(),
-          paymentMode.getName());
     }
 
-    return accountManagement.getJournal();
+    if (Objects.nonNull(accountManagement)) {
+      if (!global && Objects.nonNull(accountManagement.getJournal())) {
+        return accountManagement.getJournal();
+      }
+      if (global && Objects.nonNull(accountManagement.getChequeDepositJournal())) {
+        return accountManagement.getChequeDepositJournal();
+      }
+    }
+
+    throw new AxelorException(
+        paymentMode,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.PAYMENT_MODE_3),
+        I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+        company.getName(),
+        paymentMode.getName());
   }
 
   @Override

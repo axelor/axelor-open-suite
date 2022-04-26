@@ -30,6 +30,10 @@ public interface IExceptionMessage {
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
+      /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
+      /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -302,9 +306,15 @@ public interface IExceptionMessage {
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
+
   static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
+  static final String MOVE_13 = /*$$(*/
+      "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+
+  static final String MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be daybooked because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -933,7 +943,7 @@ public interface IExceptionMessage {
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
-  static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
+  static final String EMPLOYEE_PARTNER = /*$$(*/ "You must create a contact for employee %s" /*)*/;
 
   /*
    * Deposit slip
@@ -946,6 +956,10 @@ public interface IExceptionMessage {
       "The deposit slip has already been published." /*)*/;
   static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/
       "Unsupported payment mode type" /*)*/;
+  static final String DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO = /*$$(*/
+      "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner, deposit date)." /*)*/;
+  static final String DEPOSIT_SLIP_NOT_PUBLISHED = /*$$(*/
+      "The deposit slip is not published." /*)*/;
 
   /*
    * Partner
@@ -1019,7 +1033,7 @@ public interface IExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1027,6 +1041,18 @@ public interface IExceptionMessage {
 
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_3 = /*$$(*/
+      "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
+      "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_6 = /*$$(*/
+      "%s : Error : You must configure a result loss account and a year opening account in the account configuration" /*)*/;
 
   static final String BATCH_DOES_NOT_EXIST = /*$$(*/ "The batch does not exist." /*)*/;
 
@@ -1047,6 +1073,12 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
 
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
@@ -1099,6 +1131,9 @@ public interface IExceptionMessage {
   static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
 
+  static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
+      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
   // Account
   static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
       "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
@@ -1108,6 +1143,15 @@ public interface IExceptionMessage {
 
   static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
       "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
+
+  static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
+
+  static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;
+
+  static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
 
   static final String MOVE_PARTNER_FOR_TAX_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing partner." /*)*/;
@@ -1136,6 +1180,9 @@ public interface IExceptionMessage {
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 
+  static final String NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Error in the analytic distribution template. Please for each line give a value to analytic axis, analytic account and analytic journal." /*)*/;
+
   static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
       "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
 
@@ -1154,4 +1201,13 @@ public interface IExceptionMessage {
 
   static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
       "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
+
+  static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Specific Analytic Distribution Template" /*)*/;
 }

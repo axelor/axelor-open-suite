@@ -40,6 +40,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.pricing.PricingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -96,7 +97,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PricingService pricingService) {
     super(
         currencyService,
         priceListService,
@@ -105,7 +107,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
-        saleOrderService);
+        saleOrderService,
+        pricingService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -113,17 +116,16 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public String computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    String pricingName = super.computeProductInformation(saleOrderLine, saleOrder);
+    super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-    if (Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (appAccountService.isApp("supplychain")) {
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
       this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
     }
-    return pricingName;
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
@@ -199,7 +201,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAvailableStock(saleOrder, saleOrderLine);
     }
 
@@ -216,7 +218,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
-    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+    if (!appAccountService.isApp("supplychain")) {
       return super.getAllocatedStock(saleOrder, saleOrderLine);
     }
 
@@ -285,9 +287,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     List<Integer> statusList = new ArrayList<>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     String status =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getsOFilterOnStockDetailStatusSelect();
+        appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
     }
