@@ -20,10 +20,12 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.meta.db.MetaModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface AppBaseService extends AppService {
 
@@ -107,4 +109,6 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  public void setModel(Set<MetaModel> emailModels);
 }

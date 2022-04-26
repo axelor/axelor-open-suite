@@ -89,6 +89,8 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
+        <field colSpan="12" name="emailModelSet" form-view="meta-model-form"
+          widget="TagSelect" grid-view="meta-model-grid" canNew="false" canEdit="false"/>
         <panel name="stylePanel" title="Style" colSpan="12">
           <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
         </panel>

@@ -8,10 +8,6 @@
     <option value="2">Project Phase</option>
   </selection>
 
-  <selection name="message.related.to.select" id="project.message.related.to.select">
-    <option value="com.axelor.apps.project.db.Project">Project</option>
-  </selection>
-
   <selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
     <option value="com.axelor.apps.project.db.Project">Project/Business (Project)</option>
   </selection>

@@ -26,23 +26,33 @@ import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Singleton;
 
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en";
+  protected static String MESSAGE_RELATED_SELECTION = "base.message.related.to.select";
+
+  @Inject private MetaSelectRepository metaSelectRepository;
 
   @Override
   public AppBase getAppBase() {
@@ -230,5 +240,39 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     } else {
       return processTimeout;
     }
+  }
+
+  @Override
+  @Transactional
+  public void setModel(Set<MetaModel> emailModels) {
+
+    MetaSelect metaSelect =
+        metaSelectRepository
+            .all()
+            .filter("self.name = :selection")
+            .bind("selection", MESSAGE_RELATED_SELECTION)
+            .fetchOne();
+    if (metaSelect != null) {
+      metaSelect.clearItems();
+    }
+    if (ObjectUtils.isEmpty(emailModels)) {
+      return;
+    }
+
+    if (metaSelect == null) {
+      metaSelect = new MetaSelect();
+      metaSelect.setName(MESSAGE_RELATED_SELECTION);
+      metaSelect.setModule("axelor-base");
+    }
+
+    int i = 0;
+    for (MetaModel metaModel : emailModels) {
+      MetaSelectItem item = new MetaSelectItem();
+      item.setTitle(metaModel.getName());
+      item.setValue(metaModel.getFullName());
+      item.setOrder(i++);
+      metaSelect.addItem(item);
+    }
+    metaSelectRepository.save(metaSelect);
   }
 }
