@@ -18,8 +18,7 @@
 
   <form name="supplychain-batch-form" title="Supplychain Batch"
     model="com.axelor.apps.supplychain.db.SupplychainBatch"
-    onNew="action-supplychain-batch-record-on-new"
-    onLoad="action-group-supplychain-batch-group-onload">
+    onNew="action-supplychain-batch-record-on-new">
     <panel name="mainPanel">
       <field name="actionSelect"
         if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -61,47 +60,6 @@
             selection="purchase.purchase.order.status.select" readonly="true"/>
         </panel>
       </panel>
-      <panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration"
-        showIf="actionSelect == 1" colSpan="12">
-        <field name="accountingCutOffTypeSelect"
-          onChange="action-group-supplychain-batch-onchange-accounting-type"/>
-        <field name="moveDescription" requiredIf="actionSelect == 1"/>
-        <panel colSpan="6" itemSpan="12">
-          <field name="moveDate" requiredIf="actionSelect == 1"
-            validIf="$moment(moveDate).date() == $moment(moveDate).endOf('month').date()"
-            help="Please, enter only dates with the last day of month"
-            onChange="action-supplychain-batch-group-move-date-onchange"/>
-          <label name="adviseUser"
-            title="This batch has already been running for this move date" hidden="true"
-            css="label-danger"/>
-        </panel>
-        <panel name="expensesIncomesPanel" colSpan="12" itemSpan="3"
-          showIf="actionSelect == 1">
-          <field name="automaticReverse"/>
-          <field name="automaticReconcile"
-            showIf="automaticReverse &amp;&amp; cutOffMoveStatusSelect != 5"/>
-          <panel name="reversePanel" colSpan="6"
-            showIf="actionSelect == 1 &amp;&amp; automaticReverse">
-            <field name="reverseMoveDate"
-              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
-            <field name="reverseMoveDescription"
-              requiredIf="actionSelect == 1 &amp;&amp; automaticReverse"/>
-          </panel>
-          <field name="miscOpeJournal" colSpan="6"
-            onChange="action-record-supplychain-batch-journal-onchange,action-attrs-supplychain-batch-cutoff-move-status-domain"
-            requiredIf="actionSelect == 1"/>
-          <field name="researchJournal" colSpan="6"
-            onSelect="action-attrs-supplychain-batch-set-journal-domain"
-            hideIf="accountingCutOffTypeSelect &lt;= 2"/>
-          <field name="cutOffMoveStatusSelect" colSpan="6"/>
-          <field name="previewRecordsToProcess" colSpan="6"/>
-          <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
-          <field name="ati"
-            showIf="!recoveredTax &amp;&amp; accountingCutOffTypeSelect &lt;= 2"/>
-          <field name="includeNotStockManagedProduct"
-            showIf="accountingCutOffTypeSelect &lt;= 2"/>
-        </panel>
-      </panel>
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
         <field name="period"
@@ -118,9 +76,6 @@
       </panel>
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
-      <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
-        showIf="actionSelect == 1" onClick="action-supplychain-batch-group-accounting-cut-off"
-        colSpan="12"/>
       <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves"
         showIf="actionSelect == 2" onClick="save,action-supplychain-batch-method-run-batch"
         colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -131,69 +86,6 @@
         onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
     </panel>
   </form>
-
-  <!-- ACTION GROUP -->
-  <action-group name="action-supplychain-batch-group-accounting-cut-off">
-    <action name="save"/>
-    <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
-      if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
-    <action name="action-supplychain-batch-view-preview-move-lines-to-process"
-      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
-    <action name="action-supplychain-batch-validate-twice-in-a-month"
-      if="!previewRecordsToProcess"/>
-    <action name="action-supplychain-batch-method-run-batch" if="!previewRecordsToProcess"/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-batch-group-onload">
-    <action name="action-supplychain-batch-attrs-show-label"/>
-    <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
-  </action-group>
-
-  <action-group name="action-group-supplychain-batch-onchange-accounting-type">
-    <action name="action-supplychain-batch-attrs-show-label"/>
-    <action name="action-record-supplychain-batch-set-expenses-incomes"/>
-    <action name="action-supplychain-batch-record-empty-research-journal"/>
-    <action name="action-attrs-supplychain-batch-cutoff-move-status-domain"/>
-  </action-group>
-
-  <action-group name="action-supplychain-batch-group-move-date-onchange">
-    <action name="action-supplychain-batch-attrs-show-label"/>
-    <action name="action-record-supplychain-batch-movedate-onchange"/>
-  </action-group>
-
-  <!-- ACTION ATTRS -->
-  <action-attrs name="action-supplychain-batch-attrs-show-label">
-    <attribute name="hidden"
-      expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)"
-      for="adviseUser"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-supplychain-batch-set-journal-domain">
-    <attribute name="domain"
-      expr="eval: &quot;self.journalType.technicalTypeSelect = 1&quot;" for="researchJournal"
-      if="accountingCutOffTypeSelect == 3"/>
-    <attribute name="domain"
-      expr="eval: &quot;self.journalType.technicalTypeSelect = 2&quot;" for="researchJournal"
-      if="accountingCutOffTypeSelect == 4"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-supplychain-batch-cutoff-move-status-domain">
-    <attribute name="selection-in" expr="[3]" for="cutOffMoveStatusSelect"
-      if="actionSelect == 1"/>
-    <attribute name="selection-in" expr="[3,5]" for="cutOffMoveStatusSelect"
-      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; !miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1"/>
-    <attribute name="selection-in" expr="[2,3]" for="cutOffMoveStatusSelect"
-      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1"/>
-    <attribute name="selection-in" expr="[5,2,3]" for="cutOffMoveStatusSelect"
-      if="miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook &amp;&amp; actionSelect == 1"/>
-  </action-attrs>
-
-  <!-- ACTION VALIDATE -->
-  <action-validate name="action-supplychain-batch-validate-twice-in-a-month">
-    <alert
-      message="The batch has already been running for this move date. Are you sure to continue ?"
-      if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null"/>
-  </action-validate>
 
   <!-- ACTION RECORD -->
   <action-record name="action-supplychain-batch-record-on-new"
@@ -216,42 +108,6 @@
     <field name="period" expr="eval: null"/>
   </action-record>
 
-  <action-record name="action-record-supplychain-batch-set-expenses-incomes"
-    model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    <field name="automaticReconcile" expr="true"/>
-    <field name="automaticReverse" expr="true"/>
-    <field name="previewRecordsToProcess" expr="true"/>
-    <field name="moveDate"
-      expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
-    <field name="moveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"
-      if="__user__.activeCompany != null"/>
-    <field name="reverseMoveDate"
-      expr="eval: __date__.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"/>
-    <field name="reverseMoveDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
-      if="__user__.activeCompany != null"/>
-    <field name="cutOffMoveStatusSelect"
-      expr="eval: __repo__(SupplychainBatch).STATUS_ACCOUNTED"/>
-    <field name="researchJournal" expr="eval: null"/>
-  </action-record>
-
-  <action-record name="action-record-supplychain-batch-movedate-onchange"
-    model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    <field name="reverseMoveDate" expr="eval: moveDate.plusDays(1)"
-      if="accountingCutOffTypeSelect != null &amp;&amp;moveDate != null"/>
-  </action-record>
-
-  <action-record name="action-record-supplychain-batch-journal-onchange"
-    model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    <field name="cutOffMoveStatusSelect"
-      expr="eval: __repo__(SupplychainBatch).STATUS_SIMULATED"
-      if="miscOpeJournal?.authorizeSimulatedMove"/>
-    <field name="cutOffMoveStatusSelect"
-      expr="eval: __repo__(SupplychainBatch).STATUS_DAYBOOK"
-      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
-  </action-record>
-
   <!-- ACTION METHOD -->
 
   <action-method name="action-supplychain-batch-method-run-batch">
@@ -263,32 +119,7 @@
       method="updateStockHistory"/>
   </action-method>
 
-  <action-method name="action-method-supplychain-batch-validate-movedate">
-    <call class="com.axelor.apps.supplychain.web.SupplychainBatchController"
-      method="validateDates"/>
-  </action-method>
-
   <!-- BATCH -->
-
-  <action-view name="action-batch-show-stock-move" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-in-grid"
-      if="supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; supplychainBatch.accountingCutOffTypeSelect == 1"/>
-    <view type="grid" name="stock-move-out-grid"
-      if="supplychainBatch.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF || supplychainBatch.accountingCutOffTypeSelect == 2"/>
-    <view type="form" name="stock-move-form"/>
-    <domain>:batch MEMBER OF self.batchSet</domain>
-    <context name="batch" expr="eval: __self__"/>
-  </action-view>
-
-  <action-view name="action-batch-show-stock-move-lines" title="Stock move lines"
-    model="com.axelor.apps.stock.db.StockMoveLine">
-    <view type="grid" name="stock-move-line-all-grid"/>
-    <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.id IN :stockMovelineIdList</domain>
-    <context name="stockMovelineIdList"
-      expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
-  </action-view>
 
   <action-view name="action-batch-show-stock-history-lines" title="Stock history line"
     model="com.axelor.apps.stock.db.StockHistoryLine">
@@ -296,71 +127,6 @@
     <view type="form" name="stock-history-line-form"/>
     <domain>self.period = :period</domain>
     <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
-  </action-view>
-
-  <action-view name="action-supplychain-batch-view-preview-move-lines-to-process"
-    title="Move lines concerned by cut off" model="com.axelor.apps.account.db.MoveLine">
-    <view type="grid" name="move-line-cut-off-grid"/>
-    <view type="form" name="move-line-form"/>
-    <domain>
-      self.account.manageCutOffPeriod IS TRUE
-      AND self.cutOffStartDate IS NOT NULL
-      AND
-      self.cutOffEndDate IS NOT NULL
-      AND ((:_researchJournal > 0 AND self.move.journal.id =
-      :_researchJournal)
-      OR (:_researchJournal = 0 AND
-      self.move.journal.journalType.technicalTypeSelect = :_journalType))
-      AND
-      YEAR(self.move.date) =
-      :_year
-      AND self.move.statusSelect IN (2, 3, 5)
-      AND YEAR(self.cutOffEndDate) > :_year
-      AND
-      self.move.company.id = :_company
-    </domain>
-    <context name="_researchJournal"
-      expr="eval: researchJournal != null ? researchJournal.id : 0"/>
-    <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
-    <context name="_year" expr="eval: moveDate.getYear()"/>
-    <context name="_moveDate" expr="eval: moveDate"/>
-    <context name="_company" expr="eval: company.id"/>
-    <context name="_cutOffPreview" expr="eval: true"/>
-    <context name="_batchId" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
-    title="Stock move lines concerned by cut off" model="com.axelor.apps.stock.db.StockMoveLine">
-    <view type="grid" name="stock-move-line-cut-off-grid"/>
-    <view type="form" name="stock-move-line-form"/>
-    <domain>
-      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty OR self.product IS NULL
-      OR (:_includeNotStockManagedProduct IS TRUE AND self.product.stockManaged IS FALSE))
-      AND
-      self.stockMove.invoicingStatusSelect &lt;&gt; 2
-      AND
-      self.stockMove.statusSelect = 3
-      AND
-      ((:_accountingCutOffTypeSelect = 1 AND
-      self.stockMove.typeSelect = 3)
-      OR
-      (:_accountingCutOffTypeSelect = 2 AND
-      self.stockMove.typeSelect = 2))
-      AND
-      self.stockMove.realDate &lt;= :_moveDate
-      AND
-      self.stockMove.company.id =
-      :_company
-    </domain>
-    <context name="_company" expr="eval: company.id"/>
-    <context name="_moveDate" expr="eval: moveDate"/>
-    <context name="_accountingCutOffTypeSelect" expr="eval: accountingCutOffTypeSelect"/>
-    <context name="_includeNotStockManagedProduct"
-      expr="eval: includeNotStockManagedProduct"/>
-    <context name="_cutOffPreview" expr="eval: true"/>
-    <context name="_ati" expr="eval: ati"/>
-    <context name="_recoveredTax" expr="eval: recoveredTax"/>
-    <context name="_batchId" expr="eval: id"/>
   </action-view>
 
   <search-filters name="supplychain-batch-filters"

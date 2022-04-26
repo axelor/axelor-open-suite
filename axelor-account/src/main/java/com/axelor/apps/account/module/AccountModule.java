@@ -67,6 +67,8 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
+import com.axelor.apps.account.service.AccountingCutOffService;
+import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
 import com.axelor.apps.account.service.AccountingReportDas2CheckService;
 import com.axelor.apps.account.service.AccountingReportDas2CheckServiceImpl;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
@@ -587,5 +589,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
     bind(SubrogationReleaseWorkflowService.class).to(SubrogationReleaseWorkflowServiceImpl.class);
+
+    bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
   }
 }
