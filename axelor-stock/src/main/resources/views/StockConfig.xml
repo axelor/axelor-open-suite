@@ -43,7 +43,7 @@
         <field name="pickupDefaultStockLocation"
           onSelect="action-stock-config-attrs-pickup-stocklocation-domain" colSpan="4"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="qualityControlDefaultStockLocation"
+        <field name="qualityControlDefaultStockLocationSet"
           domain="self.company = :company and self.typeSelect != 3" colSpan="4"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="wasteStockLocation"
