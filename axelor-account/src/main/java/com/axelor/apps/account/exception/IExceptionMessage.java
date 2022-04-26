@@ -1178,4 +1178,14 @@ public interface IExceptionMessage {
   static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   static final String Capital_Depreciation_Derogatory_Account = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+  static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+      "No partner account was found for company %s." /*)*/;
+
+  /** Accounting cut off service */
+  static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
+      "Accounting cut off generation report :" /*)*/;
+
+  static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
+  static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+      "You must select at least one line to validate" /*)*/;
 }

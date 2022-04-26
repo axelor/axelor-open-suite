@@ -20,15 +20,19 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -295,5 +299,14 @@ public class MoveLineServiceImpl implements MoveLineService {
         && move.getCompany() != null
         && appAccountService.getAppAccount().getManageAnalyticAccounting()
         && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
+  }
+
+  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
+    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+
+    batchAccountingCutOff.recordIdList = recordIdList;
+    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
+
+    return batchAccountingCutOff.getBatch();
   }
 }
