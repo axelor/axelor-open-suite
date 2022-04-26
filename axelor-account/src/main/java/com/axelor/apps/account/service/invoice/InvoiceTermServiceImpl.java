@@ -45,6 +45,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -1072,6 +1073,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     Reconcile invoiceTermsReconcile =
         reconcileService.createReconcile(debitMoveLine, creditMoveLine, reconciledAmount, true);
+
     reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
 
     updateInvoiceTermsAmounts(
@@ -1090,41 +1092,54 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Transactional(rollbackOn = {Exception.class})
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList) throws AxelorException {
+    List<Partner> partnerList = getPartnersFromInvoiceTermList(invoiceTermList);
 
-    List<InvoiceTerm> invoiceTermFromInvoiceList =
-        getInvoiceTermsInvoiceOrRefundSortedByDueDate(invoiceTermList, true);
-    List<InvoiceTerm> invoiceTermFromRefundList =
-        getInvoiceTermsInvoiceOrRefundSortedByDueDate(invoiceTermList, false);
-    int invoiceCounter = 0;
-    int refundCounter = 0;
-    InvoiceTerm invoiceTermFromInvoice = null;
-    InvoiceTerm invoiceTermFromRefund = null;
-    while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
-        && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
-        && invoiceCounter < invoiceTermFromInvoiceList.size()
-        && refundCounter < invoiceTermFromRefundList.size()) {
-      invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
-      invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
-      this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
-      if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
-        invoiceTermFromInvoice.setIsPaid(true);
-        invoiceCounter++;
-      }
-      if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
-        invoiceTermFromRefund.setIsPaid(true);
-        refundCounter++;
+    for (Partner partner : partnerList) {
+
+      List<InvoiceTerm> invoiceTermFromInvoiceList =
+          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(invoiceTermList, partner, true);
+      List<InvoiceTerm> invoiceTermFromRefundList =
+          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
+              invoiceTermList, partner, false);
+      int invoiceCounter = 0;
+      int refundCounter = 0;
+      InvoiceTerm invoiceTermFromInvoice = null;
+      InvoiceTerm invoiceTermFromRefund = null;
+      while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
+          && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
+          && invoiceCounter < invoiceTermFromInvoiceList.size()
+          && refundCounter < invoiceTermFromRefundList.size()) {
+        invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
+        invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
+        this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
+        if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
+          invoiceTermFromInvoice.setIsPaid(true);
+          invoiceCounter++;
+        }
+        if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+          invoiceTermFromRefund.setIsPaid(true);
+          refundCounter++;
+        }
       }
     }
     return invoiceTermList;
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDate(
-      List<InvoiceTerm> invoiceTermList, boolean isInvoice) {
+  protected List<Partner> getPartnersFromInvoiceTermList(List<InvoiceTerm> invoiceTermList) {
+    return invoiceTermList.stream()
+        .map(it -> it.getMoveLine().getPartner())
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner, boolean isInvoice) {
     return invoiceTermList.stream()
         .filter(
             it ->
-                (it.getAmountPaid().signum() > 0 && isInvoice)
-                    || (it.getAmountPaid().signum() < 0 && !isInvoice))
+                ((it.getAmountPaid().signum() > 0 && isInvoice)
+                        || (it.getAmountPaid().signum() < 0 && !isInvoice))
+                    && it.getMoveLine().getPartner().equals(partner))
         .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
         .collect(Collectors.toList());
   }
@@ -1156,6 +1171,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
+    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
     return invoiceTerm;
   }
 
@@ -1183,5 +1199,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return isSignedNegative;
+  }
+
+  protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(InvoiceTerm invoiceTerm) {
+    boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
+
+    if (isSignedNegative) {
+      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
+
+    } else {
+      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+    }
+    this.computeAmountPaid(invoiceTerm);
+
+    return invoiceTerm;
   }
 }
