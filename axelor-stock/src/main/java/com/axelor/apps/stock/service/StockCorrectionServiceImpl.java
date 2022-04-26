@@ -21,12 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
@@ -46,6 +41,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Inject private StockConfigService stockConfigService;
 
   @Inject private ProductCompanyService productCompanyService;
+
+  @Inject private StockCorrectionRepository stockCorrectionRepository;
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
@@ -210,5 +207,49 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
+  }
+
+  @Override
+  @Transactional
+  public StockCorrection generateStockCorrection(
+      StockLocation stockLocation,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      StockCorrectionReason reason)
+      throws Exception {
+
+    StockCorrection stockCorrection = new StockCorrection();
+    stockCorrection.setStatusSelect(1);
+    stockCorrection.setStockLocation(stockLocation);
+    stockCorrection.setProduct(product);
+    if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
+      stockCorrection.setTrackingNumber(trackingNumber);
+    }
+    stockCorrection.setRealQty(realQty);
+    stockCorrection.setFutureQty(realQty); // à adapter
+    stockCorrection.setStockCorrectionReason(reason);
+    this.stockCorrectionRepository.save(stockCorrection);
+
+    if (false) { // Quelles erreurs création
+      throw new Exception();
+    }
+
+    return stockCorrection;
+  }
+
+  @Override
+  @Transactional
+  public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
+    BigDecimal diff = stockCorrection.getRealQty().subtract(realQty);
+
+    stockCorrection.setRealQty(realQty);
+    if (BigDecimal.ZERO.compareTo(diff) > 0) {
+      stockCorrection.setFutureQty(stockCorrection.getFutureQty().subtract(diff));
+    } else if (BigDecimal.ZERO.compareTo(diff) < 0) {
+      stockCorrection.setFutureQty(stockCorrection.getFutureQty().add(diff));
+    }
+
+    this.stockCorrectionRepository.save(stockCorrection);
   }
 }

@@ -17,16 +17,8 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Incoterm;
-import com.axelor.apps.stock.db.ShipmentMode;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.stock.db.*;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -48,7 +40,7 @@ public interface StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
@@ -79,12 +71,6 @@ public interface StockMoveService {
   /**
    * Generic method to create any stock move for internal stock move (without partner information)
    *
-   * @param clientPartner
-   * @param shipmentMode
-   * @param freightCarrierMode
-   * @param carrierPartner
-   * @param forwarderPartner
-   * @param incoterm
    * @param fromAddress
    * @param toAddress
    * @param company
@@ -92,7 +78,7 @@ public interface StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
@@ -107,6 +93,17 @@ public interface StockMoveService {
       LocalDate estimatedDate,
       String note,
       int typeSelect)
+      throws AxelorException;
+
+  /** To create an internal stock move with one product, mostly for mobile app (API AOS) * */
+  StockMove createStockMoveMobility(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      Company company,
+      Product product,
+      TrackingNumber trackNb,
+      BigDecimal movedQty,
+      Unit unit)
       throws AxelorException;
 
   public void validate(StockMove stockMove) throws AxelorException;
