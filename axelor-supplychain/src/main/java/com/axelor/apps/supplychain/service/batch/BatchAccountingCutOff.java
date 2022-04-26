@@ -51,12 +51,11 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected static final int FETCH_LIMIT = 1;
-
   protected AccountingCutOffService cutOffService;
   protected StockMoveRepository stockMoveRepository;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected MoveLineRepository moveLineRepository;
+  protected SupplychainBatchRepository supplychainBatchRepository;
   public List<Long> recordIdList;
 
   @Inject
@@ -64,12 +63,14 @@ public class BatchAccountingCutOff extends BatchStrategy {
       AccountingCutOffService cutOffService,
       StockMoveRepository stockMoveRepository,
       StockMoveLineRepository stockMoveLineRepository,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      SupplychainBatchRepository supplychainBatchRepository) {
     super();
     this.cutOffService = cutOffService;
     this.stockMoveRepository = stockMoveRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.moveLineRepository = moveLineRepository;
+    this.supplychainBatchRepository = supplychainBatchRepository;
   }
 
   @Override
@@ -109,6 +110,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
+      supplychainBatchRepository.find(supplychainBatch.getId());
 
       for (StockMove stockMove : stockMoveList) {
         ++offset;
@@ -136,6 +138,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
+      supplychainBatchRepository.find(supplychainBatch.getId());
 
       for (Move move : moveList) {
         ++offset;
