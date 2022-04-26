@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -410,10 +411,12 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = request.getContext().getParent().asType(Move.class);
-      List<Long> analyticAccountList = new ArrayList<Long>();
+      List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+
+      for (int i = 1; i <= 5; i++) {
+
         if (move != null
             && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
           analyticAccountList = analyticLineService.getAxisDomains(moveLine, move.getCompany(), i);
@@ -423,17 +426,23 @@ public class MoveLineController {
                 "domain",
                 "self.id IN (0)");
           } else {
-            String idList =
-                analyticAccountList.stream()
-                    .map(id -> id.toString())
-                    .collect(Collectors.joining(","));
-            response.setAttr(
-                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                "domain",
-                "self.id IN ("
-                    + idList
-                    + ") AND self.statusSelect = "
-                    + AnalyticAccountRepository.STATUS_ACTIVE);
+            if (moveLine.getMove().getCompany() != null) {
+              String idList =
+                  analyticAccountList.stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(","));
+
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "domain",
+                  "self.id IN ("
+                      + idList
+                      + ") AND self.statusSelect = "
+                      + AnalyticAccountRepository.STATUS_ACTIVE
+                      + " AND (self.company is null OR self.company.id = "
+                      + moveLine.getMove().getCompany().getId()
+                      + ")");
+            }
           }
         }
       }
@@ -559,6 +568,18 @@ public class MoveLineController {
         }
         Beans.get(AnalyticDistributionTemplateService.class)
             .validateTemplatePercentages(moveLine.getAnalyticDistributionTemplate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().getParent() != null) {
+        MoveLine moveLine = request.getContext().asType(MoveLine.class);
+        Move move = request.getContext().getParent().asType(Move.class);
+        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

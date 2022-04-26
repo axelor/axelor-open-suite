@@ -77,7 +77,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
       register.setRating(overallRatingToApply);
     }
 
-    Beans.get(TrainingSessionRepository.class).save(trainingSession);
+    trainingSessionRepo.save(trainingSession);
   }
 
   @Override
@@ -90,7 +90,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
       register.setStatusSelect(3);
     }
 
-    Beans.get(TrainingSessionRepository.class).save(trainingSession);
+    trainingSessionRepo.save(trainingSession);
   }
 
   @Override

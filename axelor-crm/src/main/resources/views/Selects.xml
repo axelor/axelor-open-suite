@@ -169,4 +169,8 @@
     <option value="12">December</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="crm.batch.batch.type.select">
+    <option value="400">CRM batch</option>
+  </selection>
+
 </object-views>

@@ -140,6 +140,8 @@ import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.YearControlService;
 import com.axelor.apps.account.service.YearControlServiceImpl;
+import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
+import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAccountServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
@@ -226,6 +228,8 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
+import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -490,6 +494,8 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
+    bind(MoveRemoveService.class).to(MoveRemoveServiceImpl.class);
+
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
 
     bind(AccountManagementRepository.class).to(AccountManagementAccountRepository.class);
@@ -529,6 +535,8 @@ public class AccountModule extends AxelorModule {
     bind(ClosureAssistantLineService.class).to(ClosureAssistantLineServiceImpl.class);
 
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
+
+    bind(AccountConfigAnalyticService.class).to(AccountConfigAnalyticServiceImpl.class);
 
     bind(SequenceBaseRepository.class).to(SequenceAccountManagementRepository.class);
 

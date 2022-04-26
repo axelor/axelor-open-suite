@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -36,4 +37,8 @@ public interface MoveLineControlService {
   boolean isInvoiceTermReadonly(MoveLine moveLine, User user);
 
   boolean displayInvoiceTermWarningMessage(MoveLine moveLine);
+
+  Move setMoveLineDates(Move move) throws AxelorException;
+
+  Move setMoveLineOriginDates(Move move) throws AxelorException;
 }

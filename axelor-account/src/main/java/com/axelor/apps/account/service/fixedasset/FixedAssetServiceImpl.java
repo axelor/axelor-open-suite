@@ -627,4 +627,26 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAssetCategory.getAnalyticDistributionTemplate());
     fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
+
+  @Override
+  public void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+      throws AxelorException {
+    if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          fixedAsset.getQty().toString());
+    }
+    if (disposalQty.compareTo(fixedAsset.getQty()) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
+          fixedAsset.getQty().toString());
+    }
+    if (disposalQty.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
+    }
+  }
 }

@@ -26,7 +26,8 @@
   </input>
 
   <input file="app_project.csv" type="com.axelor.apps.base.db.AppProject"
-    search="self.id is not null" separator=";">
+    search="self.id is not null" separator=";"
+    call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind to="defaultTaskStatusSet" column="projectTaskStatusSet"
       search="self.importId in :projectTaskStatusSet"
       eval="projectTaskStatusSet.split('\\|') as List"/>

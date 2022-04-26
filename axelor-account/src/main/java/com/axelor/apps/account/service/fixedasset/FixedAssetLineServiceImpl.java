@@ -85,23 +85,17 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             : fixedAsset.getFirstServiceDate();
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
-            previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
-
+            previousRealizedDate.plusDays(1).withDayOfMonth(1), disposalDate.withDayOfMonth(1));
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
                 BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
-
-    int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
     BigDecimal depreciationRate =
         BigDecimal.valueOf(100)
             .divide(
-                BigDecimal.valueOf(numberOfDepreciation),
+                BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
                 FixedAssetServiceImpl.CALCULATION_SCALE,
                 RoundingMode.HALF_UP);
     BigDecimal ddRate = BigDecimal.ONE;
@@ -274,7 +268,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     } else {
       correspondingFixedAssetLine = getExistingLine(fixedAsset, disposalDate);
       FixedAssetLine previousRealizedLine =
-          findOldestFixedAssetLine(
+          findNewestFixedAssetLine(
                   fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
               .orElse(null);
       if (previousRealizedLine != null

@@ -5,11 +5,24 @@
 
   <form name="payment-mode-form" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
+    <extend target="//panel[@name='mainPanel']/field[@name='typeSelect']">
+      <attribute name="onChange"
+        value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']/field[@name='inOutSelect']">
+      <attribute name="onChange"
+        value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    </extend>
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel-tabs name="mainPanelTab">
           <panel name="mainAccountingSettingsTab" title="General accounting config.">
-            <field name="accountingTriggerSelect"/>
+            <panel name="accountingTriggerPanel" stacked="true">
+              <field name="accountingTriggerSelect" hidden="true"
+                hideIf="typeSelect == 7 &amp;&amp; inOutSelect == 1"/>
+              <field name="accountingTriggerSelect" hidden="true"
+                showIf="typeSelect == 7 &amp;&amp; inOutSelect == 1" selection-in="[1,5]"/>
+            </panel>
             <panel-related name="accountManagementListPanel"
               field="accountManagementList" grid-view="account-management-payment-mode-grid"
               form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
@@ -27,6 +40,14 @@
       </insert>
     </extend>
   </form>
+
+  <action-record name="action-payment-mode-record-accounting-trigger-init-cheque-in"
+    model="com.axelor.apps.account.db.PaymentMode">
+    <field name="accountingTriggerSelect" expr="1"
+      if="typeSelect == 7 &amp;&amp; inOutSelect == 1 &amp;&amp; (accountingTriggerSelect != 1 || accountingTriggerSelect != 5)"/>
+    <field name="accountingTriggerSelect" expr="0"
+      if="(typeSelect != 7 || typeSelect != 1) &amp;&amp; accountingTriggerSelect == 5"/>
+  </action-record>
 
   <action-method name="action-method-account-set-read-only-if-in-move">
     <call class="com.axelor.apps.account.web.PaymentModeController" method="setReadOnly"/>

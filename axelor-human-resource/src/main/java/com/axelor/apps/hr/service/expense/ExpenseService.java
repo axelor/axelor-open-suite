@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -100,12 +100,12 @@ public interface ExpenseService {
       throws AxelorException;
 
   /**
-   * Get the expense from user, if no expense is found create one.
+   * Get the expense from employee, if no expense is found create one.
    *
-   * @param user
+   * @param employee
    * @return
    */
-  public Expense getOrCreateExpense(User user);
+  public Expense getOrCreateExpense(Employee employee);
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);
 
