@@ -148,14 +148,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       incrementDone();
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
+        payrollPreparationService.getPayrollPreparationExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -177,15 +177,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       total++;
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class)
-            .getPayrollPreparationMeilleurGestionExportHeader(),
+        payrollPreparationService.getPayrollPreparationMeilleurGestionExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);

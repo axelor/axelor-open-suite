@@ -129,6 +129,8 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     copy.setIfrsFixedAssetLineList(null);
     copy.setAssociatedFixedAssetsSet(null);
     copy.setCorrectedAccountingValue(null);
+    copy.setSaleAccountMove(null);
+    copy.setDisposalMove(null);
     return copy;
   }
 }

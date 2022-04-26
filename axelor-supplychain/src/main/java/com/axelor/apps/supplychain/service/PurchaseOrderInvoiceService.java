@@ -80,4 +80,28 @@ public interface PurchaseOrderInvoiceService {
       LocalDate originDate,
       PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  /**
+   * Generate a supplier advance payment from a purchaseOrder.
+   *
+   * @param purchaseOrder : the purchase order
+   * @param amountToInvoice : the amount of the advance payment
+   * @param isPercent : if the amount specified is in percent or not
+   * @return Invoice : The generated supplier advance payment
+   */
+  Invoice generateSupplierAdvancePayment(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException;
+
+  /**
+   * Throws an axelor exception if PurchaseOrder is not invoiceable.
+   *
+   * @param purchaseOrder
+   * @param amountToInvoice
+   * @param isPercent
+   * @throws AxelorException
+   */
+  void displayErrorMessageIfPurchaseOrderIsInvoiceable(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException;
 }

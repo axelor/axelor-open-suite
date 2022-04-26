@@ -1,0 +1,6 @@
+---
+title: "Identification of 'Value for Collection' type accounting accounts"
+type: feature
+description: |
+  In order to limit the number of payment methods, the number of processing method, we need to set up a transition account "Value for Collection" type.
+  We also need to create a unique payment method for incoming cheque and add a blocking control.
