@@ -70,13 +70,13 @@
 
   <form name="forecast-report-form" title="Forecast Report"
     model="com.axelor.apps.cash.management.db.ForecastRecap"
-    onNew="action-forecast-report-record-default-on-new">
+    onNew="action-forecast-report-record-default-on-new" width="large">
     <panel name="mainPanel">
       <field name="company" canEdit="false"
         onChange="action-forecast-record-bank, action-forecast-recap-record-currency" colSpan="4"
         required="true"/>
       <field name="bankDetailsSet" onChange="action-forecast-recap-method-starting-balance"
-        onSelect="action-forecast-recap-attrs-bank-details-domain"
+        onSelect="action-forecast-recap-attrs-bank-details-domain" widget="tagSelect"
         if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4"/>
       <field name="salesMan" canNew="false" canEdit="false" canView="false" colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" required="true"/>
