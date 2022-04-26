@@ -19,8 +19,16 @@ package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.db.*;
-import com.axelor.apps.hr.db.repo.*;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LunchVoucherAdvance;
+import com.axelor.apps.hr.db.LunchVoucherMgt;
+import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.HRConfigRepository;
+import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
+import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
+import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -33,7 +41,11 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
@@ -103,8 +115,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
         }
         // the line exist and is not already calculated, update it
         else {
-          if (lunchVoucherMgtLine.getStatusSelect()
-              != LunchVoucherMgtLineRepository.STATUS_CALCULATED) {
+          if (!lunchVoucherMgtLine
+              .getStatusSelect()
+              .equals(LunchVoucherMgtLineRepository.STATUS_CALCULATED)) {
             lunchVoucherMgtLineService.computeAllAttrs(
                 employee, lunchVoucherMgt, lunchVoucherMgtLine);
           }
