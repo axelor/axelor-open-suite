@@ -257,6 +257,7 @@ public class LeadServiceImpl implements LeadService {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
     authorizedStatus.add(LeadRepository.LEAD_STATUS_ASSIGNED);
+    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
     if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

@@ -79,7 +79,7 @@
 "Calls type by team",,,
 "Calls type by user",,,
 "Can not mark as lost an already lost lead.",,,
-"Can only assign to yourself new or assigned lead.",,,
+"Can only assign to yourself new, assigned or in process lead.",,,
 "Can only convert new, assigned or in process lead.",,,
 "Can only recycle a lost lead.",,,
 "Can only start new or assigned lead.",,,

@@ -69,7 +69,7 @@ public interface IExceptionMessage {
   static final String LEAD_CONVERT_WRONG_STATUS = /*$$(*/
       "Can only convert new, assigned or in process lead." /*)*/;
   static final String LEAD_ASSIGN_TO_ME_WRONG_STATUS = /*$$(*/
-      "Can only assign to yourself new or assigned lead." /*)*/;
+      "Can only assign to yourself new, assigned or in process lead." /*)*/;
   static final String LEAD_LOSE_WRONG_STATUS = /*$$(*/
       "Can not mark as lost an already lost lead." /*)*/;
 
