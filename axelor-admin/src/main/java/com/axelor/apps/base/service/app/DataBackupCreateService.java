@@ -69,6 +69,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -468,21 +469,11 @@ public class DataBackupCreateService {
               csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
               headerFlag = false;
             }
+
             if ("Partner".equals(metaModel.getName()) && dataBackup.getAnonymizeData()) {
-              dataArr.set(
-                  headerArr.indexOf("simpleFullName"),
-                  ComputeNameTool.computeSimpleFullName(
-                      dataArr.get(headerArr.indexOf("firstName")),
-                      dataArr.get(headerArr.indexOf("name")),
-                      Long.parseLong(dataArr.get(headerArr.indexOf("importId")))));
-              dataArr.set(
-                  headerArr.indexOf("fullName"),
-                  ComputeNameTool.computeFullName(
-                      dataArr.get(headerArr.indexOf("firstName")),
-                      dataArr.get(headerArr.indexOf("name")),
-                      dataArr.get(headerArr.indexOf("partnerSeq")),
-                      Long.parseLong(dataArr.get(headerArr.indexOf("importId")))));
+              dataArr = csvComputeAnonymizedFullname(dataArr, headerArr);
             }
+
             csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
           }
         }
@@ -497,10 +488,51 @@ public class DataBackupCreateService {
     } catch (ClassNotFoundException e) {
       throw new AxelorException(
           e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
-    } catch (AxelorException e) {
-      throw e;
     }
     return csvInput;
+  }
+
+  protected List<String> csvComputeAnonymizedFullname(
+      List<String> dataArr, List<String> headerArr) {
+
+    if (headerArr.indexOf("simpleFullName") < 0
+        || headerArr.indexOf("fullName") < 0
+        || headerArr.indexOf("firstName") < 0
+        || headerArr.indexOf("name") < 0
+        || headerArr.indexOf("importId") < 0) {
+      return dataArr;
+    }
+
+    List<Integer> headersIndex = new ArrayList<>();
+    int headerMax;
+
+    headersIndex.add(headerArr.indexOf("simpleFullName"));
+    headersIndex.add(headerArr.indexOf("fullName"));
+    headersIndex.add(headerArr.indexOf("firstName"));
+    headersIndex.add(headerArr.indexOf("name"));
+    headersIndex.add(headerArr.indexOf("importId"));
+
+    headerMax = Collections.max(headersIndex);
+
+    if (dataArr.size() < headerMax) {
+      return dataArr;
+    }
+
+    dataArr.set(
+        headerArr.indexOf("simpleFullName"),
+        ComputeNameTool.computeSimpleFullName(
+            dataArr.get(headerArr.indexOf("firstName")),
+            dataArr.get(headerArr.indexOf("name")),
+            dataArr.get(headerArr.indexOf("importId"))));
+    dataArr.set(
+        headerArr.indexOf("fullName"),
+        ComputeNameTool.computeFullName(
+            dataArr.get(headerArr.indexOf("firstName")),
+            dataArr.get(headerArr.indexOf("name")),
+            dataArr.get(headerArr.indexOf("partnerSeq")),
+            dataArr.get(headerArr.indexOf("importId"))));
+
+    return dataArr;
   }
 
   protected boolean isPropertyExportable(Property property) {

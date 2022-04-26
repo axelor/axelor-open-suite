@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 
 public class ComputeNameTool {
 
-  public static String computeSimpleFullName(String firstName, String lastName, Long id) {
+  public static String computeSimpleFullName(String firstName, String lastName, String id) {
     if (!Strings.isNullOrEmpty(lastName) && !Strings.isNullOrEmpty(firstName)) {
       return lastName + " " + firstName;
     } else if (!Strings.isNullOrEmpty(lastName)) {
@@ -12,12 +12,12 @@ public class ComputeNameTool {
     } else if (!Strings.isNullOrEmpty(firstName)) {
       return firstName;
     } else {
-      return "" + id;
+      return id;
     }
   }
 
   public static String computeFullName(
-      String firstName, String lastName, String sequence, Long id) {
+      String firstName, String lastName, String sequence, String id) {
     if (!Strings.isNullOrEmpty(sequence)) {
       return sequence + " - " + lastName + " " + firstName;
     }

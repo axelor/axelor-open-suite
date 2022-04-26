@@ -272,13 +272,16 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeFullName(Partner partner) {
     return ComputeNameTool.computeFullName(
-        partner.getName(), partner.getFirstName(), partner.getPartnerSeq(), partner.getId());
+        partner.getName(),
+        partner.getFirstName(),
+        partner.getPartnerSeq(),
+        partner.getId().toString());
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
     return ComputeNameTool.computeSimpleFullName(
-        partner.getName(), partner.getFirstName(), partner.getId());
+        partner.getName(), partner.getFirstName(), partner.getId().toString());
   }
 
   @Override
