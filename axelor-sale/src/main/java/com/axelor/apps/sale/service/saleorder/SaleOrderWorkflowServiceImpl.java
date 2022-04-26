@@ -113,7 +113,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
+          I18n.get(IExceptionMessage.SALE_ORDER_CANCEL_WRONG_STATUS));
     }
 
     Query q =

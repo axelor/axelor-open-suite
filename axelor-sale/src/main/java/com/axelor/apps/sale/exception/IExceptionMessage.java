@@ -90,4 +90,6 @@ public interface IExceptionMessage {
       "Can only confirm a finalized quotation." /*)*/;
   static final String SALE_ORDER_COMPLETE_WRONG_STATUS = /*$$(*/
       "Can only complete a confirmed sale order." /*)*/;
+  static final String SALE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a drafted or finalized sale order." /*)*/;
 }
