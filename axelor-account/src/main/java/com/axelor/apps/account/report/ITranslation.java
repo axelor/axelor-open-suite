@@ -259,6 +259,8 @@ public interface ITranslation {
       "AccountingReportType4.ageOfTheDebt"; /*)*/
   public static final String ACCOUNTING_REPORT_4_INVOICE_REMAINING_AMOUNT = /*$$(*/
       "AccountingReportType4.invoiceRemainingAmount"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_TERM_N = /*$$(*/
+      "AccountingReportType4.termN"; /*)*/
 
   public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
       "AccountingReportType7.title"; /*)*/
@@ -655,6 +657,12 @@ public interface ITranslation {
   public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/
       "ChequeDepositSlip.chequeDate"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_CURRENCY_CODE = /*$$(*/
+      "ChequeDepositSlip.currencyCode"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_SIGNATURE = /*$$(*/
+      "ChequeDepositSlip.signature"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_REMINDER_NOTE = /*$$(*/
+      "ChequeDepositSlip.reminderNote"; /*)*/
 
   public static final String ACCOUNTING_REPORT_16_TITLE =
       /*$$(*/ "AccountingReportType16.title"; /*)*/

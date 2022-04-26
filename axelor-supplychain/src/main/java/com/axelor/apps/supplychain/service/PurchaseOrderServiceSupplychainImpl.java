@@ -19,7 +19,9 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -147,6 +149,41 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return purchaseOrder;
   }
 
+  @Override
+  public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    super._computePurchaseOrder(purchaseOrder);
+
+    if (appSupplychainService.isApp("supplychain")) {
+      if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
+        purchaseOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(purchaseOrder));
+      }
+    }
+  }
+
+  protected BigDecimal computeTotalInvoiceAdvancePayment(PurchaseOrder purchaseOrder) {
+    BigDecimal total = BigDecimal.ZERO;
+
+    if (purchaseOrder.getId() == null) {
+      return total;
+    }
+
+    List<Invoice> advancePaymentInvoiceList =
+        Beans.get(InvoiceRepository.class)
+            .all()
+            .filter(
+                "self.purchaseOrder.id = :purchaseOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect")
+            .bind("purchaseOrderId", purchaseOrder.getId())
+            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .fetch();
+    if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
+      return total;
+    }
+    for (Invoice advance : advancePaymentInvoiceList) {
+      total = total.add(advance.getAmountPaid());
+    }
+    return total;
+  }
+
   @Transactional
   @Override
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
@@ -250,16 +287,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.requestPurchaseOrder(purchaseOrder);
       return;
     }
 
     super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoPurchaseCreatingStatusSelect();
+        appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
         && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);

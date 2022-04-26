@@ -67,6 +67,49 @@
     <field name="paymentMode"/>
   </grid>
 
+  <form name="account-management-form" title="Account management"
+    id="account-account-management-form" model="com.axelor.apps.account.db.AccountManagement"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-account-management-group-onNew,action-account-management-attrs-global-accounting-cash-account-title"/>
+      <attribute name="onLoad"
+        value="action-account-management-group-on-load,action-account-management-attrs-global-accounting-cash-account-title"/>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
+      <attribute name="showIf"
+        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
+      <attribute name="requiredIf"
+        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
+      <insert position="after">
+        <field name="chequeDepositJournal"
+          domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false" hidden="true"
+          showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+      </insert>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='paymentMode.accountingMethodSelect']">
+      <insert position="after">
+        <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
+        <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs
+    name="action-account-management-attrs-global-accounting-cash-account-title">
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model == 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; __parent__.typeSelect == 7 &amp;&amp; __parent__.inOutSelect == 1"/>
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model != 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1"/>
+  </action-attrs>
+
   <action-group name="action-group-account-account-management-onchange-common">
     <action name="action-account-management-clean-company"/>
     <action name="action-account-management-product-validate"/>

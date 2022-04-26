@@ -32,6 +32,10 @@ public interface PaymentModeService {
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
+  public Account getPaymentModeAccount(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException;
+
   public AccountManagement getAccountManagement(
       PaymentMode paymentMode, Company company, BankDetails bankDetails);
 
@@ -40,6 +44,10 @@ public interface PaymentModeService {
 
   public Journal getPaymentModeJournal(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
+
+  public Journal getPaymentModeJournal(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException;
 
   /**
    * @param paymentMode

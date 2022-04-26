@@ -222,6 +222,17 @@
       expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
   </action-view>
 
+  <menuitem name="account-root-payments-cheque-deposit-slip-all"
+    parent="account-root-payments" title="Deposit slips"
+    action="account.root.payments.cheque.deposit.slip.all" order="15"/>
+
+  <action-view name="account.root.payments.cheque.deposit.slip.all"
+    title="Deposit slips" model="com.axelor.apps.account.db.DepositSlip">
+    <view type="grid" name="cheque-deposit-slip-grid"/>
+    <view type="form" name="cheque-deposit-slip-form"/>
+    <view-param name="search-filters" value="cheque-deposit-slip-filters"/>
+  </action-view>
+
   <menuitem name="account-root-periodic-processing" parent="account-root"
     title="Periodical processing" order="10"/>
 
@@ -375,17 +386,6 @@
     <view type="grid" name="reimbursement-grid"/>
     <view type="form" name="reimbursement-form"/>
     <view-param name="search-filters" value="reimbursement-filters"/>
-  </action-view>
-
-  <menuitem name="account-root-accounting-cheque-deposit-slip-all"
-    parent="account-root-accounting" title="Deposit slips"
-    action="account.root.accounting.cheque.deposit.slip.all"/>
-
-  <action-view name="account.root.accounting.cheque.deposit.slip.all"
-    title="Deposit slips" model="com.axelor.apps.account.db.DepositSlip">
-    <view type="grid" name="cheque-deposit-slip-grid"/>
-    <view type="form" name="cheque-deposit-slip-form"/>
-    <view-param name="search-filters" value="cheque-deposit-slip-filters"/>
   </action-view>
 
   <menuitem name="account-root-accounting-accounting-reports"

@@ -224,4 +224,6 @@ public interface IExceptionMessage {
 
   static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
       "No time sheet found for employee %s" /*)*/;
+
+  static final String NO_USER_FOR_EMPLOYEE = /*$$(*/ "Please fill a user for the employee %s" /*)*/;
 }
