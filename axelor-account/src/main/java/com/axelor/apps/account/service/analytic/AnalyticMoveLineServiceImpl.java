@@ -34,7 +34,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,6 +52,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  protected AppBaseService appBaseService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -58,12 +61,14 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      AppBaseService appBaseService) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -224,8 +229,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return analyticMoveLine;
   }
 
-  @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+  protected BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
     if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
       return analyticMoveLine
           .getPercentage()
@@ -240,8 +244,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return BigDecimal.ZERO;
   }
 
-  @Override
-  public BigDecimal getAnalyticAmount(InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
+  protected BigDecimal getAnalyticAmount(
+      InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
     if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
       return analyticMoveLine
           .getPercentage()
@@ -249,5 +253,59 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine) {
+    if (MoveLine.class.equals(parent.getContextClass())) {
+      MoveLine line = parent.asType(MoveLine.class);
+      if (analyticMoveLine != null && line != null) {
+        return getAnalyticAmount(line, analyticMoveLine);
+      }
+    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
+      InvoiceLine line = parent.asType(InvoiceLine.class);
+      if (analyticMoveLine != null && line != null) {
+        return getAnalyticAmount(line, analyticMoveLine);
+      }
+    }
+    return BigDecimal.ZERO;
+  }
+
+  @Override
+  public AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException {
+    if (MoveLine.class.equals(parent.getContextClass())) {
+      MoveLine line = parent.asType(MoveLine.class);
+      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return accountConfigService
+            .getAccountConfig(line.getAccount().getCompany())
+            .getAnalyticJournal();
+      }
+    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
+      InvoiceLine line = parent.asType(InvoiceLine.class);
+      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return accountConfigService
+            .getAccountConfig(line.getAccount().getCompany())
+            .getAnalyticJournal();
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public LocalDate getDateFromParent(Context parent) {
+    if (MoveLine.class.equals(parent.getContextClass())) {
+      MoveLine line = parent.asType(MoveLine.class);
+      if (line.getDate() != null) {
+        return line.getDate();
+      } else if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return appBaseService.getTodayDate(line.getAccount().getCompany());
+      }
+    } else if (InvoiceLine.class.equals(parent.getContextClass())) {
+      InvoiceLine line = parent.asType(InvoiceLine.class);
+      if (line.getAccount() != null && line.getAccount().getCompany() != null) {
+        return appBaseService.getTodayDate(line.getAccount().getCompany());
+      }
+    }
+    return LocalDate.now();
   }
 }
