@@ -427,8 +427,7 @@
           </editor>
         </field>
       </panel>
-      <panel name="othersPanel" title="Others"
-        showIf="move.statusSelect == 2 || move.statusSelect == 3 || taxLine != null" readonly="true">
+      <panel name="othersPanel" title="Others" readonly="true">
         <field name="taxLine" canEdit="false" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
           showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
