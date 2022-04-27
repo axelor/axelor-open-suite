@@ -456,6 +456,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               expenseLine.getComments() != null
                   ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                   : "");
+      moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
