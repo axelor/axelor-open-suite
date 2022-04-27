@@ -40,6 +40,8 @@
     <string name="internalReference" title="Internal Ref."/>
     <integer name="receiptState" title="Receipt State"
       selection="purchase.order.receipt.state" readonly="true" default="1"/>
+    <decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20"
+      readonly="true"/>
 
     <!-- Tax Number and FiscalPosition -->
     <many-to-one name="taxNumber" title="Tax number"

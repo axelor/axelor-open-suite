@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" lang="java"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 

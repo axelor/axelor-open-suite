@@ -128,7 +128,7 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-fixed-asset-clear-residual-value"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
         <field name="computationMethodSelect"
           onChange="action-fixed-asset-attrs-set-degressive-coef"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
@@ -163,7 +163,7 @@
       <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1"
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="isIfrsEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-ifrs-depreciation-equal,action-attrs-fixed-asset-clear-residual-value"/>
+          onChange="action-attrs-fixed-asset-ifrs-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
         <field name="ifrsComputationMethodSelect"/>
         <field name="ifrsDegressiveCoef" showIf="ifrsComputationMethodSelect == 'degressive'"/>
         <field name="ifrsNumberOfDepreciation"
@@ -235,7 +235,7 @@
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" min="0"
         readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-      <field name="residualValue"/>
+      <field name="residualValue" readonly="true"/>
       <field name="accountingValue"
         hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"/>
     </panel>
@@ -258,7 +258,8 @@
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid"/>
       <field name="saleAccountMove" domain="self.company = :company"
-        showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "/>
+        showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
+        readonly="true"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
@@ -307,7 +308,7 @@
       <label
         title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
       <button name="splitBtn" title="Split" colSpan="4"
-        onClick="action-method-account-fixed-asset-split"/>
+        onClick="action-method-account-fixed-asset-split,close"/>
     </panel>
   </form>
   <action-method name="action-method-account-fixed-asset-split">
@@ -429,7 +430,7 @@
 
   <action-group name="action-group-fixed-asset-onload">
     <action name="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
-    <action name="action-attrs-fixed-asset-clear-residual-value"/>
+    <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
     <action name="action-method-fixed-asset-change-button-title"/>
     <action name="action-method-fixed-asset-hide-analytic"/>
   </action-group>
@@ -566,7 +567,8 @@
       if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     <action name="action-fixed-asset-account-method-set-depreciation-plan-select-to-none"/>
     <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
-    <action name="action-attrs-fixed-asset-clear-residual-value"/>
+    <action name="action-attrs-account-fixed-asset-reset-residual-value"/>
+    <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
   </action-group>
 
   <action-group name="action-group-account-record-on-change-asset-category">
@@ -581,7 +583,8 @@
       if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     <action name="action-fixed-asset-method-onchange-set-values"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
-    <action name="action-attrs-fixed-asset-clear-residual-value"/>
+    <action name="action-attrs-account-fixed-asset-reset-residual-value"/>
+    <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
   </action-group>
 
   <action-attrs name="action-account-attrs-fill-depreciation-plan">
@@ -602,7 +605,7 @@
     <attribute name="value" for="fiscalDurationInMonth"
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="fiscalNumberOfDepreciation"
-      expr="eval:fixedAssetCategory.numberOfDepreciation"/>
+      expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
     <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
     <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false"
       if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
@@ -622,7 +625,7 @@
     <attribute name="value" for="ifrsDurationInMonth"
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="ifrsNumberOfDepreciation"
-      expr="eval:fixedAssetCategory.numberOfDepreciation"/>
+      expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
     <attribute name="value" for="isIfrsEqualToFiscalDepreciation" expr="eval:true"/>
 
   </action-attrs>
@@ -722,7 +725,7 @@
     <attribute name="value" for="computationMethodSelect" expr="eval:'linear'"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-fixed-asset-clear-residual-value">
+  <action-attrs name="action-attrs-account-fixed-asset-reset-residual-value">
     <attribute name="value" for="residualValue" expr="eval:0"
       if="isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
     <attribute name="value" for="residualValue" expr="eval:0"
@@ -731,6 +734,9 @@
       if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; isIfrsEqualToFiscalDepreciation"/>
     <attribute name="value" for="residualValue" expr="eval:0"
       if="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; isEqualToFiscalDepreciation"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-fixed-asset-set-readonly-residual-value">
     <attribute name="readonly" for="residualValue"
       expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>

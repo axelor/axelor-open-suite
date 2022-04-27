@@ -169,7 +169,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
+                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
+                    + "self.prodProcess.producedProductStockLocation in (?2)) "
                     + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
@@ -572,6 +573,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);
           if (defaultBOM != null) {
             this.assignProductLevel(defaultBOM, level);
+          }
+          List<BillOfMaterial> alternativesBOM =
+              billOfMaterialService.getAlternativesBOM(subProduct, company);
+          for (BillOfMaterial alternativeBom : alternativesBOM) {
+            this.assignProductLevel(alternativeBom, level);
           }
         }
       }

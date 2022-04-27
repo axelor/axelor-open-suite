@@ -712,7 +712,7 @@
 	                      <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
 	                      <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
 	                      <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
 	                  </dl>
 
@@ -977,7 +977,7 @@
                         <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
                         <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
                         <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                     </dl>
                     ]]>
@@ -1077,7 +1077,7 @@
                             <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
                             <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
                             <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                         </dl>
                         ]]>
@@ -1703,7 +1703,7 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="salespersonUser" expr="eval:__user__"
       if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"

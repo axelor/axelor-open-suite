@@ -199,7 +199,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
 
-    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+    if (!appBusinessProjectService.isApp("business-project")) {
       return project;
     }
 

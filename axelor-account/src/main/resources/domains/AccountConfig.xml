@@ -43,6 +43,8 @@
     <many-to-one name="creditNoteJournalType"
       ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
+    <many-to-one name="supplierAdvancePaymentAccount"
+      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
 
     <!-- ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
@@ -58,7 +60,7 @@
     <many-to-one name="cashPositionVariationAccount"
       ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
-      title="Advance Payment Account"/>
+      title="Customer advance payment account"/>
     <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
     <many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account"
@@ -298,6 +300,11 @@
     <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
       ref="com.axelor.apps.account.db.Account"/>
 
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultProfitAccount"
+      title="Result account (profit)"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="resultLossAccount"
+      title="Result account (loss)"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -439,6 +446,9 @@
       <field name="invoiceMessageTemplate" on="UPDATE"/>
 
       <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
+
+      <field name="resultProfitAccount" on="UPDATE"/>
+      <field name="resultLossAccount" on="UPDATE"/>
     </track>
 
   </entity>

@@ -28,10 +28,12 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -123,12 +125,30 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (ObjectUtils.isEmpty(account.getAnalyticDistributionTemplate())
-          && account.getAnalyticDistributionAuthorized()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          account.getAnalyticDistributionTemplate();
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .createOrPersonalizeTemplate(
+                  account.getAnalyticDistributionAuthorized(),
+                  account.getCompany(),
+                  account.getName(),
+                  analyticDistributionTemplate);
+
+      if ((analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific())
+          && specificAnalyticDistributionTemplate != null) {
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+        response.setView(
+            ActionView.define(I18n.get(IExceptionMessage.SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE))
+                .model(AnalyticDistributionTemplate.class.getName())
+                .add("form", "analytic-distribution-template-account-form")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", specificAnalyticDistributionTemplate.getId())
+                .map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -157,6 +177,16 @@ public class AccountController {
       TraceBackService.trace(response, e);
     } finally {
       response.setValue("code", account.getCode());
+    }
+  }
+
+  public void verifyTemplateValues(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .verifyTemplateValues(account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
