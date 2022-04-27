@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,25 +68,15 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       return null;
     }
     BankDetails defaultBankDetails = company.getDefaultBankDetails();
-    Predicate<AccountManagement> filterOnAccountManagement =
-        accountManagement ->
-            company.equals(accountManagement.getCompany())
-                && journal.equals(accountManagement.getJournal());
-
-    if (defaultBankDetails != null) {
-      filterOnAccountManagement =
-          filterOnAccountManagement.and(
-              accountManagement -> defaultBankDetails.equals(accountManagement.getBankDetails()));
-    }
     Optional<Account> accountOpt =
-        paymentMode.getAccountManagementList().stream()
-            .filter(filterOnAccountManagement)
-            .sorted(Comparator.comparing(AccountManagement::getId))
-            .map(AccountManagement::getCashAccount)
-            .findFirst();
+        getAccountInAccountManagementList(
+            paymentMode.getAccountManagementList(), company, journal, defaultBankDetails);
 
     if (!accountOpt.isPresent()) {
       String exceptionMessage =
+          I18n.get(IExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
+      exceptionMessage += " ";
+      exceptionMessage +=
           I18n.get("Company")
               + " : %s, "
               + I18n.get("Payment mode")
@@ -96,6 +86,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       if (defaultBankDetails != null) {
         exceptionMessage += I18n.get("Bank details") + " : %s, ";
       }
+
       exceptionMessage += I18n.get(IExceptionMessage.PAYMENT_MODE_1);
       exceptionMessage =
           String.format(
@@ -109,6 +100,36 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     } else {
       return accountOpt.get();
     }
+  }
+
+  protected Optional<Account> getAccountInAccountManagementList(
+      List<AccountManagement> accountManagementList,
+      Company company,
+      Journal journal,
+      BankDetails defaultBankDetails) {
+    List<AccountManagement> accountManagementFiltered =
+        accountManagementList.stream()
+            .filter(
+                accountManagement ->
+                    company.equals(accountManagement.getCompany())
+                        && journal.equals(accountManagement.getJournal()))
+            .sorted(Comparator.comparing(AccountManagement::getId))
+            .collect(Collectors.toList());
+    Optional<Account> accountOpt = Optional.empty();
+    if (defaultBankDetails != null) {
+      accountOpt =
+          accountManagementFiltered.stream()
+              .filter(
+                  accountManagement ->
+                      defaultBankDetails.equals(accountManagement.getBankDetails()))
+              .map(AccountManagement::getCashAccount)
+              .findFirst();
+    }
+    if (!accountOpt.isPresent()) {
+      accountOpt =
+          accountManagementFiltered.stream().map(AccountManagement::getCashAccount).findFirst();
+    }
+    return accountOpt;
   }
 
   @Override

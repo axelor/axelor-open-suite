@@ -2238,6 +2238,7 @@
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
 "The company is required and must be the same for all invoices",,,
+"The configuration to retrieve the account on the payment mode is missing (Tab 'Accounting settings'):",,,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%",,,
 "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%",,,
 "The currency is missing on the account move %s",,,
