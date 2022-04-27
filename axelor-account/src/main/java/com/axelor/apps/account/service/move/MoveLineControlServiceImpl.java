@@ -99,19 +99,19 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
       }
       if (invoiceTermList.stream()
-                  .map(invoiceTerm -> invoiceTerm.getPercentage())
+                  .map(InvoiceTerm::getPercentage)
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
                   .compareTo(new BigDecimal(100))
               != 0
           || (invoiceAttached == null
               && invoiceTermList.stream()
-                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .map(InvoiceTerm::getAmount)
                       .reduce(BigDecimal.ZERO, BigDecimal::add)
                       .compareTo(moveLine.getDebit().max(moveLine.getCredit()))
                   != 0)
           || (invoiceAttached != null
               && invoiceTermList.stream()
-                      .map(invoiceTerm -> invoiceTerm.getAmount())
+                      .map(InvoiceTerm::getAmount)
                       .reduce(BigDecimal.ZERO, BigDecimal::add)
                       .compareTo(invoiceAttached.getInTaxTotal())
                   != 0)) {
