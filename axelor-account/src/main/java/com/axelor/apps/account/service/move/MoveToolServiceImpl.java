@@ -37,7 +37,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -65,7 +64,6 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
-  protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
 
@@ -79,7 +77,6 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
-    this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
   }
@@ -507,7 +504,6 @@ public class MoveToolServiceImpl implements MoveToolService {
     Company company = move.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Period period = move.getPeriod();
-    User currentUser = AuthUtils.getUser();
     if (ObjectUtils.isEmpty(period)) {
       return true;
     }
@@ -541,5 +537,21 @@ public class MoveToolServiceImpl implements MoveToolService {
     return move.getPeriod() != null
         && (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED)
         && (move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
+  }
+
+  public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAccount().getUseForPartnerBalance()) {
+          moveLineList.add(moveLine);
+        }
+      }
+    }
+
+    return moveLineList;
   }
 }

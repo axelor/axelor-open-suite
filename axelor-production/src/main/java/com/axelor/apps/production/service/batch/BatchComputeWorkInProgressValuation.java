@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -85,8 +86,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
-    Query<ManufOrder> manufOrderQuery =
-        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues);
+    Query<ManufOrder> manufOrderQuery = manufOrderRepository.all().filter(domain).bind(bindValues);
 
     int offset = 0;
 
@@ -120,5 +120,9 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     addComment(comment);
     super.stop();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
   }
 }

@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -566,6 +567,18 @@ public class MoveLineController {
         }
         Beans.get(AnalyticDistributionTemplateService.class)
             .validateTemplatePercentages(moveLine.getAnalyticDistributionTemplate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().getParent() != null) {
+        MoveLine moveLine = request.getContext().asType(MoveLine.class);
+        Move move = request.getContext().getParent().asType(Move.class);
+        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

@@ -223,7 +223,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       allMoveLineData.add(items);
     }
 
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
         accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
     filePath = filePath == null ? dataExportDir : dataExportDir + filePath;

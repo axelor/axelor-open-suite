@@ -121,8 +121,9 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException {
 
-    if (invoiceLine != null && invoiceLine.getAccount() != null) {
-      if (invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+    if (invoiceLine != null) {
+      if (invoiceLine.getAccount() != null
+          && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
           && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
           && accountConfigService
                   .getAccountConfig(invoiceLine.getAccount().getCompany())
@@ -131,11 +132,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
 
         invoiceLine.setAnalyticDistributionTemplate(
             invoiceLine.getAccount().getAnalyticDistributionTemplate());
+      } else {
+        invoiceLine.setAnalyticDistributionTemplate(null);
       }
     } else {
       invoiceLine.setAnalyticDistributionTemplate(null);
     }
-
     return invoiceLine;
   }
 

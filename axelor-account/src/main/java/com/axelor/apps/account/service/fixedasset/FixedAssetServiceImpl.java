@@ -612,12 +612,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   public void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
       throws AxelorException {
-    if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY
-        && amount.compareTo(BigDecimal.ONE) != 0
-        && amount.compareTo(fixedAsset.getQty()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL));
+    if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY) {
+      this.checkFixedAssetScissionQty(amount, fixedAsset);
     } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
         && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) > 0)) {
       throw new AxelorException(
@@ -685,5 +681,27 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setAnalyticDistributionTemplate(
         fixedAssetCategory.getAnalyticDistributionTemplate());
     fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
+  }
+
+  @Override
+  public void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+      throws AxelorException {
+    if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          fixedAsset.getQty().toString());
+    }
+    if (disposalQty.compareTo(fixedAsset.getQty()) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
+          fixedAsset.getQty().toString());
+    }
+    if (disposalQty.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
+    }
   }
 }

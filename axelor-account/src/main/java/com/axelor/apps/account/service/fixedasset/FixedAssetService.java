@@ -154,4 +154,7 @@ public interface FixedAssetService {
   void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
 
   void onChangeDepreciationPlan(FixedAsset fixedAsset) throws AxelorException;
+
+  void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+      throws AxelorException;
 }

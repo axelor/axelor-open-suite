@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -43,5 +44,9 @@ public abstract class BatchOrderInvoicing extends AbstractBatch {
             batch.getAnomaly()));
     addComment(sb.toString());
     super.stop();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SUPPLYCHAIN_BATCH);
   }
 }

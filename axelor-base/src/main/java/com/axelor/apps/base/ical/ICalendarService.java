@@ -361,15 +361,17 @@ public class ICalendarService {
       return null;
     }
 
-    ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
     ICalendarUser icalUser = null;
     icalUser =
-        repo.all().filter("self.email = ?1 AND self.user.id = ?2", email, user.getId()).fetchOne();
+        iCalendarUserRepository
+            .all()
+            .filter("self.email = ?1 AND self.user.id = ?2", email, user.getId())
+            .fetchOne();
     if (icalUser == null) {
-      icalUser = repo.all().filter("self.user.id = ?1", user.getId()).fetchOne();
+      icalUser = iCalendarUserRepository.all().filter("self.user.id = ?1", user.getId()).fetchOne();
     }
     if (icalUser == null) {
-      icalUser = repo.all().filter("self.email = ?1", email).fetchOne();
+      icalUser = iCalendarUserRepository.all().filter("self.email = ?1", email).fetchOne();
     }
     if (icalUser == null) {
       icalUser = new ICalendarUser();
@@ -399,13 +401,13 @@ public class ICalendarService {
     }
 
     String email = mailto(addr.toString(), true);
-    ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
     ICalendarUser user = null;
     if (source instanceof Organizer) {
-      user = repo.all().filter("self.email = ?1", email).fetchOne();
+      user = iCalendarUserRepository.all().filter("self.email = ?1", email).fetchOne();
     } else {
       user =
-          repo.all()
+          iCalendarUserRepository
+              .all()
               .filter("self.email = ?1 AND self.event.id = ?2", email, event.getId())
               .fetchOne();
     }
@@ -768,11 +770,9 @@ public class ICalendarService {
           .bind("end", endDate);
     }
 
-    ICalendarEventRepository repo = Beans.get(ICalendarEventRepository.class);
-
     for (ICalendarEvent event : queryBuilder.build().fetch()) {
       if (ICalendarRepository.ICAL_ONLY.equals(calendar.getSynchronizationSelect())) {
-        repo.remove(event);
+        iEventRepo.remove(event);
       } else {
         event.setArchived(true);
       }
