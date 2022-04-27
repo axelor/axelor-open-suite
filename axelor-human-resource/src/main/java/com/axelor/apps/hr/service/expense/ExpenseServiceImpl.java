@@ -1060,7 +1060,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   protected void updatePeriod(Expense expense) {
     if (expense.getMoveDate() != null) {
-      PeriodRepository periodRepository = Beans.get(PeriodRepository.class);
       LocalDate moveDate = expense.getMoveDate();
       if (expense.getPeriod() == null
           || !(moveDate.compareTo(expense.getPeriod().getFromDate()) >= 0)
