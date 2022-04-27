@@ -227,13 +227,10 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       stockCorrection.setTrackingNumber(trackingNumber);
     }
     stockCorrection.setRealQty(realQty);
+    // TODO get future qty from realQty
     stockCorrection.setFutureQty(realQty); // à adapter
     stockCorrection.setStockCorrectionReason(reason);
     this.stockCorrectionRepository.save(stockCorrection);
-
-    if (false) { // Quelles erreurs création
-      throw new Exception();
-    }
 
     return stockCorrection;
   }

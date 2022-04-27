@@ -6,7 +6,7 @@ import com.axelor.inject.Beans;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.xml.ws.http.HTTPException;
+import javax.ws.rs.ForbiddenException;
 
 public class SecurityCheck {
 
@@ -30,12 +30,11 @@ public class SecurityCheck {
   public void check() {
     Consumer<Class<? extends Model>> handlerUnauthorized =
         object -> {
-          System.out.println("You can't access " + object + " for this action.");
-          throw new HTTPException(403);
+          throw new ForbiddenException("You can't access " + object + " for this action.");
         };
 
     listCreate.stream()
-        .filter(object -> jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, object))
+        .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, object))
         .forEach(handlerUnauthorized);
     listRead.stream()
         .filter(object -> !jpaSecurity.isPermitted(JpaSecurity.CAN_READ, object))

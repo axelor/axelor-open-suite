@@ -5,24 +5,15 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.rest.dto.StockCorrectionCreateRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionResponse;
+import com.axelor.apps.stock.rest.dto.StockCorrectionUpdateRequest;
 import com.axelor.apps.stock.service.StockCorrectionService;
-import com.axelor.apps.tool.api.RequestValidator;
-import com.axelor.apps.tool.api.ResponseBody;
-import com.axelor.apps.tool.api.SecurityCheck;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.tool.api.*;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
 import java.util.Arrays;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 @Path("/aos/stock-correction")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -30,6 +21,7 @@ import wslite.json.JSONObject;
 public class StockCorrectionRestController {
 
   /*
+  // Proposition de structure de controller
   @Path("/")
   @POST
   public Response createStockCorrection(Request request) {
@@ -39,11 +31,10 @@ public class StockCorrectionRestController {
   @Path("/")
   @POST
   public Response createStockCorrection(StockCorrectionCreateRequest requestBody) {
-    RequestValidator.validateBody(requestBody);
-
-    new SecurityCheck().createAccess(Arrays.asList(StockCorrection.class, StockMove.class)).check();
-
     try {
+      RequestValidator.validateBody(requestBody);
+      new SecurityCheck().createAccess(Arrays.asList(StockCorrection.class, StockMove.class)).check();
+
       StockCorrection stockCorrection =
           Beans.get(StockCorrectionService.class)
               .generateStockCorrection(
@@ -57,21 +48,13 @@ public class StockCorrectionRestController {
         Beans.get(StockCorrectionService.class).validate(stockCorrection);
       }
 
-      int codeStatus = 201;
-      StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);
-      ResponseBody responseBody =
-          new ResponseBody(codeStatus, "Resource successfully created", objectBody);
-      return Response.status(codeStatus)
-          .type(MediaType.APPLICATION_JSON)
-          .entity(responseBody)
-          .build();
-    } catch (Exception e) {
-      int codeStatus = 500;
-      ResponseBody responseBody = new ResponseBody(codeStatus, "Error while creating resource");
-      return Response.status(codeStatus)
-          .type(MediaType.APPLICATION_JSON)
-          .entity(responseBody)
-          .build();
+      return ResponseConstructor.build(201, "Resource successfully created", new StockCorrectionResponse(stockCorrection));
+  } catch (ForbiddenException e) {
+    TraceBackService.trace(e);
+      return ResponseConstructor.build(403, e.getMessage(), null);
+  } catch (Exception e) {
+      TraceBackService.trace(e);
+      return ResponseConstructor.build(500, "Error while creating resource", null);
     }
   }
 
@@ -79,51 +62,44 @@ public class StockCorrectionRestController {
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response saveStockCorrection(@PathParam("id") long idStockCorrection, JSONObject json)
-      throws JSONException, AxelorException {
-    StockCorrection stockCorrection =
-        Beans.get(StockCorrectionRepository.class).find(idStockCorrection);
+  public Response saveStockCorrection(
+      @PathParam("id") long idStockCorrection, StockCorrectionUpdateRequest requestBody) {
+    try {
+      RequestValidator.validateBody(requestBody);
+      new SecurityCheck().writeAccess(StockCorrection.class).createAccess(StockMove.class).check();
 
-    String message = "";
+      StockCorrection stockCorrection = ObjectFinder.find(StockCorrection.class, idStockCorrection);
 
-    if (json.containsKey("realQty")) {
-      BigDecimal realQty = BigDecimal.valueOf(Long.parseLong(json.get("realQty").toString()));
-      Beans.get(StockCorrectionService.class).updateCorrectionQtys(stockCorrection, realQty);
-      message += "real qty updated; ";
-    }
+      String message = "";
+      if (requestBody.getRealQty() != null) {
+        Beans.get(StockCorrectionService.class)
+            .updateCorrectionQtys(stockCorrection, requestBody.getRealQty());
+        message += "real qty updated; ";
+      }
 
-    boolean success = true;
-
-    // Stock correction is not already validated
-    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED
-        && json.containsKey("status")) {
-      int status = Integer.parseInt(json.get("status").toString());
-      // user wants to validate stock correction
-      if (status == StockCorrectionRepository.STATUS_VALIDATED) {
-        if (Beans.get(StockCorrectionService.class).validate(stockCorrection)) {
-          message += "status updated; ";
-        } else {
-          success = false;
+      // Stock correction is not already validated
+      if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED
+          && requestBody.getStatus() != null) {
+        int status = requestBody.getStatus();
+        // user wants to validate stock correction
+        if (status == StockCorrectionRepository.STATUS_VALIDATED) {
+          if (Beans.get(StockCorrectionService.class).validate(stockCorrection)) {
+            message += "status updated; ";
+          }
         }
       }
-    }
 
-    if (success) {
-      int codeStatus = 200;
       StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);
-      ResponseBody responseBody = new ResponseBody(codeStatus, message, objectBody);
-      return Response.status(codeStatus)
-          .type(MediaType.APPLICATION_JSON)
-          .entity(responseBody)
-          .build();
-    } else {
-      int codeStatus = 500;
-      ResponseBody responseBody =
-          new ResponseBody(codeStatus, message + "Error while updating status");
-      return Response.status(codeStatus)
-          .type(MediaType.APPLICATION_JSON)
-          .entity(responseBody)
-          .build();
+      return ResponseConstructor.build(200, message, objectBody);
+    } catch (ForbiddenException e) {
+      TraceBackService.trace(e);
+      return ResponseConstructor.build(403, e.getMessage(), null);
+    } catch (NotFoundException e) {
+      TraceBackService.trace(e);
+      return ResponseConstructor.build(404, e.getMessage(), null);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      return ResponseConstructor.build(500, "Error while creating resource", null);
     }
   }
 }
