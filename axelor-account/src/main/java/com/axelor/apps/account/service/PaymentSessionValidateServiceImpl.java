@@ -203,8 +203,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           offset++;
           this.processInvoiceTerm(
               paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-        }else {
-          offset++;	
+        } else {
+          offset++;
         }
       }
 
