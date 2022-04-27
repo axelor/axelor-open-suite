@@ -190,7 +190,8 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
     if (bankDetails != null) {
       Predicate<BankStatementLineAFB120> predicate =
           l ->
-              l.getBankDetails().getId() == bankDetails.getId()
+              l.getBankDetails() != null
+                  && l.getBankDetails().getId() == bankDetails.getId()
                   && l.getLineTypeSelect()
                       == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
       Optional<BankStatementLineAFB120> id =
