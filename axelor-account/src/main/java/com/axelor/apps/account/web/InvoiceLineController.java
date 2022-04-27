@@ -538,7 +538,9 @@ public class InvoiceLineController {
 
   public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response) {
     try {
-      if (request.getContext().getParentContext() != null) {
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null
+              && parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         if (invoice.getCompany() != null) {
           AccountConfig accountConfig =
