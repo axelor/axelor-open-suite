@@ -197,12 +197,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
 
-        if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+        if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
+          this.releaseInvoiceTerm(invoiceTerm);
+        } else if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
           offset++;
           this.processInvoiceTerm(
               paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-        } else {
-          this.releaseInvoiceTerm(invoiceTerm);
+        }else {
+          offset++;	
         }
       }
 
@@ -245,23 +247,20 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (!isGlobal) {
       partner = invoiceTerm.getMoveLine().getPartner();
     }
-    if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-      Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
 
-      this.generateMoveLineFromInvoiceTerm(
-          paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
+    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveMap, paymentAmountMap);
 
-      if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()
-          && (paymentSession.getPartnerTypeSelect()
-                  == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
-              || paymentSession.getPartnerTypeSelect()
-                  == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)) {
-        this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
-      }
+    this.generateMoveLineFromInvoiceTerm(
+        paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
 
-      return moveRepo.save(move);
+    if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()
+        && (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+            || paymentSession.getPartnerTypeSelect()
+                == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)) {
+      this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
     }
-    return null;
+
+    return moveRepo.save(move);
   }
 
   protected Move getMove(
