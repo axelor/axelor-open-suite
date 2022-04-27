@@ -109,6 +109,7 @@
       <field name="moveLine"/>
       <field name="decisionPfpTakenDate"/>
       <field name="paymentSession"/>
+      <field name="pfpValidateStatusSelect"/>
     </track>
 
   </entity>

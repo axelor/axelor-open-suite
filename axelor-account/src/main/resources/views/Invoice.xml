@@ -1437,13 +1437,13 @@ InvoiceSet.length > 0))"
   </form>
 
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
-    title="Cancellation confirmation">
+    title="Invoice.refuseToPayWizard">
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
         onChange="action-attrs-invoice-other-reason"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
-      <button name="cancelConfirmBtn" title="Confirm cancellation"
+      <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
         onClick="action-invoice-refusal-to-pay-cancel-reason-check,action-invoice-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
     </panel>
