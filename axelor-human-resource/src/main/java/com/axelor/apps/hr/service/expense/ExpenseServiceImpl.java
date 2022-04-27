@@ -192,17 +192,22 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) {
+
+    LocalDate date =
+        Optional.ofNullable(expenseLine.getExpenseDate())
+            .orElse(
+                appAccountService.getTodayDate(
+                    expenseLine.getExpense() != null
+                        ? expenseLine.getExpense().getCompany()
+                        : Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)));
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             expenseLine.getAnalyticDistributionTemplate(),
             expenseLine.getUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate(
-                expenseLine.getExpense() != null
-                    ? expenseLine.getExpense().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
+            date);
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;
