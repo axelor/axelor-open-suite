@@ -1581,6 +1581,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-update-product-qty-with-pack-header-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
