@@ -102,7 +102,6 @@
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
-        <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="compatibleAccountSet" widget="TagSelect"
             showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
           <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
@@ -146,7 +145,7 @@
             <field name="isRetrievedOnPaymentSession" widget="boolean-switch"/>
           </panel>
         </panel>
-      </panel>
+
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings"
         hideIf="accountType.technicalTypeSelect == 'view'">
         <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
