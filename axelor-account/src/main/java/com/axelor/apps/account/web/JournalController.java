@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.service.JournalService;
@@ -82,27 +81,6 @@ public class JournalController {
 
       response.setReload(true);
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void changeConfig(ActionRequest request, ActionResponse response) {
-    try {
-      Journal journal = request.getContext().asType(Journal.class);
-      AccountConfig journalAccountConfig = journal.getCompany().getAccountConfig();
-      if (journalAccountConfig == null) {
-        response.setValue("authorizeSimulatedMove", false);
-        response.setValue("allowAccountingDaybook", false);
-      } else {
-        if (!journal.getCompany().getAccountConfig().getIsActivateSimulatedMove()) {
-          response.setValue(
-              "authorizeSimulatedMove", journalAccountConfig.getIsActivateSimulatedMove());
-        }
-        if (!journalAccountConfig.getAccountingDaybook()) {
-          response.setValue("allowAccountingDaybook", journalAccountConfig.getAccountingDaybook());
-        }
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
