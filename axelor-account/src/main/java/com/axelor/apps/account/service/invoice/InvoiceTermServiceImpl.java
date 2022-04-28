@@ -229,6 +229,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
     }
   }
 
@@ -365,6 +368,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getDueDate() == null || invoiceTerm.getFinancialDiscount() == null) {
+      return null;
+    }
+
     LocalDate deadlineDate =
         invoiceTerm.getDueDate().minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay());
 
