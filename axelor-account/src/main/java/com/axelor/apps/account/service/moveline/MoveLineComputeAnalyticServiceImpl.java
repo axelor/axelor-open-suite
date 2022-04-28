@@ -37,6 +37,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyticService {
 
@@ -216,10 +217,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     moveLine.setAxis3AnalyticAccount(null);
     moveLine.setAxis4AnalyticAccount(null);
     moveLine.setAxis5AnalyticAccount(null);
-    moveLine
-        .getAnalyticMoveLineList()
-        .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
-    moveLine.getAnalyticMoveLineList().clear();
+    if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine
+          .getAnalyticMoveLineList()
+          .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
+      moveLine.getAnalyticMoveLineList().clear();
+    }
     return moveLine;
   }
 

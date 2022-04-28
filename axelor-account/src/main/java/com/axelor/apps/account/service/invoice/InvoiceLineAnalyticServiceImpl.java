@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
@@ -192,10 +193,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     invoiceLine.setAxis3AnalyticAccount(null);
     invoiceLine.setAxis4AnalyticAccount(null);
     invoiceLine.setAxis5AnalyticAccount(null);
-    invoiceLine
-        .getAnalyticMoveLineList()
-        .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
-    invoiceLine.getAnalyticMoveLineList().clear();
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      invoiceLine
+          .getAnalyticMoveLineList()
+          .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
+      invoiceLine.getAnalyticMoveLineList().clear();
+    }
     return invoiceLine;
   }
 }
