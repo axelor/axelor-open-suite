@@ -58,6 +58,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -523,10 +524,15 @@ public class IrrecoverableService {
     // Getting customer MoveLine from Facture
     MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
+    List<Reconcile> reconcileList = new ArrayList<Reconcile>();
     // Ajout de l'écriture générée
     Move move =
         this.createIrrecoverableMove(
-            invoice, prorataRate, invoice.getRejectMoveLine() != null, irrecoverable.getName());
+            invoice,
+            prorataRate,
+            invoice.getRejectMoveLine() != null,
+            irrecoverable.getName(),
+            reconcileList);
     if (move == null) {
       throw new AxelorException(
           irrecoverable,
@@ -535,6 +541,13 @@ public class IrrecoverableService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
+
+    if (!ObjectUtils.isEmpty(reconcileList)) {
+      for (Reconcile reconcile : reconcileList) {
+        reconcileService.confirmReconcile(reconcile, true);
+      }
+    }
+
     irrecoverable.getMoveSet().add(move);
 
     customerMoveLine.setIrrecoverableStatusSelect(
@@ -832,7 +845,11 @@ public class IrrecoverableService {
    * @throws AxelorException
    */
   public Move createIrrecoverableMove(
-      Invoice invoice, BigDecimal prorataRate, boolean isInvoiceReject, String irrecoverableName)
+      Invoice invoice,
+      BigDecimal prorataRate,
+      boolean isInvoiceReject,
+      String irrecoverableName,
+      List<Reconcile> reconcileList)
       throws AxelorException {
     Company company = invoice.getCompany();
     Partner payerPartner = invoice.getPartner();
@@ -900,13 +917,13 @@ public class IrrecoverableService {
         Reconcile reconcile =
             reconcileService.createReconcile(invoiceMoveLine, creditMoveLine, amount, false);
         if (reconcile != null) {
-          reconcileService.confirmReconcile(reconcile, true);
+          reconcileList.add(reconcile);
         }
       } else {
         amount =
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
-        if (invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect()
-            == AccountTypeRepository.TYPE_TAX) {
+        if (AccountTypeRepository.TYPE_TAX.equals(
+            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
