@@ -118,7 +118,8 @@
       <panel-related name="dataInputListPanel" field="dataInputList"
         type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
         target="com.axelor.apps.base.db.Wizard" title="Move Lines data input"
-        grid-view="wizard-custom-in-percentage-grid" form-view="wizard-custom-in-percentage-form"  colSpan="12"/>
+        grid-view="wizard-custom-in-percentage-grid" form-view="wizard-custom-in-percentage-form"
+        colSpan="12"/>
       <panel-related name="moveTemplateSetPanel" field="moveTemplateSet"
         type="many-to-many" showIf="moveTemplateType.typeSelect == 2"
         target="com.axelor.apps.account.db.MoveTemplate" title="Move templates"
@@ -150,9 +151,9 @@
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
   </grid>
-  
+
   <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
-    model="com.axelor.apps.base.db.Wizard" 
+    model="com.axelor.apps.base.db.Wizard"
     onNew="action-move-template-wizard-line-set-move-template">
     <field name="date" type="date" title="Date" required="true"
       onChange="action-move-template-wizard-check-value"/>
