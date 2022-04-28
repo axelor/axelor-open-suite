@@ -154,19 +154,22 @@
 
   <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
     model="com.axelor.apps.base.db.Wizard"
+    onLoad="action-move-template-wizard-line-set-move-template"
     onNew="action-move-template-wizard-line-set-move-template">
-    <field name="date" type="date" title="Date" required="true"
-      onChange="action-move-template-wizard-check-value"/>
-    <field name="moveBalance" type="decimal" precision="20" scale="2" min="0" required="true"
-      title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
-    <field name="debitPartner" target-name="fullName" title="Partner to Debit"
-      onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
-      target="com.axelor.apps.base.db.Partner"/>
-    <field name="creditPartner" target-name="fullName" title="Partner to Credit"
-      onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
-      target="com.axelor.apps.base.db.Partner"/>
-    <field name="moveTemplate" type="many-to-one"
-      target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    <panel name="mainPanel">
+      <field name="date" type="date" title="Date" required="true"
+        onChange="action-move-template-wizard-check-value"/>
+      <field name="moveBalance" type="decimal" precision="20" scale="2" min="0"
+        required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+      <field name="debitPartner" target-name="fullName" title="Partner to Debit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="creditPartner" target-name="fullName" title="Partner to Credit"
+        onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"/>
+      <field name="moveTemplate" type="many-to-one"
+        target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    </panel>
   </form>
 
   <action-group name="action-move-template-group-line-list-onchange">
