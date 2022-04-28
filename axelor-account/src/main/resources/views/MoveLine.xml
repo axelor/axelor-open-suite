@@ -319,7 +319,8 @@
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange"
         colSpan="3"/>
-      <field name="amountRemaining" colSpan="3"/>
+      <field name="amountRemaining" colSpan="3"
+        showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="12"/>
@@ -499,7 +500,8 @@
       <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
-      <field name="amountRemaining" colSpan="3"/>
+      <field name="amountRemaining" colSpan="3"
+        showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="6"/>
@@ -696,7 +698,6 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
-    <action name="action-move-line-method-set-amount-remaining"/>
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
@@ -1067,10 +1068,6 @@
   <action-method name="action-move-line-method-check-analytic-account-on-move-line">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="checkAnalyticMoveLineForAxis"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-set-amount-remaining">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="setAmountRemaining"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
