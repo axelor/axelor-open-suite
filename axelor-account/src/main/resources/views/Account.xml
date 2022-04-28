@@ -102,6 +102,7 @@
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
+
           <field name="compatibleAccountSet" widget="TagSelect"
             showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
           <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
