@@ -16,6 +16,7 @@
 "Analytic distribution template",,,
 "Analytic move lines",,,
 "Analytics",,,
+"App",,,
 "App contract",,,
 "Attention the contract will have as starting date the provisional activation         date ${currentContractVersion.supposedActivationDate}, Are you sure?",,,
 "Auto enable version on renew",,,
