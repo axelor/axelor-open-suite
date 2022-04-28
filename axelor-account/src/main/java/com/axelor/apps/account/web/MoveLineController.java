@@ -425,7 +425,7 @@ public class MoveLineController {
                 "domain",
                 "self.id IN (0)");
           } else {
-            if (moveLine.getMove().getCompany() != null) {
+            if (move.getCompany() != null) {
               String idList =
                   analyticAccountList.stream()
                       .map(Object::toString)
@@ -439,7 +439,7 @@ public class MoveLineController {
                       + ") AND self.statusSelect = "
                       + AnalyticAccountRepository.STATUS_ACTIVE
                       + " AND (self.company is null OR self.company.id = "
-                      + moveLine.getMove().getCompany().getId()
+                      + move.getCompany().getId()
                       + ")");
             }
           }
