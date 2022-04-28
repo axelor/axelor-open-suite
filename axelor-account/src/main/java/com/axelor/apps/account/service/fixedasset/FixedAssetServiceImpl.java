@@ -183,11 +183,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect) {
-    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
-        && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
+  public int computeTransferredReason(
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect,
+      BigDecimal disposalQty,
+      FixedAsset fixedAsset) {
+    boolean partialCession =
+        disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
+            && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL;
+    if (partialCession && disposalQty.compareTo(fixedAsset.getQty()) < 0) {
       return FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION;
-    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
+    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
+        || (partialCession && disposalQty.compareTo(fixedAsset.getQty()) == 0)) {
       return FixedAssetRepository.TRANSFERED_REASON_CESSION;
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
       return FixedAssetRepository.TRANSFERED_REASON_ONGOING_CESSION;

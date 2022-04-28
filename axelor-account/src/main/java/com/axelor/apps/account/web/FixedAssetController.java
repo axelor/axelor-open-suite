@@ -126,7 +126,8 @@ public class FixedAssetController {
     try {
       int transferredReason =
           Beans.get(FixedAssetService.class)
-              .computeTransferredReason(disposalTypeSelect, disposalQtySelect);
+              .computeTransferredReason(
+                  disposalTypeSelect, disposalQtySelect, disposalQty, fixedAsset);
 
       FixedAsset createdFixedAsset =
           Beans.get(FixedAssetService.class)

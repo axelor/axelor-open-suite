@@ -286,7 +286,7 @@
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
-        onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
+        onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal,close"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2"/>
       <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"
@@ -313,7 +313,7 @@
   </action-method>
   <action-validate
     name="action-validate-account-fixed-asset-wizard-form-validate-qty">
-    <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0) "
+    <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt;= 0) "
       message="Disposal Quantity must be greater than 0"/>
   </action-validate>
   <action-attrs
