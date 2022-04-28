@@ -615,7 +615,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY) {
       this.checkFixedAssetScissionQty(amount, fixedAsset);
     } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
-        && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) > 0)) {
+        && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) >= 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
