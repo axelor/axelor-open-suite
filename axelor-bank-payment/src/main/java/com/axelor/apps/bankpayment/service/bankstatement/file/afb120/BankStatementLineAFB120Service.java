@@ -38,7 +38,6 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
   protected BankPaymentBankStatementLineAFB120Repository
@@ -188,18 +187,17 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
   public BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(
       BankDetails bankDetails) {
     if (bankDetails != null) {
-      Predicate<BankStatementLineAFB120> predicate =
-          l ->
-              l.getBankDetails() != null
-                  && l.getBankDetails().getId() == bankDetails.getId()
-                  && l.getLineTypeSelect()
-                      == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
+      String predicate =
+          "self.bankDetails is not null AND self.bankDetails.id = "
+              + bankDetails.getId()
+              + " AND self.lineTypeSelect = "
+              + BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
       Optional<BankStatementLineAFB120> id =
           bankPaymentBankStatementLineAFB120Repository
               .all()
+              .filter(predicate)
               .fetchStream()
               .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
-              .filter(predicate)
               .findFirst();
       return id.isPresent()
           ? bankPaymentBankStatementLineAFB120Repository.find(id.get().getId())
