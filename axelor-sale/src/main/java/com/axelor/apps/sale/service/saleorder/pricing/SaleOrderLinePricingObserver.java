@@ -56,7 +56,8 @@ public class SaleOrderLinePricingObserver implements PricingObserver {
   public void updateFieldToPopulate(MetaField field) {
     logs.append(
         String.format(
-            I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_POPULATED_FIELD), field.getName()));
+            I18n.get(ITranslation.SALE_ORDER_LINE_OBSERVER_POPULATED_FIELD),
+            field != null ? field.getName() : "null"));
     logs.append("\n");
   }
 

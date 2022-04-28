@@ -202,18 +202,18 @@ public class PricingComputer extends AbstractObservablePricing {
         .forEach(
             resultPricingRule -> {
               MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+              Object result = scriptHelper.eval(resultPricingRule.getFormula());
               if (fieldToPopulate != null) {
-                Object result = scriptHelper.eval(resultPricingRule.getFormula());
-                notifyResultPricingRule(resultPricingRule, result);
-                notifyFieldToPopulate(fieldToPopulate);
-                if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
-                  LOG.debug(
-                      "Adding result temp variable {} in context",
-                      resultPricingRule.getTempVarName());
-                  putInContext(resultPricingRule.getTempVarName(), result);
-                }
                 Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
               }
+              if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+                LOG.debug(
+                    "Adding result temp variable {} in context",
+                    resultPricingRule.getTempVarName());
+                putInContext(resultPricingRule.getTempVarName(), result);
+              }
+              notifyResultPricingRule(resultPricingRule, result);
+              notifyFieldToPopulate(fieldToPopulate);
             });
   }
 
