@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
@@ -27,11 +26,13 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -70,6 +71,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
+  protected AccountManagementAccountService accountManagementService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -82,7 +84,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -94,6 +97,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.appAccountService = appAccountService;
+    this.accountManagementService = accountManagementService;
   }
 
   /**
@@ -335,44 +339,23 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
+    Tax financialDiscountTax = null;
+    Account financialDiscountAccount = null;
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-
-      Account purchAccount = new Account();
-
-      for (AccountManagement accountManagement :
-          accountConfig.getPurchFinancialDiscountTax().getAccountManagementList()) {
-        if (accountManagement.getCompany().equals(company)) {
-          purchAccount = accountManagement.getFinancialDiscountAccount();
-        }
-      }
-
-      move =
-          fillMoveLinesWithFinancialDiscount(
-              invoicePayment,
-              move,
-              customerAccount,
-              purchAccount,
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount());
-
+      financialDiscountTax = accountConfigService.getPurchFinancialDiscountTax(accountConfig);
+      financialDiscountAccount =
+          accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
-
-      Account saleAccount = new Account();
-      for (AccountManagement accountManagement :
-          accountConfig.getSaleFinancialDiscountTax().getAccountManagementList()) {
-        if (accountManagement.getCompany().equals(company)) {
-          saleAccount = accountManagement.getFinancialDiscountAccount();
-        }
-      }
-
-      move =
-          fillMoveLinesWithFinancialDiscount(
-              invoicePayment,
-              move,
-              customerAccount,
-              saleAccount,
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount());
+      financialDiscountTax = accountConfigService.getSaleFinancialDiscountTax(accountConfig);
+      financialDiscountAccount =
+          accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
+
+    Account account =
+        accountManagementService.getFinancialDiscountAccount(financialDiscountTax, company);
+    move =
+        fillMoveLinesWithFinancialDiscount(
+            invoicePayment, move, customerAccount, account, financialDiscountAccount);
 
     return move;
   }
