@@ -6,8 +6,24 @@
   <module name="maintenance" package="com.axelor.apps.maintenance.db"/>
 
   <entity name="EquipementMaintenance" lang="java">
-    <string name="code" title="equipement.maintenance.code" namecolumn="true" readonly="true"/>
+    <string name="code" title="equipement.maintenance.code" readonly="true"/>
     <string name="name" title="equipement.maintenance.name" required="true"/>
+    <string name="fullName" namecolumn="true" search="code,name">
+      <![CDATA[
+            if(!(code == null || code.isEmpty()) && !(name == null || name.isEmpty())){
+              return code + " - " + name;
+            }
+            else if(!(code == null || code.isEmpty()) && (name == null || name.isEmpty())){
+              return code;
+            }
+            else if((code == null || code.isEmpty()) && !(name == null || name.isEmpty())){
+              return name;
+            }
+            else{
+              return "";
+            }
+	    ]]>
+    </string>
     <many-to-one name="maintenanceCategory" ref="MaintenanceCategory"
       title="Maintenance Category"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"

@@ -58,8 +58,9 @@
     <field name="image"/>
     <field name="maintenanceCategory"/>
     <field name="machine"/>
+    <field name="fullName"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{code}}-{{name}}</strong></div>
+		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
 			  <div class="span4 card-image">
                 <img ng-show="image" ng-src="{{$image('image', 'content')}}" />
