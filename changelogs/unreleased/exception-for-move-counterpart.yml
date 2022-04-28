@@ -1,5 +1,0 @@
----
-title: "Move :  fix of generate counterpart"
-type: fix
-description: |
-  When you push the button - Generate counterpart, the function for taxes was thrown and after that, generation of counterpart with an exception. This exception is now thrown at start of button actions
