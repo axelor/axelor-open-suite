@@ -467,10 +467,10 @@ public interface IExceptionMessage {
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "One of previous periods is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
-      "One of the previous periods is not closed." /*)*/;
+      "The previous period is not closed." /*)*/;
 
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
