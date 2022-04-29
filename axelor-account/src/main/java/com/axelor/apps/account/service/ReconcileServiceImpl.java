@@ -45,6 +45,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymen
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -410,34 +411,45 @@ public class ReconcileServiceImpl implements ReconcileService {
         invoicePayment.addReconcileListItem(reconcile);
       }
     }
-
-    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getHasInvoiceTerm() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
-
-      if (invoiceTermList != null) {
-        invoiceTermPaymentList =
-            invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-                invoicePayment,
-                invoiceTermList,
-                invoicePayment != null ? invoicePayment.getAmount() : amount);
-
-        for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-          invoiceTermService.updateInvoiceTermsPaidAmount(
-              invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
-
-          if (invoicePayment == null) {
-            invoiceTermPayment.addReconcileListItem(reconcile);
-          }
-        }
-      }
+      invoiceTermPaymentList =
+          this.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
     }
 
     if (invoicePayment != null) {
       invoicePaymentRepo.save(invoicePayment);
-    } else {
+    } else if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
+  }
+
+  @Override
+  public List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
+      BigDecimal amount,
+      Reconcile reconcile)
+      throws AxelorException {
+    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
+    if (invoiceTermList != null) {
+      invoiceTermPaymentList =
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment,
+              invoiceTermList,
+              invoicePayment != null ? invoicePayment.getAmount() : amount);
+
+      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+        invoiceTermService.updateInvoiceTermsPaidAmount(
+            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+
+        if (invoicePayment == null) {
+          invoiceTermPayment.addReconcileListItem(reconcile);
+        }
+      }
+    }
+    return invoiceTermPaymentList;
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {

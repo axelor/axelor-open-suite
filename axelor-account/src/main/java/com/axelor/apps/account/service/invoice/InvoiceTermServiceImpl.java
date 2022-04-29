@@ -1156,20 +1156,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTermList.add(invoiceTerm);
 
-    List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
-
-    invoiceTermPaymentList =
-        invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTermList, amount);
-
-    for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
-      this.updateInvoiceTermsPaidAmount(
-          invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
-
-      if (invoicePayment == null) {
-        invoiceTermPayment.addReconcileListItem(reconcile);
-      }
-    }
+    reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
 
     invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
     return invoiceTerm;

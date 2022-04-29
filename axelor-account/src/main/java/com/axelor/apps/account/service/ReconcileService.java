@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
@@ -75,4 +78,11 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
+
+  public List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
+      BigDecimal amount,
+      Reconcile reconcile)
+      throws AxelorException;
 }
