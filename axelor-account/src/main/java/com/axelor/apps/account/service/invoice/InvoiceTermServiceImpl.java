@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -229,6 +230,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
     }
   }
 
@@ -288,9 +292,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm) {
+  public InvoiceTerm initCustomizedInvoiceTerm(
+      MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
 
-    invoiceTerm.setInvoice(moveLine.getMove().getInvoice());
+    invoiceTerm.setInvoice(move.getInvoice());
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
     invoiceTerm.setIsCustomized(true);
@@ -364,6 +369,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected LocalDate computeFinancialDiscountDeadlineDate(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getDueDate() == null || invoiceTerm.getFinancialDiscount() == null) {
+      return null;
+    }
+
     LocalDate deadlineDate =
         invoiceTerm.getDueDate().minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay());
 

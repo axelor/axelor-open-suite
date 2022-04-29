@@ -49,7 +49,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -291,18 +290,25 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.checkPreconditions(move);
 
     log.debug("Precondition check of move {} OK", move.getReference());
-    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        && !move.getAutoYearClosureMove()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
-    }
-
     boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
 
-    log.debug("dayBookMode {}", dayBookMode);
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        && !move.getAutoYearClosureMove()) {
+      if (dayBookMode
+          && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+              || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
+      }
+    }
+
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
     }
@@ -536,19 +542,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     while (!((move = moveListQuery.fetchOne()) == null)) {
       accounting(move);
       JPA.clear();
-    }
-  }
-
-  private String getPartnerFullName(Partner partner) {
-    if (!Strings.isNullOrEmpty(partner.getName())
-        && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getName() + " " + partner.getFirstName();
-    } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      return partner.getName();
-    } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      return partner.getFirstName();
-    } else {
-      return "" + partner.getId();
     }
   }
 

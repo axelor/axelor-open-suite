@@ -212,7 +212,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        customerAccount = accountConfigService.getSupplierAdvancePaymentAccount(accountConfig);
+      } else {
+        customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
+      }
+
     } else {
       if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;

@@ -174,7 +174,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
       if (userCtx != null) {
         user = (User) userCtx.getTarget();
         if (user != null) {
-          user = Beans.get(UserRepository.class).find(user.getId());
+          user = userRepository.find(user.getId());
         }
       }
     } else {

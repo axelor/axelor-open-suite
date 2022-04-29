@@ -138,4 +138,28 @@ public class LogisticalFormController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void carrierValidate(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.carrierValidate(logisticalForm);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void backToProvision(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.backToProvision(logisticalForm);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

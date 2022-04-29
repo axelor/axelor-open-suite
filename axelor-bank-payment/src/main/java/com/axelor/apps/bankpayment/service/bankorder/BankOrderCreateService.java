@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -163,7 +162,7 @@ public class BankOrderCreateService {
             null,
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT,
-            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+            paymentMode.getAccountingTriggerSelect());
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =

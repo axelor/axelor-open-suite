@@ -30,6 +30,10 @@ public interface IExceptionMessage {
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
+      /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
+  static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
+      /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -302,11 +306,15 @@ public interface IExceptionMessage {
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
+
   static final String MOVE_12 = /*$$(*/ "The currency is missing on the account move %s" /*)*/;
   static final String MOVE_13 = /*$$(*/
       "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+
+  static final String MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be daybooked because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -935,7 +943,7 @@ public interface IExceptionMessage {
   /** Budget service */
   static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
-  static final String USER_PARTNER = /*$$(*/ "You must create a contact for user %s" /*)*/;
+  static final String EMPLOYEE_PARTNER = /*$$(*/ "You must create a contact for employee %s" /*)*/;
 
   /*
    * Deposit slip
@@ -948,6 +956,10 @@ public interface IExceptionMessage {
       "The deposit slip has already been published." /*)*/;
   static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/
       "Unsupported payment mode type" /*)*/;
+  static final String DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO = /*$$(*/
+      "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner, deposit date)." /*)*/;
+  static final String DEPOSIT_SLIP_NOT_PUBLISHED = /*$$(*/
+      "The deposit slip is not published." /*)*/;
 
   /*
    * Partner
@@ -1062,6 +1074,12 @@ public interface IExceptionMessage {
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 
+  static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
+      "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
+
+  static final String DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT = /*$$(*/
+      "The selected date is out of the accounting period." /*)*/;
+
   /* FEC IMPORT */
   static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
       "The import failed: the move %s already exist." /*)*/;
@@ -1162,6 +1180,9 @@ public interface IExceptionMessage {
   static final String SAME_TAX_MOVE_LINES = /*$$(*/
       "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
 
+  static final String NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Error in the analytic distribution template. Please for each line give a value to analytic axis, analytic account and analytic journal." /*)*/;
+
   static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
       "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
 
@@ -1186,4 +1207,7 @@ public interface IExceptionMessage {
 
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Specific Analytic Distribution Template" /*)*/;
 }
