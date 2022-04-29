@@ -22,6 +22,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 import java.util.Map;
 
 public interface LeadService {
@@ -55,9 +56,6 @@ public interface LeadService {
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName, String companyName);
 
-  @Transactional
-  public void saveLead(Lead lead);
-
   @SuppressWarnings("rawtypes")
   public Object importLead(Object bean, Map values);
 
@@ -70,12 +68,44 @@ public interface LeadService {
   public boolean isThereDuplicateLead(Lead lead);
 
   /**
+   * Set the lead status to In Process.
+   *
+   * @param lead
+   * @throws AxelorException if the lead wasn't new nor assigned.
+   */
+  void startLead(Lead lead) throws AxelorException;
+
+  /**
+   * Set the lead to the current user and change status to Assigned.
+   *
+   * @param lead
+   * @throws AxelorException if the lead wasn't new nor assigned.
+   */
+  void assignToMeLead(Lead lead) throws AxelorException;
+
+  /**
+   * Set multiple leads to the current user and change status to Assigned.
+   *
+   * @param leadList
+   * @throws AxelorException if the lead wasn't new nor assigned.
+   */
+  void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException;
+
+  /**
+   * Recycle the lead if it was lost, change the status to In Process.
+   *
+   * @param lead
+   * @throws AxelorException if the lead wasn't lost.
+   */
+  void recycleLead(Lead lead) throws AxelorException;
+
+  /**
    * Set the lead status to lost and set the lost reason with the given lost reason.
    *
    * @param lead a context lead object
    * @param lostReason the specified lost reason
    */
-  public void loseLead(Lead lead, LostReason lostReason);
+  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException;
 
   public String processFullName(String enterpriseName, String name, String firstName);
 }

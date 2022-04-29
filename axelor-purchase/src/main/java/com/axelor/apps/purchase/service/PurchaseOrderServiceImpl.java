@@ -46,6 +46,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -82,6 +83,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected ProductCompanyService productCompanyService;
 
   @Inject protected CurrencyService currencyService;
+
+  @Inject protected PurchaseConfigService purchaseConfigService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -232,7 +235,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
-
+    purchaseOrder.setDisplayPriceOnQuotationRequest(
+        purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;
   }
 
@@ -296,6 +300,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    if (purchaseOrder.getStatusSelect() == null
+        || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
+    }
+
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
     Partner partner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
