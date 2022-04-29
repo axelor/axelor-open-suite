@@ -78,4 +78,16 @@
     <domain>self.restoreDate != null</domain>
   </action-view>
 
+  <menuitem name="admin-root-data-backup-configuration" title="Configuration" order="50"
+    parent="admin-root-data-backup" icon="fa-cog"/>
+
+  <menuitem name="admin-root-faker-api-field" title="Faker API fields"
+    action="action.admin.root.view.faker.api.field" parent="admin-root-data-backup-configuration"/>
+
+  <action-view name="action.admin.root.view.faker.api.field" title="Faker API field"
+    model="com.axelor.apps.base.db.FakerApiField">
+    <view type="grid" name="faker-api-field-grid"/>
+    <view type="form" name="faker-api-field-form"/>
+  </action-view>
+
 </object-views>
