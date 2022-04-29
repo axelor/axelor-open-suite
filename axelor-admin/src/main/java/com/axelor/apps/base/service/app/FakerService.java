@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.base.service.app;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 
-public interface WeightedAveragePriceService {
-
-  @Transactional
-  public void computeAvgPriceForProduct(Product product) throws AxelorException;
-
-  public BigDecimal computeAvgPriceForCompany(Product product, Company company)
-      throws AxelorException;
+public interface FakerService {
+  /**
+   * Generate fake values depending on the class and method name given with the Faker API .
+   *
+   * @param fakerApiField
+   * @return
+   * @throws AxelorException if the class or method given doesn't exist.
+   */
+  String generateFakeData(FakerApiField fakerApiField) throws AxelorException;
 }

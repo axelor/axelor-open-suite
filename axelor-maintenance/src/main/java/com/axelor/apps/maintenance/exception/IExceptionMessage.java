@@ -15,19 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.maintenance.exception;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-
-public interface WeightedAveragePriceService {
-
-  @Transactional
-  public void computeAvgPriceForProduct(Product product) throws AxelorException;
-
-  public BigDecimal computeAvgPriceForCompany(Product product, Company company)
-      throws AxelorException;
+/** Interface of Exceptions. Enum all exception of axelor-maintenance. */
+public interface IExceptionMessage {
+  static final String EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE = /*$$(*/
+      "Missing equipement maintenance sequence." /*)*/;
 }
