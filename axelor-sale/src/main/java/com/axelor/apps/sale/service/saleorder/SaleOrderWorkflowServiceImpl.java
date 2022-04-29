@@ -45,6 +45,8 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Query;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
@@ -96,9 +98,21 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException {
+
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
+    authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
+    if (saleOrder.getStatusSelect() == null
+        || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_CANCEL_WRONG_STATUS));
+    }
+
     Query q =
         JPA.em()
             .createQuery(
@@ -125,6 +139,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       rollbackOn = {Exception.class},
       ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getStatusSelect() == null
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS));
+    }
+
     Partner partner = saleOrder.getClientPartner();
 
     Blocking blocking =
@@ -157,6 +179,16 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
+    authorizedStatus.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    if (saleOrder.getStatusSelect() == null
+        || !authorizedStatus.contains(saleOrder.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_CONFIRM_WRONG_STATUS));
+    }
+
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
     saleOrder.setConfirmedByUser(userService.getUser());
@@ -174,8 +206,16 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     saleOrderRepo.save(saleOrder);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getStatusSelect() == null
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_WRONG_STATUS));
+    }
+
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     saleOrder.setOrderBeingEdited(false);
 

@@ -292,6 +292,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    if (purchaseOrder.getStatusSelect() == null
+        || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
+    }
+
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
     Partner partner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
