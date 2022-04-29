@@ -1052,4 +1052,10 @@ public interface IExceptionMessage {
 
   static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
       "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
+
+  static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
+      "Please select a payment mode to generate the counterpart" /*)*/;
 }
