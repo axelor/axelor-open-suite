@@ -1,3 +1,17 @@
+## [5.4.14] (2022-04-29)
+
+#### Changes
+
+* Databackup: Add option to use fake data when making the backup with anonymization enabled.
+
+#### Fixed
+
+* Purchase Order: generating purchase orders now correctly applies the company purchase config for purchase printing.
+* Lunch voucher: fixed issue where half days were not accounted in lunch voucher computation.
+* Partner: fixed issue where missing sales config is blocking supplier save.
+* Lead: add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Product: average price (WAP) is now correctly computed in product purchase currency.
+
 ## [5.4.13] (2022-04-15)
 
 #### Changes
@@ -507,6 +521,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.14]: https://github.com/axelor/axelor-open-suite/compare/v5.4.13...v5.4.14
 [5.4.13]: https://github.com/axelor/axelor-open-suite/compare/v5.4.12...v5.4.13
 [5.4.12]: https://github.com/axelor/axelor-open-suite/compare/v5.4.11...v5.4.12
 [5.4.11]: https://github.com/axelor/axelor-open-suite/compare/v5.4.10...v5.4.11
