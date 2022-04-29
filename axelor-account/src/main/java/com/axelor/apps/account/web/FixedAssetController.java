@@ -382,4 +382,28 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkPartialDisposal(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (context.get("disposalDate") == null
+        || context.get("disposalAmount") == null
+        || context.get("disposalTypeSelect") == null
+        || context.get("disposalQtySelect") == null) {
+      return;
+    }
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+    Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    FixedAsset fixedAsset =
+        Beans.get(FixedAssetRepository.class).find(Long.valueOf(context.get("_id").toString()));
+    try {
+      if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
+          && disposalQty.compareTo(fixedAsset.getQty()) == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
 }

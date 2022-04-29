@@ -286,7 +286,7 @@
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
-        onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal,close"/>
+        onClick="action-fixed-asset-group-disposal-asset"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2"/>
       <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"
@@ -363,6 +363,13 @@
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
   </action-record>
+
+  <action-group name="action-fixed-asset-group-disposal-asset">
+    <action name="action-validate-account-fixed-asset-wizard-form-validate-qty"/>
+    <action name="action-method-account-fixed-asset-validate-partial-disposal"/>
+    <action name="action-fixed-asset-disposal-wizard-method-disposal"/>
+    <action name="close"/>
+  </action-group>
 
   <action-method name="action-method-account-fixed-asset-validate">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
@@ -464,6 +471,11 @@
 
   <action-method name="action-method-fixed-asset-change-button-title">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="setTitleForButton"/>
+  </action-method>
+
+  <action-method name="action-method-account-fixed-asset-validate-partial-disposal">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="checkPartialDisposal"/>
   </action-method>
 
   <search-filters name="fixed-asset-filters"
