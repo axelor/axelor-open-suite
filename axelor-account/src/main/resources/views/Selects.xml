@@ -725,4 +725,30 @@
     <option value="201">Invoice batch</option>
   </selection>
 
+  <selection name="account.analytic.move.line.query.origin.select">
+    <option value="1">Accounted moves</option>
+    <option value="2">Invoice accounted moves</option>
+    <option value="3">Invoice and accounted moves</option>
+    <option value="4">Daybook moves</option>
+    <option value="5">Daybook invoice moves</option>
+    <option value="6">Daybook moves and invoice moves</option>
+    <option value="7">origin.SimulatedMove</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.search.operator.select">
+    <option value="0">OR</option>
+    <option value="1">AND</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.query.parameter.type.select">
+    <option value="1">parameterType.Search</option>
+    <option value="2">parameterType.Reverse</option>
+  </selection>
+
+  <selection name="account.analytic.move.line.sub.type.select">
+    <option value="1">Original</option>
+    <option value="2">line.Reverse</option>
+    <option value="3">Revision</option>
+  </selection>
+
 </object-views>
