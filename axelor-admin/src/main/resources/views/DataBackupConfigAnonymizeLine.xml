@@ -6,17 +6,22 @@
   <grid model="com.axelor.apps.base.db.DataBackupConfigAnonymizeLine"
     title="Data backup config anonymize lines" name="data-backup-config-anonymize-line-grid">
     <field name="metaModel"/>
+    <field name="metaField"/>
   </grid>
 
   <form model="com.axelor.apps.base.db.DataBackupConfigAnonymizeLine"
     title="Data backup config anonymize line" name="data-backup-config-anonymize-line-form">
     <panel name="mainPanel">
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
-      <field name="metaFieldSet" grid-view="meta-field-details-grid" canNew="false"
+      <field name="metaField" grid-view="meta-field-details-grid" canNew="false"
         canEdit="false"
         domain="self.typeName in ('String','Integer','LocalDateTime','Long','Double','LocalTime','ZonedDateTime','BigDecimal','LocalDate')
-        and self.metaModel = :metaModel and not (self.metaModel.name = 'User' and self.name='password')"
-        widget="TagSelect"/>
+        and self.metaModel = :metaModel and not (self.metaModel.name = 'User' and self.name='password')
+        and not (self.metaModel.name = 'Partner' and self.name='fullName')
+        and not (self.metaModel.name = 'Partner' and self.name='simpleFullName')"/>
+      <field name="useFakeData"/>
+      <field name="fakerApiField" grid-view="faker-api-field-grid"
+        form-view="faker-api-field-form" hidden="true" showIf="useFakeData"/>
     </panel>
   </form>
 </object-views>
