@@ -12,6 +12,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -60,6 +61,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -80,6 +82,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         reconcileService,
         invoiceTermService,
         moveLineTaxService,
+        moveLineInvoiceTermService,
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,

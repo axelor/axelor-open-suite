@@ -17,6 +17,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -48,6 +49,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected MoveRepository moveRepo;
@@ -64,6 +66,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -76,6 +79,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.paymentSessionRepo = paymentSessionRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.moveRepo = moveRepo;
@@ -378,7 +382,20 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       creditMoveLine = moveLine;
     }
 
+    this.generateInvoiceTerm(debitMoveLine);
+    this.generateInvoiceTerm(creditMoveLine);
+
     return reconcileService.reconcile(debitMoveLine, creditMoveLine, false, true);
+  }
+
+  protected void generateInvoiceTerm(MoveLine moveLine) {
+    if (moveLine.getInvoiceTermList() == null) {
+      moveLine.setInvoiceTermList(new ArrayList<>());
+    }
+
+    if (moveLine.getInvoiceTermList().isEmpty()) {
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine);
+    }
   }
 
   protected void generateCashMoveAndLines(
