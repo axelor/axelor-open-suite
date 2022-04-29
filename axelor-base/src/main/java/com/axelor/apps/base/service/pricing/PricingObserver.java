@@ -35,4 +35,10 @@ public interface PricingObserver {
    * @param field
    */
   void updateFieldToPopulate(MetaField field);
+
+  /** Update the observer that the computation started */
+  void computationStarted();
+
+  /** Update the observer that the computation finished */
+  void computationFinished();
 }

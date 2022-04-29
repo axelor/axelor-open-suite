@@ -53,4 +53,10 @@ public interface ObservablePricing {
    * @param result
    */
   void notifyFieldToPopulate(MetaField field);
+
+  /** Notify observers that computation is finished */
+  void notifyFinished();
+
+  /** Notify observers that computation has started */
+  void notifyStarted();
 }
