@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -133,13 +134,16 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     if (line.getAnalyticMoveLineList() != null
         && !line.getAnalyticMoveLineList().isEmpty()
         && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = new ArrayList();
+      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       for (AnalyticAxisByCompany analyticAxisByCompany :
           accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
         for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
           if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
             analyticMoveLineList.add(analyticMoveLine);
           }
+        }
+        if (analyticMoveLineList.isEmpty()) {
+          return line;
         }
         AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
         if (analyticMoveLineList.size() == 1

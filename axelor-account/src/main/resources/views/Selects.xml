@@ -301,7 +301,8 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
-    <option value="7">Doubtful credit</option>
+    <option value="7">Irrecoverable Debt</option>
+    <option value="8">Doubtful credit</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -510,6 +511,7 @@
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">

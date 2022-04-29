@@ -81,6 +81,8 @@ public interface IExceptionMessage {
       "The trading name must be the same for all purchase orders." /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
+  static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders." /*)*/;
   static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/ "No invoice was generated" /*)*/;
   static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
