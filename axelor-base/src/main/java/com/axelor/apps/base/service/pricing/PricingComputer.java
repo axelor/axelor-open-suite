@@ -1,21 +1,5 @@
 package com.axelor.apps.base.service.pricing;
 
-import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.PricingLine;
-import com.axelor.apps.base.db.PricingRule;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PricingRuleRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.db.EntityHelper;
-import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
-import com.axelor.rpc.Context;
-import com.axelor.script.GroovyScriptHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,10 +10,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.Pricing;
+import com.axelor.apps.base.db.PricingLine;
+import com.axelor.apps.base.db.PricingRule;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PricingRuleRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.MetaJsonAttrsService.MetaJsonAttrsBuilder;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 
 public class PricingComputer extends AbstractObservablePricing {
 
@@ -126,7 +129,7 @@ public class PricingComputer extends AbstractObservablePricing {
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
       Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
-      if (optChildPricing.flatMap(this::applyPricing).isPresent()) {
+      if (optChildPricing.isPresent() && applyPricing(optChildPricing.get()).isPresent()) {
         currentPricing = optChildPricing.get();
       } else {
         notifyFinished();
@@ -166,8 +169,9 @@ public class PricingComputer extends AbstractObservablePricing {
    *
    * @param pricing
    * @return optional of the pricing line applied
+   * @throws AxelorException
    */
-  protected Optional<PricingLine> applyPricing(Pricing pricing) {
+  protected Optional<PricingLine> applyPricing(Pricing pricing) throws AxelorException {
     LOG.debug("Applying pricing {} with model {}", pricing, this.model);
     if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
 
@@ -186,7 +190,8 @@ public class PricingComputer extends AbstractObservablePricing {
     return Optional.empty();
   }
 
-  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine) {
+  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine)
+      throws AxelorException {
     Objects.requireNonNull(pricingLine);
 
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(context);
@@ -197,24 +202,50 @@ public class PricingComputer extends AbstractObservablePricing {
     resultPricingRuleList.add(pricing.getResult3PricingRule());
     resultPricingRuleList.add(pricing.getResult4PricingRule());
 
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
-              Object result = scriptHelper.eval(resultPricingRule.getFormula());
-              if (fieldToPopulate != null) {
-                Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
-              }
-              if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
-                LOG.debug(
-                    "Adding result temp variable {} in context",
-                    resultPricingRule.getTempVarName());
-                putInContext(resultPricingRule.getTempVarName(), result);
-              }
-              notifyResultPricingRule(resultPricingRule, result);
-              notifyFieldToPopulate(fieldToPopulate);
-            });
+    for (PricingRule resultPricingRule : resultPricingRuleList) {
+      if (resultPricingRule != null) {
+        MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+        Object result = scriptHelper.eval(resultPricingRule.getFormula());
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
+        if (fieldToPopulate != null) {
+          if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+            String newMetaJsonAttrs = buildMetaJsonAttrs(resultPricingRule, result);
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
+            notifyMetaJsonFieldToPopulate(resultPricingRule.getMetaJsonField());
+          } else {
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+          }
+        }
+        if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+          LOG.debug(
+              "Adding result temp variable {} in context", resultPricingRule.getTempVarName());
+          putInContext(resultPricingRule.getTempVarName(), result);
+        }
+      }
+    }
+  }
+
+  protected String buildMetaJsonAttrs(PricingRule resultPricingRule, Object result)
+      throws AxelorException {
+    LOG.debug("Populating {} of {} with {}", resultPricingRule.getFieldToPopulate(), model, result);
+
+    Object attrsObject =
+        Mapper.of(classModel).get(model, resultPricingRule.getFieldToPopulate().getName());
+    String metaJsonAttrs;
+    if (attrsObject == null) {
+      metaJsonAttrs = "";
+    } else {
+      metaJsonAttrs = attrsObject.toString();
+    }
+
+    try {
+      return new MetaJsonAttrsBuilder(metaJsonAttrs)
+          .putValue(resultPricingRule.getMetaJsonField(), result)
+          .build();
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
   }
 
   /**
