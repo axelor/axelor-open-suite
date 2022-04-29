@@ -20,7 +20,10 @@ public class SequenceAccountManagementRepository extends SequenceBaseRepository 
       Sequence sequence =
           Beans.get(SequenceService.class)
               .getSequence(SequenceRepository.FIXED_ASSET, entity.getCompany());
-      if (entity.getCompany() != null && sequence != null && !sequence.equals(entity)) {
+      if (SequenceRepository.FIXED_ASSET.equals(entity.getCodeSelect())
+          && entity.getCompany() != null
+          && sequence != null
+          && !sequence.equals(entity)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.FIXED_ASSET_SEQUENCE_ALREADY_EXISTS));
