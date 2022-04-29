@@ -940,4 +940,13 @@ public interface IExceptionMessage {
 
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
       "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String IMPORT_FEC_ACCOUNT_NOT_FOUND = /*$$(*/
+      "The account with the code %s cannot be found. The move line cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
+      "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
+
+  static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
+      "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 }
