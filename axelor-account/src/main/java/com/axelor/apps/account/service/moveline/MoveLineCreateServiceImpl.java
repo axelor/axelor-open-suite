@@ -541,7 +541,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         addInvoiceTermMoveLines(
             invoice, partnerAccount, move, partner, isDebitCustomer, origin, moveLineId, total));
 
-
     if (consolidate) {
       moveLineConsolidateService.consolidateMoveLines(moveLines);
     }
