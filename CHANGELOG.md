@@ -1,3 +1,19 @@
+## [6.0.21] (2022-04-29)
+
+#### Changes
+
+* Databackup: Add option to use fake data when making the backup with anonymization enabled.
+
+#### Fixed
+
+* Purchase Order: generating purchase orders now correctly applies the company purchase config for purchase printing.
+* Lunch voucher: fixed issue where half days were not accounted in lunch voucher computation.
+* Partner: fixed issue where missing sales config is blocking supplier save.
+* INVOICE: Fix ClassNotFoundException on partner change when cash-management module is not loaded.
+* Lead, Contract, Sale Order, Purchase Request, Purchase Order: add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Product: average price (WAP) is now correctly computed in product purchase currency.
+* Sequence: When loading app for the first time, correctly initialize default sequences.
+
 ## [6.0.20] (2022-04-15)
 
 #### Changes
@@ -720,6 +736,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.21]: https://github.com/axelor/axelor-open-suite/compare/v6.0.20...v6.0.21
 [6.0.20]: https://github.com/axelor/axelor-open-suite/compare/v6.0.19...v6.0.20
 [6.0.19]: https://github.com/axelor/axelor-open-suite/compare/v6.0.18...v6.0.19
 [6.0.18]: https://github.com/axelor/axelor-open-suite/compare/v6.0.17...v6.0.18
