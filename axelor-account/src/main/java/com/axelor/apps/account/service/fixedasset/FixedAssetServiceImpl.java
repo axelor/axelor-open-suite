@@ -395,6 +395,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             : fixedAsset.getGrossValue();
     BigDecimal newAmount = originalAmount.subtract(amount);
 
+    if (originalAmount.signum() == 0) {
+      return null;
+    }
+
     // Prorata
     BigDecimal prorata = amount.divide(originalAmount, CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal remainingProrata =
