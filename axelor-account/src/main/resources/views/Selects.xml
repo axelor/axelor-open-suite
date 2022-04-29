@@ -657,6 +657,11 @@
     <option value="1">Active</option>
   </selection>
 
+  <selection name="account.fixed.asset.split.type.select">
+    <option value="1">Quantity</option>
+    <option value="2">Amount</option>
+  </selection>
+
   <selection name="iaccount.account.batch.bill.of.exchange.type.select">
     <option value="1">Direct bank LCR</option>
   </selection>

@@ -29,7 +29,9 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
-      /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+      /*$$(*/ "The input quantity can't be greater or equal to the quantity available in the fixed asset." /*)*/;
+  static final String IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL =
+      /*$$(*/ "The input gross value neither can't be greater or equal to the asset gross value nor equal to 0." /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
       /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
@@ -1072,6 +1074,9 @@ public interface IExceptionMessage {
 
   // Split message
   static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
+
+  static final String SPLIT_MESSAGE_COMMENT_AMOUNT = /*$$(*/
+      "Split of %.2f %s realized on %s" /*)*/;
 
   static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
