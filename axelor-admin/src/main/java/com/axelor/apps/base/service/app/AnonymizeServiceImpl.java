@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -32,10 +35,24 @@ import org.slf4j.LoggerFactory;
 
 public class AnonymizeServiceImpl implements AnonymizeService {
 
+  protected FakerService fakerService;
+
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
+  @Inject
+  public AnonymizeServiceImpl(FakerService fakerService) {
+    this.fakerService = fakerService;
+  }
+
   @Override
-  public Object anonymizeValue(Object object, Property property) {
+  public Object anonymizeValue(
+      Object object, Property property, boolean useFakeData, FakerApiField fakerApiField)
+      throws AxelorException {
+
+    if (useFakeData) {
+      return fakerService.generateFakeData(fakerApiField);
+    }
+
     switch (property.getType()) {
       case TEXT:
       case STRING:
