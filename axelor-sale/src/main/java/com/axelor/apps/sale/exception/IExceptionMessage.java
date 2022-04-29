@@ -81,4 +81,15 @@ public interface IExceptionMessage {
       "Missing mapped by: unidirectional one-to-many are not supported by the configurator." /*)*/;
 
   static final String COPY = /*$$(*/ "copy" /*)*/;
+
+  /** Sale Order Workflow Service * */
+  static final String SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS = /*$$(*/
+      "Can only finalize a drafted quotation." /*)*/;
+
+  static final String SALE_ORDER_CONFIRM_WRONG_STATUS = /*$$(*/
+      "Can only confirm a finalized quotation." /*)*/;
+  static final String SALE_ORDER_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only complete a confirmed sale order." /*)*/;
+  static final String SALE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel a drafted or finalized sale order." /*)*/;
 }
