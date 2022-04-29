@@ -1141,4 +1141,10 @@ public interface IExceptionMessage {
 
   static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
       "Specific Analytic Distribution Template" /*)*/;
+
+  static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
+      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
+
+  static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
+      "Please select a payment mode to generate the counterpart" /*)*/;
 }

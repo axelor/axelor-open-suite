@@ -176,4 +176,6 @@ public interface MoveToolService {
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
+
+  void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 }

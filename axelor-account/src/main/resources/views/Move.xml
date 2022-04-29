@@ -161,6 +161,8 @@
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
 	                      <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
+
+                      	  <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
                       </h4>
                     ]]>
           </viewer>
@@ -545,6 +547,7 @@
 
   <action-group name="action-account-move-group-generate-counterpart">
     <action name="save"/>
+    <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
     <action name="action-account-move-method-compute-totals"/>
@@ -798,6 +801,10 @@
 
   <action-method name="action-move-method-check-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="checkDates"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-exception-counterpart">
+    <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
   </action-method>
 
   <!-- ACTION VIEW -->
