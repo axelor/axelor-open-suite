@@ -15,11 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bpm.service;
+package com.axelor.apps.bpm.service.dashboard;
 
+import com.axelor.apps.bpm.db.WkfModel;
+import com.axelor.apps.bpm.db.WkfProcess;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
-public interface BpmDashboardService {
+public interface BpmManagerDashboardTaskService {
 
-  Map<String, Object> getData(int offset);
+  public void getTaskByProcess(
+      Map<String, Object> _map,
+      WkfProcess process,
+      String taskByProcessType,
+      List<Map<String, Object>> dataMapList);
+
+  public Map<String, Object> getTaskByProcessRecords(
+      WkfModel wkfModel, String processName, String model, String typeSelect);
+
+  public List<Map<String, Object>> getTaskCompletionByDays(LocalDate fromDate, LocalDate toDate);
 }
