@@ -127,8 +127,8 @@
     <attribute name="value:del" for="__paymentVoucherDueList"
       expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
     <attribute name="value" for="totalAmount"
-      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }?.sum{it.paidAmount as BigDecimal}) + totalAmount"
-      if="__paymentVoucherDueList?.findAll{ it.selected }"/>
+      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }.sum{it.paidAmount as BigDecimal}) + totalAmount"
+      if="__paymentVoucherDueList?.findAll{ it.selected }.size() > 0"/>
     <attribute name="value" for="chequeCount"
       expr="eval: __paymentVoucherDueList?.findAll{ it.selected }?.size() + chequeCount"
       if="__paymentVoucherDueList?.findAll{ it.selected }"/>
