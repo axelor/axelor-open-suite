@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -63,6 +64,8 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
 
       copyAdvancePaymentToInvoice(invoice);
     }
+
+    manageFinancialDiscountDeadLineDate(invoice);
 
     // send message
     if (invoice.getInvoiceAutomaticMail()) {
@@ -124,5 +127,14 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
     }
+  }
+
+  protected void manageFinancialDiscountDeadLineDate(Invoice invoice) {
+    FinancialDiscount financialDiscount = invoice.getFinancialDiscount();
+    if (financialDiscount == null) {
+      return;
+    }
+    invoice.setFinancialDiscountDeadlineDate(
+        invoice.getDueDate().minusDays(financialDiscount.getDiscountDelay()));
   }
 }

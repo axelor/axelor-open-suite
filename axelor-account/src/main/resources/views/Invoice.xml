@@ -765,7 +765,7 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
+        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
@@ -1101,7 +1101,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
-        onClick="save,action-invoice-method-ventilate,save"
+        onClick="save,action-invoice-method-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-invoice-method-cancel,save"
@@ -2332,11 +2332,11 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
       if="financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="financialDiscount &amp;&amp; financialDiscount.discountRate"/>
+      if="financialDiscount"/>
     <field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)"
+      expr="eval: dueDate.minusDays(financialDiscount.discountDelay)"
       if="dueDate &amp;&amp; financialDiscount"/>
   </action-record>
 
