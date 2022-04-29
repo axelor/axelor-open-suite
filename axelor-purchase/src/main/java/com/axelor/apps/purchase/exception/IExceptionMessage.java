@@ -85,5 +85,4 @@ public interface IExceptionMessage {
       "Can not cancel already canceled purchase request." /*)*/;
   public static final String PURCHASE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft from canceled purchase request." /*)*/;
-
 }
