@@ -259,4 +259,10 @@ public interface InvoiceTermService {
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
+
+  public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
+      List<InvoiceTerm> invoiceTermList) throws AxelorException;
+
+  void reconcileAndUpdateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
 }

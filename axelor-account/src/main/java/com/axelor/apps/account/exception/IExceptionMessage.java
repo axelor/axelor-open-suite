@@ -1207,11 +1207,17 @@ public interface IExceptionMessage {
   static final String PAYMENT_SESSION_NO_GLOBAL_ACCOUNTING_CASH_ACCOUNT = /*$$(*/
       "Please set the global payment account in the account management settings by company on the payment mode %s." /*)*/;
 
+  static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
+      "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
+
   static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
 
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND = /*$$(*/
+      "Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue." /*)*/;
 
   static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
       "Specific Analytic Distribution Template" /*)*/;
