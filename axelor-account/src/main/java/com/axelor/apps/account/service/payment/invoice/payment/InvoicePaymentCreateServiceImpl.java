@@ -49,9 +49,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.shiro.util.CollectionUtils;
 
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
 
@@ -331,26 +331,38 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   @Transactional
   public InvoicePayment createInvoicePayment(
-      InvoiceTerm invoiceTerm,
+      List<InvoiceTerm> invoiceTermList,
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+
+    Invoice invoice = invoiceTermList.get(0).getInvoice();
+    Currency currency = invoice.getCurrency();
+    BigDecimal amountRemaining =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
     InvoicePayment invoicePayment =
         createInvoicePayment(
-            invoiceTerm.getInvoice(),
-            invoiceTerm.getAmountRemaining(),
+            invoice,
+            amountRemaining,
             paymentDate,
-            invoiceTerm.getInvoice().getCurrency(),
+            currency,
             paymentMode,
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+    invoicePayment.setManualChange(true);
 
-    invoiceTermPaymentService.initInvoiceTermPayments(
-        invoicePayment, Collections.singletonList(invoiceTerm));
+    invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
     invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
@@ -369,36 +381,68 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate bankDepositDate,
       String chequeNumber)
       throws AxelorException {
-
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
-
     for (Long invoiceId : invoiceList) {
-
       Invoice invoice = invoiceRepository.find(invoiceId);
-      for (InvoiceTerm invoiceTerm :
-          invoice.getInvoiceTermList().stream()
-              .filter(it -> !it.getIsPaid() && it.getAmountRemaining().signum() > 0)
-              .collect(Collectors.toList())) {
-        InvoicePayment invoicePayment =
-            this.createInvoicePayment(
-                invoiceTerm,
-                paymentMode,
-                companyBankDetails,
-                paymentDate,
-                bankDepositDate,
-                chequeNumber);
-        invoicePaymentList.add(invoicePayment);
 
-        if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
-          invoice.addInvoicePaymentListItem(invoicePayment);
-        }
-      }
+      this.createInvoicePayment(
+          invoice,
+          invoicePaymentList,
+          paymentMode,
+          companyBankDetails,
+          paymentDate,
+          bankDepositDate,
+          chequeNumber,
+          false);
+      this.createInvoicePayment(
+          invoice,
+          invoicePaymentList,
+          paymentMode,
+          companyBankDetails,
+          paymentDate,
+          bankDepositDate,
+          chequeNumber,
+          true);
+
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
     return invoicePaymentList;
+  }
+
+  public void createInvoicePayment(
+      Invoice invoice,
+      List<InvoicePayment> invoicePaymentList,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber,
+      boolean holdback) {
+    List<InvoiceTerm> invoiceTermList =
+        invoice.getInvoiceTermList().stream()
+            .filter(
+                it ->
+                    !it.getIsPaid()
+                        && it.getAmountRemaining().signum() > 0
+                        && it.getIsHoldBack() == holdback)
+            .collect(Collectors.toList());
+
+    InvoicePayment invoicePayment =
+        this.createInvoicePayment(
+            invoiceTermList,
+            paymentMode,
+            companyBankDetails,
+            paymentDate,
+            bankDepositDate,
+            chequeNumber);
+    invoicePaymentList.add(invoicePayment);
+
+    if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
+      invoice.addInvoicePaymentListItem(invoicePayment);
+    }
   }
 
   @Override
