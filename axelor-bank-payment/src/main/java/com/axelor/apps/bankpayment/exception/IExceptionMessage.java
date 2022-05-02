@@ -257,6 +257,8 @@ public interface IExceptionMessage {
       "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
       "Can't load while another reconciliation is open" /*)*/;
+  static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
+      "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
