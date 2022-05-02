@@ -5,11 +5,17 @@ import javax.ws.rs.core.Response;
 
 public class ResponseConstructor {
 
-    public static Response build(int statusCode, String message, ApiStructure object) {
-        return Response.status(statusCode)
-                .type(MediaType.APPLICATION_JSON)
-                .entity(new ResponseBody(statusCode, message, object))
-                .build();
-    }
+  public static Response build(Response.Status statusCode, String message, ApiStructure object) {
+    return Response.status(statusCode)
+        .type(MediaType.APPLICATION_JSON)
+        .entity(new ResponseBody(statusCode, message, object))
+        .build();
+  }
 
+  public static Response build(Response.Status statusCode, String message) {
+    return Response.status(statusCode)
+        .type(MediaType.APPLICATION_JSON)
+        .entity(new ResponseBody(statusCode, message))
+        .build();
+  }
 }

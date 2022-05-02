@@ -18,6 +18,8 @@
 package com.axelor.apps.tool.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.tool.api.HttpExceptionHandler;
+import com.axelor.apps.tool.api.HttpExceptionHandlerImpl;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.apps.tool.service.ArchivingToolServiceImpl;
 import com.axelor.apps.tool.service.CipherService;
@@ -28,6 +30,7 @@ import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.apps.tool.service.ListToolServiceImpl;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.apps.tool.service.TranslationServiceImpl;
+import com.google.inject.matcher.Matchers;
 
 public class ToolModule extends AxelorModule {
 
@@ -38,5 +41,9 @@ public class ToolModule extends AxelorModule {
     bind(ArchivingToolService.class).to(ArchivingToolServiceImpl.class);
     bind(ListToolService.class).to(ListToolServiceImpl.class);
     bind(ConvertBinaryToMetafileService.class).to(ConvertBinaryToMetafileServiceImpl.class);
+    bindInterceptor(
+        Matchers.any(),
+        Matchers.annotatedWith(HttpExceptionHandler.class),
+        new HttpExceptionHandlerImpl());
   }
 }
