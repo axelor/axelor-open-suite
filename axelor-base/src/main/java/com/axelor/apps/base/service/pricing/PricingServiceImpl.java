@@ -1,5 +1,14 @@
 package com.axelor.apps.base.service.pricing;
 
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
@@ -7,13 +16,6 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PricingServiceImpl implements PricingService {
 
@@ -52,6 +54,7 @@ public class PricingServiceImpl implements PricingService {
     Map<String, Object> bindings = new HashMap<>();
 
     filter.append("self.startDate <= :todayDate ");
+    filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
     bindings.put("todayDate", appBaseService.getTodayDate(company));
 
     if (company != null) {
