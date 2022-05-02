@@ -43,6 +43,7 @@
     model="com.axelor.apps.supplychain.db.Mrp">
     <view type="grid" name="mrp-grid"/>
     <view type="form" name="mrp-form"/>
+    <domain>self.mrpTypeSelect = 1</domain>
   </action-view>
 
   <menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts"
