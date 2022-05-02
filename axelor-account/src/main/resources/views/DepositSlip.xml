@@ -223,7 +223,6 @@
     <field name="chequeDueDate" readonly="true"/>
   </grid>
 
-
   <form title="Payment voucher" name="payment-voucher-deposit-slip-form"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <panel name="mainPanel" colSpan="12" readonly="true">
