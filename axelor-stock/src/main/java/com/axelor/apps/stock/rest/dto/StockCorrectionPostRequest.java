@@ -12,7 +12,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockCorrectionCreateRequest implements RequestStructure {
+public class StockCorrectionPostRequest implements RequestStructure {
 
   @NotNull
   @Min(0)
@@ -37,7 +37,7 @@ public class StockCorrectionCreateRequest implements RequestStructure {
   @Min(0)
   private BigDecimal realQty;
 
-  public StockCorrectionCreateRequest() {}
+  public StockCorrectionPostRequest() {}
 
   public Long getProductId() {
     return productId;
@@ -88,19 +88,19 @@ public class StockCorrectionCreateRequest implements RequestStructure {
   }
 
   // Transform id to object
-  public Product getProduct() {
+  public Product fetchProduct() {
     return ObjectFinder.find(Product.class, productId);
   }
 
-  public StockLocation getStockLocation() {
+  public StockLocation fetchStockLocation() {
     return ObjectFinder.find(StockLocation.class, stockLocationId);
   }
 
-  public StockCorrectionReason getReason() {
+  public StockCorrectionReason fetchReason() {
     return ObjectFinder.find(StockCorrectionReason.class, reasonId);
   }
 
-  public TrackingNumber getTrackingNumber() {
+  public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
       return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
     } else {

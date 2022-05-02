@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-public class StockCorrectionUpdateRequest implements RequestStructure {
+public class StockCorrectionPutRequest implements RequestStructure {
 
   @Min(StockCorrectionRepository.STATUS_DRAFT)
   @Max(StockCorrectionRepository.STATUS_VALIDATED)
@@ -15,7 +15,7 @@ public class StockCorrectionUpdateRequest implements RequestStructure {
   @Min(0)
   private BigDecimal realQty;
 
-  public StockCorrectionUpdateRequest() {}
+  public StockCorrectionPutRequest() {}
 
   public Integer getStatus() {
     return status;

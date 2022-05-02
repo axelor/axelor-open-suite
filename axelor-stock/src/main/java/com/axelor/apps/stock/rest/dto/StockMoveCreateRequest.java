@@ -3,15 +3,10 @@ package com.axelor.apps.stock.rest.dto;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestStructure;
-import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -105,28 +100,28 @@ public class StockMoveCreateRequest implements RequestStructure {
 
   // Transform id to object
   public Product getProduct() {
-    return Beans.get(ProductRepository.class).find(this.productId);
+    return ObjectFinder.find(Product.class, productId);
   }
 
   public StockLocation getOriginStockLocation() {
-    return Beans.get(StockLocationRepository.class).find(this.originStockLocationId);
+    return ObjectFinder.find(StockLocation.class, originStockLocationId);
   }
 
   public StockLocation getDestStockLocation() {
-    return Beans.get(StockLocationRepository.class).find(this.destStockLocationId);
+    return ObjectFinder.find(StockLocation.class, destStockLocationId);
   }
 
   public Company getCompany() {
-    return Beans.get(CompanyRepository.class).find(this.companyId);
+    return ObjectFinder.find(Company.class, companyId);
   }
 
   public Unit getUnit() {
-    return Beans.get(UnitRepository.class).find(this.unitId);
+    return ObjectFinder.find(Unit.class, unitId);
   }
 
   public TrackingNumber getTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return Beans.get(TrackingNumberRepository.class).find(this.trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
     } else {
       return null;
     }

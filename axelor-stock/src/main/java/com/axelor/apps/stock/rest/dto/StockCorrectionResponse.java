@@ -15,7 +15,6 @@ public class StockCorrectionResponse implements ApiStructure {
     this.realQty = stockCorrection.getRealQty().intValue();
   }
 
-  @Override
   public String getObjectName() {
     return "stockCorrection";
   }

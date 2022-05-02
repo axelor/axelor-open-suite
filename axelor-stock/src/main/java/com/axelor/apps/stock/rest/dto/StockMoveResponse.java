@@ -16,7 +16,6 @@ public class StockMoveResponse implements ApiStructure {
     this.idToLocation = stockMove.getToStockLocation().getId();
   }
 
-  @Override
   public String getObjectName() {
     return "stockMove";
   }
