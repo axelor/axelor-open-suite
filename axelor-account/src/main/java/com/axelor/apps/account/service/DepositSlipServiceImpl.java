@@ -38,7 +38,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -50,22 +49,6 @@ import org.slf4j.LoggerFactory;
 public class DepositSlipServiceImpl implements DepositSlipService {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void loadPayments(DepositSlip depositSlip) throws AxelorException {
-    if (depositSlip.getPublicationDate() != null) {
-      throw new AxelorException(
-          depositSlip,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_ALREADY_PUBLISHED));
-    }
-
-    depositSlip.clearPaymentVoucherList();
-
-    fetchPaymentVouchers(depositSlip).forEach(depositSlip::addPaymentVoucherListItem);
-    compute(depositSlip);
-  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -154,18 +137,6 @@ public class DepositSlipServiceImpl implements DepositSlipService {
             depositSlip,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
-    }
-  }
-
-  private void compute(DepositSlip depositSlip) {
-    if (depositSlip.getPaymentVoucherList() != null) {
-      List<PaymentVoucher> paymentVoucherList = depositSlip.getPaymentVoucherList();
-      BigDecimal totalAmount =
-          paymentVoucherList.stream()
-              .map(PaymentVoucher::getPaidAmount)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      depositSlip.setTotalAmount(totalAmount);
-      depositSlip.setChequeCount(paymentVoucherList.size());
     }
   }
 
