@@ -1160,8 +1160,7 @@ InvoiceSet.length > 0))"
         <field name="externalReference"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-        <field name="invoiceDate"
-          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-dates"/>
+        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
@@ -1517,7 +1516,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-dates"/>
-    <action name="action-invoice-method-estimated-payment-dates"/>
     <action name="action-invoice-method-fill-company-bank-details"/>
     <action name="action-invoice-record-specific-note-on-invoice"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
@@ -1605,7 +1603,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-dates"/>
-    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
+      if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -2096,12 +2095,6 @@ InvoiceSet.length > 0))"
   <action-method name="action-suppl-invoice-method-merge-from-popup">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="mergeSupplInvoiceFromPopup"/>
-  </action-method>
-
-  <action-method name="action-invoice-method-estimated-payment-dates"
-    if-module="axelor-cash-management">
-    <call class="com.axelor.apps.cash.management.web.InvoiceController"
-      method="computeEstimatedPaymentDates"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
