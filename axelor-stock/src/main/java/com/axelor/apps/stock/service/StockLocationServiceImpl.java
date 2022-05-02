@@ -38,13 +38,11 @@ import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 
@@ -176,6 +174,15 @@ public class StockLocationServiceImpl implements StockLocationService {
   public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
       throws AxelorException {
     return getQty(productId, locationId, companyId, "future");
+  }
+
+  @Override
+  public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
+      throws AxelorException {
+    Map<String, Object> map = new HashMap<>();
+    map.put("$realQty", getRealQty(productId, locationId, companyId));
+    map.put("$futureQty", getFutureQty(productId, locationId, companyId));
+    return map;
   }
 
   public List<Long> getBadStockLocationLineId() {
@@ -310,4 +317,16 @@ public class StockLocationServiceImpl implements StockLocationService {
                     && !stockConfig.getIsDisplaySaleValueInPrinting())
                 && !stockConfig.getIsDisplayPurchaseValueInPrinting());
   }
+
+  @Transactional
+  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker){
+    List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
+      if (stockLocationLine.getProduct() == product) {
+        stockLocationLine.setRack(newLocker);
+      }
+    }
+    stockLocationRepo.save(stockLocation);
+  }
+
 }
