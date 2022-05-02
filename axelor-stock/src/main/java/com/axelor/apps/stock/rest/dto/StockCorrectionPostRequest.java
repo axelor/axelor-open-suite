@@ -1,16 +1,12 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockCorrectionReason;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.StockCorrectionReasonRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestStructure;
-import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -93,20 +89,20 @@ public class StockCorrectionCreateRequest implements RequestStructure {
 
   // Transform id to object
   public Product getProduct() {
-    return Beans.get(ProductRepository.class).find(this.productId);
+    return ObjectFinder.find(Product.class, productId);
   }
 
   public StockLocation getStockLocation() {
-    return Beans.get(StockLocationRepository.class).find(this.stockLocationId);
+    return ObjectFinder.find(StockLocation.class, stockLocationId);
   }
 
   public StockCorrectionReason getReason() {
-    return Beans.get(StockCorrectionReasonRepository.class).find(this.reasonId);
+    return ObjectFinder.find(StockCorrectionReason.class, reasonId);
   }
 
   public TrackingNumber getTrackingNumber() {
     if (this.trackingNumberId != null) {
-      return Beans.get(TrackingNumberRepository.class).find(this.trackingNumberId);
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
     } else {
       return null;
     }
