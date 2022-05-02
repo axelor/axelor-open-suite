@@ -5,7 +5,7 @@ import com.axelor.apps.tool.api.ApiStructure;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class StockProductResponse implements ApiStructure {
+public class SupplychainStockProductResponse implements ApiStructure {
 
   private final long id;
   private final BigDecimal realQty;
@@ -18,7 +18,7 @@ public class StockProductResponse implements ApiStructure {
   private final BigDecimal consumeManufOrderQty;
   private final BigDecimal missingManufOrderQty;
 
-  public StockProductResponse(Product product, Map<String, Object> qtys) {
+  public SupplychainStockProductResponse(Product product, Map<String, Object> qtys) {
     this.id = product.getId();
     this.realQty = (BigDecimal) qtys.get("$realQty");
     this.futureQty = (BigDecimal) qtys.get("$futureQty");
