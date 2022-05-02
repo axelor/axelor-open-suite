@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -265,4 +266,6 @@ public interface InvoiceTermService {
 
   void reconcileAndUpdateInvoiceTermsAmounts(
       InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+
+  BigDecimal computeParentTotal(Context context);
 }
