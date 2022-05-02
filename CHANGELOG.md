@@ -1,3 +1,27 @@
+## [6.1.10] (2022-04-29)
+
+#### Changes
+
+* Databackup: add option to use fake data when making the backup with anonymization enabled.
+* Product: add column available quantity on variants panel on product form view.
+* Configurator Creator: add tooltip to document attributes configuration.
+
+#### Fixed
+
+* Purchase Order: generating purchase orders now correctly applies the company purchase config for purchase printing.
+* Lunch voucher: fixed issue where half days were not accounted in lunch voucher computation.
+* ObjectDataConfig: Improve demo data to have an usable configuration.
+* Partner: fixed issue where missing sales config is blocking supplier save.
+* Invoice: Fix ClassNotFoundException on partner change when cash-management module is not loaded.
+* Lead, Contract, Sale Order, Purchase Request, Purchase Order: add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Product: average price (WAP) is now correctly computed in product purchase currency.
+* Equipment maintenance: An error is correctly displayed when a sequence for equipment maintenance is missing.
+* Sequence: When loading app for the first time, correctly initialize default sequences.
+
+#### Removed
+
+* Webapp: remove date.format property from application.properties file.
+
 ## [6.1.9] (2022-04-15)
 
 #### Changes
@@ -493,6 +517,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.10]: https://github.com/axelor/axelor-open-suite/compare/v6.1.9...v6.1.10
 [6.1.9]: https://github.com/axelor/axelor-open-suite/compare/v6.1.8...v6.1.9
 [6.1.8]: https://github.com/axelor/axelor-open-suite/compare/v6.1.7...v6.1.8
 [6.1.7]: https://github.com/axelor/axelor-open-suite/compare/v6.1.6...v6.1.7

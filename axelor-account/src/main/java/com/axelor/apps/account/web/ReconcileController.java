@@ -50,7 +50,8 @@ public class ReconcileController {
 
     try {
       Beans.get(ReconcileService.class)
-          .confirmReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()), true);
+          .confirmReconcile(
+              Beans.get(ReconcileRepository.class).find(reconcile.getId()), true, true);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

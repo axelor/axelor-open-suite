@@ -33,6 +33,9 @@ public interface IExceptionMessage {
 
   static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only return to validated from finished purchase order." /*)*/;
+
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
@@ -81,6 +84,8 @@ public interface IExceptionMessage {
       "The trading name must be the same for all purchase orders." /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
+  static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders." /*)*/;
   static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/ "No invoice was generated" /*)*/;
   static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
@@ -301,6 +306,9 @@ public interface IExceptionMessage {
 
   static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
       "The customer account is blocked because he has late payments." /*)*/;
+
+  static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
+      "Can only go back to confirmed if completed." /*)*/;
 
   static final String BATCH_MOVE_DATE_ERROR = /*$$(*/
       "Please, enter only dates with the last day of month" /*)*/;
