@@ -1,3 +1,0 @@
----
-title: "BOM: Fixed a bug where created boms would not be displayed on the grid view or on a manuf order"
-type: fix
