@@ -1,0 +1,3 @@
+---
+title: "Purchase order : fix an error occuring when validating a purchase order with interco at true"
+type: fix
