@@ -1,3 +1,3 @@
 ---
-title: "Fix an error happenning when importing currency demo data"
+title: "Invoice: fixed an error preventing invoice line to be created on import."
 type : fix
