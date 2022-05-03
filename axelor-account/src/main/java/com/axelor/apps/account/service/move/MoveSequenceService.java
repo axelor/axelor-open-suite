@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -31,11 +32,13 @@ import com.google.inject.Inject;
 public class MoveSequenceService {
 
   private SequenceService sequenceService;
+  private MoveRepository moveRepo;
 
   @Inject
-  public MoveSequenceService(SequenceService sequenceService) {
+  public MoveSequenceService(SequenceService sequenceService, MoveRepository moveRepo) {
 
     this.sequenceService = sequenceService;
+    this.moveRepo = moveRepo;
   }
 
   public void setDraftSequence(Move move) throws AxelorException {
@@ -58,6 +61,17 @@ public class MoveSequenceService {
           I18n.get(IExceptionMessage.MOVE_5),
           journal.getName());
     }
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
+    String ref = sequenceService.getSequenceNumber(journal.getSequence(), move.getDate());
+    Company company = move.getCompany();
+    Move otherMoveWithSameRef =
+        moveRepo.all().filter("self.reference = ?1 and self.company = ?2", ref, company).fetchOne();
+    if (otherMoveWithSameRef != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+          I18n.get(IExceptionMessage.MOVE_REFERENCE_ALREADY_EXISTS),
+          ref,
+          company.getName());
+    }
+    move.setReference(ref);
   }
 }
