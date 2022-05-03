@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   public Map<String, Object> computeTotals(Move move) {
 
     Map<String, Object> values = new HashMap<>();
-    if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+    if (move.getMoveLineList() == null) {
       return values;
     }
     values.put("$totalLines", move.getMoveLineList().size());
@@ -20,8 +21,9 @@ public class MoveComputeServiceImpl implements MoveComputeService {
     BigDecimal totalCurrency =
         move.getMoveLineList().stream()
             .map(MoveLine::getCurrencyAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    values.put("$totalCurrency", totalCurrency.divide(BigDecimal.ONE.add(BigDecimal.ONE)));
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
+    values.put("$totalCurrency", totalCurrency);
 
     BigDecimal totalDebit =
         move.getMoveLineList().stream()

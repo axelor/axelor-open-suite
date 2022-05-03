@@ -941,6 +941,9 @@ public interface IExceptionMessage {
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
       "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
 
+  static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
+      "Please select a payment mode to generate the counterpart" /*)*/;
+  
   static final String IMPORT_FEC_ACCOUNT_NOT_FOUND = /*$$(*/
       "The account with the code %s cannot be found. The move line cannot be created." /*)*/;
 
