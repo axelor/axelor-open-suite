@@ -1,3 +1,3 @@
 ---
-title: "Invoice: fixed an error preventing invoice line to be created on import."
+title: "Invoice: fixed an error preventing an invoice to be created on import or from a sale order."
 type : fix
