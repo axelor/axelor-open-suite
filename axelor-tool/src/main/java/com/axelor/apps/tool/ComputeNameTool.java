@@ -36,7 +36,7 @@ public class ComputeNameTool {
   public static String computeFullName(
       String firstName, String lastName, String sequence, String id) {
     if (!Strings.isNullOrEmpty(sequence)) {
-      return sequence + " - " + lastName + " " + firstName;
+      return sequence + " - " + computeSimpleFullName(firstName, lastName, id);
     }
     return computeSimpleFullName(firstName, lastName, id);
   }
