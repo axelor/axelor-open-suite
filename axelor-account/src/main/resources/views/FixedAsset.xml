@@ -186,7 +186,7 @@
       <panel name="associatedFixedAssets" title="Associated Fixed Assets">
         <field name="associatedFixedAssetsSet" showIf="id" colSpan="12" widget="many-to-many"
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
-          domain="self.company = :company"/>
+          domain="self.company = :company and (:id = null or self.id != :id)"/>
       </panel>
       <panel if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
         name="barcodePanel" title="Barcode" readonlyIf="barcode != null" colspan="12">
