@@ -513,7 +513,7 @@ public class ReconcileServiceImpl implements ReconcileService {
             it ->
                 it.getMove() != null
                     && it.getMove().equals(move)
-                    && it.getReconcileList().isEmpty())
+                    && CollectionUtils.isEmpty(it.getReconcileList()))
         .findFirst()
         .orElse(null);
   }
