@@ -66,6 +66,12 @@
     <call class="com.axelor.apps.account.web.PeriodController" method="setReadOnly"/>
   </action-method>
 
+  <action-group name="action-period-group-onload">
+    <action name="action-attrs-period-hide-linked-adjusting-moves-dashlet"/>
+    <action name="action-method-period-show-buttons"/>
+    <action name="action-method-account-readonly-if-period-in-move"/>
+  </action-group>
+
   <action-group id="account-action-period-group-close-temp"
     name="action-period-group-close-temp">
     <action name="save"/>
