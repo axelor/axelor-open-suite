@@ -544,7 +544,7 @@ public class IrrecoverableService {
 
     if (!ObjectUtils.isEmpty(reconcileList)) {
       for (Reconcile reconcile : reconcileList) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
 
