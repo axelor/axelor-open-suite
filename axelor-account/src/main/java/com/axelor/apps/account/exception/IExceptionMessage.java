@@ -316,6 +316,9 @@ public interface IExceptionMessage {
   static final String MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be daybooked because its fiscal period is closed." /*)*/;
 
+  static final String MOVE_REFERENCE_ALREADY_EXISTS = /*$$(*/
+      "The move reference %s already exists for the company %s" /*)*/;
+
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
       "%s : You must configure a RIB for payment timetable %s" /*)*/;
