@@ -125,6 +125,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     operationOrder.setUseLineInGeneratedPurchaseOrder(
         prodProcessLine.getUseLineInGeneratedPurchaseOrder());
 
+    operationOrder.setOutsourcing(prodProcessLine.getOutsourcing());
+
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
