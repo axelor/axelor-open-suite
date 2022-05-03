@@ -483,6 +483,8 @@
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
         readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
+      <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
+        grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
@@ -907,16 +909,17 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
 								<font x-translate ng-if="record.typeSelect == 5">On</font>
 								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-								<font x-translate ng-if="record.typeSelect == 7">Doubtful on</font>
+								<font x-translate ng-if="record.typeSelect == 7">Exp. accounted on</font>
+								<font x-translate ng-if="record.typeSelect == 8">Doubtful on</font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
 							</span>
 						</dt>
-						<dd  ng-if="record.typeSelect == 7">
+						<dd  ng-if="record.typeSelect == 8">
 							{{$fmt('amount') | currency: record.currency.symbol}}
 						</dd>
-						<dd ng-if="record.typeSelect != 7">
+						<dd ng-if="record.typeSelect != 8">
 							-{{$fmt('amount') | currency: record.currency.symbol}}
 						</dd>
 					</dl>
@@ -930,6 +933,7 @@ InvoiceSet.length > 0))"
 							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
 							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">On</font>
 							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
+							<font x-translate ng-if="record.typeSelect == 7 && record.applyFinancialDiscount == true">Exp. accounted on</font>
 							<font x-translate ng-if="record.applyFinancialDiscount == true">
 								{{$fmt('paymentDate')}}
 							</font>
@@ -995,12 +999,10 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
-        <field name="invoiceDate"
-          onChange="action-invoice-group-payment-condition-onchange,action-invoice-method-estimated-payment-dates"
+        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
         <spacer/>
-        <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
-          readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1159,9 +1161,8 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate"
-          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-dates,action-invoice-method-estimated-payment-dates"/>
-        <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
-          readonlyIf="!paymentCondition.isFree"/>
+          onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-dates"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1241,6 +1242,9 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="record.typeSelect == 6">
 									Imputed on
 								</font>
+								<font x-translate ng-if="record.typeSelect == 7">
+									Exp. accounted on
+								/font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
@@ -1437,13 +1441,13 @@ InvoiceSet.length > 0))"
   </form>
 
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
-    title="Cancellation confirmation">
+    title="Invoice.refuseToPayWizard">
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
         onChange="action-attrs-invoice-other-reason"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
-      <button name="cancelConfirmBtn" title="Confirm cancellation"
+      <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
         onClick="action-invoice-refusal-to-pay-cancel-reason-check,action-invoice-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
     </panel>
@@ -1601,12 +1605,13 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-dates"/>
-    <action name="action-invoice-method-estimated-payment-dates"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
+    <action name="action-invoice-method-generate-invoice-terms"
+      if="statusSelect == 1 &amp;&amp; invoiceTermList?.isEmpty() &amp;&amp; invoiceLineList?.size() > 0 &amp;&amp; paymentCondition != null"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>

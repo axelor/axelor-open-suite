@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -163,6 +164,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected int determineType(Move move) {
 
     Invoice invoice = move.getInvoice();
+    if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
+      return InvoicePaymentRepository.TYPE_IRRECOVERABLE_DEBT;
+    }
     if (invoice != null) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
           || invoice.getOperationTypeSelect()

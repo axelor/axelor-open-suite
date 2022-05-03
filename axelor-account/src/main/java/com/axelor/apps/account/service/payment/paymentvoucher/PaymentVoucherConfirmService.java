@@ -320,7 +320,7 @@ public class PaymentVoucherConfirmService {
               true);
     }
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     moveValidateService.accounting(move);
   }
@@ -474,7 +474,7 @@ public class PaymentVoucherConfirmService {
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
         if (reconcile != null) {
-          reconcileService.confirmReconcile(reconcile, true);
+          reconcileService.confirmReconcile(reconcile, true, true);
         }
       } else {
 
@@ -768,7 +768,7 @@ public class PaymentVoucherConfirmService {
         reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
     return moveLine;
   }

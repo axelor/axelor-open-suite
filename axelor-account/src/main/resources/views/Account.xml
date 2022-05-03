@@ -303,6 +303,8 @@
       if="!analyticDistributionAuthorized"/>
     <field name="analyticDistributionRequiredOnMoveLines" expr="eval: false"
       if="!analyticDistributionAuthorized"/>
+    <field name="analyticDistributionTemplate" expr="eval: null"
+      if="!analyticDistributionAuthorized"/>
   </action-record>
 
   <action-record name="action-account-record-uncheck-tax-required"

@@ -867,7 +867,7 @@ public class IrrecoverableService {
             null,
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
@@ -1008,7 +1008,7 @@ public class IrrecoverableService {
             null,
             payerPartner != null ? payerPartner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            moveLine.getMove().getFunctionalOriginSelect(),
+            MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             originStr,
             moveLine.getDescription());
     move.setOriginDate(moveLine.getMove().getDate());
@@ -1031,7 +1031,7 @@ public class IrrecoverableService {
 
     Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();
