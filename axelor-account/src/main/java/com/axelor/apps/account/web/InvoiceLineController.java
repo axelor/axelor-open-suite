@@ -397,7 +397,6 @@ public class InvoiceLineController {
       InvoiceLineAnalyticService invoiceLineAnalyticService =
           Beans.get(InvoiceLineAnalyticService.class);
       invoiceLine = invoiceLineAnalyticService.selectDefaultDistributionTemplate(invoiceLine);
-
       response.setValue(
           "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
       response.setValue(
@@ -539,7 +538,8 @@ public class InvoiceLineController {
 
   public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response) {
     try {
-      if (request.getContext().getParentContext() != null) {
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(Invoice.class)) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         if (invoice.getCompany() != null) {
           AccountConfig accountConfig =

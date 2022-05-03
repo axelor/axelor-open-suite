@@ -67,6 +67,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -269,21 +270,30 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null) {
+      if (invoice.getPaymentCondition() == null
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        if (invoice.getInvoiceTermList() != null) {
+          invoice.getInvoiceTermList().clear();
+        } else {
+          invoice.setInvoiceTermList(new ArrayList<>());
+        }
+
+        response.setValues(invoice);
         return;
       }
+
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
           || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
+
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
       if (invoice != null) {
         response.setValues(invoice);
-      } else if (invoice == null) {
+      } else {
         response.setValue("invoiceTermList", null);
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

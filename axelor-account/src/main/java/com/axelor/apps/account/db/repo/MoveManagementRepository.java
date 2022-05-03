@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -101,6 +102,10 @@ public class MoveManagementRepository extends MoveRepository {
 
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
+    }
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(it -> it.setInvoice(null));
     }
   }
 

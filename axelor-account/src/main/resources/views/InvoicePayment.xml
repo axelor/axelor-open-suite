@@ -27,8 +27,6 @@
         target="com.axelor.apps.account.db.InvoiceTerm"
         grid-view="invoice-term-invoice-payment-grid" form-view="invoice-term-move-line-form"
         readonly="true" colSpan="12"/>
-      <button onClick="action-invoice-payement-method-add-invoice-terms-to-pay"
-        name="selectInvoiceTermTopayBtn" title="Add selected invoice terms to pay"/>
     </panel>
     <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
       grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12"
@@ -214,12 +212,6 @@
   <action-method name="action-invoice-payment-method-load-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="loadInvoiceTerms"/>
-  </action-method>
-
-
-  <action-method name="action-invoice-payement-method-add-invoice-terms-to-pay">
-    <call class="com.axelor.apps.account.web.InvoicePaymentController"
-      method="addSelectedInvoiceTermsToPay"/>
   </action-method>
 
   <action-record name="action-record-on-change-invoice-payment-financial-discount"

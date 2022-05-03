@@ -121,8 +121,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(
-        Beans.get(AppBaseService.class).getTodayDate(billOfMaterial.getCompany()));
+    costSheet.setCalculationDate(appBaseService.getTodayDate(billOfMaterial.getCompany()));
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -172,7 +171,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     costSheet.setCalculationDate(
         calculationDate != null
             ? calculationDate
-            : Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+            : appBaseService.getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
         computeTotalProducedQty(

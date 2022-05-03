@@ -8,8 +8,8 @@
 
   <selection name='iaccount.payment.voucher.status.select'>
     <option value='1'>Draft</option>
-    <option value='2'>Waiting for deposit slip</option>
-    <option value='3'>Confirmed</option>
+    <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
+    <option value='2'>Confirmed</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>
@@ -301,7 +301,8 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
-    <option value="7">Doubtful credit</option>
+    <option value="7">Irrecoverable Debt</option>
+    <option value="8">Doubtful credit</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -510,6 +511,7 @@
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -599,7 +601,6 @@
   <selection name="account.deposit.type.select">
     <option value="1">Cheque</option>
     <option value="2">Cash</option>
-    <option value="3">Bill of Exchange</option>
   </selection>
 
   <selection name="account.config.analytic.axis.order.select">
@@ -659,6 +660,11 @@
     <option value="1">Active</option>
   </selection>
 
+  <selection name="account.fixed.asset.split.type.select">
+    <option value="1">Quantity</option>
+    <option value="2">Amount</option>
+  </selection>
+
   <selection name="iaccount.account.batch.bill.of.exchange.type.select">
     <option value="1">Direct bank LCR</option>
   </selection>
@@ -714,7 +720,6 @@
     <option value="2">vat.Payment</option>
   </selection>
 
-
   <selection name="account.closure.assistant.line.action.select">
     <option value="2">Fixed asset realization</option>
     <option value="3">Move consistency check</option>
@@ -747,6 +752,12 @@
   <selection name="payment.mode.accounting.trigger.select">
     <option value="0" order="0">None</option>
     <option value="1" order="1">Immediate</option>
+    <option value="5" order="5">Value for collection</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
+    <option value="200">Accounting batch</option>
+    <option value="201">Invoice batch</option>
   </selection>
 
 </object-views>

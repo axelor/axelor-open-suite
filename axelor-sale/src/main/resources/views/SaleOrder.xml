@@ -712,7 +712,7 @@
 	                      <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
 	                      <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
 	                      <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
 	                  </dl>
 
@@ -977,7 +977,7 @@
                         <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
                         <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
                         <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                     </dl>
                     ]]>
@@ -1077,7 +1077,7 @@
                             <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
                             <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
+                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
                             <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                         </dl>
                         ]]>
@@ -2075,6 +2075,8 @@
   <action-validate name="action-sale-order-validate-check-on-confirm">
     <alert message="The total amount of quotation is zero. Do you want to proceed ?"
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <error message="Incoterm must be filled"
+      if="__config__.app.isApp('supplychain') &amp;&amp; incoterm == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != &quot;FR&quot;"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"

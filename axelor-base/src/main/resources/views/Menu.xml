@@ -666,6 +666,13 @@
   <menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
     title="Batches" order="35"/>
 
+  <menuitem name="admin-root-batch-dashboard" parent="admin-root-batch"
+    title="Batches dashboard" action="admin.root.batch.dashboard" order="-1"/>
+
+  <action-view name="admin.root.batch.dashboard" title="Batches dashboard">
+    <view type="dashboard" name="base.batch.dashboard"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-base" parent="admin-root-batch" title="Base batches"
     action="admin.root.batch.base"/>
 
@@ -922,4 +929,37 @@
     <view type="grid" name="print-template-grid"/>
     <view type="form" name="print-template-form"/>
   </action-view>
+
+  <!-- File source connector -->
+
+  <menuitem name="base-file-source-connector-conf" parent="admin-root-general"
+    title="File source connectors"/>
+  <menuitem name="base-file-source-connector-all" parent="base-file-source-connector-conf"
+    title="File source connectors" action="action.file.source.connector.view.all"/>
+
+  <action-view name="action.file.source.connector.view.all"
+    title="File source connectors" model="com.axelor.apps.base.db.FileSourceConnector">
+    <view type="grid" name="file-source-connector-grid"/>
+    <view type="form" name="file-source-connector-form"/>
+  </action-view>
+
+  <menuitem title="File source connector parameters"
+    parent="base-file-source-connector-conf" name="action-file-source-connector-parameters-all"
+    action="action.file.source.connector.parameters.view.all"/>
+
+  <action-view name="action.file.source.connector.parameters.view.all"
+    title="File source connectors" model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <view type="grid" name="file-source-connector-parameters-grid"/>
+    <view type="form" name="file-source-connector-parameters-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-batch-import-batch" parent="admin-root-batch"
+    title="Import batch" action="admin.root.batch.import.batch"/>
+
+  <action-view name="admin.root.batch.import.batch" title="Import batch"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <view type="grid" name="import-batch-grid"/>
+    <view type="form" name="import-batch-form"/>
+  </action-view>
+
 </object-views>

@@ -1,3 +1,56 @@
+## [6.1.10] (2022-04-29)
+
+#### Changes
+
+* Databackup: add option to use fake data when making the backup with anonymization enabled.
+* Product: add column available quantity on variants panel on product form view.
+* Configurator Creator: add tooltip to document attributes configuration.
+
+#### Fixed
+
+* Purchase Order: generating purchase orders now correctly applies the company purchase config for purchase printing.
+* Lunch voucher: fixed issue where half days were not accounted in lunch voucher computation.
+* ObjectDataConfig: Improve demo data to have an usable configuration.
+* Partner: fixed issue where missing sales config is blocking supplier save.
+* Invoice: Fix ClassNotFoundException on partner change when cash-management module is not loaded.
+* Lead, Contract, Sale Order, Purchase Request, Purchase Order: add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Product: average price (WAP) is now correctly computed in product purchase currency.
+* Equipment maintenance: An error is correctly displayed when a sequence for equipment maintenance is missing.
+* Sequence: When loading app for the first time, correctly initialize default sequences.
+
+#### Removed
+
+* Webapp: remove date.format property from application.properties file.
+
+## [6.1.9] (2022-04-15)
+
+#### Changes
+
+* Add an anonymization feature to the data backup feature.
+
+Add an anonymization option to allow the person making the data backup to get a backup with the selected fields anonymized.
+For the moment fields are anonymized using an hash function, a call to an API to get fake data is not implemented yet.
+
+#### Fixed
+
+* BankReconciliation: On company change, empty fields related to company in bank reconciliation form view.
+* ObjectDataConfig: Fix export and anonymization of data.
+* Account Config: Remove account clearance editor view and instead use a standard panel.
+* Leave: filter out leave reasons that do not manage accumulation.
+* PaymentAssistantReport: fix empty columns when ticket is printed.
+* Product: fix products full name translation on cards view.
+* MAINTENANCE: fix data-init import for maintenance sequence.
+* Invoicing project: when trying to invoice without a partner selected, a meaningful message is displayed (instead of NullPointerException).
+* Stock and MRP: Add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Irrecoverable: improve form view UI and fix exception management so the process is correctly rollbacked in case of an anomaly.
+* StockLocation: fix print button on stock location grid view.
+* Java services: made optimizations (service injection) that can improve overall performance.
+
+
+#### Removed
+
+* webapp : Remove date.format property from application.properties file
+
 ## [6.1.8] (2022-04-01)
 
 #### Changes
@@ -464,6 +517,8 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.10]: https://github.com/axelor/axelor-open-suite/compare/v6.1.9...v6.1.10
+[6.1.9]: https://github.com/axelor/axelor-open-suite/compare/v6.1.8...v6.1.9
 [6.1.8]: https://github.com/axelor/axelor-open-suite/compare/v6.1.7...v6.1.8
 [6.1.7]: https://github.com/axelor/axelor-open-suite/compare/v6.1.6...v6.1.7
 [6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6

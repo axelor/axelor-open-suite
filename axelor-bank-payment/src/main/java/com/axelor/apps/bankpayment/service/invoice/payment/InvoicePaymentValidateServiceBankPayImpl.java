@@ -98,12 +98,14 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     int typeSelect = paymentMode.getTypeSelect();
     int inOutSelect = paymentMode.getInOutSelect();
 
-    if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
-        || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
-            && inOutSelect == PaymentModeRepository.OUT)
-        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
-                && inOutSelect == PaymentModeRepository.IN)
-            && paymentMode.getGenerateBankOrder()) {
+    if (((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
+            || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
+                && inOutSelect == PaymentModeRepository.OUT)
+            || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
+                && inOutSelect == PaymentModeRepository.IN))
+        && paymentMode.getGenerateBankOrder()
+        && paymentMode.getAccountingTriggerSelect()
+            != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
@@ -118,7 +120,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
-        && !paymentMode.getGenerateBankOrder()) {
+        && (!paymentMode.getGenerateBankOrder()
+            || paymentMode.getAccountingTriggerSelect()
+                == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
