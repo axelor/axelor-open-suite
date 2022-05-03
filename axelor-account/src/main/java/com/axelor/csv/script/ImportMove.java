@@ -44,6 +44,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -135,7 +136,7 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              IExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND,
+              I18n.get(IExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
               moveLine.getDate(),
               company);
         }
@@ -160,7 +161,7 @@ public class ImportMove {
             throw new AxelorException(
                 fecImport,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                IExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND,
+                I18n.get(IExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
                 values.get("JournalCode"));
           }
           move.setJournal(journal);
@@ -193,12 +194,15 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              IExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND,
+              I18n.get(IExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
               values.get("CompteNum"));
         }
         moveLine.setAccount(account);
       }
       move.addMoveLineListItem(moveLine);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      throw e;
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(
