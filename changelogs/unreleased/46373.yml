@@ -1,0 +1,3 @@
+---
+title: "LeaveLine: fixed a bug where daysToValidate in leave line could have a wrong value" 
+type: fix
