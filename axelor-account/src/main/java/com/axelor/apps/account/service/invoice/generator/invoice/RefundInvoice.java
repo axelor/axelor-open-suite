@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -53,6 +54,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
     InvoiceToolService.resetInvoiceStatusOnCopy(refund);
 
     refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
+    this.emptyFinancialDiscount(refund);
 
     List<InvoiceLine> refundLines = new ArrayList<>();
     if (refund.getInvoiceLineList() != null) {
@@ -95,5 +97,13 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
       invoiceLine.setQty(invoiceLine.getQty().negate());
       invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
     }
+  }
+
+  protected void emptyFinancialDiscount(Invoice invoice) {
+    invoice.setFinancialDiscount(null);
+    invoice.setFinancialDiscountDeadlineDate(null);
+    invoice.setFinancialDiscountRate(BigDecimal.ZERO);
+    invoice.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+    invoice.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
   }
 }
