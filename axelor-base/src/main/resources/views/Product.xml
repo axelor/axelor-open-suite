@@ -246,7 +246,8 @@
             if="__config__.app.isApp('purchase')"/>
           <field name="defShipCoefByPartner"
             onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable"
-            if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+            if-module="axelor-purchase"
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
         </panel>
         <panel-related name="supplierCatalogListPanel" field="supplierCatalogList"
           form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"
