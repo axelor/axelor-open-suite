@@ -1,0 +1,3 @@
+---
+title: "Product: defShipCoefByPartner field in product is now hidden if manageSupplierCatalog is false in purchase configuration" 
+type: fix
