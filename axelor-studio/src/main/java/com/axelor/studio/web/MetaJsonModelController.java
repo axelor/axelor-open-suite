@@ -17,7 +17,9 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.common.Inflector;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -45,5 +47,12 @@ public class MetaJsonModelController {
       Beans.get(MenuBuilderRepo.class).remove(menuBuilder);
       response.setReload(true);
     }
+  }
+
+  @CallMethod
+  public String checkJsonModelName(String name) {
+
+    name = name.replaceAll("[^a-zA-Z0-9 ]", "");
+    return Inflector.getInstance().camelize(name, false);
   }
 }
