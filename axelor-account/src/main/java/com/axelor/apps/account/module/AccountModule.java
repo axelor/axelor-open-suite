@@ -57,7 +57,6 @@ import com.axelor.apps.account.db.repo.ReconcileGroupAccountRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.db.repo.SequenceAccountManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -253,7 +252,6 @@ import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
@@ -505,8 +503,6 @@ public class AccountModule extends AxelorModule {
     bind(NoteBillsCreateService.class).to(NoteBillsCreateServiceImpl.class);
 
     bind(AccountConfigAnalyticService.class).to(AccountConfigAnalyticServiceImpl.class);
-
-    bind(SequenceBaseRepository.class).to(SequenceAccountManagementRepository.class);
 
     bind(BatchPrintAccountingReportService.class).to(BatchPrintAccountingReportServiceImpl.class);
 

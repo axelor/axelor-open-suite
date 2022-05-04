@@ -967,7 +967,8 @@ public class BankReconciliationService {
     return domain;
   }
 
-  public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
+  public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation)
+      throws AxelorException {
     boolean uniqueBankDetails = true;
     BankDetails bankDetails = null;
     bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
@@ -979,6 +980,12 @@ public class BankReconciliationService {
     for (BankStatementLine bankStatementLine : bankStatementLines) {
       if (bankDetails == null) {
         bankDetails = bankStatementLine.getBankDetails();
+      }
+      // If it is still null
+      if (bankDetails == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL));
       }
       if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
         uniqueBankDetails = false;

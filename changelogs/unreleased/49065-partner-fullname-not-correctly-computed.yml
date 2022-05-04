@@ -1,0 +1,3 @@
+---
+title: "Partner: fixed an issue where partner fullname was not correctly computed."
+type: fix
