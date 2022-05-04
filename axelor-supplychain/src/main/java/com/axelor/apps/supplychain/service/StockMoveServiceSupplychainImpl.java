@@ -114,7 +114,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && partnerSupplychainService.isBlockedPartnerOrParent(stockMove.getPartner())) {
+        && (stockMove.getPartner() != null
+            && partnerSupplychainService.isBlockedPartnerOrParent(stockMove.getPartner()))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));

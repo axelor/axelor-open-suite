@@ -429,6 +429,9 @@ public class BankReconciliationController {
       actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
       actionViewBuilder.add("form", "move-line-form");
       actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      if (bankReconciliation.getCompany() == null) {
+        return;
+      }
       Map<String, Object> params =
           bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
       Set<String> keys = params.keySet();
