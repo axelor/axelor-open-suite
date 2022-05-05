@@ -403,7 +403,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
-      invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
+      if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
+        invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
+      }
 
       if (invoicePayment == null) {
         invoicePayment =
