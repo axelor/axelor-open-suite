@@ -34,6 +34,9 @@ public interface IExceptionMessage {
   static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only return to validated from finished purchase order." /*)*/;
 
+  static final String PURCHASE_ORDER_TRADING_NAME_MISSING = /*$$(*/
+      "The purchase order trading name is missing." /*)*/;
+
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
