@@ -380,7 +380,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
       }
       if (countryAlpha2code.equals("FR")) {
-        lines.add(setN4DSLine("S70.G10.00.004.010", compileAddressValue(listObj[7].toString())));
+        lines.add(setN4DSLine("S70.G10.00.004.010", zip));
         lines.add(
             setN4DSLine(
                 "S70.G10.00.004.012",
