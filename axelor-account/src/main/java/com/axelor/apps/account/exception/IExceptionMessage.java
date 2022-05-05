@@ -943,7 +943,7 @@ public interface IExceptionMessage {
 
   static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
       "Please select a payment mode to generate the counterpart" /*)*/;
-  
+
   static final String IMPORT_FEC_ACCOUNT_NOT_FOUND = /*$$(*/
       "The account with the code %s cannot be found. The move line cannot be created." /*)*/;
 

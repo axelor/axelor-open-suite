@@ -33,9 +33,9 @@
         <field name="description" colSpan="12" showTitle="false" widget="html"/>
       </panel>
       <panel-dashlet action="action-view-account-fec-import-moves-panel-dashlet"
-        title="Generated moves" canSearch="true"/>
+        title="Generated moves" canSearch="true" showIf="id"/>
       <panel-dashlet action="action-view-account-fec-import-anomalies-panel-dashlet"
-        title="Anomalies" canSearch="true"/>
+        title="Anomalies" canSearch="true" showIf="id"/>
     </panel-tabs>
   </form>
 
