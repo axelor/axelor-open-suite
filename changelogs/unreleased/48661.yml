@@ -1,0 +1,3 @@
+---
+title: "LeaveRequest: Leave quantity is now by default 0 is there is no leave reason configured"
+type: fix
