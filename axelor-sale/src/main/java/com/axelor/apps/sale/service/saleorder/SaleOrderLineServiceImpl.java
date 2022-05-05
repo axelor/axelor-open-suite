@@ -300,6 +300,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return line;
   }
 
+  public void resetPrice(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setPrice(null);
+    }
+    line.setInTaxPrice(null);
+  }
+
   @Override
   public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {

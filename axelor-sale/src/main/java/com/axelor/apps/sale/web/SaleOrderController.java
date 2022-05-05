@@ -751,9 +751,14 @@ public class SaleOrderController {
   public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
+      Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {

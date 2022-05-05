@@ -48,6 +48,14 @@ public interface SaleOrderLineService {
   SaleOrderLine resetProductInformation(SaleOrderLine line);
 
   /**
+   * Reset price (only if the line.enableFreezeField is disabled) and inTaxPrice of the
+   * saleOrderLine
+   *
+   * @param line
+   */
+  void resetPrice(SaleOrderLine line);
+
+  /**
    * Compute totals from a sale order line
    *
    * @param saleOrder
