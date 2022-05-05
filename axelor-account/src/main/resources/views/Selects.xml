@@ -301,7 +301,8 @@
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
-    <option value="7">Doubtful credit</option>
+    <option value="7">Irrecoverable Debt</option>
+    <option value="8">Doubtful credit</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -510,6 +511,7 @@
     <option value='6'>Cut Off</option>
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
+    <option value='9'>Irrecoverable</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -656,6 +658,11 @@
   <selection name='ianalytic.account.status.select'>
     <option value="0">Inactive</option>
     <option value="1">Active</option>
+  </selection>
+
+  <selection name="account.fixed.asset.split.type.select">
+    <option value="1">Quantity</option>
+    <option value="2">Amount</option>
   </selection>
 
   <selection name="iaccount.account.batch.bill.of.exchange.type.select">

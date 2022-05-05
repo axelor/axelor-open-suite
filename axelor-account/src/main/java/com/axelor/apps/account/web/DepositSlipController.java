@@ -54,20 +54,6 @@ public class DepositSlipController {
     response.setValue("paymentVoucherList", paymentVouchers);
   }
 
-  @Deprecated
-  public void loadPayments(ActionRequest request, ActionResponse response) {
-    DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
-    depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());
-    DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
-
-    try {
-      depositSlipService.loadPayments(depositSlip);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void publish(ActionRequest request, ActionResponse response) {
     DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     depositSlip = Beans.get(DepositSlipRepository.class).find(depositSlip.getId());

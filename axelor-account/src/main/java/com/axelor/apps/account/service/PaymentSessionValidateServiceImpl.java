@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
   protected AppBaseService appBaseService;
@@ -194,13 +196,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
 
-        if (invoiceTerm.getIsSelectedOnPaymentSession()) {
+        if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
+          this.releaseInvoiceTerm(invoiceTerm);
+        } else if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+          offset++;
           this.processInvoiceTerm(
               paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
         } else {
-          this.releaseInvoiceTerm(invoiceTerm);
+          offset++;
         }
       }
 
@@ -607,5 +611,80 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true"
+                    + " GROUP BY Partner.id "
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
+  }
+
+  @Override
+  public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException {
+
+    TypedQuery<InvoiceTerm> invoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
+                InvoiceTerm.class);
+    invoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
+
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      invoiceTermList =
+          invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(invoiceTermList);
+    }
+  }
+
+  @Override
+  public boolean checkIsHoldBackWithRefund(PaymentSession paymentSession) throws AxelorException {
+    boolean isHoldBackWithRefund = false;
+    TypedQuery<InvoiceTerm> holdbackInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.isHoldBack = true ",
+                InvoiceTerm.class);
+    holdbackInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> holdbackInvoiceTermList = holdbackInvoiceTermQuery.getResultList();
+
+    TypedQuery<InvoiceTerm> refundInvoiceTermQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " AND InvoiceTerm.amountPaid < 0",
+                InvoiceTerm.class);
+    refundInvoiceTermQuery.setParameter("paymentSession", paymentSession);
+
+    List<InvoiceTerm> refundInvoiceTermList = refundInvoiceTermQuery.getResultList();
+
+    if (!ObjectUtils.isEmpty(holdbackInvoiceTermList)
+        && !ObjectUtils.isEmpty(refundInvoiceTermList)) {
+      isHoldBackWithRefund = true;
+    }
+
+    return isHoldBackWithRefund;
   }
 }

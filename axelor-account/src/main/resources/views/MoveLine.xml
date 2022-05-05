@@ -319,7 +319,8 @@
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange"
         colSpan="3"/>
-      <field name="amountRemaining" colSpan="3"/>
+      <field name="amountRemaining" colSpan="3"
+        showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="12"/>
@@ -466,6 +467,7 @@
 	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 6" x-translate>Cut Off</span>
 	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 7" x-translate>Fixed asset</span>
 	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 8" x-translate>Doubtful customer</span>
+                      	  <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
                       </h4>
                     ]]>
         </viewer>
@@ -527,7 +529,8 @@
       <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
-      <field name="amountRemaining" colSpan="3"/>
+      <field name="amountRemaining" colSpan="3"
+        showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
       <field name="origin" colSpan="6"/>
