@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -450,9 +452,14 @@ public class MoveToolServiceImpl implements MoveToolService {
         && period.getYear().getCompany() != null
         && user.getGroup() != null
         && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(period.getYear().getCompany());
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+      Set<Role> roleSet =
+          accountConfigService
+              .getAccountConfig(period.getYear().getCompany())
+              .getClosureAuthorizedRoleList();
+      if (CollectionUtils.isEmpty(roleSet)) {
+        return false;
+      }
+      for (Role role : roleSet) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
           return false;
         }
