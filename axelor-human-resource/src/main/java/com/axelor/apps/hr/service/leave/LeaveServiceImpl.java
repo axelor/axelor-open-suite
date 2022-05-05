@@ -269,6 +269,12 @@ public class LeaveServiceImpl implements LeaveService {
               publicHolidayHrService.computePublicHolidayDays(
                   fromDate, toDate, weeklyPlanning, holidayPlanning));
     }
+    if (imposedDaysPlanning != null) {
+      duration =
+              duration.subtract(
+                      publicHolidayHrService.computePublicHolidayDays(
+                              fromDate, toDate, weeklyPlanning, imposedDaysPlanning));
+    }
 
     return duration;
   }
