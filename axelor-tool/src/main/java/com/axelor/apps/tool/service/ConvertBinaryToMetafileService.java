@@ -21,5 +21,12 @@ import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 
 public interface ConvertBinaryToMetafileService {
+  /**
+   * Convert bytePicture in Metafile
+   *
+   * @param bytePicture : require non null
+   * @return Metafile created
+   * @throws IOException
+   */
   public MetaFile convertByteTabPictureInMetafile(byte[] bytePicture) throws IOException;
 }
