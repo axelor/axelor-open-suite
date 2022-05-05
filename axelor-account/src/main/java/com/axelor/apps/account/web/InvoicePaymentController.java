@@ -233,7 +233,7 @@ public class InvoicePaymentController {
 
         if (invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
-          amountError = true;
+          amountError = invoicePayment.getManualChange();
         }
 
         List<Long> invoiceTermIdList =
