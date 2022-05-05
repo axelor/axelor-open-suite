@@ -118,18 +118,25 @@
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-            name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
-            onChange="action-attrs-account-account-template-show-title"
-            domain="self.company = :company AND self.isSpecific = false"
-            form-view="analytic-distribution-template-form"
-            grid-view="analytic-distribution-template-grid" showIf="analyticDistributionAuthorized"
-            colSpan="3"/>
+            canEdit="false" canNew="false" onChange="action-account-method-personalize-template"
+            domain="self.company = :company AND self.isSpecific = false"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
             colSpan="3"
-            showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate.isSpecific"
-            onClick="action-account-account-method-new-analytic-dist-template,action-attrs-account-account-template-show-title"/>
+            showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate"
+            onClick="action-account-account-method-new-analytic-dist-template"/>
+          <field name="analyticDistributionTemplate"
+            showIf="analyticDistributionAuthorized &amp;&amp; analyticDistributionTemplate &amp;&amp; !$readonly()"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+            colSpan="12" canNew="false" canSelect="false" showTitle="false">
+            <editor>
+              <field name="analyticDistributionLineList" colSpan="12" editable="true"
+                showTitle="false" grid-view="analytic-distribution-line-editable-grid"
+                form-view="analytic-distribution-line-form"/>
+            </editor>
+          </field>
+
           <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
@@ -210,7 +217,6 @@
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
-    <action name="action-attrs-account-account-template-show-title"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -323,6 +329,11 @@
       method="createAnalyticDistTemplate"/>
   </action-method>
 
+  <action-method name="action-account-method-personalize-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="personalizeAnalyticDistTemplate"/>
+  </action-method>
+
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
@@ -342,15 +353,6 @@
       expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
     <attribute name="title" for="activeStatusBtn"
       expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
-  </action-attrs>
-
-  <action-attrs name="action-attrs-account-account-template-show-title">
-    <attribute name="title" for="personalizeBtn"
-      expr="eval:com.axelor.i18n.I18n.get('Create personalized analytic template')"
-      if="!analyticDistributionTemplate"/>
-    <attribute name="title" for="personalizeBtn"
-      expr="eval:com.axelor.i18n.I18n.get('Personalize analytic template')"
-      if="analyticDistributionTemplate"/>
   </action-attrs>
 
   <action-method name="action-method-account-hide-analytic">
