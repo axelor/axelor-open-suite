@@ -24,6 +24,12 @@
 
   <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField"
     id="studio-json-field-form" extension="true">
+    <extend target="//field[@name='name']">
+      <replace>
+        <field name="name"
+          onChange="action-studio-meta-json-model-name-onchange-record,action-studio-meta-json-field-record-name"/>
+      </replace>
+    </extend>
     <extend target="//field[@name='modelField']">
       <insert position="after">
         <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
@@ -41,6 +47,16 @@
     </extend>
   </form>
 
+  <form name="json-field-form-2" title="Custom field" model="com.axelor.meta.db.MetaJsonField"
+    id="studio-json-field-form-2" extension="true">
+    <extend target="//field[@name='name']">
+      <replace>
+        <field name="name"
+          onChange="action-studio-meta-json-model-name-onchange-record,action-studio-meta-json-field-record-name"/>
+      </replace>
+    </extend>
+  </form>
+
   <grid name="studio-meta-json-field-grid" title="Custom fields"
     model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
     <field name="name"/>
@@ -52,23 +68,24 @@
 
   <grid id="studio-json-field-grid" name="json-field-grid" title="Custom fields"
     model="com.axelor.meta.db.MetaJsonField" extension="true">
-
     <extend target="/">
       <attribute name="orderBy" value="model,sequence"/>
     </extend>
-
     <extend target="//field[@name='name']">
       <insert position="before">
         <field name="sequence"/>
       </insert>
     </extend>
-
     <extend target="//field[@name='modelField']">
       <insert position="after">
         <field name="appBuilder" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
       </insert>
     </extend>
-
   </grid>
 
+  <action-record name="action-studio-meta-json-field-record-name"
+    model="com.axelor.meta.db.MetaJsonField">
+    <field name="name"
+      expr="call:com.axelor.studio.service.JsonFieldService:checkJsonFieldName(name)"/>
+  </action-record>
 </object-views>
