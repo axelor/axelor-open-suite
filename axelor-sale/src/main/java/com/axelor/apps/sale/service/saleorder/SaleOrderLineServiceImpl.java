@@ -300,11 +300,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return line;
   }
 
+  @Override
   public void resetPrice(SaleOrderLine line) {
     if (!line.getEnableFreezeFields()) {
       line.setPrice(null);
+      line.setInTaxPrice(null);
     }
-    line.setInTaxPrice(null);
   }
 
   @Override
