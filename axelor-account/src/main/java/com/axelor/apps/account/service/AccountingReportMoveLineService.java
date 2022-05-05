@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
@@ -52,6 +53,8 @@ public interface AccountingReportMoveLineService {
   public List<Object[]> getN4DSDeclaredPartnersData(AccountingReport accountingExport);
 
   public String computeNic(String registrationCode, String countryAlpha2Code);
+
+  String computeZip(Address address);
 
   public String computeSiren(String registrationCode, String countryAlpha2Code);
 

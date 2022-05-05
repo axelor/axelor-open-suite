@@ -220,6 +220,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     String registrationCode = companyPartner.getRegistrationCode().replaceAll(" ", "");
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
+    String zip = computeZip(address);
 
     String regexForCity = "[^0-9a-zA-Z_\\s]";
 
@@ -308,6 +309,20 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.add(
         setN4DSLine("S20.G01.00.004.002", accountingExport.getComplementaryExport() ? "52" : "51"));
     lines.add(setN4DSLine("S20.G01.00.005", "11"));
+    if (accountingExport.getComplementaryExport()) {
+      lines.add(
+          setN4DSLine(
+              "S20.G01.00.006.001",
+              accountingExport
+                  .getDateFrom()
+                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
+      lines.add(
+          setN4DSLine(
+              "S20.G01.00.006.002",
+              accountingExport
+                  .getDateTo()
+                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
+    }
     lines.add(setN4DSLine("S20.G01.00.007", "01"));
     lines.add(setN4DSLine("S20.G01.00.008", nic));
     if (!Strings.isNullOrEmpty(addressL2L3)) {
@@ -371,6 +386,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
                 compileStringValue(regexForCity, listObj[8].toString(), " ")));
       } else {
         lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
+        lines.add(setN4DSLine("S70.G10.00.004.016", zip));
       }
       String serviceTypeCode = listObj[10].toString();
       String amount = listObj[11].toString();
@@ -436,6 +452,17 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     }
 
     return registrationCode.substring(registrationCode.length() - 5);
+  }
+
+  @Override
+  public String computeZip(Address address) {
+    if (address == null
+        || address.getCity() == null
+        || StringUtils.isEmpty(address.getCity().getZip())) {
+      return "0";
+    } else {
+      return address.getCity().getZip();
+    }
   }
 
   @SuppressWarnings("unchecked")
