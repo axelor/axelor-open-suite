@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
@@ -12,10 +29,13 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -52,11 +72,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
+  protected MoveToolService moveToolService;
   protected MoveRepository moveRepository;
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected AppAccountService appAccountService;
   protected FixedAssetGenerationService fixedAssetGenerationService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -64,21 +87,27 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
+      MoveToolService moveToolService,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      AppAccountService appAccountService,
+      FixedAssetGenerationService fixedAssetGenerationService,
+      MoveLineTaxService moveLineTaxService) {
 
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
+    this.moveToolService = moveToolService;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.appAccountService = appAccountService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -142,6 +171,15 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(IExceptionMessage.MOVE_4), move.getReference()));
     }
+    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_13),
+              move.getJournal().getCode(),
+              move.getPeriod().getCode()));
+    }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
@@ -153,6 +191,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(IExceptionMessage.MOVE_12), move.getReference()));
+    }
+
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()
+        && move.getTechnicalOriginSelect() != MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC
+        && !moveToolService.checkMoveLinesCutOffDates(move)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
     }
 
     if (move.getMoveLineList().stream()
@@ -168,6 +214,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
     checkInactiveJournal(move);
+
+    validateVatSystem(move);
 
     if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
         && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
@@ -205,6 +253,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
         moveLineControlService.validateMoveLine(moveLine);
       }
+
+      moveLineTaxService.checkTaxMoveLines(move);
+
       this.validateWellBalancedMove(move);
     }
   }
@@ -235,16 +286,24 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     this.checkPreconditions(move);
 
-    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        && !move.getAutoYearClosureMove()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
-    }
-
-    Boolean dayBookMode =
+    boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
+
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        && !move.getAutoYearClosureMove()) {
+      if (dayBookMode
+          && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+              || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
+      }
+    }
 
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
@@ -590,5 +649,44 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(IExceptionMessage.INACTIVE_JOURNAL_FOUND),
           move.getJournal().getName());
     }
+  }
+
+  protected void validateVatSystem(Move move) throws AxelorException {
+    if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+      if (isConfiguredVatSystem(move) && isConfigurationIssueOnVatSystem(move)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TAX_MOVELINE_VAT_SYSTEM_DEFAULT));
+      }
+    }
+  }
+
+  protected boolean isConfiguredVatSystem(Move move) {
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (moveline.getTaxLine() != null
+          && moveline.getAccount() != null
+          && moveline.getAccount().getAccountType() != null
+          && !AccountTypeRepository.TYPE_TAX.equals(
+              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveline.getAccount().getIsTaxAuthorizedOnMoveLine()
+          && moveline.getAccount().getVatSystemSelect() != null
+          && moveline.getAccount().getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected boolean isConfigurationIssueOnVatSystem(Move move) {
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (moveline.getAccount() != null
+          && moveline.getAccount().getAccountType() != null
+          && AccountTypeRepository.TYPE_TAX.equals(
+              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveline.getVatSystemSelect() == MoveLineRepository.VAT_SYSTEM_DEFAULT) {
+        return true;
+      }
+    }
+    return false;
   }
 }

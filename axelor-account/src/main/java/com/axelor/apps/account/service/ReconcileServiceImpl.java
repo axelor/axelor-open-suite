@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -362,16 +363,14 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected void udpatePaymentTax(Reconcile reconcile) throws AxelorException {
     Move debitMove = reconcile.getDebitMoveLine().getMove();
     Move creditMove = reconcile.getCreditMoveLine().getMove();
-    Invoice debitInvoice = debitMove.getInvoice();
-    Invoice creditInvoice = creditMove.getInvoice();
 
-    if (debitInvoice != null && creditInvoice == null) {
+    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
-          reconcile.getCreditMoveLine(), debitInvoice, reconcile);
+          reconcile.getDebitMoveLine(), reconcile.getCreditMoveLine(), reconcile);
     }
-    if (creditInvoice != null && debitInvoice == null) {
+    if (creditMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
-          reconcile.getDebitMoveLine(), creditInvoice, reconcile);
+          reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine(), reconcile);
     }
   }
 

@@ -89,6 +89,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -320,8 +321,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (account != null
           && !account.getAnalyticDistributionAuthorized()
           && (invoiceLine.getAnalyticDistributionTemplate() != null
-              || (invoiceLine.getAnalyticMoveLineList() != null
-                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+              || !CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList()))) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1312,6 +1312,32 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoicePayment.setFinancialDiscountTotalAmount(
         calculateFinancialDiscountTotalAmount(invoice, amount));
     return invoicePayment;
+  }
+
+  @Override
+  public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
+    return invoice.getInvoiceLineList() == null
+        || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(Invoice invoice) {
+    return CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())
+        && invoice.getInvoiceLineList().stream()
+            .anyMatch(invoiceLine -> invoiceLineService.checkManageCutOffDates(invoiceLine));
+  }
+
+  @Override
+  public void applyCutOffDates(
+      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      invoice
+          .getInvoiceLineList()
+          .forEach(
+              invoiceLine ->
+                  invoiceLineService.applyCutOffDates(
+                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+    }
   }
 
   @Override

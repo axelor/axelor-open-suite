@@ -353,4 +353,10 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  boolean checkInvoiceLinesCutOffDates(Invoice invoice);
+
+  boolean checkManageCutOffDates(Invoice invoice);
+
+  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

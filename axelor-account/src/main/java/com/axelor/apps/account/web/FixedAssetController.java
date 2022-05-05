@@ -49,6 +49,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -230,7 +231,7 @@ public class FixedAssetController {
       if (analyticDistributionTemplate == null || !analyticDistributionTemplate.getIsSpecific()) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
-            ActionView.define("Specific Analytic Distribution Template")
+            ActionView.define(I18n.get(IExceptionMessage.SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE))
                 .model(AnalyticDistributionTemplate.class.getName())
                 .add("form", "analytic-distribution-template-fixed-asset-form")
                 .param("popup", "true")
@@ -273,19 +274,33 @@ public class FixedAssetController {
   }
 
   public void splitFixedAsset(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    Long fixedAssetId = Long.valueOf(context.get("_id").toString());
-    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
-    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
-    FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
     try {
-      fixedAssetService.checkFixedAssetScissionQty(disposalQty, fixedAsset);
+      Context context = request.getContext();
+      Long fixedAssetId = Long.valueOf(context.get("_id").toString());
+      FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+      FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
+
+      // Get wizard values from context
+      int splitType = Integer.parseInt(context.get("splitTypeSelect").toString());
+      BigDecimal amount =
+          new BigDecimal(
+              context
+                  .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
+                  .toString());
+
+      // Check values
+      fixedAssetService.checkFixedAssetBeforeSplit(fixedAsset, splitType, amount);
+
+      // Do the split
       FixedAsset createdFixedAsset =
           fixedAssetService.splitAndSaveFixedAsset(
               fixedAsset,
-              disposalQty,
+              splitType,
+              amount,
               Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
               fixedAsset.getComments());
+
+      // Open in view
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
@@ -293,6 +308,7 @@ public class FixedAssetController {
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
                 .map());
+
         response.setCanClose(true);
         response.setReload(true);
       }
@@ -377,6 +393,25 @@ public class FixedAssetController {
           "analyticPanel",
           "hidden",
           !Beans.get(AnalyticToolService.class).isManageAnalytic(fixedAsset.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void initSplitWizardValues(ActionRequest request, ActionResponse response) {
+    try {
+      BigDecimal qty =
+          new BigDecimal(
+              (String)
+                  ((LinkedHashMap<String, Object>) request.getContext().get("_fixedAsset"))
+                      .get("qty"));
+
+      response.setAttr(
+          "splitTypeSelect",
+          "value",
+          qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0);
+      response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

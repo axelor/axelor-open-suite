@@ -1,8 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -18,10 +36,12 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -34,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,19 +467,34 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period != null
-        && period.getYear().getCompany() != null
-        && user.getGroup() != null
-        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(period.getYear().getCompany());
-      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
-        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+  public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
+      throws AxelorException {
+    if (period != null) {
+      if (period.getStatusSelect() == PeriodRepository.STATUS_OPENED
+          && period.getCloseJournalsOnPeriod()
+          && journal != null
+          && !CollectionUtils.isEmpty(period.getClosedJournalSet())
+          && period.getClosedJournalSet().contains(journal)) {
+        return true;
+      }
+      if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+        if (journal != null
+            && period.getKeepJournalsOpenOnPeriod()
+            && !CollectionUtils.isEmpty(period.getOpenedJournalSet())
+            && period.getOpenedJournalSet().contains(journal)) {
           return false;
         }
+        if (period.getYear().getCompany() != null && user.getGroup() != null) {
+          AccountConfig accountConfig =
+              accountConfigService.getAccountConfig(period.getYear().getCompany());
+          for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+              return false;
+            }
+          }
+          return true;
+        }
       }
-      return true;
     }
     return false;
   }
@@ -474,6 +511,33 @@ public class MoveToolServiceImpl implements MoveToolService {
     if (ObjectUtils.isEmpty(accountConfig)) {}
 
     return result;
+  }
+
+  @Override
+  public boolean checkMoveLinesCutOffDates(Move move) {
+    return move.getMoveLineList() == null
+        || move.getMoveLineList().stream().allMatch(moveLineToolService::checkCutOffDates);
+  }
+
+  @Override
+  public List<Move> findDaybookByYear(Set<Year> yearList) {
+    List<Long> idList = new ArrayList<>();
+    yearList.forEach(y -> idList.add(y.getId()));
+    if (!CollectionUtils.isEmpty(idList)) {
+      return Query.of(Move.class)
+          .filter("self.period.year.id in :years AND self.statusSelect = :statusSelect")
+          .bind("years", idList)
+          .bind("statusSelect", MoveRepository.STATUS_DAYBOOK)
+          .fetch();
+    }
+    return new ArrayList<Move>();
+  }
+
+  @Override
+  public boolean isSimulatedMovePeriodClosed(Move move) {
+    return move.getPeriod() != null
+        && (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED)
+        && (move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
   }
 
   public List<MoveLine> getToReconcileDebitMoveLines(Move move) {

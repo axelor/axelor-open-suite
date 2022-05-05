@@ -564,13 +564,22 @@
     </panel>
 
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
-      <panel name="invoiceContentPanel" title="Content" showTitle="false">
+      <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
+        <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
+          readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
+          <field name="$cutOffStartDate" type="date" title="From date"
+            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
+          <field name="$cutOffEndDate" type="date" title="To date"
+            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
+          <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
+            onClick="action-invoice-method-apply-cut-off-dates"
+            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
+        </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
-          readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
-          form-view="invoice-line-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-group-invoice-line-list-on-change" canMove="true"
-          orderBy="sequence" height="30"/>
+          readonlyIf="statusSelect == 3 || partner == null" form-view="invoice-line-form"
+          grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
+          canMove="true" orderBy="sequence" height="30"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false">
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
@@ -824,10 +833,10 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,action-record-invoice-set-financial-discount-informations,save"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
-        onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+        onClick="action-invoice-group-validate-and-ventilate"/>
       <button name="passedForPaymentValidationBtn" css="btn-success"
         showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)"
         title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
@@ -1557,6 +1566,26 @@ InvoiceSet.length > 0))"
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
+  <action-group name="action-invoice-group-ventilate">
+    <action name="save"/>
+    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
+    <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-ventilate"/>
+    <action name="action-record-invoice-set-financial-discount-informations"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-validate-and-ventilate">
+    <action name="save"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
+    <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-method-validate-and-ventilate"/>
+  </action-group>
+
   <action-attrs name="action-invoice-attrs-in-ati">
     <attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     <attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -2058,9 +2087,18 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController" method="hideSendEmailPfpBtn"/>
   </action-method>
 
+  <action-method name="action-invoice-method-apply-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="applyCutOffDates"/>
+  </action-method>
+
   <action-method name="action-invoice-method-fiscal-position-on-change">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateLinesAfterFiscalPositionChange"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkInvoiceLinesCutOffDates"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

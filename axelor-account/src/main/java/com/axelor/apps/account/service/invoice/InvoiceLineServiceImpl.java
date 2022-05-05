@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -26,10 +25,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
@@ -45,20 +42,15 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
@@ -67,98 +59,33 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected AppAccountService appAccountService;
-  protected AnalyticMoveLineService analyticMoveLineService;
   protected ProductCompanyService productCompanyService;
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
+  protected InvoiceLineAnalyticService invoiceLineAnalyticService;
 
   @Inject
   public InvoiceLineServiceImpl(
       CurrencyService currencyService,
       PriceListService priceListService,
       AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.appAccountService = appAccountService;
-    this.analyticMoveLineService = analyticMoveLineService;
     this.productCompanyService = productCompanyService;
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
-  }
-
-  @Override
-  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
-    if (accountConfigService
-            .getAccountConfig(invoice.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
-    }
-
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        analyticMoveLineService.getAnalyticDistributionTemplate(
-            invoice.getPartner(), invoiceLine.getProduct(), invoice.getCompany());
-
-    invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-
-    if (invoiceLine.getAnalyticMoveLineList() != null) {
-      invoiceLine.getAnalyticMoveLineList().clear();
-    }
-
-    return this.computeAnalyticDistribution(invoiceLine);
-  }
-
-  @Override
-  public List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine) {
-
-    List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
-
-    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      return createAnalyticDistributionWithTemplate(invoiceLine);
-    } else {
-      LocalDate date =
-          appAccountService.getTodayDate(
-              invoiceLine.getInvoice() != null
-                  ? invoiceLine.getInvoice().getCompany()
-                  : Optional.ofNullable(AuthUtils.getUser())
-                      .map(User::getActiveCompany)
-                      .orElse(null));
-      if (invoiceLine.getAnalyticMoveLineList() != null) {
-        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-          analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
-        }
-      }
-      return analyticMoveLineList;
-    }
-  }
-
-  @Override
-  public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
-    List<AnalyticMoveLine> analyticMoveLineList =
-        analyticMoveLineService.generateLines(
-            invoiceLine.getAnalyticDistributionTemplate(),
-            invoiceLine.getCompanyExTaxTotal(),
-            AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate(
-                invoiceLine.getInvoice() != null
-                    ? invoiceLine.getInvoice().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
-
-    return analyticMoveLineList;
+    this.invoiceLineAnalyticService = invoiceLineAnalyticService;
   }
 
   @Override
@@ -595,7 +522,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
 
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      List<AnalyticMoveLine> analyticMoveLineList = this.computeAnalyticDistribution(invoiceLine);
+      List<AnalyticMoveLine> analyticMoveLineList =
+          invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
       if (ObjectUtils.notEmpty(analyticMoveLineList)) {
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
       }
@@ -604,25 +532,28 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
-      throws AxelorException {
+  public boolean checkCutOffDates(InvoiceLine invoiceLine) {
+    return invoiceLine == null
+        || invoiceLine.getAccount() == null
+        || !invoiceLine.getAccount().getManageCutOffPeriod()
+        || (invoiceLine.getCutOffStartDate() != null && invoiceLine.getCutOffEndDate() != null);
+  }
 
-    if (invoiceLine != null && invoiceLine.getAccount() != null) {
-      if (invoiceLine.getAccount().getAnalyticDistributionAuthorized()
-          && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(invoiceLine.getAccount().getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+  @Override
+  public boolean checkManageCutOffDates(InvoiceLine invoiceLine) {
+    return invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod();
+  }
 
-        invoiceLine.setAnalyticDistributionTemplate(
-            invoiceLine.getAccount().getAnalyticDistributionTemplate());
-      }
-    } else {
-      invoiceLine.setAnalyticDistributionTemplate(null);
+  @Override
+  public void applyCutOffDates(
+      InvoiceLine invoiceLine,
+      Invoice invoice,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate) {
+    if (cutOffStartDate != null && cutOffEndDate != null) {
+      invoiceLine.setCutOffStartDate(cutOffStartDate);
+      invoiceLine.setCutOffEndDate(cutOffEndDate);
     }
-
-    return invoiceLine;
   }
 
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)

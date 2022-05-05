@@ -62,6 +62,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -849,6 +850,41 @@ public class InvoiceController {
           invoiceLineService.compute(invoice, invoiceLine);
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceService invoiceService = Beans.get(InvoiceService.class);
+
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+      if (invoiceService.checkManageCutOffDates(invoice)) {
+        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageCutOffPeriod()
+          && !Beans.get(InvoiceService.class).checkInvoiceLinesCutOffDates(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_MISSING_CUT_OFF_DATE));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

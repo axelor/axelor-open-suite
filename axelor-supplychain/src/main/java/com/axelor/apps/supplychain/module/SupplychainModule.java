@@ -24,12 +24,14 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.account.service.ClosureAssistantLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -86,6 +88,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.ClosureAssistantLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -94,6 +97,8 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.MoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.MoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.MrpForecastService;
 import com.axelor.apps.supplychain.service.MrpForecastServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
@@ -268,6 +273,10 @@ public class SupplychainModule extends AxelorModule {
     bind(AccountingSituationInitServiceImpl.class)
         .to(AccountingSituationInitSupplychainServiceImpl.class);
     bind(InvoiceMergingServiceImpl.class).to(InvoiceMergingServiceSupplychainImpl.class);
+    bind(MoveLineServiceSupplychain.class).to(MoveLineServiceSupplychainImpl.class);
+    bind(MoveLineServiceImpl.class).to(MoveLineServiceSupplychainImpl.class);
+    bind(ClosureAssistantLineServiceImpl.class)
+        .to(ClosureAssistantLineSupplychainServiceImpl.class);
     bind(CommonInvoiceService.class).to(CommonInvoiceServiceImpl.class);
     bind(MrpForecastService.class).to(MrpForecastServiceImpl.class);
   }

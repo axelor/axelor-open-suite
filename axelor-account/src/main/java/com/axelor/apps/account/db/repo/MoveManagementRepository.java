@@ -128,6 +128,7 @@ public class MoveManagementRepository extends MoveRepository {
           moveLineControlService.controlAccountingAccount(moveLine);
         }
       }
+
       return super.save(move);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

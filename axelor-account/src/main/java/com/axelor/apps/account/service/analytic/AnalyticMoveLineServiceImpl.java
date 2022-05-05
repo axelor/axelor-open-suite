@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -200,6 +201,38 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(moveLine.getDate());
+    if (moveLine.getAccount() != null) {
+      analyticMoveLine.setAccount(moveLine.getAccount());
+      analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+    }
+    if (moveLine.getCredit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getCredit());
+    } else if (moveLine.getDebit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getDebit());
+    }
+    return analyticMoveLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(invoice.getOriginDate());
+    if (invoiceLine.getAccount() != null) {
+      analyticMoveLine.setAccount(invoiceLine.getAccount());
+      analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
+    }
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+    return analyticMoveLine;
+  }
+
+  public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
 
     if (company != null) {
@@ -209,22 +242,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         analyticMoveLine.setAnalyticJournal(analyticJournal);
       }
     }
-    analyticMoveLine.setDate(moveLine.getDate());
     analyticMoveLine.setPercentage(new BigDecimal(100));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-    if (moveLine.getAccount() != null) {
-      analyticMoveLine.setAccount(moveLine.getAccount());
-      analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-    }
 
     if (analyticAccount != null) {
       analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
       analyticMoveLine.setAnalyticAccount(analyticAccount);
-    }
-    if (moveLine.getCredit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getCredit());
-    } else if (moveLine.getDebit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getDebit());
     }
     return analyticMoveLine;
   }

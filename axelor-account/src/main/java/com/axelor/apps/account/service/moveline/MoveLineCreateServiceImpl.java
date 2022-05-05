@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.*;
@@ -29,6 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +63,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -57,7 +76,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      MoveLineConsolidateService moveLineConsolidateService,
+      MoveLineTaxService moveLineTaxService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -68,6 +88,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -394,8 +415,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (invoiceLine.getAnalyticMoveLineList() != null
-            && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
+        if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
                 analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
@@ -418,6 +438,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(taxLine);
           moveLine.setTaxRate(taxLine.getValue());
           moveLine.setTaxCode(taxLine.getTax().getCode());
+        }
+
+        // Cut off
+        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
         }
 
         moveLines.add(moveLine);
@@ -467,6 +493,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
           moveLine.setTaxCode(tax.getCode());
+          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
           moveLines.add(moveLine);
         }
 
@@ -500,6 +527,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
           moveLine.setTaxCode(tax.getCode());
+          moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
           moveLines.add(moveLine);
         }
       }
@@ -576,7 +604,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
-    MoveLine newOrUpdatedMoveLine;
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    MoveLine newOrUpdatedMoveLine = new MoveLine();
 
     if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
 
@@ -586,6 +615,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else {
       newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
+    newOrUpdatedMoveLine.setMove(move);
+    newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+    newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
+    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+    newOrUpdatedMoveLine.setDescription(move.getDescription());
 
     newOrUpdatedMoveLine.setDebit(
         newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));

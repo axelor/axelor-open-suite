@@ -61,6 +61,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -564,9 +565,36 @@ public class MoveController {
         response.setError(
             I18n.get(
                 "This period is temporarily closed and you do not have the necessary permissions to create entries"));
+      } else if (move.getPeriod() != null
+          && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+          && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+        response.setError(
+            I18n.get(
+                "This period is closed and you do not have the necessary permissions to create entries"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+      if (moveComputeService.checkManageCutOffDates(move)) {
+        moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+
+        response.setValue("moveLineList", move.getMoveLineList());
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.NO_CUT_OFF_TO_APPLY));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

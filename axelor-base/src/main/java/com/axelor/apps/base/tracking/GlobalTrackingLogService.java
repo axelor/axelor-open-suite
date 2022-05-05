@@ -20,6 +20,7 @@ package com.axelor.apps.base.tracking;
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.schema.actions.ActionView;
 import java.util.List;
 
 public interface GlobalTrackingLogService {
@@ -29,4 +30,6 @@ public interface GlobalTrackingLogService {
   public void deleteOldGlobalTrackingLog(int months);
 
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList);
+
+  public ActionView.ActionViewBuilder createReferenceView(GlobalTrackingLog globalTrackingLog);
 }

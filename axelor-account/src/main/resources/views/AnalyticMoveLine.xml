@@ -17,6 +17,7 @@
       width="150"/>
     <field name="analyticAccount" form-view="analytic-account-form"
       grid-view="analytic-account-grid"/>
+    <field name="analyticAccount.parent"/>
     <field name="accountType"/>
     <field name="date" width="120"/>
     <field name="originalPieceAmount" aggregate="sum"/>
@@ -127,7 +128,7 @@
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-attrs-domain-onselect-journal-analytic-move-line"
         onSelect="action-attrs-domain-onselect-axis-analytic-move-line"/>
-      <field name="analyticAccount" grid-view="analytic-account-grid"
+      <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-attrs-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
@@ -214,7 +215,7 @@
   <action-condition
     name="action-analytic-move-line-condition-valid-analytic-move-line-list">
     <check
-      error="Invalid Analytic moveLines, some axes percentage values are different than 100%."
+      error="Invalid analytic move lines, some axes percentage values are different than 100%."
       field="analyticMoveLineList" if="!isValidAnalyticMoveLineList"/>
   </action-condition>
 
@@ -246,8 +247,11 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id} &quot;"
-      if="analyticAxis"/>
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id}  AND self.company.id = ${analyticAxis.company.id}&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.company"/>
+    <attribute name="domain" for="analyticAccount"
+      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis.id}&quot;"
+      if="analyticAxis &amp;&amp; !analyticAxis.company"/>
   </action-attrs>
 
   <action-record name="action-record-onchange-axis-analytic-move-line"

@@ -73,7 +73,8 @@
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
               canSelect="false"/>
-            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
             <field name="fixedPhone" widget="phone" colSpan="4"
               x-placeholder-number-type="FIXED_LINE"/>
@@ -259,7 +260,8 @@
 
               <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
                 canSelect="false"/>
-              <field name="webSite" placeholder="http://www.url.com" widget="url"/>
+              <field name="webSite" placeholder="http://www.url.com" widget="url"
+                pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
               <field name="fixedPhone" widget="phone" colSpan="4"
                 x-placeholder-number-type="FIXED_LINE"/>

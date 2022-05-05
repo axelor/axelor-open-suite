@@ -343,7 +343,6 @@ public abstract class InvoiceGenerator {
         "Peupler une facture => lignes de factures: {} ", new Object[] {invoiceLines.size()});
 
     initCollections(invoice);
-
     // Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 

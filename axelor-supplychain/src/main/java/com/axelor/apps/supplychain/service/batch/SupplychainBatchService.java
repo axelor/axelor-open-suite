@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -27,6 +28,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
@@ -86,7 +89,30 @@ public class SupplychainBatchService extends AbstractBatchService {
     }
   }
 
+  public void checkDates(SupplychainBatch supplychainBatch) throws AxelorException {
+    LocalDate date = supplychainBatch.getMoveDate();
+    if (date != null
+        && date.getDayOfMonth()
+            != date.plusMonths(1).withDayOfMonth(1).minusDays(1).getDayOfMonth()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(com.axelor.apps.supplychain.exception.IExceptionMessage.BATCH_MOVE_DATE_ERROR));
+    }
+  }
+
   public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
     return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
+  }
+
+  @Transactional
+  public SupplychainBatch createNewSupplychainBatch(int action, Company company) {
+    if (company != null) {
+      SupplychainBatch supplychainBatch = new SupplychainBatch();
+      supplychainBatch.setActionSelect(action);
+      supplychainBatch.setCompany(company);
+      Beans.get(SupplychainBatchRepository.class).save(supplychainBatch);
+      return supplychainBatch;
+    }
+    return null;
   }
 }

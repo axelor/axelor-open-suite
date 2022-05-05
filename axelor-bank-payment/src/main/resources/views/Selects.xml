@@ -303,4 +303,8 @@
     <option value="2">BOR</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="bank.payment.batch.batch.type.select">
+    <option value="300">Bank payment batch</option>
+  </selection>
+
 </object-views>

@@ -34,6 +34,13 @@
 
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code"/>
+
+    <!-- Cut off -->
+    <many-to-one name="purchVatRegulationAccount"
+      title="VAT Regularization account on purchase" ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="saleVatRegulationAccount"
+      title="VAT Regularization account on sale" ref="com.axelor.apps.account.db.Account"/>
+
     <string name="name">
           <![CDATA[
       String name = "";

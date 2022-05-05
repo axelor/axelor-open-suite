@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
@@ -105,5 +106,9 @@ public class BatchContract extends BatchStrategy {
         String.format(
             "%d contract(s) treated and %d anomaly(ies) reported !",
             batch.getDone(), batch.getAnomaly()));
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
   }
 }
