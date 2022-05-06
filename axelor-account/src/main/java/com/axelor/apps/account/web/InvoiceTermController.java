@@ -57,12 +57,8 @@ public class InvoiceTermController {
   public void computeCustomizedAmount(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
-      }
+      BigDecimal total =
+          Beans.get(InvoiceTermService.class).computeParentTotal(request.getContext());
       if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
@@ -84,18 +80,13 @@ public class InvoiceTermController {
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
-      }
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      BigDecimal total = invoiceTermService.computeParentTotal(request.getContext());
       if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal percentage =
-          Beans.get(InvoiceTermService.class)
-              .computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+          invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
       response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
