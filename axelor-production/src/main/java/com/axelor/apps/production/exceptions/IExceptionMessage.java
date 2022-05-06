@@ -172,4 +172,6 @@ public interface IExceptionMessage {
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+  static final String CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION = /*$$(*/
+      "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula." /*)*/;
 }
