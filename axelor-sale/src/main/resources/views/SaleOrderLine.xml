@@ -213,7 +213,8 @@
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
                 onChange="action-sale-order-line-group-discount-amount-onchange"/>
               <field name="discountDerogation" colSpan="3"
-                onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
+                onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"
+                hidden="true" showIf="discountTypeSelect != 1"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
             <field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount"
