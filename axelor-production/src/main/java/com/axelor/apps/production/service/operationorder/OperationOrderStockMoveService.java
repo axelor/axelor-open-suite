@@ -316,6 +316,7 @@ public class OperationOrderStockMoveService {
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(operationOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 }
