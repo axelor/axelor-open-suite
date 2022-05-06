@@ -262,4 +262,15 @@ public interface IExceptionMessage {
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
+
+  static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d bank statement couldn't be deleted, please check the logs." /*)*/;
+
+  static final String STATEMENT_REMOVE_OK = /*$$(*/
+      "Bank statement(s) has been removed successfully" /*)*/;
+
+  static final String STATEMENT_REMOVE_NOT_OK = /*$$(*/
+      "Error in statement deleting, please check the log" /*)*/;
+
+  static final String NO_STATEMENT_TO_REMOVE = /*$$(*/ "Please select statements" /*)*/;
 }
