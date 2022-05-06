@@ -206,4 +206,13 @@ public interface IExceptionMessage {
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "The outsourcing receipt stock location is missing from the stock config" /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION =
+      /*$$(*/
+      "Stock location is missing from the prod process and in the component default stock location in stock configuration." /*)*/;
+  static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
+      /*$$(*/
+      "The produced product stock location is missing in the prod process" /*)*/;
 }
