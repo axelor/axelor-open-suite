@@ -10,7 +10,8 @@
       <replace>
         <panel name="accountingTriggerPanel" stacked="true">
           <field name="accountingTriggerSelect" hidden="true"
-            hideIf="!generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"/>
+            hideIf="!generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"
+            selection-in="[0,1,2,3,4]"/>
           <field name="accountingTriggerSelect" hidden="true"
             hideIf="generateBankOrder || (typeSelect == 7 &amp;&amp; inOutSelect == 1)"
             selection-in="[0,1]"/>
