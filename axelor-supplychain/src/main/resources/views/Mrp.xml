@@ -99,7 +99,7 @@
 
   <form name="mrp-generate-proposal-wizard-form"
     onLoad="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.supplychain.db.Mrp"
-    title="MPS">
+    title="MRP/MPS">
     <panel name="wizardPanel">
       <field name="$consolidateProposalsPerSupplier"
         title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch"/>
