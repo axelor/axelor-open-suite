@@ -295,7 +295,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
 
     if (startLocation == null) {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
       StockConfig stockConfig = stockConfigService.getStockConfig(company);
       startLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
     }

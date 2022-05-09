@@ -1093,29 +1093,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
-    User user = timesheet.getUser();
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
-      TimesheetLine timesheetLine = new TimesheetLine();
-      Project project = projectPlanningTime.getProject();
-      timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
-      timesheetLine.setDuration(
-          timesheetLineService.computeHoursDuration(
-              timesheet, projectPlanningTime.getPlannedHours(), false));
-      timesheetLine.setTimesheet(timesheet);
-      timesheetLine.setUser(user);
-      timesheetLine.setProduct(projectPlanningTime.getProduct());
-      if (project.getIsShowTimeSpent()) {
-        timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
-        timesheetLine.setProject(project);
-      }
-      timesheetLine.setDate(projectPlanningTime.getDate());
-      timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      TimesheetLine timesheetLine = createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);
     }
   }
 
-  private List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
+  protected List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
     List<ProjectPlanningTime> planningList;
 
     if (timesheet.getToDate() == null) {
@@ -1239,6 +1224,26 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       }
     }
     timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
+  }
+
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine timesheetLine = new TimesheetLine();
+    Project project = projectPlanningTime.getProject();
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setDuration(
+        timesheetLineService.computeHoursDuration(
+            timesheet, projectPlanningTime.getPlannedHours(), false));
+    timesheetLine.setTimesheet(timesheet);
+    timesheetLine.setUser(timesheet.getUser());
+    timesheetLine.setProduct(projectPlanningTime.getProduct());
+    if (project.getIsShowTimeSpent()) {
+      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
+      timesheetLine.setProject(projectPlanningTime.getProject());
+    }
+    timesheetLine.setDate(projectPlanningTime.getDate());
+    timesheetLine.setProjectPlanningTime(projectPlanningTime);
+    return timesheetLine;
   }
 
   @Override
