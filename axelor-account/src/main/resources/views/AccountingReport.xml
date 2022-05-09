@@ -177,6 +177,7 @@
           showIf="reportType.typeSelect==7 || reportType.typeSelect == 1"/>
         <field name="displayCumulativeBalance"
           showIf="reportType.typeSelect==7 || reportType.typeSelect==1"/>
+        <field name="company.accountConfig" hidden="true"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
       </panel>
     </panel-tabs>

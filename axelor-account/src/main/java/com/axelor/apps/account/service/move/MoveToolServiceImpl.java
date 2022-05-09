@@ -487,7 +487,14 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
-          for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+          Set<Role> roleSet =
+              accountConfigService
+                  .getAccountConfig(period.getYear().getCompany())
+                  .getClosureAuthorizedRoleList();
+          if (CollectionUtils.isEmpty(roleSet)) {
+            return false;
+          }
+          for (Role role : roleSet) {
             if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
               return false;
             }

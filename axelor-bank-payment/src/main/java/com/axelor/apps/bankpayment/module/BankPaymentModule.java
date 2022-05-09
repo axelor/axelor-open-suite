@@ -67,6 +67,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
@@ -151,5 +153,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
     bind(BankStatementLineAFB120Repository.class)
         .to(BankPaymentBankStatementLineAFB120Repository.class);
+
+    bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
   }
 }

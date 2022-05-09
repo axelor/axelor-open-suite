@@ -1137,21 +1137,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Company company = invoice.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    BigDecimal baseAmountByRate =
-        baseAmount.multiply(
-            invoice
-                .getFinancialDiscountRate()
-                .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
     if (invoice.getFinancialDiscount().getDiscountBaseSelect()
         == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
-      return baseAmountByRate.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+      return baseAmount.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
         && accountConfig.getPurchFinancialDiscountTax() != null) {
 
-      return baseAmountByRate.divide(
+      return baseAmount.divide(
           taxService
               .getTaxLine(
                   accountConfig.getPurchFinancialDiscountTax(),
@@ -1165,7 +1160,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
         && accountConfig.getSaleFinancialDiscountTax() != null) {
-      return baseAmountByRate.divide(
+      return baseAmount.divide(
           taxService
               .getTaxLine(
                   accountConfig.getSaleFinancialDiscountTax(), appBaseService.getTodayDate(company))
@@ -1220,11 +1215,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected BigDecimal computeBaseAmount(Invoice invoice, BigDecimal amount) {
+    BigDecimal ratioPaidRemaining =
+        invoice
+            .getAmountRemaining()
+            .divide(invoice.getInTaxTotal(), CALCULATION_SCALE, RoundingMode.HALF_UP);
+    BigDecimal baseAmount = invoice.getFinancialDiscountTotalAmount().multiply(ratioPaidRemaining);
+
     if (amount.signum() > 0) {
-      return amount;
-    } else {
-      return invoice.getAmountRemaining();
+      BigDecimal remainingAmount =
+          invoice.getRemainingAmountAfterFinDiscount().multiply(ratioPaidRemaining);
+      baseAmount =
+          baseAmount
+              .multiply(amount)
+              .divide(remainingAmount, CALCULATION_SCALE, RoundingMode.HALF_UP);
     }
+
+    return baseAmount;
   }
 
   @Override
@@ -1250,6 +1256,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   public boolean applyFinancialDiscount(Invoice invoice) {
     return (invoice != null
+        && invoice.getFinancialDiscount() != null
         && invoice.getFinancialDiscountDeadlineDate() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && invoice
@@ -1292,16 +1299,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoicePayment
             .getAmount()
             .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
-            .longValue()
-        > invoice.getAmountRemaining().longValue()) {
+            .compareTo(invoice.getAmountRemaining())
+        > 0) {
       invoicePayment.setAmount(
           calculateAmountRemainingInPayment(
-              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
-    } else {
-      invoicePayment =
-          changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
+              invoice, invoicePayment.getApplyFinancialDiscount(), BigDecimal.ZERO));
     }
-    return invoicePayment;
+
+    return changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
   }
 
   public InvoicePayment changeFinancialDiscountAmounts(
