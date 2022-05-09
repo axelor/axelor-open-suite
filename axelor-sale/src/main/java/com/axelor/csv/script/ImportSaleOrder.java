@@ -60,6 +60,8 @@ public class ImportSaleOrder {
     if (saleOrder.getStatusSelect() == 1) {
       saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
       saleOrderRepo.computeFullName(saleOrder);
+    } else {
+      saleOrderWorkflowService.finalizeQuotation(saleOrder);
     }
 
     return saleOrder;
