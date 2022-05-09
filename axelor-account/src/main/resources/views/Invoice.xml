@@ -811,7 +811,6 @@ InvoiceSet.length > 0))"
         <field name="company.accountConfig.isManagePFPInRefund"/>
         <field name="$isValidInvoiceTermPfpValidateStatus" type="boolean" hidden="true"/>
       </panel>
-    </panel>
       <panel name="budgetPanel" title="Budget"
         showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
         <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
