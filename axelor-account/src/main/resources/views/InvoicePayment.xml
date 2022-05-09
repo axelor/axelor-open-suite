@@ -48,8 +48,7 @@
     </panel>
     <panel name="discountPanel" title="Financial Discount" showIf="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonly="true"
-        onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
+      <field name="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
       <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"
         readonly="true"/>
@@ -194,12 +193,6 @@
       expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)"
       if="invoice"/>
   </action-record>
-
-  <action-attrs name="action-attrs-on-change-invoice-payment-financial-discount">
-    <attribute name="title" for="amount"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:setAmountTitle(applyFinancialDiscount)"/>
-  </action-attrs>
-
 
 </object-views>
 
