@@ -56,7 +56,7 @@ public class CurrencyService {
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
   }
 
-  public CurrencyService(LocalDate today) {
+  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
 
     this.appBaseService = appBaseService;
     this.today = today;

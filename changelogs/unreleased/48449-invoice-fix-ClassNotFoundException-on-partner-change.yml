@@ -1,3 +1,0 @@
----
-title: "INVOICE: Fix ClassNotFoundException on partner change when cash-management module is not loaded."
-type: fix
