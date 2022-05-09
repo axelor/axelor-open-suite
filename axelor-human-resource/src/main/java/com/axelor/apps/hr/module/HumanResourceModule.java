@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,6 +71,8 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
+import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -86,6 +88,8 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -126,5 +130,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(EmploymentContractRepository.class).to(EmploymentContractHRRepository.class);
     bind(AppTimesheetService.class).to(AppTimesheetServiceImpl.class);
     bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
+    bind(ProjectDashboardServiceImpl.class).to(ProjectDashboardHRServiceImpl.class);
+    bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
   }
 }

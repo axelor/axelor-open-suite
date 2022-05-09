@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -265,13 +264,7 @@ public class LeaveController {
         return;
       }
 
-      LeaveLine leaveLine =
-          Beans.get(LeaveLineRepository.class)
-              .all()
-              .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-              .bind("leaveReason", leaveRequest.getLeaveReason())
-              .bind("employee", leaveRequest.getUser().getEmployee())
-              .fetchOne();
+      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
       if (leaveLine != null
           && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
         if (!leaveRequest.getLeaveReason().getAllowNegativeValue()

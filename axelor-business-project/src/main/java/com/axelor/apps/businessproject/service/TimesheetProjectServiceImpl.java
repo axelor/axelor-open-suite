@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,10 +36,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,10 +62,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      ProjectTaskRepository projectTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -76,17 +77,18 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        projectTaskRepository,
+        projectTaskRepo,
         productCompanyService,
-        timesheetLineRepo,
-        timeSheetRepository);
+        timesheetlineRepo,
+        timeSheetRepository,
+        projectService);
   }
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("business-project")) {
+    if (!appHumanResourceService.isApp("business-project")) {
       return super.createInvoiceLines(invoice, timesheetLineList, priority);
     }
 

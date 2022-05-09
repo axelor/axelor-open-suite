@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,10 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -32,9 +32,14 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
   @Inject
   public AccountCustomerServiceSupplyChain(
       AccountingSituationService accountingSituationService,
+      AccountingSituationInitService accountingSituationInitService,
       AccountingSituationRepository accSituationRepo,
       AppBaseService appBaseService) {
-    super(accountingSituationService, accSituationRepo, appBaseService);
+    super(
+        accountingSituationService,
+        accountingSituationInitService,
+        accSituationRepo,
+        appBaseService);
   }
 
   @Override
@@ -53,7 +58,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
             updateDueCustAccount,
             updateDueDebtRecoveryCustAccount);
 
-    if (updateCustAccount && Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (updateCustAccount && appBaseService.isApp("supplychain")) {
       accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
     }
 

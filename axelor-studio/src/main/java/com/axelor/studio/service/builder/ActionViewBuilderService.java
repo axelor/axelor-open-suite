@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -53,7 +54,9 @@ public class ActionViewBuilderService {
 
     appendParams(builder.getViewParams(), xml);
 
-    appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
+    if (!Strings.isNullOrEmpty(builder.getModel())) {
+      appendDomain(builder.getDomainCondition(), builder.getIsJson(), xml);
+    }
 
     appendContext(builder, xml);
 
@@ -133,7 +136,11 @@ public class ActionViewBuilderService {
     if (!builder.getIsJson()) {
       model = builder.getModel();
     }
-    xml.append("model=\"" + model + "\">");
+
+    if (!Strings.isNullOrEmpty(builder.getModel())) {
+      xml.append("model=\"" + model + "\" ");
+    }
+    xml.append(">");
 
     return model;
   }

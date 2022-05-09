@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,8 +53,11 @@ public class AppMobileController {
     data.put(
         "isQualityAppEnable",
         appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
-    data.put(
-        "isStockAppEnable", appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false);
+    boolean isStockAppEnable = appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false;
+    data.put("isStockAppEnable", isStockAppEnable);
+    if (isStockAppEnable) {
+      data.put("inventoryTypeSelect", appMobile.getInventoryStatusSelect());
+    }
     boolean isProductionAppEnable =
         appService.isApp("production") ? appMobile.getIsProductionAppEnable() : false;
     data.put("isProductionAppEnable", isProductionAppEnable);
@@ -71,7 +74,6 @@ public class AppMobileController {
     data.put("projectSet", convertToData(appMobile.getProjectSet()));
     data.put("leadSet", convertToData(appMobile.getLeadSet()));
     data.put("productSet", convertToData(appMobile.getProductSet()));
-
     response.setData(data);
   }
 

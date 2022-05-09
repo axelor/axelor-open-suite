@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -53,8 +54,9 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -67,8 +69,9 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
         projectPlanningTimeRepository,
         projectTaskRepo,
         productCompanyService,
-        timesheetLineRepo,
-        timeSheetRepository);
+        timesheetlineRepo,
+        timeSheetRepository,
+        projectService);
   }
 
   @Override

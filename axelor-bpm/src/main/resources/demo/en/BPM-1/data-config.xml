@@ -1,0 +1,42 @@
+<xml-inputs>
+  <input file="File.xml" root="files">
+    <bind node="file" search="json_extract_text(self.attrs,&apos;name&apos;) = :_name"
+      update="true" json-model="File">
+      <bind node="name" to="_name"/>
+      <bind node="name" to="$attrs.name"/>
+    </bind>
+  </input>
+  <input file="File.xml" root="files">
+    <bind node="file" search="json_extract_text(self.attrs,&apos;name&apos;) = :_name"
+      update="true" json-model="File">
+      <bind node="name" to="_name"/>
+    </bind>
+  </input>
+  <input file="Sequence.xml" root="sequences">
+    <bind node="sequence" type="com.axelor.apps.base.db.Sequence"
+      search="self.codeSelect =  :_codeSelect" update="true">
+      <bind node="codeSelect" to="_codeSelect"/>
+      <bind node="codeSelect" to="codeSelect"/>
+      <bind node="company" to="_company"/>
+      <bind node="company" to="company" search="self.name = :_company" update="true"
+        create="false"/>
+      <bind node="padding" to="_padding"/>
+      <bind node="padding" to="padding"/>
+      <bind node="prefixe" to="_prefixe"/>
+      <bind node="prefixe" to="prefixe"/>
+      <bind node="toBeAdded" to="toBeAdded"/>
+      <bind node="name" to="name"/>
+    </bind>
+  </input>
+  <input file="Sequence.xml" root="sequences">
+    <bind node="sequence" type="com.axelor.apps.base.db.Sequence"
+      search="self.codeSelect =  :_codeSelect" update="true" create="false">
+      <bind node="codeSelect" to="_codeSelect"/>
+      <bind node="company" to="_company"/>
+      <bind node="company" to="company" search="self.name = :_company" update="true"
+        create="false"/>
+      <bind node="padding" to="_padding"/>
+      <bind node="prefixe" to="_prefixe"/>
+    </bind>
+  </input>
+</xml-inputs>

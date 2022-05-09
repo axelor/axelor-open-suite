@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,9 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.util.Map;
+import java.util.Set;
 
 public interface ProjectService {
   Project generateProject(
@@ -62,4 +64,12 @@ public interface ProjectService {
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);
+
+  public void getChildProjectIds(Set<Long> projectIdsSet, Project project);
+
+  @CallMethod
+  public Set<Long> getContextProjectIds();
+
+  @CallMethod
+  public String getContextProjectIdsString();
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.BamlModelRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__)
+	}
+	
+	bamlModels = ""
+	query.fetch().each({
+		bamlModel -> bamlModels += """\n\t\t<baml-model>
+							\n\t\t\t<name>${bamlModel.name}</name>
+							\n\t\t\t<bamlXml><![CDATA[""" + bamlModel.bamlXml + """]]></bamlXml>
+							\n\t\t\t<resultScript><![CDATA[""" + bamlModel.resultScript + """]]></resultScript>
+							\n\t\t\t<appBuilder>${bamlModel.appBuilder?.code}</appBuilder>
+							\n\t\t</baml-model>"""
+	})
+	
+	if (!bamlModels.isEmpty()) {
+		bamlModels = """<baml-models>\n""" +  bamlModels + """\n</baml-models>"""
+	}
+	
+	out << """$bamlModels"""
+%>

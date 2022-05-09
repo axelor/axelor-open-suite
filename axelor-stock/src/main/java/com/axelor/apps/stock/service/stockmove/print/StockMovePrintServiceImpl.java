@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
     String fileName =
         I18n.get("Stock moves")
             + " - "
-            + Beans.get(AppBaseService.class)
+            + appBaseService
                 .getTodayDate(
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
@@ -109,6 +108,8 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
         .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
+        .addParam(
+            "AddressPositionSelect", stockMove.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format);
   }
 

@@ -1,67 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator" >
-        <field name="configuratorCreator"/>
-    </grid>
+  <grid name="configurator-grid" title="Configurators"
+    model="com.axelor.apps.sale.db.Configurator">
+    <field name="configuratorCreator"/>
+  </grid>
 
-    <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator"
-          onNew="action-configurator-group-on-new"
-          onLoad="action-configurator-update-indicators,save">
-        <panel name="mainPanel" readonlyIf="product">
-            <field name="product" readonly="true" showTitle="false"
-                   showIf="product" colSpan="12" domain="self.dtype = 'Product'">
-                <viewer>
+  <form name="configurator-form" title="Configurator"
+    model="com.axelor.apps.sale.db.Configurator" onNew="action-configurator-group-on-new"
+    onLoad="action-configurator-update-indicators,save">
+    <panel name="mainPanel" readonlyIf="product">
+      <field name="product" readonly="true" showTitle="false" showIf="product" colSpan="12"
+        domain="self.dtype = 'Product'">
+        <viewer>
                     <![CDATA[
 			 			<h3>
 			             <span class="label label-important" x-translate>Product generated</span>
 			           </h3>
 					]]>
-                </viewer>
-            </field>
-            <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
-                   onSelect="action-configurator-method-creator-domain" onChange="action-configurator-group-creator-onchange"/>
-          <field name="configuratorCreatorName"/>
-          <field name="attributes" colSpan="12"/>
-        </panel>
-        <panel name="indicatorsPanel" readonly="true">
-            <field name="indicators" colSpan="12"/>
-        </panel>
-        <panel name="actionPanel" showIf="configuratorCreator.generateProduct" readonlyIf="product" >
-            <button name="generateProductBtn" title="Generate Product"
-                    onClick="save,action-configurator-generate-product"/>
-            <field name="configuratorCreator.generateProduct" hidden="true"/>
-        </panel>
-    </form>
+        </viewer>
+      </field>
+      <field name="configuratorCreator" form-view="configurator-creator-form"
+        grid-view="configurator-creator-grid" onSelect="action-configurator-method-creator-domain"
+        onChange="action-configurator-group-creator-onchange"/>
+      <field name="configuratorCreatorName"/>
+      <field name="attributes" colSpan="12"/>
+    </panel>
+    <panel name="indicatorsPanel" readonly="true">
+      <field name="indicators" colSpan="12"/>
+    </panel>
+    <panel name="actionPanel" showIf="configuratorCreator.generateProduct"
+      readonlyIf="product">
+      <button name="generateProductBtn" title="Generate Product"
+        onClick="save,action-configurator-generate-product"/>
+      <field name="configuratorCreator.generateProduct" hidden="true"/>
+    </panel>
+  </form>
 
-    <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator" title="Generate configurator">
-        <panel name="mainPanel">
-            <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
-                   onSelect="action-configurator-method-creator-domain" onChange="action-configurator-record-fill-creator-name"/>
-            <button name="generateBtn" title="Generate"
-            		onClick="action-configurator-group-create-configurator"/>
-          <field name="configuratorCreatorName"/>
-        </panel>
-        <panel name="configuratorPanel" hidden="true" colSpan="12">
-       		<field name="configuratorCreator" readonly="true" showTitle="false" css="bold large" canView="false"/>
-       		<button name="validateBtn" title="Validate and generate the line" colSpan="4" colOffset="2"
-            onClick="save,action-configurator-method-generate"/>
-       	</panel>
-       	<panel name="attributesPanel" hidden="true">
-            <field name="attributes" colSpan="12"/>
-        </panel>
-       	<panel name="indicatorsPanel" hidden="true">
-            <field name="indicators" colSpan="12" readonly="true"/>
-        </panel>
-    </form>
+  <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator"
+    title="Generate configurator">
+    <panel name="mainPanel">
+      <field name="configuratorCreator" form-view="configurator-creator-form"
+        grid-view="configurator-creator-grid" onSelect="action-configurator-method-creator-domain"
+        onChange="action-configurator-record-fill-creator-name"/>
+      <button name="generateBtn" title="Generate"
+        onClick="action-configurator-group-create-configurator"/>
+      <field name="configuratorCreatorName"/>
+    </panel>
+    <panel name="configuratorPanel" hidden="true" colSpan="12">
+      <field name="configuratorCreator" readonly="true" showTitle="false" css="bold large"
+        canView="false"/>
+      <button name="validateBtn" title="Validate and generate the line" colSpan="4"
+        colOffset="2" onClick="save,action-configurator-method-generate"/>
+    </panel>
+    <panel name="attributesPanel" hidden="true">
+      <field name="attributes" colSpan="12"/>
+    </panel>
+    <panel name="indicatorsPanel" hidden="true">
+      <field name="indicators" colSpan="12" readonly="true"/>
+    </panel>
+  </form>
 
-    <action-group name="action-configurator-group-create-configurator">
-    	<action name="action-configurator-attrs-create-configurator"/>
-    	<action name="save"/>
-    	<action name="action-configurator-update-indicators"/>
-    </action-group>
+  <action-group name="action-configurator-group-create-configurator">
+    <action name="action-configurator-attrs-create-configurator"/>
+    <action name="save"/>
+    <action name="action-configurator-update-indicators"/>
+  </action-group>
 
   <action-group name="action-configurator-group-creator-onchange">
     <action name="save"/>
@@ -69,49 +75,54 @@
     <action name="action-configurator-record-fill-creator-name"/>
   </action-group>
 
-    <action-method name="action-configurator-update-indicators">
-        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
-    </action-method>
+  <action-method name="action-configurator-update-indicators">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController" method="updateIndicators"/>
+  </action-method>
 
-    <action-method name="action-configurator-generate-product">
-        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
-    </action-method>
+  <action-method name="action-configurator-generate-product">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
+  </action-method>
 
-    <action-group name="action-configurator-group-on-new">
-        <action name="action-configurator-record-on-new" if="eval: _configuratorCreator != null"/>
-        <action name="action-configurator-attrs-on-new" if="eval: _configuratorCreator != null"/>
-       	<action name="save" if="eval: _configuratorCreator != null"/>
-       	<action name="action-configurator-update-indicators" if="eval: _configuratorCreator != null"/>
-    </action-group>
+  <action-group name="action-configurator-group-on-new">
+    <action name="action-configurator-record-on-new" if="eval: _configuratorCreator != null"/>
+    <action name="action-configurator-attrs-on-new" if="eval: _configuratorCreator != null"/>
+    <action name="save" if="eval: _configuratorCreator != null"/>
+    <action name="action-configurator-update-indicators"
+      if="eval: _configuratorCreator != null"/>
+  </action-group>
 
-    <action-record name="action-configurator-record-on-new" model="com.axelor.apps.sale.db.Configurator">
-        <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
-      <field name="configuratorCreatorName" expr="eval: _configuratorCreator?.name"/>
-    </action-record>
+  <action-record name="action-configurator-record-on-new"
+    model="com.axelor.apps.sale.db.Configurator">
+    <field name="configuratorCreator" expr="eval: _configuratorCreator"/>
+    <field name="configuratorCreatorName" expr="eval: _configuratorCreator?.name"/>
+  </action-record>
 
-  <action-record name="action-configurator-record-fill-creator-name" model="com.axelor.apps.sale.db.Configurator">
+  <action-record name="action-configurator-record-fill-creator-name"
+    model="com.axelor.apps.sale.db.Configurator">
     <field name="configuratorCreatorName" expr="eval: configuratorCreator.name"/>
   </action-record>
 
-    <action-attrs name="action-configurator-attrs-on-new">
-        <attribute for="configuratorCreator" name="readonly" expr="eval: _configuratorCreator != null"/>
-    </action-attrs>
+  <action-attrs name="action-configurator-attrs-on-new">
+    <attribute for="configuratorCreator" name="readonly"
+      expr="eval: _configuratorCreator != null"/>
+  </action-attrs>
 
-    <action-method name="action-configurator-method-creator-domain">
-        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="createDomainForCreator"/>
-    </action-method>
+  <action-method name="action-configurator-method-creator-domain">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController"
+      method="createDomainForCreator"/>
+  </action-method>
 
-    <action-method name="action-configurator-method-generate">
-        <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>
-    </action-method>
+  <action-method name="action-configurator-method-generate">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateForSaleOrder"/>
+  </action-method>
 
-    <action-attrs name="action-configurator-attrs-create-configurator">
-    	<attribute name="hidden" for="configuratorPanel" expr="false"/>
-    	<attribute name="hidden" for="attributesPanel" expr="false"/>
-    	<attribute name="hidden" for="indicatorsPanel" expr="false"/>
-    	<attribute name="hidden" for="validateBtn" expr="false"/>
-    	<attribute name="hidden" for="mainPanel" expr="true"/>
-    	<attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
-    </action-attrs>
+  <action-attrs name="action-configurator-attrs-create-configurator">
+    <attribute name="hidden" for="configuratorPanel" expr="false"/>
+    <attribute name="hidden" for="attributesPanel" expr="false"/>
+    <attribute name="hidden" for="indicatorsPanel" expr="false"/>
+    <attribute name="hidden" for="validateBtn" expr="false"/>
+    <attribute name="hidden" for="mainPanel" expr="true"/>
+    <attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
+  </action-attrs>
 
 </object-views>

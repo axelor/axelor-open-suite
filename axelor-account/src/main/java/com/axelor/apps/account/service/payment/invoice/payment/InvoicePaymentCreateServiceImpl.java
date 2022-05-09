@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -133,7 +133,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
-    computeAdvancePaymentImputation(invoicePayment, paymentMove);
+    computeAdvancePaymentImputation(invoicePayment, paymentMove, invoice.getOperationTypeSelect());
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     invoicePaymentRepository.save(invoicePayment);
@@ -159,10 +159,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
   }
 
-  protected void computeAdvancePaymentImputation(InvoicePayment invoicePayment, Move paymentMove) {
+  protected void computeAdvancePaymentImputation(
+      InvoicePayment invoicePayment, Move paymentMove, int operationTypeSelect) {
 
     // check if the payment is an advance payment imputation
-    Invoice advanceInvoice = determineIfReconcileFromInvoice(paymentMove);
+    Invoice advanceInvoice =
+        findAvancePaymentInvoiceFromPaymentInvoice(paymentMove, operationTypeSelect);
     if (advanceInvoice != null) {
       List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
       if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
@@ -202,47 +204,78 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @return the found advance invoice if the move is from a payment that comes from this invoice.
    *     null in other cases
    */
-  protected Invoice determineIfReconcileFromInvoice(Move move) {
+  protected Invoice findAvancePaymentInvoiceFromPaymentInvoice(Move move, int operationTypeSelect) {
     List<MoveLine> moveLineList = move.getMoveLineList();
-    if (moveLineList == null || moveLineList.size() != 2) {
+    if (moveLineList == null || moveLineList.size() < 2) {
       return null;
     }
-    InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
     for (MoveLine moveLine : moveLineList) {
       // search for the reconcile between the debit line
-      if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        Reconcile reconcile =
-            Beans.get(ReconcileRepository.class)
-                .all()
-                .filter("self.debitMoveLine = ?", moveLine)
-                .fetchOne();
-        if (reconcile == null) {
-          return null;
-        }
-        // in the reconcile, search for the credit line to get the
-        // associated payment
-        if (reconcile.getCreditMoveLine() == null
-            || reconcile.getCreditMoveLine().getMove() == null) {
+      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+          || moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+        Invoice invoice =
+            findAdvancePaymentInvoiceFromPaymentMoveLine(moveLine, operationTypeSelect);
+        if (invoice == null) {
           continue;
-        }
-        Move candidatePaymentMove = reconcile.getCreditMoveLine().getMove();
-        InvoicePayment invoicePayment =
-            invoicePaymentRepo
-                .all()
-                .filter("self.move = :_move")
-                .bind("_move", candidatePaymentMove)
-                .fetchOne();
-        // if the invoice linked to the payment is an advance
-        // payment, then return true.
-        if (invoicePayment != null
-            && invoicePayment.getInvoice() != null
-            && invoicePayment.getInvoice().getOperationSubTypeSelect()
-                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-          return invoicePayment.getInvoice();
+        } else {
+          return invoice;
         }
       }
     }
     return null;
+  }
+
+  protected Invoice findAdvancePaymentInvoiceFromPaymentMoveLine(
+      MoveLine moveLine, int operationTypeSelect) {
+    Reconcile reconcile =
+        findReconcileFromMoveLine(
+            moveLine, operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+    if (reconcile == null) {
+      return null;
+    }
+    // in the reconcile, search for the credit line to get the
+    // associated payment
+    MoveLine candidateMoveLine;
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      candidateMoveLine = reconcile.getDebitMoveLine();
+    } else {
+      candidateMoveLine = reconcile.getCreditMoveLine();
+    }
+
+    if (candidateMoveLine == null || candidateMoveLine.getMove() == null) {
+      return null;
+    }
+    Move candidatePaymentMove = candidateMoveLine.getMove();
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter("self.move = :_move")
+            .bind("_move", candidatePaymentMove)
+            .fetchOne();
+    // if the invoice linked to the payment is an advance
+    // payment, then return true.
+    if (invoicePayment != null
+        && invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      return invoicePayment.getInvoice();
+    }
+    return null;
+  }
+
+  protected Reconcile findReconcileFromMoveLine(MoveLine moveLine, boolean fromDebitMoveLine) {
+    StringBuilder filterString = new StringBuilder();
+    if (fromDebitMoveLine) {
+      filterString.append("self.debitMoveLine = ?");
+    } else {
+      filterString.append("self.creditMoveLine = ?");
+    }
+    Reconcile reconcile =
+        Beans.get(ReconcileRepository.class)
+            .all()
+            .filter(filterString.toString(), moveLine)
+            .fetchOne();
+    return reconcile;
   }
 
   @Override

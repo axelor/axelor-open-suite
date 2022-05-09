@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.MenuBuilderRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__).order('-parentMenu')
+	} 
+	
+	menuBuilders = ""
+	query.fetch().each({
+		menu ->	
+				groups = ""
+				menu.groups.each{
+					group -> groups += """\n\t\t\t\t<group>${group.code}</group>"""
+				}
+				
+				roles = ""
+				menu.roles.each{
+					role -> roles += """\n\t\t\t\t<role>${role.name}</role>"""
+				}
+				
+				menuBuilders += """\n\t\t<menu-builder>
+				\n\t\t\t<name>${menu.name}</name>
+				\n\t\t\t<xmlId>${menu.xmlId}</xmlId>
+				\n\t\t\t<title>${menu.title}</title>
+				\n\t\t\t<icon>${menu.icon}</icon>
+				\n\t\t\t<iconBackground>${menu.iconBackground}</iconBackground>
+				\n\t\t\t<order>${menu.order}</order>
+				\n\t\t\t<tag>${menu.tag}</tag>
+				\n\t\t\t<tagGet>${menu.tagGet}</tagGet>
+				\n\t\t\t<tagCount>${menu.tagCount}</tagCount>
+				\n\t\t\t<tagStyle>${menu.tagStyle}</tagStyle>
+				\n\t\t\t<top>${menu.top}</top>
+				\n\t\t\t<left>${menu.left}</left>
+				\n\t\t\t<mobile>${menu.mobile}</mobile>
+				\n\t\t\t<hidden>${menu.hidden}</hidden>
+				\n\t\t\t<link>${menu.link}</link>
+				\n\t\t\t<conditionToCheck>${menu.conditionToCheck}</conditionToCheck>
+				\n\t\t\t<moduleToCheck>${menu.moduleToCheck}</moduleToCheck>
+				\n\t\t\t<showAction>${menu.showAction}</showAction>
+				\n\t\t\t<groups>$groups
+				\n\t\t\t</groups>
+				\n\t\t\t<roles>$roles
+				\n\t\t\t</roles>
+				\n\t\t\t<parentMenu>${menu.parentMenu?.name}</parentMenu>
+				\n\t\t\t<actionBuilder>${menu.actionBuilder?.name}</actionBuilder>
+				\n\t\t\t<appBuilder>${menu.appBuilder?.code}</appBuilder>
+				\n\t\t</menu-builder>""" 
+				
+	})
+	
+	if (!menuBuilders.isEmpty()) {
+		menuBuilders = """<menu-builders>\n""" +  menuBuilders + """\n</menu-builders>"""
+	}
+	
+	out << """$menuBuilders"""
+%>

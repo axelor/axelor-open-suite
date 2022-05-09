@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<process-actions xmlns="http://www.example.org/baml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.example.org/baml baml.xsd">
+
+  <process-action id="intervention" name="Update intervention"
+    sourceModel="InterventionRequest" targetModel="InterventionRequest" staticCompile="false">
+    <query returnType="SINGLE" model="com.axelor.auth.db.User" isJson="false" target="usr"
+      expression="self.code = 'demo'" id=""></query>
+    <query returnType="MULTIPLE" model="Year" isJson="false" target="years"
+      expression="self.id != null" id=""></query>
+    <assignation id="">
+      <assign target="interventionRequest.assignedTo" expression="usr.getTarget()"/>
+    </assignation>
+    <loop target="year" expression="years" id="">
+      <new-record target="forecastWithdrawal" expression="Withdrawal" id=""/>
+      <assignation id="">
+        <assign target="forecastWithdrawal.year" expression="year.getTarget()"/>
+        <assign target="forecastWithdrawal.inTaxAmount"
+          expression="year.name.split(' ')[1] as Integer" targetType="decimal"/>
+        <assign target="interventionRequest.forecastWithdrawalList"
+          expression="forecastWithdrawal" add="true" save="true"/>
+      </assignation>
+    </loop>
+  </process-action>
+
+</process-actions>

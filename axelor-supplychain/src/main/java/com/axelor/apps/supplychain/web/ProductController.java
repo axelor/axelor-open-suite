@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,10 +89,10 @@ public class ProductController {
         List<Long> stockLocationIdList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocationId(stockLocation, false);
-        response.setValue("__stockLocationIdList", stockLocationIdList);
+        response.setValue("$stockLocationIdList", stockLocationIdList);
         return;
       }
     }
-    response.setValue("__stockLocationIdList", Arrays.asList(0L));
+    response.setValue("$stockLocationIdList", Arrays.asList(0L));
   }
 }

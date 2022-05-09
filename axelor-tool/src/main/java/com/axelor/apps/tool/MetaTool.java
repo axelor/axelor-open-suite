@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,10 @@ public class MetaTool {
           nameType);
     }
     return typeName;
+  }
+
+  public static String computeFullClassName(MetaField metaField) {
+    return String.format("%s.%s", metaField.getPackageName(), metaField.getTypeName());
   }
 
   /**

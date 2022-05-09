@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,6 +93,12 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public boolean validate(StockCorrection stockCorrection) throws AxelorException {
+    if (stockCorrection.getStatusSelect() == null
+        || stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
+    }
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {

@@ -7,7 +7,8 @@
 
   <entity name="SupplyChainConfig" lang="java">
 
-    <boolean name="autoRequestReservedQtyOnManufOrder" title="Auto request qty for manuf orders"
+    <boolean name="autoRequestReservedQtyOnManufOrder"
+      title="Auto request qty for manuf orders"
       help="If true, the components will be automatically requested for reservation on planning manufacturing orders."/>
 
     <track>

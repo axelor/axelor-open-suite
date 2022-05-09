@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,8 +39,7 @@ import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
@@ -49,7 +48,6 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -69,8 +67,6 @@ public abstract class BatchStrategy extends AbstractBatch {
   @Inject protected BatchRepository batchRepo;
 
   @Inject protected CompanyRepository companyRepo;
-
-  @Inject protected MoveService moveService;
 
   @Inject protected MoveRepository moveRepo;
 
@@ -182,7 +178,7 @@ public abstract class BatchStrategy extends AbstractBatch {
 
   protected void updateAccountMove(Move move, boolean incrementDone) {
 
-    move.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
+    move.addBatchSetItem(batchRepo.find(batch.getId()));
 
     if (incrementDone) {
       incrementDone();

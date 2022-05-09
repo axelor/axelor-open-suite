@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
@@ -65,6 +66,7 @@ import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectI
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
@@ -84,9 +86,9 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.workflow.WorkflowValidationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 public class BusinessProjectModule extends AxelorModule {
@@ -121,8 +123,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(WorkflowVentilationServiceSupplychainImpl.class)
         .to(WorkflowVentilationProjectServiceImpl.class);
     bind(TimesheetLineBusinessService.class).to(TimesheetLineProjectServiceImpl.class);
-    bind(WorkflowValidationServiceSupplychainImpl.class)
-        .to(WorkflowValidationServiceProjectImpl.class);
+    bind(WorkflowValidationServiceImpl.class).to(WorkflowValidationServiceProjectImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceProjectImpl.class);
     bind(ProjectTaskHRRepository.class).to(ProjectTaskBusinessProjectRepository.class);
     bind(SaleOrderLineServiceSupplyChainImpl.class).to(SaleOrderLineProjectServiceImpl.class);
@@ -137,5 +138,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectAnalyticMoveLineService.class).to(ProjectAnalyticMoveLineServiceImpl.class);
     bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
         .to(PurchaseOrderWorkflowServiceProjectImpl.class);
+    bind(InvoiceMergingServiceSupplychainImpl.class)
+        .to(InvoiceMergingServiceBusinessProjectImpl.class);
   }
 }

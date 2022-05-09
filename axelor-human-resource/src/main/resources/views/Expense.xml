@@ -1,101 +1,133 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
-		<hilite color="danger" if="statusSelect == 5"/>
-		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
-		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="expenseSeq" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<field name="statusSelect"/>
-		<field name="ventilated"/>
-	</grid>
-	
-	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
-		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-		<field name="inTaxTotal" aggregate="sum"/>
-	</grid>
-	
-	<grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
-		<toolbar>
-			<button name="showSubordinateExpenseToValidateBtn" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
-		</toolbar>
-		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
-		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
-		<field name="expenseSeq" width="120"/>
-		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<field name="statusSelect"/>
-	</grid>
+  <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
+    orderBy="-sentDate">
+    <hilite color="danger" if="statusSelect == 5"/>
+    <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
+    <hilite color="warning" if="statusSelect == 2"/>
+    <field name="expenseSeq" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="sentDate"/>
+    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
+      canView="false"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="statusSelect"/>
+    <field name="ventilated"/>
+  </grid>
 
-	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
-		  onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
-		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
-		  onSave="action-expense-method-validate-and-compute" canCopy="false">
-		<menubar>
-            <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-				<item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
-			</menu>
-		</menubar>
-		<panel name="mainPanel">
-			<panel colSpan="9" name="statusPanel">
-				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
-				<field name="expenseSeq" showTitle="false" colSpan="8">
-				<viewer depends="expenseSeq">
+  <grid name="expense-payroll-preparation-grid" title="Expenses"
+    model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
+    <field name="sentDate"/>
+    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
+      canView="false"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+  </grid>
+
+  <grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
+    orderBy="-sentDate">
+    <toolbar>
+      <button name="showSubordinateExpenseToValidateBtn"
+        title="Show expenses to be validated by my subordinates"
+        onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
+    </toolbar>
+    <hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
+    <hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
+    <field name="expenseSeq" width="120"/>
+    <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="sentDate"/>
+    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
+      canView="false"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
+    onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
+    onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
+    onSave="action-expense-method-validate-and-compute" canCopy="false">
+    <menubar>
+      <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+        <item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel">
+      <panel colSpan="9" name="statusPanel">
+        <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
+        <field name="expenseSeq" showTitle="false" colSpan="8">
+          <viewer depends="expenseSeq">
 					<![CDATA[
 						<h3>
 							<span x-translate>Expense</span>
 							{{record.expenseSeq}}
 						</h3>
 					]]>
-				</viewer>
-				</field>
-				<field name="move" readonly="true" showTitle="false" showIf="move" colSpan="4">
-					<viewer>
+          </viewer>
+        </field>
+        <field name="move" readonly="true" showTitle="false" showIf="move" colSpan="4">
+          <viewer>
 						<![CDATA[
 							<h3>
 								<span class="label label-important" x-translate>Ventilated</span>
 							</h3>
 						]]>
-					</viewer>
-				</field>
-				<panel name="generalInfoPanel" colSpan="12">
-					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"
+          </viewer>
+        </field>
+        <panel name="generalInfoPanel" colSpan="12">
+          <field name="multipleUsers" colSpan="12" hidden="true"
+            onChange="action-expense-attrs-multiple-users"/>
+          <field name="company" canEdit="false" form-view="company-form"
+            grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+          <field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain"
+            grid-view="user-grid" canNew="false" canEdit="false" canView="false"
             onChange="action-expense-record-user-onchange"/>
-					<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
-					<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
-					<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
-					<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
-					<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
-					<field name="personalExpenseAmount" hidden="true" />
-					<field name="advanceAmount" hidden="true" />
-				</panel>
-			</panel>
-			<panel name="sidePanel" itemSpan="12" colSpan="3">
-				<panel name="actionsPanel" itemSpan="12">
-					<button name="sendExpensesBtn" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
-					<button name="ventilateBtn" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
-					<button name="validateBtn" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
-					<button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
-					<button name="cancelBtn" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-					<button name="draftBtn" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
-					<button name="addPaymentBtn" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-					<button name="cancelPaymentBtn" title="Cancel payment"
-							showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
-							onClick="save,action-expense-method-cancel-payment"/>
-				</panel>
-				<panel name="inTaxTotalPanel" readonly="true" >
-		            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-		                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
+          <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
+            onSelect="action-accounting-batch-attrs-bank-details-domain"
+            form-view="bank-details-form" grid-view="bank-details-grid"
+            if="__config__.app.getApp('base').getManageMultiBanks()"/>
+          <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
+            form-view="period-form" grid-view="period-grid" canView="false"/>
+          <field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"
+            readonlyIf="statusSelect != 1"/>
+          <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
+            readonlyIf="statusSelect != 1"/>
+          <field name="user.employee.companyCbDetails" colSpan="12" hidden="true"
+            showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+          <field name="personalExpenseAmount" hidden="true"/>
+          <field name="advanceAmount" hidden="true"/>
+        </panel>
+      </panel>
+      <panel name="sidePanel" itemSpan="12" colSpan="3">
+        <panel name="actionsPanel" itemSpan="12">
+          <button name="sendExpensesBtn" title="Send Expenses"
+            onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
+          <button name="ventilateBtn" title="Ventilate"
+            onClick="save,action-expense-method-ventilate" hidden="true"/>
+          <button name="validateBtn" onClick="action-expense-group-validate" title="Validate"
+            hidden="true"/>
+          <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
+            hidden="true"/>
+          <button name="cancelBtn"
+            onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field"
+            hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+          <button name="draftBtn"
+            onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field"
+            title="Return to draft status" showIf="statusSelect &gt; 4 "/>
+          <button name="addPaymentBtn" title="Register payment"
+            onClick="save,action-expense-add-payment-form"
+            showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+          <button name="cancelPaymentBtn" title="Cancel payment"
+            showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
+            onClick="save,action-expense-method-cancel-payment"/>
+        </panel>
+        <panel name="inTaxTotalPanel" readonly="true">
+          <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+            <viewer
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
@@ -116,218 +148,269 @@
 		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund')}}</dd>
 		                    </dl>
 		                    ]]>
-		                </viewer>
-		            </field>
-		            <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"/>
-		        </panel>
-			</panel>
-	    </panel>
+            </viewer>
+          </field>
+          <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"/>
+        </panel>
+      </panel>
+    </panel>
 
-		<panel name="followupPanel" title="Follow-up" showIf="sentDate" colSpan="12" canCollapse="true">
-			<field name="sentDate" colSpan="4"/>
-			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
-			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
-			<field name="refusedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
-			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
-		</panel>
-		<panel-tabs name="mainPanelTab">
-			<panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
-				editable="true" form-view="expense-line-form" grid-view="expense-line-grid" onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period,action-expense-attrs-set-total-to-refund" />
-			<panel-related name="kilometricExpenseLineListPanel" field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
-				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute,action-expense-attrs-set-total-to-refund"/>
-			<panel-related name="employeeAdvanceUsageListPanel" showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
-			<panel name="accountInfoPanel" title="Account information">
-				<panel name="moveInfoPanel" title="Account information">
-					<field name="moveDate" readonlyIf="move" colSpan="4"/>
-					<field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form" grid-view="move-grid"/>
-				</panel>
-				<panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information" colSpan="12">
-					<field name="paymentStatusSelect" colSpan="4"/>
-					<field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
-					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
-					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
-				</panel>
-			</panel>
-		</panel-tabs>
-		<panel name="attrsPanel">
-			<field name="attrs" colSpan="12" />
-		</panel>
-      <panel-mail name="mailPanel">
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	  </panel-mail>
-	</form>
-	
-	<form name="popup-expense-refusal-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">
-		<field name="groundForRefusal" showTitle="false"/>
-	</form>
-	
-	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
-		<panel name="mainPanel">
-			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
-			<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
-		</panel>
-	</form>
+    <panel name="followupPanel" title="Follow-up" showIf="sentDate" colSpan="12"
+      canCollapse="true">
+      <field name="sentDate" colSpan="4"/>
+      <field name="validatedBy" canEdit="false" hidden="true" form-view="user-form"
+        grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
+      <field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
+      <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
+        grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
+      <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
+      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
+        readonly="true"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
+        title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
+        form-view="expense-line-form" grid-view="expense-line-grid"
+        onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period,action-expense-attrs-set-total-to-refund"/>
+      <panel-related name="kilometricExpenseLineListPanel"
+        field="kilometricExpenseLineList" title="Kilometric Allowances"
+        readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers" editable="true"
+        form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
+        onChange="action-expense-method-compute,action-expense-attrs-set-total-to-refund"/>
+      <panel-related name="employeeAdvanceUsageListPanel"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
+        canNew="false" canSelect="false" canEdit="true" editable="true"
+        form-view="employee-advance-usage-expense-form"
+        grid-view="employee-advance-usage-expense-grid"/>
+      <panel name="accountInfoPanel" title="Account information">
+        <panel name="moveInfoPanel" title="Account information">
+          <field name="moveDate" readonlyIf="move" colSpan="4"/>
+          <field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form"
+            grid-view="move-grid"/>
+        </panel>
+        <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
+          colSpan="12">
+          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
+          <field name="paymentDate" showIf="paymentDate" colSpan="4"/>
+          <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
 
-	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
-        <panel name="mainPanel">
-			<field name="paymentMode" domain="self.inOutSelect = 2"/>
-			<button name="addPaymentBtn" title="Register payment" onClick="save,action-expense-method-add-payment,close"/>
-		</panel>
-	</form>
+  <form name="popup-expense-refusal-form" title="Ground for refusal"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="groundForRefusal" showTitle="false"/>
+  </form>
 
-	<action-group name="action-expense-group-send">
-		<action name="save"/>
-		<action name="action-expense-method-send"/>
-		<action name="action-expense-attrs-hide-button-readonly-field"/>
-	</action-group>
-	
-	<action-group name="action-expense-group-validate">
-		<action name="save"/>
-		<action name="action-expense-method-valid"/>
-		<action name="action-expense-attrs-hide-button-readonly-field"/>
-	</action-group>
-	
-	<action-group name="action-expense-group-refuse">
-		<action name="save"/>
-		<action name="action-expense-method-refuse"/>
-		<action name="action-expense-refusal-popup-form"/>
-		<action name="action-expense-attrs-hide-button-readonly-field"/>
-		<action name="save"/>
-	</action-group>
-	
-	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
-		<field name="user" expr="eval:__user__"/>
-		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, _payCompany).fetchOne()"/>
-		<field name="exTaxTotal" expr="eval: 0"/>
-		<field name="taxTotal" expr="eval: 0"/>
-		<field name="inTaxTotal" expr="eval: 0"/>
-		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
-		<field name="bankDetails"
-		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
-	</action-record>
+  <form name="popup-expense-form" title="Select the expense you want to edit"
+    model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    <panel name="mainPanel">
+      <field name="$expenseSelect" title="Select Expense" type="many-to-one"
+        target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
+      <button name="editExpenseSelectedBtn" title="Edit Expense Selected"
+        onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+    </panel>
+  </form>
 
-  <action-record name="action-expense-record-user-onchange" model="com.axelor.apps.hr.db.Expense">
+  <form name="popup-expense-add-payment-form" title="Choose payment mode"
+    model="com.axelor.apps.hr.db.Expense">
+    <panel name="mainPanel">
+      <field name="paymentMode" domain="self.inOutSelect = 2"/>
+      <button name="addPaymentBtn" title="Register payment"
+        onClick="save,action-expense-method-add-payment,close"/>
+    </panel>
+  </form>
+
+  <action-group name="action-expense-group-send">
+    <action name="save"/>
+    <action name="action-expense-method-send"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+  </action-group>
+
+  <action-group name="action-expense-group-validate">
+    <action name="save"/>
+    <action name="action-expense-method-valid"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+  </action-group>
+
+  <action-group name="action-expense-group-refuse">
+    <action name="save"/>
+    <action name="action-expense-method-refuse"/>
+    <action name="action-expense-refusal-popup-form"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-record name="action-expense-record-default"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="user" expr="eval:__user__"/>
+    <field name="company"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+    <field name="period"
+      expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, _payCompany).fetchOne()"/>
+    <field name="exTaxTotal" expr="eval: 0"/>
+    <field name="taxTotal" expr="eval: 0"/>
+    <field name="inTaxTotal" expr="eval: 0"/>
+    <field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+    <field name="bankDetails"
+      expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
+  </action-record>
+
+  <action-record name="action-expense-record-user-onchange"
+    model="com.axelor.apps.hr.db.Expense">
     <field name="bankDetails"
       expr="eval: user?.employee?.mainEmploymentContract?.payCompany ? user.employee.mainEmploymentContract.payCompany.defaultBankDetails : user.activeCompany.defaultBankDetails"/>
   </action-record>
 
-	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
-		<field name="bankDetails" expr="eval: null"/>
-		<field name="user" expr="eval: null"/>
-	</action-record>
+  <action-record name="action-expense-record-company-onchange"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="period"
+      expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
+    <field name="bankDetails" expr="eval: null"/>
+    <field name="user" expr="eval: null"/>
+  </action-record>
 
-	<action-record name="action-expense-record-draft" model="com.axelor.apps.hr.db.Expense">
-	    <field name="statusSelect" expr="1"/>
-	</action-record>
-	
-	<action-attrs name="action-expense-attrs-domain-expense-select">
-		<attribute name="domain" for="$expenseSelect" expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-expense-attrs-domain-period">
-		<attribute name="domain" for="period" expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = 1 &quot;"/>
-	</action-attrs>
-	
-	<action-method name="action-expense-method-compute">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="compute"/>
-	</action-method>
-	
-	<action-method name="action-expense-method-ventilate">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="ventilate"/>
-	</action-method>
-	
-	<action-method name="action-print-expense">
-    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
-    </action-method>
-    
-    <action-method name="action-expense-method-send">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="send"/>
-	</action-method>
-	
-	<action-method name="action-expense-method-valid">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="valid"/>
-	</action-method>
-	
-	<action-method name="action-expense-method-refuse">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="refuse"/>
-	</action-method>
-	
-	<action-method name="action-expense-method-add-payment">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="addPayment"/>
-	</action-method>
+  <action-record name="action-expense-record-draft"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="statusSelect" expr="1"/>
+  </action-record>
 
-	<action-method name="action-expense-method-cancel-payment">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
-	</action-method>
-	
-	<action-attrs name="action-expense-attrs-hide-button-readonly-field">
-		<attribute name="hidden" for="ventilateBtn" expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
-		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || move"/>
-		<attribute name="readonly" for="period" expr="eval: true" if="!__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="period" expr="eval: ventilated" if="__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="bankDetails" expr="eval: true" if="!__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="bankDetails" expr="eval: ventilated" if="__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="company" expr="eval: true" if="!__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2" if="__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="user" expr="eval: true" if="!__user__.employee?.hrManager"/>
-		<attribute name="readonly" for="user" expr="eval: statusSelect &gt; 2" if="__user__.employee?.hrManager"/>
-	</action-attrs>
-	
-	<action-attrs name="action-expense-attrs-multiple-users">
-		<attribute name="hidden" for="generalExpenseLineList.user" expr="eval: !multipleUsers"/>
-	</action-attrs>
-	
-	<action-attrs name="action-expense-attrs-expense-company-cb">
-		<attribute name="hidden" for="generalExpenseLineList.companyCbPaymentSelect" expr="eval: companyCbSelect == 1"/>
-	</action-attrs>
-	
-	<action-validate name="action-expense-validate-period">
-		<error message="Period is closed" if="period?.statusSelect == 2"/>
-	</action-validate>
-	
-	<action-view name="action-expense-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Expense">
-    	<view type="form" name="popup-expense-refusal-form"/>
-        <view-param name="popup" value="reload"/>
-        <view-param name="show-toolbar" value="false"/>
-  		<view-param name="show-confirm" value="true" />
-	  	<view-param name="popup-save" value="true"/>
-	  	<view-param name="forceEdit" value="true" />
-    	<context name="_showRecord" expr="eval: id"/>
-    </action-view>
+  <action-attrs name="action-expense-attrs-domain-expense-select">
+    <attribute name="domain" for="$expenseSelect"
+      expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+  </action-attrs>
 
-	<action-view name="action-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
-		<view type="form" name="popup-expense-add-payment-form"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="show-confirm" value="true" />
-		<view-param name="popup-save" value="false"/>
-		<view-param name="forceEdit" value="true" />
-		<context name="_showRecord" expr="eval: id"/>
-	</action-view>
+  <action-attrs name="action-expense-attrs-domain-period">
+    <attribute name="domain" for="period"
+      expr="eval: &quot; self.fromDate &lt;= CURRENT_DATE AND self.statusSelect = 1 AND self.allowExpenseCreation = true AND self.year.company = :company AND self.year.typeSelect = 1 &quot;"/>
+  </action-attrs>
 
-    <action-method name="action-expense-method-validate-and-compute">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateAndCompute"/>
-    </action-method>
-    
+  <action-method name="action-expense-method-compute">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="compute"/>
+  </action-method>
 
-    <action-method name="action-expense-method-update-moveDate-and-period">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateMoveDateAndPeriod"/>
-    </action-method>
-    
-    <action-attrs name="action-expense-attrs-set-total-to-refund">
-    	<attribute name="value" for="$totalToRefund" expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
-    </action-attrs>
-    
-    <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense" title="Expense filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()" />
-    </search-filters>
+  <action-method name="action-expense-method-ventilate">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="ventilate"/>
+  </action-method>
+
+  <action-method name="action-print-expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
+  </action-method>
+
+  <action-method name="action-expense-method-send">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="send"/>
+  </action-method>
+
+  <action-method name="action-expense-method-valid">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="valid"/>
+  </action-method>
+
+  <action-method name="action-expense-method-refuse">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="refuse"/>
+  </action-method>
+
+  <action-method name="action-expense-method-add-payment">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="addPayment"/>
+  </action-method>
+
+  <action-method name="action-expense-method-cancel-payment">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
+  </action-method>
+
+  <action-attrs name="action-expense-attrs-hide-button-readonly-field">
+    <attribute name="hidden" for="ventilateBtn"
+      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
+    <attribute name="hidden" for="validateBtn"
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+    <attribute name="hidden" for="refuseBtn"
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+    <attribute name="hidden" for="cancelBtn"
+      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || move"/>
+    <attribute name="readonly" for="period" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="period" expr="eval: ventilated"
+      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="bankDetails" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="bankDetails" expr="eval: ventilated"
+      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="company" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
+      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="user" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="user" expr="eval: statusSelect &gt; 2"
+      if="__user__.employee?.hrManager"/>
+  </action-attrs>
+
+  <action-attrs name="action-expense-attrs-multiple-users">
+    <attribute name="hidden" for="generalExpenseLineList.user" expr="eval: !multipleUsers"/>
+  </action-attrs>
+
+  <action-attrs name="action-expense-attrs-expense-company-cb">
+    <attribute name="hidden" for="generalExpenseLineList.companyCbPaymentSelect"
+      expr="eval: companyCbSelect == 1"/>
+  </action-attrs>
+
+  <action-validate name="action-expense-validate-period">
+    <error message="Period is closed" if="period?.statusSelect == 2"/>
+  </action-validate>
+
+  <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"
+    model="com.axelor.apps.hr.db.Expense">
+    <view type="form" name="popup-expense-refusal-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-expense-add-payment-form" title="Choose payment mode"
+    model="com.axelor.apps.hr.db.Expense">
+    <view type="form" name="popup-expense-add-payment-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-expense-method-validate-and-compute">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateAndCompute"/>
+  </action-method>
+
+
+  <action-method name="action-expense-method-update-moveDate-and-period">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="updateMoveDateAndPeriod"/>
+  </action-method>
+
+  <action-attrs name="action-expense-attrs-set-total-to-refund">
+    <attribute name="value" for="$totalToRefund"
+      expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
+  </action-attrs>
+
+  <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
+    title="Expense filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="bankDetails" hidden="true"
+      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+  </search-filters>
 
 </object-views>

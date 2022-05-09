@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,7 +48,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -158,7 +157,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throws AxelorException {
 
     // the case when stockMove is null is made in super.
-    if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (stockMove == null || !appBaseService.isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
     }
 
@@ -250,7 +249,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return newStockMoveLine;
     }
     BigDecimal reservedQtyAfterSplit =
@@ -266,7 +265,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   @Override
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.updateAvailableQty(stockMoveLine, stockLocation);
       return;
     }
@@ -396,7 +395,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
 
-    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       super.setProductInfo(stockMove, stockMoveLine, company);
       return;
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -257,7 +257,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :typeSelect AND self.project = :_project")
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
             .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
 
     if (ObjectUtils.notEmpty(context)) {
@@ -349,5 +349,43 @@ public class ProjectServiceImpl implements ProjectService {
                             && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
                         || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
                             && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
+  }
+
+  @Override
+  public void getChildProjectIds(Set<Long> projectIdsSet, Project project) {
+    if (projectIdsSet.contains(project.getId())) {
+      return;
+    }
+
+    projectIdsSet.add(project.getId());
+
+    for (Project childProject : project.getChildProjectList()) {
+      getChildProjectIds(projectIdsSet, childProject);
+    }
+  }
+
+  @Override
+  public Set<Long> getContextProjectIds() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+    Set<Long> projectIdsSet = new HashSet<>();
+    if (contextProject == null) {
+      projectIdsSet.add(0l);
+      return projectIdsSet;
+    }
+    if (!currentUser.getIsIncludeSubContextProjects()) {
+      projectIdsSet.add(contextProject.getId());
+      return projectIdsSet;
+    }
+    this.getChildProjectIds(projectIdsSet, contextProject);
+    return projectIdsSet;
+  }
+
+  @Override
+  public String getContextProjectIdsString() {
+    Set<Long> contextProjectIds = this.getContextProjectIds();
+    return contextProjectIds.contains(0l)
+        ? null
+        : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
   }
 }

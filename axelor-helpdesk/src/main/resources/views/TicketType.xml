@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	
-	<grid name="ticket-type-grid" title="All ticket types" model="com.axelor.apps.helpdesk.db.TicketType">
-		<field name="name"/>
-	</grid>
-	
-    <form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"
-        name="ticket-type-form" width="large">
-        <panel name="namePanel">
-            <field name="name"/>
-        </panel>
 
-        <panel-dashlet name="ticketByTicketTypePanel" action="dashlet.ticket.by.ticket.type" colSpan="12"/>
+  <grid name="ticket-type-grid" title="All ticket types"
+    model="com.axelor.apps.helpdesk.db.TicketType">
+    <field name="name"/>
+  </grid>
 
-        <panel-dashlet name="repartitionTicketPerStateDashletPanel"
-            action="chart:chart.ticket.type.percentage.repartition.ticket.per.state"
-            colSpan="12"/>
-    </form>
+  <form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"
+    name="ticket-type-form" width="large">
+    <panel name="namePanel">
+      <field name="name"/>
+    </panel>
 
-    <action-view name="dashlet.ticket.by.ticket.type" title="Tickets by ticket type"
-        model="com.axelor.apps.helpdesk.db.Ticket">
-        <view type="grid" name="ticket-grid"/>
-        <view type="form" name="ticket-form"/>
-        <domain>self.ticketType = :id </domain>
-        <context name="_user" expr="eval: __user__"/>
-    </action-view>
+    <panel-dashlet name="ticketByTicketTypePanel"
+      action="dashlet.ticket.by.ticket.type" colSpan="12"/>
+
+    <panel-dashlet name="repartitionTicketPerStateDashletPanel"
+      action="chart:chart.ticket.type.percentage.repartition.ticket.per.state" colSpan="12"/>
+  </form>
+
+  <action-view name="dashlet.ticket.by.ticket.type" title="Tickets by ticket type"
+    model="com.axelor.apps.helpdesk.db.Ticket">
+    <view type="grid" name="ticket-grid"/>
+    <view type="form" name="ticket-form"/>
+    <domain>self.ticketType = :id </domain>
+    <context name="_user" expr="eval: __user__"/>
+  </action-view>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -48,12 +50,22 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected TimesheetService timesheetService;
   protected EmployeeRepository employeeRepository;
+  protected TimesheetRepository timesheetRepo;
+  protected AppHumanResourceService appHumanResourceService;
+  protected UserHrService userHrService;
 
   @Inject
   public TimesheetLineServiceImpl(
-      TimesheetService timesheetService, EmployeeRepository employeeRepository) {
+      TimesheetService timesheetService,
+      EmployeeRepository employeeRepository,
+      TimesheetRepository timesheetRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserHrService userHrService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
+    this.timesheetRepo = timesheetRepo;
+    this.appHumanResourceService = appHumanResourceService;
+    this.userHrService = userHrService;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -78,7 +90,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
+      if (user != null && user.getEmployee() != null) {
         Employee employee = employeeRepository.find(user.getEmployee().getId());
 
         log.debug("Employee: {}", employee);

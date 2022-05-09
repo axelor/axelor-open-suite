@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -81,6 +81,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
   protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -91,7 +92,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService,
-      PartnerStockSettingsService partnerStockSettingsService) {
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -101,6 +103,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
     this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   /**
@@ -176,6 +179,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     StockLocation startLocation = getStartStockLocation(purchaseOrder);
 
+    StockLocation endLocation = null;
+
     StockMove stockMove =
         stockMoveService.createStockMove(
             address,
@@ -194,6 +199,22 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && company.getTradingNameSet() != null
+        && !company.getTradingNameSet().isEmpty()) {
+      if (purchaseOrder.getTradingName() != null) {
+        endLocation = purchaseOrder.getTradingName().getQualityControlDefaultStockLocation();
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
+      }
+
+    } else {
+      endLocation =
+          stockConfigService.getStockConfig(company).getQualityControlDefaultStockLocation();
+    }
+
     StockMove qualityStockMove =
         stockMoveService.createStockMove(
             address,
@@ -201,9 +222,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            appBaseService.getAppBase().getEnableTradingNamesManagement()
-                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
-                : company.getStockConfig().getQualityControlDefaultStockLocation(),
+            endLocation,
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),
@@ -417,6 +436,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
     }
+    if (purchaseOrderLine.getReceiptState() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
+    }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
@@ -596,7 +618,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         List<StockLocation> stockLocationList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
                   + StringTool.getIdListString(stockLocationList)
