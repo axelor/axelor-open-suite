@@ -1,0 +1,3 @@
+---
+title: "Maintenance : fix a bug where creating a BoM from maintenance would make it appear in manufacturing but not in maintenance"
+type: fix
