@@ -57,9 +57,9 @@
         if="__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial discount"
+    <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount"/>
+      <field name="applyFinancialDiscount" readonly="true"/>
       <field name="$totalAmountWithFinancialDiscount" type="decimal"
         title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null"

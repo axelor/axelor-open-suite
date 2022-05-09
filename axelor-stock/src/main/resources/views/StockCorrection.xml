@@ -44,8 +44,6 @@
         onChange="action-stock-correction-method-set-deault-qtys"/>
       <spacer name="trackingNumberSpacer"/>
       <field name="realQty" colSpan="4"/>
-      <field name="futureQty" colSpan="4"/>
-      <field name="reservedQty" colSpan="4"/>
     </panel>
     <panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
       <field name="stockCorrectionReason" canEdit="false" colSpan="12" required="true"/>

@@ -785,34 +785,33 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <panel name="financialDiscountPanel" colSpan="12" showIf="statusSelect &gt;=3"
-          if="__config__.app.getApp('account').getManageFinancialDiscount()">
-          <field name="financialDiscount" onChange="action-invoice-group-financial-discount"/>
-          <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="financialDiscount"/>
-          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
-            <field name="financialDiscountRate" readonly="true"/>
-            <field name="financialDiscountTotalAmount" readonly="true"/>
-            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-          </panel>
+        <field name="financialDiscount" readonlyIf="amountPaid > 0"
+          onChange="action-invoice-group-financial-discount"/>
+        <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
+        <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+          <field name="financialDiscountRate" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
         </panel>
-
-
-        <panel-related name="invoicePaymentListPanel" title="Payments details"
-          field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
-          form-view="invoice-payment-form" canNew="false" canRemove="false"/>
-        <panel name="pfpAccountConfigPanel"
-          if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
-          <field name="$isValidPfpValidatorUser" type="boolean"/>
-          <field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator"/>
-          <field name="$isInvoiceTermAwaiting" type="boolean"/>
-          <field name="reasonOfRefusalToPay"/>
-          <field name="company.accountConfig"/>
-          <field name="company.accountConfig.isManagePassedForPayment"/>
-          <field name="company.accountConfig.isManagePFPInRefund"/>
-          <field name="$isValidInvoiceTermPfpValidateStatus" type="boolean" hidden="true"/>
-        </panel>
+        <field name="amountPaid" hidden="true"/>
       </panel>
+
+
+      <panel-related name="invoicePaymentListPanel" title="Payments details"
+        field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
+        form-view="invoice-payment-form" canNew="false" canRemove="false"/>
+      <panel name="pfpAccountConfigPanel"
+        if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
+        <field name="$isValidPfpValidatorUser" type="boolean"/>
+        <field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator"/>
+        <field name="$isInvoiceTermAwaiting" type="boolean"/>
+        <field name="reasonOfRefusalToPay"/>
+        <field name="company.accountConfig"/>
+        <field name="company.accountConfig.isManagePassedForPayment"/>
+        <field name="company.accountConfig.isManagePFPInRefund"/>
+        <field name="$isValidInvoiceTermPfpValidateStatus" type="boolean" hidden="true"/>
+      </panel>
+    </panel>
       <panel name="budgetPanel" title="Budget"
         showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
         <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
