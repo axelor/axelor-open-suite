@@ -353,4 +353,7 @@ public interface InvoiceService {
 
   public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
 }
