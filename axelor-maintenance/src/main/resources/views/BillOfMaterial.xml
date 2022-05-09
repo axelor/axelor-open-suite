@@ -55,6 +55,7 @@
     <action name="action-bill-of-material-group-on-new"/>
     <action name="action-maintenance-bill-of-material-attrs-set-default"/>
     <action name="action-maintenance-bill-of-material-attrs-set-attributes"/>
+    <action name="action-maintenance-bill-of-material-attrs-set-default"/>
   </action-group>
 
   <action-group name="action-maintenance-bill-of-material-group-onload">
