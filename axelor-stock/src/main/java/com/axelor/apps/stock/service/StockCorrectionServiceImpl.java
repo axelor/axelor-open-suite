@@ -238,15 +238,20 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   @Transactional
   public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
-    BigDecimal diff = stockCorrection.getRealQty().subtract(realQty);
-
-    stockCorrection.setRealQty(realQty);
-    if (BigDecimal.ZERO.compareTo(diff) > 0) {
-      stockCorrection.setFutureQty(stockCorrection.getFutureQty().subtract(diff));
-    } else if (BigDecimal.ZERO.compareTo(diff) < 0) {
-      stockCorrection.setFutureQty(stockCorrection.getFutureQty().add(diff));
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED){
+      stockCorrection.setRealQty(realQty);
+      stockCorrection.setFutureQty(realQty);
+      this.stockCorrectionRepository.save(stockCorrection);
     }
-
-    this.stockCorrectionRepository.save(stockCorrection);
   }
+
+  @Override
+  @Transactional
+  public void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason){
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED){
+      stockCorrection.setStockCorrectionReason(reason);
+      this.stockCorrectionRepository.save(stockCorrection);
+    }
+  }
+
 }

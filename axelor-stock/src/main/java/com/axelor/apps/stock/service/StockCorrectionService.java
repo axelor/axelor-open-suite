@@ -43,4 +43,7 @@ public interface StockCorrectionService {
       throws Exception;
 
   void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty);
+
+  void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason);
+
 }

@@ -63,6 +63,12 @@ public class StockCorrectionRestController {
       message += "Real qty updated; ";
     }
 
+    if (requestBody.fetchReason() != null) {
+      Beans.get(StockCorrectionService.class)
+              .updateReason(stockCorrection, requestBody.fetchReason());
+      message += "Reason updated; ";
+    }
+
     // Stock correction is not already validated
     if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED
         && requestBody.getStatus() != null) {
