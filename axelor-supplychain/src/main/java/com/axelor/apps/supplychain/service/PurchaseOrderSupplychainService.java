@@ -18,8 +18,9 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderSupplychainService {
 
-  public void updateToValidatedStatus(PurchaseOrder purchaseOrder);
+  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException;
 }

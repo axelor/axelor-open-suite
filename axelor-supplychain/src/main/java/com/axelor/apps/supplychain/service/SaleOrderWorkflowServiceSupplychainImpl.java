@@ -116,9 +116,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {

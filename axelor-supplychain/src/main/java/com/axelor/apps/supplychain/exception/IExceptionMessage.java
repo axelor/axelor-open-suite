@@ -31,6 +31,9 @@ public interface IExceptionMessage {
   static final String PURCHASE_ORDER_2 = /*$$(*/
       "Error : you have exceeded the budget %s for this period" /*)*/;
 
+  static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only return to validated from finished purchase order." /*)*/;
+
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
@@ -282,4 +285,7 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
       "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
+
+  static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
+      "Can only go back to confirmed if completed." /*)*/;
 }
