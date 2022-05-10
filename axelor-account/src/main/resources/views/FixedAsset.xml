@@ -282,7 +282,7 @@
         onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
       <field name="qty"
         onChange="action-validate-account-fixed-asset-wizard-form-validate-qty"
-        showIf="disposalQtySelect == 2" min="0.01" type="decimal"/>
+        showIf="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 2" min="0.01" type="decimal"/>
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
@@ -340,6 +340,8 @@
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
     <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    <attribute name="value" for="disposalQtySelect" expr="eval: 1"
+      if="disposalTypeSelect != 2"/>
   </action-attrs>
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
     model="com.axelor.apps.base.db.Wizard">
