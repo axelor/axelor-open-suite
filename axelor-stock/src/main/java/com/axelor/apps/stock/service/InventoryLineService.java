@@ -38,12 +38,25 @@ public class InventoryLineService {
       String rack,
       TrackingNumber trackingNumber) {
 
+    return createInventoryLine(inventory, product, currentQty, rack, trackingNumber, null, null);
+  }
+
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      String description) {
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;

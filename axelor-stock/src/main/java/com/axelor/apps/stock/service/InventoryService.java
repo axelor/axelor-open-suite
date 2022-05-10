@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -188,100 +189,143 @@ public class InventoryService {
     List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
     List<String[]> data = this.getDatas(filePath);
-
     HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
     List<String> headers = Arrays.asList(data.get(0));
 
     data.remove(0); /* Skip headers */
 
     for (String[] line : data) {
-      if (line.length < 6)
-        throw new AxelorException(
-            new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)),
-            inventory,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVENTORY_3));
-
-      String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
-      String rack = line[headers.indexOf(RACK)].replace("\"", "");
-      String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
-
-      BigDecimal realQty = null;
-      try {
-        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
-          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
-      } catch (NumberFormatException e) {
-        throw new AxelorException(
-            new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
-            inventory,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INVENTORY_3));
-      }
-
-      String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
-
-      int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
-      String key = code + trackingNumberSeq;
-
-      if (inventoryLineMap.containsKey(key)) {
-        InventoryLine inventoryLine = inventoryLineMap.get(key);
-        if (realQty != null)
-          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setDescription(description);
-
-        if (inventoryLine.getTrackingNumber() != null) {
-          inventoryLine.getTrackingNumber().setCounter(realQty);
-        }
-      } else {
-        BigDecimal currentQty;
-        try {
-          currentQty = new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""));
-        } catch (NumberFormatException e) {
-          throw new AxelorException(
-              new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
-              inventory,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.INVENTORY_3));
-        }
-
-        InventoryLine inventoryLine = new InventoryLine();
-        List<Product> productList =
-            productRepo
-                .all()
-                .filter("self.code = :code AND self.dtype = 'Product'")
-                .bind("code", code)
-                .fetch();
-        if (productList != null && !productList.isEmpty()) {
-          if (productList.size() > 1) {
-            throw new AxelorException(
-                inventory,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.INVENTORY_12) + " " + code);
-          }
-        }
-        Product product = productList.get(0);
-        if (product == null
-            || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-          throw new AxelorException(
-              inventory,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
-        inventoryLine.setProduct(product);
-        inventoryLine.setInventory(inventory);
-        inventoryLine.setRack(rack);
-        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        if (realQty != null)
-          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setDescription(description);
-        inventoryLine.setTrackingNumber(
-            this.getTrackingNumber(trackingNumberSeq, product, realQty));
-        inventoryLineList.add(inventoryLine);
-      }
+      addToInventory(inventory, inventoryLineList, inventoryLineMap, headers, line);
     }
     inventory.setInventoryLineList(inventoryLineList);
 
     inventoryRepo.save(inventory);
     return filePath;
+  }
+
+  protected void addToInventory(
+      Inventory inventory,
+      List<InventoryLine> inventoryLineList,
+      HashMap<String, InventoryLine> inventoryLineMap,
+      List<String> headers,
+      String[] line)
+      throws AxelorException {
+    if (line.length < 6) {
+      throw new AxelorException(
+          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_LINE_LENGHT)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_3));
+    }
+
+    String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
+    String rack = line[headers.indexOf(RACK)].replace("\"", "");
+    String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
+    String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
+    String key = code + trackingNumberSeq;
+    BigDecimal realQty = getRealQty(inventory, headers, line);
+    BigDecimal currentQty = getCurrentQty(inventory, headers, line);
+    Product product = getProduct(inventory, code);
+    if (product == null
+        || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+      throw new AxelorException(
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
+    }
+
+    if (inventoryLineMap.containsKey(key)) {
+      editInventoryLine(inventoryLineMap.get(key), description, realQty);
+    } else {
+      inventoryLineList.add(
+          createInventoryLine(
+              inventory, rack, trackingNumberSeq, description, realQty, currentQty, product));
+    }
+  }
+
+  protected void editInventoryLine(
+      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
+    if (inventoryLine.getTrackingNumber() != null) {
+      inventoryLine.getTrackingNumber().setCounter(realQty);
+    }
+  }
+
+  protected InventoryLine createInventoryLine(
+      Inventory inventory,
+      String rack,
+      String trackingNumberSeq,
+      String description,
+      BigDecimal realQty,
+      BigDecimal currentQty,
+      Product product) {
+
+    return inventoryLineService.createInventoryLine(
+        inventory,
+        product,
+        currentQty,
+        rack,
+        this.getTrackingNumber(trackingNumberSeq, product, realQty),
+        realQty,
+        description);
+  }
+
+  protected Product getProduct(Inventory inventory, String code) throws AxelorException {
+    List<Product> productList =
+        productRepo
+            .all()
+            .filter("self.code = :code AND self.dtype = 'Product'")
+            .bind("code", code)
+            .fetch();
+    if (CollectionUtils.isNotEmpty(productList)) {
+      if (productList.size() > 1) {
+        throw new AxelorException(
+            inventory,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INVENTORY_12) + " " + code);
+      }
+      return productList.get(0);
+    } else {
+      throw new AxelorException(
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_4) + " " + code);
+    }
+  }
+
+  protected BigDecimal getCurrentQty(Inventory inventory, List<String> headers, String[] line)
+      throws AxelorException {
+    int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
+    try {
+      return new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""))
+          .setScale(qtyScale, RoundingMode.HALF_UP);
+    } catch (NumberFormatException e) {
+      throw new AxelorException(
+          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_3));
+    }
+  }
+
+  protected BigDecimal getRealQty(Inventory inventory, List<String> headers, String[] line)
+      throws AxelorException {
+    int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
+    try {
+      if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)])) {
+        return new BigDecimal(line[headers.indexOf(REAL_QUANTITY)])
+            .setScale(qtyScale, RoundingMode.HALF_UP);
+      }
+
+    } catch (NumberFormatException e) {
+      throw new AxelorException(
+          new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_3));
+    }
+    return null;
   }
 
   public List<String[]> getDatas(Path filePath) throws AxelorException {
