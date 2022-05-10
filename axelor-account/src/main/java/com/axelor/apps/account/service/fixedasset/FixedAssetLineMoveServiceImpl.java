@@ -666,21 +666,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(creditMoveLine1);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
+      if (creditAmountTwo.compareTo(BigDecimal.ZERO) > 0) {
+        MoveLine creditMoveLine2 =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                creditAccountTwo,
+                creditAmountTwo,
+                false,
+                disposalDate,
+                1,
+                origin,
+                fixedAsset.getName());
+        moveLines.add(creditMoveLine2);
 
-      MoveLine creditMoveLine2 =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              creditAccountTwo,
-              creditAmountTwo,
-              false,
-              disposalDate,
-              1,
-              origin,
-              fixedAsset.getName());
-      moveLines.add(creditMoveLine2);
-
-      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
+        this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
+      }
 
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

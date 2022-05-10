@@ -18,14 +18,23 @@
 package com.axelor.apps.production.service.config;
 
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 
 public class StockConfigProductionService extends StockConfigService {
+
+  protected AppProductionService appProductionService;
+
+  @Inject
+  public StockConfigProductionService(AppProductionService appProductionService) {
+    this.appProductionService = appProductionService;
+  }
 
   public StockLocation getProductionVirtualStockLocation(
       StockConfig stockConfig, boolean isOutsource) throws AxelorException {
@@ -54,27 +63,46 @@ public class StockConfigProductionService extends StockConfigService {
     return stockConfig.getWasteStockLocation();
   }
 
-  public StockLocation getFinishedProductsDefaultStockLocation(StockConfig stockConfig)
-      throws AxelorException {
-    if (stockConfig.getFinishedProductsDefaultStockLocation() == null) {
+  public StockLocation getFinishedProductsDefaultStockLocation(
+      StockLocation workshop, StockConfig stockConfig) throws AxelorException {
+    StockLocation finishedProductsDefaultStockLocation = null;
+    if (appProductionService.getAppBase().getEnableTradingNamesManagement()
+        && workshop != null
+        && workshop.getTradingName() != null) {
+      finishedProductsDefaultStockLocation =
+          workshop.getTradingName().getFinishedProductsDefaultStockLocation();
+    }
+    if (finishedProductsDefaultStockLocation == null) {
+      finishedProductsDefaultStockLocation = stockConfig.getFinishedProductsDefaultStockLocation();
+    }
+    if (finishedProductsDefaultStockLocation == null) {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PRODUCTION_CONFIG_4),
           stockConfig.getCompany().getName());
     }
-    return stockConfig.getFinishedProductsDefaultStockLocation();
+    return finishedProductsDefaultStockLocation;
   }
 
-  public StockLocation getComponentDefaultStockLocation(StockConfig stockConfig)
-      throws AxelorException {
-    if (stockConfig.getComponentDefaultStockLocation() == null) {
+  public StockLocation getComponentDefaultStockLocation(
+      StockLocation workshop, StockConfig stockConfig) throws AxelorException {
+    StockLocation componentDefaultStockLocation = null;
+    if (appProductionService.getAppBase().getEnableTradingNamesManagement()
+        && workshop != null
+        && workshop.getTradingName() != null) {
+      componentDefaultStockLocation = workshop.getTradingName().getComponentDefaultStockLocation();
+    }
+    if (componentDefaultStockLocation == null) {
+      componentDefaultStockLocation = stockConfig.getComponentDefaultStockLocation();
+    }
+    if (componentDefaultStockLocation == null) {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PRODUCTION_CONFIG_5),
           stockConfig.getCompany().getName());
     }
-    return stockConfig.getComponentDefaultStockLocation();
+    return componentDefaultStockLocation;
   }
 }

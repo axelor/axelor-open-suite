@@ -241,7 +241,7 @@
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange"/>
     <field name="taxLine" hidden="true" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
-      requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"/>
+      requiredIf="account.isTaxRequiredOnMoveLine"/>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="$isDescriptionRequired" hidden="true" type="boolean"/>

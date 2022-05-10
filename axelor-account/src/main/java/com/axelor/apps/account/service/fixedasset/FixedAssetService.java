@@ -110,7 +110,11 @@ public interface FixedAssetService {
   void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
       throws AxelorException;
 
-  int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
+  int computeTransferredReason(
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect,
+      BigDecimal disposalQty,
+      FixedAsset fixedAsset);
 
   /**
    * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with

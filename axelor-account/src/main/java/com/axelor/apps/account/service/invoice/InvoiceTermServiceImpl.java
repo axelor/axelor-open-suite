@@ -48,12 +48,14 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -1249,5 +1251,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .orElse(BigDecimal.ZERO);
 
     return amountToPay.compareTo(amount) >= 0;
+  }
+
+  @Override
+  public BigDecimal computeParentTotal(Context context) {
+    BigDecimal total = BigDecimal.ZERO;
+    if (context.getParent() != null) {
+      Invoice invoice = ContextTool.getContextParent(context, Invoice.class, 1);
+      if (invoice != null) {
+        total = invoice.getInTaxTotal();
+      } else {
+        MoveLine moveLine = ContextTool.getContextParent(context, MoveLine.class, 1);
+        if (moveLine != null) {
+          total = moveLine.getDebit().max(moveLine.getCredit());
+        }
+      }
+    }
+    return total;
   }
 }

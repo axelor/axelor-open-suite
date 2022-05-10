@@ -49,6 +49,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,11 +185,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect) {
-    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
-        && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
+  public int computeTransferredReason(
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect,
+      BigDecimal disposalQty,
+      FixedAsset fixedAsset) {
+    boolean partialCession =
+        disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
+            && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL;
+    if (partialCession && disposalQty.compareTo(fixedAsset.getQty()) < 0) {
       return FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION;
-    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
+    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
+        || (partialCession && disposalQty.compareTo(fixedAsset.getQty()) == 0)) {
       return FixedAssetRepository.TRANSFERED_REASON_CESSION;
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
       return FixedAssetRepository.TRANSFERED_REASON_ONGOING_CESSION;
@@ -501,9 +509,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
     }
-    if (fixedAssetLineService.getExistingLineWithSameYear(
-            fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_REALIZED)
-        != null) {
+    Optional<FixedAssetLine> fixedAssetLine =
+        fixedAssetLineService.findOldestFixedAssetLine(
+            fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
+    if (fixedAssetLine.isPresent()
+        && !disposalDate.isAfter(fixedAssetLine.get().getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
