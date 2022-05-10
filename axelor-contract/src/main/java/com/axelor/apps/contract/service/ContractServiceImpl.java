@@ -371,7 +371,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   @Override
   @Transactional
-  public void close(Contract contract, LocalDate terminationDate) {
+  public void close(Contract contract, LocalDate terminationDate) throws AxelorException {
     LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 
     ContractVersion currentVersion = contract.getCurrentContractVersion();

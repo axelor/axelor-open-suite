@@ -78,6 +78,8 @@
 "Calculation started",,,
 "Can only be cancelled from drafted or confirmed forecast.",,,
 "Can only be confirmed from drafted forecast.",,,
+"Can only go back to confirmed if completed.",,,
+"Can only return to validated from finished purchase order.",,,
 "Can't remove delivered detail line %s.",,,
 "Cancel",,,
 "Cancel reason on changing sale order",,,
