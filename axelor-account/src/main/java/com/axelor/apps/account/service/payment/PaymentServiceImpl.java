@@ -133,7 +133,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         log.debug(
             "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
-            creditMoveLine.getAmountRemaining());
+            this.getAmountRemainingForPayment(creditMoveLine));
         creditTotalRemaining =
             creditTotalRemaining.add(this.getAmountRemainingForPayment(creditMoveLine));
       }
@@ -146,7 +146,8 @@ public class PaymentServiceImpl implements PaymentService {
         log.debug(
             "Emploie du trop perçu : ligne en débit (restant à payer): {})",
             debitMoveLine.getAmountRemaining());
-        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+        debitTotalRemaining =
+            debitTotalRemaining.add(this.getAmountRemainingForPayment(debitMoveLine));
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
