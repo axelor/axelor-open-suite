@@ -385,9 +385,13 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
-      String nic = Beans.get(PartnerService.class).getNicFromRegistrationCode(partner);
-      String siren = Beans.get(PartnerService.class).getSirenFromRegistrationCode(partner);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      if (!partnerService.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(IExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      }
+      String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
+      String nic = partnerService.getNicFromRegistrationCode(partner);
+      String siren = partnerService.getSirenFromRegistrationCode(partner);
       response.setValue("taxNbr", taxNbr);
       response.setValue("nic", nic);
       response.setValue("siren", siren);

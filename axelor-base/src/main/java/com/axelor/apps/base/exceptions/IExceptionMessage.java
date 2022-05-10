@@ -248,6 +248,8 @@ public interface IExceptionMessage {
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
   public static final String PARTNER_EMAIL_EXIST = /*$$(*/
       "Email address already linked with another partner" /*)*/;
+  public static final String PARTNER_INVALID_REGISTRATION_CODE = /*$$(*/
+      "Registration code is invalid." /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
