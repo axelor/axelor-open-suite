@@ -20,6 +20,8 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -65,7 +67,7 @@ public class ReconcileController {
       Beans.get(ReconcileService.class)
           .checkReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
