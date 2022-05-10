@@ -302,4 +302,19 @@ public class InvoicePaymentController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  @SuppressWarnings("unchecked")
+  public void setMassPaymentAmount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      List<Long> invoiceIdList = (List<Long>) request.getContext().get("_invoices");
+
+      response.setValue(
+          "amount",
+          Beans.get(InvoicePaymentToolService.class)
+              .getMassPaymentAmount(invoiceIdList, invoicePayment.getPaymentDate()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

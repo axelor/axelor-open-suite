@@ -265,4 +265,10 @@ public interface InvoiceTermService {
 
   void reconcileAndUpdateInvoiceTermsAmounts(
       InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+
+  List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
+
+  boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
+
+  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
 }

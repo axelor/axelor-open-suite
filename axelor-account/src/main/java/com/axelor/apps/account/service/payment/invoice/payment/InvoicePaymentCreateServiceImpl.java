@@ -49,6 +49,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
@@ -346,6 +347,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, Collections.singletonList(invoiceTerm));
     return invoicePaymentRepository.save(invoicePayment);
   }
 
@@ -367,7 +370,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     for (Long invoiceId : invoiceList) {
 
       Invoice invoice = invoiceRepository.find(invoiceId);
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermService.getUnpaidInvoiceTerms(invoice)) {
         InvoicePayment invoicePayment =
             this.createInvoicePayment(
                 invoiceTerm,
@@ -405,7 +408,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         continue;
       }
 
-      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0
+          || !invoiceService.checkInvoiceTerms(invoice)) {
 
         continue;
       }

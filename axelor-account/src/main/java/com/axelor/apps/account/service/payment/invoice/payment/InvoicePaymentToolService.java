@@ -63,4 +63,6 @@ public interface InvoicePaymentToolService {
   BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date);
 
   void computeFinancialDiscount(InvoicePayment invoicePayment);
+
+  BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
 }

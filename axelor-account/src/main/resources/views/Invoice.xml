@@ -1576,6 +1576,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-group-add-invoice-payment">
     <action name="save"/>
+    <action name="action-invoice-method-check-invoice-terms"/>
     <action name="action-invoice-view-register-payment"/>
   </action-group>
 
@@ -2209,6 +2210,10 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-unpaid-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateUnpaidInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-check-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="checkInvoiceTerms"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

@@ -57,4 +57,15 @@ public class ReconcileController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkReconcile(ActionRequest request, ActionResponse response) {
+    Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+    try {
+      Beans.get(ReconcileService.class)
+          .checkReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

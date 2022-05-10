@@ -85,4 +85,6 @@ public interface ReconcileService {
       BigDecimal amount,
       Reconcile reconcile)
       throws AxelorException;
+
+  void checkReconcile(Reconcile reconcile) throws AxelorException;
 }
