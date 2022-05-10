@@ -17,28 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.validation.ValidationException;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -73,6 +51,25 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import javax.validation.ValidationException;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnitCostCalculationServiceImpl implements UnitCostCalculationService {
 
@@ -131,7 +128,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalcLineList) {
       String[] item = new String[5];
       Optional<Product> product = Optional.ofNullable(unitCostCalcLine.getProduct());
-	  item[0] = product.map(Product::getCode).orElse("");
+      item[0] = product.map(Product::getCode).orElse("");
       item[1] = product.map(Product::getName).orElse("");
       item[2] = product.map(Product::getPurchaseCurrency).map(Currency::getCode).orElse("");
       item[3] = unitCostCalcLine.getComputedCost().toString();

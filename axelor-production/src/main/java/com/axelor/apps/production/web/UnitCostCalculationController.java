@@ -99,6 +99,7 @@ public class UnitCostCalculationController {
                       + metaFile.getId()
                       + "/content/download?v="
                       + metaFile.getVersion())
+              .param("download", "true")
               .map());
       response.setReload(true);
     } catch (Exception e) {
