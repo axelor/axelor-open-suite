@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
@@ -43,6 +44,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -67,8 +69,8 @@ public class ImportMove {
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
+    FECImport fecImport = null;
     try {
-      FECImport fecImport = null;
       if (values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
       }
@@ -114,6 +116,7 @@ public class ImportMove {
       Move move = moveRepository.all().filter("self.reference = ?", importReference).fetchOne();
       if (move == null) {
         move = new Move();
+        move.setFecImport(fecImport);
         move.setReference(importReference);
         if (values.get("PieceRef") != null) {
           move.setOrigin(values.get("PieceRef").toString());
@@ -128,6 +131,14 @@ public class ImportMove {
 
         if (values.get("EcritureDate") != null) {
           move.setDate(parseDate(values.get("EcritureDate").toString()));
+        }
+        if (period == null) {
+          throw new AxelorException(
+              fecImport,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
+              moveLine.getDate(),
+              company);
         }
         move.setPeriod(period);
 
@@ -146,6 +157,13 @@ public class ImportMove {
                       values.get("JournalCode").toString(),
                       move.getCompany().getId())
                   .fetchOne();
+          if (journal == null) {
+            throw new AxelorException(
+                fecImport,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
+                values.get("JournalCode"));
+          }
           move.setJournal(journal);
         }
 
@@ -172,12 +190,23 @@ public class ImportMove {
                     values.get("CompteNum").toString(),
                     move.getCompany().getId())
                 .fetchOne();
+        if (account == null) {
+          throw new AxelorException(
+              fecImport,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
+              values.get("CompteNum"));
+        }
         moveLine.setAccount(account);
       }
-      moveLine.setMove(move);
+      move.addMoveLineListItem(moveLine);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      throw e;
     } catch (Exception e) {
       TraceBackService.trace(e);
-      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+      throw new AxelorException(
+          fecImport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return moveLine;
   }

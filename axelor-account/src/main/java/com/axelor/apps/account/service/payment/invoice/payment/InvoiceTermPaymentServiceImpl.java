@@ -196,7 +196,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected void toggleFinancialDiscount(InvoicePayment invoicePayment, InvoiceTerm invoiceTerm) {
     if (!invoicePayment.getApplyFinancialDiscount()) {
       invoicePayment.setApplyFinancialDiscount(
-          invoiceTerm.getApplyFinancialDiscount()
+          invoiceTerm.getFinancialDiscountDeadlineDate() != null
+              && invoiceTerm.getApplyFinancialDiscount()
               && !invoicePayment
                   .getPaymentDate()
                   .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate()));

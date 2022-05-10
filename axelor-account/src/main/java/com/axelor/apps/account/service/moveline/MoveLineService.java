@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,4 +44,6 @@ public interface MoveLineService {
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
+  public boolean checkManageAnalytic(Move move) throws AxelorException;
 }

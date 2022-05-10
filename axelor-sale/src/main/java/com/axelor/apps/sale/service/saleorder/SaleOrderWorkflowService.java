@@ -32,7 +32,8 @@ public interface SaleOrderWorkflowService {
   public String getSequence(Company company) throws AxelorException;
 
   public void cancelSaleOrder(
-      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr);
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException;
 
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException;
 

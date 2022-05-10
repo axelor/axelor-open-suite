@@ -441,13 +441,13 @@
   </form>
 
   <form name="invoice-term-refusal-to-pay-wizard-form"
-    model="com.axelor.apps.account.db.InvoiceTerm" title="Cancellation confirmation">
+    model="com.axelor.apps.account.db.InvoiceTerm" title="Invoice.refuseToPayWizard">
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
         onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
-      <button name="cancelConfirmBtn" title="Confirm cancellation"
+      <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
         onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
     </panel>

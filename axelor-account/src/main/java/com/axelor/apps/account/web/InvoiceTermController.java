@@ -30,6 +30,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
@@ -119,12 +121,10 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (request.getContext().getParent() != null) {
-        if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
-          Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-          if (invoice != null) {
-            invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-            response.setValues(invoiceTerm);
-          }
+        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        if (invoice != null) {
+          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+          response.setValues(invoiceTerm);
         } else {
           if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
             MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);

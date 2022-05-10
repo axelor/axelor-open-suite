@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -102,13 +103,16 @@ public class MoveManagementRepository extends MoveRepository {
     if (analyticMoveLineList != null) {
       moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
     }
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      moveLine.getInvoiceTermList().forEach(it -> it.setInvoice(null));
+    }
   }
 
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCurrency() != null) {

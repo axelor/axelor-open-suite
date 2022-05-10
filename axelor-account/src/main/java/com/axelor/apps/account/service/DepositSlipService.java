@@ -27,14 +27,6 @@ import java.util.List;
 public interface DepositSlipService {
 
   /**
-   * Load payments into deposit slip.
-   *
-   * @param depositSlip
-   * @throws AxelorException
-   */
-  void loadPayments(DepositSlip depositSlip) throws AxelorException;
-
-  /**
    * Get payments into deposit slip.
    *
    * @param depositSlip

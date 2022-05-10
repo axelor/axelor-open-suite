@@ -254,7 +254,7 @@
   <form name="invoice-line-client-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" width="large"
     onNew="action-account-invoice-line-onnew-group"
-    onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
+    onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form,action-attrs-account-invoice-line-cut-off-dates-required">
     <panel name="titlePanel">
       <field name="typeSelect" onChange="action-invoice-line-method-empty-line"/>
       <field name="productName" showIf="typeSelect == 1" title="Title"
@@ -420,6 +420,7 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -430,6 +431,7 @@
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -442,6 +444,7 @@
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -450,10 +453,12 @@
     <action name="action-invoice-line-method-compute-analytic-distribution"/>
     <action name="action-budget-validate-exceed-line-amount"/>
   </action-group>
+
   <action-group name="action-group-invoice-line-menu-form-onload">
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-attrs-readonly-menu-form"/>
     <action name="action-invoice-line-attrs-hidden-menu-form"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-account-onchange">
@@ -464,6 +469,7 @@
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-invoice-line-method-axis-create-analytic-line"/>
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group
@@ -657,8 +663,9 @@
 
     <attribute name="selection-in" for="typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
 
-    <!-- Cut off -->
+  <action-attrs name="action-attrs-account-invoice-line-cut-off-dates-required">
     <attribute name="required" for="cutOffStartDate"
       expr="eval: account != null &amp;&amp; account.manageCutOffPeriod &amp;&amp; __parent__?.operationSubTypeSelect != 2"/>
     <attribute name="required" for="cutOffEndDate"

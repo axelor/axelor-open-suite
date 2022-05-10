@@ -269,6 +269,8 @@ public interface IExceptionMessage {
       "Please select one move line" /*)*/;
   static final String BANK_RECONCILIATION_ALREADY_OPEN = /*$$(*/
       "Can't load while another reconciliation is open" /*)*/;
+  static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
+      "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
 
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
@@ -277,4 +279,15 @@ public interface IExceptionMessage {
       "The bank order %s has been generated successfully." /*)*/;
   static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
+
+  static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d bank statement couldn't be deleted, please check the logs." /*)*/;
+
+  static final String STATEMENT_REMOVE_OK = /*$$(*/
+      "Bank statement(s) has been removed successfully" /*)*/;
+
+  static final String STATEMENT_REMOVE_NOT_OK = /*$$(*/
+      "Error in statement deleting, please check the log" /*)*/;
+
+  static final String NO_STATEMENT_TO_REMOVE = /*$$(*/ "Please select statements" /*)*/;
 }
