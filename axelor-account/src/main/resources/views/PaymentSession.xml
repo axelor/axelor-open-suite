@@ -51,13 +51,22 @@
       <button name="printPaymentSessionBtn" title="Print/Export session"
         onClick="save,action-view-account-payment-session-print-wizard"/>
     </toolbar>
-    <panel name="statusSelectPanel" colSpan="12">
+    <panel name="statusSelectPanel" colSpan="7" stacked="true">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
         colSpan="9"/>
       <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
         widget="info-button" onClick="" colSpan="3"
         showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
         x-currency="company.currency.symbol"/>
+    </panel>
+    <panel name="viewerTagsPanel" colSpan="5">
+      <field name="$viewerTags" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+                       <h4 class="text-right">
+                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmount < 0">Session total amount is negative</span>
+                       </h4>
+        ]]></viewer>
+      </field>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
@@ -110,8 +119,7 @@
         showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
         onClick="action-payment-session-group-validate"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger"
-        showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; (sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm))"
-        onClick="action-payment-session-group-cancel"/>
+        showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
@@ -123,12 +131,6 @@
         showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
         onClick="save,action-payment-session-method-send-emails"/>
       <field name="hasEmailsSent" readonly="true"/>
-    </panel>
-    <panel name="bankOrderPanel" title="Bank order"
-      showIf="paymentMode != null &amp;&amp; paymentMode.generateBankOrder &amp;&amp; statusSelect > 1"
-      sidebar="true">
-      <field name="bankOrder" readonly="true" colSpan="12"/>
-      <field name="paymentMode.generateBankOrder" hidden="true" colSpan="12"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
@@ -152,7 +154,9 @@
 
   <action-group name="action-payment-session-group-validate">
     <action name="save"/>
+    <action name="action-payment-session-method-check-session"/>
     <action name="action-payment-session-method-validate-invoice-terms"/>
+    <action name="action-payment-session-method-reconciled-invoice-term-moves"/>
     <action name="action-payment-session-method-validate-payment-session"/>
   </action-group>
 
@@ -270,6 +274,15 @@
   <action-method name="action-method-payment-session-search-eligible-terms">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="searchEligibleTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-reconciled-invoice-term-moves">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="reconciledInvoiceTermMoves"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-check-session">
+    <call class="com.axelor.apps.account.web.PaymentSessionController" method="checkSession"/>
   </action-method>
 
   <action-group name="action-group-payment-session-search-eligible-terms">

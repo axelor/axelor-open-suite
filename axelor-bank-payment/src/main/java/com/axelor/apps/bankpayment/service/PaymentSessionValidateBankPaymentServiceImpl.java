@@ -2,8 +2,8 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,6 +39,7 @@ import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -70,7 +72,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      InvoicePaymentRepository invoicePaymentRepo) {
     super(
         appBaseService,
         moveCreateService,
@@ -82,7 +85,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
-        partnerRepo);
+        partnerRepo,
+        invoicePaymentRepo);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;
@@ -96,7 +100,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
     if (paymentSession.getPaymentMode() != null
-        && paymentSession.getPaymentMode().getGenerateBankOrder()) {
+        && paymentSession.getPaymentMode().getGenerateBankOrder()
+        && paymentSession.getBankOrder() == null) {
       this.generateBankOrderFromPaymentSession(paymentSession);
     }
 
@@ -118,7 +123,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       bankOrderService.updateTotalAmounts(bankOrder);
       bankOrderRepo.save(bankOrder);
 
-      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()) {
+      if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
+          && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
           bankOrderService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
@@ -152,7 +158,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             paymentSession.getSequence(),
             this.getLabel(paymentSession),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
+            paymentSession.getAccountingTriggerSelect());
 
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);
@@ -167,15 +174,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<Partner, List<Move>> moveMap,
       Map<Move, BigDecimal> paymentAmountMap,
-      Map<Move, MoveLine> financialDiscountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
             paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
-
-    if (paymentSession.getBankOrder() != null) {
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }
@@ -295,5 +301,25 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     }
 
     return flashMessage;
+  }
+
+  @Override
+  public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
+      throws AxelorException {
+    TypedQuery<Partner> partnerQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT Partner FROM Partner Partner "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
+                    + " GROUP BY Partner.id , InvoiceTerm.bankDetails "
+                    + " HAVING SUM(InvoiceTerm.paymentAmount) < 0 ",
+                Partner.class);
+
+    partnerQuery.setParameter("paymentSession", paymentSession);
+
+    return partnerQuery.getResultList();
   }
 }

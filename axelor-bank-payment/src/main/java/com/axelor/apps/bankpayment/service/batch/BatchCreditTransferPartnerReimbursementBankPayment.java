@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -141,7 +142,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
             null,
             null,
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_BATCH_PAYBACK);
+            BankOrderRepository.FUNCTIONAL_ORIGIN_BATCH_PAYBACK,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
     for (Reimbursement reimbursement : reimbursementList) {
       BankOrderLine bankOrderLine =
@@ -157,8 +159,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
               reimbursement.getDescription(),
               reimbursement);
       bankOrder.addBankOrderLineListItem(bankOrderLine);
-      Beans.get(ReimbursementExportService.class)
-          .reimburse(reimbursement, accountingBatch.getCompany());
+      reimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
     }
 
     bankOrder = bankOrderRepo.save(bankOrder);

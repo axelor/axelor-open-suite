@@ -70,7 +70,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
-  public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException {
+  public void createInvoicePaymentTerms(
+      InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermToPayList)
+      throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     if (invoice == null
@@ -79,7 +81,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     }
 
     List<InvoiceTerm> invoiceTerms;
-    if (invoicePayment.getMove() != null
+    if (CollectionUtils.isNotEmpty(invoiceTermToPayList)) {
+      invoiceTerms = new ArrayList<>(invoiceTermToPayList);
+    } else if (invoicePayment.getMove() != null
         && invoicePayment.getMove().getPaymentVoucher() != null
         && CollectionUtils.isNotEmpty(
             invoicePayment.getMove().getPaymentVoucher().getPayVoucherElementToPayList())) {
@@ -192,7 +196,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected void toggleFinancialDiscount(InvoicePayment invoicePayment, InvoiceTerm invoiceTerm) {
     if (!invoicePayment.getApplyFinancialDiscount()) {
       invoicePayment.setApplyFinancialDiscount(
-          invoiceTerm.getApplyFinancialDiscount()
+          invoiceTerm.getFinancialDiscountDeadlineDate() != null
+              && invoiceTerm.getApplyFinancialDiscount()
               && !invoicePayment
                   .getPaymentDate()
                   .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate()));

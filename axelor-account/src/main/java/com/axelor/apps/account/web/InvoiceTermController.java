@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
@@ -55,12 +57,8 @@ public class InvoiceTermController {
   public void computeCustomizedAmount(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
-      }
+      BigDecimal total =
+          Beans.get(InvoiceTermService.class).computeParentTotal(request.getContext());
       if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
@@ -82,18 +80,13 @@ public class InvoiceTermController {
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     try {
-      BigDecimal total;
-      if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getInTaxTotal();
-      } else {
-        total = invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
-      }
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      BigDecimal total = invoiceTermService.computeParentTotal(request.getContext());
       if (total.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
       BigDecimal percentage =
-          Beans.get(InvoiceTermService.class)
-              .computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+          invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
       response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
@@ -112,19 +105,17 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (request.getContext().getParent() != null) {
-        if (request.getContext().getParent().get("_model").toString().contains("Invoice")) {
-          Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-          if (invoice != null) {
-            invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-            response.setValues(invoiceTerm);
-          }
+        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        if (invoice != null) {
+          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+          response.setValues(invoiceTerm);
         } else {
-          if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
-            MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-            if (moveLine != null) {
-              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm);
-              response.setValues(invoiceTerm);
-            }
+          MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+          if (moveLine != null) {
+            Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
+            response.setValues(invoiceTerm);
           }
         }
       }

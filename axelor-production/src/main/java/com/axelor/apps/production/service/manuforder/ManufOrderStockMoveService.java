@@ -184,8 +184,10 @@ public class ManufOrderStockMoveService {
     if (stockLocation == null) {
       stockLocation =
           inOrOut == STOCK_LOCATION_IN
-              ? stockConfigService.getComponentDefaultStockLocation(stockConfig)
-              : stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+              ? stockConfigService.getComponentDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig)
+              : stockConfigService.getFinishedProductsDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig);
     }
     return stockLocation;
   }
@@ -281,7 +283,8 @@ public class ManufOrderStockMoveService {
         manufOrder.getProdProcess().getProducedProductStockLocation();
     if (producedProductStockLocation == null) {
       producedProductStockLocation =
-          stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+          stockConfigService.getFinishedProductsDefaultStockLocation(
+              manufOrder.getWorkshopStockLocation(), stockConfig);
     }
 
     StockMove stockMove =

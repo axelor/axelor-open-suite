@@ -19,8 +19,8 @@
     <field name="name"/>
     <field name="invoice"/>
     <field name="dueDate"/>
-    <field name="amount"/>
-    <field name="amountRemaining"/>
+    <field name="amount" title="To pay / To use"/>
+    <field name="amountRemaining" title="Left to pay / to use"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
@@ -122,6 +122,17 @@
       icon="fa-user-times"
       onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
+  </grid>
+
+  <grid name="invoice-term-debt-recovery-grid" model="com.axelor.apps.account.db.InvoiceTerm"
+    title="Invoice term">
+    <field name="moveLine.move.company"/>
+    <field name="moveLine.origin"/>
+    <field name="moveLine.move.originDate"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="amountRemaining"/>
+    <field name="moveLine.description"/>
   </grid>
 
   <form name="invoice-term-move-line-invoice-form" title="Invoice term"
@@ -272,7 +283,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -291,7 +303,7 @@
         <field name="invoice" readonly="true" form-view="invoice-form"
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
-        <field name="isPaid" readonly="true"/>
+        <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
       </panel>
@@ -303,14 +315,14 @@
         <field name="isHoldBack" readonlyIf="financialDiscount != null"/>
         <field name="estimatedPaymentDate" readonlyIf="pfpValidateStatusSelect > 1"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" readonlyIf="pfpValidateStatusSelect > 1"
-          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"
-          validIf="amount > 0"/>
+        <field name="amount" title="To pay / To use" readonlyIf="pfpValidateStatusSelect > 1"
+          validIf="amount > 0"
+          onChange="action-invoice-term-method-compute-customized-percentage,action-invoice-term-record-update-customized-true"/>
         <field name="percentage" readonlyIf="pfpValidateStatusSelect > 1"
           onChange="action-invoice-term-method-compute-customized-amount,action-invoice-term-record-update-customized-true"
           validIf="percentage > 0"/>
-        <field name="amountRemaining" readonly="true"/>
-        <field name="paymentMode" required="true"/>
+        <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
+        <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9"
           readonlyIf="isPaid"
@@ -419,7 +431,8 @@
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="amountPaid" readonly="true" showIf="isSelectedOnPaymentSession"/>
+        <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
+          showIf="isSelectedOnPaymentSession"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -428,13 +441,13 @@
   </form>
 
   <form name="invoice-term-refusal-to-pay-wizard-form"
-    model="com.axelor.apps.account.db.InvoiceTerm" title="Cancellation confirmation">
+    model="com.axelor.apps.account.db.InvoiceTerm" title="Invoice.refuseToPayWizard">
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
         onChange="action-attrs-invoice-other-reason" required="true"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
-      <button name="cancelConfirmBtn" title="Confirm cancellation"
+      <button name="cancelConfirmBtn" title="Invoice.refuseToPayBtn"
         onClick="action-invoiceterm-refusal-to-pay-cancel-reason-check,action-invoice-term-method-refusal-to-pay"
         colOffset="4" colSpan="4"/>
     </panel>

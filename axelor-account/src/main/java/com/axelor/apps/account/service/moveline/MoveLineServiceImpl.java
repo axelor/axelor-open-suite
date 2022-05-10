@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -59,8 +58,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public MoveLineServiceImpl(
@@ -267,30 +264,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
-  }
-
-  @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
     return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
   }
@@ -314,5 +287,13 @@ public class MoveLineServiceImpl implements MoveLineService {
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public boolean checkManageAnalytic(Move move) throws AxelorException {
+    return move != null
+        && move.getCompany() != null
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 }

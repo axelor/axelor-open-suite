@@ -177,6 +177,8 @@ public interface MoveToolService {
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
 
+  List<MoveLine> getToReconcileDebitMoveLines(Move move);
+
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
@@ -193,4 +195,6 @@ public interface MoveToolService {
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
+
+  void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 }

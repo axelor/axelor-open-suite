@@ -323,9 +323,15 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)
       throws AxelorException {
+    return this.mergeFromInvoicePayments(invoicePayments, null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public BankOrder mergeFromInvoicePayments(
+      Collection<InvoicePayment> invoicePayments, LocalDate bankOrderDate) throws AxelorException {
 
     if (invoicePayments == null || invoicePayments.isEmpty()) {
       throw new AxelorException(
@@ -346,7 +352,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     }
 
     if (bankOrders.size() > 1) {
-      LocalDate bankOrderDate = bankOrders.iterator().next().getBankOrderDate();
+      if (bankOrderDate == null) {
+        bankOrderDate = bankOrders.iterator().next().getBankOrderDate();
+      }
       BankOrder mergedBankOrder = mergeBankOrders(bankOrders);
       mergedBankOrder.setBankOrderDate(bankOrderDate);
 

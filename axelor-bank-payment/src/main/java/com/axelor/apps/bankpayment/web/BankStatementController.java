@@ -20,8 +20,13 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -31,6 +36,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class BankStatementController {
@@ -96,5 +103,59 @@ public class BankStatementController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void deleteMultipleStatements(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> statementIds =
+          (List)
+              (((List) request.getContext().get("_ids"))
+                  .stream()
+                      .filter(ObjectUtils::notEmpty)
+                      .map(input -> Long.parseLong(input.toString()))
+                      .collect(Collectors.toList()));
+      if (!CollectionUtils.isEmpty(statementIds)) {
+        BankStatementRemoveService bankStatementRemoveService =
+            Beans.get(BankStatementRemoveService.class);
+        if (statementIds.size() == 1) {
+          bankStatementRemoveService.deleteStatement(
+              Beans.get(BankStatementRepository.class).find(statementIds.get(0)));
+        } else {
+          int errorNB = bankStatementRemoveService.deleteMultiple(statementIds);
+          if (errorNB > 0) {
+            response.setFlash(
+                String.format(I18n.get(IExceptionMessage.STATEMENT_REMOVE_NOT_OK_NB), errorNB));
+          } else {
+            response.setFlash(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
+            response.setReload(true);
+          }
+        }
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void deleteStatement(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
+
+      Beans.get(BankStatementRemoveService.class).deleteStatement(bankStatement);
+
+      response.setView(
+          ActionView.define(I18n.get("Bank Statements"))
+              .model(BankStatement.class.getName())
+              .add("grid", "bank-statement-grid")
+              .add("form", "bank-statement-form")
+              .map());
+      response.setCanClose(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

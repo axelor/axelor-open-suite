@@ -204,7 +204,7 @@ public class PaymentServiceImpl implements PaymentService {
     // End gestion du passage en 580
 
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
 
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -256,7 +256,7 @@ public class PaymentServiceImpl implements PaymentService {
       String invoiceName = "";
       if (debitMoveLine.getMove().getInvoice() != null) {
         invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
-      } else {
+      } else if (payVoucherElementToPay != null) {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
@@ -302,7 +302,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     for (Reconcile reconcile : reconcileList) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     // Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -416,7 +416,7 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (Reconcile reconcile : reconcileList) {
-        reconcileService.confirmReconcile(reconcile, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
       }
     }
     // Si il y a un restant à payer, alors on crée un dû.

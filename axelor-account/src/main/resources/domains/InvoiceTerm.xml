@@ -59,7 +59,7 @@
     <boolean name="applyFinancialDiscountOnPaymentSession"
       title="Apply Fin. Discount (session) ?"/>
     <decimal name="amountPaid" title="Amount paid" readonly="true"/>
-
+    <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
       title="Name">
             <![CDATA[
@@ -109,6 +109,7 @@
       <field name="moveLine"/>
       <field name="decisionPfpTakenDate"/>
       <field name="paymentSession"/>
+      <field name="pfpValidateStatusSelect"/>
     </track>
 
   </entity>
