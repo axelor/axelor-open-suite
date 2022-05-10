@@ -182,8 +182,12 @@ public class AccountController {
   public void verifyTemplateValues(ActionRequest request, ActionResponse response) {
     Account account = request.getContext().asType(Account.class);
     try {
-      Beans.get(AnalyticDistributionTemplateService.class)
-          .verifyTemplateValues(account.getAnalyticDistributionTemplate());
+      AnalyticDistributionTemplateService analyticDistributionTemplateService =
+          Beans.get(AnalyticDistributionTemplateService.class);
+      analyticDistributionTemplateService.verifyTemplateValues(
+          account.getAnalyticDistributionTemplate());
+      analyticDistributionTemplateService.validateTemplatePercentages(
+          account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

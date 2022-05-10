@@ -209,7 +209,8 @@
   <action-group name="action-account-group-onsave">
     <action name="action-account-method-check-if-code-already-exist-for-company"/>
     <action name="action-on-change-distribution-template-account"/>
-    <action name="action-account-method-verify-template-value"/>
+    <action name="action-account-method-verify-template-value"
+      if="__this__.analyticDistributionTemplate != null"/>
   </action-group>
 
   <action-group name="action-group-account-account-onload">

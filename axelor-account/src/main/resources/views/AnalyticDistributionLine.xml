@@ -16,10 +16,11 @@
 
   <grid name="analytic-distribution-line-editable-grid" title="Analytic distribution lines"
     model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis"
-    editable="true">
+    editable="true" onNew="action-group-analytic-distribution-line-set-on-new">
     <field name="analyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form" required="true"
-      onSelect="action-attrs-domain-account-distribution-line"/>
+      onSelect="action-attrs-domain-account-distribution-line"
+      onChange="action-analytic-distribution-account-on-change"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
       hidden="true"/>
     <field name="percentage"/>
