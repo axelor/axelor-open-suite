@@ -77,11 +77,12 @@
           </panel>
         </panel>
 
-        <panel name="importPanel" title="Import"
+        <panel name="importPanel" title="inventory.importPanelTitle"
           showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
           <field name="importFile" widget="binary-link"/>
-          <button name="importFileBtn" title="Import" readonlyIf="importFile == null"
-            onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
+          <button name="importFileBtn" title="inventory.importBtn"
+            readonlyIf="importFile == null" onClick="action-group-stock-inventory-importfile-click"
+            colSpan="3"/>
         </panel>
       </panel>
 

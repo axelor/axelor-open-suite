@@ -13,7 +13,7 @@
     <field name="createdOn"/>
   </grid>
 
-  <form name="import-configuration-form" title="Import"
+  <form name="import-configuration-form" title="importConfig.importFormTitle"
     model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default"
     width="large">
     <panel name="mainPanel">
