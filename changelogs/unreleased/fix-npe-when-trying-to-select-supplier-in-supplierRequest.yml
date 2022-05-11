@@ -1,0 +1,3 @@
+---
+title: "POLine : Fix NPE when trying to select Supplier in SupplierRequest"
+type: fix
