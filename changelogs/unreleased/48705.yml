@@ -1,3 +1,0 @@
----
-title: "Lead: Fixed a bug where converting a lead without picture resulted in NPE"
-type: fix

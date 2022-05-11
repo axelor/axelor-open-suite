@@ -1,3 +1,0 @@
----
-title: "Stock Move : Fix an issue where creating or updating stock moves would throw an exception"
-type: fix

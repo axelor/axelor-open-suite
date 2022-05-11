@@ -1,3 +1,33 @@
+## [6.1.11] (2022-05-11)
+
+#### Fixed
+
+* Lead: Fix a bug where converting a lead without picture resulted in `NullPointerException` error and would not convert the lead.
+* Inventory: Fix an error when importing inventory demo data.
+* Partner: Fix an issue where partner full name was not correctly computed.
+* Leave Request: Leave quantity is now by default 0 if there is no leave reason configured.
+* Leave Line: Fix a bug where "days to validate" in leave line could have a wrong value.
+* Invoice: Fix an error preventing an invoice to be created on import or from a sale order.
+* Stock move: Fix a bug where switching to the next stock move from unsaved record could result in a unsaved record exception.
+* Stock correction: Hide future and reserved quantity in the view (will be deleted in later version).
+* Stock correction: Fix an issue when modifying a quantity in stock would change the average price of the product in stock location.
+* Bill of materials: Fix a bug where general bill of materials list displayed maintenance bill of materials.
+* Manufacturing Order: Fix an issue where updating consumed/produced products panel shows an error and does not update the stock.
+* Manufacturing order: Fix french translation issue for available status (is now correctly translated to 'Disponibilité').
+* Manufacturing order: Display correct columns on components/manufactured product/waste stock move list grid view.
+* Operation order: Fix stock move and consumed product panels display.
+* Purchase order: Alert user if trading name is missing when generating a stock move from a purchase order
+* Project: Fix an issue were it was not possible to generate multiple planning lines.
+* Project: Fix an issue were timesheet lines generated from planning lines were not correctly marked as "to invoice".
+* Bank Reconciliation: Translate bank reconciliation report filename.
+* Stock Location: Fix `NullPointerException` error on birt report run from an external stock location (excel).
+* Business Project App: Fix incomplete task status when loading demo data.
+* Accounting Reports: Disable page break interval to get only one tab on excel files.
+* Accounting Reports: In custom reports, fix filtering the move lines by period.
+* Outsourcing: Improve error message when a virtual stock location is present but not usable for outsourcing.
+* Configurator: Fixed import popup title.
+* Configurator Prod Process: Fix an issue preventing the user to configure a stock location from a formula.
+
 ## [6.1.10] (2022-04-29)
 
 #### Changes
@@ -517,6 +547,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.11]: https://github.com/axelor/axelor-open-suite/compare/v6.1.10...v6.1.11
 [6.1.10]: https://github.com/axelor/axelor-open-suite/compare/v6.1.9...v6.1.10
 [6.1.9]: https://github.com/axelor/axelor-open-suite/compare/v6.1.8...v6.1.9
 [6.1.8]: https://github.com/axelor/axelor-open-suite/compare/v6.1.7...v6.1.8
