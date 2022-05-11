@@ -155,11 +155,12 @@
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
   </action-method>
+
   <action-record name="action-journal-record-change-config-values"
     model="com.axelor.apps.account.db.Journal">
-    <field name="authorizeSimulatedMove" expr="eval: false"
-      if="company?.accountConfig?.isActivateSimulatedMove||company?.accountConfig==null"/>
-    <field name="allowAccountingDaybook" expr="eval: false"
-      if="company?.accountConfig?.isActivateSimulatedMove||company?.accountConfig==null"/>
+    <field name="authorizeSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: company?.accountConfig?.accountingDaybook"/>
   </action-record>
 </object-views>
