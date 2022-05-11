@@ -270,7 +270,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return price;
   }
 
-  protected void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  @Override
+  public void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     if (saleOrder.getClientPartner() != null) {

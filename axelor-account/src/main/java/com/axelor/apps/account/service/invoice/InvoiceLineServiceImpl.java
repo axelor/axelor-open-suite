@@ -487,16 +487,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
     try {
-      taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
-      invoiceLine.setTaxLine(taxLine);
-      productInformation.put("taxLine", taxLine);
-      productInformation.put("taxRate", taxLine.getValue());
-      productInformation.put("taxCode", taxLine.getTax().getCode());
-
-      TaxEquiv taxEquiv =
-          accountManagementAccountService.getProductTaxEquiv(
-              product, company, fiscalPosition, isPurchase);
-      productInformation.put("taxEquiv", taxEquiv);
+      taxLine =
+          fillTaxInformation(
+              invoice,
+              invoiceLine,
+              isPurchase,
+              productInformation,
+              product,
+              company,
+              fiscalPosition);
 
       Account account =
           accountManagementAccountService.getProductAccount(
@@ -519,6 +518,43 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", invoiceLine.getProduct().getName());
 
     return productInformation;
+  }
+
+  @Override
+  public Map<String, Object> fillTaxInformation(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Map<String, Object> productInformation = new HashMap<>();
+    Product product = invoiceLine.getProduct();
+    Company company = invoice.getCompany();
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
+    fillTaxInformation(
+        invoice, invoiceLine, isPurchase, productInformation, product, company, fiscalPosition);
+    return productInformation;
+  }
+
+  protected TaxLine fillTaxInformation(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      boolean isPurchase,
+      Map<String, Object> productInformation,
+      Product product,
+      Company company,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+    TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
+
+    invoiceLine.setTaxLine(taxLine);
+    productInformation.put("taxLine", taxLine);
+    productInformation.put("taxRate", taxLine.getValue());
+    productInformation.put("taxCode", taxLine.getTax().getCode());
+
+    TaxEquiv taxEquiv =
+        accountManagementAccountService.getProductTaxEquiv(
+            product, company, fiscalPosition, isPurchase);
+    productInformation.put("taxEquiv", taxEquiv);
+    return taxLine;
   }
 
   @Override

@@ -905,7 +905,7 @@ public class SaleOrderController {
       SaleOrderLineService saleOrderLineServiceSupplyChain = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
         for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineServiceSupplyChain.computeProductInformation(saleOrderLine, saleOrder);
+          saleOrderLineServiceSupplyChain.fillTaxInformation(saleOrderLine, saleOrder);
           saleOrderLineServiceSupplyChain.computeValues(saleOrder, saleOrderLine);
         }
         response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());

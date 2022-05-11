@@ -336,8 +336,17 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    * @return true if it can be classified, else false
-   * @throws AxelorException
+   * @throws@Override AxelorException
    */
   public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  /**
+   * Method that fill the tax (TaxLine and TaxEquiv) in the sale order line
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 }

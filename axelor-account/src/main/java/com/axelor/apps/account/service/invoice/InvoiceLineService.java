@@ -117,4 +117,15 @@ public interface InvoiceLineService {
 
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
+
+  /**
+   * Fill the tax information (TaxLine, taxRate, taxCode and TaxEquiv) of the invoice line.
+   *
+   * @param invoice
+   * @param invoiceLine
+   * @return A map representing the values filled
+   * @throws AxelorException
+   */
+  Map<String, Object> fillTaxInformation(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException;
 }

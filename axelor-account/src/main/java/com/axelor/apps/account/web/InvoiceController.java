@@ -835,7 +835,7 @@ public class InvoiceController {
         Mapper mapper = Mapper.of(InvoiceLine.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
           Map<String, Object> invoiceLineMap =
-              invoiceLineService.fillProductInformation(invoice, invoiceLine);
+              invoiceLineService.fillTaxInformation(invoice, invoiceLine);
 
           String errorMsg = (String) invoiceLineMap.get("error");
           if (!Strings.isNullOrEmpty(errorMsg)) {
