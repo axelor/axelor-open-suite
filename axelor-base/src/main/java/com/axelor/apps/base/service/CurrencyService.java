@@ -26,6 +26,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -119,7 +120,7 @@ public class CurrencyService {
 
   private CurrencyConversionLine getCurrencyConversionLine(
       Currency startCurrency, Currency endCurrency, LocalDate localDate) {
-
+    if(appBaseService==null) appBaseService =  Beans.get(AppBaseService.class);
     List<CurrencyConversionLine> currencyConversionLineList =
         appBaseService.getCurrencyConfigurationLineList();
 
