@@ -1,3 +1,22 @@
+## [5.4.15] (2022-05-11)
+
+#### Fixed
+
+* Lead: Fixed a bug where converting a lead without picture resulted in `NullPointerException` error and would not convert the lead.
+* Inventory: Fix an error when importing inventory demo data.
+* Partner: Fix an issue where partner full name was not correctly computed.
+* Stock move: Fix a bug where switching to the next stock move from unsaved record could result in a unsaved record exception.
+* Manufacturing Order: Fix an issue where updating consumed/produced products panel shows an error and does not update the stock.
+* Operation order: Fix stock move and consumed product panels display.
+* Project: Fix an issue were it was not possible to generate multiple planning lines.
+* Project: Fix an issue were timesheet lines generated from planning lines were not correctly marked as "to invoice".
+* Stock correction: Fix an issue when modifying a quantity in stock would change the average price of the product in stock location.
+* BANK RECONCILIATION: Translate bank reconciliation report filename.
+* STOCK LOCATION: Fix `NullPointerException` error on birt report run from an external stock location (excel).
+* Accounting Reports: Disable page break interval to get only one tab on excel files.
+* Configurator: Fixed import popup title.
+* Configurator Prod Process: Fix an issue preventing the user to configure a stock location from a formula.
+
 ## [5.4.14] (2022-04-29)
 
 #### Changes
@@ -521,6 +540,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.15]: https://github.com/axelor/axelor-open-suite/compare/v5.4.14...v5.4.15
 [5.4.14]: https://github.com/axelor/axelor-open-suite/compare/v5.4.13...v5.4.14
 [5.4.13]: https://github.com/axelor/axelor-open-suite/compare/v5.4.12...v5.4.13
 [5.4.12]: https://github.com/axelor/axelor-open-suite/compare/v5.4.11...v5.4.12

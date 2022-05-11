@@ -1,5 +1,0 @@
----
-title: "ConfiguratorProdProcess : remove required constraint of stockLocation."
-type: remove
-description: |
-  Remove required constraint of stockLocation from database and make required in form view if defStockLocationAsFormula is false.

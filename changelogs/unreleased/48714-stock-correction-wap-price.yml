@@ -1,3 +1,0 @@
----
-title: "Stock correction : fix an issue when modifying a stock would change the average price of the product in Stock Location"
-type: fix
