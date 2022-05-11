@@ -313,8 +313,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public InvoiceTerm initCustomizedInvoiceTerm(
       MoveLine moveLine, InvoiceTerm invoiceTerm, Move move) {
-
-    invoiceTerm.setInvoice(move.getInvoice());
+    if (move != null) {
+      invoiceTerm.setInvoice(move.getInvoice());
+    }
     invoiceTerm.setSequence(initInvoiceTermsSequence(moveLine));
 
     invoiceTerm.setIsCustomized(true);
@@ -839,6 +840,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
         ? invoiceTerm.getAmountRemainingAfterFinDiscount()
         : invoiceTerm.getAmountRemaining();
+  }
+
+  @Override
+  public BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total) {
+    return invoiceTerm
+        .getPercentage()
+        .multiply(total)
+        .divide(
+            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected boolean canUpdateInvoiceTerm(InvoiceTerm invoiceTerm, User currentUser) {
