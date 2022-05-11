@@ -1,3 +1,249 @@
+## [6.1.11] (2022-05-11)
+
+#### Fixed
+
+* Lead: Fix a bug where converting a lead without picture resulted in `NullPointerException` error and would not convert the lead.
+* Inventory: Fix an error when importing inventory demo data.
+* Partner: Fix an issue where partner full name was not correctly computed.
+* Leave Request: Leave quantity is now by default 0 if there is no leave reason configured.
+* Leave Line: Fix a bug where "days to validate" in leave line could have a wrong value.
+* Invoice: Fix an error preventing an invoice to be created on import or from a sale order.
+* Stock move: Fix a bug where switching to the next stock move from unsaved record could result in a unsaved record exception.
+* Stock correction: Hide future and reserved quantity in the view (will be deleted in later version).
+* Stock correction: Fix an issue when modifying a quantity in stock would change the average price of the product in stock location.
+* Bill of materials: Fix a bug where general bill of materials list displayed maintenance bill of materials.
+* Manufacturing Order: Fix an issue where updating consumed/produced products panel shows an error and does not update the stock.
+* Manufacturing order: Fix french translation issue for available status (is now correctly translated to 'Disponibilité').
+* Manufacturing order: Display correct columns on components/manufactured product/waste stock move list grid view.
+* Operation order: Fix stock move and consumed product panels display.
+* Purchase order: Alert user if trading name is missing when generating a stock move from a purchase order
+* Project: Fix an issue were it was not possible to generate multiple planning lines.
+* Project: Fix an issue were timesheet lines generated from planning lines were not correctly marked as "to invoice".
+* Bank Reconciliation: Translate bank reconciliation report filename.
+* Stock Location: Fix `NullPointerException` error on birt report run from an external stock location (excel).
+* Business Project App: Fix incomplete task status when loading demo data.
+* Accounting Reports: Disable page break interval to get only one tab on excel files.
+* Accounting Reports: In custom reports, fix filtering the move lines by period.
+* Outsourcing: Improve error message when a virtual stock location is present but not usable for outsourcing.
+* Configurator: Fixed import popup title.
+* Configurator Prod Process: Fix an issue preventing the user to configure a stock location from a formula.
+
+## [6.1.10] (2022-04-29)
+
+#### Changes
+
+* Databackup: add option to use fake data when making the backup with anonymization enabled.
+* Product: add column available quantity on variants panel on product form view.
+* Configurator Creator: add tooltip to document attributes configuration.
+
+#### Fixed
+
+* Purchase Order: generating purchase orders now correctly applies the company purchase config for purchase printing.
+* Lunch voucher: fixed issue where half days were not accounted in lunch voucher computation.
+* ObjectDataConfig: Improve demo data to have an usable configuration.
+* Partner: fixed issue where missing sales config is blocking supplier save.
+* Invoice: Fix ClassNotFoundException on partner change when cash-management module is not loaded.
+* Lead, Contract, Sale Order, Purchase Request, Purchase Order: add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Product: average price (WAP) is now correctly computed in product purchase currency.
+* Equipment maintenance: An error is correctly displayed when a sequence for equipment maintenance is missing.
+* Sequence: When loading app for the first time, correctly initialize default sequences.
+
+#### Removed
+
+* Webapp: remove date.format property from application.properties file.
+
+## [6.1.9] (2022-04-15)
+
+#### Changes
+
+* Add an anonymization feature to the data backup feature.
+
+Add an anonymization option to allow the person making the data backup to get a backup with the selected fields anonymized.
+For the moment fields are anonymized using an hash function, a call to an API to get fake data is not implemented yet.
+
+#### Fixed
+
+* BankReconciliation: On company change, empty fields related to company in bank reconciliation form view.
+* ObjectDataConfig: Fix export and anonymization of data.
+* Account Config: Remove account clearance editor view and instead use a standard panel.
+* Leave: filter out leave reasons that do not manage accumulation.
+* PaymentAssistantReport: fix empty columns when ticket is printed.
+* Product: fix products full name translation on cards view.
+* MAINTENANCE: fix data-init import for maintenance sequence.
+* Invoicing project: when trying to invoice without a partner selected, a meaningful message is displayed (instead of NullPointerException).
+* Stock and MRP: Add a server side check on every status change, preventing user mistake in case of malfunctioning views.
+* Irrecoverable: improve form view UI and fix exception management so the process is correctly rollbacked in case of an anomaly.
+* StockLocation: fix print button on stock location grid view.
+* Java services: made optimizations (service injection) that can improve overall performance.
+
+
+#### Removed
+
+* webapp : Remove date.format property from application.properties file
+
+## [6.1.8] (2022-04-01)
+
+#### Changes
+
+* BPM Manager: display version tag with name of the bpm.
+
+#### Fixed
+
+* Product Disponibility: missing filter on products set
+
+Add filter to remove products that are not stock managed from product set in product disponibility form
+
+* Lead: Add missing checks for duplicated reference during lead conversion.
+* Lead: Fix 'NullPointerException' error when an user linked to a lead does not have an active company during lead conversion.
+* Lead: fix loading lead logo when converting a lead to a partner.
+* SALEORDER: added missing french translation for the warning message appearing when the total amount is equal to zero.
+* Chart Builder: Fix tag support on on-click open records.
+* Purchase Order: when generating a purchase order from a sale order, generated purchase order lines order is now correctly retrieved from sale order lines.
+* Move, Accounting Period: improve format of displayed dates in error message.
+* FixedAsset: validation of a fixed asset is now correctly prevented when the validation is done from a grid view and the fixed asset does not have a positive gross value.
+* Supplier stock move invoicing wizard now correctly opens invoice supplier grid.
+* Invoice: Remove duplicated specific notes copied from tax when we have multiple lines.
+* Contact: fixed duplicate contact name warning not displayed when the contact was not saved.
+* Studio: Fix call to action-view in dashlet generated from dashlet builder.
+* User: Fix missing "create partner" and "create employee" buttons when creating a new user.
+* App Management: Fix typo in french translation in warning message before installation.
+
+#### Removed
+
+* ObjectDataConfig : Delete status select
+
+## [6.1.7] (2022-03-08)
+
+#### Changes
+
+* Data config line (for GDPR feature): Add help message for the field "Tab name".
+
+#### Fixed
+
+* Product: fix filter on cost type selection.
+* BUDGET: Clear budget when purchase order is cancelled.
+* AppLoader: Fix parent menu import on app loader import.
+* Exception: fix message display when an error occurs on save.
+
+For example, the message 'Invoice type missing on invoice' is now correctly displayed instead of 'com.axelor.exception.AxelorException: Invoice type missing on invoice'.
+
+* Menu Builder: Fix issue on menu generated with dashboard and no model.
+* MetaSchedule: Fix the title for 'Service' field.
+* Custom state accounting report: Fix typo in french demo data (explotation -> exploitation).
+* Sale order: when generating a purchase order from a sale order, we now also generate title lines.
+* HR Batch: fix internal server error happening during most HR batch executions when processing more than 10 records.
+* Improve possible performance issues on having a lot of companies on form views with a company field.
+* Product category: Prevent selecting a "children" product category when selecting a parent, to avoid configuration errors when creating a hierarchy of product categories.
+* Custom state accounting report: 'NaN' is no longer displayed, the report now shows 0 instead.
+* Project: in project dashboard, fix `com.axelor.internal.javax.el.ELEXCEPTION:Failed to parse the expression` error: "My tasks due" is now correctly displayed.
+* Object data config: Fix the title of the popup appearing when anonymizing data.
+* Search filters: fix french translation of search-filter labels.
+
+#### Removed
+
+* App base: remove unused field `defaultProjectUnit`.
+
+## [6.1.6] (2022-02-25)
+
+#### Fixed
+
+* Studio: add missing french translations.
+* Production process: Fix french help message in data-init.
+* Bank Reconciliation Line: Fix errors an account or a partner in a bank reconciliation line.
+* Manuf Order: fix an issue where updating the quantity on generated manufacturing orders did not correctly update prod product list.
+* SaleOrder: lines generated from complementary products are now correctly sorted directly after original sale order line.
+* INVOICE LINE: Fix product selection in supplier invoice line when the product does not have a catalog supplier for the selected partner.
+* Partner category: fix french translation.
+* BPM: Add french translations.
+* Analytic distribution required on sale order line: Fix french translation.
+* Analytic distribution required on purchase order line: fix french translation.
+* Lead: fix 'no transaction is in progress' error when trying to convert a lead.
+* YEAR: changed demo data for period on civil year.
+
+## [6.1.5] (2022-02-10)
+
+#### Changes
+
+* Move / Move lines: add functional origin tag in header.
+
+#### Fixed
+
+* ADDRESS: fix zip code not filled in demo data.
+* AdvancedExport: filter out transient fields in AdvancedExportLine form.
+* GEONAMES: fix NPE while importing cities from geonames.
+* PaymentVoucher: Fixed element to pay that was imputed to 0 when changing amount to pay and reloading due element.
+* Fiscal Position: fix issue where reverse charge tax lines on purchase order were not correctly generated.
+* Stock move: add server side check on status before realizing a stock move.
+* Budget: Fix budget lines update on cancelling a purchase order.
+* Inventory: Filling inventory line list will now correctly exclude the lines without stock if exclude out of stock option is true.
+* Sale Order: Fix transaction issue when generating production order from sale order.
+* AppLoader: fix dashletbuilder import with json field of real model.
+* INVENTORY: change export filename format to `Inventory_<sequence>_<date>.csv` (for example: `Inventory_INV1220002_20211231.csv`).
+* MRP: fix NPE during computation when having multiple BOM levels.
+* BPM: Fix terminate and redeploy.
+
+Fix unique process id error on redeployment of bpm diagram.
+
+
+#### Removed
+
+* PrintingSettings: remove company field from PrintingSettings and remove company condition from all permissions on PrintingSettings.
+
+## [6.1.4] (2022-01-14)
+
+#### Changes
+
+* BPM: Add new property `compulsory` for DMN
+
+The DMN node sometimes require a compulsory result, if no result are returned it should generate an error.
+Add compulsory boolean property to make DMN complosory and it's value will be true by default.
+
+* Chart Builder: Add support to open records on click.
+* Geonames: Addition of error log while importing geonames.
+
+#### Fixed
+
+* BPM: Fix logo on bpm studio.
+* INVENTORY: Fix exception when importing from a csv file with null values in quantity columns.
+* Sequence: fixed issue where the sequence count would increment after an exception cancelled the process.
+* Product: Remove blank space in purchase/costs tab in product form view.
+* Fixed assets: Fix typo in french translation.
+* PaymentVoucher: Fixed a bug where amount to pay in elements to pay were not correctly imputed.
+* STOCK: Fix filters of stock forecast menu entries.
+* Stock reservation: fix german translation of error message.
+* Sequence: Fix full name and prefix or suffix issue on data init.
+* Invoice: on ventilation, now refund automatically pays the supplier invoice. This was previously only working with customer invoice.
+* Meta Translation: Add missing english translation.
+* Event: fix NPE happening on start date update.
+* Advance import: Correctly apply 'find new' option when it is activated.
+* SaleOrder: fix details lines generation when adding a complementary product so the generated lines are displayed inside the title line.
+* HR(Timesheet/LeaveRequest/Expense): fix employee selection by correctly filtering out employees with closed employment contract.
+
+## [6.1.3] (2021-12-16)
+
+#### Fixed
+
+* STOCKMOVE/INVOICING: Correctly apply unit conversion when updating invoiced quantity in stock move lines.
+* Move: fix wrong currency amount and rate computation in VAT move line.
+* SALE ORDER: Blocking invoice generation when the full amount of the order has already been invoiced.
+* Sale Order: Display discounts on reports even if the discount is positive.
+* Translation: Remove wrong fr translation for 'Supplier arrivals' axelor-business-project module.
+* Move: display status tag when editing move.
+* PaymentVoucher: Fix concurrent update error message after modifying an element to pay in payment voucher.
+* SaleOrderLine: Fix invoiced quantities computation when having refunds.
+
+changed the method of checking invoiced or delivered quantities whenever quantity on a sale order line is changed
+
+* Automatic creation of account configuration on payment modes.
+* PERIODS: Removed overlapping periods in demo data.
+* Payment Voucher: improve error message displayed when deleting a payment voucher linked to a move.
+* Bank Statement: bank statement can now be deleted without having to delete linked bank statement lines.
+* Geonames: Check the type of the uploaded file before manual import.
+* Sequence: Take the most recent sequence version when there are multiple ones to be picked.
+* STOCK DETAILS: Fixed issue where stock locations were sometimes not properly filtered.
+* Disable new button on bank-details-cards.
+* Budget: Fix budget lines update on cancelling an invoice.
+
 ## [6.1.2] (2021-11-19)
 
 #### Fixed
@@ -301,6 +547,15 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.11]: https://github.com/axelor/axelor-open-suite/compare/v6.1.10...v6.1.11
+[6.1.10]: https://github.com/axelor/axelor-open-suite/compare/v6.1.9...v6.1.10
+[6.1.9]: https://github.com/axelor/axelor-open-suite/compare/v6.1.8...v6.1.9
+[6.1.8]: https://github.com/axelor/axelor-open-suite/compare/v6.1.7...v6.1.8
+[6.1.7]: https://github.com/axelor/axelor-open-suite/compare/v6.1.6...v6.1.7
+[6.1.6]: https://github.com/axelor/axelor-open-suite/compare/v6.1.5...v6.1.6
+[6.1.5]: https://github.com/axelor/axelor-open-suite/compare/v6.1.4...v6.1.5
+[6.1.4]: https://github.com/axelor/axelor-open-suite/compare/v6.1.3...v6.1.4
+[6.1.3]: https://github.com/axelor/axelor-open-suite/compare/v6.1.2...v6.1.3
 [6.1.2]: https://github.com/axelor/axelor-open-suite/compare/v6.1.1...v6.1.2
 [6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.1.0
