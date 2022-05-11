@@ -1,5 +1,0 @@
----
-title: "Purchase order: advance payment"
-type: feature
-description: |
-  "When generating a invoice on purchase order, you can now invoice an advance payment"
