@@ -19,8 +19,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class StockProductRestController {
 
-  @Path("/product-with-stock/{productId}")
-  @GET
+  @Path("/fetch-product-with-stock/{productId}")
+  @POST
   @HttpExceptionHandler
   public Response fetchProductIndicators(
       @PathParam("productId") long productId, StockProductGetRequest requestBody) throws Exception {
