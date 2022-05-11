@@ -30,7 +30,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -126,26 +125,12 @@ public class InvoiceTermController {
           invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
           response.setValues(invoiceTerm);
         } else {
-          if (request.getContext().getParent().get("_model").toString().contains("MoveLine")) {
-            MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+          MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
-            if (moveLine != null) {
-              Move move = null;
-
-              if (moveLine.getMove() == null
-                  && request.getContext().getParent().getParent() != null
-                  && request
-                      .getContext()
-                      .getParent()
-                      .getParent()
-                      .get("_model")
-                      .equals(Move.class.getName())) {
-                move = request.getContext().getParent().getParent().asType(Move.class);
-              }
-
-              invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-              response.setValues(invoiceTerm);
-            }
+          if (moveLine != null) {
+            Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
+            response.setValues(invoiceTerm);
           }
         }
       }
