@@ -1,8 +1,0 @@
----
-title: "Work center, Prod process line and Configurator prod process line : Add timing of implementation"
-type: feature
-description: |
-  Add timing of implementation to work center, prod process line and configurator prod process line :
-  - Update models, views and processes accordingly.
-  - Allow define by script on Configurator prod process line.
-  - Update import / export / demo data accordingly
