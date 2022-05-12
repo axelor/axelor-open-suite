@@ -12,6 +12,8 @@ spotless {
     target fileTree(projectDir) {
       include '**/*.java'
       exclude '**/build/**'
+      exclude '**/bin/**'
+      exclude '**/out/**'
     }
     googleJavaFormat()
   }
@@ -19,6 +21,13 @@ spotless {
     target fileTree(projectDir) {
       include '**/*.xml'
       exclude '**/build/**'
+      exclude '**/bin/**'
+      exclude '**/.project/**'
+      exclude '**/.classpath/**'
+      exclude '**/.settings/**'
+      exclude '**/.metadata/**'
+      exclude '**/out/**'
+      exclude '**/.idea/**'
     }
     eclipseWtp('xml').configFile("${projectDir}/gradle/spotless.xml.prefs")
     trimTrailingWhitespace()
