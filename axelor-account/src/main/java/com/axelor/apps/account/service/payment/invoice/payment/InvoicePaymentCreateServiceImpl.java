@@ -334,7 +334,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber) {
+      String chequeNumber,
+      boolean applyDiscount)
+      throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoiceTerm.getInvoice(),
@@ -346,6 +348,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+
     return invoicePaymentRepository.save(invoicePayment);
   }
 
@@ -357,7 +360,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
@@ -375,7 +379,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
                 companyBankDetails,
                 paymentDate,
                 bankDepositDate,
-                chequeNumber);
+                chequeNumber,
+                applyDiscount);
         invoicePaymentList.add(invoicePayment);
         invoice.addInvoicePaymentListItem(invoicePayment);
       }

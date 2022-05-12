@@ -67,7 +67,8 @@ public interface InvoicePaymentCreateService {
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException;
 
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException;

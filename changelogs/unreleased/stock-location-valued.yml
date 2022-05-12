@@ -1,4 +1,0 @@
-title: "STOCK LOCATION : valued"
-type: change
-description: |
-  Added a boolean field, so instead of checking type field(internal, external, and virtual), if that is true then display and compute stock location value.

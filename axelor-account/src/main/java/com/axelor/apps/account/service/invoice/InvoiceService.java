@@ -326,6 +326,9 @@ public interface InvoiceService {
   @CallMethod
   public List<Long> getInvoiceLineIds(Invoice invoice);
 
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
   boolean checkManageCutOffDates(Invoice invoice);
