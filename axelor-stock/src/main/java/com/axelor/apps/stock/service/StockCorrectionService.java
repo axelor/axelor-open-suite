@@ -45,5 +45,4 @@ public interface StockCorrectionService {
   void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty);
 
   void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason);
-
 }

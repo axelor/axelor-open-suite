@@ -77,5 +77,6 @@ public interface StockLocationService {
 
   public boolean isConfigMissing(StockLocation stockLocation, int printType);
 
-  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) throws Exception;
+  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)
+      throws Exception;
 }

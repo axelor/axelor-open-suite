@@ -319,7 +319,7 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Transactional
-  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker){
+  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
     List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
       if (stockLocationLine.getProduct() == product) {
@@ -328,5 +328,4 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
     stockLocationRepo.save(stockLocation);
   }
-
 }

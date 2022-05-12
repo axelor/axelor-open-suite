@@ -65,7 +65,7 @@ public class StockCorrectionRestController {
 
     if (requestBody.fetchReason() != null) {
       Beans.get(StockCorrectionService.class)
-              .updateReason(stockCorrection, requestBody.fetchReason());
+          .updateReason(stockCorrection, requestBody.fetchReason());
       message += "Reason updated; ";
     }
 

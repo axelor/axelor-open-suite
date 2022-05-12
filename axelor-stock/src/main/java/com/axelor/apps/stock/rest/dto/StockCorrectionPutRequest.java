@@ -46,7 +46,7 @@ public class StockCorrectionPutRequest implements RequestStructure {
     this.reasonId = reasonId;
   }
 
-  //Transform id to object
+  // Transform id to object
   public StockCorrectionReason fetchReason() {
     if (this.reasonId != null) {
       return ObjectFinder.find(StockCorrectionReason.class, reasonId);
@@ -54,5 +54,4 @@ public class StockCorrectionPutRequest implements RequestStructure {
       return null;
     }
   }
-
 }

@@ -1384,4 +1384,45 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
   }
+
+  @Override
+  public void updateStatus(StockMove stockMove, Integer status) throws Exception {
+    int currentStatus = stockMove.getStatusSelect();
+    if (currentStatus == StockMoveRepository.STATUS_DRAFT) {
+      if (status == StockMoveRepository.STATUS_PLANNED) {
+        plan(stockMove);
+      } else if (status == StockMoveRepository.STATUS_REALIZED) {
+        validate(stockMove);
+      } else if (status == StockMoveRepository.STATUS_CANCELED) {
+        cancel(stockMove);
+      }
+    } else if (currentStatus == StockMoveRepository.STATUS_PLANNED) {
+      if (status == StockMoveRepository.STATUS_REALIZED) {
+        realize(stockMove);
+      } else if (status == StockMoveRepository.STATUS_CANCELED) {
+        cancel(stockMove);
+      }
+    } else {
+      throw new Exception("Method not supported");
+    }
+  }
+
+  /**
+   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
+   * AOS) *
+   */
+  @Override
+  @Transactional
+  public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
+      throws AxelorException {
+    if (movedQty != null) {
+      // Only one product
+      stockMove.getStockMoveLineList().get(0).setQty(movedQty);
+      stockMove.getStockMoveLineList().get(0).setRealQty(movedQty);
+    }
+    if (unit != null) {
+      stockMove.getStockMoveLineList().get(0).setUnit(unit);
+    }
+    stockMoveRepo.save(stockMove);
+  }
 }

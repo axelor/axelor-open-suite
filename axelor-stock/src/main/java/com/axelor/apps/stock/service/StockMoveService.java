@@ -221,4 +221,13 @@ public interface StockMoveService {
   void updateStocks(StockMove stockMove) throws AxelorException;
 
   void updateProductNetMass(StockMove stockMove) throws AxelorException;
+
+  void updateStatus(StockMove stockMove, Integer status) throws Exception;
+
+  /**
+   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
+   * AOS) *
+   */
+  void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
+      throws AxelorException;
 }

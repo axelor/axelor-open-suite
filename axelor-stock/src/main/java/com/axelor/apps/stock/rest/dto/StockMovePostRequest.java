@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class StockMoveCreateRequest implements RequestStructure {
+public class StockMovePostRequest implements RequestStructure {
 
   @NotNull
   @Min(0)
@@ -40,7 +40,7 @@ public class StockMoveCreateRequest implements RequestStructure {
   @Min(0)
   private BigDecimal movedQty;
 
-  public StockMoveCreateRequest() {}
+  public StockMovePostRequest() {}
 
   public Long getProductId() {
     return productId;
@@ -99,27 +99,27 @@ public class StockMoveCreateRequest implements RequestStructure {
   }
 
   // Transform id to object
-  public Product getProduct() {
+  public Product fetchProduct() {
     return ObjectFinder.find(Product.class, productId);
   }
 
-  public StockLocation getOriginStockLocation() {
+  public StockLocation fetchOriginStockLocation() {
     return ObjectFinder.find(StockLocation.class, originStockLocationId);
   }
 
-  public StockLocation getDestStockLocation() {
+  public StockLocation fetchDestStockLocation() {
     return ObjectFinder.find(StockLocation.class, destStockLocationId);
   }
 
-  public Company getCompany() {
+  public Company fetchCompany() {
     return ObjectFinder.find(Company.class, companyId);
   }
 
-  public Unit getUnit() {
+  public Unit fetchUnit() {
     return ObjectFinder.find(Unit.class, unitId);
   }
 
-  public TrackingNumber getTrackingNumber() {
+  public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
       return ObjectFinder.find(TrackingNumber.class, trackingNumberId);
     } else {

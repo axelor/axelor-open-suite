@@ -19,9 +19,9 @@ import javax.ws.rs.core.Response;
 public class SupplychainStockProductRestController extends StockProductRestController {
 
   /*
-  * OVERRIDING
-  * Origin :  StockProductRestController in axelor-stock module
-  * Add : stock indicators of supplychain (sale / purchase / production)
+   * OVERRIDING
+   * Origin :  StockProductRestController in axelor-stock module
+   * Add : stock indicators of supplychain (sale / purchase / production)
    */
   @Override
   public Response getProductIndicators(

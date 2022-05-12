@@ -1,13 +1,11 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.*;
-import com.axelor.apps.stock.rest.dto.StockMoveCreateRequest;
+import com.axelor.apps.stock.rest.dto.StockMovePostRequest;
+import com.axelor.apps.stock.rest.dto.StockMovePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveResponse;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.tool.api.HttpExceptionHandler;
-import com.axelor.apps.tool.api.RequestValidator;
-import com.axelor.apps.tool.api.ResponseConstructor;
-import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.apps.tool.api.*;
 import com.axelor.inject.Beans;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,21 +19,42 @@ public class StockMoveRestController {
   @Path("/internal/")
   @POST
   @HttpExceptionHandler
-  public Response createInternalStockMove(StockMoveCreateRequest requestBody) throws Exception {
+  public Response createInternalStockMove(StockMovePostRequest requestBody) throws Exception {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().createAccess(StockMove.class).check();
     StockMove stockmove =
         Beans.get(StockMoveService.class)
             .createStockMoveMobility(
-                requestBody.getOriginStockLocation(),
-                requestBody.getDestStockLocation(),
-                requestBody.getCompany(),
-                requestBody.getProduct(),
-                requestBody.getTrackingNumber(),
+                requestBody.fetchOriginStockLocation(),
+                requestBody.fetchDestStockLocation(),
+                requestBody.fetchCompany(),
+                requestBody.fetchProduct(),
+                requestBody.fetchTrackingNumber(),
                 requestBody.getMovedQty(),
-                requestBody.getUnit());
+                requestBody.fetchUnit());
 
     return ResponseConstructor.build(
         Response.Status.CREATED, "Resource successfully created", new StockMoveResponse(stockmove));
+  }
+
+  @Path("/internal/{id}")
+  @POST
+  @HttpExceptionHandler
+  public Response updateInternalStockMove(
+      @PathParam("id") long stockCorrectionId, StockMovePutRequest requestBody) throws Exception {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(StockMove.class).check();
+
+    StockMove stockmove = ObjectFinder.find(StockMove.class, stockCorrectionId);
+
+    Beans.get(StockMoveService.class)
+        .updateStockMoveMobility(stockmove, requestBody.getMovedQty(), requestBody.fetchUnit());
+
+    if (requestBody.getStatus() != null) {
+      Beans.get(StockMoveService.class).updateStatus(stockmove, requestBody.getStatus());
+    }
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Successfully updated", new StockMoveResponse(stockmove));
   }
 }

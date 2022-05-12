@@ -238,7 +238,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   @Transactional
   public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
-    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED){
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
       stockCorrection.setRealQty(realQty);
       stockCorrection.setFutureQty(realQty);
       this.stockCorrectionRepository.save(stockCorrection);
@@ -247,11 +247,10 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Override
   @Transactional
-  public void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason){
-    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED){
+  public void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
       stockCorrection.setStockCorrectionReason(reason);
       this.stockCorrectionRepository.save(stockCorrection);
     }
   }
-
 }
