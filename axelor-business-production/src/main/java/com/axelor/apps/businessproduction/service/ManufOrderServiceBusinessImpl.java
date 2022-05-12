@@ -34,7 +34,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -120,7 +119,6 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
             plannedStartDateT,
             plannedEndDateT);
 
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       return manufOrder;

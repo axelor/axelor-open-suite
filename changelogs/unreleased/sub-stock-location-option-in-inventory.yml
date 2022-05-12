@@ -1,4 +1,0 @@
-title: "Inventory : Add option to include sub stock location"
-type: feature
-description: |
-  Added a boolean field to include sub stock location option in inventory.

@@ -125,7 +125,8 @@
         onSelect="action-attrs-domain-onselect-journal-analytic-move-line"
         onChange="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onChange="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onChange="action-attrs-domain-onselect-journal-analytic-move-line"
+        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-attrs-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
@@ -190,7 +191,7 @@
 
   <action-attrs name="action-analytic-move-line-attrs-hide-fields">
     <attribute for="date" name="hidden"
-      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+      expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
     <attribute for="typeSelect" name="hidden"
       expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
     <attribute for="accountType" name="hidden"

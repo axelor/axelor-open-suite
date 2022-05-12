@@ -198,17 +198,20 @@ public class SaleOrderController {
   }
 
   public void cancelSaleOrder(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderWorkflowService.class)
+          .cancelSaleOrder(
+              Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
+              saleOrder.getCancelReason(),
+              saleOrder.getCancelReasonStr());
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .cancelSaleOrder(
-            Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
-            saleOrder.getCancelReason(),
-            saleOrder.getCancelReasonStr());
-
-    response.setFlash(I18n.get("The sale order was canceled"));
-    response.setCanClose(true);
+      response.setFlash(I18n.get("The sale order was canceled"));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void finalizeQuotation(ActionRequest request, ActionResponse response) {
@@ -748,9 +751,14 @@ public class SaleOrderController {
   public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
+      Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {
@@ -847,7 +855,7 @@ public class SaleOrderController {
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form")
             .add("grid", "sale-order-grid")

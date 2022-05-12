@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Project;
 import java.util.Map;
 
 public interface ProjectMenuService {
@@ -28,4 +29,6 @@ public interface ProjectMenuService {
   public Map<String, Object> getAllProjects();
 
   public Map<String, Object> getAllProjectTasks();
+
+  public Map<String, Object> getAllProjectRelatedTasks(Project project);
 }

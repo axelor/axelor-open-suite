@@ -109,6 +109,6 @@ public class ProcessEngineService {
   }
 
   public String getWkfViewerUrl() {
-    return "wkf-editor?%s&taskIds=%s&activityCount=%s";
+    return "wkf-editor/index.html?%s&taskIds=%s&activityCount=%s";
   }
 }

@@ -134,6 +134,7 @@ public class ManufOrderWorkflowService {
       if (sequenceService.isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
         manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
       }
+      manufOrderService.createBarcode(manufOrder);
       if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
         manufOrderService.preFillOperations(manufOrder);
       } else {
@@ -358,7 +359,7 @@ public class ManufOrderWorkflowService {
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
-    Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    manufOrderStockMoveService.partialFinish(manufOrder);
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())

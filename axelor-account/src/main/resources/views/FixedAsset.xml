@@ -27,10 +27,6 @@
     model="com.axelor.apps.account.db.FixedAsset"
     onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
     onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload">
-    <toolbar>
-      <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
-        onClick="save,action-fixed-asset-view-show-split-wizard" hidden="true"/>
-    </toolbar>
     <panel>
       <panel name="statusSelectPanel" colSpan="12">
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="6"
@@ -198,7 +194,7 @@
       <panel name="associatedFixedAssets" title="Associated Fixed Assets">
         <field name="associatedFixedAssetsSet" showIf="id" colSpan="12" widget="many-to-many"
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
-          domain="self.company = :company" hidden="true"/>
+          domain="self.company = :company and (:id = null or self.id != :id)" hidden="true"/>
       </panel>
       <panel if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
         name="barcodePanel" title="Barcode" readonlyIf="barcode != null" colspan="12">
@@ -231,8 +227,9 @@
         onClick="action-attrs-account-fixed-asset-set-can-update-depreciation" hidden="true"/>
       <button name="updateDepreciationBtn" title="Update depreciation"
         showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation"
-        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"
-        hidden="true"/>
+        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save" hidden="true"/>
+      <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
+        onClick="save,action-fixed-asset-view-show-split-wizard" hidden="true"/>
       <field name="$canUpdateDepreciation" type="integer" hidden="true"/>
     </panel>
     <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
@@ -274,7 +271,7 @@
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid" hidden="true"/>
       <field name="saleAccountMove" domain="self.company = :company"
-        showIf="statusSelect == 4 || (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
+        showIf="statusSelect == 4 &amp;&amp; (transferredReasonSelect == 2 || transferredReasonSelect == 3 ) "
         hidden="true"/>
     </panel>
     <panel-mail>
@@ -305,7 +302,7 @@
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" min="0.01" hidden="true"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
-        onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
+        onClick="action-fixed-asset-group-disposal-asset"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"
@@ -324,7 +321,7 @@
       <label
         title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
       <button name="splitBtn" title="Split" colSpan="4"
-        onClick="action-method-account-fixed-asset-split"/>
+        onClick="action-method-account-fixed-asset-split,close"/>
     </panel>
   </form>
   <action-method name="action-method-account-fixed-asset-split">
@@ -332,7 +329,7 @@
   </action-method>
   <action-validate
     name="action-validate-account-fixed-asset-wizard-form-validate-qty">
-    <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0) "
+    <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt;= 0) "
       message="Disposal Quantity must be greater than 0"/>
   </action-validate>
   <action-attrs
@@ -382,6 +379,13 @@
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
   </action-record>
+
+  <action-group name="action-fixed-asset-group-disposal-asset">
+    <action name="action-validate-account-fixed-asset-wizard-form-validate-qty"/>
+    <action name="action-method-account-fixed-asset-validate-partial-disposal"/>
+    <action name="action-fixed-asset-disposal-wizard-method-disposal"/>
+    <action name="close"/>
+  </action-group>
 
   <action-method name="action-method-account-fixed-asset-validate">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
@@ -483,6 +487,11 @@
 
   <action-method name="action-method-fixed-asset-change-button-title">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="setTitleForButton"/>
+  </action-method>
+
+  <action-method name="action-method-account-fixed-asset-validate-partial-disposal">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="checkPartialDisposal"/>
   </action-method>
 
   <search-filters name="fixed-asset-filters"
