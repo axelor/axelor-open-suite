@@ -227,7 +227,8 @@
         onClick="action-attrs-account-fixed-asset-set-can-update-depreciation" hidden="true"/>
       <button name="updateDepreciationBtn" title="Update depreciation"
         showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation"
-        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save" hidden="true"/>
+        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"
+        hidden="true"/>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard" hidden="true"/>
       <field name="$canUpdateDepreciation" type="integer" hidden="true"/>
