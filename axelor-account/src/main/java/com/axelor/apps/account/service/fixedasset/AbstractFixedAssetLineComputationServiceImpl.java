@@ -435,6 +435,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
 
+    // If we are at the last line, we depreciation the remaining amount
+    if (getNumberOfDepreciation(fixedAsset) == numberOfDepreciationDone(fixedAsset) + 1) {
+      depreciation = previousFixedAssetLine.getAccountingValue();
+      return depreciation;
+    }
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
