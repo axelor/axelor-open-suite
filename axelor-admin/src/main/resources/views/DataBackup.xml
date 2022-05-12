@@ -13,18 +13,19 @@
   <form model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
     name="data-create-backup-form" onNew="action-data-backup-group-on-new" width="large">
     <panel name="mainPanel" large="true">
-      <panel name="userPanel" colSpan="9">
+      <panel name="userPanel" colSpan="9"
+        readonlyIf="backupMetaFile != null &amp;&amp; statusSelect != 1">
         <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
           colSpan="12"/>
-        <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
+        <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="2"/>
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
+        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
+        <field name="anonymizeData" widget="boolean-switch" colSpan="2"/>
         <field name="isRelativeDate" widget="boolean-switch"
           onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
-        <field name="anonymizeData" widget="boolean-switch" colSpan="2"/>
         <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
           colSpan="2"/>
-        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
-        <panel-related field="dataBackupConfigAnonymizeLineList"
+        <panel-related field="dataBackupConfigAnonymizeLineList" colSpan="12"
           grid-view="data-backup-config-anonymize-line-grid"
           form-view="data-backup-config-anonymize-line-form" showIf="anonymizeData" hidden="true"
           groupBy="metaModel"/>
@@ -47,9 +48,10 @@
         <field name="logMetaFile" readonly="true" widget="binary-link"
           showIf="logMetaFile != null" colSpan="4" hidden="true"/>
       </panel>
-
     </panel>
-
+    <panel name="hiddenPanel" hidden="true">
+      <field name="importId"/>
+    </panel>
   </form>
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
@@ -72,6 +74,9 @@
       <spacer name="restoreBtnSpacer"/>
       <field name="restoreDate" readonly="true" colSpan="3"/>
       <field name="logMetaFile" readonly="true" widget="binary-link" colSpan="3"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="importId"/>
     </panel>
   </form>
 
