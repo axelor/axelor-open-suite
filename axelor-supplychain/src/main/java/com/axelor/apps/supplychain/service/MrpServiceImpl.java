@@ -538,7 +538,12 @@ public class MrpServiceImpl implements MrpService {
       }
       mrpLine.setQty(mrpLine.getQty().add(reorderQty));
       mrpLine.setRelatedToSelectName(null);
-
+      MrpLine estimatedDeliveryMrpLine = mrpLine.getEstimatedDeliveryMrpLine();
+      if (estimatedDeliveryMrpLine != null) {
+        estimatedDeliveryMrpLine.setQty(estimatedDeliveryMrpLine.getQty().add(reorderQty));
+        estimatedDeliveryMrpLine.setRelatedToSelectName(relatedToSelectName);
+        this.copyMrpLineOrigins(estimatedDeliveryMrpLine, mrpLineOriginList);
+      }
     } else {
       MrpLine createdmrpLine =
           this.createMrpLine(
