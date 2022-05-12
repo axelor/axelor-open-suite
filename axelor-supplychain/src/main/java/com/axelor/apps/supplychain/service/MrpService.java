@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
@@ -73,4 +74,6 @@ public interface MrpService extends Callable<Mrp> {
    * @throws AxelorException
    */
   boolean isOnGoing(Mrp mrp) throws AxelorException;
+
+  public LocalDate getEstimatedDeliveryMaturityDate(MrpLine mrpLine);
 }

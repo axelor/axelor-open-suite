@@ -361,7 +361,6 @@ public class MrpServiceImpl implements MrpService {
             .order("mrpLineType.sequence")
             .order("id")
             .fetch();
-
     for (MrpLine mrpLine : mrpLineList) {
 
       doASecondPass =
@@ -388,7 +387,11 @@ public class MrpServiceImpl implements MrpService {
     BigDecimal cumulativeQty = mrpLine.getCumulativeQty();
 
     MrpLineType mrpLineType = mrpLine.getMrpLineType();
-
+    if (mrpLineType != null
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+        && mrpLine.getEstimatedDeliveryMrpLine() != null) {
+      return false;
+    }
     boolean isProposalElement = this.isProposalElement(mrpLineType);
 
     BigDecimal minQty = mrpLine.getMinQty();
@@ -547,11 +550,33 @@ public class MrpServiceImpl implements MrpService {
               BigDecimal.ZERO,
               stockLocation,
               null);
+
+      mrpLine = mrpLineRepository.save(createdmrpLine);
+
       if (createdmrpLine != null) {
         createdmrpLine.setWarnDelayFromSupplier(
             getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
-        mrpLine = mrpLineRepository.save(createdmrpLine);
+
+        MrpLineType mrpLineTypeEstimatedDelivery =
+            this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
+        if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            && mrpLineTypeEstimatedDelivery != null) {
+          MrpLine createdEstimatedDeliveryMrpLine =
+              this.createMrpLine(
+                  mrp,
+                  product,
+                  mrpLineTypeEstimatedDelivery,
+                  reorderQty,
+                  this.getEstimatedDeliveryMaturityDate(createdmrpLine),
+                  BigDecimal.ZERO,
+                  stockLocation,
+                  null);
+          createdEstimatedDeliveryMrpLine.setRelatedToSelectName(relatedToSelectName);
+          this.copyMrpLineOrigins(createdEstimatedDeliveryMrpLine, mrpLineOriginList);
+          createdmrpLine.setEstimatedDeliveryMrpLine(createdEstimatedDeliveryMrpLine);
+        }
       }
+
       mrpLine.setRelatedToSelectName(relatedToSelectName);
     }
 
@@ -675,9 +700,14 @@ public class MrpServiceImpl implements MrpService {
             .fetch();
 
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
-
     for (MrpLine mrpLine : mrpLineList) {
-      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+      if (mrpLine.getMrpLineType() != null
+          && mrpLine.getMrpLineType().getElementSelect()
+              == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
+        mrpLine.setCumulativeQty(previousCumulativeQty);
+      } else {
+        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+      }
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
@@ -742,7 +772,6 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrderLine.getDesiredDelivDate();
     }
-
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
     if (this.isBeforeEndDate(maturityDate) || purchaseOrderMrpLineType.getIgnoreEndDate()) {
@@ -1678,5 +1707,33 @@ public class MrpServiceImpl implements MrpService {
 
       JPA.clear();
     }
+  }
+
+  @Override
+  public LocalDate getEstimatedDeliveryMaturityDate(MrpLine mrpLine) {
+    Product product = mrpLine.getProduct();
+    if (product != null) {
+      List<MrpLine> nextOutgoingLines =
+          mrpLineRepository
+              .all()
+              .filter(
+                  "self.mrp.id = ?1 AND self.product = ?2 AND self.maturityDate >= ?3 AND self.maturityDate <= ?4 AND self.mrpLineType.typeSelect = ?5",
+                  mrpLine.getMrp().getId(),
+                  product,
+                  mrpLine.getMaturityDate(),
+                  mrpLine.getMaturityDate().plusDays(product.getSupplierDeliveryTime()),
+                  MrpLineTypeRepository.TYPE_OUT)
+              .order("maturityDate")
+              .fetch();
+
+      for (MrpLine nextLine : nextOutgoingLines) {
+        BigDecimal futureQty = nextLine.getCumulativeQty().subtract(mrpLine.getReOrderQty());
+        if (futureQty.compareTo(mrpLine.getMinQty()) < 0) {
+          return nextLine.getMaturityDate();
+        }
+      }
+      return mrpLine.getMaturityDate().plusDays(product.getSupplierDeliveryTime());
+    }
+    return mrpLine.getMaturityDate();
   }
 }
