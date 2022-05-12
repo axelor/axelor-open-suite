@@ -705,14 +705,12 @@ public class MrpServiceImpl implements MrpService {
             .fetch();
 
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
-    MrpLineType mrpLineTypeEstimatedDelivery =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
     for (MrpLine mrpLine : mrpLineList) {
 
       if (mrpLine.getMrpLineType() != null
           && mrpLine.getMrpLineType().getElementSelect()
               == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-          && mrpLineTypeEstimatedDelivery != null) {
+          && mrpLine.getEstimatedDeliveryMrpLine() != null) {
         mrpLine.setCumulativeQty(previousCumulativeQty);
       } else {
         mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
