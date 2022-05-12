@@ -120,7 +120,7 @@ public class CurrencyService {
 
   private CurrencyConversionLine getCurrencyConversionLine(
       Currency startCurrency, Currency endCurrency, LocalDate localDate) {
-    if(appBaseService==null) appBaseService =  Beans.get(AppBaseService.class);
+    if (appBaseService == null) appBaseService = Beans.get(AppBaseService.class);
     List<CurrencyConversionLine> currencyConversionLineList =
         appBaseService.getCurrencyConfigurationLineList();
 
