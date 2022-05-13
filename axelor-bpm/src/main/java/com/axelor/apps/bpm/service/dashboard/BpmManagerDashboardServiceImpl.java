@@ -15,14 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bpm.service;
+package com.axelor.apps.bpm.service.dashboard;
 
 import com.axelor.apps.bpm.db.WkfModel;
 import com.axelor.apps.bpm.db.WkfProcess;
 import com.axelor.apps.bpm.db.WkfProcessConfig;
-import com.axelor.apps.bpm.db.WkfTaskConfig;
-import com.axelor.apps.bpm.db.repo.WkfModelRepository;
-import com.axelor.apps.bpm.web.WkfModelController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -31,51 +28,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class BpmDashboardServiceImpl implements BpmDashboardService {
+public class BpmManagerDashboardServiceImpl implements BpmManagerDashboardService {
 
-  public static int FETCH_LIMIT = 20;
+  public static final int FETCH_LIMIT = 20;
 
-  @Inject private WkfModelRepository wkfModelRepo;
+  @Inject private WkfDashboardCommonService wkfDashboardCommonService;
 
-  @Inject private WkfModelService wkfModelService;
+  @Inject private BpmManagerDashboardUserService bpmMgrDashboardUserService;
 
-  @Inject private WkfModelController wkfModelController;
-
-  private List<WkfModel> getWkfModelsByUser(User user) {
-    List<WkfModel> wkfModelList = wkfModelRepo.all().order("code").fetch();
-    List<WkfModel> filterWkfModels = new ArrayList<>();
-
-    for (WkfModel wkfModel : wkfModelList) {
-      List<WkfProcess> processes = wkfModelService.getProcesses(wkfModel);
-      if (CollectionUtils.isEmpty(processes)) {
-        continue;
-      }
-
-      boolean isSuperAdmin = user.getCode().equals("admin");
-      boolean isAdmin = wkfModelController.isAdmin(wkfModel, user);
-      boolean isManager = wkfModelController.isManager(wkfModel, user);
-      boolean isUser = wkfModelController.isUser(wkfModel, user);
-
-      if (!isSuperAdmin && !isAdmin && !isManager && !isUser) {
-        continue;
-      }
-
-      filterWkfModels.add(wkfModel);
-    }
-    return filterWkfModels;
-  }
+  @Inject private BpmManagerDashboardTaskService bpmMgrDashboardTaskService;
 
   @SuppressWarnings({"unchecked", "serial"})
   @Override
-  public Map<String, Object> getData(int offset) {
+  public Map<String, Object> showProcess(int offset) {
     User user = AuthUtils.getUser();
     Map<String, Object> dataMap = new HashMap<>();
     List<Map<String, Object>> modelList = new ArrayList<>();
 
-    List<WkfModel> wkfModelList = this.getWkfModelsByUser(user);
+    List<WkfModel> wkfModelList = bpmMgrDashboardUserService.getWkfModelsByUser(user);
     long totalRecord = wkfModelList.size();
 
     List<WkfModel> showWkfModels =
@@ -84,18 +56,18 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
     for (WkfModel wkfModel : showWkfModels) {
 
       boolean isSuperAdmin = user.getCode().equals("admin");
-      boolean isAdmin = wkfModelController.isAdmin(wkfModel, user);
-      boolean isManager = wkfModelController.isManager(wkfModel, user);
-      boolean isUser = wkfModelController.isUser(wkfModel, user);
+      boolean isAdmin = wkfDashboardCommonService.isAdmin(wkfModel, user);
+      boolean isManager = wkfDashboardCommonService.isManager(wkfModel, user);
+      boolean isUser = wkfDashboardCommonService.isUser(wkfModel, user);
 
-      List<WkfProcess> processes = wkfModelService.getProcesses(wkfModel);
+      List<WkfProcess> processes = wkfDashboardCommonService.findProcesses(wkfModel, null);
       List<Map<String, Object>> processList = new ArrayList<>();
 
       for (WkfProcess process : processes) {
         List<Map<String, Object>> configList = new ArrayList<>();
 
         List<WkfProcessConfig> processConfigs = process.getWkfProcessConfigList();
-        wkfModelService.sortProcessConfig(processConfigs);
+        wkfDashboardCommonService.sortProcessConfig(processConfigs);
 
         List<String> _modelList = new ArrayList<>();
         for (WkfProcessConfig processConfig : processConfigs) {
@@ -111,7 +83,8 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
           }
           _modelList.add(modelName);
 
-          Map<String, Object> _map = this.computeConfigs(process, modelName, isMetaModel, user);
+          Map<String, Object> _map =
+              this.computeAssignedTaskConfigs(process, modelName, isMetaModel, user);
           List<Long> recordIdsUserPerModel = (List<Long>) _map.get("recordIdsUserPerModel");
           List<Map<String, Object>> statusUserList =
               (List<Map<String, Object>>) _map.get("statusUserList");
@@ -181,20 +154,16 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
   }
 
   @SuppressWarnings({"serial"})
-  private Map<String, Object> computeConfigs(
+  private Map<String, Object> computeAssignedTaskConfigs(
       WkfProcess process, String modelName, boolean isMetaModel, User user) {
 
-    List<WkfTaskConfig> userTaskConfigs =
-        wkfModelService.getTaskConfigs(process, modelName, isMetaModel, user, true);
+    Object obj[] =
+        bpmMgrDashboardUserService.computeAssignedTaskConfig(
+            process, modelName, isMetaModel, user, true, WkfDashboardCommonService.ASSIGNED_ME);
 
     Object userObj[] =
-        wkfModelService.computeTaskConfig(userTaskConfigs, modelName, isMetaModel, user, false);
-
-    List<WkfTaskConfig> taskConfigs =
-        wkfModelService.getTaskConfigs(process, modelName, isMetaModel, null, false);
-
-    Object obj[] =
-        wkfModelService.computeTaskConfig(taskConfigs, modelName, isMetaModel, null, false);
+        bpmMgrDashboardUserService.computeAssignedTaskConfig(
+            process, modelName, isMetaModel, user, false, WkfDashboardCommonService.ASSIGNED_OTHER);
 
     return new HashMap<String, Object>() {
       {
@@ -204,5 +173,56 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
         put("statusList", obj[1]);
       }
     };
+  }
+
+  @Override
+  public List<Map<String, Object>> getChartData(
+      WkfModel wkfModel, String type, String taskByProcessType) {
+
+    List<Map<String, Object>> dataMapList = new ArrayList<>();
+    User user = AuthUtils.getUser();
+
+    List<WkfProcess> processes = wkfDashboardCommonService.findProcesses(wkfModel, null);
+
+    for (WkfProcess process : processes) {
+      List<WkfProcessConfig> processConfigs = process.getWkfProcessConfigList();
+      wkfDashboardCommonService.sortProcessConfig(processConfigs);
+
+      List<String> _modelList = new ArrayList<>();
+      for (WkfProcessConfig processConfig : processConfigs) {
+
+        boolean isMetaModel = processConfig.getMetaModel() != null;
+        String modelName =
+            isMetaModel
+                ? processConfig.getMetaModel().getName()
+                : processConfig.getMetaJsonModel().getName();
+
+        if (_modelList.contains(modelName)) {
+          continue;
+        }
+        _modelList.add(modelName);
+
+        Map<String, Object> _map =
+            wkfDashboardCommonService.computeStatus(isMetaModel, modelName, process, null, null);
+
+        switch (type) {
+          case WkfDashboardCommonService.ASSIGNED_ME:
+            bpmMgrDashboardUserService.getAssignedToMeTask(
+                process, modelName, isMetaModel, dataMapList, user);
+            break;
+
+          case WkfDashboardCommonService.ASSIGNED_OTHER:
+            bpmMgrDashboardUserService.getAssignedToOtherTask(
+                process, modelName, isMetaModel, dataMapList, user);
+            break;
+
+          case WkfDashboardCommonService.TASK_BY_PROCESS:
+            bpmMgrDashboardTaskService.getTaskByProcess(
+                _map, process, taskByProcessType, dataMapList);
+            break;
+        }
+      }
+    }
+    return dataMapList;
   }
 }
