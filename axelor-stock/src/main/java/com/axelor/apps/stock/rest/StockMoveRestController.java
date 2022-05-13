@@ -38,7 +38,7 @@ public class StockMoveRestController {
   }
 
   @Path("/internal/{id}")
-  @POST
+  @PUT
   @HttpExceptionHandler
   public Response updateInternalStockMove(
       @PathParam("id") long stockCorrectionId, StockMovePutRequest requestBody) throws Exception {

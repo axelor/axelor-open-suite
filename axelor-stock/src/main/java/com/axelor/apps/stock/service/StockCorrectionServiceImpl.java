@@ -227,8 +227,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       stockCorrection.setTrackingNumber(trackingNumber);
     }
     stockCorrection.setRealQty(realQty);
-    // TODO get future qty from realQty
-    stockCorrection.setFutureQty(realQty); // à adapter
     stockCorrection.setStockCorrectionReason(reason);
     this.stockCorrectionRepository.save(stockCorrection);
 
@@ -240,7 +238,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
     if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
       stockCorrection.setRealQty(realQty);
-      stockCorrection.setFutureQty(realQty);
       this.stockCorrectionRepository.save(stockCorrection);
     }
   }

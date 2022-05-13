@@ -1415,13 +1415,17 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Transactional
   public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
       throws AxelorException {
+    StockMoveLine line = stockMove.getStockMoveLineList().get(0);
+    if (unit != null) {
+      BigDecimal convertQty = Beans.get(UnitConversionService.class).convert(line.getUnit(), unit, line.getQty(), line.getQty().scale() , line.getProduct());
+      line.setUnit(unit);
+      line.setQty(convertQty);
+      line.setRealQty(convertQty);
+    }
     if (movedQty != null) {
       // Only one product
-      stockMove.getStockMoveLineList().get(0).setQty(movedQty);
-      stockMove.getStockMoveLineList().get(0).setRealQty(movedQty);
-    }
-    if (unit != null) {
-      stockMove.getStockMoveLineList().get(0).setUnit(unit);
+      line.setQty(movedQty);
+      line.setRealQty(movedQty);
     }
     stockMoveRepo.save(stockMove);
   }
