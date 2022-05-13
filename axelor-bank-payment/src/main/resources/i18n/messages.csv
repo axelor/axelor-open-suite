@@ -899,7 +899,7 @@
 "com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService",,,
 "digest value cannot be null",,,
 "dn",,,
-"ebicsUser.importBtn",,,
+"import.verb",,,
 "info",,,
 "pain.001.001.02.ict",,,
 "pain.001.001.02.mct",,,
