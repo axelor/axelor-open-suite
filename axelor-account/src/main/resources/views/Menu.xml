@@ -549,7 +549,8 @@
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
 
-  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"/>
+  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
