@@ -20,6 +20,7 @@
     <integer name="operatorSelect" title="Operator"
       selection="base.pricing.rule.operator.select"/>
     <string name="tempVarName" title="Name of temporary variable"/>
+    <integer name="scale" title="Scale" min="0" max="10" default="2"/>
 
     <extra-code><![CDATA[
 			//TYPE SELECT

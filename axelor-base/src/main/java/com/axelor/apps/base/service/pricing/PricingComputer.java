@@ -35,6 +35,7 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -221,6 +222,11 @@ public class PricingComputer extends AbstractObservablePricing {
               MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
               Object result = scriptHelper.eval(resultPricingRule.getFormula());
               if (fieldToPopulate != null) {
+                String typeName = resultPricingRule.getFieldToPopulate().getTypeName();
+                int scale = resultPricingRule.getScale();
+                if (typeName.equals("BigDecimal")) {
+                  result = ((BigDecimal) result).setScale(scale, RoundingMode.HALF_UP);
+                }
                 Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
               }
               if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
@@ -276,6 +282,9 @@ public class PricingComputer extends AbstractObservablePricing {
 
     if (classPricingRule != null) {
       Object result = scriptHelper.eval(classPricingRule.getFormula());
+      if (classPricingRule.getFieldTypeSelect() == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+        result = ((BigDecimal) result).setScale(classPricingRule.getScale(), RoundingMode.HALF_UP);
+      }
       notifyClassificationPricingRule(classPricingRule, result);
       return result;
     }
