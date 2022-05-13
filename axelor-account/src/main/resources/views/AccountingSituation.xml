@@ -275,7 +275,7 @@
   <action-record name="action-record-manage-vat-system-onnew"
     model="com.axelor.apps.account.db.AccountingSituation">
     <field name="vatSystemSelect" expr="eval: 1"
-      if="partner != null &amp;&amp; (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
+      if="partner?.isCustomer || partner?.isSupplier"/>
   </action-record>
 
   <action-method name="action-accounting-situation-method-set-default-mail">

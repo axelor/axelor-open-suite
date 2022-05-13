@@ -163,8 +163,7 @@
 
   <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
-    onSave="action-partner-iban-check-on-save,save,action-partner-method-set-user-partner"
-    width="large">
+    onSave="action-partner-group-onsave" width="large">
     <toolbar>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
@@ -1119,6 +1118,19 @@
     <action name="action-partner-validate-factor-supplier-customer-show-error"/>
   </action-group>
 
+  <action-group name="action-partner-group-onsave">
+    <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-validate-registration-code"/>
+    <action name="action-method-partner-check-registration-code"/>
+    <action name="save"/>
+    <action name="action-partner-method-set-user-partner"/>
+  </action-group>
+
+  <action-validate name="action-partner-validate-registration-code">
+    <error message="Registration code is required."
+      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+  </action-validate>
+
   <action-record name="action-partner-record-factor-supplier-customer-no-error"
     model="com.axelor.apps.base.db.Partner">
     <field name="customerCantBeRemoved" expr="eval:false"/>
@@ -1467,6 +1479,10 @@
 
   <action-method name="action-method-partner-registration-code-onChange">
     <call class="com.axelor.apps.base.web.PartnerController" method="modifyRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-method-partner-check-registration-code">
+    <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"
