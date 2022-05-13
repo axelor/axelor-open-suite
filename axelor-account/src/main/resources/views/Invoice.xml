@@ -738,7 +738,8 @@ InvoiceSet.length > 0))"
         showTitle="false">
         <field name="debitBlockingOk"/>
         <field name="debtRecoveryBlockingOk"/>
-        <field name="billOfExchangeBlockingOk"/>
+        <field name="billOfExchangeBlockingOk"
+          onChange="action-invoice-record-set-user-on-exchange-blocking"/>
         <panel name="debitBlockingGroupPanel" title="Direct debit blocking"
           showIf="debitBlockingOk" colSpan="12">
           <field name="debitBlockingByUser" canNew="false" canEdit="false" canView="false"
@@ -758,7 +759,7 @@ InvoiceSet.length > 0))"
         <panel showIf="billOfExchangeBlockingOk" name="debtRecoveryBlockingPanel"
           title="Bill of exchange blocking" colSpan="12">
           <field name="billOfExchangeBlockingByUser" canNew="false" canEdit="false"
-            canView="false" form-view="user-form" grid-view="user-grid"/>
+            canView="false" form-view="user-form" grid-view="user-grid" readonly="true"/>
           <field name="billOfExchangeBlockingToDate"/>
           <field name="billOfExchangeBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -1739,6 +1740,11 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.Invoice">
     <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings"
       if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
+  </action-record>
+
+  <action-record name="action-invoice-record-set-user-on-exchange-blocking"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="billOfExchangeBlockingByUser" expr="eval:__user__"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
