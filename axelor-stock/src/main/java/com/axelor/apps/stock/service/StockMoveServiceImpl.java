@@ -449,7 +449,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     computeMasses(stockMove);
     stockMoveRepo.save(stockMove);
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()) {
       partnerProductQualityRatingService.calculate(stockMove);
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getRealStockMoveAutomaticMail() != null
