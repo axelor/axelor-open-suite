@@ -385,7 +385,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
                       paymentDate,
                       bankDepositDate,
                       chequeNumber));
-
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
