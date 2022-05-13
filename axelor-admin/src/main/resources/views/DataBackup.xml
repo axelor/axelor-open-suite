@@ -76,11 +76,6 @@
     </panel>
   </form>
 
-  <action-record name="action-data-backup-record-set-today-datetime"
-    model="com.axelor.apps.base.db.DataBackup">
-    <field name="backupDate" expr="eval: __datetime__"/>
-  </action-record>
-
   <action-record name="action-data-backup-record-set-default-fetch-limit"
     model="com.axelor.apps.base.db.DataBackup">
     <field name="fetchLimit" expr="100"/>
@@ -98,7 +93,6 @@
   </action-record>
 
   <action-group name="action-data-backup-group-create-button">
-    <action name="action-data-backup-record-set-today-datetime"/>
     <action name="save"/>
     <action name="action.data.backup.call.createbackup"/>
   </action-group>
