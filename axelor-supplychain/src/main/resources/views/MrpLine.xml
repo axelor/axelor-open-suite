@@ -24,9 +24,13 @@
     <button name="toggleBtn" icon="fa-exchange" onClick="action-mrp-line-method-toggle"
       showIf="!proposalGenerated &amp;&amp; [5,8].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="proposalToProcess" showIf="!proposalGenerated"/>
+    <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh"
+      readonlyIf="true" icon="fa-exclamation-triangle"/>
     <field name="mrpLineType" width="300"/>
     <field name="qty" x-scale="2"/>
-    <field name="maturityDate" width="100"/>
+    <field name="maturityDate" width="100">
+      <hilite if="warnDelayFromSupplier" color="danger"/>
+    </field>
     <field name="cumulativeQty" css="bold" x-scale="2"/>
     <field name="product.unit"/>
     <field name="minQty" x-scale="2"/>
@@ -40,8 +44,6 @@
     <button name="generateProposalBtn" icon="fa-calendar"
       onClick="action-mrp-line-method-generate-proposal"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
-    <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh"
-      readonlyIf="true" icon="fa-exclamation-triangle"/>
     <field name="mrpLineType.elementSelect" hidden="true"/>
     <field name="isEditedByUser" hidden="true"/>
     <field name="product.defaultSupplierPartner.id" hidden="true"/>
@@ -77,6 +79,8 @@
       <field name="stockLocation" readonly="true"/>
       <field name="maxLevel" readonly="true"/>
       <field name="partner" showIf="partner"/>
+      <field name="estimatedDeliveryMrpLine" readonly="true" showIf="estimatedDeliveryMrpLine"
+        form-view="mrp-line-form"/>
       <button name="generateProposalBtn" title="Generate proposal"
         onClick="action-mrp-line-method-generate-proposal"
         showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>

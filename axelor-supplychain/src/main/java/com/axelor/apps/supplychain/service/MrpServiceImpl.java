@@ -559,8 +559,7 @@ public class MrpServiceImpl implements MrpService {
       mrpLine = mrpLineRepository.save(createdmrpLine);
 
       if (createdmrpLine != null) {
-        createdmrpLine.setWarnDelayFromSupplier(
-            getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
+        createdmrpLine.setWarnDelayFromSupplier(getWarnDelayFromSupplier(createdmrpLine));
 
         MrpLineType mrpLineTypeEstimatedDelivery =
             this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY);
@@ -588,10 +587,10 @@ public class MrpServiceImpl implements MrpService {
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
   }
 
-  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
+  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine) {
     return mrpLine.getMrpLineType().getElementSelect()
             == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-        && DAYS.between(initialMaturityDate, mrpLine.getMaturityDate())
+        && DAYS.between(mrpLine.getMaturityDate(), this.getEstimatedDeliveryMaturityDate(mrpLine))
             < mrpLine.getProduct().getSupplierDeliveryTime();
   }
 

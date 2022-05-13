@@ -22,7 +22,7 @@
     <decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10"/>
     <string name="relatedToSelectName" title="Related to"/>
     <one-to-one ref="com.axelor.apps.supplychain.db.MrpLine"
-      name="estimatedDeliveryMrpLine"/>
+      name="estimatedDeliveryMrpLine" title="Associated estimated delivery mrp line"/>
 
     <one-to-many name="mrpLineOriginList"
       ref="com.axelor.apps.supplychain.db.MrpLineOrigin" mappedBy="mrpLine" title="Origins"/>
