@@ -61,6 +61,12 @@
           domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)"
           form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
       </panel>
+      <panel name="bankStatementPanel" title="Bank statement" colSpan="12">
+        <field name="hasAutomaticReconciliation" widget="boolean-switch"/>
+        <field name="hasAutoMoveFromStatementRule" widget="boolean-switch"/>
+        <field name="bnkStmtAutoReconcileAmountMargin" requiredIf="hasAutomaticReconciliation"/>
+        <field name="bnkStmtAutoReconcileDateMargin" requiredIf="hasAutomaticReconciliation"/>
+      </panel>
     </panel>
 
     <panel-mail name="mailPanel">

@@ -221,4 +221,14 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     return style;
   }
+
+  @Override
+  public int getProcessTimeout() {
+    int processTimeout = getAppBase().getProcessTimeout();
+    if (processTimeout < 1) {
+      return 10;
+    } else {
+      return processTimeout;
+    }
+  }
 }

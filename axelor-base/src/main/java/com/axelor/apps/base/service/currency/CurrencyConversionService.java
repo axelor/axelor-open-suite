@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPResponse;
@@ -166,6 +167,32 @@ public abstract class CurrencyConversionService {
     ccl.setVariations(variations);
     cclRepo.save(ccl);
   }
+
+  /**
+   * Getting rate of currencyFrom in terms of currencyTo.
+   *
+   * <p>Example: 1 EUR = x USD
+   *
+   * @param currencyFrom
+   * @param currencyTo
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
+      Currency currencyFrom, Currency currencyTo)
+      throws MalformedURLException, JSONException, AxelorException;
+
+  /**
+   * Validate the response and get the rate.
+   *
+   * @param dayCount
+   * @param currencyFrom
+   * @param currencyTo
+   * @param date
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, Float> validateAndGetRateWithDate(
+      int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws AxelorException;
 
   @Transactional
   public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {

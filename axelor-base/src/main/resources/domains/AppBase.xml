@@ -20,7 +20,7 @@
 
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
-      selection="base.app.base.map.api.select" default="1"/>
+      selection="base.app.base.map.api.select" default="2"/>
 
     <!-- Routing service API for Open Street Map> -->
     <integer name="osmRoutingServiceApiSelect"
@@ -131,14 +131,23 @@
       title="Email template list for notifications"
       ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 
+    <one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
+      title="Email links"/>
+
     <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
     <boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners"
       default="false"/>
+    <boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
 
     <string name="customAppStyle" title="Custom style" large="true"
       help="Custom css to personnalize web user interface."/>
+
+    <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
+      help="Maximum time before a process called by an user starts running in the background"
+      min="1"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
