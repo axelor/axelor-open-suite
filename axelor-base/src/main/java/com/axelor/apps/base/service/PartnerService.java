@@ -158,6 +158,4 @@ public interface PartnerService {
   String getNicFromRegistrationCode(Partner partner);
 
   String getSirenFromRegistrationCode(Partner partner);
-
-  boolean isRegistrationCodeValid(Partner partner);
 }
