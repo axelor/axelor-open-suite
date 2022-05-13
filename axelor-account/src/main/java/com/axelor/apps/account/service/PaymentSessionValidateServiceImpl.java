@@ -86,11 +86,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public boolean validateInvoiceTerms(PaymentSession paymentSession) {
-    if (paymentSession.getNextSessionDate() == null) {
-      return true;
-    }
-
+  public int validateInvoiceTerms(PaymentSession paymentSession) {
     LocalDate nextSessionDate;
     int offset = 0;
     List<InvoiceTerm> invoiceTermList;
@@ -99,8 +95,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .all()
             .filter(
                 "self.paymentSession = :paymentSession "
-                    + "AND self.isSelectedOnPaymentSession IS TRUE "
-                    + "AND self.financialDiscount IS NOT NULL")
+                    + "AND self.isSelectedOnPaymentSession IS TRUE")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -111,31 +106,40 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
 
-        if ((invoiceTerm.getInvoice() != null
-                && !invoiceTerm
-                    .getInvoice()
-                    .getFinancialDiscountDeadlineDate()
-                    .isAfter(nextSessionDate))
-            || (invoiceTerm.getMoveLine() != null
-                && invoiceTerm.getMoveLine().getPartner() != null
-                && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
-                && !invoiceTerm
-                    .getDueDate()
-                    .minusDays(
-                        invoiceTerm
-                            .getMoveLine()
-                            .getPartner()
-                            .getFinancialDiscount()
-                            .getDiscountDelay())
-                    .isAfter(nextSessionDate))) {
-          return false;
+        if (nextSessionDate != null
+            && invoiceTerm.getFinancialDiscount() != null
+            && this.checkNextSessionDate(invoiceTerm, nextSessionDate)) {
+          return 1;
+        } else if (invoiceTerm.getIsPaid()
+            || invoiceTerm.getPaymentAmount().compareTo(invoiceTerm.getAmountRemaining()) > 0) {
+          return 2;
         }
       }
 
       JPA.clear();
     }
 
-    return true;
+    return 0;
+  }
+
+  protected boolean checkNextSessionDate(InvoiceTerm invoiceTerm, LocalDate nextSessionDate) {
+    return (invoiceTerm.getInvoice() != null
+            && !invoiceTerm
+                .getInvoice()
+                .getFinancialDiscountDeadlineDate()
+                .isAfter(nextSessionDate))
+        || (invoiceTerm.getMoveLine() != null
+            && invoiceTerm.getMoveLine().getPartner() != null
+            && invoiceTerm.getMoveLine().getPartner().getFinancialDiscount() != null
+            && !invoiceTerm
+                .getDueDate()
+                .minusDays(
+                    invoiceTerm
+                        .getMoveLine()
+                        .getPartner()
+                        .getFinancialDiscount()
+                        .getDiscountDelay())
+                .isAfter(nextSessionDate));
   }
 
   protected LocalDate fetchNextSessionDate(PaymentSession paymentSession) {
@@ -197,19 +201,26 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
 
-        if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
-          this.releaseInvoiceTerm(invoiceTerm);
-        } else if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+        if (this.shouldBeProcessed(invoiceTerm)) {
           offset++;
-          this.processInvoiceTerm(
-              paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            this.processInvoiceTerm(
+                paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+          }
         } else {
-          offset++;
+          this.releaseInvoiceTerm(invoiceTerm);
         }
       }
 
       JPA.clear();
     }
+  }
+
+  protected boolean shouldBeProcessed(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getIsSelectedOnPaymentSession()
+        && !invoiceTerm.getIsPaid()
+        && invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getPaymentAmount()) >= 0;
   }
 
   protected PaymentSession processInvoiceTerm(

@@ -6,7 +6,7 @@ import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionValidateService {
-  public boolean validateInvoiceTerms(PaymentSession paymentSession);
+  public int validateInvoiceTerms(PaymentSession paymentSession);
 
   public int processPaymentSession(PaymentSession paymentSession) throws AxelorException;
 
