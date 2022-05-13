@@ -76,7 +76,11 @@ public class DataBackupRestoreService {
 
             @Override
             public void imported(Model model) {
-              modelName = model.getClass().getSimpleName();
+              if (model != null) {
+                modelName = model.getClass().getSimpleName();
+              } else {
+                modelName = "";
+              }
             }
 
             @Override
@@ -89,6 +93,7 @@ public class DataBackupRestoreService {
               sb.append(modelName + " : \n");
               sb.append(strError).append(str + "-----------------------------------------\n");
               sb1.setLength(0);
+              modelName = "";
             }
           });
       csvImporter.run();
@@ -136,6 +141,11 @@ public class DataBackupRestoreService {
 
   public Object importObjectWithByteArray(Object bean, Map<String, Object> values)
       throws IOException {
+
+    if (bean == null) {
+      return bean;
+    }
+
     assert bean instanceof Model;
     final Path path = (Path) values.get("__path__");
 
