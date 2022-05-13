@@ -21,14 +21,10 @@
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
         <field name="isRelativeDate" widget="boolean-switch"
           onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
-        <field name="anonymizeData" widget="boolean-switch" colSpan="2"/>
         <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
           colSpan="2"/>
         <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
-        <panel-related field="dataBackupConfigAnonymizeLineList"
-          grid-view="data-backup-config-anonymize-line-grid"
-          form-view="data-backup-config-anonymize-line-form" showIf="anonymizeData" hidden="true"
-          groupBy="metaModel"/>
+        <field name="anonymizer" colSpan="4" canRemove="true"/>
 
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12" sidebar="true">

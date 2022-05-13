@@ -11,11 +11,15 @@
   </grid>
 
   <form model="com.axelor.apps.base.db.FakerApiField" title="Faker API fields"
-    name="faker-api-field-form">
+    name="faker-api-field-form" onSave="action-faker-api-field-attrs-compute-name">
     <panel name="mainPanel">
-      <field name="name"/>
+      <field name="name" readonly="true"/>
       <field name="className"/>
       <field name="methodName" title="FakerApiField.methodName"/>
     </panel>
   </form>
+
+  <action-attrs name="action-faker-api-field-attrs-compute-name">
+    <attribute for="name" name="value" expr="eval: className + &quot;.&quot; + methodName"/>
+  </action-attrs>
 </object-views>
