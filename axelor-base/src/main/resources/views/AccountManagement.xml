@@ -41,8 +41,10 @@
       canEdit="false"/>
     <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
-      if="__config__.app.isApp('account')" canNew="true"/>
+      if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form" canNew="true"/>
   </grid>
+
 
 
   <form name="account-management-form" title="Account management"
@@ -147,10 +149,16 @@
         <field name="tax" form-view="tax-form" grid-view="tax-grid"
           requiredIf="typeSelect == 2"/>
       </panel>
-
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        showIf="typeSelect == 2">
+        <field name="financialDiscountAccount"
+          domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+          canEdit="false"/>
+      </panel>
     </panel>
   </form>
-
 
   <!-- ACTION RECORD -->
   <action-record name="action-account-management-record-default"

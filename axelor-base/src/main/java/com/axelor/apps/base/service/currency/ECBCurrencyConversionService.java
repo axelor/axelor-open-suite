@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPClient;
@@ -101,8 +102,12 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
       for (CurrencyConversionLine ccl : cclList) {
         LOG.trace("Currency Conversion Line without toDate : {}", ccl);
         BigDecimal currentRate = BigDecimal.ZERO;
+        LocalDate rateRetrieveDate = null;
         try {
-          currentRate = this.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+          Pair<LocalDate, BigDecimal> pair =
+              this.getRateWithDate(ccl.getStartCurrency(), ccl.getEndCurrency());
+          currentRate = pair.getRight();
+          rateRetrieveDate = pair.getLeft();
         } catch (Exception e) {
           throw new AxelorException(
               e.getCause(),
@@ -117,14 +122,19 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
 
         ccl = cclRepo.find(ccl.getId());
         BigDecimal previousRate = ccl.getExchangeRate();
-        if (currentRate.compareTo(previousRate) != 0) {
-          ccl.setToDate(today.minusDays(1).isAfter(ccl.getFromDate()) ? today.minusDays(1) : today);
+        if (currentRate.compareTo(previousRate) != 0
+            && rateRetrieveDate.isAfter(ccl.getFromDate())) {
+          ccl.setToDate(
+              !rateRetrieveDate.minusDays(1).isBefore(ccl.getFromDate())
+                  ? rateRetrieveDate.minusDays(1)
+                  : rateRetrieveDate);
+
           this.saveCurrencyConversionLine(ccl);
           String variations = this.getVariations(currentRate, previousRate);
           this.createCurrencyConversionLine(
               ccl.getStartCurrency(),
               ccl.getEndCurrency(),
-              today,
+              rateRetrieveDate,
               currentRate,
               appBase,
               variations);
@@ -136,24 +146,28 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
   @Override
   public BigDecimal convert(Currency currencyFrom, Currency currencyTo)
       throws MalformedURLException, JSONException, AxelorException {
-    BigDecimal rate = new BigDecimal(-1);
+    return this.getRateWithDate(currencyFrom, currencyTo).getRight();
+  }
 
+  @Override
+  public Pair<LocalDate, BigDecimal> getRateWithDate(Currency currencyFrom, Currency currencyTo)
+      throws MalformedURLException, JSONException, AxelorException {
+
+    LocalDate todayDate =
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+
+    BigDecimal rate = new BigDecimal(-1);
     LOG.trace("Currerncy conversion From: {} To: {}", new Object[] {currencyFrom, currencyTo});
 
     if (currencyFrom != null && currencyTo != null) {
-      Float rt =
-          this.validateAndGetRate(
-              1,
-              currencyFrom,
-              currencyTo,
-              appBaseService.getTodayDate(
-                  Optional.ofNullable(AuthUtils.getUser())
-                      .map(User::getActiveCompany)
-                      .orElse(null)));
-      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_UP);
+      Pair<LocalDate, Float> pair =
+          this.validateAndGetRateWithDate(1, currencyFrom, currencyTo, todayDate);
+      rate = BigDecimal.valueOf(pair.getRight()).setScale(8, RoundingMode.HALF_UP);
+      LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
+      return Pair.of(pair.getLeft(), rate);
     } else LOG.trace("Currency from and to must be filled to get rate");
-    LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
-    return rate;
+    return Pair.of(todayDate, rate);
   }
 
   @Override
@@ -161,10 +175,18 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws AxelorException {
 
-    try {
-      HTTPResponse response = null;
+    return validateAndGetRateWithDate(dayCount, currencyFrom, currencyTo, date).getRight();
+  }
 
-      if (dayCount < 8) {
+  @Override
+  public Pair<LocalDate, Float> validateAndGetRateWithDate(
+      int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws AxelorException {
+
+    HTTPResponse response = null;
+
+    if (dayCount < 8) {
+      try {
         HTTPClient httpclient = new HTTPClient();
         HTTPRequest request = new HTTPRequest();
         Map<String, Object> headers = new HashMap<>();
@@ -182,28 +204,28 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
             "Webservice response code: {}, response message: {}",
             response.getStatusCode(),
             response.getStatusMessage());
-        if (response.getStatusCode() != 200) return -1f;
+        if (response.getStatusCode() != 200) return Pair.of(date, -1f);
 
-        if (response.getContentAsString().isEmpty()) {
-          return this.validateAndGetRate(
-              (dayCount + 1), currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
-        } else {
-          return this.getRateFromJson(currencyFrom, currencyTo, response);
-        }
-      } else {
+      } catch (Exception e) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(IExceptionMessage.CURRENCY_7),
-                date.plus(Period.ofDays(1)),
-                appBaseService.getTodayDate(
-                    Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null))));
+            I18n.get(IExceptionMessage.CURRENCY_7),
+            currencyFrom.getName(),
+            currencyTo.getName());
       }
-    } catch (Exception e) {
+      if (response.getContentAsString().isEmpty()) {
+        return this.validateAndGetRateWithDate(
+            (dayCount + 1), currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
+      } else {
+        Float rate = this.getRateFromJson(currencyFrom, currencyTo, response);
+        return Pair.of(date, rate);
+      }
+    } else {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_6));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CURRENCY_7),
+          currencyFrom.getName(),
+          currencyTo.getName());
     }
   }
 

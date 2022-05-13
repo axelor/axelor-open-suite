@@ -26,7 +26,7 @@ public class ForecastGeneratorToolService {
     copy.setAmount(null);
     copy.setFromDate(null);
     copy.setToDate(null);
-    copy.setForecastReason(null);
+    copy.setForecastRecapLineType(null);
     copy.setComments(null);
   }
 }

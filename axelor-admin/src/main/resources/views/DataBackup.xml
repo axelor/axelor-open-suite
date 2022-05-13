@@ -24,6 +24,7 @@
         <field name="anonymizeData" widget="boolean-switch" colSpan="2"/>
         <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
           colSpan="2"/>
+        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
         <panel-related field="dataBackupConfigAnonymizeLineList"
           grid-view="data-backup-config-anonymize-line-grid"
           form-view="data-backup-config-anonymize-line-form" showIf="anonymizeData" hidden="true"

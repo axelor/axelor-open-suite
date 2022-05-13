@@ -88,7 +88,7 @@ public class ProjectTaskController {
           Beans.get(ProjectTaskBusinessProjectService.class);
       task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = projectTaskBusinessProjectService.computeDefaultInformation(task);
+        task = projectTaskBusinessProjectService.updateTaskFinancialInfo(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

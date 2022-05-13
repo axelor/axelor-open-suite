@@ -10,6 +10,12 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
+    <extend target="//field[@name='versionNumber']">
+      <insert position="after">
+        <field colSpan="3" name="directOrderLocation"
+          onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
+      </insert>
+    </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
@@ -111,6 +117,7 @@
     <action name="action-sale-order-attrs-interco"/>
     <action name="action-sale-order-record-interco"/>
     <action name="supplychain-action-create-shipment-cost-line"/>
+    <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
@@ -303,6 +310,7 @@
       expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
     <field name="toStockLocation"
       expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
+
   </action-record>
 
   <action-record name="action-sale-order-record-update-timetable-amounts"
