@@ -292,7 +292,7 @@
   </action-method>
 
   <action-method name="action-wkf-model-method-show-dashboard">
-    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showDashboard"/>
+    <call class="com.axelor.apps.bpm.web.WkfDashboardController" method="showDashboard"/>
   </action-method>
 
   <action-method name="action-wkf-model-method-status-per-view">
