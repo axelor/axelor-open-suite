@@ -454,6 +454,24 @@ public class ReconcileServiceImpl implements ReconcileService {
     return invoiceTermPaymentList;
   }
 
+  @Override
+  public void checkReconcile(Reconcile reconcile) throws AxelorException {
+    this.checkMoveLine(reconcile, reconcile.getCreditMoveLine());
+    this.checkMoveLine(reconcile, reconcile.getDebitMoveLine());
+  }
+
+  protected void checkMoveLine(Reconcile reconcile, MoveLine moveLine) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
+        && !invoiceTermService.isEnoughAmountToPay(
+            moveLine.getInvoiceTermList(),
+            reconcile.getAmount(),
+            reconcile.getReconciliationDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
+    }
+  }
+
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine) {
     if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       if (move != null

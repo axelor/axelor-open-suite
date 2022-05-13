@@ -49,6 +49,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
@@ -329,14 +330,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   @Transactional
   public InvoicePayment createInvoicePayment(
+      Invoice invoice,
       InvoiceTerm invoiceTerm,
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber,
-      boolean applyDiscount)
-      throws AxelorException {
+      String chequeNumber) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoiceTerm.getInvoice(),
@@ -345,9 +345,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoiceTerm.getInvoice().getCurrency(),
             paymentMode,
             InvoicePaymentRepository.TYPE_PAYMENT);
+
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
+    invoice.addInvoicePaymentListItem(invoicePayment);
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, Collections.singletonList(invoiceTerm));
 
     return invoicePaymentRepository.save(invoicePayment);
   }
@@ -360,8 +364,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber,
-      boolean applyDiscount)
+      String chequeNumber)
       throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
@@ -369,21 +372,19 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
 
     for (Long invoiceId : invoiceList) {
-
       Invoice invoice = invoiceRepository.find(invoiceId);
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        InvoicePayment invoicePayment =
-            this.createInvoicePayment(
-                invoiceTerm,
-                paymentMode,
-                companyBankDetails,
-                paymentDate,
-                bankDepositDate,
-                chequeNumber,
-                applyDiscount);
-        invoicePaymentList.add(invoicePayment);
-        invoice.addInvoicePaymentListItem(invoicePayment);
-      }
+      invoiceTermService
+          .getUnpaidInvoiceTerms(invoice)
+          .forEach(
+              it ->
+                  this.createInvoicePayment(
+                      invoice,
+                      it,
+                      paymentMode,
+                      companyBankDetails,
+                      paymentDate,
+                      bankDepositDate,
+                      chequeNumber));
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
@@ -410,7 +411,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         continue;
       }
 
-      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0
+          || !invoiceService.checkInvoiceTerms(invoice)) {
 
         continue;
       }

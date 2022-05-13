@@ -48,6 +48,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -333,5 +334,26 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP)
             .intValue());
+  }
+
+  public BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date) {
+    List<Invoice> invoiceList =
+        invoiceRepo
+            .all()
+            .filter("self.id IN :invoiceIdList")
+            .bind("invoiceIdList", invoiceIdList)
+            .fetch();
+
+    if (CollectionUtils.isNotEmpty(invoiceList) && date != null) {
+      return invoiceList.stream()
+          .map(Invoice::getInvoiceTermList)
+          .flatMap(Collection::stream)
+          .filter(invoiceTermService::isNotAwaitingPayment)
+          .map(it -> invoiceTermService.getAmountRemaining(it, date))
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 }

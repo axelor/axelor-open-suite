@@ -95,7 +95,7 @@
 
   <form name="invoice-payment-mass-form" title="Mass payment"
     model="com.axelor.apps.account.db.InvoicePayment"
-    onNew="action-invoice-payment-record-mass-payment-new">
+    onNew="action-invoice-payment-group-mass-payment-new">
     <panel name="mainPanel">
       <field name="amount" readonly="true" title="Total amount"/>
       <field name="currency" canEdit="false" form-view="currency-form"
@@ -106,7 +106,8 @@
       <field name="companyBankDetails" canEdit="false"
         onSelect="action-invoice-payment-method-bank-details-domain" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
-      <field name="paymentDate"/>
+      <field name="paymentDate"
+        onChange="action-invoice-payment-method-mass-payment-set-amount"/>
 
       <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
       <field name="bankDepositDate"
@@ -139,6 +140,11 @@
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-method-change-amount"/>
     <action name="action-invoice-payment-method-new-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-mass-payment-new">
+    <action name="action-invoice-payment-record-mass-payment-new"/>
+    <action name="action-invoice-payment-method-mass-payment-set-amount"/>
   </action-group>
 
   <action-record name="action-invoice-payment-record-new"
@@ -221,6 +227,11 @@
   <action-method name="action-invoice-payment-method-load-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="loadInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-mass-payment-set-amount">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="setMassPaymentAmount"/>
   </action-method>
 
   <action-record name="action-record-on-change-invoice-payment-financial-discount"

@@ -1198,6 +1198,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceTerm.setBankDetails(invoice.getBankDetails());
   }
 
+  @Override
+  public boolean checkInvoiceTerms(Invoice invoice) {
+    return CollectionUtils.isNotEmpty(invoiceTermService.getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
   public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
     int discountDelay =
         Optional.of(invoice)

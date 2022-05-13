@@ -179,8 +179,7 @@ public class InvoicePaymentController {
                 invoicePayment.getCompanyBankDetails(),
                 invoicePayment.getPaymentDate(),
                 invoicePayment.getBankDepositDate(),
-                invoicePayment.getChequeNumber(),
-                invoicePayment.getApplyFinancialDiscount());
+                invoicePayment.getChequeNumber());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -299,6 +298,21 @@ public class InvoicePaymentController {
         response.setValue("amount", invoicePayment.getAmount());
         response.setValue("$invoiceTerms", invoiceTermIdList);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void setMassPaymentAmount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      List<Long> invoiceIdList = (List<Long>) request.getContext().get("_invoices");
+
+      response.setValue(
+          "amount",
+          Beans.get(InvoicePaymentToolService.class)
+              .getMassPaymentAmount(invoiceIdList, invoicePayment.getPaymentDate()));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
