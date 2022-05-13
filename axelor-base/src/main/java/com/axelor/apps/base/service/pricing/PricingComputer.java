@@ -36,6 +36,7 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -306,6 +307,9 @@ public class PricingComputer extends AbstractObservablePricing {
 
     if (classPricingRule != null) {
       Object result = scriptHelper.eval(classPricingRule.getFormula());
+      if (classPricingRule.getFieldTypeSelect() == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+        result = ((BigDecimal) result).setScale(classPricingRule.getScale(), RoundingMode.HALF_UP);
+      }
       notifyClassificationPricingRule(classPricingRule, result);
       return result;
     }
