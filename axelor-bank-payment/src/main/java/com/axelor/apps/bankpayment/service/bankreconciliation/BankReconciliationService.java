@@ -212,7 +212,7 @@ public class BankReconciliationService {
 
           if (bankStatementRule != null
               && bankStatementRule.getBankStatementQuery() != null
-              && bankStatementRule.getBankStatementQuery().getQuery() != null
+              && !Strings.isNullOrEmpty(bankStatementRule.getBankStatementQuery().getQuery())
               && Boolean.TRUE.equals(
                   new GroovyScriptHelper(scriptContext)
                       .eval(
