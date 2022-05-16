@@ -151,19 +151,14 @@ public class DataBackupCreateService {
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
     int errorsCount = 0;
-    boolean anonymizeData = false;
-
-    if (dataBackup.getAnonymizer() != null) {
-      anonymizeData = true;
-    }
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels(anonymizeData);
+    List<MetaModel> metaModelList = getMetaModels(dataBackup.getAnonymizer() != null);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData);
+    Map<String, List<String>> subClassesMap = getSubClassesMap(dataBackup.getAnonymizer() != null);
 
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
@@ -676,6 +671,7 @@ public class DataBackupCreateService {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
     List<AnonymizerLine> anonymizerLines = new ArrayList<>();
+
     if (value == null) {
       return "";
     }
@@ -686,36 +682,7 @@ public class DataBackupCreateService {
     }
 
     if (anonymizerLines != null && anonymizerLines.size() > 0) {
-      if (property.isJson()) {
-        HashMap<MetaJsonField, FakerApiField> fakerMap = new HashMap<>();
-        for (AnonymizerLine anonymizerLine : anonymizerLines) {
-          if (anonymizerLine.getMetaJsonField() != null
-              && anonymizerLine.getFakerApiField() != null) {
-            fakerMap.put(anonymizerLine.getMetaJsonField(), anonymizerLine.getFakerApiField());
-          }
-
-          if (anonymizerLine.getMetaJsonField() != null
-              && anonymizerLine.getFakerApiField() == null) {
-            fakerMap.put(anonymizerLine.getMetaJsonField(), null);
-          }
-        }
-
-        return anonymizeService.createAnonymizedJson(value, fakerMap).toString();
-      }
-
-      for (AnonymizerLine anonymizerLine : anonymizerLines) {
-        if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
-            && anonymizerLine.getMetaField() != null
-            && property.getName().equals(anonymizerLine.getMetaField().getName())) {
-          if (anonymizerLine.getFakerApiField() != null) {
-            return anonymizeService
-                .anonymizeValue(value, property, anonymizerLine.getFakerApiField())
-                .toString();
-          } else {
-            return anonymizeService.anonymizeValue(value, property).toString();
-          }
-        }
-      }
+      return anonymizeMetaModelData(property, metaModelName, value, anonymizerLines);
     }
 
     switch (propertyTypeStr) {
@@ -761,6 +728,52 @@ public class DataBackupCreateService {
       default:
         return value.toString();
     }
+  }
+
+  protected String anonymizeMetaModelData(
+      Property property, String metaModelName, Object value, List<AnonymizerLine> anonymizerLines)
+      throws AxelorException {
+
+    if (anonymizerLines != null && anonymizerLines.size() > 0) {
+      if (property.isJson()) {
+        return anonymizeMetaModelDataJsonValues(anonymizerLines, value);
+      }
+    }
+    return anonymizeMetaModelDataValues(anonymizerLines, value, property, metaModelName);
+  }
+
+  protected String anonymizeMetaModelDataJsonValues(
+      List<AnonymizerLine> anonymizerLines, Object value) throws AxelorException {
+    HashMap<MetaJsonField, FakerApiField> fakerMap = new HashMap<>();
+
+    anonymizerLines.stream()
+        .filter(anonymizerLine -> anonymizerLine.getMetaJsonField() != null)
+        .forEach(
+            anonymizerLine ->
+                fakerMap.put(anonymizerLine.getMetaJsonField(), anonymizerLine.getFakerApiField()));
+
+    return anonymizeService.createAnonymizedJson(value, fakerMap).toString();
+  }
+
+  protected String anonymizeMetaModelDataValues(
+      List<AnonymizerLine> anonymizerLines, Object value, Property property, String metaModelName)
+      throws AxelorException {
+    String result = "";
+    for (AnonymizerLine anonymizerLine : anonymizerLines) {
+      if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
+          && anonymizerLine.getMetaField() != null
+          && property.getName().equals(anonymizerLine.getMetaField().getName())) {
+        if (anonymizerLine.getFakerApiField() != null) {
+          result =
+              anonymizeService
+                  .anonymizeValue(value, property, anonymizerLine.getFakerApiField())
+                  .toString();
+        } else {
+          result = anonymizeService.anonymizeValue(value, property).toString();
+        }
+      }
+    }
+    return result;
   }
 
   public String createRelativeDateTime(LocalDateTime dateT) {

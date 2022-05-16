@@ -16,7 +16,7 @@
     <panel name="mainPanel" large="true">
       <panel name="userPanel" colSpan="9">
         <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
-          colSpan="12"/>
+          colSpan="12" showTitle="false"/>
         <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
         <field name="isRelativeDate" widget="boolean-switch"
