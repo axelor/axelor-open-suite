@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -46,9 +47,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
@@ -59,17 +62,23 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Inject
   public AnalyticMoveLineServiceImpl(
+      AnalyticMoveLineRepository analyticMoveLineRepository,
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
       AccountRepository accountRepository,
       AppBaseService appBaseService) {
 
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
+  }
+
+  public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
+    return this.analyticMoveLineRepository;
   }
 
   @Override
@@ -330,5 +339,44 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
     }
     return LocalDate.now();
+  }
+
+  @Override
+  public AnalyticMoveLine reverse(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+
+    MoveLine moveLine = analyticMoveLine.getMoveLine();
+    AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
+    reverse.setOriginAnalyticMoveLine(analyticMoveLine);
+    moveLine.addAnalyticMoveLineListItem(reverse);
+    reverse.setAmount(analyticMoveLine.getAmount().negate());
+    reverse.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVERSE);
+
+    return reverse;
+  }
+
+  @Override
+  @Transactional
+  public AnalyticMoveLine reverseAndPersist(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+    return analyticMoveLineRepository.save(reverse(analyticMoveLine, analyticAccount));
+  }
+
+  @Override
+  @Transactional
+  public AnalyticMoveLine generateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+
+    AnalyticMoveLine newAnalyticmoveLine = analyticMoveLineRepository.copy(analyticMoveLine, false);
+
+    MoveLine moveLine = analyticMoveLine.getMoveLine();
+    newAnalyticmoveLine.setOriginAnalyticMoveLine(analyticMoveLine);
+    moveLine.addAnalyticMoveLineListItem(newAnalyticmoveLine);
+    newAnalyticmoveLine.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVISION);
+    if (Objects.nonNull(analyticAccount)) {
+      newAnalyticmoveLine.setAnalyticAccount(analyticAccount);
+    }
+
+    return analyticMoveLineRepository.save(newAnalyticmoveLine);
   }
 }
