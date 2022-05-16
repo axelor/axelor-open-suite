@@ -68,4 +68,17 @@ public class BaseBatchController {
       response.setReload(true);
     }
   }
+
+  public void actionPasswordChange(ActionRequest request, ActionResponse response) {
+    try {
+      BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
+      baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
+      Batch batch = Beans.get(BaseBatchService.class).passwordChange(baseBatch);
+      response.setFlash(batch.getComments());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
 }

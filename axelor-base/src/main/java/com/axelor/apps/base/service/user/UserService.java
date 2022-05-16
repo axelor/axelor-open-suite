@@ -190,4 +190,6 @@ public interface UserService {
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);
+
+  public User generateRandomPasswordForUser(User user);
 }
