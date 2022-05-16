@@ -24,7 +24,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,9 +34,9 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -46,14 +45,11 @@ import wslite.json.JSONObject;
 public class AnonymizeServiceImpl implements AnonymizeService {
 
   protected FakerService fakerService;
-  protected MetaJsonFieldRepository metaJsonFieldRepository;
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
   @Inject
-  public AnonymizeServiceImpl(
-      FakerService fakerService, MetaJsonFieldRepository metaJsonFieldRepository) {
+  public AnonymizeServiceImpl(FakerService fakerService) {
     this.fakerService = fakerService;
-    this.metaJsonFieldRepository = metaJsonFieldRepository;
   }
 
   @Override
@@ -82,69 +78,11 @@ public class AnonymizeServiceImpl implements AnonymizeService {
   }
 
   @Override
-  public Object anonymizeJsonValue(Object object, Property property, MetaJsonField metaJsonField)
-      throws JSONException {
-    JSONObject jsonObject = new JSONObject(object.toString());
-    for (Object field : jsonObject.keySet()) {
-      if (metaJsonField.getName().equals(field)) {
-        return anonymize(
-            jsonObject.get(field.toString()), metaJsonField.getType(), metaJsonField.getMaxSize());
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public Object anonymizeJsonValue(
-      Object object, Property property, MetaJsonField metaJsonField, FakerApiField fakerApiField)
-      throws JSONException, AxelorException {
-    if (fakerApiField != null) {
-      return fakerService.generateFakeData(fakerApiField);
-    }
-    return anonymizeJsonValue(object, property, metaJsonField);
-  }
-
-  @Override
-  public JSONObject createAnonymizedJson(Object object, List<MetaJsonField> metaJsonFieldToAnoList)
-      throws AxelorException {
-    List<String> metaJsonFieldsNameToAnonymize = new ArrayList<>();
-    JSONObject anonymizedJson = new JSONObject();
-    for (MetaJsonField metaJsonField : metaJsonFieldToAnoList) {
-      metaJsonFieldsNameToAnonymize.add(metaJsonField.getName());
-    }
-    try {
-      JSONObject jsonObject = new JSONObject(object.toString());
-      for (Object field : jsonObject.keySet()) {
-        if (metaJsonFieldsNameToAnonymize.contains(field.toString())) {
-          MetaJsonField metaJsonField = null;
-          for (MetaJsonField metaJsonField1 : metaJsonFieldToAnoList) {
-            if (metaJsonField1.getName().equals(field.toString())) {
-              metaJsonField = metaJsonField1;
-            }
-          }
-          // OR MetaJsonField metaJsonField = metaJsonFieldRepository.findByName(field.toString());
-
-          anonymizedJson.put(
-              field.toString(),
-              anonymize(
-                  jsonObject.get(field.toString()).toString(),
-                  metaJsonField.getType(),
-                  metaJsonField.getMaxSize()));
-        } else {
-          anonymizedJson.put(field.toString(), jsonObject.get(field.toString()).toString());
-        }
-      }
-      return anonymizedJson;
-    } catch (JSONException e) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
-    }
-  }
-
-  @Override
   public JSONObject createAnonymizedJson(
       Object object, HashMap<MetaJsonField, FakerApiField> fakerMap) throws AxelorException {
-    List<String> metaJsonFieldsNameToAnonymize = new ArrayList<>();
     JSONObject anonymizedJson = new JSONObject();
+    List<String> metaJsonFieldsNameToAnonymize =
+        fakerMap.keySet().stream().map(MetaJsonField::getName).collect(Collectors.toList());
     for (MetaJsonField metaJsonField : fakerMap.keySet()) {
       metaJsonFieldsNameToAnonymize.add(metaJsonField.getName());
     }
@@ -152,18 +90,10 @@ public class AnonymizeServiceImpl implements AnonymizeService {
       JSONObject jsonObject = new JSONObject(object.toString());
       for (Object field : jsonObject.keySet()) {
         if (metaJsonFieldsNameToAnonymize.contains(field.toString())) {
-          MetaJsonField metaJsonField = metaJsonFieldRepository.findByName(field.toString());
-          if (fakerMap.get(metaJsonField) != null) {
-            anonymizedJson.put(
-                field.toString(), fakerService.generateFakeData(fakerMap.get(metaJsonField)));
-          } else {
-            anonymizedJson.put(
-                field.toString(),
-                anonymize(
-                    jsonObject.get(field.toString()).toString(),
-                    metaJsonField.getType(),
-                    metaJsonField.getMaxSize()));
-          }
+          anonymizedJson.put(
+              field.toString(),
+              anonymizeJsonValue(
+                  fakerMap, field.toString(), jsonObject.get(field.toString()).toString()));
         } else {
           anonymizedJson.put(field.toString(), jsonObject.get(field.toString()).toString());
         }
@@ -171,6 +101,22 @@ public class AnonymizeServiceImpl implements AnonymizeService {
       return anonymizedJson;
     } catch (JSONException e) {
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+  }
+
+  protected Object anonymizeJsonValue(
+      HashMap<MetaJsonField, FakerApiField> fakerMap, String fieldName, String objectValue)
+      throws AxelorException {
+    MetaJsonField metaJsonField =
+        fakerMap.keySet().stream()
+            .filter(metaJsonField1 -> fieldName.equals(metaJsonField1.getName()))
+            .findAny()
+            .get(); // we will always find a metaJsonField since we called contains on the list
+    // before
+    if (fakerMap.get(metaJsonField) != null) {
+      return fakerService.generateFakeData(fakerMap.get(metaJsonField));
+    } else {
+      return anonymize(objectValue, metaJsonField.getType(), metaJsonField.getMaxSize());
     }
   }
 

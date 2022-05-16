@@ -22,8 +22,6 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import java.util.HashMap;
-import java.util.List;
-import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 public interface AnonymizeService {
@@ -47,44 +45,6 @@ public interface AnonymizeService {
    * @throws AxelorException if an error occurs when generating a fake value.
    */
   Object anonymizeValue(Object object, Property property, FakerApiField fakerApiField)
-      throws AxelorException;
-
-  /**
-   * return a hash or hard-coded value for a JSON field.
-   *
-   * @param object
-   * @param property
-   * @param metaJsonField
-   * @return
-   * @throws JSONException
-   */
-  Object anonymizeJsonValue(Object object, Property property, MetaJsonField metaJsonField)
-      throws JSONException;
-
-  /**
-   * return a hash, hard-coded or fake generated value for a JSON field.
-   *
-   * @param object
-   * @param property
-   * @param metaJsonField
-   * @param fakerApiField
-   * @return
-   * @throws JSONException
-   * @throws AxelorException
-   */
-  Object anonymizeJsonValue(
-      Object object, Property property, MetaJsonField metaJsonField, FakerApiField fakerApiField)
-      throws JSONException, AxelorException;
-
-  /**
-   * return a JSON with hash or hard-coded values.
-   *
-   * @param object
-   * @param metaJsonFieldList
-   * @return
-   * @throws AxelorException
-   */
-  JSONObject createAnonymizedJson(Object object, List<MetaJsonField> metaJsonFieldList)
       throws AxelorException;
 
   /**
