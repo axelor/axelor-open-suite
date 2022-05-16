@@ -43,6 +43,7 @@
       <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect"/>
       <field name="currency"/>
+      <field name="contentCurrencySelect" widget="MultiSelect"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">

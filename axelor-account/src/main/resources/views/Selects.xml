@@ -664,4 +664,9 @@
     <option value="1">Direct bank LCR</option>
   </selection>
 
+  <selection name="account.accounting.report.content.currency.select">
+    <option value="1">Company's currency</option>
+    <option value="2">Origin's currency</option>
+  </selection>
+
 </object-views>
