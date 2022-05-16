@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,7 @@ public class ReportSettings {
     this.computeOutputName(outputName);
     addDataBaseConnection();
     addAttachmentPath();
+    addBrowserLocale();
   }
 
   /**
@@ -262,5 +264,13 @@ public class ReportSettings {
    */
   public static String getPrintingLocale() {
     return getPrintingLocale(null);
+  }
+
+  protected ReportSettings addBrowserLocale() {
+    return this.addParam("BirtLocale", this.getBrowserLocale());
+  }
+
+  public String getBrowserLocale() {
+    return Beans.get(HttpServletRequest.class).getLocale().toLanguageTag();
   }
 }
