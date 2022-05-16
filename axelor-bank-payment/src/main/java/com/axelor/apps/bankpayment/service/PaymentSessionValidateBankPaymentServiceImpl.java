@@ -1,11 +1,13 @@
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
@@ -15,6 +17,8 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -62,6 +66,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
       MoveLineTaxService moveLineTaxService,
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo,
       MoveRepository moveRepo,
@@ -82,6 +88,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         reconcileService,
         invoiceTermService,
         moveLineTaxService,
+        invoicePaymentCreateService,
+        invoicePaymentValidateService,
         paymentSessionRepo,
         invoiceTermRepo,
         moveRepo,
@@ -187,6 +195,27 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     }
 
     return paymentSession;
+  }
+
+  @Override
+  protected boolean generatePaymentsFirst(PaymentSession paymentSession) {
+    return super.generatePaymentsFirst(paymentSession)
+        || (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_ONGOING
+            && paymentSession.getPaymentMode().getGenerateBankOrder()
+            && paymentSession.getPaymentMode().getAccountingTriggerSelect()
+                != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    InvoicePayment invoicePayment =
+        super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+
+    invoicePayment.setBankOrder(paymentSession.getBankOrder());
+
+    return invoicePaymentRepo.save(invoicePayment);
   }
 
   protected void createOrUpdateBankOrderLineFromInvoiceTerm(
