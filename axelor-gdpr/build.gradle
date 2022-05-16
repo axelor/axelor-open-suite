@@ -1,16 +1,16 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "7.0"
+    version = openSuiteVersion
 }
 
 axelor {
-	title "Axelor GDPR"
-	description "Axelor GDPR Module"
+    title "Axelor Fleet"
+    description "Axelor Fleet Module"
 }
 
 dependencies {
-	api project(":modules:axelor-base")
-	api project(":modules:axelor-crm")
-	api project(":modules:axelor-human-resource")
+    api project(":modules:axelor-base")
 }
