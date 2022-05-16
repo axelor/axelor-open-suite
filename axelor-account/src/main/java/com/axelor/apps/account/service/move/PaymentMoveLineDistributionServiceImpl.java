@@ -79,7 +79,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
           new PaymentMoveLineDistribution(
               move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
 
-      paymentMvlD.setOperationDate(reconcile.getDebitMoveLine().getDueDate());
+      paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
       if (!moveLine.getAccount().getReconcileOk()) {
         this.computeProratedAmounts(
             paymentMvlD,
