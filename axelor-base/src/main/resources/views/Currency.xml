@@ -7,6 +7,7 @@
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="symbol"/>
+    <field name="codeISO" x-bind="{{code|unaccent|uppercase}}"/>
   </grid>
 
   <form name="currency-form" title="Currency" model="com.axelor.apps.base.db.Currency">
@@ -14,6 +15,7 @@
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="symbol" colSpan="3"/>
+      <field name="codeISO" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
     </panel>
   </form>
 
