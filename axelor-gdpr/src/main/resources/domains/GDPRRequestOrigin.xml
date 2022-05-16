@@ -4,9 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
-
   <entity name="GDPRRequestOrigin" lang="java">
-
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
   </entity>
