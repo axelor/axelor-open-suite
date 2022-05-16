@@ -1,0 +1,5 @@
+---
+title: "FIXEDASSET : Add AssetDisposalReason onto the disposal wizard and fixedAsset + new menu entry to generate"
+type: feature
+description: |
+  This disposalReason choice will help better characterize the reason why the company is disposing of the fixedAsset (but it won't have at this stage other impacts, purely informative)

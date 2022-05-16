@@ -1,0 +1,11 @@
+---
+title: "Rename move status"
+type: change
+description: |
+  Status accounted becomes daybook
+  Status validated becomes accounted
+  Track messages updated
+  Viewer tags updated
+  Validate buttons updated
+  Validation date becomes accounting date
+  Related prompt message updated
